@@ -28,9 +28,9 @@ body {
   grid-template-columns: minmax(240px, 300px) 1fr minmax(240px, 300px);
   grid-template-rows: auto 1fr auto;
   grid-template-areas:
-    "header . ."
-    "tools  . ."
-    "footer counter .";
+    "header counter ."
+    "tools  .       ."
+    "footer reading .";
   gap: 16px;
   padding: 20px 24px;
   pointer-events: none;
@@ -65,12 +65,15 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .tool-buy { align-self: stretch; margin-top: 4px; }
 
 .counter {
-  grid-area: counter; justify-self: center; align-self: end;
+  grid-area: counter; justify-self: center; align-self: start;
   display: flex; flex-direction: column; align-items: center; gap: 2px;
   text-shadow: var(--shadow);
 }
 .value { font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
-.label { color: var(--muted); margin-bottom: 12px; font-size: 0.9rem; }
+.label { color: var(--muted); font-size: 0.9rem; }
+
+/* Le livre tenu en main sort par le bas de l'écran. */
+.reading { grid-area: reading; justify-self: center; align-self: end; margin-bottom: -9vh; }
 
 footer {
   grid-area: footer; align-self: end;
@@ -83,11 +86,12 @@ footer {
 @media (max-width: 760px) {
   #app {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr auto auto auto;
-    grid-template-areas: "header" "." "tools" "counter" "footer";
+    grid-template-rows: auto auto 1fr auto auto auto;
+    grid-template-areas: "header" "counter" "." "tools" "reading" "footer";
     gap: 10px; padding: 14px 16px;
   }
-  .tools { max-height: 34vh; }
+  .tools { max-height: 30vh; }
+  .reading { margin-bottom: -8vh; }
   footer { flex-direction: row; justify-content: space-between; }
 }
 

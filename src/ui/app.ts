@@ -2,6 +2,7 @@ import { createHeader } from './header';
 import { createLanguageSwitch } from './languageSwitch';
 import { createCounter } from './counter';
 import { createToolsPanel } from './toolsPanel';
+import { createReading } from './reading';
 import { createFooter } from './footer';
 import { setLocale } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
@@ -24,6 +25,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       createHeader(languageSwitch),
       createCounter(state),
       createToolsPanel(state),
+      createReading(state),
       createFooter(() => {
         deleteSave();
         Object.assign(state, createInitialState(state.locale));
