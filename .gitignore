@@ -3,3 +3,5 @@ dist/
 .idea/
 .DS_Store
 .ai/
+# Sources des illustrations (PNG lourds), gardées en local
+art/

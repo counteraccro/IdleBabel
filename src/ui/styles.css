@@ -1,42 +1,51 @@
-/* Habillage neutre en attendant la direction artistique. */
+/* L'interface flotte au-dessus du décor peint (src/scene). */
 :root {
-  --bg: #f4ecdc;
-  --ink: #2b2118;
-  --muted: #7a6a58;
-  --accent: #8a5a2b;
-  --card: #fbf6ec;
-  color-scheme: light dark;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #16130f;
-    --ink: #e8dcc6;
-    --muted: #9c8c78;
-    --accent: #d2a064;
-    --card: #211c16;
-  }
+  --ink: #efe3c8;
+  --muted: #b8a684;
+  --accent: #e0b870;
+  --panel: rgba(12, 9, 7, 0.72);
+  --border: rgba(201, 164, 106, 0.4);
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink); font-family: Georgia, 'Times New Roman', serif; }
-#app { max-width: 520px; margin: 0 auto; padding: 32px 16px; }
-header { text-align: center; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0b0806;
+  color: var(--ink);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+.scene { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+#app { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; padding: 32px 16px; }
+header { text-align: center; text-shadow: 0 2px 12px #000; }
 h1 { margin: 0; letter-spacing: 0.08em; }
 .subtitle { color: var(--muted); margin: 4px 0 12px; font-style: italic; }
 .langs button { margin: 0 2px; }
 .langs .active { border-color: var(--accent); color: var(--accent); }
 button {
-  font: inherit; color: var(--ink); background: var(--card);
-  border: 1px solid var(--muted); border-radius: 6px; padding: 6px 12px; cursor: pointer;
+  font: inherit; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--border); border-radius: 4px; padding: 6px 12px; cursor: pointer;
+  backdrop-filter: blur(4px);
 }
 button:disabled { opacity: 0.45; cursor: not-allowed; }
-.primary { border-color: var(--accent); padding: 12px 24px; font-size: 1.1rem; }
-.counter { text-align: center; margin: 40px 0; }
+.primary { background: #efe3c8; color: #1a120b; border: none; padding: 12px 28px; font-size: 1.1rem; }
+.counter { text-align: center; margin: 40px 0; text-shadow: 0 2px 12px #000; }
 .value { font-size: 3rem; font-variant-numeric: tabular-nums; }
 .label { color: var(--muted); margin-bottom: 20px; }
 .tool {
   display: flex; gap: 16px; align-items: center; justify-content: space-between;
-  background: var(--card); border: 1px solid var(--muted); border-radius: 8px; padding: 16px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 16px;
+  backdrop-filter: blur(4px);
 }
 .tool p { margin: 4px 0; color: var(--muted); font-size: 0.9rem; }
-footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 40px; color: var(--muted); font-size: 0.8rem; }
-.link { border: none; background: none; padding: 0; color: var(--muted); text-decoration: underline; }
+footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 40px; color: var(--muted); font-size: 0.8rem; text-shadow: 0 1px 6px #000; }
+.link { border: none; background: none; backdrop-filter: none; padding: 0; color: var(--muted); text-decoration: underline; }
+.debug {
+  position: fixed; right: 12px; bottom: 12px; z-index: 10; width: 260px;
+  display: flex; flex-direction: column; gap: 8px; padding: 12px;
+  background: rgba(8, 6, 5, 0.9); border: 1px dashed var(--accent); border-radius: 4px;
+  font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+}
+.debug input { width: 150px; font: inherit; background: #1a140f; color: var(--ink); border: 1px solid var(--border); padding: 4px; }
+.debug-presets { display: flex; flex-wrap: wrap; gap: 4px; }
+.debug-presets button { padding: 2px 6px; font-size: 12px; }
