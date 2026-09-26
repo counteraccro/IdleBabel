@@ -17,6 +17,9 @@ export const setLocale = (locale: Locale): void => {
 
 export const getLocale = (): Locale => current;
 
+/** Textes de la langue courante, pour les contenus en liste (fragments…). */
+export const messages = () => LOCALES[current];
+
 const lookup = (messages: unknown, path: string): string | undefined => {
   const value = path.split('.').reduce<unknown>((node, key) => (node as Record<string, unknown>)?.[key], messages);
   return typeof value === 'string' ? value : undefined;

@@ -12,3 +12,21 @@ export const randomBabelText = (length: number, random: () => number = Math.rand
   }
   return text.replace(/ {2,}/g, ' ').trim();
 };
+
+/** Une page : du charabia, et parfois une phrase sensée trouvée au milieu. */
+export interface PageContent {
+  before: string;
+  fragment?: string;
+  after: string;
+}
+
+export const createPage = (length: number, fragment?: string, random: () => number = Math.random): PageContent => {
+  if (!fragment) return { before: randomBabelText(length, random), after: '' };
+  const noise = Math.max(0, length - fragment.length);
+  const split = Math.floor(noise * (0.2 + random() * 0.6));
+  return {
+    before: `${randomBabelText(split, random)} `,
+    fragment,
+    after: ` ${randomBabelText(noise - split, random)}`,
+  };
+};
