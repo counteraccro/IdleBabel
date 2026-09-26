@@ -1,0 +1,10 @@
+{
+  "subtitle": "Deployment prototype",
+  "pages": "Pages read",
+  "perSecond": "/s",
+  "read": "Turn a page",
+  "owned": "Owned",
+  "buy": "Buy",
+  "reset": "Erase save",
+  "build": "Build of"
+}

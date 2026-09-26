@@ -1,0 +1,33 @@
+import { SAVE_VERSION, createInitialState, type GameState } from './state';
+import type { Locale } from '../i18n';
+
+const SAVE_KEY = 'idle-babel-save';
+
+export const loadGame = (defaultLocale: Locale): GameState => {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw) as GameState;
+      if (saved.version === SAVE_VERSION) return { ...createInitialState(defaultLocale), ...saved };
+    }
+  } catch {
+    // sauvegarde illisible ou stockage bloqué : nouvelle partie
+  }
+  return createInitialState(defaultLocale);
+};
+
+export const saveGame = (state: GameState): void => {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  } catch {
+    // stockage indisponible (navigation privée) : le jeu continue sans sauvegarde
+  }
+};
+
+export const deleteSave = (): void => {
+  try {
+    localStorage.removeItem(SAVE_KEY);
+  } catch {
+    // rien à faire
+  }
+};

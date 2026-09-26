@@ -1,0 +1,10 @@
+{
+  "subtitle": "Prototype de déploiement",
+  "pages": "Pages lues",
+  "perSecond": "/s",
+  "read": "Feuilleter une page",
+  "owned": "Possédés",
+  "buy": "Acheter",
+  "reset": "Effacer la sauvegarde",
+  "build": "Version du"
+}

@@ -1,0 +1,42 @@
+/* Habillage neutre en attendant la direction artistique. */
+:root {
+  --bg: #f4ecdc;
+  --ink: #2b2118;
+  --muted: #7a6a58;
+  --accent: #8a5a2b;
+  --card: #fbf6ec;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16130f;
+    --ink: #e8dcc6;
+    --muted: #9c8c78;
+    --accent: #d2a064;
+    --card: #211c16;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: Georgia, 'Times New Roman', serif; }
+#app { max-width: 520px; margin: 0 auto; padding: 32px 16px; }
+header { text-align: center; }
+h1 { margin: 0; letter-spacing: 0.08em; }
+.subtitle { color: var(--muted); margin: 4px 0 12px; font-style: italic; }
+.langs button { margin: 0 2px; }
+.langs .active { border-color: var(--accent); color: var(--accent); }
+button {
+  font: inherit; color: var(--ink); background: var(--card);
+  border: 1px solid var(--muted); border-radius: 6px; padding: 6px 12px; cursor: pointer;
+}
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+.primary { border-color: var(--accent); padding: 12px 24px; font-size: 1.1rem; }
+.counter { text-align: center; margin: 40px 0; }
+.value { font-size: 3rem; font-variant-numeric: tabular-nums; }
+.label { color: var(--muted); margin-bottom: 20px; }
+.tool {
+  display: flex; gap: 16px; align-items: center; justify-content: space-between;
+  background: var(--card); border: 1px solid var(--muted); border-radius: 8px; padding: 16px;
+}
+.tool p { margin: 4px 0; color: var(--muted); font-size: 0.9rem; }
+footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 40px; color: var(--muted); font-size: 0.8rem; }
+.link { border: none; background: none; padding: 0; color: var(--muted); text-decoration: underline; }
