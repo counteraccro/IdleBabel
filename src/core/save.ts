@@ -8,7 +8,9 @@ export const loadGame = (defaultLocale: Locale): GameState => {
     const raw = localStorage.getItem(SAVE_KEY);
     if (raw) {
       const saved = JSON.parse(raw) as GameState;
-      if (saved.version === SAVE_VERSION) return { ...createInitialState(defaultLocale), ...saved };
+      if (saved.version === SAVE_VERSION) {
+        return { ...createInitialState(defaultLocale), ...saved, totalPagesRead: saved.totalPagesRead ?? saved.pages };
+      }
     }
   } catch {
     // sauvegarde illisible ou stockage bloqué : nouvelle partie

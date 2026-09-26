@@ -6,17 +6,18 @@ import type { ToolId } from '../data/tools';
 import type { GameState } from '../core/state';
 
 export const createToolCard = (state: GameState, id: ToolId): Component => {
-  const root = el('section', 'tool');
-  const info = el('div');
-  const owned = el('small');
-  info.append(el('strong', undefined, t(`tools.${id}.name`)), el('p', undefined, t(`tools.${id}.description`)), owned);
-  const button = el('button');
+  const root = el('article', 'tool');
+  const title = el('div', 'tool-title');
+  const owned = el('span', 'tool-owned');
+  title.append(el('strong', undefined, t(`tools.${id}.name`)), owned);
+  const button = el('button', 'tool-buy');
   button.addEventListener('click', () => buyTool(state, id));
-  root.append(info, button);
+  root.append(title, el('p', undefined, t(`tools.${id}.description`)), button);
 
   const update = (): void => {
     const cost = nextToolCost(state, id);
-    owned.textContent = `${t('ui.owned')} : ${state.tools[id]}`;
+    owned.textContent = String(state.tools[id]);
+    owned.title = t('ui.owned');
     button.textContent = `${t('ui.buy')} — ${formatNumber(Math.ceil(cost), getLocale())} 📄`;
     button.disabled = state.pages < cost;
   };

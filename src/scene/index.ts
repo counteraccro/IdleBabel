@@ -6,6 +6,8 @@ const SCENE = {
   image: 'scenes/age1.jpg',
   depth: 'scenes/age1-depth.png',
   vanishing: { x: 0.56, y: 0.45 },
+  /** Âge Manuel : une obscurité presque totale, pas de brume. */
+  fogColor: [0.012, 0.009, 0.007] as [number, number, number],
 };
 
 const loadImage = (src: string): Promise<HTMLImageElement> =>
@@ -27,7 +29,7 @@ export const mountScene = async (perception: { clarity: () => number; beyond: ()
   const depth = await loadDepth(base + SCENE.depth, image, SCENE.vanishing);
   let started = false;
   try {
-    started = startScene(canvas, { image, depth, vanishing: SCENE.vanishing, ...perception });
+    started = startScene(canvas, { image, depth, vanishing: SCENE.vanishing, fogColor: SCENE.fogColor, ...perception });
   } catch (error) {
     console.error('Scène animée indisponible, image fixe affichée à la place.', error);
   }

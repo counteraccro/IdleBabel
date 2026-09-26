@@ -63,11 +63,13 @@ void main() {
   vec3 repeated = texture(uImage, uVanishing + (uv - uVanishing) * 3.2 + drift * 2.0).rgb;
   color = mix(color, mix(color, repeated * 1.35 + color * 0.35, 0.65), glass * uBeyond);
 
-  // Brume qui ondule lentement : elle avale ce qui est plus loin que la compréhension.
+  // Obscurité (ou brume) qui ondule lentement : elle avale ce qui est plus loin que la compréhension.
+  // La lumière de la fenêtre perce faiblement, comme une promesse.
   float wisps = fbm(shifted * 3.0 + vec2(uTime * 0.015, uTime * 0.006)) - 0.5;
   float distance = 1.0 - nearness;
   float fog = smoothstep(uClarity - 0.08, uClarity + 0.22, distance + wisps * 0.25);
-  color = mix(color, uFogColor + wisps * 0.04, fog * 0.94);
+  fog *= 1.0 - glass * 0.12;
+  color = mix(color, uFogColor + wisps * 0.03, fog * 0.97);
 
   // Lumière vivante, grain et vignette.
   color *= 1.0 + 0.025 * sin(uTime * 1.7) * sin(uTime * 2.9);

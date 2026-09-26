@@ -10,9 +10,10 @@ export interface SceneOptions {
   clarity: () => number;
   /** De 0 à 1 : ce qu'il devine derrière la vitre. */
   beyond: () => number;
+  /** Couleur de ce qu'il ne comprend pas encore : obscurité (Âge Manuel) ou brume (Âges suivants). */
+  fogColor: [number, number, number];
 }
 
-const FOG_COLOR = [0.09, 0.075, 0.06];
 
 const compile = (gl: WebGL2RenderingContext, type: number, source: string): WebGLShader => {
   const shader = gl.createShader(type)!;
@@ -54,7 +55,7 @@ export const startScene = (canvas: HTMLCanvasElement, options: SceneOptions): bo
   gl.uniform1i(uniform('uImage'), 0);
   gl.uniform1i(uniform('uDepth'), 1);
   gl.uniform2f(uniform('uVanishing'), options.vanishing.x, options.vanishing.y);
-  gl.uniform3fv(uniform('uFogColor'), FOG_COLOR);
+  gl.uniform3fv(uniform('uFogColor'), options.fogColor);
 
   const resize = (): void => {
     const ratio = Math.min(window.devicePixelRatio, 2);

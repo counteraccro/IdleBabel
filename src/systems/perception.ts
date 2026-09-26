@@ -1,13 +1,16 @@
 import type { GameState } from '../core/state';
 
+/** Pages lues à partir desquelles la pièce de l'Âge Manuel est entièrement visible. */
+const ROOM_REVEALED_AT = 2_500;
+
 /**
- * Brouillard de compréhension : il ne voit que ce qu'il comprend.
- * Provisoire, en attendant les Âges : au réveil il est dans la pénombre,
- * puis sa pièce se révèle en entier au fil des premières centaines de pages.
- * 0 = seul le plus proche est visible, 1 = tout est visible.
+ * Âge Manuel : il se réveille dans le noir et ne distingue que les livres à portée de main,
+ * puis découvre sa pièce au fil de sa lecture. Basé sur les pages lues à vie :
+ * dépenser ne rend pas l'obscurité, et une fois la pièce vue, il ne l'oublie plus.
+ * 0 = seul le plus proche est visible, au-delà de 1 = tout est visible.
  */
 export const clarity = (state: GameState): number =>
-  0.35 + 0.75 * Math.min(1, Math.log10(1 + state.pages) / 2.7);
+  0.14 + 0.96 * Math.min(1, Math.sqrt(state.totalPagesRead / ROOM_REVEALED_AT));
 
 /**
  * Ce qu'il devine derrière la vitre : à l'Âge Manuel, rien — il croit à un vrai dehors.

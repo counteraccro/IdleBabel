@@ -1,51 +1,102 @@
-/* L'interface flotte au-dessus du décor peint (src/scene). */
+/*
+ * L'interface flotte au-dessus du décor peint (src/scene) sans jamais masquer la fenêtre :
+ * titre en haut à gauche, méthodes sur les étagères de gauche, lecture en bas sur le parquet.
+ */
 :root {
   --ink: #efe3c8;
   --muted: #b8a684;
   --accent: #e0b870;
-  --panel: rgba(12, 9, 7, 0.72);
-  --border: rgba(201, 164, 106, 0.4);
+  --panel: rgba(10, 8, 6, 0.62);
+  --border: rgba(201, 164, 106, 0.35);
+  --shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
   min-height: 100vh;
-  background: #0b0806;
+  overflow: hidden;
+  background: #050403;
   color: var(--ink);
   font-family: Georgia, 'Times New Roman', serif;
 }
 .scene { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
-#app { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; padding: 32px 16px; }
-header { text-align: center; text-shadow: 0 2px 12px #000; }
-h1 { margin: 0; letter-spacing: 0.08em; }
-.subtitle { color: var(--muted); margin: 4px 0 12px; font-style: italic; }
-.langs button { margin: 0 2px; }
+
+#app {
+  position: fixed; inset: 0; z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) 1fr minmax(240px, 300px);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header . ."
+    "tools  . ."
+    "footer counter .";
+  gap: 16px;
+  padding: 20px 24px;
+  pointer-events: none;
+}
+#app > * { pointer-events: auto; }
+
+header { grid-area: header; display: flex; align-items: center; gap: 14px; text-shadow: var(--shadow); }
+h1 { margin: 0; font-size: 1.5rem; letter-spacing: 0.1em; font-weight: normal; }
+.langs { display: flex; gap: 4px; }
+.langs button { padding: 2px 8px; font-size: 0.8rem; }
 .langs .active { border-color: var(--accent); color: var(--accent); }
+
 button {
   font: inherit; color: var(--ink); background: var(--panel);
-  border: 1px solid var(--border); border-radius: 4px; padding: 6px 12px; cursor: pointer;
-  backdrop-filter: blur(4px);
+  border: 1px solid var(--border); border-radius: 3px; padding: 6px 12px; cursor: pointer;
+  backdrop-filter: blur(3px);
 }
 button:disabled { opacity: 0.45; cursor: not-allowed; }
-.primary { background: #efe3c8; color: #1a120b; border: none; padding: 12px 28px; font-size: 1.1rem; }
-.counter { text-align: center; margin: 40px 0; text-shadow: 0 2px 12px #000; }
-.value { font-size: 3rem; font-variant-numeric: tabular-nums; }
-.label { color: var(--muted); margin-bottom: 20px; }
-.tool {
-  display: flex; gap: 16px; align-items: center; justify-content: space-between;
-  background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 16px;
-  backdrop-filter: blur(4px);
+.primary { background: #efe3c8; color: #1a120b; border: none; padding: 12px 32px; font-size: 1.1rem; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7); }
+
+.panel {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 3px;
+  padding: 14px 16px; backdrop-filter: blur(3px);
 }
-.tool p { margin: 4px 0; color: var(--muted); font-size: 0.9rem; }
-footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 40px; color: var(--muted); font-size: 0.8rem; text-shadow: 0 1px 6px #000; }
-.link { border: none; background: none; backdrop-filter: none; padding: 0; color: var(--muted); text-decoration: underline; }
+.panel h2 { margin: 0 0 10px; font-size: 1rem; font-weight: normal; letter-spacing: 0.06em; color: var(--accent); }
+.tools { grid-area: tools; align-self: center; max-height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.tool { display: flex; flex-direction: column; gap: 4px; }
+.tool + .tool { border-top: 1px solid var(--border); padding-top: 12px; }
+.tool-title { display: flex; justify-content: space-between; gap: 8px; }
+.tool-owned { color: var(--accent); font-variant-numeric: tabular-nums; }
+.tool p { margin: 0; color: var(--muted); font-size: 0.85rem; font-style: italic; }
+.tool-buy { align-self: stretch; margin-top: 4px; }
+
+.counter {
+  grid-area: counter; justify-self: center; align-self: end;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  text-shadow: var(--shadow);
+}
+.value { font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.label { color: var(--muted); margin-bottom: 12px; font-size: 0.9rem; }
+
+footer {
+  grid-area: footer; align-self: end;
+  display: flex; flex-direction: column; gap: 4px;
+  color: var(--muted); font-size: 0.75rem; text-shadow: var(--shadow);
+}
+.link { align-self: flex-start; border: none; background: none; backdrop-filter: none; padding: 0; color: var(--muted); text-decoration: underline; }
+
+/* Téléphone : la fenêtre au centre, les commandes en bas. */
+@media (max-width: 760px) {
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto auto auto;
+    grid-template-areas: "header" "." "tools" "counter" "footer";
+    gap: 10px; padding: 14px 16px;
+  }
+  .tools { max-height: 34vh; }
+  footer { flex-direction: row; justify-content: space-between; }
+}
+
 .debug {
   position: fixed; right: 12px; bottom: 12px; z-index: 10; width: 260px;
   display: flex; flex-direction: column; gap: 8px; padding: 12px;
   background: rgba(8, 6, 5, 0.9); border: 1px dashed var(--accent); border-radius: 4px;
   font-family: ui-monospace, Menlo, monospace; font-size: 12px;
 }
-.debug input { width: 150px; font: inherit; background: #1a140f; color: var(--ink); border: 1px solid var(--border); padding: 4px; }
+.debug input { width: 130px; font: inherit; background: #1a140f; color: var(--ink); border: 1px solid var(--border); padding: 4px; }
 .debug-presets { display: flex; flex-wrap: wrap; gap: 4px; }
 .debug-presets button { padding: 2px 6px; font-size: 12px; }
