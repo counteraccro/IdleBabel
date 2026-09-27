@@ -37,12 +37,12 @@ body {
 }
 #app > * { pointer-events: auto; }
 
-header { grid-area: header; display: flex; align-items: center; gap: 14px; text-shadow: var(--shadow); }
+/* L'en-tête peut déborder un peu sur la colonne du compteur, qui est centré : le titre reste sur une ligne. */
+header { grid-area: header; display: flex; align-items: center; gap: 14px; white-space: nowrap; text-shadow: var(--shadow); }
 h1 { margin: 0; font-size: 1.5rem; letter-spacing: 0.1em; font-weight: normal; }
 .langs { display: flex; gap: 4px; }
 .langs button { padding: 2px 8px; font-size: 0.8rem; }
 .langs .active { border-color: var(--accent); color: var(--accent); }
-.options-open { padding: 2px 10px; font-size: 0.8rem; white-space: nowrap; }
 
 button {
   font: inherit; color: var(--ink); background: var(--panel);
@@ -91,6 +91,7 @@ footer {
     grid-template-areas: "header" "counter" "." "tools" "reading" "footer";
     gap: 10px; padding: 14px 16px;
   }
+  header { flex-wrap: wrap; row-gap: 8px; }
   .tools { max-height: 30vh; }
   .reading { margin-bottom: -8vh; }
   footer { flex-direction: row; justify-content: space-between; }
@@ -104,7 +105,11 @@ footer {
   background: rgba(8, 6, 5, 0.92); border: 1px dashed var(--accent); border-radius: 4px;
   font-family: ui-monospace, Menlo, monospace; font-size: 12px;
 }
-.debug-header { display: flex; justify-content: space-between; align-items: baseline; }
+.debug-header { display: flex; align-items: center; gap: 10px; }
+.debug-header .debug-fps { margin-left: auto; }
+.debug-toggle { padding: 0 7px; font: inherit; line-height: 1.4; }
+.debug.collapsed { width: auto; }
+.debug.collapsed > :not(.debug-header) { display: none; }
 .debug-section { border-top: 1px solid var(--border); padding-top: 6px; }
 .debug-section summary { cursor: pointer; color: var(--accent); margin-bottom: 4px; }
 .debug-row {

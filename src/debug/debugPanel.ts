@@ -5,7 +5,7 @@ import { forceTitles, type TitleOverride } from '../systems/coverTitle';
 import { pagesPerSecond } from '../systems/production';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed } from '../systems/strangeBook';
 import { DEBUG_BOOK_EVENT } from './events';
-import { buttons, check, numberInput, row, section } from './debugControls';
+import { buttons, check, numberInput, rememberOpen, row, section, wasOpen } from './debugControls';
 import { createFpsMeter } from '../ui/fpsMeter';
 import type { GameState } from '../core/state';
 
@@ -99,7 +99,17 @@ export const mountDebugPanel = (state: GameState): void => {
 
   const panel = el('aside', 'debug');
   const header = el('div', 'debug-header');
-  header.append(el('strong', undefined, 'Débogage'), createFpsMeter('debug-fps', true));
+  // Panneau réduit : il ne reste que son titre et les FPS, un clic le rouvre.
+  const toggle = el('button', 'debug-toggle');
+  const setOpen = (open: boolean): void => {
+    panel.classList.toggle('collapsed', !open);
+    toggle.textContent = open ? '−' : '+';
+    toggle.title = open ? 'Réduire le panneau' : 'Ouvrir le panneau';
+    rememberOpen('panel', open);
+  };
+  toggle.addEventListener('click', () => setOpen(panel.classList.contains('collapsed')));
+  header.append(el('strong', undefined, 'Débogage'), createFpsMeter('debug-fps', true), toggle);
+  setOpen(wasOpen('panel'));
   panel.append(header, pages, held, strange, status);
   document.body.append(panel);
 

@@ -1,0 +1,61 @@
+/*
+ * Boutons de l'en-tête (voir header.ts) : petite plaque de cuir à lettres dorées, d'où dépasse
+ * un signet de tissu en queue d'aronde. Au survol, le signet descend un peu.
+ */
+.ribbons { display: flex; gap: 10px; }
+.ribbon {
+  --cloth: #7a1f28;
+  --leather: #3a2216;
+  --leather-dark: #1f110a;
+  position: relative;
+  padding: 3px 11px 4px;
+  font-size: 0.78rem;
+  font-variant: small-caps;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  color: #e3c57f;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.7);
+  background: linear-gradient(180deg, var(--leather), var(--leather-dark));
+  border: 1px solid rgba(201, 164, 106, 0.45);
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.6);
+  backdrop-filter: none;
+}
+.ribbon:hover,
+.ribbon:focus-visible { color: #f3dc9c; border-color: rgba(224, 184, 112, 0.75); }
+.ribbon[hidden] { display: none; }
+.ribbon-strange { --cloth: #4a5b78; --leather: #1b2029; --leather-dark: #0b0d12; }
+
+/*
+ * Le signet sort d'entre les pages : il part de derrière le bouton (sous son bord bas), ombré à la
+ * sortie, et pend légèrement de travers comme un vrai ruban.
+ */
+.ribbon-tail {
+  position: absolute;
+  top: calc(100% - 5px);
+  right: 12px;
+  z-index: -1;
+  width: 7px;
+  height: 17px;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 55%),
+    linear-gradient(90deg, color-mix(in srgb, var(--cloth), black 35%), var(--cloth) 50%, color-mix(in srgb, var(--cloth), black 35%));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+  transform: rotate(-5deg);
+  transform-origin: top center;
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.6));
+  transition: height 0.2s ease-out, transform 0.2s ease-out;
+  pointer-events: none;
+}
+.ribbon:hover .ribbon-tail,
+.ribbon:focus-visible .ribbon-tail { height: 21px; transform: rotate(-2deg); }
+
+/* Livre étrange trouvé : le bouton apparaît, puis son signet se déroule. */
+.ribbon.unroll { animation: ribbon-appear 0.5s ease-out; }
+.ribbon.unroll .ribbon-tail { animation: ribbon-unroll 0.7s 0.35s cubic-bezier(0.3, 0.7, 0.3, 1.2) backwards; }
+@keyframes ribbon-appear { from { opacity: 0; } }
+@keyframes ribbon-unroll { from { transform: rotate(-5deg) scaleY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-tail { transition: none; }
+  .ribbon.unroll, .ribbon.unroll .ribbon-tail { animation: none; }
+}

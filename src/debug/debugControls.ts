@@ -12,17 +12,22 @@ const readOpen = (): Record<string, boolean> => {
   }
 };
 
+/** Mémorise si un élément (section ou panneau entier) est ouvert. */
+export const rememberOpen = (key: string, open: boolean): void => {
+  try {
+    localStorage.setItem(OPEN_KEY, JSON.stringify({ ...readOpen(), [key]: open }));
+  } catch {
+    // stockage indisponible : l'élément reprendra son état par défaut au prochain chargement
+  }
+};
+
+export const wasOpen = (key: string, fallback = true): boolean => readOpen()[key] ?? fallback;
+
 /** Section repliable ; ouverte ou fermée comme la dernière fois (mémorisé dans ce navigateur). */
 export const section = (title: string, ...rows: HTMLElement[]): HTMLElement => {
   const details = el('details', 'debug-section');
-  details.open = readOpen()[title] ?? true;
-  details.addEventListener('toggle', () => {
-    try {
-      localStorage.setItem(OPEN_KEY, JSON.stringify({ ...readOpen(), [title]: details.open }));
-    } catch {
-      // stockage indisponible : la section restera ouverte au prochain chargement
-    }
-  });
+  details.open = wasOpen(title);
+  details.addEventListener('toggle', () => rememberOpen(title, details.open));
   details.append(el('summary', undefined, title), ...rows);
   return details;
 };
