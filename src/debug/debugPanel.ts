@@ -2,8 +2,10 @@ import { el } from '../ui/dom';
 import { beyond, clarity } from '../systems/perception';
 import { forceFragments } from '../systems/fragments';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
-import { revealStats, statsRevealed } from '../systems/strangeBook';
+import { pagesPerSecond } from '../systems/production';
+import { STRANGE_BOOK_INDEX, revealStats, statsRevealed } from '../systems/strangeBook';
 import { DEBUG_BOOK_EVENT } from './events';
+import { buttons, check, numberInput, row, section } from './debugControls';
 import { createFpsMeter } from '../ui/fpsMeter';
 import type { GameState } from '../core/state';
 
@@ -15,121 +17,108 @@ export const isDebugEnabled = (): boolean => new URLSearchParams(window.location
 
 const PRESETS = [0, 100, 1_000, 10_000, 1_000_000];
 
-type NumericField = 'pages' | 'totalPagesRead' | 'bookPage' | 'booksFinished';
-
-const createField = (state: GameState, field: NumericField, text: string): HTMLInputElement => {
-  const input = el('input');
-  input.type = 'number';
-  input.min = '0';
-  input.dataset.field = field;
-  input.setAttribute('aria-label', text);
-  input.addEventListener('change', () => {
-    state[field] = Math.max(0, Number(input.value) || 0);
-  });
-  return input;
+/** Le livre en main a changé (page, numéro, titres) : il se redessine. */
+const refreshBook = (): void => {
+  window.dispatchEvent(new Event(DEBUG_BOOK_EVENT));
 };
 
 export const mountDebugPanel = (state: GameState): void => {
-  const panel = el('aside', 'debug');
-  const stock = createField(state, 'pages', 'Pages en stock');
-  const total = createField(state, 'totalPagesRead', 'Pages lues à vie');
-  const stockLabel = el('label', undefined, 'Stock ');
-  stockLabel.append(stock);
-  const totalLabel = el('label', undefined, 'Lues (à vie) ');
-  totalLabel.append(total);
+  // Champs recopiés depuis l'état toutes les 250 ms (sauf celui qu'on est en train de modifier).
+  const synced: [HTMLInputElement, () => number][] = [];
+  const field = (read: () => number, write: (value: number) => void, max?: number): HTMLInputElement => {
+    const input = numberInput(write, max);
+    synced.push([input, read]);
+    return input;
+  };
 
-  const presets = el('div', 'debug-presets');
-  for (const value of PRESETS) {
-    const button = el('button', undefined, value.toLocaleString('fr-FR'));
-    button.title = 'Règle le stock et les pages lues à vie';
-    button.addEventListener('click', () => {
-      state.pages = value;
-      state.totalPagesRead = value;
-    });
-    presets.append(button);
-  }
+  const pages = section(
+    'Pages et production',
+    row('Stock', field(() => state.pages, (v) => (state.pages = v)), 'pages à dépenser'),
+    row('Lues à vie', field(() => state.totalPagesRead, (v) => (state.totalPagesRead = v)), "dissipent l'obscurité du décor"),
+    row(
+      'Régler les deux à',
+      buttons(...PRESETS.map((value): [string, () => void] => [value.toLocaleString('fr-FR'), () => {
+        state.pages = value;
+        state.totalPagesRead = value;
+      }])),
+    ),
+    row('Lecture diagonale', field(() => state.tools.diagonal, (v) => (state.tools.diagonal = v)), '10 = 1 page/s ; 50 = pages en continu'),
+  );
 
-  // Production : 10 lecteurs en diagonale = 1 page/s ; 50 atteignent le feuilletage continu.
-  const readers = el('input');
-  readers.type = 'number';
-  readers.min = '0';
-  readers.setAttribute('aria-label', 'Lecteurs en diagonale');
-  readers.addEventListener('change', () => {
-    state.tools.diagonal = Math.max(0, Math.floor(Number(readers.value) || 0));
-  });
-  const readersLabel = el('label', undefined, 'Diagonale ');
-  readersLabel.append(readers);
-
-  // Page du livre en main : 405 pour voir le livre se refermer tout de suite.
-  const bookPage = createField(state, 'bookPage', 'Page du livre');
-  bookPage.max = '409';
-  bookPage.addEventListener('change', () => window.dispatchEvent(new Event(DEBUG_BOOK_EVENT)));
-  const bookPageLabel = el('label', undefined, 'Page du livre ');
-  bookPageLabel.append(bookPage);
-
-  // Numéro du livre (livres terminés) : la couverture du prochain livre en dépend.
-  const books = createField(state, 'booksFinished', 'Livres terminés');
-  books.addEventListener('change', () => window.dispatchEvent(new Event(DEBUG_BOOK_EVENT)));
-  const booksLabel = el('label', undefined, 'Livres terminés ');
-  booksLabel.append(books);
-
-  // Phrase sensée sur chaque nouvelle page (au lieu d'une sur 8).
-  const fragments = el('input');
-  fragments.type = 'checkbox';
-  fragments.addEventListener('change', () => forceFragments(fragments.checked));
-  const fragmentsLabel = el('label');
-  fragmentsLabel.append(fragments, ' Texte cohérent à chaque page');
-
-  // Titre des couvertures : tel que tiré, ou imposé (charabia, un vrai mot, titre entier).
   const titles = el('select');
-  for (const [value, text] of [['', 'tel que tiré'], ['none', 'charabia'], ['word', 'un vrai mot'], ['title', 'titre entier']]) {
+  for (const [value, text] of [['', 'tels que tirés'], ['none', 'charabia'], ['word', 'un vrai mot'], ['title', 'titre entier']]) {
     const option = el('option', undefined, text);
     option.value = value;
     titles.append(option);
   }
   titles.addEventListener('change', () => {
     forceTitles((titles.value || undefined) as TitleOverride);
-    window.dispatchEvent(new Event(DEBUG_BOOK_EVENT));
+    refreshBook();
   });
-  const titlesLabel = el('label', undefined, 'Titres ');
-  titlesLabel.append(titles);
+  const held = section(
+    'Livre en main',
+    row('Page', field(() => state.bookPage, (v) => {
+      state.bookPage = Math.min(v, 409);
+      refreshBook();
+    }, 409), '0 à 409 ; 405 : le livre se referme bientôt'),
+    row('Livres terminés', field(() => state.booksFinished, (v) => {
+      state.booksFinished = v;
+      refreshBook();
+    }), 'numéro du livre : couverture, reliure'),
+    row('Titres des couvertures', titles),
+    check('Phrase sensée à chaque page', 'au lieu d’une page sur 8', forceFragments).root,
+  );
 
-  // Livre étrange accessible sans l'avoir trouvé : tous ses chapitres, tous ses chiffres, légendes en clair.
-  const stats = el('input');
-  stats.type = 'checkbox';
-  stats.addEventListener('change', () => {
-    revealStats(stats.checked);
-    // Livre étrange en main : sa couverture change de titre.
-    window.dispatchEvent(new Event(DEBUG_BOOK_EVENT));
+  const reveal = check('Statistiques visibles', 'livre accessible, tout débloqué, titre et légendes en clair', (on) => {
+    revealStats(on);
+    refreshBook();
     // Livre étrange déjà ouvert : il est reconstruit avec ou sans les chiffres cachés.
     window.dispatchEvent(new HashChangeEvent('hashchange'));
   });
-  const statsLabel = el('label');
-  statsLabel.append(stats, ' Statistiques visibles');
-
-  const readout = el('small');
-  panel.append(
-    el('strong', undefined, 'Débogage'),
-    createFpsMeter('debug-fps', true),
-    stockLabel,
-    totalLabel,
-    presets,
-    readersLabel,
-    bookPageLabel,
-    booksLabel,
-    fragmentsLabel,
-    titlesLabel,
-    statsLabel,
-    readout,
+  const strange = section(
+    'Livre étrange',
+    reveal.root,
+    row(
+      'Raccourcis',
+      buttons(
+        ['Le prendre en main', () => {
+          state.booksFinished = STRANGE_BOOK_INDEX;
+          state.bookPage = 0;
+          refreshBook();
+        }],
+        ['L’ouvrir en grand', () => {
+          window.location.hash = '#livre';
+        }],
+      ),
+      'le prendre en main le rend aussi accessible',
+    ),
   );
+
+  const readout = el('div', 'debug-readout');
+  const status = section('État (lecture seule)', readout);
+
+  const panel = el('aside', 'debug');
+  const header = el('div', 'debug-header');
+  header.append(el('strong', undefined, 'Débogage'), createFpsMeter('debug-fps', true));
+  panel.append(header, pages, held, strange, status);
   document.body.append(panel);
 
   setInterval(() => {
-    for (const input of [stock, total, bookPage, books]) {
-      if (document.activeElement !== input) input.value = String(Math.floor(state[input.dataset.field as NumericField]));
+    for (const [input, read] of synced) {
+      if (document.activeElement !== input) input.value = String(Math.floor(read()));
     }
-    if (document.activeElement !== readers) readers.value = String(state.tools.diagonal);
-    stats.checked = statsRevealed();
-    readout.textContent = `Livres : ${state.booksFinished} · Découverte : ${clarity(state).toFixed(2)} · Au-delà : ${beyond(state).toFixed(2)}`;
+    reveal.input.checked = statsRevealed();
+    readout.replaceChildren(
+      ...[
+        ['Production', `${pagesPerSecond(state).toFixed(1)} pages/s`],
+        ['Découverte', clarity(state).toFixed(2)],
+        ['Au-delà', beyond(state).toFixed(2)],
+        ['Livre étrange', state.booksFinished >= STRANGE_BOOK_INDEX ? 'trouvé' : `au livre n° ${STRANGE_BOOK_INDEX + 1}`],
+      ].map(([label, value]) => {
+        const line = el('div');
+        line.append(el('span', 'debug-label', label), el('span', undefined, value));
+        return line;
+      }),
+    );
   }, 250);
 };

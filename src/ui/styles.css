@@ -96,16 +96,33 @@ footer {
   footer { flex-direction: row; justify-content: space-between; }
 }
 
+/* Panneau de débogage (?debug) : sections repliables, une ligne par réglage avec son aide. */
 .debug {
-  position: fixed; right: 12px; bottom: 12px; z-index: 10; width: 260px;
-  display: flex; flex-direction: column; gap: 8px; padding: 12px;
-  background: rgba(8, 6, 5, 0.9); border: 1px dashed var(--accent); border-radius: 4px;
+  position: fixed; right: 12px; bottom: 12px; z-index: 10; width: 280px;
+  max-height: calc(100vh - 24px); overflow-y: auto;
+  display: flex; flex-direction: column; gap: 6px; padding: 10px 12px;
+  background: rgba(8, 6, 5, 0.92); border: 1px dashed var(--accent); border-radius: 4px;
   font-family: ui-monospace, Menlo, monospace; font-size: 12px;
 }
-.debug input { width: 130px; font: inherit; background: #1a140f; color: var(--ink); border: 1px solid var(--border); padding: 4px; }
+.debug-header { display: flex; justify-content: space-between; align-items: baseline; }
+.debug-section { border-top: 1px solid var(--border); padding-top: 6px; }
+.debug-section summary { cursor: pointer; color: var(--accent); margin-bottom: 4px; }
+.debug-row {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 8px;
+  padding: 3px 0;
+}
+.debug-row > .debug-buttons { grid-column: 1 / -1; }
+.debug-hint { grid-column: 1 / -1; color: var(--muted); font-size: 11px; }
+.debug-check { grid-template-columns: auto 1fr; cursor: pointer; }
+.debug input[type='number'], .debug select {
+  width: 110px; font: inherit; background: #1a140f; color: var(--ink); border: 1px solid var(--border); padding: 3px 4px;
+}
+.debug input[type='checkbox'] { margin: 0; accent-color: var(--accent); }
+.debug-buttons { display: flex; flex-wrap: wrap; gap: 4px; }
+.debug-buttons button { padding: 2px 6px; font-size: 12px; }
+.debug-readout > div { display: flex; justify-content: space-between; padding: 1px 0; }
+.debug-label { color: var(--ink); }
 .fps { opacity: 0.7; font-variant-numeric: tabular-nums; }
 .fps.slow { color: #e08a6a; opacity: 1; }
 .debug-fps { color: #9fd49a; }
 .debug-fps.slow { color: #e08a6a; }
-.debug-presets { display: flex; flex-wrap: wrap; gap: 4px; }
-.debug-presets button { padding: 2px 6px; font-size: 12px; }
