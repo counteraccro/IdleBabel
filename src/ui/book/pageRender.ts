@@ -50,6 +50,23 @@ const GUTTER: readonly [number, string][] = [
 export const gutterCss = (toward: '90deg' | '270deg'): string =>
   `linear-gradient(${toward}, ${GUTTER.map(([at, color]) => `${color} ${(at * 100).toFixed(1)}%`).join(', ')})`;
 
+/** Hauteurs de la police courante du contexte au-dessus et au-dessous de la ligne de base. */
+const fontBox = (context: CanvasRenderingContext2D): { ascent: number; descent: number } => {
+  const metrics = context.measureText('M');
+  return { ascent: metrics.fontBoundingBoxAscent, descent: metrics.fontBoundingBoxDescent };
+};
+
+/**
+ * Ligne de base d'un texte placé comme en CSS : la police (ascendante + descendante) est centrée dans
+ * une ligne de hauteur `lineHeight` qui commence à `top`. À dessiner avec textBaseline = 'alphabetic'.
+ * (textBaseline = 'top' cale le haut du carré de la lettre, un peu plus haut : le texte sautait
+ * de quelques pixels quand la page HTML laissait place à sa photo au début d'un tour.)
+ */
+export const cssBaseline = (context: CanvasRenderingContext2D, top: number, lineHeight: number): number => {
+  const { ascent, descent } = fontBox(context);
+  return top + (lineHeight - (ascent + descent)) / 2 + ascent;
+};
+
 /**
  * Fond d'une page dessinée (feuille WebGL) : papier et ombre du dos, à la résolution de la texture.
  * Renvoie un contexte dans le repère de la mise en page (PAGE_TEXTURE).
@@ -92,21 +109,23 @@ export const drawPageTexture = (
 ): void => {
   const context = preparePageTexture(canvas, spineOnLeft, paperColors);
   context.font = PAGE_FONT;
-  context.textBaseline = 'top';
+  context.textBaseline = 'alphabetic';
   const lineHeight = PAGE_FONT_SIZE * PAGE_LINE_HEIGHT;
+  const { ascent, descent } = fontBox(context);
   lines.forEach((line, index) => {
     let x = PAGE_PADDING.x;
-    const y = PAGE_PADDING.y + index * lineHeight;
+    const baseline = cssBaseline(context, PAGE_PADDING.y + index * lineHeight, lineHeight);
     for (const piece of line) {
       const pieceWidth = context.measureText(piece.text).width;
       if (piece.fragment) {
+        // Fond d'un <mark> : la hauteur de la police, autour du texte.
         context.fillStyle = 'rgba(242, 198, 121, 0.6)';
-        context.fillRect(x - 2, y + 2, pieceWidth + 4, PAGE_FONT_SIZE + 4);
+        context.fillRect(x, baseline - ascent, pieceWidth, ascent + descent);
         context.fillStyle = '#2a1608';
       } else {
         context.fillStyle = 'rgba(52, 36, 22, 0.82)';
       }
-      context.fillText(piece.text, x, y + 4);
+      context.fillText(piece.text, x, baseline);
       x += pieceWidth;
     }
   });

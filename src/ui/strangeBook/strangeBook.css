@@ -54,7 +54,12 @@
 
 /* Éléments placés dans le repère de la page (voir pageItems.ts). */
 .sb-text { position: absolute; line-height: 1; white-space: pre; }
-.sb-dots { position: absolute; border-top: 0.25cqw dotted #5d5f66; }
+/* Points de conduite : un carré de 1,5 unité toutes les 6 (1 unité = 100/640 cqw), comme drawItems (pageItems.ts). */
+.sb-dots {
+  position: absolute;
+  height: 0.234cqw;
+  background: repeating-linear-gradient(90deg, #5d5f66 0 0.234cqw, transparent 0.234cqw 0.9375cqw);
+}
 .sb-link {
   position: absolute;
   left: 10%;

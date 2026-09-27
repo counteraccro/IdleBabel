@@ -1,6 +1,6 @@
 import { el } from '../dom';
 import { PAGE_TEXTURE } from '../book/pageLayout';
-import { preparePageTexture, type Paper } from '../book/pageRender';
+import { cssBaseline, preparePageTexture, type Paper } from '../book/pageRender';
 
 /**
  * Éléments d'une page du livre étrange, dans le repère de la texture (640 × 800). Une seule
@@ -83,14 +83,16 @@ export const createItemsView = (target: HTMLElement, goTo: (page: number) => voi
 /** Même page, dessinée sur la texture de la feuille. */
 export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft: boolean): void => {
   const context = preparePageTexture(canvas, spineOnLeft, STRANGE_PAPER);
-  context.textBaseline = 'top';
+  context.textBaseline = 'alphabetic';
   for (const item of items) {
     if (item.kind === 'text') {
       context.font = font(item, `${item.size}px`);
       context.letterSpacing = `${item.spacing ?? 0}px`;
       context.fillStyle = item.faded ? FADED : INK;
       context.textAlign = item.align;
-      context.fillText(item.text, item.align === 'center' ? PAGE_TEXTURE.width / 2 : item.x, item.y);
+      // .sb-text : line-height 1.
+      const baseline = cssBaseline(context, item.y, item.size);
+      context.fillText(item.text, item.align === 'center' ? PAGE_TEXTURE.width / 2 : item.x, baseline);
     } else if (item.kind === 'dots') {
       context.fillStyle = FADED;
       for (let x = item.x1; x < item.x2; x += 6) context.fillRect(x, item.y, 1.5, 1.5);

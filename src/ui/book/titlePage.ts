@@ -1,7 +1,7 @@
 import './titlePage.css';
 import { el } from '../dom';
 import { PAGE_TEXTURE } from './pageLayout';
-import { preparePageTexture, type Paper } from './pageRender';
+import { cssBaseline, preparePageTexture, type Paper } from './pageRender';
 import { shelfMarkText, type CoverDesign } from '../../systems/coverDesign';
 import { coverTitle, hasMeaningfulTitle } from '../../systems/coverTitle';
 
@@ -88,14 +88,15 @@ export const drawTitlePageTexture = (canvas: HTMLCanvasElement, design: CoverDes
   const context = preparePageTexture(canvas, true, paper);
   const center = PAGE_TEXTURE.width / 2;
   context.textAlign = 'center';
-  context.textBaseline = 'top';
+  context.textBaseline = 'alphabetic';
   for (const item of layout(design)) {
     context.fillStyle = item.color;
     context.strokeStyle = item.color;
     if (item.kind === 'text') {
       context.font = font(item, `${item.size}px`);
       context.letterSpacing = `${item.spacing}px`;
-      context.fillText(item.text, center, item.y);
+      // .title-text : line-height 1.
+      context.fillText(item.text, center, cssBaseline(context, item.y, item.size));
     } else if (item.kind === 'rule') {
       context.fillRect(center - item.width / 2, item.y, item.width, item.thickness);
     } else if (item.kind === 'lozenge') {
