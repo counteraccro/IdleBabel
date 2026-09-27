@@ -23,6 +23,14 @@ export const renderPageHtml = (target: HTMLElement, lines: PageLines): void => {
 
 const TEXTURE_SCALE = 2;
 
+/** Papier des pages, de haut en bas : jauni pour les livres anciens, blanc pour les modernes. */
+export type Paper = readonly [string, string, string];
+export const OLD_PAPER: Paper = ['#efe2c4', '#e2d1ab', '#d6c299'];
+export const MODERN_PAPER: Paper = ['#f8f6f0', '#f0ede5', '#e6e2d8'];
+
+/** Même papier pour les pages fixes (CSS) et la feuille qui tourne (canevas). */
+export const paperCss = (paper: Paper): string => `linear-gradient(180deg, ${paper[0]}, ${paper[1]} 70%, ${paper[2]})`;
+
 /**
  * Ombre de la gouttière, du dos vers la tranche (position en fraction de la largeur de page) :
  * le papier s'enfonce dans la reliure (creux sombre), se courbe (léger reflet), puis s'étale à plat.
@@ -46,7 +54,12 @@ export const gutterCss = (toward: '90deg' | '270deg'): string =>
  * Page dessinée (feuille WebGL) : parchemin, ombre du pli côté dos, texte et fragment surligné.
  * spineOnLeft : le dos du livre est à gauche de la page (recto de la feuille) ou à droite (verso).
  */
-export const drawPageTexture = (canvas: HTMLCanvasElement, lines: PageLines, spineOnLeft: boolean): void => {
+export const drawPageTexture = (
+  canvas: HTMLCanvasElement,
+  lines: PageLines,
+  spineOnLeft: boolean,
+  paperColors: Paper = OLD_PAPER,
+): void => {
   // Texture deux fois plus fine que la mise en page : le texte reste net sur les écrans denses.
   canvas.width = PAGE_TEXTURE.width * TEXTURE_SCALE;
   canvas.height = PAGE_TEXTURE.height * TEXTURE_SCALE;
@@ -55,9 +68,9 @@ export const drawPageTexture = (canvas: HTMLCanvasElement, lines: PageLines, spi
   const { width, height } = PAGE_TEXTURE;
 
   const paper = context.createLinearGradient(0, 0, 0, height);
-  paper.addColorStop(0, '#efe2c4');
-  paper.addColorStop(0.7, '#e2d1ab');
-  paper.addColorStop(1, '#d6c299');
+  paper.addColorStop(0, paperColors[0]);
+  paper.addColorStop(0.7, paperColors[1]);
+  paper.addColorStop(1, paperColors[2]);
   context.fillStyle = paper;
   context.fillRect(0, 0, width, height);
 

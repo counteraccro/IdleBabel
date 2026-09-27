@@ -13,11 +13,18 @@ export interface CoverDesign {
   scuffs: { x: number; y: number; size: number }[];
   /** Parfois, un livre qui semble moderne : la Bibliothèque contient tous les livres possibles. */
   modern: boolean;
+  /** Livre moderne : nom d'auteur (en symboles de Babel) et mise en page de la couverture. */
+  author: string[];
+  layout: number;
+  /** Livre moderne : résumé au dos, et chiffres sous le code-barres. */
+  blurb: string;
+  barcode: string;
   /** Cote au dos : mur de l'hexagone, étagère, volume. */
   shelfMark: { wall: number; shelf: number; volume: number };
 }
 
 export const FRAME_COUNT = 4;
+export const MODERN_LAYOUT_COUNT = 3;
 export const ORNAMENT_COUNT = 4;
 const MODERN_CHANCE = 1 / 12;
 /** Borges : quatre murs de livres par hexagone, cinq étagères par mur, trente-deux livres par étagère. */
@@ -56,6 +63,10 @@ export const coverDesign = (bookIndex: number): CoverDesign => {
     scuffs: Array.from({ length: between(random, 2, 5) }, () => ({ x: random(), y: random(), size: 0.08 + random() * 0.2 })),
     modern: random() < MODERN_CHANCE,
     shelfMark: { wall: between(random, 1, WALLS), shelf: between(random, 1, SHELVES), volume: between(random, 1, VOLUMES) },
+    author: Array.from({ length: between(random, 1, 2) }, () => word(random)),
+    layout: Math.floor(random() * MODERN_LAYOUT_COUNT),
+    blurb: Array.from({ length: between(random, 28, 40) }, () => word(random)).join(' '),
+    barcode: Array.from({ length: 13 }, () => Math.floor(random() * 10)).join(''),
   };
 };
 
@@ -72,3 +83,7 @@ export const toRoman = (value: number): string => {
   }
   return result;
 };
+
+/** Cote de la Bibliothèque : mur · étagère · volume, en chiffres romains. */
+export const shelfMarkText = ({ shelfMark: { wall, shelf, volume } }: CoverDesign): string =>
+  `${toRoman(wall)} · ${toRoman(shelf)} · ${toRoman(volume)}`;

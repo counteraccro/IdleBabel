@@ -1,6 +1,8 @@
 import './coverArt.css';
 import { el } from '../dom';
-import { toRoman, type CoverDesign } from '../../systems/coverDesign';
+import { shelfMarkText, type CoverDesign } from '../../systems/coverDesign';
+import { createWear } from './coverWear';
+import { modernBack, modernFront } from './coverModern';
 
 /** Fleurons dorés au centre de la couverture de devant (dessins fixes, choisis par la couverture). */
 const ORNAMENTS = [
@@ -29,50 +31,25 @@ const ornament = (index: number): HTMLElement => {
   return root;
 };
 
-/** Usure : coins frottés et quelques éraflures, plus ou moins marqués selon l'âge du livre. */
-const wear = (design: CoverDesign): HTMLElement => {
-  const root = el('span', 'cover-wear');
-  const scuffs = design.scuffs.map(
-    ({ x, y, size }) =>
-      `radial-gradient(ellipse ${(size * 100).toFixed(0)}% ${(size * 60).toFixed(0)}% at ${(x * 100).toFixed(0)}% ${(y * 100).toFixed(0)}%, rgba(190, 160, 120, 0.3), transparent)`,
-  );
-  const corners = ['0% 0%', '100% 0%', '0% 100%', '100% 100%'].map(
-    (at) => `radial-gradient(circle at ${at}, rgba(185, 150, 105, 0.75), rgba(185, 150, 105, 0.25) 7%, transparent 16%)`,
-  );
-  root.style.backgroundImage = [...scuffs, ...corners].join(', ');
-  root.style.opacity = design.wear.toFixed(2);
-  return root;
-};
-
-const art = (design: CoverDesign): HTMLElement => el('span', design.modern ? 'cover-art modern' : 'cover-art');
-
+/** Livre ancien, devant : titre doré, encadrement, fleuron, usure. */
 const front = (design: CoverDesign): HTMLElement => {
-  const root = art(design);
+  const root = el('span', 'cover-art');
   const title = el('span', 'cover-title');
   for (const word of design.title) title.append(el('span', undefined, word));
-  if (design.modern) {
-    // Livre moderne : un bandeau et un titre en caractères bâton, sans dorure.
-    const band = el('span', 'cover-band');
-    band.append(title);
-    root.append(band);
-    return root;
-  }
   if (design.frame > 0) root.append(el('span', `cover-frame frame-${design.frame}`));
-  root.append(title, ornament(design.ornament), wear(design));
+  root.append(title, ornament(design.ornament), createWear(design));
   return root;
 };
 
+/** Livre ancien, derrière : un filet et la cote. */
 const back = (design: CoverDesign): HTMLElement => {
-  const root = art(design);
-  const { wall, shelf, volume } = design.shelfMark;
-  const mark = el('span', 'cover-mark', `${toRoman(wall)} · ${toRoman(shelf)} · ${toRoman(volume)}`);
-  if (!design.modern) root.append(el('span', 'cover-frame frame-1'), wear(design));
-  root.append(mark);
+  const root = el('span', 'cover-art');
+  root.append(el('span', 'cover-frame frame-1'), createWear(design), el('span', 'cover-mark', shelfMarkText(design)));
   return root;
 };
 
-/** Habille les plats extérieurs : couverture de devant (titre, fleuron) et de derrière (cote). */
+/** Habille les plats extérieurs : couverture de devant et de derrière, ancienne ou moderne. */
 export const dressCovers = (outside: { front: HTMLElement; back: HTMLElement }, design: CoverDesign): void => {
-  outside.front.replaceChildren(front(design));
-  outside.back.replaceChildren(back(design));
+  outside.front.replaceChildren(design.modern ? modernFront(design) : front(design));
+  outside.back.replaceChildren(design.modern ? modernBack(design) : back(design));
 };

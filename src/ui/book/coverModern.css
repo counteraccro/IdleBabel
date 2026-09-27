@@ -1,0 +1,134 @@
+/* Livre moderne (voir coverModern.ts) : aplats, caractères bâton, vernis brillant. */
+.cover-art.modern {
+  color: #f6f3ec;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+/* Vernis : un reflet en biais, comme sur une couverture pelliculée. */
+.modern-gloss {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 32%, rgba(255, 255, 255, 0) 68%, rgba(255, 255, 255, 0.08));
+}
+.modern-title {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+.modern-author {
+  position: absolute;
+  font-size: 4.2cqw;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.modern-publisher {
+  position: absolute;
+  bottom: 6cqw;
+  left: 8cqw;
+  width: 6cqw;
+  height: 6cqw;
+  opacity: 0.9;
+}
+.modern-publisher svg { width: 100%; height: 100%; display: block; }
+.modern-graphic { position: absolute; }
+
+/*
+ * En jeu, le bas du livre sort de l'écran : titre et auteur restent dans le haut de la couverture,
+ * les motifs décoratifs peuvent descendre.
+ */
+/* Visuel géométrique : titre en haut, grand disque qui déborde en bas à droite. */
+.modern-geometric .modern-graphic {
+  width: 90cqw;
+  height: 90cqw;
+  right: -30cqw;
+  top: 52cqw;
+  border-radius: 50%;
+  background: rgba(246, 243, 236, 0.92);
+  box-shadow: -14cqw 20cqw 0 -8cqw rgba(20, 20, 20, 0.35);
+}
+.modern-geometric .modern-author { left: 8cqw; top: 9cqw; }
+.modern-geometric .modern-title { left: 8cqw; right: 8cqw; top: 17cqw; font-size: 12cqw; }
+
+/* Composition typographique : auteur en haut, grand titre, filet épais, trois carrés. */
+.modern-swiss .modern-author { left: 8cqw; top: 9cqw; }
+.modern-swiss .modern-title { left: 8cqw; right: 8cqw; top: 18cqw; font-size: 13cqw; }
+.modern-swiss .modern-graphic {
+  left: 8cqw;
+  right: 8cqw;
+  top: 62cqw;
+  height: 16cqw;
+  border-top: 1.6cqw solid currentColor;
+  background:
+    linear-gradient(90deg, #1d1d1b 0 20%, transparent 20% 26%, rgba(246, 243, 236, 0.9) 26% 46%, transparent 46%) bottom / 100% 11cqw no-repeat;
+}
+.modern-publisher { top: auto; }
+.modern-swiss .modern-publisher,
+.modern-geometric .modern-publisher {
+  bottom: auto;
+  top: 9cqw;
+  left: auto;
+  right: 8cqw;
+}
+
+/* Bandeau clair au tiers haut, titre sombre dedans, rayures fines au-dessus. */
+.modern-band .modern-graphic {
+  left: 0;
+  right: 0;
+  top: 22cqw;
+  height: 42cqw;
+  background: #f4efe4;
+  box-shadow: 0 -8cqw 0 -6.6cqw #f4efe4, 0 -12cqw 0 -11cqw #f4efe4;
+}
+.modern-band .modern-title { left: 8cqw; right: 8cqw; top: 34cqw; font-size: 11cqw; color: #1d1d1b; }
+.modern-band .modern-author { left: 8cqw; top: 26cqw; color: #1d1d1b; }
+
+/* Dos : résumé, code-barres, étiquette de bibliothèque. */
+.modern-blurb {
+  position: absolute;
+  left: 10cqw;
+  right: 10cqw;
+  top: 12cqw;
+  font-size: 3.4cqw;
+  line-height: 1.45;
+  text-align: justify;
+  opacity: 0.9;
+  display: -webkit-box;
+  -webkit-line-clamp: 9;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.modern-barcode {
+  position: absolute;
+  right: 8cqw;
+  bottom: 8cqw;
+  width: 34cqw;
+  padding: 2cqw 2.5cqw 1cqw;
+  background: #fff;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2.6cqw;
+  letter-spacing: 0.08em;
+}
+.modern-barcode svg { width: 100%; height: 11cqw; display: block; fill: #111; }
+.modern-sticker {
+  position: absolute;
+  left: 8cqw;
+  bottom: 10cqw;
+  padding: 1.6cqw 3cqw;
+  background: #f3efe2;
+  color: #3a2a18;
+  border: 0.5cqw solid #b8a47a;
+  border-radius: 1.2cqw;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 3.6cqw;
+  letter-spacing: 0.12em;
+  transform: rotate(-3deg);
+  box-shadow: 0 0.4cqw 0.8cqw rgba(0, 0, 0, 0.25);
+}

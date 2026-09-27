@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FRAME_COUNT, ORNAMENT_COUNT, coverDesign, toRoman } from '../src/systems/coverDesign';
+import { FRAME_COUNT, MODERN_LAYOUT_COUNT, ORNAMENT_COUNT, coverDesign, toRoman } from '../src/systems/coverDesign';
 
 describe('couvertures', () => {
   it('donne toujours la même couverture au même livre', () => {
@@ -36,6 +36,16 @@ describe('couvertures', () => {
     const modern = Array.from({ length: 1200 }, (_, i) => coverDesign(i).modern).filter(Boolean).length;
     expect(modern).toBeGreaterThan(40);
     expect(modern).toBeLessThan(180);
+  });
+
+  it('donne aux livres modernes un auteur, un résumé et un code-barres', () => {
+    for (let i = 0; i < 100; i++) {
+      const { author, layout, blurb, barcode } = coverDesign(i);
+      expect(author.length).toBeGreaterThanOrEqual(1);
+      expect(layout).toBeLessThan(MODERN_LAYOUT_COUNT);
+      expect(blurb).toMatch(/^[abcdefghijlmnopqrstuvxz ]+$/);
+      expect(barcode).toMatch(/^\d{13}$/);
+    }
   });
 
   it('écrit la cote en chiffres romains', () => {

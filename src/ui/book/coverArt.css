@@ -66,30 +66,4 @@
   inset: 0;
   pointer-events: none;
 }
-
-/* Livre moderne : toile unie, bandeau clair, titre en caractères bâton. */
-.cover-art.modern { color: #f4efe4; }
-.cover-band {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 22%;
-  padding: 5cqw 8cqw;
-  background: rgba(244, 239, 228, 0.92);
-}
-.cover-art.modern .cover-title {
-  position: static;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-weight: 700;
-  font-size: 9cqw;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  color: #1d1d1b;
-  background: none;
-  -webkit-text-fill-color: currentColor;
-  filter: none;
-}
-.cover-art.modern .cover-mark {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  letter-spacing: 0.1em;
-}
+.cover-wear svg { width: 100%; height: 100%; display: block; }

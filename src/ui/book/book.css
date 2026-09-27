@@ -47,17 +47,17 @@
   width: 46.5%;
   overflow: hidden;
   container-type: inline-size;
-  background: linear-gradient(180deg, #efe2c4, #e2d1ab 70%, #d6c299);
+  background: var(--paper);
 }
 .book-left {
   left: 3.5%;
   border-radius: 3px 0 0 3px;
-  background-image: var(--gutter-left), linear-gradient(180deg, #efe2c4, #e2d1ab 70%, #d6c299);
+  background-image: var(--gutter-left), var(--paper);
 }
 .book-right {
   right: 3.5%;
   border-radius: 0 3px 3px 0;
-  background-image: var(--gutter-right), linear-gradient(180deg, #efe2c4, #e2d1ab 70%, #d6c299);
+  background-image: var(--gutter-right), var(--paper);
 }
 /*
  * Tranches des piles vues sur le bord extérieur et en bas : de fines couches de papier.

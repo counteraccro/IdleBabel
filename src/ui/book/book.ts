@@ -7,7 +7,7 @@ import { stackDepths } from './bookBlock';
 import type { CoverDesign } from '../../systems/coverDesign';
 import { createLeafRenderer } from './leafRenderer';
 import { layoutPage, type PageLines } from './pageLayout';
-import { drawPageTexture, gutterCss, renderPageHtml } from './pageRender';
+import { MODERN_PAPER, OLD_PAPER, drawPageTexture, gutterCss, paperCss, renderPageHtml } from './pageRender';
 import { createHeadbands } from './headbands';
 import { createPage } from '../../systems/babelText';
 
@@ -69,10 +69,15 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
 
   const newLines = (fragment?: string): PageLines => layoutPage(createPage(PAGE_LENGTH, fragment));
   let rightLines: PageLines;
+  // Papier du livre en main : blanc pour un livre moderne, jauni sinon.
+  let paper = OLD_PAPER;
   const openNewBook = (): void => {
     book.classList.remove('last-page');
     applyBinding(book, handlers.binding());
-    closing.dress(handlers.cover());
+    const design = handlers.cover();
+    closing.dress(design);
+    paper = design.modern ? MODERN_PAPER : OLD_PAPER;
+    book.style.setProperty('--paper', paperCss(paper));
     showProgress();
     rightLines = newLines();
     renderPageHtml(left, newLines());
@@ -169,8 +174,8 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     if (turning) finish();
     const backLines = newLines();
     turning = { back: backLines, previousRight: rightLines, counted };
-    drawPageTexture(front, rightLines, true);
-    drawPageTexture(back, backLines, false);
+    drawPageTexture(front, rightLines, true, paper);
+    drawPageTexture(back, backLines, false, paper);
     renderer?.setPages(front, back);
     rightLines = newLines(handlers.nextFragment());
     renderPageHtml(right, rightLines);
