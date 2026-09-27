@@ -22,6 +22,7 @@ export const createReading = (state: GameState): Component => {
     // Sans pages qui tournent seules, le livre suivant attend fermé qu'on l'ouvre.
     stayClosed: () => !state.settings.autoTurn,
   });
+  book.root.classList.toggle('still', !state.settings.bookSway);
   root.append(book.root);
   startAutoTurn(book, () => pagesPerSecond(state), () => state.settings.autoTurn);
   return { root, update: () => {} };

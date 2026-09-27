@@ -8,9 +8,11 @@ export const SAVE_VERSION = 1;
 export interface Settings {
   /** La production fait tourner les pages du livre toute seule. */
   autoTurn: boolean;
+  /** Le livre bouge doucement, tenu à bout de bras. */
+  bookSway: boolean;
 }
 
-export const DEFAULT_SETTINGS: Settings = { autoTurn: true };
+export const DEFAULT_SETTINGS: Settings = { autoTurn: true, bookSway: true };
 
 export interface GameState {
   version: number;

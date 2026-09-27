@@ -48,6 +48,10 @@ export const createOptionsPage = (state: GameState, handlers: OptionsHandlers): 
         state.settings.autoTurn = value;
         handlers.onSettings();
       }),
+      createToggle(t('ui.bookSway'), t('ui.bookSwayHint'), state.settings.bookSway, (value) => {
+        state.settings.bookSway = value;
+        handlers.onSettings();
+      }),
     ),
     createSection(t('ui.save'), createResetButton(handlers.onReset)),
   );

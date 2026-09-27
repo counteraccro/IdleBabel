@@ -16,5 +16,7 @@
   "save": "Sauvegarde",
   "resetConfirm": "Tout effacer ? La partie recommence depuis le début.",
   "yes": "Oui, effacer",
-  "no": "Annuler"
+  "no": "Annuler",
+  "bookSway": "Le livre bouge dans les mains",
+  "bookSwayHint": "Le livre oscille doucement, comme tenu à bout de bras. Désactivé, il reste immobile."
 }

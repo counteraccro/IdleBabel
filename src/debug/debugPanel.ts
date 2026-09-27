@@ -1,5 +1,6 @@
 import { el } from '../ui/dom';
 import { beyond, clarity } from '../systems/perception';
+import { forceFragments } from '../systems/fragments';
 import type { GameState } from '../core/state';
 
 /**
@@ -61,8 +62,24 @@ export const mountDebugPanel = (state: GameState): void => {
   const bookPageLabel = el('label', undefined, 'Page du livre ');
   bookPageLabel.append(bookPage);
 
+  // Phrase sensée sur chaque nouvelle page (au lieu d'une sur 8).
+  const fragments = el('input');
+  fragments.type = 'checkbox';
+  fragments.addEventListener('change', () => forceFragments(fragments.checked));
+  const fragmentsLabel = el('label');
+  fragmentsLabel.append(fragments, ' Texte cohérent à chaque page');
+
   const readout = el('small');
-  panel.append(el('strong', undefined, 'Débogage'), stockLabel, totalLabel, presets, readersLabel, bookPageLabel, readout);
+  panel.append(
+    el('strong', undefined, 'Débogage'),
+    stockLabel,
+    totalLabel,
+    presets,
+    readersLabel,
+    bookPageLabel,
+    fragmentsLabel,
+    readout,
+  );
   document.body.append(panel);
 
   setInterval(() => {

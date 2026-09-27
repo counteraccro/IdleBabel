@@ -6,8 +6,14 @@ import { messages } from '../i18n';
  */
 const FRAGMENT_CHANCE = 1 / 8;
 
+/** Mode débogage : chaque nouvelle page contient une phrase sensée. */
+let forced = false;
+export const forceFragments = (on: boolean): void => {
+  forced = on;
+};
+
 export const rollFragment = (random: () => number = Math.random): string | undefined => {
-  if (random() >= FRAGMENT_CHANCE) return undefined;
+  if (!forced && random() >= FRAGMENT_CHANCE) return undefined;
   const samples = messages().fragments.samples;
   return samples[Math.floor(random() * samples.length)];
 };

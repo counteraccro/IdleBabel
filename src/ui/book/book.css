@@ -146,6 +146,8 @@
 }
 .book.turning .leaf-canvas { visibility: visible; }
 
+/* Option « le livre bouge » désactivée, ou mouvements réduits demandés par le système. */
+.book.still .book-cover { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .book-cover { animation: none; }
 }
