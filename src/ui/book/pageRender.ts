@@ -51,15 +51,14 @@ export const gutterCss = (toward: '90deg' | '270deg'): string =>
   `linear-gradient(${toward}, ${GUTTER.map(([at, color]) => `${color} ${(at * 100).toFixed(1)}%`).join(', ')})`;
 
 /**
- * Page dessinée (feuille WebGL) : parchemin, ombre du pli côté dos, texte et fragment surligné.
- * spineOnLeft : le dos du livre est à gauche de la page (recto de la feuille) ou à droite (verso).
+ * Fond d'une page dessinée (feuille WebGL) : papier et ombre du dos, à la résolution de la texture.
+ * Renvoie un contexte dans le repère de la mise en page (PAGE_TEXTURE).
  */
-export const drawPageTexture = (
+export const preparePageTexture = (
   canvas: HTMLCanvasElement,
-  lines: PageLines,
   spineOnLeft: boolean,
   paperColors: Paper = OLD_PAPER,
-): void => {
+): CanvasRenderingContext2D => {
   // Texture deux fois plus fine que la mise en page : le texte reste net sur les écrans denses.
   canvas.width = PAGE_TEXTURE.width * TEXTURE_SCALE;
   canvas.height = PAGE_TEXTURE.height * TEXTURE_SCALE;
@@ -78,7 +77,20 @@ export const drawPageTexture = (
   for (const [at, color] of GUTTER) gutter.addColorStop(at, color);
   context.fillStyle = gutter;
   context.fillRect(0, 0, width, height);
+  return context;
+};
 
+/**
+ * Page dessinée (feuille WebGL) : parchemin, ombre du pli côté dos, texte et fragment surligné.
+ * spineOnLeft : le dos du livre est à gauche de la page (recto de la feuille) ou à droite (verso).
+ */
+export const drawPageTexture = (
+  canvas: HTMLCanvasElement,
+  lines: PageLines,
+  spineOnLeft: boolean,
+  paperColors: Paper = OLD_PAPER,
+): void => {
+  const context = preparePageTexture(canvas, spineOnLeft, paperColors);
   context.font = PAGE_FONT;
   context.textBaseline = 'top';
   const lineHeight = PAGE_FONT_SIZE * PAGE_LINE_HEIGHT;

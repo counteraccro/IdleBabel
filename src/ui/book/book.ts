@@ -9,6 +9,7 @@ import { createLeafRenderer } from './leafRenderer';
 import { layoutPage, type PageLines } from './pageLayout';
 import { MODERN_PAPER, OLD_PAPER, drawPageTexture, gutterCss, paperCss, renderPageHtml } from './pageRender';
 import { createHeadbands } from './headbands';
+import { drawTitlePageTexture, renderTitlePageHtml } from './titlePage';
 import { createPage } from '../../systems/babelText';
 
 const PAGE_LENGTH = 700;
@@ -68,20 +69,26 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   book.append(cover);
 
   const newLines = (fragment?: string): PageLines => layoutPage(createPage(PAGE_LENGTH, fragment));
-  let rightLines: PageLines;
-  // Papier du livre en main : blanc pour un livre moderne, jauni sinon.
+  // Page de droite : du texte, ou la page de titre (première page d'un livre, rightLines vaut alors null).
+  let rightLines: PageLines | null = null;
+  const showRight = (lines: PageLines | null): void => {
+    rightLines = lines;
+    if (lines) renderPageHtml(right, lines);
+    else renderTitlePageHtml(right, design);
+  };
+  // Couverture et papier du livre en main : papier blanc pour un livre moderne, jauni sinon.
+  let design = handlers.cover();
   let paper = OLD_PAPER;
   const openNewBook = (): void => {
     book.classList.remove('last-page');
     applyBinding(book, handlers.binding());
-    const design = handlers.cover();
+    design = handlers.cover();
     closing.dress(design);
     paper = design.modern ? MODERN_PAPER : OLD_PAPER;
     book.style.setProperty('--paper', paperCss(paper));
     showProgress();
-    rightLines = newLines();
     renderPageHtml(left, newLines());
-    renderPageHtml(right, rightLines);
+    showRight(handlers.progress() === 0 ? null : newLines());
   };
   // Hauteur des piles de pages ; première page : pas encore de page à gauche.
   const showProgress = (): void => {
@@ -122,7 +129,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
 
   // Feuille en cours : son verso (future page de gauche), la page de droite d'avant,
   // et si elle compte comme lue (tournée par le lecteur) ou non (tournée par la production).
-  let turning: { back: PageLines; previousRight: PageLines; counted: boolean } | null = null;
+  let turning: { back: PageLines; previousRight: PageLines | null; counted: boolean } | null = null;
   let progress = 0;
   let animation = 0;
 
@@ -162,8 +169,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   /** La feuille retombe à droite : rien n'est lu, la page de droite redevient celle d'avant. */
   const fallBack = (): void => {
     if (!turning) return;
-    rightLines = turning.previousRight;
-    renderPageHtml(right, rightLines);
+    showRight(turning.previousRight);
     book.classList.remove('last-page');
     turning = null;
     stop();
@@ -172,13 +178,14 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   /** Soulève la page de droite : elle part sur la feuille, une nouvelle apparaît dessous. */
   const lift = (counted = true): void => {
     if (turning) finish();
-    const backLines = newLines();
+    // Les deux faces de la feuille peuvent cacher une phrase sensée : le verso deviendra la page de gauche.
+    const backLines = newLines(handlers.nextFragment());
     turning = { back: backLines, previousRight: rightLines, counted };
-    drawPageTexture(front, rightLines, true, paper);
+    if (rightLines) drawPageTexture(front, rightLines, true, paper);
+    else drawTitlePageTexture(front, design, paper);
     drawPageTexture(back, backLines, false, paper);
     renderer?.setPages(front, back);
-    rightLines = newLines(handlers.nextFragment());
-    renderPageHtml(right, rightLines);
+    showRight(newLines(handlers.nextFragment()));
     // Dernière feuille : elle découvre l'intérieur de la couverture arrière, sans page.
     book.classList.toggle('last-page', handlers.lastLeaf());
     book.classList.add('turning');
