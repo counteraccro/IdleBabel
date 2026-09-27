@@ -1,5 +1,7 @@
 import { BOOK_THICKNESS_PX, createPageStack, stackDepths } from './bookBlock';
 import { carryPage, createFlap } from './bookFlap';
+import { dressCovers } from './coverArt';
+import type { CoverDesign } from '../../systems/coverDesign';
 
 const CLOSE_MS = 750;
 const LOWER_MS = 500;
@@ -11,6 +13,12 @@ export interface BookClosing {
   play: (swap: () => void, stayClosed: boolean) => Promise<void>;
   /** Ouvre le livre fermé que le chercheur tient en main. */
   open: () => Promise<void>;
+  /** Décore la couverture de devant (rabat de gauche) et de derrière (rabat de droite). */
+  dress: (design: CoverDesign) => void;
+  /** Pose tout de suite le livre neuf fermé, de face (sans animation). */
+  presentClosed: () => void;
+  /** Annule toute pose : livre ouvert, à plat. */
+  reset: () => void;
 }
 
 const reducedMotion = (): boolean => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -55,6 +63,19 @@ export const createBookClosing = (
   // Pile de pages d'un côté : elle reprend toute son épaisseur quand la couverture se pose dessus.
   const setDepth = (side: 'left' | 'right', px: number): void => book.style.setProperty(`--${side}-depth`, `${px}px`);
 
+  const presentClosed = (): void => {
+    carryPage(left, pages.left);
+    setDepth('right', BOOK_THICKNESS_PX);
+    book.classList.add('new-closed');
+    left.root.animate([{ transform: LEFT_CLOSED }], { duration: 0, fill: 'forwards' });
+    cover.animate([{ transform: HELD_FRONT }], { duration: 0, fill: 'forwards' });
+  };
+
+  const reset = (): void => {
+    book.classList.remove('closing', 'new-closed');
+    cancelAll(left.root, right.root, cover, book);
+  };
+
   const play = async (swap: () => void, stayClosed: boolean): Promise<void> => {
     carryPage(right, pages.right);
     book.classList.add('closing');
@@ -68,13 +89,7 @@ export const createBookClosing = (
     cancelAll(right.root, cover);
     swap();
     // Livre suivant : il remonte ouvert, ou fermé et de face, couverture de devant sur les pages de droite.
-    if (stayClosed) {
-      carryPage(left, pages.left);
-      setDepth('right', BOOK_THICKNESS_PX);
-      book.classList.add('new-closed');
-      left.root.animate([{ transform: LEFT_CLOSED }], { duration: 0, fill: 'forwards' });
-      cover.animate([{ transform: HELD_FRONT }], { duration: 0, fill: 'forwards' });
-    }
+    if (stayClosed) presentClosed();
     await run(book, [{ transform: 'translateY(45%)', opacity: 0 }, { transform: 'none', opacity: 1 }], RAISE_MS, 'ease-out');
     cancelAll(book);
   };
@@ -89,5 +104,7 @@ export const createBookClosing = (
     cancelAll(left.root, cover);
   };
 
-  return { play, open };
+  const dress = (design: CoverDesign): void => dressCovers({ front: left.outside, back: right.outside }, design);
+
+  return { play, open, dress, presentClosed, reset };
 };

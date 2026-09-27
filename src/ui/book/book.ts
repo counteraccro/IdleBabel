@@ -4,6 +4,7 @@ import { attachGrab } from './bookGrab';
 import { applyBinding, type Binding } from './bindings';
 import { createBookClosing } from './bookClose';
 import { stackDepths } from './bookBlock';
+import type { CoverDesign } from '../../systems/coverDesign';
 import { createLeafRenderer } from './leafRenderer';
 import { layoutPage, type PageLines } from './pageLayout';
 import { drawPageTexture, gutterCss, renderPageHtml } from './pageRender';
@@ -31,8 +32,9 @@ export interface BookHandlers {
   progress: () => number;
   /** La page de droite est-elle la dernière du livre ? Dessous, il n'y a plus que la couverture. */
   lastLeaf: () => boolean;
-  /** Reliure du livre en main. */
+  /** Reliure et couverture du livre en main. */
   binding: () => Binding;
+  cover: () => CoverDesign;
   /** Le livre suivant attend-il fermé qu'on l'ouvre d'un clic ? */
   stayClosed: () => boolean;
 }
@@ -42,6 +44,8 @@ export interface Book {
   root: HTMLButtonElement;
   /** Tourne une page en `duration` ms ; refuse (false) si une page bouge déjà, est tenue, ou si le livre se referme. */
   autoTurn: (duration: number) => boolean;
+  /** Redessine le livre en main d'après l'état (débogage) : à la page 0, un livre neuf, fermé s'il le faut. */
+  refresh: () => void;
 }
 
 const easeInOut = (t: number): number => -(Math.cos(Math.PI * t) - 1) / 2;
@@ -68,6 +72,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   const openNewBook = (): void => {
     book.classList.remove('last-page');
     applyBinding(book, handlers.binding());
+    closing.dress(handlers.cover());
     showProgress();
     rightLines = newLines();
     renderPageHtml(left, newLines());
@@ -82,9 +87,8 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     book.style.setProperty('--read', progress.toFixed(3));
     book.classList.toggle('first-page', progress === 0);
   };
-  openNewBook();
-
   const closing = createBookClosing(book, cover, { left, right });
+  openNewBook();
   // Fermeture ou ouverture en cours : aucune page ne tourne. Livre fermé en main : un clic l'ouvre.
   let isClosing = false;
   let isClosed = false;
@@ -225,5 +229,14 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     return true;
   };
 
-  return { root: book, autoTurn };
+  const refresh = (): void => {
+    if (turning || isClosing) return;
+    closing.reset();
+    openNewBook();
+    isClosed = handlers.progress() === 0 && handlers.stayClosed();
+    if (isClosed) closing.presentClosed();
+    book.classList.toggle('closed', isClosed);
+  };
+
+  return { root: book, autoTurn, refresh };
 };

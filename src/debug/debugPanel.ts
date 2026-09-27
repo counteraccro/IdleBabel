@@ -1,6 +1,7 @@
 import { el } from '../ui/dom';
 import { beyond, clarity } from '../systems/perception';
 import { forceFragments } from '../systems/fragments';
+import { DEBUG_BOOK_EVENT } from './events';
 import type { GameState } from '../core/state';
 
 /**
@@ -11,7 +12,7 @@ export const isDebugEnabled = (): boolean => new URLSearchParams(window.location
 
 const PRESETS = [0, 100, 1_000, 10_000, 1_000_000];
 
-type NumericField = 'pages' | 'totalPagesRead' | 'bookPage';
+type NumericField = 'pages' | 'totalPagesRead' | 'bookPage' | 'booksFinished';
 
 const createField = (state: GameState, field: NumericField, text: string): HTMLInputElement => {
   const input = el('input');
@@ -59,8 +60,15 @@ export const mountDebugPanel = (state: GameState): void => {
   // Page du livre en main : 405 pour voir le livre se refermer tout de suite.
   const bookPage = createField(state, 'bookPage', 'Page du livre');
   bookPage.max = '409';
+  bookPage.addEventListener('change', () => window.dispatchEvent(new Event(DEBUG_BOOK_EVENT)));
   const bookPageLabel = el('label', undefined, 'Page du livre ');
   bookPageLabel.append(bookPage);
+
+  // Numéro du livre (livres terminés) : la couverture du prochain livre en dépend.
+  const books = createField(state, 'booksFinished', 'Livres terminés');
+  books.addEventListener('change', () => window.dispatchEvent(new Event(DEBUG_BOOK_EVENT)));
+  const booksLabel = el('label', undefined, 'Livres terminés ');
+  booksLabel.append(books);
 
   // Phrase sensée sur chaque nouvelle page (au lieu d'une sur 8).
   const fragments = el('input');
@@ -77,13 +85,14 @@ export const mountDebugPanel = (state: GameState): void => {
     presets,
     readersLabel,
     bookPageLabel,
+    booksLabel,
     fragmentsLabel,
     readout,
   );
   document.body.append(panel);
 
   setInterval(() => {
-    for (const input of [stock, total, bookPage]) {
+    for (const input of [stock, total, bookPage, books]) {
       if (document.activeElement !== input) input.value = String(Math.floor(state[input.dataset.field as NumericField]));
     }
     if (document.activeElement !== readers) readers.value = String(state.tools.diagonal);
