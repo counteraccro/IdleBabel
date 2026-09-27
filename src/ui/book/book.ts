@@ -10,13 +10,13 @@ import { layoutPage, type PageLines } from './pageLayout';
 import { MODERN_PAPER, OLD_PAPER, drawPageTexture, gutterCss, paperCss, renderPageHtml } from './pageRender';
 import { createHeadbands } from './headbands';
 import { drawTitlePageTexture, renderTitlePageHtml } from './titlePage';
-import { createPage } from '../../systems/babelText';
+import type { PageContent } from '../../systems/babelText';
 
 const PAGE_LENGTH = 700;
-const TURN_MS = 850;
-const RELEASE_MS = 380;
+export const TURN_MS = 850;
+export const RELEASE_MS = 380;
 /** Page tenue sans bouger : elle se soulève à peine. */
-const HELD_PROGRESS = 0.06;
+export const HELD_PROGRESS = 0.06;
 /** Perspective du livre (voir .book dans book.css). */
 const PERSPECTIVE_PX = 1400;
 /** Écart entre le haut d'une pile et la feuille qui en part ou s'y pose. */
@@ -27,6 +27,8 @@ export interface BookHandlers {
   onTurn: () => void;
   /** Toute page tournée, lue ou non ; renvoie true si le livre est terminé et doit être refermé. */
   onLeaf: () => boolean;
+  /** Contenu d'une nouvelle page du livre en main, avec la phrase sensée éventuelle. */
+  page: (length: number, fragment?: string) => PageContent;
   /** Phrase sensée éventuelle à cacher dans la prochaine page. */
   nextFragment: () => string | undefined;
   /** Avancement dans le livre en main, de 0 à 1 : épaisseur des tranches. */
@@ -49,7 +51,7 @@ export interface Book {
   refresh: () => void;
 }
 
-const easeInOut = (t: number): number => -(Math.cos(Math.PI * t) - 1) / 2;
+export const easeInOut = (t: number): number => -(Math.cos(Math.PI * t) - 1) / 2;
 
 /**
  * Un livre ouvert tenu en main. Clic : la page tourne. Appui maintenu : on tient la page
@@ -68,7 +70,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   book.style.setProperty('--gutter-right', gutterCss('90deg'));
   book.append(cover);
 
-  const newLines = (fragment?: string): PageLines => layoutPage(createPage(PAGE_LENGTH, fragment));
+  const newLines = (fragment?: string): PageLines => layoutPage(handlers.page(PAGE_LENGTH, fragment));
   // Page de droite : du texte, ou la page de titre (première page d'un livre, rightLines vaut alors null).
   let rightLines: PageLines | null = null;
   const showRight = (lines: PageLines | null): void => {

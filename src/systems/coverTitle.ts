@@ -1,5 +1,6 @@
 import { messages } from '../i18n';
 import type { CoverDesign } from './coverDesign';
+import { statsRevealed } from './strangeBook';
 
 /**
  * Titre affiché d'un livre : les symboles de Babel de la couverture, où se glisse parfois
@@ -20,6 +21,8 @@ export const hasMeaningfulTitle = (design: CoverDesign): boolean => (forced ?? d
 export const coverTitle = (design: CoverDesign): string[] => {
   const { slot, pick } = design.sense;
   const { words, titles } = messages().covers;
+  // Débogage « statistiques visibles » : le livre étrange porte son titre en clair.
+  if (design.strange && statsRevealed()) return [messages().strangeBook.title];
   switch (forced ?? design.sense.kind) {
     case 'title':
       return [...pickFrom(titles, pick)];

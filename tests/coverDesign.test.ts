@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { isStrangeBook } from '../src/systems/strangeBook';
 import { FRAME_COUNT, MODERN_LAYOUT_COUNT, ORNAMENT_COUNT, coverDesign, toRoman } from '../src/systems/coverDesign';
 
 describe('couvertures', () => {
@@ -9,6 +10,7 @@ describe('couvertures', () => {
 
   it("écrit les titres avec les lettres de Babel", () => {
     for (let i = 0; i < 200; i++) {
+      if (isStrangeBook(i)) continue;
       const { title } = coverDesign(i);
       expect(title.length).toBeGreaterThanOrEqual(1);
       expect(title.length).toBeLessThanOrEqual(3);
@@ -40,6 +42,7 @@ describe('couvertures', () => {
 
   it('donne aux livres modernes un auteur, un résumé et un code-barres', () => {
     for (let i = 0; i < 100; i++) {
+      if (isStrangeBook(i)) continue;
       const { author, layout, blurb, barcode } = coverDesign(i);
       expect(author.length).toBeGreaterThanOrEqual(1);
       expect(layout).toBeLessThan(MODERN_LAYOUT_COUNT);

@@ -22,5 +22,8 @@
   "display": "Display",
   "showFps": "Show frames per second",
   "showFpsHint": "A small counter in the bottom left, to check the game stays smooth on your device.",
-  "fps": "FPS"
+  "fps": "FPS",
+  "strangeBook": "The strange book",
+  "previousPage": "Previous page",
+  "nextPage": "Next page"
 }

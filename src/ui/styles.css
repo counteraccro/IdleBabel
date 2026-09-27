@@ -42,7 +42,7 @@ h1 { margin: 0; font-size: 1.5rem; letter-spacing: 0.1em; font-weight: normal; }
 .langs { display: flex; gap: 4px; }
 .langs button { padding: 2px 8px; font-size: 0.8rem; }
 .langs .active { border-color: var(--accent); color: var(--accent); }
-.options-open { padding: 2px 10px; font-size: 0.8rem; }
+.options-open { padding: 2px 10px; font-size: 0.8rem; white-space: nowrap; }
 
 button {
   font: inherit; color: var(--ink); background: var(--panel);

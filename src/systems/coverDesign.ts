@@ -1,4 +1,5 @@
 import { LETTERS } from './babelText';
+import { STRANGE_BOOK_INDEX, randomDigitText } from './strangeBook';
 
 /** Couverture d'un livre de la Bibliothèque, tirée de son numéro : toujours la même pour un livre donné. */
 export interface CoverDesign {
@@ -26,6 +27,8 @@ export interface CoverDesign {
    * `slot` : place du mot dans le titre ; `pick` (0 à 1) : choix dans la liste de la langue courante.
    */
   sense: { kind: 'none' | 'word' | 'title'; slot: number; pick: number };
+  /** Le livre étrange (voir strangeBook.ts). */
+  strange?: boolean;
 }
 
 export const FRAME_COUNT = 4;
@@ -67,7 +70,7 @@ const senseKind = (roll: number): CoverDesign['sense']['kind'] =>
 export const coverDesign = (bookIndex: number): CoverDesign => {
   const random = seeded(bookIndex);
   const title = Array.from({ length: between(random, 1, 3) }, () => word(random));
-  return {
+  const design: CoverDesign = {
     title,
     frame: Math.floor(random() * FRAME_COUNT),
     ornament: Math.floor(random() * ORNAMENT_COUNT),
@@ -82,7 +85,18 @@ export const coverDesign = (bookIndex: number): CoverDesign => {
     // Tiré en dernier : les couvertures déjà vues ne changent pas.
     sense: { kind: senseKind(random()), slot: Math.floor(random() * title.length), pick: random() },
   };
+  return bookIndex === STRANGE_BOOK_INDEX ? strangeCover(design, random) : design;
 };
+
+/** Le livre étrange : titre doré en symboles de Babel, sans encadrement ; sa page de titre n'a que des chiffres. */
+const strangeCover = (design: CoverDesign, random: () => number): CoverDesign => ({
+  ...design,
+  frame: 0,
+  modern: false,
+  strange: true,
+  blurb: randomDigitText(40, random),
+  sense: { kind: 'none', slot: 0, pick: 0 },
+});
 
 /** Chiffres romains, pour la cote gravée au dos. */
 export const toRoman = (value: number): string => {

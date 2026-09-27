@@ -2,6 +2,7 @@ import { el } from '../ui/dom';
 import { beyond, clarity } from '../systems/perception';
 import { forceFragments } from '../systems/fragments';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
+import { revealStats } from '../systems/strangeBook';
 import { DEBUG_BOOK_EVENT } from './events';
 import { createFpsMeter } from '../ui/fpsMeter';
 import type { GameState } from '../core/state';
@@ -93,6 +94,19 @@ export const mountDebugPanel = (state: GameState): void => {
   const titlesLabel = el('label', undefined, 'Titres ');
   titlesLabel.append(titles);
 
+  // Livre étrange accessible sans l'avoir trouvé : tous ses chapitres, tous ses chiffres, légendes en clair.
+  const stats = el('input');
+  stats.type = 'checkbox';
+  stats.addEventListener('change', () => {
+    revealStats(stats.checked);
+    // Livre étrange en main : sa couverture change de titre.
+    window.dispatchEvent(new Event(DEBUG_BOOK_EVENT));
+    // Livre étrange déjà ouvert : il est reconstruit avec ou sans les chiffres cachés.
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+  });
+  const statsLabel = el('label');
+  statsLabel.append(stats, ' Statistiques visibles');
+
   const readout = el('small');
   panel.append(
     el('strong', undefined, 'Débogage'),
@@ -105,6 +119,7 @@ export const mountDebugPanel = (state: GameState): void => {
     booksLabel,
     fragmentsLabel,
     titlesLabel,
+    statsLabel,
     readout,
   );
   document.body.append(panel);

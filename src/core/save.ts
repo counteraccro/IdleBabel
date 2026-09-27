@@ -14,6 +14,7 @@ export const loadGame = (defaultLocale: Locale): GameState => {
           ...initial,
           ...saved,
           settings: { ...initial.settings, ...saved.settings },
+          stats: { ...initial.stats, ...saved.stats },
           totalPagesRead: saved.totalPagesRead ?? saved.pages,
         };
       }

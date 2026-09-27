@@ -14,6 +14,20 @@ export interface Settings {
   showFps: boolean;
 }
 
+/** Chiffres de la partie, relevés en silence : le joueur ne les découvre que plus tard. */
+export interface Stats {
+  /** Pages feuilletées à la main. */
+  clicks: number;
+  /** Temps passé le jeu ouvert, en secondes (les mises en veille ne comptent pas). */
+  playSeconds: number;
+  /** Meilleure production atteinte, en pages par seconde. */
+  bestPagesPerSecond: number;
+  /** Phrases sensées apparues dans les pages. */
+  fragments: number;
+}
+
+export const DEFAULT_STATS: Stats = { clicks: 0, playSeconds: 0, bestPagesPerSecond: 0, fragments: 0 };
+
 export const DEFAULT_SETTINGS: Settings = { autoTurn: true, bookSway: true, showFps: false };
 
 export interface GameState {
@@ -29,6 +43,7 @@ export interface GameState {
   booksFinished: number;
   locale: Locale;
   settings: Settings;
+  stats: Stats;
   history: HistoryEntry[];
   lastTick: number;
 }
@@ -42,6 +57,7 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   booksFinished: 0,
   locale,
   settings: { ...DEFAULT_SETTINGS },
+  stats: { ...DEFAULT_STATS },
   history: [{ type: 'gameStarted', at: now }],
   lastTick: now,
 });

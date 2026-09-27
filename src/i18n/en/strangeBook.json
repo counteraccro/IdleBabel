@@ -1,0 +1,24 @@
+{
+  "title": "Statistics",
+  "contents": "Contents",
+  "chapters": {
+    "pages": "Pages",
+    "books": "Books",
+    "time": "Time",
+    "methods": "Methods"
+  },
+  "figures": {
+    "totalPages": "pages read in total",
+    "stock": "pages available",
+    "clicks": "pages turned by hand",
+    "booksFinished": "books finished",
+    "bookPage": "page of the current book",
+    "meaningfulCovers": "covers that meant something",
+    "fragments": "meaningful sentences",
+    "playTime": "time played",
+    "startDate": "entered the Library",
+    "days": "days elapsed",
+    "pagesPerSecond": "pages per second",
+    "bestPagesPerSecond": "best pages per second"
+  }
+}

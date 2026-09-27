@@ -1,5 +1,6 @@
 import type { GameState } from './state';
 import { produce } from '../systems/production';
+import { trackPlay } from '../systems/stats';
 
 const TICK_MS = 100;
 
@@ -7,7 +8,9 @@ const TICK_MS = 100;
 export const startLoop = (state: GameState, onTick: () => void): void => {
   setInterval(() => {
     const now = Date.now();
-    produce(state, (now - state.lastTick) / 1000);
+    const seconds = (now - state.lastTick) / 1000;
+    produce(state, seconds);
+    trackPlay(state, seconds);
     state.lastTick = now;
     onTick();
   }, TICK_MS);

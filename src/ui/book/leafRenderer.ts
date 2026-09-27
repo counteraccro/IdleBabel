@@ -78,9 +78,12 @@ void main() {
   outColor = vec4(color * shade + sheen, 1.0);
 }`;
 
+/** Mêmes dimensions que dans le shader : page de droite, et étendue du canevas autour du dos. */
+export const LEAF_GEOMETRY = { pageWidth: 0.744, pageHalfHeight: 0.465, view: { x: 0.96, y: 0.8 } } as const;
+
 const COLUMNS = 64;
 const ROWS = 40;
-const PAGE_WIDTH = 0.744;
+const PAGE_WIDTH = LEAF_GEOMETRY.pageWidth;
 
 export interface LeafRenderer {
   /** Recto (page qui part) et verso (future page de gauche). */

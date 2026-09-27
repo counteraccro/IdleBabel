@@ -26,6 +26,9 @@ const MODERN_BINDINGS: readonly Binding[] = [
   { dark: '#1f3f86', leather: '#2c55ad', deep: '#142a5c' }, // cobalt
 ];
 
+/** Le livre étrange : un cuir presque noir, aux reflets bleutés. */
+export const STRANGE_BINDING: Binding = { dark: '#0b0d12', leather: '#1b2029', deep: '#050608' };
+
 export const modernBindingFor = (index: number): Binding => MODERN_BINDINGS[index % MODERN_BINDINGS.length];
 
 /** Reliure du n-ième livre : deux livres qui se suivent n'ont jamais la même. */
