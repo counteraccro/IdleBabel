@@ -75,7 +75,10 @@
 .leaf-side { position: absolute; inset: 0; backface-visibility: hidden; }
 .leaf-back { transform: rotateY(180deg); }
 
-/* La spirale, au milieu (ou sur le bord de la moitié visible quand le carnet est fermé). */
+/*
+ * La spirale, au milieu (ou sur le bord de la moitié visible quand le carnet est fermé) : par-dessus
+ * les pages posées, sous la feuille qui tourne (elle est redessinée sur sa photo, voir pageSnapshot.ts).
+ */
 .sketchbook-rings {
   position: absolute;
   left: 50%;
@@ -116,7 +119,7 @@
 
 /* Scène hors écran où l'on photographie une page avant qu'elle ne tourne (voir pageSnapshot.ts). */
 .sketchbook-stage { position: absolute; left: -10000px; top: 0; visibility: hidden; pointer-events: none; }
-/* La feuille qui tourne (papier WebGL ou carton) passe par-dessus la spirale et la cache. */
+/* La feuille qui tourne (papier WebGL ou carton) passe par-dessus la spirale. */
 .sketchbook-body > .sb-leaf { z-index: 6; }
 
 /* Les pages se tournent au clic ou en les tenant, comme le livre étrange. */
@@ -179,7 +182,11 @@
   background: #e8dcbd;
   border-radius: 2px;
 }
-.wear { position: absolute; inset: 0; pointer-events: none; background-size: 100% 100%; border-radius: inherit; }
+/* L'usure passe sous l'écriture (comme sur la photo de la page qui tourne) : par-dessus, elle la délave. */
+.wear { position: absolute; inset: 0; z-index: -1; pointer-events: none; background-size: 100% 100%; border-radius: inherit; }
+.sketchbook-page,
+.sketchbook-verso,
+.sketchbook-board { isolation: isolate; }
 .sketchbook-verso { inset: 0 0 7px 6px; }
 .sketchbook-folio { margin-top: auto; align-self: center; color: var(--pencil); font-size: 1.1rem; }
 .sketchbook-page h1 { font-size: 2rem; letter-spacing: 0.02em; transform: rotate(-1.5deg); }

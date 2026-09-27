@@ -16,12 +16,12 @@ uniform float uAngle;
 uniform float PAGE_WIDTH;
 uniform float PAGE_HALF_HEIGHT;
 uniform vec2 VIEW;
+uniform float EYE;
 // -1 : mouvement en reflet autour du dos (on revient en arrière, la page de gauche part vers la droite).
 uniform float uMirror;
 out vec2 vUV;
 out vec3 vNormal;
 
-const float EYE = 3.0;
 const float PI = 3.14159265;
 
 void main() {
@@ -90,15 +90,25 @@ void main() {
   outColor = vec4(color * shade + sheen, 1.0);
 }`;
 
+/**
+ * Pixels du canevas de la feuille par pixel CSS. Plus fin que l'écran : le canevas est ensuite incliné
+ * avec le livre, le navigateur le réduit au lieu de l'étirer et la feuille reste nette. Une page
+ * photographiée pour la feuille (voir pageSnapshot.ts) doit avoir la même finesse : plus fine, la carte
+ * graphique la réduirait en la floutant, et l'écriture paraîtrait plus grasse que sur la page.
+ */
+export const leafPixelRatio = (): number => Math.min(window.devicePixelRatio * 1.5, 3);
+
 /** Page de droite, et étendue du canevas autour du dos (voir le repère plus haut). */
 export interface LeafGeometry {
   pageWidth: number;
   pageHalfHeight: number;
   view: { x: number; y: number };
+  /** Distance de l'œil : plus il est loin, moins la feuille soulevée grossit en venant vers le lecteur. */
+  eye: number;
 }
 
 /** Les pages du livre en main. */
-export const LEAF_GEOMETRY: LeafGeometry = { pageWidth: 0.744, pageHalfHeight: 0.465, view: { x: 0.96, y: 0.8 } };
+export const LEAF_GEOMETRY: LeafGeometry = { pageWidth: 0.744, pageHalfHeight: 0.465, view: { x: 0.96, y: 0.8 }, eye: 3 };
 
 /** Géométrie d'une page de proportions largeur / hauteur, avec la même marge de canevas que le livre en main. */
 export const leafGeometryFor = (aspect: number): LeafGeometry => {
@@ -107,6 +117,8 @@ export const leafGeometryFor = (aspect: number): LeafGeometry => {
     pageWidth,
     pageHalfHeight: LEAF_GEOMETRY.pageHalfHeight,
     view: { x: pageWidth + (LEAF_GEOMETRY.view.x - LEAF_GEOMETRY.pageWidth), y: LEAF_GEOMETRY.view.y },
+    // Carnet posé à plat, vu de haut : la page qui se pose ne doit pas sembler grossir puis rétrécir.
+    eye: 10,
   };
 };
 
@@ -204,6 +216,7 @@ const setUpLeafRenderer = (canvas: HTMLCanvasElement): LeafRenderer | null => {
     gl.uniform1f(uniform('PAGE_WIDTH'), geometry.pageWidth);
     gl.uniform1f(uniform('PAGE_HALF_HEIGHT'), geometry.pageHalfHeight);
     gl.uniform2f(uniform('VIEW'), geometry.view.x, geometry.view.y);
+    gl.uniform1f(uniform('EYE'), geometry.eye);
   };
   setGeometry(LEAF_GEOMETRY);
   const setMirrored = (mirrored: boolean): void => gl.uniform1f(uniform('uMirror'), mirrored ? -1 : 1);
@@ -225,9 +238,7 @@ const setUpLeafRenderer = (canvas: HTMLCanvasElement): LeafRenderer | null => {
   };
 
   const resize = (): void => {
-    // Plus fin que l'écran : le canevas est ensuite incliné avec le livre, le navigateur le réduit
-    // au lieu de l'étirer et la feuille reste nette.
-    const ratio = Math.min(window.devicePixelRatio * 1.5, 3);
+    const ratio = leafPixelRatio();
     const width = Math.round(canvas.offsetWidth * ratio);
     const height = Math.round(canvas.offsetHeight * ratio);
     if (canvas.width !== width || canvas.height !== height) {

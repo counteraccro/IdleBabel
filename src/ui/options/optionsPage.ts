@@ -36,10 +36,17 @@ const createToggle = (label: string, hint: string, checked: boolean, onChange: (
   return root;
 };
 
+/**
+ * Bords élimés, les mêmes sur toutes les feuilles (le verso en reflet du recto : c'est la même
+ * feuille) : les encoches tombent les unes sur les autres et laissent voir le carton, même quand
+ * une page tourne au-dessus d'une autre.
+ */
+const TEAR_SEED = 1;
+
 /** Une page du carnet : papier à petits carreaux, numéro griffonné en bas. */
 const sheet = (number: number, ...content: HTMLElement[]): HTMLElement => {
   const page = el('div', 'sketchbook-page');
-  page.style.clipPath = roughEdges(number, 'left');
+  page.style.clipPath = roughEdges(TEAR_SEED, 'left');
   // La plupart des pages ont gardé la trace d'une tasse posée dessus.
   page.append(paperWear(number, { coffee: number !== 3 }), ...content, el('span', 'sketchbook-folio', String(number)));
   return page;
@@ -50,7 +57,7 @@ let versoSeed = 50;
 const verso = (...content: HTMLElement[]): HTMLElement => {
   const page = el('div', 'sketchbook-verso');
   const seed = versoSeed++;
-  page.style.clipPath = roughEdges(seed, 'right');
+  page.style.clipPath = roughEdges(TEAR_SEED, 'right');
   page.append(paperWear(seed, { coffee: seed % 2 === 1 }), ...content);
   return page;
 };

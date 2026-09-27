@@ -52,7 +52,8 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
   // Feuille WebGL (papier qui s'enroule) et scène hors écran où l'on photographie les pages.
   const leaf = createLeafTurn();
   const stage = el('div', 'sketchbook-stage');
-  body.append(left, right, createRings(), leaf.canvas);
+  const rings = createRings();
+  body.append(left, right, rings, leaf.canvas);
 
   const previous = el('button', 'sketchbook-turn', '‹');
   const next = el('button', 'sketchbook-turn', '›');
@@ -123,8 +124,8 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
     const height = right.offsetHeight;
     leaf.fit(single(), leafGeometryFor(width / height));
     leaf.begin((front, back) => {
-      snapshotPage(moving, front, stage, width, height, 'left');
-      snapshotPage(single() ? null : landing, back, stage, width, height, 'right');
+      snapshotPage(moving, front, stage, width, height, rings, 'left');
+      snapshotPage(single() ? null : landing, back, stage, width, height, rings, 'right');
     }, 0, !forward);
     return forward;
   };
@@ -137,7 +138,7 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
     if (recto) front.append(recto);
     if (verso) back.append(verso);
     leaf.append(front, back);
-    body.insertBefore(leaf, body.querySelector('.sketchbook-rings'));
+    body.insertBefore(leaf, rings);
     try {
       await Promise.all([
         animate(leaf, `rotateY(${from}deg)`, `rotateY(${to}deg)`),

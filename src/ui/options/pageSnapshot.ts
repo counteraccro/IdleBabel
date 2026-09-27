@@ -1,3 +1,5 @@
+import { leafPixelRatio } from '../book/leafRenderer';
+
 /**
  * Photographie d'une page du carnet sur un canevas, pour la feuille WebGL qui s'enroule (le HTML
  * vivant ne peut pas servir de texture). La page est recopiée dans une scène hors écran aux
@@ -5,9 +7,7 @@
  * papier, usure, croquis, mots, cases, traits de crayon, bords déchirés. Les marges restent
  * transparentes : le carton de la moitié de carnet se voit dessous.
  */
-const SCALE = 2;
-/** Bande le long du dos, là où passent les anneaux : laissée vide, la spirale reste visible. */
-const RING_STRIP = 17;
+
 const GRAPHITE = '#34302b';
 
 const images = new Map<string, HTMLImageElement>();
@@ -79,45 +79,69 @@ const drawWords = (ctx: CanvasRenderingContext2D, root: HTMLElement, origin: DOM
   ctx.letterSpacing = '0px';
 };
 
-/** Les traits de crayon faits en CSS : cases, soulignés des titres, langue entourée. */
+/**
+ * Les traits de crayon faits en CSS (images SVG de fond, dans options.css) : mêmes tracés, même
+ * boîte, même épaisseur, pour que la photo ne paraisse pas plus grasse que la page.
+ */
+const CHECK = { path: new Path2D('M3 11 L8 16 L19 1'), box: 20, width: 2.6 };
+const UNDERLINE = { path: new Path2D('M2 5 Q 50 1 100 4 T 198 3'), width: 200, height: 8, stroke: 1.6, band: 7 };
+const CIRCLE = { path: new Path2D('M8 20 C 4 8 30 2 48 6 C 60 10 58 26 40 29 C 22 32 6 28 8 16'), width: 60, height: 34, stroke: 1.6 };
+const BOX_BORDER = 2;
+
+/** Rotation d'un élément (transform et rotate), en radians. */
+const angleOf = (el: Element): number => {
+  const style = getComputedStyle(el);
+  const matrix = new DOMMatrix(style.transform === 'none' ? undefined : style.transform);
+  const rotate = style.rotate === 'none' ? 0 : parseFloat(style.rotate);
+  return Math.atan2(matrix.b, matrix.a) + (rotate * Math.PI) / 180;
+};
+
 const drawPencil = (ctx: CanvasRenderingContext2D, root: HTMLElement, origin: DOMRect): void => {
   const at = (el: Element): DOMRect => {
     const r = el.getBoundingClientRect();
     return new DOMRect(r.left - origin.left, r.top - origin.top, r.width, r.height);
   };
+  /** Trace `path` (en unités de son viewBox `w` × `h`) étiré sur la boîte, comme preserveAspectRatio="none". */
+  const stretched = (path: Path2D, w: number, h: number, stroke: number, x: number, y: number, boxW: number, boxH: number): void => {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(boxW / w, boxH / h);
+    ctx.lineWidth = stroke;
+    ctx.stroke(path);
+    ctx.restore();
+  };
   ctx.strokeStyle = GRAPHITE;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
+  // Case : sa bordure et sa coche, tournées avec elle (et avec sa ligne, écrite de travers).
   root.querySelectorAll<HTMLInputElement>('input[type=checkbox]').forEach((box) => {
     const r = at(box);
-    ctx.lineWidth = 2;
+    const w = box.offsetWidth;
+    const h = box.offsetHeight;
+    ctx.save();
+    ctx.translate(r.x + r.width / 2, r.y + r.height / 2);
+    ctx.rotate(angleOf(box) + angleOf(box.closest('.option-toggle') ?? box));
+    ctx.translate(-w / 2, -h / 2);
+    ctx.lineWidth = BOX_BORDER;
     ctx.beginPath();
-    ctx.roundRect(r.x + 1, r.y + 1, r.width - 2, r.height - 2, [3, 6, 4, 7]);
+    ctx.roundRect(BOX_BORDER / 2, BOX_BORDER / 2, w - BOX_BORDER, h - BOX_BORDER, [3, 6, 4, 7]);
     ctx.stroke();
     if (box.checked) {
-      ctx.lineWidth = 2.6;
-      ctx.beginPath();
-      ctx.moveTo(r.x + r.width * 0.15, r.y + r.height * 0.55);
-      ctx.lineTo(r.x + r.width * 0.4, r.y + r.height * 0.8);
-      ctx.lineTo(r.x + r.width * 0.95, r.y + r.height * 0.05);
-      ctx.stroke();
+      // Fond « center / 125% » de la zone intérieure (sans la bordure).
+      const size = (w - 2 * BOX_BORDER) * 1.25;
+      stretched(CHECK.path, CHECK.box, CHECK.box, CHECK.width, (w - size) / 2, (h - size) / 2, size, size);
     }
+    ctx.restore();
   });
-  ctx.lineWidth = 1.6;
+  // Soulignés : fond « bottom / 100% 7px ».
   root.querySelectorAll('.options-section h2').forEach((heading) => {
     const r = at(heading);
-    const y = r.bottom - 3;
-    ctx.beginPath();
-    ctx.moveTo(r.x + 2, y);
-    ctx.quadraticCurveTo(r.x + r.width * 0.25, y - 4, r.x + r.width * 0.5, y - 1);
-    ctx.quadraticCurveTo(r.x + r.width * 0.75, y + 2, r.right - 2, y - 2);
-    ctx.stroke();
+    stretched(UNDERLINE.path, UNDERLINE.width, UNDERLINE.height, UNDERLINE.stroke, r.x, r.bottom - UNDERLINE.band, r.width, UNDERLINE.band);
   });
+  // Langue entourée : fond « center / 100% 100% ».
   root.querySelectorAll('.langs .active').forEach((active) => {
     const r = at(active);
-    ctx.beginPath();
-    ctx.ellipse(r.x + r.width / 2, r.y + r.height / 2, r.width / 2, r.height / 2, -0.05, 0.2, Math.PI * 2 + 0.1);
-    ctx.stroke();
+    stretched(CIRCLE.path, CIRCLE.width, CIRCLE.height, CIRCLE.stroke, r.x, r.y, r.width, r.height);
   });
 };
 
@@ -139,10 +163,50 @@ const drawDoodles = (ctx: CanvasRenderingContext2D, root: HTMLElement): void => 
 };
 
 /**
+ * Anneaux de la spirale (voir .sketchbook-rings dans options.css), redessinés sur la photo : la feuille
+ * qui tourne passe devant la vraie spirale, et à plat elle doit la montrer telle qu'elle est. Seule la
+ * moitié de chaque anneau posée sur cette page tombe dans l'image.
+ */
+const RING = { width: 30, height: 9, border: 2, radius: 5, hole: 6, holeInset: 3 };
+const drawRings = (ctx: CanvasRenderingContext2D, rings: HTMLElement, spineX: number): void => {
+  rings.querySelectorAll<HTMLElement>('span').forEach((ring) => {
+    const x = spineX - RING.width / 2;
+    const y = rings.offsetTop + ring.offsetTop;
+    const half = RING.border / 2;
+    ctx.save();
+    ctx.lineWidth = RING.border;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
+    ctx.shadowBlur = 1;
+    ctx.strokeStyle = '#8b8a84';
+    ctx.beginPath();
+    ctx.roundRect(x + half, y + half, RING.width - RING.border, RING.height - RING.border, RING.radius - half);
+    ctx.stroke();
+    ctx.restore();
+    // Bord du haut piqué de rouille.
+    ctx.strokeStyle = '#9a7a5c';
+    ctx.lineWidth = RING.border;
+    ctx.beginPath();
+    ctx.moveTo(x + RING.radius, y + half);
+    ctx.lineTo(x + RING.width - RING.radius, y + half);
+    ctx.stroke();
+    // Les trous dans le papier, de part et d'autre du dos.
+    ctx.fillStyle = '#1c140d';
+    const r = RING.hole / 2;
+    for (const cx of [x + RING.border + RING.holeInset + r, x + RING.width - RING.border - RING.holeInset - r]) {
+      ctx.beginPath();
+      ctx.arc(cx, y + RING.height / 2, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+};
+
+/**
  * Photographie `page` (page de droite, verso, ou rien : papier nu) dans `canvas`, aux dimensions
  * d'une moitié de carnet (`width` × `height`). `stage` : conteneur hors écran, dans le carnet
- * (il en hérite les couleurs et les polices). `spine` : côté du dos sur cette image (à gauche pour
- * une page de droite, à droite pour un verso) ; la bande des anneaux y reste transparente.
+ * (il en hérite les couleurs et les polices). `rings` : la spirale, dont les anneaux sont redessinés
+ * sur le bord du dos (à gauche pour une page de droite, à droite pour un verso).
  */
 export const snapshotPage = (
   page: HTMLElement | null,
@@ -150,12 +214,15 @@ export const snapshotPage = (
   stage: HTMLElement,
   width: number,
   height: number,
+  rings: HTMLElement,
   spine: 'left' | 'right',
 ): void => {
-  canvas.width = Math.round(width * SCALE);
-  canvas.height = Math.round(height * SCALE);
+  // À la finesse du canevas de la feuille : un pixel de la photo pour un pixel de la feuille à plat.
+  const scale = leafPixelRatio();
+  canvas.width = Math.round(width * scale);
+  canvas.height = Math.round(height * scale);
   const ctx = canvas.getContext('2d')!;
-  ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+  ctx.setTransform(scale, 0, 0, scale, 0, 0);
   ctx.clearRect(0, 0, width, height);
   const copy = (page?.cloneNode(true) as HTMLElement | undefined) ?? Object.assign(document.createElement('div'), { className: 'sketchbook-verso' });
   stage.style.width = `${width}px`;
@@ -185,6 +252,6 @@ export const snapshotPage = (
   ctx.restore();
   drawWords(ctx, copy, origin);
   drawPencil(ctx, copy, origin);
-  ctx.clearRect(spine === 'left' ? 0 : width - RING_STRIP, 0, RING_STRIP, height);
+  drawRings(ctx, rings, spine === 'left' ? 0 : width);
   stage.replaceChildren();
 };
