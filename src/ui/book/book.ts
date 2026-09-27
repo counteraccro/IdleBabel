@@ -1,6 +1,8 @@
 import './book.css';
 import { el } from '../dom';
 import { attachGrab } from './bookGrab';
+import { applyBinding, type Binding } from './bindings';
+import { createBookClosing } from './bookClose';
 import { createLeafRenderer } from './leafRenderer';
 import { layoutPage, type PageLines } from './pageLayout';
 import { drawPageTexture, renderPageHtml } from './pageRender';
@@ -15,14 +17,20 @@ const HELD_PROGRESS = 0.06;
 export interface BookHandlers {
   /** Une page vient d'être tournée (comptée comme lue). */
   onTurn: () => void;
+  /** Toute page tournée, lue ou non ; renvoie true si le livre est terminé et doit être refermé. */
+  onLeaf: () => boolean;
   /** Phrase sensée éventuelle à cacher dans la prochaine page. */
   nextFragment: () => string | undefined;
+  /** Avancement dans le livre en main, de 0 à 1 : épaisseur des tranches. */
+  progress: () => number;
+  /** Reliure du livre en main. */
+  binding: () => Binding;
 }
 
 /** Le livre, et la page tournée par la production (non comptée : ces pages le sont déjà). */
 export interface Book {
   root: HTMLButtonElement;
-  /** Tourne une page en `duration` ms ; refuse (false) si une page bouge déjà ou est tenue. */
+  /** Tourne une page en `duration` ms ; refuse (false) si une page bouge déjà, est tenue, ou si le livre se referme. */
   autoTurn: (duration: number) => boolean;
 }
 
@@ -39,13 +47,31 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   const left = el('span', 'book-page book-left');
   const right = el('span', 'book-page book-right');
   const canvas = el('canvas', 'leaf-canvas');
-  cover.append(left, right, canvas);
+  cover.append(el('span', 'cover-left'), left, right, canvas);
   book.append(cover);
 
   const newLines = (fragment?: string): PageLines => layoutPage(createPage(PAGE_LENGTH, fragment));
-  let rightLines = newLines();
-  renderPageHtml(left, newLines());
-  renderPageHtml(right, rightLines);
+  let rightLines: PageLines;
+  const openNewBook = (): void => {
+    applyBinding(book, handlers.binding());
+    showProgress();
+    rightLines = newLines();
+    renderPageHtml(left, newLines());
+    renderPageHtml(right, rightLines);
+  };
+  const showProgress = (): void => {
+    book.style.setProperty('--read', handlers.progress().toFixed(3));
+  };
+  openNewBook();
+
+  const closing = createBookClosing(book, cover, right);
+  let isClosing = false;
+  const closeBook = (): void => {
+    isClosing = true;
+    void closing.play(openNewBook).finally(() => {
+      isClosing = false;
+    });
+  };
 
   const renderer = createLeafRenderer(canvas);
   const front = document.createElement('canvas');
@@ -77,6 +103,9 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     turning = null;
     stop();
     if (counted) handlers.onTurn();
+    const finished = handlers.onLeaf();
+    showProgress();
+    if (finished) closeBook();
   };
 
   /** La feuille retombe à droite : rien n'est lu, la page de droite redevient celle d'avant. */
@@ -116,19 +145,23 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
 
   attachGrab(book, {
     turn: () => {
+      if (isClosing) return;
       lift();
       show(0);
       animateTo(1, renderer ? TURN_MS : 0, finish);
     },
     grab: () => {
+      if (isClosing) return;
       lift();
       animateTo(HELD_PROGRESS, 120, () => {});
     },
     move: (value) => {
+      if (!turning) return;
       cancelAnimationFrame(animation);
       show(HELD_PROGRESS + (1 - HELD_PROGRESS) * value);
     },
     release: (value) => {
+      if (!turning) return;
       const completes = HELD_PROGRESS + (1 - HELD_PROGRESS) * value > 0.5;
       const target = completes ? 1 : 0;
       animateTo(target, RELEASE_MS * Math.max(0.3, Math.abs(target - progress)), completes ? finish : fallBack);
@@ -136,7 +169,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   });
 
   const autoTurn = (duration: number): boolean => {
-    if (turning) return false;
+    if (turning || isClosing) return false;
     lift(false);
     show(0);
     animateTo(1, renderer ? duration : 0, finish);

@@ -4,7 +4,7 @@ import type { GameState } from './state';
  * Moments marquants de la partie : ils serviront à écrire le Livre Total.
  * N'enregistrer que des « premières fois » et des événements rares.
  */
-export type HistoryType = 'gameStarted' | 'firstClick' | 'firstTool';
+export type HistoryType = 'gameStarted' | 'firstClick' | 'firstTool' | 'firstBook';
 
 export interface HistoryEntry {
   type: HistoryType;

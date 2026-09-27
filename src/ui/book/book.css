@@ -14,6 +14,11 @@
 .book:focus-visible .book-cover { outline: 2px solid var(--accent); outline-offset: 6px; }
 .book.turning { cursor: grabbing; }
 
+.book {
+  --leather-dark: #2a140c;
+  --leather: #4a2414;
+  --leather-deep: #1c0d07;
+}
 .book-cover {
   position: relative;
   display: block;
@@ -22,17 +27,42 @@
   transform: rotateX(14deg) rotateZ(-1.5deg);
   transform-style: preserve-3d;
   animation: book-held 7s ease-in-out infinite;
-  border-radius: 6px;
+}
+
+/* La couverture est en deux moitiés : la droite (le rabat) se referme d'un bloc sur la gauche. */
+.cover-left,
+.flap-inside,
+.flap-leather {
+  position: absolute;
+  top: 0;
+  bottom: 0;
   box-sizing: border-box;
-  background:
-    radial-gradient(ellipse at 30% 20%, rgba(255, 220, 170, 0.12), transparent 60%),
-    linear-gradient(90deg, #2a140c, #4a2414 48%, #1c0d07 50%, #4a2414 52%, #2a140c);
   box-shadow:
     0 -10px 50px rgba(0, 0, 0, 0.7),
-    0 0 90px rgba(242, 198, 121, 0.16),
-    inset 0 0 0 2px #1a0b05,
-    inset 0 0 0 4px rgba(184, 145, 78, 0.35);
+    0 0 90px rgba(242, 198, 121, 0.16);
 }
+.cover-left {
+  left: 0;
+  width: 50%;
+  border-radius: 6px 0 0 6px;
+  background:
+    radial-gradient(ellipse at 60% 20%, rgba(255, 220, 170, 0.12), transparent 60%),
+    linear-gradient(90deg, var(--leather-dark), var(--leather) 96%, var(--leather-deep));
+}
+/* Liseré de la couverture, sauf côté dos. */
+.cover-left::after,
+.flap-inside::after,
+.flap-leather::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid #1a0b05;
+  border-right: 0;
+  box-shadow: inset 2px 0 0 rgba(184, 145, 78, 0.35), inset 0 2px 0 rgba(184, 145, 78, 0.35), inset 0 -2px 0 rgba(184, 145, 78, 0.35);
+  pointer-events: none;
+}
+.flap-inside::after { border-right: 2px solid #1a0b05; border-left: 0; box-shadow: inset -2px 0 0 rgba(184, 145, 78, 0.35), inset 0 2px 0 rgba(184, 145, 78, 0.35), inset 0 -2px 0 rgba(184, 145, 78, 0.35); }
 .book:active .book-cover { animation-play-state: paused; }
 
 /* Les mains qui tiennent le livre ne sont jamais parfaitement immobiles. */
@@ -58,7 +88,12 @@
   background-image:
     linear-gradient(90deg, rgba(60, 35, 15, 0.18), rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0) 72%, rgba(80, 50, 20, 0.45) 100%),
     linear-gradient(180deg, #efe2c4, #e2d1ab 70%, #d6c299);
-  box-shadow: -1px 1px 0 #cdb88e, -2px 2px 0 #bfa97e, -3px 3px 0 #b39c70;
+  /* Tranche des pages lues : elle s'épaissit au fil du livre. */
+  --stack: calc(0.5px + 9.5px * var(--read, 0));
+  box-shadow:
+    calc(var(--stack) * -0.33) calc(var(--stack) * 0.33) 0 #cdb88e,
+    calc(var(--stack) * -0.66) calc(var(--stack) * 0.66) 0 #bfa97e,
+    calc(var(--stack) * -1) var(--stack) 0 #b39c70;
 }
 .book-right {
   right: 3.5%;
@@ -66,7 +101,12 @@
   background-image:
     linear-gradient(270deg, rgba(60, 35, 15, 0.18), rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0) 72%, rgba(80, 50, 20, 0.45) 100%),
     linear-gradient(180deg, #efe2c4, #e2d1ab 70%, #d6c299);
-  box-shadow: 1px 1px 0 #cdb88e, 2px 2px 0 #bfa97e, 3px 3px 0 #b39c70;
+  /* Tranche des pages qui restent : elle s'amincit au fil du livre. */
+  --stack: calc(0.5px + 9.5px * (1 - var(--read, 0)));
+  box-shadow:
+    calc(var(--stack) * 0.33) calc(var(--stack) * 0.33) 0 #cdb88e,
+    calc(var(--stack) * 0.66) calc(var(--stack) * 0.66) 0 #bfa97e,
+    var(--stack) var(--stack) 0 #b39c70;
 }
 /* Ombre de la feuille soulevée sur la page de dessous. */
 .book-right::after {
@@ -117,6 +157,90 @@
   visibility: hidden;
 }
 .book.turning .leaf-canvas { visibility: visible; }
+
+/*
+ * Moitié droite de la couverture (voir bookClose.ts) : dedans, le cuir intérieur où repose la page
+ * de droite ; dehors, le plat de la couverture. Livre terminé : elle se rabat, page comprise.
+ */
+.book-flap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 50%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.book-flap > * { backface-visibility: hidden; }
+.flap-inside {
+  left: 0;
+  width: 100%;
+  border-radius: 0 6px 6px 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(255, 220, 170, 0.1), transparent 60%),
+    linear-gradient(90deg, var(--leather-deep), var(--leather) 4%, var(--leather-dark));
+}
+.flap-leather {
+  left: 0;
+  width: 100%;
+  transform: rotateY(180deg);
+  border-radius: 6px 0 0 6px;
+  background:
+    radial-gradient(ellipse at 40% 25%, rgba(255, 220, 170, 0.1), transparent 60%),
+    linear-gradient(90deg, var(--leather-dark), var(--leather) 92%, var(--leather-deep));
+}
+/*
+ * Bloc des pages du livre fermé (voir bookBlock.ts) : ses tranches n'apparaissent qu'à la fermeture.
+ * Même retrait que les pages ouvertes : la couverture déborde, comme sur un vrai livre.
+ */
+.page-block {
+  position: absolute;
+  top: 3.5%;
+  bottom: 3.5%;
+  left: 3.5%;
+  width: 46.5%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  visibility: hidden;
+}
+.book.closing .page-block { visibility: visible; }
+.block-edge {
+  position: absolute;
+  background:
+    repeating-linear-gradient(var(--edge-direction, 0deg), rgba(120, 95, 60, 0.35) 0 1px, transparent 1px 3px),
+    linear-gradient(var(--edge-direction, 0deg), #d9c69d, #efe2c4 50%, #cbb68a);
+}
+/* Tranches du haut et du bas : elles se dressent vers le lecteur depuis le bord des pages. */
+.block-top,
+.block-bottom {
+  left: 0;
+  right: 0;
+  height: var(--thickness);
+}
+.block-top { top: 0; transform-origin: top; transform: rotateX(90deg); }
+.block-bottom { bottom: 0; transform-origin: bottom; transform: rotateX(-90deg); }
+/* Tranche de devant (opposée au dos). */
+.block-fore {
+  --edge-direction: 90deg;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--thickness);
+  transform-origin: left;
+  transform: rotateY(-90deg);
+}
+
+/* Pendant la fermeture, la page de droite voyage sur le rabat. */
+.flap-page { visibility: hidden; }
+.book.closing .flap-page { visibility: visible; }
+.book.closing .book-cover > .book-right { visibility: hidden; }
+.book.closing { cursor: default; }
+.flap-page.book-page {
+  left: auto;
+  right: 7%;
+  width: 93%;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .book-cover { animation: none; }

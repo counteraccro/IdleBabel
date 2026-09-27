@@ -10,7 +10,7 @@ export const isDebugEnabled = (): boolean => new URLSearchParams(window.location
 
 const PRESETS = [0, 100, 1_000, 10_000, 1_000_000];
 
-type NumericField = 'pages' | 'totalPagesRead';
+type NumericField = 'pages' | 'totalPagesRead' | 'bookPage';
 
 const createField = (state: GameState, field: NumericField, text: string): HTMLInputElement => {
   const input = el('input');
@@ -55,15 +55,21 @@ export const mountDebugPanel = (state: GameState): void => {
   const readersLabel = el('label', undefined, 'Diagonale ');
   readersLabel.append(readers);
 
+  // Page du livre en main : 405 pour voir le livre se refermer tout de suite.
+  const bookPage = createField(state, 'bookPage', 'Page du livre');
+  bookPage.max = '409';
+  const bookPageLabel = el('label', undefined, 'Page du livre ');
+  bookPageLabel.append(bookPage);
+
   const readout = el('small');
-  panel.append(el('strong', undefined, 'Débogage'), stockLabel, totalLabel, presets, readersLabel, readout);
+  panel.append(el('strong', undefined, 'Débogage'), stockLabel, totalLabel, presets, readersLabel, bookPageLabel, readout);
   document.body.append(panel);
 
   setInterval(() => {
-    for (const input of [stock, total]) {
+    for (const input of [stock, total, bookPage]) {
       if (document.activeElement !== input) input.value = String(Math.floor(state[input.dataset.field as NumericField]));
     }
     if (document.activeElement !== readers) readers.value = String(state.tools.diagonal);
-    readout.textContent = `Découverte : ${clarity(state).toFixed(2)} · Au-delà : ${beyond(state).toFixed(2)}`;
+    readout.textContent = `Livres : ${state.booksFinished} · Découverte : ${clarity(state).toFixed(2)} · Au-delà : ${beyond(state).toFixed(2)}`;
   }, 250);
 };
