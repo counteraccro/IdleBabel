@@ -21,14 +21,37 @@ export const renderPageHtml = (target: HTMLElement, lines: PageLines): void => {
   target.replaceChildren(text);
 };
 
+const TEXTURE_SCALE = 2;
+
+/**
+ * Ombre de la gouttière, du dos vers la tranche (position en fraction de la largeur de page) :
+ * le papier s'enfonce dans la reliure (creux sombre), se courbe (léger reflet), puis s'étale à plat.
+ * Même profil pour les pages fixes (CSS) et la feuille qui tourne (canevas).
+ */
+const GUTTER: readonly [number, string][] = [
+  [0, 'rgba(45, 25, 10, 0.5)'],
+  [0.02, 'rgba(60, 35, 15, 0.3)'],
+  [0.07, 'rgba(80, 50, 20, 0.1)'],
+  [0.11, 'rgba(255, 246, 222, 0.08)'],
+  [0.17, 'rgba(0, 0, 0, 0)'],
+  [0.88, 'rgba(0, 0, 0, 0)'],
+  [1, 'rgba(60, 35, 15, 0.18)'],
+];
+
+/** Dégradé CSS de la gouttière ; `toward` : sens du dos vers la tranche (90deg si le dos est à gauche). */
+export const gutterCss = (toward: '90deg' | '270deg'): string =>
+  `linear-gradient(${toward}, ${GUTTER.map(([at, color]) => `${color} ${(at * 100).toFixed(1)}%`).join(', ')})`;
+
 /**
  * Page dessinée (feuille WebGL) : parchemin, ombre du pli côté dos, texte et fragment surligné.
  * spineOnLeft : le dos du livre est à gauche de la page (recto de la feuille) ou à droite (verso).
  */
 export const drawPageTexture = (canvas: HTMLCanvasElement, lines: PageLines, spineOnLeft: boolean): void => {
-  canvas.width = PAGE_TEXTURE.width;
-  canvas.height = PAGE_TEXTURE.height;
+  // Texture deux fois plus fine que la mise en page : le texte reste net sur les écrans denses.
+  canvas.width = PAGE_TEXTURE.width * TEXTURE_SCALE;
+  canvas.height = PAGE_TEXTURE.height * TEXTURE_SCALE;
   const context = canvas.getContext('2d')!;
+  context.scale(TEXTURE_SCALE, TEXTURE_SCALE);
   const { width, height } = PAGE_TEXTURE;
 
   const paper = context.createLinearGradient(0, 0, 0, height);
@@ -39,10 +62,7 @@ export const drawPageTexture = (canvas: HTMLCanvasElement, lines: PageLines, spi
   context.fillRect(0, 0, width, height);
 
   const gutter = context.createLinearGradient(spineOnLeft ? 0 : width, 0, spineOnLeft ? width : 0, 0);
-  gutter.addColorStop(0, 'rgba(80, 50, 20, 0.45)');
-  gutter.addColorStop(0.28, 'rgba(0, 0, 0, 0)');
-  gutter.addColorStop(0.88, 'rgba(0, 0, 0, 0)');
-  gutter.addColorStop(1, 'rgba(60, 35, 15, 0.18)');
+  for (const [at, color] of GUTTER) gutter.addColorStop(at, color);
   context.fillStyle = gutter;
   context.fillRect(0, 0, width, height);
 

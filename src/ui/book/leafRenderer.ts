@@ -71,7 +71,9 @@ void main() {
     facing = dot(-normal, light);
   }
   float diffuse = max(facing, 0.0);
-  float shade = 0.55 + 0.45 * diffuse;
+  // À plat (normale face au lecteur), la feuille a exactement la teinte des pages fixes ;
+  // elle ne s'assombrit qu'en se courbant.
+  float shade = min(1.0, 0.55 + 0.45 * diffuse / light.z);
   float sheen = pow(diffuse, 24.0) * 0.12;
   outColor = vec4(color * shade + sheen, 1.0);
 }`;
@@ -160,18 +162,25 @@ const setUpLeafRenderer = (canvas: HTMLCanvasElement): LeafRenderer | null => {
   gl.enable(gl.DEPTH_TEST);
   gl.frontFace(gl.CW);
 
+  // Feuille vue en biais quand elle se courbe : sans filtrage anisotrope, la texture devient floue.
+  const anisotropy = gl.getExtension('EXT_texture_filter_anisotropic');
+  const maxAnisotropy = anisotropy ? (gl.getParameter(anisotropy.MAX_TEXTURE_MAX_ANISOTROPY_EXT) as number) : 0;
+
   const upload = (unit: number, source: TexImageSource): void => {
     gl.activeTexture(gl.TEXTURE0 + unit);
     gl.bindTexture(gl.TEXTURE_2D, textures[unit]);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
     gl.generateMipmap(gl.TEXTURE_2D);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    if (anisotropy) gl.texParameterf(gl.TEXTURE_2D, anisotropy.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8, maxAnisotropy));
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   };
 
   const resize = (): void => {
-    const ratio = Math.min(window.devicePixelRatio, 2);
+    // Plus fin que l'écran : le canevas est ensuite incliné avec le livre, le navigateur le réduit
+    // au lieu de l'étirer et la feuille reste nette.
+    const ratio = Math.min(window.devicePixelRatio * 1.5, 3);
     const width = Math.round(canvas.offsetWidth * ratio);
     const height = Math.round(canvas.offsetHeight * ratio);
     if (canvas.width !== width || canvas.height !== height) {

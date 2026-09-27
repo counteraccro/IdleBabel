@@ -65,12 +65,6 @@
 .flap-right .flap-inside::after,
 .flap-left .flap-leather::after { border-left: 0; }
 
-/*
- * Pages fixes un peu au-dessus du cuir intérieur : à la même profondeur, le navigateur hésite entre
- * les deux quand le livre bouge, et des rayures clignotent.
- */
-.book-cover > .book-page { transform: translateZ(2px); }
-
 /* Page emportée par le rabat qui bouge (copie de la page fixe, cachée pendant ce temps). */
 .flap-page { visibility: hidden; }
 .flap-page.book-page { width: 93%; }
@@ -84,47 +78,81 @@
 .book.new-closed { cursor: default; }
 .book.closed { cursor: pointer; }
 
+/* Hauteur des piles : animable, pour qu'elles s'épaississent quand le livre se ferme. */
+@property --left-depth { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --right-depth { syntax: '<length>'; inherits: true; initial-value: 0px; }
+.book.closing,
+.book.new-closed { transition: --left-depth 0.75s ease-in-out, --right-depth 0.7s ease-in-out; }
+
 /*
- * Bloc des pages du livre fermé (voir bookBlock.ts) : même retrait que les pages ouvertes,
- * la couverture déborde comme sur un vrai livre. Sous le rabat de droite qui se referme, il est
- * à gauche ; sous la couverture de devant d'un livre neuf, il est à droite.
+ * Piles de pages (voir bookBlock.ts) : pages lues à gauche, pages à lire à droite. Au début du livre
+ * tout est à droite ; à la fin, tout est à gauche. Même retrait que les pages : la couverture déborde.
  */
-.page-block {
+.page-stack {
   position: absolute;
   top: 3.5%;
   bottom: 3.5%;
-  left: 3.5%;
   width: 46.5%;
   transform-style: preserve-3d;
   pointer-events: none;
-  visibility: hidden;
 }
-.book.closing .page-block,
-.book.new-closed .page-block { visibility: visible; }
-.book.new-closed .page-block { left: 50%; }
-.block-edge {
+.stack-left { left: 3.5%; --depth: var(--left-depth, 0px); }
+.stack-right { left: 50%; --depth: var(--right-depth, 0px); }
+.stack-edge {
   position: absolute;
   background:
     repeating-linear-gradient(var(--edge-direction, 0deg), rgba(120, 95, 60, 0.35) 0 1px, transparent 1px 3px),
     linear-gradient(var(--edge-direction, 0deg), #d9c69d, #efe2c4 50%, #cbb68a);
 }
 /* Tranches du haut et du bas : elles se dressent vers le lecteur depuis le bord des pages. */
-.block-top,
-.block-bottom {
+.stack-top,
+.stack-bottom {
   left: 0;
   right: 0;
-  height: var(--thickness);
+  height: var(--depth);
 }
-.block-top { top: 0; transform-origin: top; transform: rotateX(90deg); }
-.block-bottom { bottom: 0; transform-origin: bottom; transform: rotateX(-90deg); }
+.stack-top { top: 0; transform-origin: top; transform: rotateX(90deg); }
+.stack-bottom { bottom: 0; transform-origin: bottom; transform: rotateX(-90deg); }
 /* Tranche de devant, opposée au dos. */
-.block-fore {
+.stack-fore {
   --edge-direction: 90deg;
   top: 0;
   bottom: 0;
-  left: 0;
-  width: var(--thickness);
-  transform-origin: left;
-  transform: rotateY(-90deg);
+  width: var(--depth);
 }
-.book.new-closed .block-fore { left: auto; right: 0; transform-origin: right; transform: rotateY(90deg); }
+.stack-left .stack-fore { left: 0; transform-origin: left; transform: rotateY(-90deg); }
+.stack-right .stack-fore { right: 0; transform-origin: right; transform: rotateY(90deg); }
+
+/*
+ * Pile vide du côté que la couverture découvre (droite à la fermeture, gauche à l'ouverture) :
+ * trop fine, ses tranches dessineraient un contour clair autour de la page.
+ */
+.book.closing .stack-right,
+.book.new-closed .stack-left { visibility: hidden; }
+
+/*
+ * Première page d'un livre : à gauche, rien que l'intérieur de la couverture.
+ * Dernière page : à droite, rien que l'intérieur de la couverture arrière (y compris sur le rabat).
+ */
+.book.first-page .book-cover .book-page.book-left,
+.book.last-page .book-cover .book-page.book-right { visibility: hidden; }
+
+/*
+ * Tranchefiles (voir headbands.ts) : au dos, nettement au-dessus des piles (trop près des pages, le
+ * navigateur hésite entre les deux et des rayures clignotent), cachés quand la couverture bouge.
+ */
+.headband {
+  position: absolute;
+  left: 49.3%;
+  width: 1.4%;
+  height: 1.6%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 35%, #b0503c, #6e2418 75%);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  transform: translateZ(calc(max(var(--left-depth, 0px), var(--right-depth, 0px)) + 6px));
+}
+.headband-top { top: 2.8%; }
+.headband-bottom { bottom: 2.8%; }
+.book.closing .headband,
+.book.new-closed .headband { visibility: hidden; }

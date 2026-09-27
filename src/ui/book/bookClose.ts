@@ -1,4 +1,4 @@
-import { BOOK_THICKNESS_PX, createPageBlock } from './bookBlock';
+import { BOOK_THICKNESS_PX, createPageStack, stackDepths } from './bookBlock';
 import { carryPage, createFlap } from './bookFlap';
 
 const CLOSE_MS = 750;
@@ -23,10 +23,10 @@ const HELD_OPEN = 'translateX(0%) translateY(0%) rotateX(14deg) rotateY(0deg) ro
 const HELD_CLOSED = 'translateX(25%) translateY(-18%) rotateX(24deg) rotateY(62deg) rotateZ(-3deg)';
 /** Livre neuf, fermé, tenu de face : couverture de devant vers le lecteur, recentrée. */
 const HELD_FRONT = 'translateX(-25%) translateY(0%) rotateX(14deg) rotateY(0deg) rotateZ(-1.5deg)';
-/** Rabat à plat, puis posé sur le bloc de pages de l'autre côté, à son épaisseur. */
+/** Rabat à plat, puis posé sur toutes les pages de l'autre côté (au-dessus de la page fixe). */
 const FLAP_OPEN = 'translateZ(1px) rotateY(0deg)';
-const RIGHT_CLOSED = `translateZ(${BOOK_THICKNESS_PX + 1}px) rotateY(-180deg)`;
-const LEFT_CLOSED = `translateZ(${BOOK_THICKNESS_PX + 1}px) rotateY(180deg)`;
+const RIGHT_CLOSED = `translateZ(${BOOK_THICKNESS_PX + 3}px) rotateY(-180deg)`;
+const LEFT_CLOSED = `translateZ(${BOOK_THICKNESS_PX + 3}px) rotateY(180deg)`;
 const FLAP_EASING = 'cubic-bezier(0.45, 0, 0.25, 1)';
 
 /**
@@ -42,8 +42,7 @@ export const createBookClosing = (
 ): BookClosing => {
   const left = createFlap('left');
   const right = createFlap('right');
-  const block = createPageBlock();
-  cover.prepend(left.root, right.root, block);
+  cover.prepend(left.root, right.root, createPageStack('left'), createPageStack('right'));
 
   const run = (element: HTMLElement, keyframes: Keyframe[], duration: number, easing: string): Promise<void> =>
     element
@@ -53,20 +52,25 @@ export const createBookClosing = (
   const cancelAll = (...elements: HTMLElement[]): void =>
     elements.forEach((element) => element.getAnimations().forEach((animation) => animation.cancel()));
 
+  // Pile de pages d'un côté : elle reprend toute son épaisseur quand la couverture se pose dessus.
+  const setDepth = (side: 'left' | 'right', px: number): void => book.style.setProperty(`--${side}-depth`, `${px}px`);
+
   const play = async (swap: () => void, stayClosed: boolean): Promise<void> => {
     carryPage(right, pages.right);
     book.classList.add('closing');
+    setDepth('left', BOOK_THICKNESS_PX);
     await Promise.all([
       run(right.root, [{ transform: FLAP_OPEN }, { transform: RIGHT_CLOSED }], CLOSE_MS, FLAP_EASING),
       run(cover, [{ transform: HELD_OPEN }, { transform: HELD_CLOSED }], CLOSE_MS * 1.3, 'ease-in-out'),
     ]);
     await run(book, [{ transform: 'none', opacity: 1 }, { transform: 'translateY(45%) rotateX(20deg)', opacity: 0 }], LOWER_MS, 'ease-in');
-    swap();
     book.classList.remove('closing');
     cancelAll(right.root, cover);
+    swap();
     // Livre suivant : il remonte ouvert, ou fermé et de face, couverture de devant sur les pages de droite.
     if (stayClosed) {
       carryPage(left, pages.left);
+      setDepth('right', BOOK_THICKNESS_PX);
       book.classList.add('new-closed');
       left.root.animate([{ transform: LEFT_CLOSED }], { duration: 0, fill: 'forwards' });
       cover.animate([{ transform: HELD_FRONT }], { duration: 0, fill: 'forwards' });
@@ -76,14 +80,13 @@ export const createBookClosing = (
   };
 
   const open = async (): Promise<void> => {
+    setDepth('right', stackDepths(0).right);
     await Promise.all([
       run(left.root, [{ transform: LEFT_CLOSED }, { transform: FLAP_OPEN }], OPEN_MS, FLAP_EASING),
       run(cover, [{ transform: HELD_FRONT }, { transform: HELD_OPEN }], OPEN_MS, 'ease-in-out'),
-      // Le bloc de pages s'aplatit avec l'ouverture : le livre ouvert n'a plus que ses tranches fines.
-      run(block, [{ transform: 'scaleZ(1)' }, { transform: 'scaleZ(0.01)' }], OPEN_MS, FLAP_EASING),
     ]);
     book.classList.remove('new-closed');
-    cancelAll(left.root, cover, block);
+    cancelAll(left.root, cover);
   };
 
   return { play, open };

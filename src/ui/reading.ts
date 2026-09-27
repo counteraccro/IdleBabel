@@ -5,7 +5,7 @@ import { createBook } from './book/book';
 import { startAutoTurn } from './book/autoTurn';
 import { rollFragment } from '../systems/fragments';
 import { pagesPerSecond } from '../systems/production';
-import { bookProgress, turnBookPage } from '../systems/books';
+import { PAGES_PER_BOOK, bookProgress, turnBookPage } from '../systems/books';
 import { bindingFor } from './book/bindings';
 import type { GameState } from '../core/state';
 
@@ -17,6 +17,7 @@ export const createReading = (state: GameState): Component => {
     onLeaf: () => turnBookPage(state),
     nextFragment: rollFragment,
     progress: () => bookProgress(state),
+    lastLeaf: () => state.bookPage === PAGES_PER_BOOK - 1,
     binding: () => bindingFor(state.booksFinished),
     // Sans pages qui tournent seules, le livre suivant attend fermé qu'on l'ouvre.
     stayClosed: () => !state.settings.autoTurn,

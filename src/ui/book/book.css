@@ -38,6 +38,7 @@
   70% { transform: rotateX(13deg) rotateZ(-2.1deg) translateY(3px); }
 }
 
+/* Ombre de la gouttière (--gutter-left, --gutter-right) : définie dans pageRender.ts, posée par book.ts. */
 /* Pages fixes : même format que la texture de la feuille (640 × 800), texte mis en page à l'avance. */
 .book-page {
   position: absolute;
@@ -51,29 +52,48 @@
 .book-left {
   left: 3.5%;
   border-radius: 3px 0 0 3px;
-  background-image:
-    linear-gradient(90deg, rgba(60, 35, 15, 0.18), rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0) 72%, rgba(80, 50, 20, 0.45) 100%),
-    linear-gradient(180deg, #efe2c4, #e2d1ab 70%, #d6c299);
-  /* Tranche des pages lues : elle s'épaissit au fil du livre. */
-  --stack: calc(0.5px + 9.5px * var(--read, 0));
-  box-shadow:
-    calc(var(--stack) * -0.33) calc(var(--stack) * 0.33) 0 #cdb88e,
-    calc(var(--stack) * -0.66) calc(var(--stack) * 0.66) 0 #bfa97e,
-    calc(var(--stack) * -1) var(--stack) 0 #b39c70;
+  background-image: var(--gutter-left), linear-gradient(180deg, #efe2c4, #e2d1ab 70%, #d6c299);
 }
 .book-right {
   right: 3.5%;
   border-radius: 0 3px 3px 0;
-  background-image:
-    linear-gradient(270deg, rgba(60, 35, 15, 0.18), rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0) 72%, rgba(80, 50, 20, 0.45) 100%),
-    linear-gradient(180deg, #efe2c4, #e2d1ab 70%, #d6c299);
-  /* Tranche des pages qui restent : elle s'amincit au fil du livre. */
-  --stack: calc(0.5px + 9.5px * (1 - var(--read, 0)));
-  box-shadow:
-    calc(var(--stack) * 0.33) calc(var(--stack) * 0.33) 0 #cdb88e,
-    calc(var(--stack) * 0.66) calc(var(--stack) * 0.66) 0 #bfa97e,
-    var(--stack) var(--stack) 0 #b39c70;
+  background-image: var(--gutter-right), linear-gradient(180deg, #efe2c4, #e2d1ab 70%, #d6c299);
 }
+/*
+ * Tranches des piles vues sur le bord extérieur et en bas : de fines couches de papier.
+ * Pages lues à gauche (elles s'épaississent), pages à lire à droite (elles s'amincissent).
+ * Elles restent dans la marge de la couverture : 12 px sur le côté, 7 px en bas (marge plus étroite).
+ */
+.book-cover > .book-left {
+  --stack-x: calc(1px + 11px * var(--read, 0));
+  --stack-y: calc(0.5px + 6.5px * var(--read, 0));
+  box-shadow:
+    calc(var(--stack-x) * -0.143) calc(var(--stack-y) * 0.143) 0 #e3d3ae,
+    calc(var(--stack-x) * -0.286) calc(var(--stack-y) * 0.286) 0 #b39c70,
+    calc(var(--stack-x) * -0.429) calc(var(--stack-y) * 0.429) 0 #e3d3ae,
+    calc(var(--stack-x) * -0.571) calc(var(--stack-y) * 0.571) 0 #b39c70,
+    calc(var(--stack-x) * -0.714) calc(var(--stack-y) * 0.714) 0 #e3d3ae,
+    calc(var(--stack-x) * -0.857) calc(var(--stack-y) * 0.857) 0 #b39c70,
+    calc(var(--stack-x) * -1.000) calc(var(--stack-y) * 1.000) 0 #e3d3ae;
+}
+.book-cover > .book-right {
+  --stack-x: calc(1px + 11px * (1 - var(--read, 0)));
+  --stack-y: calc(0.5px + 6.5px * (1 - var(--read, 0)));
+  box-shadow:
+    calc(var(--stack-x) * 0.143) calc(var(--stack-y) * 0.143) 0 #e3d3ae,
+    calc(var(--stack-x) * 0.286) calc(var(--stack-y) * 0.286) 0 #b39c70,
+    calc(var(--stack-x) * 0.429) calc(var(--stack-y) * 0.429) 0 #e3d3ae,
+    calc(var(--stack-x) * 0.571) calc(var(--stack-y) * 0.571) 0 #b39c70,
+    calc(var(--stack-x) * 0.714) calc(var(--stack-y) * 0.714) 0 #e3d3ae,
+    calc(var(--stack-x) * 0.857) calc(var(--stack-y) * 0.857) 0 #b39c70,
+    calc(var(--stack-x) * 1.000) calc(var(--stack-y) * 1.000) 0 #e3d3ae;
+}
+/*
+ * Pages fixes posées sur leur pile (voir bookCover.css), un peu au-dessus : à la même profondeur
+ * que le cuir, le navigateur hésite entre les deux quand le livre bouge et des rayures clignotent.
+ */
+.book-cover > .book-left { transform: translateZ(calc(var(--left-depth, 0px) + 2px)); }
+.book-cover > .book-right { transform: translateZ(calc(var(--right-depth, 0px) + 2px)); }
 /* Ombre de la feuille soulevée sur la page de dessous. */
 .book-right::after {
   content: '';
@@ -121,7 +141,8 @@
   height: 160%;
   pointer-events: none;
   visibility: hidden;
-  transform: translateZ(3px); /* au-dessus des pages fixes (voir bookCover.css) */
+  /* Au-dessus des deux piles de pages, à l'échelle de sa vraie hauteur (voir show() dans book.ts). */
+  transform: translateZ(var(--leaf-z, 3px)) scale(var(--leaf-scale, 1));
 }
 .book.turning .leaf-canvas { visibility: visible; }
 

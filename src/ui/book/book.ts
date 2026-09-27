@@ -3,9 +3,11 @@ import { el } from '../dom';
 import { attachGrab } from './bookGrab';
 import { applyBinding, type Binding } from './bindings';
 import { createBookClosing } from './bookClose';
+import { stackDepths } from './bookBlock';
 import { createLeafRenderer } from './leafRenderer';
 import { layoutPage, type PageLines } from './pageLayout';
-import { drawPageTexture, renderPageHtml } from './pageRender';
+import { drawPageTexture, gutterCss, renderPageHtml } from './pageRender';
+import { createHeadbands } from './headbands';
 import { createPage } from '../../systems/babelText';
 
 const PAGE_LENGTH = 700;
@@ -13,6 +15,10 @@ const TURN_MS = 850;
 const RELEASE_MS = 380;
 /** Page tenue sans bouger : elle se soulève à peine. */
 const HELD_PROGRESS = 0.06;
+/** Perspective du livre (voir .book dans book.css). */
+const PERSPECTIVE_PX = 1400;
+/** Écart entre le haut d'une pile et la feuille qui en part ou s'y pose. */
+const LEAF_GAP_PX = 3;
 
 export interface BookHandlers {
   /** Une page vient d'être tournée (comptée comme lue). */
@@ -23,6 +29,8 @@ export interface BookHandlers {
   nextFragment: () => string | undefined;
   /** Avancement dans le livre en main, de 0 à 1 : épaisseur des tranches. */
   progress: () => number;
+  /** La page de droite est-elle la dernière du livre ? Dessous, il n'y a plus que la couverture. */
+  lastLeaf: () => boolean;
   /** Reliure du livre en main. */
   binding: () => Binding;
   /** Le livre suivant attend-il fermé qu'on l'ouvre d'un clic ? */
@@ -49,20 +57,30 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   const left = el('span', 'book-page book-left');
   const right = el('span', 'book-page book-right');
   const canvas = el('canvas', 'leaf-canvas');
-  cover.append(left, right, canvas);
+  cover.append(left, right, ...createHeadbands(), canvas);
+  // Même ombre de gouttière que la feuille qui tourne : dos à droite pour la page de gauche, et inversement.
+  book.style.setProperty('--gutter-left', gutterCss('270deg'));
+  book.style.setProperty('--gutter-right', gutterCss('90deg'));
   book.append(cover);
 
   const newLines = (fragment?: string): PageLines => layoutPage(createPage(PAGE_LENGTH, fragment));
   let rightLines: PageLines;
   const openNewBook = (): void => {
+    book.classList.remove('last-page');
     applyBinding(book, handlers.binding());
     showProgress();
     rightLines = newLines();
     renderPageHtml(left, newLines());
     renderPageHtml(right, rightLines);
   };
+  // Hauteur des piles de pages ; première page : pas encore de page à gauche.
   const showProgress = (): void => {
-    book.style.setProperty('--read', handlers.progress().toFixed(3));
+    const progress = handlers.progress();
+    const depths = stackDepths(progress);
+    book.style.setProperty('--left-depth', `${depths.left.toFixed(2)}px`);
+    book.style.setProperty('--right-depth', `${depths.right.toFixed(2)}px`);
+    book.style.setProperty('--read', progress.toFixed(3));
+    book.classList.toggle('first-page', progress === 0);
   };
   openNewBook();
 
@@ -103,6 +121,14 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     progress = value;
     renderer?.draw(value);
     book.style.setProperty('--lift', Math.sin(Math.PI * value).toFixed(3));
+    // La feuille va du haut de la pile de droite à celui de gauche. Son canevas est plat : placé à
+    // mi-hauteur, la page de droite, plus haute, le cacherait. Il reste donc au-dessus des deux piles,
+    // réduit pour garder la taille qu'il aurait à sa vraie hauteur malgré la perspective.
+    const depths = stackDepths(handlers.progress());
+    const top = Math.max(depths.left, depths.right) + LEAF_GAP_PX;
+    const height = depths.right + (depths.left - depths.right) * value + LEAF_GAP_PX;
+    book.style.setProperty('--leaf-z', `${top.toFixed(2)}px`);
+    book.style.setProperty('--leaf-scale', ((PERSPECTIVE_PX - top) / (PERSPECTIVE_PX - height)).toFixed(4));
   };
 
   const stop = (): void => {
@@ -119,9 +145,9 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     turning = null;
     stop();
     if (counted) handlers.onTurn();
-    const finished = handlers.onLeaf();
-    showProgress();
-    if (finished) closeBook();
+    // Livre terminé : il garde son allure de fin (pages à gauche) jusqu'à ce que le suivant soit pris.
+    if (handlers.onLeaf()) closeBook();
+    else showProgress();
   };
 
   /** La feuille retombe à droite : rien n'est lu, la page de droite redevient celle d'avant. */
@@ -129,6 +155,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     if (!turning) return;
     rightLines = turning.previousRight;
     renderPageHtml(right, rightLines);
+    book.classList.remove('last-page');
     turning = null;
     stop();
   };
@@ -143,6 +170,8 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     renderer?.setPages(front, back);
     rightLines = newLines(handlers.nextFragment());
     renderPageHtml(right, rightLines);
+    // Dernière feuille : elle découvre l'intérieur de la couverture arrière, sans page.
+    book.classList.toggle('last-page', handlers.lastLeaf());
     book.classList.add('turning');
   };
 
