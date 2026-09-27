@@ -19,13 +19,20 @@ export interface BookHandlers {
   nextFragment: () => string | undefined;
 }
 
+/** Le livre, et la page tournée par la production (non comptée : ces pages le sont déjà). */
+export interface Book {
+  root: HTMLButtonElement;
+  /** Tourne une page en `duration` ms ; refuse (false) si une page bouge déjà ou est tenue. */
+  autoTurn: (duration: number) => boolean;
+}
+
 const easeInOut = (t: number): number => -(Math.cos(Math.PI * t) - 1) / 2;
 
 /**
  * Un livre ouvert tenu en main. Clic : la page tourne. Appui maintenu : on tient la page
  * et on la tourne soi-même ; lâchée après la moitié, elle finit de tourner, sinon elle retombe.
  */
-export const createBook = (label: string, handlers: BookHandlers): HTMLButtonElement => {
+export const createBook = (label: string, handlers: BookHandlers): Book => {
   const book = el('button', 'book');
   book.setAttribute('aria-label', label);
   const cover = el('span', 'book-cover');
@@ -44,8 +51,9 @@ export const createBook = (label: string, handlers: BookHandlers): HTMLButtonEle
   const front = document.createElement('canvas');
   const back = document.createElement('canvas');
 
-  // Feuille en cours : son verso (future page de gauche) et la page de droite d'avant.
-  let turning: { back: PageLines; previousRight: PageLines } | null = null;
+  // Feuille en cours : son verso (future page de gauche), la page de droite d'avant,
+  // et si elle compte comme lue (tournée par le lecteur) ou non (tournée par la production).
+  let turning: { back: PageLines; previousRight: PageLines; counted: boolean } | null = null;
   let progress = 0;
   let animation = 0;
 
@@ -64,10 +72,11 @@ export const createBook = (label: string, handlers: BookHandlers): HTMLButtonEle
   /** La feuille est passée à gauche : la page est lue. */
   const finish = (): void => {
     if (!turning) return;
+    const { counted } = turning;
     renderPageHtml(left, turning.back);
     turning = null;
     stop();
-    handlers.onTurn();
+    if (counted) handlers.onTurn();
   };
 
   /** La feuille retombe à droite : rien n'est lu, la page de droite redevient celle d'avant. */
@@ -80,10 +89,10 @@ export const createBook = (label: string, handlers: BookHandlers): HTMLButtonEle
   };
 
   /** Soulève la page de droite : elle part sur la feuille, une nouvelle apparaît dessous. */
-  const lift = (): void => {
+  const lift = (counted = true): void => {
     if (turning) finish();
     const backLines = newLines();
-    turning = { back: backLines, previousRight: rightLines };
+    turning = { back: backLines, previousRight: rightLines, counted };
     drawPageTexture(front, rightLines, true);
     drawPageTexture(back, backLines, false);
     renderer?.setPages(front, back);
@@ -126,5 +135,13 @@ export const createBook = (label: string, handlers: BookHandlers): HTMLButtonEle
     },
   });
 
-  return book;
+  const autoTurn = (duration: number): boolean => {
+    if (turning) return false;
+    lift(false);
+    show(0);
+    animateTo(1, renderer ? duration : 0, finish);
+    return true;
+  };
+
+  return { root: book, autoTurn };
 };

@@ -44,14 +44,26 @@ export const mountDebugPanel = (state: GameState): void => {
     presets.append(button);
   }
 
+  // Production : 10 lecteurs en diagonale = 1 page/s ; 50 atteignent le feuilletage continu.
+  const readers = el('input');
+  readers.type = 'number';
+  readers.min = '0';
+  readers.setAttribute('aria-label', 'Lecteurs en diagonale');
+  readers.addEventListener('change', () => {
+    state.tools.diagonal = Math.max(0, Math.floor(Number(readers.value) || 0));
+  });
+  const readersLabel = el('label', undefined, 'Diagonale ');
+  readersLabel.append(readers);
+
   const readout = el('small');
-  panel.append(el('strong', undefined, 'Débogage'), stockLabel, totalLabel, presets, readout);
+  panel.append(el('strong', undefined, 'Débogage'), stockLabel, totalLabel, presets, readersLabel, readout);
   document.body.append(panel);
 
   setInterval(() => {
     for (const input of [stock, total]) {
       if (document.activeElement !== input) input.value = String(Math.floor(state[input.dataset.field as NumericField]));
     }
+    if (document.activeElement !== readers) readers.value = String(state.tools.diagonal);
     readout.textContent = `Découverte : ${clarity(state).toFixed(2)} · Au-delà : ${beyond(state).toFixed(2)}`;
   }, 250);
 };
