@@ -55,7 +55,26 @@ const drawPaper = (ctx: CanvasRenderingContext2D, w: number, h: number): void =>
   ctx.fillRect(0, 0, w, h);
 };
 
-/** Chaque mot, à la place et dans la police où le navigateur l'a mis. */
+/** Rotation d'un élément (transform et rotate), en radians. */
+const angleOf = (el: Element): number => {
+  const style = getComputedStyle(el);
+  const matrix = new DOMMatrix(style.transform === 'none' ? undefined : style.transform);
+  const rotate = style.rotate === 'none' ? 0 : parseFloat(style.rotate);
+  return Math.atan2(matrix.b, matrix.a) + (rotate * Math.PI) / 180;
+};
+
+/** Rotation totale d'un élément dans la page (lignes écrites de travers, titre penché). */
+const tiltOf = (el: Element, root: HTMLElement): number => {
+  let angle = 0;
+  for (let node: Element | null = el; node && node !== root; node = node.parentElement) angle += angleOf(node);
+  return angle;
+};
+
+/**
+ * Chaque mot, à la place, dans la police et avec l'inclinaison où le navigateur l'a mis. La boîte
+ * mesurée d'un mot penché l'englobe : on part de son centre, qui est celui du mot, et on le redresse
+ * de la même inclinaison (partir de son coin décalait les mots des lignes de travers).
+ */
 const drawWords = (ctx: CanvasRenderingContext2D, root: HTMLElement, origin: DOMRect): void => {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   const range = document.createRange();
@@ -66,17 +85,25 @@ const drawWords = (ctx: CanvasRenderingContext2D, root: HTMLElement, origin: DOM
     ctx.letterSpacing = style.letterSpacing === 'normal' ? '0px' : style.letterSpacing;
     ctx.fillStyle = style.color;
     ctx.textBaseline = 'alphabetic';
+    ctx.textAlign = 'center';
+    const tilt = tiltOf(parent, root);
     const text = node.data;
     for (const match of text.matchAll(/\S+/g)) {
       range.setStart(node, match.index);
       range.setEnd(node, match.index + match[0].length);
       const rect = range.getBoundingClientRect();
       if (!rect.width) continue;
-      const ascent = ctx.measureText(match[0]).fontBoundingBoxAscent;
-      ctx.fillText(match[0], rect.left - origin.left, rect.top - origin.top + ascent);
+      const { fontBoundingBoxAscent: ascent, fontBoundingBoxDescent: descent } = ctx.measureText(match[0]);
+      ctx.save();
+      ctx.translate(rect.left + rect.width / 2 - origin.left, rect.top + rect.height / 2 - origin.top);
+      ctx.rotate(tilt);
+      // Ligne de base sous le centre de la boîte du mot (hauteur de la police).
+      ctx.fillText(match[0], 0, (ascent - descent) / 2);
+      ctx.restore();
     }
   }
   ctx.letterSpacing = '0px';
+  ctx.textAlign = 'start';
 };
 
 /**
@@ -87,14 +114,6 @@ const CHECK = { path: new Path2D('M3 11 L8 16 L19 1'), box: 20, width: 2.6 };
 const UNDERLINE = { path: new Path2D('M2 5 Q 50 1 100 4 T 198 3'), width: 200, height: 8, stroke: 1.6, band: 7 };
 const CIRCLE = { path: new Path2D('M8 20 C 4 8 30 2 48 6 C 60 10 58 26 40 29 C 22 32 6 28 8 16'), width: 60, height: 34, stroke: 1.6 };
 const BOX_BORDER = 2;
-
-/** Rotation d'un élément (transform et rotate), en radians. */
-const angleOf = (el: Element): number => {
-  const style = getComputedStyle(el);
-  const matrix = new DOMMatrix(style.transform === 'none' ? undefined : style.transform);
-  const rotate = style.rotate === 'none' ? 0 : parseFloat(style.rotate);
-  return Math.atan2(matrix.b, matrix.a) + (rotate * Math.PI) / 180;
-};
 
 const drawPencil = (ctx: CanvasRenderingContext2D, root: HTMLElement, origin: DOMRect): void => {
   const at = (el: Element): DOMRect => {
@@ -150,14 +169,20 @@ const drawDoodles = (ctx: CanvasRenderingContext2D, root: HTMLElement): void => 
   root.querySelectorAll<HTMLElement>('.doodle').forEach((doodle) => {
     const svg = doodle.querySelector('svg');
     const img = svg && image(svgSource(svg, getComputedStyle(doodle).color));
-    if (!img?.complete || !img.naturalWidth) return;
+    if (!svg || !img?.complete || !img.naturalWidth) return;
     const style = getComputedStyle(doodle);
     const matrix = new DOMMatrix(style.transform === 'none' ? undefined : style.transform);
     ctx.save();
     ctx.globalAlpha = Number(style.opacity);
     ctx.translate(doodle.offsetLeft + doodle.offsetWidth / 2, doodle.offsetTop + doodle.offsetHeight / 2);
     ctx.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
-    ctx.drawImage(img, -doodle.offsetWidth / 2, -doodle.offsetHeight / 2, doodle.offsetWidth, doodle.offsetHeight);
+    // Ajusté dans sa boîte sans être déformé (preserveAspectRatio par défaut du SVG), comme sur la page :
+    // étiré, le croquis d'un verso (boîte plus haute que large) grossissait au départ du tour.
+    const view = svg.viewBox.baseVal;
+    const scale = Math.min(doodle.offsetWidth / view.width, doodle.offsetHeight / view.height);
+    const width = view.width * scale;
+    const height = view.height * scale;
+    ctx.drawImage(img, -width / 2, -height / 2, width, height);
     ctx.restore();
   });
 };
