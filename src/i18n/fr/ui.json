@@ -6,5 +6,15 @@
   "owned": "Possédés",
   "buy": "Acheter",
   "reset": "Effacer la sauvegarde",
-  "build": "Version du"
+  "build": "Version du",
+  "options": "Options",
+  "back": "Retour au jeu",
+  "language": "Langue",
+  "reading": "Lecture",
+  "autoTurn": "Les pages tournent seules",
+  "autoTurnHint": "La production fait tourner les pages du livre. Désactivé, le livre ne bouge qu'au clic, et un nouveau livre reste fermé jusqu'à ce qu'on l'ouvre.",
+  "save": "Sauvegarde",
+  "resetConfirm": "Tout effacer ? La partie recommence depuis le début.",
+  "yes": "Oui, effacer",
+  "no": "Annuler"
 }

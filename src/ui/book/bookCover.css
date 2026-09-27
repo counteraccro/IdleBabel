@@ -1,0 +1,130 @@
+/*
+ * Couverture du livre en deux rabats (voir bookFlap.ts) : chacun a un dedans (cuir intérieur, où
+ * repose la page) et un dehors (plat de la couverture). Livre terminé : le rabat de droite se
+ * referme sur les pages de gauche (.closing). Livre neuf pris fermé : le rabat de gauche, la
+ * couverture de devant, est posé sur les pages de droite et s'ouvre vers la gauche (.new-closed).
+ */
+.book-flap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.flap-left { left: 0; transform-origin: right center; }
+.flap-right { left: 50%; transform-origin: left center; }
+.book-flap > * { backface-visibility: hidden; }
+
+.flap-inside,
+.flap-leather {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  box-shadow:
+    0 -10px 50px rgba(0, 0, 0, 0.7),
+    0 0 90px rgba(242, 198, 121, 0.16);
+}
+.flap-leather { transform: rotateY(180deg); }
+
+/* Liseré de la couverture, sauf côté dos (--edge : côté de la tranche, à gauche ou à droite). */
+.flap-inside::after,
+.flap-leather::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid #1a0b05;
+  box-shadow:
+    inset calc(2px * var(--edge)) 0 0 rgba(184, 145, 78, 0.35),
+    inset 0 2px 0 rgba(184, 145, 78, 0.35),
+    inset 0 -2px 0 rgba(184, 145, 78, 0.35);
+  pointer-events: none;
+}
+
+/* Côté dos à droite : tranche à gauche. */
+.flap-left .flap-inside,
+.flap-right .flap-leather {
+  --edge: 1;
+  border-radius: 6px 0 0 6px;
+  background:
+    radial-gradient(ellipse at 60% 20%, rgba(255, 220, 170, 0.12), transparent 60%),
+    linear-gradient(90deg, var(--leather-dark), var(--leather) 92%, var(--leather-deep));
+}
+/* Côté dos à gauche : tranche à droite. */
+.flap-right .flap-inside,
+.flap-left .flap-leather {
+  --edge: -1;
+  border-radius: 0 6px 6px 0;
+  background:
+    radial-gradient(ellipse at 40% 20%, rgba(255, 220, 170, 0.12), transparent 60%),
+    linear-gradient(90deg, var(--leather-deep), var(--leather) 8%, var(--leather-dark));
+}
+.flap-left .flap-inside::after,
+.flap-right .flap-leather::after { border-right: 0; }
+.flap-right .flap-inside::after,
+.flap-left .flap-leather::after { border-left: 0; }
+
+/*
+ * Pages fixes un peu au-dessus du cuir intérieur : à la même profondeur, le navigateur hésite entre
+ * les deux quand le livre bouge, et des rayures clignotent.
+ */
+.book-cover > .book-page { transform: translateZ(2px); }
+
+/* Page emportée par le rabat qui bouge (copie de la page fixe, cachée pendant ce temps). */
+.flap-page { visibility: hidden; }
+.flap-page.book-page { width: 93%; }
+.flap-left .flap-page.book-page { left: 7%; right: auto; }
+.flap-right .flap-page.book-page { left: auto; right: 7%; }
+.book.closing .flap-right .flap-page,
+.book.new-closed .flap-left .flap-page { visibility: visible; }
+.book.closing .book-cover > .book-right,
+.book.new-closed .book-cover > .book-left { visibility: hidden; }
+.book.closing,
+.book.new-closed { cursor: default; }
+.book.closed { cursor: pointer; }
+
+/*
+ * Bloc des pages du livre fermé (voir bookBlock.ts) : même retrait que les pages ouvertes,
+ * la couverture déborde comme sur un vrai livre. Sous le rabat de droite qui se referme, il est
+ * à gauche ; sous la couverture de devant d'un livre neuf, il est à droite.
+ */
+.page-block {
+  position: absolute;
+  top: 3.5%;
+  bottom: 3.5%;
+  left: 3.5%;
+  width: 46.5%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  visibility: hidden;
+}
+.book.closing .page-block,
+.book.new-closed .page-block { visibility: visible; }
+.book.new-closed .page-block { left: 50%; }
+.block-edge {
+  position: absolute;
+  background:
+    repeating-linear-gradient(var(--edge-direction, 0deg), rgba(120, 95, 60, 0.35) 0 1px, transparent 1px 3px),
+    linear-gradient(var(--edge-direction, 0deg), #d9c69d, #efe2c4 50%, #cbb68a);
+}
+/* Tranches du haut et du bas : elles se dressent vers le lecteur depuis le bord des pages. */
+.block-top,
+.block-bottom {
+  left: 0;
+  right: 0;
+  height: var(--thickness);
+}
+.block-top { top: 0; transform-origin: top; transform: rotateX(90deg); }
+.block-bottom { bottom: 0; transform-origin: bottom; transform: rotateX(-90deg); }
+/* Tranche de devant, opposée au dos. */
+.block-fore {
+  --edge-direction: 90deg;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--thickness);
+  transform-origin: left;
+  transform: rotateY(-90deg);
+}
+.book.new-closed .block-fore { left: auto; right: 0; transform-origin: right; transform: rotateY(90deg); }

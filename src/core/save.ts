@@ -9,7 +9,13 @@ export const loadGame = (defaultLocale: Locale): GameState => {
     if (raw) {
       const saved = JSON.parse(raw) as GameState;
       if (saved.version === SAVE_VERSION) {
-        return { ...createInitialState(defaultLocale), ...saved, totalPagesRead: saved.totalPagesRead ?? saved.pages };
+        const initial = createInitialState(defaultLocale);
+        return {
+          ...initial,
+          ...saved,
+          settings: { ...initial.settings, ...saved.settings },
+          totalPagesRead: saved.totalPagesRead ?? saved.pages,
+        };
       }
     }
   } catch {

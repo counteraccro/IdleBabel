@@ -6,5 +6,15 @@
   "owned": "Owned",
   "buy": "Buy",
   "reset": "Erase save",
-  "build": "Build of"
+  "build": "Build of",
+  "options": "Options",
+  "back": "Back to the game",
+  "language": "Language",
+  "reading": "Reading",
+  "autoTurn": "Pages turn by themselves",
+  "autoTurnHint": "Production turns the pages of the book. When off, the book only moves when clicked, and a new book stays closed until you open it.",
+  "save": "Save",
+  "resetConfirm": "Erase everything? The game starts over from the beginning.",
+  "yes": "Yes, erase",
+  "no": "Cancel"
 }

@@ -18,8 +18,10 @@ export const createReading = (state: GameState): Component => {
     nextFragment: rollFragment,
     progress: () => bookProgress(state),
     binding: () => bindingFor(state.booksFinished),
+    // Sans pages qui tournent seules, le livre suivant attend fermé qu'on l'ouvre.
+    stayClosed: () => !state.settings.autoTurn,
   });
   root.append(book.root);
-  startAutoTurn(book, () => pagesPerSecond(state));
+  startAutoTurn(book, () => pagesPerSecond(state), () => state.settings.autoTurn);
   return { root, update: () => {} };
 };

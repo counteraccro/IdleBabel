@@ -4,6 +4,14 @@ import type { Locale } from '../i18n';
 
 export const SAVE_VERSION = 1;
 
+/** Réglages du joueur : conservés quand on efface la sauvegarde. */
+export interface Settings {
+  /** La production fait tourner les pages du livre toute seule. */
+  autoTurn: boolean;
+}
+
+export const DEFAULT_SETTINGS: Settings = { autoTurn: true };
+
 export interface GameState {
   version: number;
   /** Pages disponibles, que l'on dépense. */
@@ -16,6 +24,7 @@ export interface GameState {
   /** Livres lus jusqu'au bout. */
   booksFinished: number;
   locale: Locale;
+  settings: Settings;
   history: HistoryEntry[];
   lastTick: number;
 }
@@ -28,6 +37,7 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   bookPage: 0,
   booksFinished: 0,
   locale,
+  settings: { ...DEFAULT_SETTINGS },
   history: [{ type: 'gameStarted', at: now }],
   lastTick: now,
 });

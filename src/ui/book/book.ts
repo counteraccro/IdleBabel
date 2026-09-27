@@ -25,6 +25,8 @@ export interface BookHandlers {
   progress: () => number;
   /** Reliure du livre en main. */
   binding: () => Binding;
+  /** Le livre suivant attend-il fermé qu'on l'ouvre d'un clic ? */
+  stayClosed: () => boolean;
 }
 
 /** Le livre, et la page tournée par la production (non comptée : ces pages le sont déjà). */
@@ -47,7 +49,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   const left = el('span', 'book-page book-left');
   const right = el('span', 'book-page book-right');
   const canvas = el('canvas', 'leaf-canvas');
-  cover.append(el('span', 'cover-left'), left, right, canvas);
+  cover.append(left, right, canvas);
   book.append(cover);
 
   const newLines = (fragment?: string): PageLines => layoutPage(createPage(PAGE_LENGTH, fragment));
@@ -64,11 +66,25 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   };
   openNewBook();
 
-  const closing = createBookClosing(book, cover, right);
+  const closing = createBookClosing(book, cover, { left, right });
+  // Fermeture ou ouverture en cours : aucune page ne tourne. Livre fermé en main : un clic l'ouvre.
   let isClosing = false;
+  let isClosed = false;
   const closeBook = (): void => {
     isClosing = true;
-    void closing.play(openNewBook).finally(() => {
+    const stayClosed = handlers.stayClosed();
+    void closing.play(openNewBook, stayClosed).finally(() => {
+      isClosing = false;
+      isClosed = stayClosed;
+      book.classList.toggle('closed', isClosed);
+    });
+  };
+  const openBook = (): void => {
+    if (!isClosed || isClosing) return;
+    isClosed = false;
+    isClosing = true;
+    book.classList.remove('closed');
+    void closing.open().finally(() => {
       isClosing = false;
     });
   };
@@ -145,13 +161,15 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
 
   attachGrab(book, {
     turn: () => {
-      if (isClosing) return;
+      if (isClosed) openBook();
+      if (isClosed || isClosing) return;
       lift();
       show(0);
       animateTo(1, renderer ? TURN_MS : 0, finish);
     },
     grab: () => {
-      if (isClosing) return;
+      if (isClosed) openBook();
+      if (isClosed || isClosing) return;
       lift();
       animateTo(HELD_PROGRESS, 120, () => {});
     },
@@ -169,6 +187,8 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   });
 
   const autoTurn = (duration: number): boolean => {
+    // Pages qui tournent seules réactivées pendant que le livre est fermé : on l'ouvre d'abord.
+    if (isClosed) openBook();
     if (turning || isClosing) return false;
     lift(false);
     show(0);
