@@ -3,6 +3,7 @@ import { beyond, clarity } from '../systems/perception';
 import { forceFragments } from '../systems/fragments';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
 import { DEBUG_BOOK_EVENT } from './events';
+import { createFpsMeter } from '../ui/fpsMeter';
 import type { GameState } from '../core/state';
 
 /**
@@ -95,6 +96,7 @@ export const mountDebugPanel = (state: GameState): void => {
   const readout = el('small');
   panel.append(
     el('strong', undefined, 'Débogage'),
+    createFpsMeter('debug-fps', true),
     stockLabel,
     totalLabel,
     presets,

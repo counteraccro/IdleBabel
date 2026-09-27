@@ -103,5 +103,9 @@ footer {
   font-family: ui-monospace, Menlo, monospace; font-size: 12px;
 }
 .debug input { width: 130px; font: inherit; background: #1a140f; color: var(--ink); border: 1px solid var(--border); padding: 4px; }
+.fps { opacity: 0.7; font-variant-numeric: tabular-nums; }
+.fps.slow { color: #e08a6a; opacity: 1; }
+.debug-fps { color: #9fd49a; }
+.debug-fps.slow { color: #e08a6a; }
 .debug-presets { display: flex; flex-wrap: wrap; gap: 4px; }
 .debug-presets button { padding: 2px 6px; font-size: 12px; }

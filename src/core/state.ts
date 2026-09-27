@@ -10,9 +10,11 @@ export interface Settings {
   autoTurn: boolean;
   /** Le livre bouge doucement, tenu à bout de bras. */
   bookSway: boolean;
+  /** Images par seconde affichées discrètement en bas à gauche. */
+  showFps: boolean;
 }
 
-export const DEFAULT_SETTINGS: Settings = { autoTurn: true, bookSway: true };
+export const DEFAULT_SETTINGS: Settings = { autoTurn: true, bookSway: true, showFps: false };
 
 export interface GameState {
   version: number;

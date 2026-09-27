@@ -18,5 +18,9 @@
   "yes": "Oui, effacer",
   "no": "Annuler",
   "bookSway": "Le livre bouge dans les mains",
-  "bookSwayHint": "Le livre oscille doucement, comme tenu à bout de bras. Désactivé, il reste immobile."
+  "bookSwayHint": "Le livre oscille doucement, comme tenu à bout de bras. Désactivé, il reste immobile.",
+  "display": "Affichage",
+  "showFps": "Afficher les images par seconde",
+  "showFpsHint": "Un petit compteur en bas à gauche, pour vérifier que le jeu reste fluide sur votre appareil.",
+  "fps": "FPS"
 }

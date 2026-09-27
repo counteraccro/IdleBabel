@@ -28,7 +28,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     createCounter(state),
     createToolsPanel(state),
     createReading(state),
-    createFooter(),
+    createFooter(state.settings),
   ];
 
   const options = (): Component[] => [

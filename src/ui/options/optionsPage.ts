@@ -53,6 +53,13 @@ export const createOptionsPage = (state: GameState, handlers: OptionsHandlers): 
         handlers.onSettings();
       }),
     ),
+    createSection(
+      t('ui.display'),
+      createToggle(t('ui.showFps'), t('ui.showFpsHint'), state.settings.showFps, (value) => {
+        state.settings.showFps = value;
+        handlers.onSettings();
+      }),
+    ),
     createSection(t('ui.save'), createResetButton(handlers.onReset)),
   );
   return { root, update: () => {} };
