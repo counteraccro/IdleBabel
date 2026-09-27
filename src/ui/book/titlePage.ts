@@ -95,8 +95,8 @@ export const drawTitlePageTexture = (canvas: HTMLCanvasElement, design: CoverDes
     if (item.kind === 'text') {
       context.font = font(item, `${item.size}px`);
       context.letterSpacing = `${item.spacing}px`;
-      // .title-text : line-height 1.
-      context.fillText(item.text, center, cssBaseline(context, item.y, item.size));
+      // Le raccourci `font` de la page HTML remet line-height à normal.
+      context.fillText(item.text, center, cssBaseline(context, item.y));
     } else if (item.kind === 'rule') {
       context.fillRect(center - item.width / 2, item.y, item.width, item.thickness);
     } else if (item.kind === 'lozenge') {

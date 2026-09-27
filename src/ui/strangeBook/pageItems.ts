@@ -90,8 +90,8 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
       context.letterSpacing = `${item.spacing ?? 0}px`;
       context.fillStyle = item.faded ? FADED : INK;
       context.textAlign = item.align;
-      // .sb-text : line-height 1.
-      const baseline = cssBaseline(context, item.y, item.size);
+      // placeText règle la police par le raccourci `font`, qui remet line-height à normal.
+      const baseline = cssBaseline(context, item.y);
       context.fillText(item.text, item.align === 'center' ? PAGE_TEXTURE.width / 2 : item.x, baseline);
     } else if (item.kind === 'dots') {
       context.fillStyle = FADED;

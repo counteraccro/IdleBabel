@@ -57,14 +57,16 @@ const fontBox = (context: CanvasRenderingContext2D): { ascent: number; descent: 
 };
 
 /**
- * Ligne de base d'un texte placé comme en CSS : la police (ascendante + descendante) est centrée dans
- * une ligne de hauteur `lineHeight` qui commence à `top`. À dessiner avec textBaseline = 'alphabetic'.
- * (textBaseline = 'top' cale le haut du carré de la lettre, un peu plus haut : le texte sautait
- * de quelques pixels quand la page HTML laissait place à sa photo au début d'un tour.)
+ * Ligne de base d'un texte placé comme en CSS, dans une ligne qui commence à `top` : avec une hauteur
+ * de ligne `lineHeight`, la police (ascendante + descendante) y est centrée ; sans (line-height:
+ * normal), la ligne a la hauteur de la police et la ligne de base est à une ascendante du haut.
+ * À dessiner avec textBaseline = 'alphabetic'. (textBaseline = 'top' cale le haut du carré de la
+ * lettre, plus haut : le texte sautait de quelques pixels quand la page HTML laissait place à sa
+ * photo au début d'un tour.)
  */
-export const cssBaseline = (context: CanvasRenderingContext2D, top: number, lineHeight: number): number => {
+export const cssBaseline = (context: CanvasRenderingContext2D, top: number, lineHeight?: number): number => {
   const { ascent, descent } = fontBox(context);
-  return top + (lineHeight - (ascent + descent)) / 2 + ascent;
+  return top + ((lineHeight ?? ascent + descent) - (ascent + descent)) / 2 + ascent;
 };
 
 /**
