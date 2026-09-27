@@ -1,10 +1,10 @@
 import { el } from '../dom';
-import { LEAF_GEOMETRY, createLeafRenderer } from '../book/leafRenderer';
+import { LEAF_GEOMETRY, createLeafRenderer, type LeafGeometry } from '../book/leafRenderer';
 import { easeInOut } from '../book/book';
 
-/** Place de la page de droite dans le canevas (voir LEAF_GEOMETRY), en pourcentage de la double page. */
-const box = (pageWidth: number, spine: number): Record<'left' | 'top' | 'width' | 'height', string> => {
-  const { pageWidth: unitWidth, pageHalfHeight, view } = LEAF_GEOMETRY;
+/** Place de la page de droite dans le canevas (voir LeafGeometry), en pourcentage de la double page. */
+const box = (geometry: LeafGeometry, pageWidth: number, spine: number): Record<'left' | 'top' | 'width' | 'height', string> => {
+  const { pageWidth: unitWidth, pageHalfHeight, view } = geometry;
   const pct = (value: number): string => `${value.toFixed(3)}%`;
   return {
     left: pct(spine - (view.x / unitWidth) * pageWidth),
@@ -16,8 +16,8 @@ const box = (pageWidth: number, spine: number): Record<'left' | 'top' | 'width' 
 
 export interface LeafTurn {
   canvas: HTMLCanvasElement;
-  /** Double page (dos au milieu) ou page seule (dos à gauche). */
-  fit: (single: boolean) => void;
+  /** Double page (dos au milieu) ou page seule (dos à gauche), aux proportions de ces pages. */
+  fit: (single: boolean, geometry?: LeafGeometry) => void;
   /** Montre la feuille, recto et verso dessinés par `paint`, à l'avancement donné (0 : à droite, 1 : à gauche). */
   begin: (paint: (front: HTMLCanvasElement, back: HTMLCanvasElement) => void, progress: number) => void;
   /** Page tenue : la feuille suit le pointeur (annule tout mouvement en cours). */
@@ -28,7 +28,7 @@ export interface LeafTurn {
   end: () => void;
 }
 
-/** La feuille du livre en main (même rendu WebGL), posée sur le grand livre. */
+/** La feuille du livre en main (même rendu WebGL), posée sur le grand livre ou le carnet. */
 export const createLeafTurn = (): LeafTurn => {
   const canvas = el('canvas', 'sb-leaf');
   const renderer = createLeafRenderer(canvas);
@@ -51,8 +51,9 @@ export const createLeafTurn = (): LeafTurn => {
 
   return {
     canvas,
-    fit: (single) => {
-      Object.assign(canvas.style, single ? box(100, 0) : box(50, 50));
+    fit: (single, geometry = LEAF_GEOMETRY) => {
+      renderer?.setGeometry(geometry);
+      Object.assign(canvas.style, single ? box(geometry, 100, 0) : box(geometry, 50, 50));
     },
     begin: (paint, value) => {
       if (!renderer) return;

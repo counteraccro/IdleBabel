@@ -4,21 +4,22 @@
  * d'un rouleau invisible puis repasse à l'envers au-dessus. Le coin du haut part en premier.
  *
  * Repère : l'unité est la hauteur de la couverture ; origine au centre, dos du livre en x = 0.
- * La page de droite va de x = 0 à 0,744 et de y = -0,465 à 0,465. Le canevas déborde de la
- * couverture (voir .leaf-canvas) pour que la page puisse s'élever vers le lecteur.
+ * Livre en main : la page de droite va de x = 0 à 0,744 et de y = -0,465 à 0,465 (LEAF_GEOMETRY) ;
+ * d'autres pages (carnet) donnent leurs propres proportions avec setGeometry. Le canevas déborde
+ * de la page (voir .leaf-canvas) pour qu'elle puisse s'élever vers le lecteur.
  */
 const VERTEX = `#version 300 es
 in vec2 aUV;
 uniform float uFold;
 uniform float uRadius;
 uniform float uAngle;
+uniform float PAGE_WIDTH;
+uniform float PAGE_HALF_HEIGHT;
+uniform vec2 VIEW;
 out vec2 vUV;
 out vec3 vNormal;
 
-const float PAGE_WIDTH = 0.744;
-const float PAGE_HALF_HEIGHT = 0.465;
 const float EYE = 3.0;
-const vec2 VIEW = vec2(0.96, 0.8);
 const float PI = 3.14159265;
 
 void main() {
@@ -61,15 +62,18 @@ out vec4 outColor;
 void main() {
   vec3 light = normalize(vec3(-0.35, 0.45, 1.0));
   vec3 normal = normalize(vNormal);
-  vec3 color;
+  vec4 texel;
   float facing;
   if (gl_FrontFacing) {
-    color = texture(uFront, vUV).rgb;
+    texel = texture(uFront, vUV);
     facing = dot(normal, light);
   } else {
-    color = texture(uBack, vec2(1.0 - vUV.x, vUV.y)).rgb;
+    texel = texture(uBack, vec2(1.0 - vUV.x, vUV.y));
     facing = dot(-normal, light);
   }
+  // Bords transparents de la texture (papier déchiré) : rien n'est dessiné.
+  if (texel.a < 0.5) discard;
+  vec3 color = texel.rgb;
   float diffuse = max(facing, 0.0);
   // À plat (normale face au lecteur), la feuille a exactement la teinte des pages fixes ;
   // elle ne s'assombrit qu'en se courbant.
@@ -78,18 +82,35 @@ void main() {
   outColor = vec4(color * shade + sheen, 1.0);
 }`;
 
-/** Mêmes dimensions que dans le shader : page de droite, et étendue du canevas autour du dos. */
-export const LEAF_GEOMETRY = { pageWidth: 0.744, pageHalfHeight: 0.465, view: { x: 0.96, y: 0.8 } } as const;
+/** Page de droite, et étendue du canevas autour du dos (voir le repère plus haut). */
+export interface LeafGeometry {
+  pageWidth: number;
+  pageHalfHeight: number;
+  view: { x: number; y: number };
+}
+
+/** Les pages du livre en main. */
+export const LEAF_GEOMETRY: LeafGeometry = { pageWidth: 0.744, pageHalfHeight: 0.465, view: { x: 0.96, y: 0.8 } };
+
+/** Géométrie d'une page de proportions largeur / hauteur, avec la même marge de canevas que le livre en main. */
+export const leafGeometryFor = (aspect: number): LeafGeometry => {
+  const pageWidth = 2 * LEAF_GEOMETRY.pageHalfHeight * aspect;
+  return {
+    pageWidth,
+    pageHalfHeight: LEAF_GEOMETRY.pageHalfHeight,
+    view: { x: pageWidth + (LEAF_GEOMETRY.view.x - LEAF_GEOMETRY.pageWidth), y: LEAF_GEOMETRY.view.y },
+  };
+};
 
 const COLUMNS = 64;
 const ROWS = 40;
-const PAGE_WIDTH = LEAF_GEOMETRY.pageWidth;
-
 export interface LeafRenderer {
   /** Recto (page qui part) et verso (future page de gauche). */
   setPages: (front: TexImageSource, back: TexImageSource) => void;
   /** Dessine la feuille à un avancement de 0 (à plat à droite) à 1 (à plat à gauche). */
   draw: (progress: number) => void;
+  /** Proportions de la page (par défaut celles du livre en main). */
+  setGeometry: (geometry: LeafGeometry) => void;
 }
 
 const compile = (gl: WebGL2RenderingContext, type: number, source: string): WebGLShader => {
@@ -120,10 +141,10 @@ const createGrid = (): { uv: Float32Array; indices: Uint16Array } => {
  * Forme de la feuille selon l'avancement (0 : à plat à droite, 1 : à plat à gauche) :
  * position du pli, rayon du rouleau (grand au milieu, nul aux extrémités) et inclinaison du pli.
  */
-export const leafShape = (progress: number): { fold: number; radius: number; angle: number } => {
+export const leafShape = (progress: number, pageWidth = LEAF_GEOMETRY.pageWidth): { fold: number; radius: number; angle: number } => {
   const lift = Math.sin(Math.PI * progress);
   return {
-    fold: (PAGE_WIDTH + 0.1) * (1 - progress),
+    fold: (pageWidth + 0.1) * (1 - progress),
     radius: 0.17 * lift ** 0.75,
     angle: -0.38 * lift,
   };
@@ -164,6 +185,14 @@ const setUpLeafRenderer = (canvas: HTMLCanvasElement): LeafRenderer | null => {
   gl.uniform1i(uniform('uBack'), 1);
   gl.enable(gl.DEPTH_TEST);
   gl.frontFace(gl.CW);
+  let pageWidth = LEAF_GEOMETRY.pageWidth;
+  const setGeometry = (geometry: LeafGeometry): void => {
+    pageWidth = geometry.pageWidth;
+    gl.uniform1f(uniform('PAGE_WIDTH'), geometry.pageWidth);
+    gl.uniform1f(uniform('PAGE_HALF_HEIGHT'), geometry.pageHalfHeight);
+    gl.uniform2f(uniform('VIEW'), geometry.view.x, geometry.view.y);
+  };
+  setGeometry(LEAF_GEOMETRY);
 
   // Feuille vue en biais quand elle se courbe : sans filtrage anisotrope, la texture devient floue.
   const anisotropy = gl.getExtension('EXT_texture_filter_anisotropic');
@@ -200,7 +229,7 @@ const setUpLeafRenderer = (canvas: HTMLCanvasElement): LeafRenderer | null => {
       upload(1, back);
     },
     draw: (progress) => {
-      const shape = leafShape(progress);
+      const shape = leafShape(progress, pageWidth);
       gl.uniform1f(uniform('uFold'), shape.fold);
       gl.uniform1f(uniform('uRadius'), shape.radius);
       gl.uniform1f(uniform('uAngle'), shape.angle);
@@ -208,5 +237,6 @@ const setUpLeafRenderer = (canvas: HTMLCanvasElement): LeafRenderer | null => {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.drawElements(gl.TRIANGLES, grid.indices.length, gl.UNSIGNED_SHORT, 0);
     },
+    setGeometry,
   };
 };

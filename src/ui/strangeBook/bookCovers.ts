@@ -66,8 +66,8 @@ export const createStrangeCovers = (book: HTMLElement, single: () => boolean): S
     clear();
     carried[side].replaceChildren(...(page && !single() ? [page.cloneNode(true)] : []));
     book.classList.add(`moving-${side}`);
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const options: KeyframeAnimationOptions = { duration: reduced ? 1 : MOVE_MS, easing: EASING, fill: 'forwards' };
+    // Toujours animé, comme les pages : ouvrir et fermer le livre est un geste, pas une décoration.
+    const options: KeyframeAnimationOptions = { duration: MOVE_MS, easing: EASING, fill: 'forwards' };
     const flat = 'rotateY(0deg)';
     const [flapFrom, flapTo] = closing ? [flat, angle(side)] : [angle(side), flat];
     const [bookFrom, bookTo] = closing ? ['none', shift(side)] : [shift(side), 'none'];

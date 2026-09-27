@@ -1,33 +1,291 @@
-/* Page des options : design provisoire, à retravailler. */
+/*
+ * Page des options : le carnet de croquis du chercheur (voir sketchbook.ts et optionsPage.ts).
+ * Posé à l'horizontale : couverture de carton, spirale à gauche, papier crème à petits carreaux,
+ * écriture à la main.
+ */
+.options-back { align-self: flex-start; }
+
 .options-page {
   grid-column: 1 / -1;
   grid-row: 1 / -1;
-  justify-self: center;
-  align-self: start;
-  width: min(640px, 100%);
-  max-height: 100%;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 24px 28px;
-  background: rgba(10, 8, 6, 0.86);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  backdrop-filter: blur(6px);
+  align-items: center;
+  gap: 12px;
+  min-height: 0;
 }
-.options-page h1 { font-size: 1.6rem; }
-.options-back { align-self: flex-start; }
-.options-section { display: flex; flex-direction: column; gap: 10px; }
-.options-section + .options-section { border-top: 1px solid var(--border); padding-top: 16px; }
-.options-section h2 { margin: 0; font-size: 1rem; font-weight: normal; letter-spacing: 0.06em; color: var(--accent); }
+
+.sketchbook {
+  --graphite: #34302b;
+  --pencil: #6d665c;
+  --red-pencil: #a8372c;
+  --kraft: #8d6c47;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  animation: sketchbook-rise 0.6s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+/* Le carnet sort de la poche : il monte en se redressant. */
+@keyframes sketchbook-rise {
+  from { transform: translateY(45vh) rotate(5deg); opacity: 0; }
+}
+
+/* Ouvert : deux moitiés de part et d'autre de la spirale. Fermé : recentré sur l'une d'elles. */
+.sketchbook-body {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: min(920px, calc(100vw - 48px));
+  height: min(400px, calc(100vh - 170px));
+  perspective: 2200px;
+  rotate: -1deg;
+}
+.sketchbook-body.single {
+  grid-template-columns: 1fr;
+  width: min(460px, calc(100vw - 32px));
+  height: min(470px, calc(100vh - 170px));
+}
+.sketchbook-body.single .sketchbook-left { display: none; }
+
+/* Chaque moitié : le carton de derrière, qui dépasse un peu des pages (l'épaisseur du carnet). */
+.sketchbook-half {
+  position: relative;
+  background: linear-gradient(135deg, #5b4430, #3a2a1c);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+.sketchbook-left { border-radius: 4px 0 0 4px; }
+.sketchbook-right { border-radius: 0 4px 4px 0; }
+.sketchbook-body.single .sketchbook-right { border-radius: 4px; }
+.sketchbook-half.empty { visibility: hidden; }
+
+/* Feuille qui pivote autour de la spirale : recto à droite, verso qui se pose à gauche. */
+.sketchbook-leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 50%;
+  z-index: 3;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+.sketchbook-body.single .sketchbook-leaf { left: 0; width: 100%; }
+.leaf-side { position: absolute; inset: 0; backface-visibility: hidden; }
+.leaf-back { transform: rotateY(180deg); }
+
+/* La spirale, au milieu (ou sur le bord de la moitié visible quand le carnet est fermé). */
+.sketchbook-rings {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  bottom: 18px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.sketchbook-body.single .sketchbook-rings { left: 0; }
+/* Un anneau : le fil de fer qui passe par-dessus le dos, et un trou de chaque côté. */
+.sketchbook-rings span {
+  position: relative;
+  width: 30px;
+  height: 9px;
+  /* Fil de fer terni, piqué de rouille. */
+  border: 2px solid #8b8a84;
+  border-top-color: #9a7a5c;
+  border-radius: 5px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+.sketchbook-rings span::before,
+.sketchbook-rings span::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: #1c140d;
+}
+.sketchbook-rings span::before { left: 3px; }
+.sketchbook-rings span::after { right: 3px; }
+
+/* Scène hors écran où l'on photographie une page avant qu'elle ne tourne (voir pageSnapshot.ts). */
+.sketchbook-stage { position: absolute; left: -10000px; top: 0; visibility: hidden; pointer-events: none; }
+/* La feuille WebGL passe sous la spirale : les anneaux la tiennent. */
+.sketchbook-body > .sb-leaf { z-index: 3; }
+
+/* Coin corné en bas à droite de la page : on le prend pour tourner. */
+.sketchbook-corner {
+  position: absolute;
+  right: 6px;
+  bottom: 7px;
+  z-index: 5;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  backdrop-filter: none;
+  /* Le dos du papier, aussi jauni et sali que le reste. */
+  background: linear-gradient(315deg, transparent 50%, #b9a57a 50%, #d6c69c 80%, #cbb88c);
+  box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.25);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  transform: rotate(180deg);
+  transition: width 0.15s, height 0.15s;
+}
+.sketchbook-corner:hover,
+.sketchbook-corner:focus-visible { width: 38px; height: 38px; outline: none; }
+.sketchbook-corner[hidden] { display: none; }
+.sketchbook.closed .sketchbook-body { cursor: pointer; }
+
+/* Carton kraft : couverture et dos. */
+.sketchbook-board {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  /* Le grain et la crasse viennent de boardWear (wear.ts) : ici, seulement la teinte et un léger relief. */
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255, 230, 190, 0.1), transparent 60%),
+    var(--kraft);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25), inset 0 0 40px rgba(40, 25, 10, 0.35);
+}
+/* Étiquette de papier collée sur la couverture, écrite à la main. */
+.sketchbook-label {
+  position: absolute;
+  top: 34%;
+  left: 50%;
+  padding: 14px 34px;
+  transform: translateX(-50%) rotate(-2deg);
+  font-family: 'Nothing You Could Do', cursive;
+  font-size: 2rem;
+  color: var(--graphite);
+  background: radial-gradient(ellipse at 70% 80%, rgba(120, 85, 40, 0.25), transparent 60%), #e4d7b5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35), inset 0 0 12px rgba(110, 75, 35, 0.3);
+}
+.sketchbook-label::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 70px;
+  height: 18px;
+  transform: translateX(-50%) rotate(3deg);
+  background: rgba(215, 190, 120, 0.55);
+}
+.sketchbook-inside { background-color: #7d5e3d; }
+.sketchbook-board-back .doodle { color: #3b2a19; opacity: 0.45; right: 26px; bottom: 26px; top: auto; width: 60px; height: 60px; }
+
+/* Une page (à droite) et le verso d'une page tournée (à gauche) : papier à petits carreaux. */
+.sketchbook-page,
+.sketchbook-verso {
+  position: absolute;
+  inset: 0 6px 7px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  padding: 26px 34px 30px 36px;
+  color: var(--graphite);
+  font-family: 'Nothing You Could Do', cursive;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  text-shadow: none;
+  /* Papier jauni, plus sombre et encrassé vers les bords ; carreaux à moitié effacés. */
+  background:
+    radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(120, 85, 40, 0.28) 100%),
+    radial-gradient(ellipse at 85% 90%, rgba(150, 105, 50, 0.2), transparent 45%),
+    radial-gradient(ellipse at 15% 10%, rgba(160, 120, 60, 0.14), transparent 40%),
+    repeating-linear-gradient(0deg, rgba(90, 110, 150, 0.07) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(90deg, rgba(90, 110, 150, 0.07) 0 1px, transparent 1px 24px),
+    #e8dcbd;
+  box-shadow: inset 0 0 24px rgba(100, 70, 30, 0.3);
+  border-radius: 2px;
+}
+.wear { position: absolute; inset: 0; pointer-events: none; background-size: 100% 100%; border-radius: inherit; }
+.sketchbook-verso { inset: 0 0 7px 6px; }
+.sketchbook-folio { margin-top: auto; align-self: center; color: var(--pencil); font-size: 1.1rem; }
+.sketchbook-page h1 { font-size: 2rem; letter-spacing: 0.02em; transform: rotate(-1.5deg); }
+.sketchbook-page button {
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  border-radius: 0;
+  backdrop-filter: none;
+  cursor: pointer;
+}
+.sketchbook-page button:hover,
+.sketchbook-page button:focus-visible { text-decoration: underline wavy; text-underline-offset: 4px; outline: none; }
+
+/* Titres de section soulignés d'un trait de crayon. */
+.options-section { display: flex; flex-direction: column; gap: 8px; }
+.options-section h2 {
+  align-self: flex-start;
+  margin: 0;
+  padding: 0 6px 4px 0;
+  font-size: 1.4rem;
+  font-weight: normal;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5 Q 50 1 100 4 T 198 3' fill='none' stroke='%2334302b' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") bottom / 100% 7px no-repeat;
+}
 
 .option-toggle { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
-.option-toggle input { margin-top: 4px; accent-color: var(--accent); }
-.option-toggle > span { display: flex; flex-direction: column; gap: 4px; }
-.option-hint { color: var(--muted); font-style: italic; }
+/* Écrit à main levée : les lignes ne sont jamais tout à fait droites. */
+.option-toggle:nth-child(odd) { rotate: -0.6deg; }
+.option-toggle:nth-child(even) { rotate: 0.5deg; }
+.option-toggle > span { display: flex; flex-direction: column; }
+.option-label { font-size: 1.2rem; }
+.option-hint { color: var(--pencil); font-size: 0.95rem; line-height: 1.35; }
 
-.reset-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.reset-confirm p { flex-basis: 100%; margin: 0; color: var(--muted); }
-.danger { border-color: #b0503c; color: #f0a890; }
+/* Case dessinée au crayon, cochée à la main. */
+.option-toggle input {
+  appearance: none;
+  flex-shrink: 0;
+  width: 20px;
+  height: 19px;
+  margin: 6px 0 0;
+  border: 2px solid var(--graphite);
+  border-radius: 3px 6px 4px 7px;
+  transform: rotate(-3deg);
+  cursor: pointer;
+}
+.option-toggle input:checked {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 11 L8 16 L19 1' fill='none' stroke='%2334302b' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 125% no-repeat;
+}
+.option-toggle input:focus-visible { outline: 1px dashed var(--pencil); outline-offset: 3px; }
+
+/* Langue choisie : entourée au crayon. */
+.sketchbook-page .langs { gap: 18px; }
+.sketchbook-page .langs button { padding: 2px 10px; font-size: 1.25rem; }
+.sketchbook-page .langs .active {
+  color: inherit;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 34' preserveAspectRatio='none'%3E%3Cpath d='M8 20 C 4 8 30 2 48 6 C 60 10 58 26 40 29 C 22 32 6 28 8 16' fill='none' stroke='%2334302b' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
+/* Effacer : au crayon rouge. */
+.reset-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; }
+.reset-confirm p { flex-basis: 100%; margin: 0; }
 .reset-confirm[hidden] { display: none; }
+.sketchbook-page .reset > button,
+.sketchbook-page .danger { color: var(--red-pencil); }
+
+/* Croquis dans les marges. */
+.doodle { position: absolute; color: var(--pencil); opacity: 0.55; pointer-events: none; }
+.doodle svg { display: block; width: 100%; height: 100%; }
+/* Sur un verso, le croquis prend la page. */
+.sketchbook-verso .doodle { top: 50%; left: 50%; width: 46%; height: 60%; transform: translate(-50%, -50%) rotate(-4deg); }
+
+.sketchbook-nav { display: flex; gap: 12px; }
+.sketchbook-turn { font-size: 1.4rem; line-height: 1; padding: 4px 18px; }
+
+@media (max-width: 760px) {
+  .sketchbook-page { padding: 26px 20px 26px 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sketchbook { animation: none; }
+}
