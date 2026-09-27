@@ -1,6 +1,7 @@
 import './coverModern.css';
 import { el } from '../dom';
 import { createWear } from './coverWear';
+import { coverTitle, hasMeaningfulTitle } from '../../systems/coverTitle';
 import { shelfMarkText, type CoverDesign } from '../../systems/coverDesign';
 
 /**
@@ -27,7 +28,9 @@ const surface = (design: CoverDesign, className: string): HTMLElement => {
 export const modernFront = (design: CoverDesign): HTMLElement => {
   const root = surface(design, LAYOUTS[design.layout]);
   const title = el('span', 'modern-title');
-  for (const word of design.title) title.append(el('span', undefined, capitalize(word)));
+  // Un vrai titre garde sa casse ; les mots de Babel prennent une majuscule.
+  const casing = hasMeaningfulTitle(design) ? (line: string) => line : capitalize;
+  for (const word of coverTitle(design)) title.append(el('span', undefined, casing(word)));
   const author = el('span', 'modern-author', design.author.map(capitalize).join(' '));
   root.prepend(el('span', 'modern-graphic'));
   root.append(author, title, publisherMark());

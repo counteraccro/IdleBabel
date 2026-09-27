@@ -1,6 +1,7 @@
 import './coverArt.css';
 import { el } from '../dom';
 import { shelfMarkText, type CoverDesign } from '../../systems/coverDesign';
+import { coverTitle } from '../../systems/coverTitle';
 import { createWear } from './coverWear';
 import { modernBack, modernFront } from './coverModern';
 
@@ -35,7 +36,7 @@ const ornament = (index: number): HTMLElement => {
 const front = (design: CoverDesign): HTMLElement => {
   const root = el('span', 'cover-art');
   const title = el('span', 'cover-title');
-  for (const word of design.title) title.append(el('span', undefined, word));
+  for (const word of coverTitle(design)) title.append(el('span', undefined, word));
   if (design.frame > 0) root.append(el('span', `cover-frame frame-${design.frame}`));
   root.append(title, ornament(design.ornament), createWear(design));
   return root;

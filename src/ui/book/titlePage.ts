@@ -3,6 +3,7 @@ import { el } from '../dom';
 import { PAGE_TEXTURE } from './pageLayout';
 import { preparePageTexture, type Paper } from './pageRender';
 import { shelfMarkText, type CoverDesign } from '../../systems/coverDesign';
+import { coverTitle, hasMeaningfulTitle } from '../../systems/coverTitle';
 
 /**
  * Page de titre : la première page de droite d'un livre. Une seule mise en page (repère de la
@@ -22,7 +23,7 @@ const MODERN_INK = '#1d1d1b';
 const oldLayout = (design: CoverDesign): Item[] => {
   const items: Item[] = [];
   let y = 220;
-  for (const word of design.title) {
+  for (const word of coverTitle(design)) {
     items.push({ kind: 'text', text: word.toUpperCase(), y, size: 36, family: SERIF, spacing: 6, color: OLD_INK });
     y += 52;
   }
@@ -39,8 +40,9 @@ const modernLayout = (design: CoverDesign): Item[] => {
   const items: Item[] = [];
   items.push({ kind: 'text', text: design.author.join(' ').toUpperCase(), y: 190, size: 17, family: SANS, spacing: 3, color: MODERN_INK });
   let y = 240;
-  for (const word of design.title) {
-    items.push({ kind: 'text', text: word.charAt(0).toUpperCase() + word.slice(1), y, size: 42, family: SANS, bold: true, spacing: 0, color: MODERN_INK });
+  const meaningful = hasMeaningfulTitle(design);
+  for (const word of coverTitle(design)) {
+    items.push({ kind: 'text', text: meaningful ? word : word.charAt(0).toUpperCase() + word.slice(1), y, size: 42, family: SANS, bold: true, spacing: 0, color: MODERN_INK });
     y += 48;
   }
   items.push({ kind: 'rule', y: y + 18, width: 60, thickness: 4, color: MODERN_INK });

@@ -1,6 +1,7 @@
 import { el } from '../ui/dom';
 import { beyond, clarity } from '../systems/perception';
 import { forceFragments } from '../systems/fragments';
+import { forceTitles, type TitleOverride } from '../systems/coverTitle';
 import { DEBUG_BOOK_EVENT } from './events';
 import type { GameState } from '../core/state';
 
@@ -77,6 +78,20 @@ export const mountDebugPanel = (state: GameState): void => {
   const fragmentsLabel = el('label');
   fragmentsLabel.append(fragments, ' Texte cohérent à chaque page');
 
+  // Titre des couvertures : tel que tiré, ou imposé (charabia, un vrai mot, titre entier).
+  const titles = el('select');
+  for (const [value, text] of [['', 'tel que tiré'], ['none', 'charabia'], ['word', 'un vrai mot'], ['title', 'titre entier']]) {
+    const option = el('option', undefined, text);
+    option.value = value;
+    titles.append(option);
+  }
+  titles.addEventListener('change', () => {
+    forceTitles((titles.value || undefined) as TitleOverride);
+    window.dispatchEvent(new Event(DEBUG_BOOK_EVENT));
+  });
+  const titlesLabel = el('label', undefined, 'Titres ');
+  titlesLabel.append(titles);
+
   const readout = el('small');
   panel.append(
     el('strong', undefined, 'Débogage'),
@@ -87,6 +102,7 @@ export const mountDebugPanel = (state: GameState): void => {
     bookPageLabel,
     booksLabel,
     fragmentsLabel,
+    titlesLabel,
     readout,
   );
   document.body.append(panel);

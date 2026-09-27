@@ -21,12 +21,20 @@ export interface CoverDesign {
   barcode: string;
   /** Cote au dos : mur de l'hexagone, étagère, volume. */
   shelfMark: { wall: number; shelf: number; volume: number };
+  /**
+   * Titre sensé (rare) : un vrai mot glissé parmi les symboles, ou un titre entier.
+   * `slot` : place du mot dans le titre ; `pick` (0 à 1) : choix dans la liste de la langue courante.
+   */
+  sense: { kind: 'none' | 'word' | 'title'; slot: number; pick: number };
 }
 
 export const FRAME_COUNT = 4;
 export const MODERN_LAYOUT_COUNT = 3;
 export const ORNAMENT_COUNT = 4;
 const MODERN_CHANCE = 1 / 12;
+/** Provisoire, pour tester : sera équilibré plus tard. */
+const WORD_CHANCE = 1 / 4;
+const TITLE_CHANCE = 1 / 6;
 /** Borges : quatre murs de livres par hexagone, cinq étagères par mur, trente-deux livres par étagère. */
 const WALLS = 4;
 const SHELVES = 5;
@@ -53,10 +61,14 @@ const between = (random: () => number, min: number, max: number): number => min 
 const word = (random: () => number): string =>
   Array.from({ length: between(random, 3, 8) }, () => LETTERS[Math.floor(random() * LETTERS.length)]).join('');
 
+const senseKind = (roll: number): CoverDesign['sense']['kind'] =>
+  roll < TITLE_CHANCE ? 'title' : roll < TITLE_CHANCE + WORD_CHANCE ? 'word' : 'none';
+
 export const coverDesign = (bookIndex: number): CoverDesign => {
   const random = seeded(bookIndex);
+  const title = Array.from({ length: between(random, 1, 3) }, () => word(random));
   return {
-    title: Array.from({ length: between(random, 1, 3) }, () => word(random)),
+    title,
     frame: Math.floor(random() * FRAME_COUNT),
     ornament: Math.floor(random() * ORNAMENT_COUNT),
     wear: random() ** 1.5,
@@ -67,6 +79,8 @@ export const coverDesign = (bookIndex: number): CoverDesign => {
     layout: Math.floor(random() * MODERN_LAYOUT_COUNT),
     blurb: Array.from({ length: between(random, 28, 40) }, () => word(random)).join(' '),
     barcode: Array.from({ length: 13 }, () => Math.floor(random() * 10)).join(''),
+    // Tiré en dernier : les couvertures déjà vues ne changent pas.
+    sense: { kind: senseKind(random()), slot: Math.floor(random() * title.length), pick: random() },
   };
 };
 
