@@ -47,6 +47,8 @@ export const createStrangeBookPage = (state: GameState, onBack: () => void): Com
     position < 0 ? 'front' : position >= spreadCount() ? 'back' : null;
   const pageAt = (spreadIndex: number, slot: number): LeafPage | undefined => pages[spreadIndex * perSpread + slot];
   const place = (slot: number, page: LeafPage | undefined): void => {
+    // Une page qui arrive (ou revient) n'affiche plus la légende d'un sceau survolé la dernière fois.
+    if (page && slots[slot].firstChild !== page.root) page.shown();
     slots[slot].replaceChildren(page?.root ?? el('div', 'sb-paper'));
   };
   /** Texture d'une page, ou papier vierge (verso d'une page seule, page manquante). */

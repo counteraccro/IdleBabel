@@ -20,5 +20,29 @@
     "days": "days elapsed",
     "pagesPerSecond": "pages per second",
     "bestPagesPerSecond": "best pages per second"
+  },
+  "sealsTitle": "Seals",
+  "sealsCompletion": "of the seals set",
+  "plates": {
+    "pages": "Pages",
+    "books": "Books",
+    "fragments": "Fragments",
+    "time": "Time",
+    "methods": "Methods",
+    "secrets": "Secrets"
+  },
+  "seals": {
+    "pagesRead": "Read {n} pages",
+    "clicks": "Turn {n} pages by hand",
+    "stock": "Keep {n} pages in reserve",
+    "speed": "Read {n} pages per second",
+    "booksFinished": "Close {n} books",
+    "meaningfulCovers": "Find {n} covers that mean something",
+    "fragments": "Find {n} meaningful sentences",
+    "playTime": "Spend {n} hours in the Library",
+    "diagonal": "Learn Diagonal Reading {n} times",
+    "strangeBook": "Pick up the strange book",
+    "insomnia": "Read between three and four in the morning",
+    "still": "Hold the book still"
   }
 }

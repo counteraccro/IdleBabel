@@ -8,6 +8,8 @@ export interface HeaderHandlers {
   onStrangeBook: () => void;
   /** Le livre étrange a-t-il été trouvé ? Son signet n'apparaît qu'ensuite. */
   strangeBookFound: () => boolean;
+  /** Des sceaux obtenus attendent d'être vus : le signet du livre étrange luit. */
+  hasNewSeals: () => boolean;
 }
 
 /** Bouton de cuir, avec un petit signet de tissu qui dépasse dessous, comme d'un livre fermé. */
@@ -29,6 +31,7 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     const found = handlers.strangeBookFound();
     if (found && strangeBook.hidden) strangeBook.classList.add('unroll');
     strangeBook.hidden = !found;
+    strangeBook.classList.toggle('news', handlers.hasNewSeals());
   };
   root.append(el('h1', undefined, 'Idle Babel'), ribbons);
   return { root, update };

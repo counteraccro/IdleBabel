@@ -4,6 +4,8 @@ import { forceFragments } from '../systems/fragments';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
 import { pagesPerSecond } from '../systems/production';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed } from '../systems/strangeBook';
+import { announceSeals, sealAll } from '../systems/seals';
+import { SEALS } from '../data/seals';
 import { DEBUG_BOOK_EVENT } from './events';
 import { buttons, check, numberInput, rememberOpen, row, section, wasOpen } from './debugControls';
 import { createFpsMeter } from '../ui/fpsMeter';
@@ -91,6 +93,14 @@ export const mountDebugPanel = (state: GameState): void => {
         }],
       ),
       'le prendre en main le rend aussi accessible',
+    ),
+    row(
+      'Sceaux',
+      buttons(
+        ['Une vision', () => announceSeals([SEALS[Math.floor(Math.random() * SEALS.length)].id])],
+        ['Tout débloquer', () => sealAll(state)],
+      ),
+      'une vision : sans rien débloquer ; tout débloquer : pour de vrai (effacer la sauvegarde pour revenir)',
     ),
   );
 

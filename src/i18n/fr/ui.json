@@ -22,6 +22,8 @@
   "display": "Affichage",
   "showFps": "Afficher les images par seconde",
   "showFpsHint": "Un petit compteur en bas à gauche, pour vérifier que le jeu reste fluide sur votre appareil.",
+  "reduceBlur": "Réduire les effets de flou",
+  "reduceBlurHint": "Les chiffres du livre étrange changent sans se brouiller un instant.",
   "fps": "FPS",
   "strangeBook": "Le livre étrange",
   "previousPage": "Page précédente",

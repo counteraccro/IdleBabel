@@ -18,8 +18,14 @@ const STRANGE_BOOK_HASH = '#livre';
  * Construit l'écran : le jeu, la page des options (adresse #options) ou le livre étrange (#livre) ;
  * le bouton « retour » du navigateur ramène au jeu. Renvoie la fonction de mise à jour appelée à chaque tick.
  */
+/** Réglages qui s'appliquent à toute la page par une classe sur <html>. */
+const applySettings = (state: GameState): void => {
+  document.documentElement.classList.toggle('reduce-blur', state.settings.reduceBlur);
+};
+
 export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   let components: Component[] = [];
+  applySettings(state);
   // Page ouverte depuis le jeu : « retour » revient en arrière dans l'historique du navigateur.
   let openedFromGame = false;
   const open = (hash: string) => (): void => {
@@ -36,6 +42,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       onOptions: open(OPTIONS_HASH),
       onStrangeBook: open(STRANGE_BOOK_HASH),
       strangeBookFound: () => strangeBookFound(state),
+      hasNewSeals: () => state.newSeals.length > 0,
     }),
     createCounter(state),
     createToolsPanel(state),
@@ -51,7 +58,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         saveGame(state);
         render();
       },
-      onSettings: () => saveGame(state),
+      onSettings: () => {
+        applySettings(state);
+        saveGame(state);
+      },
       onReset: () => {
         deleteSave();
         // Nouvelle partie : le livre étrange est à retrouver, même si le débogage le montrait.

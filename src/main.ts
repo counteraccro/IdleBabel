@@ -3,6 +3,7 @@ import { detectLocale, setLocale } from './i18n';
 import { loadGame, saveGame } from './core/save';
 import { startLoop } from './core/loop';
 import { mountApp } from './ui/app';
+import { mountSealVisions } from './ui/sealVision';
 import { mountScene } from './scene';
 import { beyond, clarity } from './systems/perception';
 import { isDebugEnabled, mountDebugPanel } from './debug/debugPanel';
@@ -14,6 +15,7 @@ setLocale(state.locale);
 state.lastTick = Date.now(); // pas encore de gains hors-ligne dans le prototype
 
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);
+mountSealVisions();
 startLoop(state, update);
 void mountScene({ clarity: () => clarity(state), beyond: () => beyond(state) });
 if (isDebugEnabled()) mountDebugPanel(state);

@@ -12,6 +12,8 @@ export interface Settings {
   bookSway: boolean;
   /** Images par seconde affichées discrètement en bas à gauche. */
   showFps: boolean;
+  /** Pas d'effet de flou (chiffres du livre étrange qui se réécrivent). */
+  reduceBlur: boolean;
 }
 
 /** Chiffres de la partie, relevés en silence : le joueur ne les découvre que plus tard. */
@@ -28,7 +30,7 @@ export interface Stats {
 
 export const DEFAULT_STATS: Stats = { clicks: 0, playSeconds: 0, bestPagesPerSecond: 0, fragments: 0 };
 
-export const DEFAULT_SETTINGS: Settings = { autoTurn: true, bookSway: true, showFps: false };
+export const DEFAULT_SETTINGS: Settings = { autoTurn: true, bookSway: true, showFps: false, reduceBlur: false };
 
 export interface GameState {
   version: number;
@@ -44,6 +46,10 @@ export interface GameState {
   locale: Locale;
   settings: Settings;
   stats: Stats;
+  /** Sceaux obtenus (voir data/seals.ts), avec leur date. */
+  seals: Record<string, number>;
+  /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
+  newSeals: string[];
   history: HistoryEntry[];
   lastTick: number;
 }
@@ -58,6 +64,8 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   locale,
   settings: { ...DEFAULT_SETTINGS },
   stats: { ...DEFAULT_STATS },
+  seals: {},
+  newSeals: [],
   history: [{ type: 'gameStarted', at: now }],
   lastTick: now,
 });

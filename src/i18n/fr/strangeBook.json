@@ -20,5 +20,29 @@
     "days": "jours écoulés",
     "pagesPerSecond": "pages par seconde",
     "bestPagesPerSecond": "record de pages par seconde"
+  },
+  "sealsTitle": "Sceaux",
+  "sealsCompletion": "des sceaux apposés",
+  "plates": {
+    "pages": "Pages",
+    "books": "Livres",
+    "fragments": "Fragments",
+    "time": "Temps",
+    "methods": "Méthodes",
+    "secrets": "Secrets"
+  },
+  "seals": {
+    "pagesRead": "Lire {n} pages",
+    "clicks": "Tourner {n} pages à la main",
+    "stock": "Garder {n} pages en réserve",
+    "speed": "Lire {n} pages par seconde",
+    "booksFinished": "Refermer {n} livres",
+    "meaningfulCovers": "Trouver {n} couvertures porteuses de sens",
+    "fragments": "Trouver {n} phrases sensées",
+    "playTime": "Passer {n} heures dans la Bibliothèque",
+    "diagonal": "Apprendre {n} fois la Lecture Diagonale",
+    "strangeBook": "Prendre en main le livre étrange",
+    "insomnia": "Lire entre trois et quatre heures du matin",
+    "still": "Tenir le livre immobile"
   }
 }

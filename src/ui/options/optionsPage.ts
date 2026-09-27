@@ -130,6 +130,10 @@ export const createOptionsPage = (state: GameState, handlers: OptionsHandlers): 
           state.settings.showFps = value;
           handlers.onSettings();
         }),
+        createToggle(t('ui.reduceBlur'), t('ui.reduceBlurHint'), state.settings.reduceBlur, (value) => {
+          state.settings.reduceBlur = value;
+          handlers.onSettings();
+        }),
       ),
       createSection(t('ui.save'), createResetButton(handlers.onReset)),
     ),
