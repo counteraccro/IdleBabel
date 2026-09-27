@@ -2,7 +2,7 @@ import { el } from '../ui/dom';
 import { beyond, clarity } from '../systems/perception';
 import { forceFragments } from '../systems/fragments';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
-import { revealStats } from '../systems/strangeBook';
+import { revealStats, statsRevealed } from '../systems/strangeBook';
 import { DEBUG_BOOK_EVENT } from './events';
 import { createFpsMeter } from '../ui/fpsMeter';
 import type { GameState } from '../core/state';
@@ -129,6 +129,7 @@ export const mountDebugPanel = (state: GameState): void => {
       if (document.activeElement !== input) input.value = String(Math.floor(state[input.dataset.field as NumericField]));
     }
     if (document.activeElement !== readers) readers.value = String(state.tools.diagonal);
+    stats.checked = statsRevealed();
     readout.textContent = `Livres : ${state.booksFinished} · Découverte : ${clarity(state).toFixed(2)} · Au-delà : ${beyond(state).toFixed(2)}`;
   }, 250);
 };

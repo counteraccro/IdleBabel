@@ -5,7 +5,7 @@ import { createReading } from './reading';
 import { createFooter } from './footer';
 import { createOptionsPage } from './options/optionsPage';
 import { createStrangeBookPage } from './strangeBook/strangeBookPage';
-import { strangeBookFound } from '../systems/strangeBook';
+import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { setLocale } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
 import { createInitialState, type GameState } from '../core/state';
@@ -54,6 +54,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       onSettings: () => saveGame(state),
       onReset: () => {
         deleteSave();
+        // Nouvelle partie : le livre étrange est à retrouver, même si le débogage le montrait.
+        revealStats(false);
         Object.assign(state, createInitialState(state.locale), { settings: state.settings });
         saveGame(state);
       },
