@@ -154,3 +154,8 @@
 @media (max-width: 760px) {
   .book { width: 92vw; }
 }
+
+/* Livre étrange tenu en main : les pages du grand livre, sans rien de cliquable (un clic tourne la page). */
+.book .sb-paper * { pointer-events: none; }
+/* En petit, les points de conduite gardent au moins un pixel. */
+.book .sb-dots { height: max(1px, 0.234cqw); }

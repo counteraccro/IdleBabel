@@ -9,6 +9,15 @@ import {
 } from './pageLayout';
 
 /** Page HTML (pages fixes du livre) : les lignes déjà calculées, à l'échelle de la page. */
+/**
+ * Une page du livre en main : sa version HTML (posée à plat) et sa version dessinée (la feuille qui
+ * tourne). D'ordinaire des lignes de texte (textPage) ; le livre étrange y met aussi ses propres pages.
+ */
+export interface PageView {
+  html: (target: HTMLElement) => void;
+  texture: (canvas: HTMLCanvasElement, spineOnLeft: boolean, paper: Paper) => void;
+}
+
 export const renderPageHtml = (target: HTMLElement, lines: PageLines): void => {
   const text = el('span', 'page-text');
   for (const line of lines) {
@@ -132,3 +141,9 @@ export const drawPageTexture = (
     }
   });
 };
+
+/** Page de texte (charabia de Babel, fragment surligné). */
+export const textPage = (lines: PageLines): PageView => ({
+  html: (target) => renderPageHtml(target, lines),
+  texture: (canvas, spineOnLeft, paper) => drawPageTexture(canvas, lines, spineOnLeft, paper),
+});

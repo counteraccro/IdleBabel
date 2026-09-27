@@ -6,8 +6,8 @@ import { createBookClosing } from './bookClose';
 import { stackDepths } from './bookBlock';
 import type { CoverDesign } from '../../systems/coverDesign';
 import { createLeafRenderer } from './leafRenderer';
-import { layoutPage, type PageLines } from './pageLayout';
-import { MODERN_PAPER, OLD_PAPER, drawPageTexture, gutterCss, paperCss, renderPageHtml } from './pageRender';
+import { layoutPage } from './pageLayout';
+import { MODERN_PAPER, OLD_PAPER, gutterCss, paperCss, textPage, type PageView, type Paper } from './pageRender';
 import { createHeadbands } from './headbands';
 import { drawTitlePageTexture, renderTitlePageHtml } from './titlePage';
 import type { PageContent } from '../../systems/babelText';
@@ -29,6 +29,15 @@ export interface BookHandlers {
   onLeaf: () => boolean;
   /** Contenu d'une nouvelle page du livre en main, avec la phrase sensée éventuelle. */
   page: (length: number, fragment?: string) => PageContent;
+  /**
+   * Page toute faite à la place du texte (le livre étrange reprend celles du grand livre), selon sa place
+   * dans le livre : 0 pour la page de gauche après la première page tournée, 1 pour celle de droite, etc.
+   */
+  special?: (position: number) => PageView | undefined;
+  /** Pages déjà tournées dans le livre en main. */
+  turned: () => number;
+  /** Papier des pages, s'il n'est pas celui de la couverture (jauni, ou blanc pour un livre moderne). */
+  paper?: () => Paper | undefined;
   /** Phrase sensée éventuelle à cacher dans la prochaine page. */
   nextFragment: () => string | undefined;
   /** Avancement dans le livre en main, de 0 à 1 : épaisseur des tranches. */
@@ -70,12 +79,14 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   book.style.setProperty('--gutter-right', gutterCss('90deg'));
   book.append(cover);
 
-  const newLines = (fragment?: string): PageLines => layoutPage(handlers.page(PAGE_LENGTH, fragment));
-  // Page de droite : du texte, ou la page de titre (première page d'un livre, rightLines vaut alors null).
-  let rightLines: PageLines | null = null;
-  const showRight = (lines: PageLines | null): void => {
-    rightLines = lines;
-    if (lines) renderPageHtml(right, lines);
+  /** Page à la place `position` dans l'ordre de lecture (voir BookHandlers.special). */
+  const newPage = (position: number, fragment?: string): PageView =>
+    handlers.special?.(position) ?? textPage(layoutPage(handlers.page(PAGE_LENGTH, fragment)));
+  // Page de droite : une page, ou la page de titre (première page d'un livre, rightPage vaut alors null).
+  let rightPage: PageView | null = null;
+  const showRight = (page: PageView | null): void => {
+    rightPage = page;
+    if (page) page.html(right);
     else renderTitlePageHtml(right, design);
   };
   // Couverture et papier du livre en main : papier blanc pour un livre moderne, jauni sinon.
@@ -86,11 +97,13 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     applyBinding(book, handlers.binding());
     design = handlers.cover();
     closing.dress(design);
-    paper = design.modern ? MODERN_PAPER : OLD_PAPER;
+    paper = handlers.paper?.() ?? (design.modern ? MODERN_PAPER : OLD_PAPER);
     book.style.setProperty('--paper', paperCss(paper));
     showProgress();
-    renderPageHtml(left, newLines());
-    showRight(handlers.progress() === 0 ? null : newLines());
+    // Après n pages tournées : à gauche la page 2n - 2, à droite la page 2n - 1.
+    const turned = handlers.turned();
+    newPage(2 * turned - 2).html(left);
+    showRight(handlers.progress() === 0 ? null : newPage(2 * turned - 1));
   };
   // Hauteur des piles de pages ; première page : pas encore de page à gauche.
   const showProgress = (): void => {
@@ -131,7 +144,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
 
   // Feuille en cours : son verso (future page de gauche), la page de droite d'avant,
   // et si elle compte comme lue (tournée par le lecteur) ou non (tournée par la production).
-  let turning: { back: PageLines; previousRight: PageLines | null; counted: boolean } | null = null;
+  let turning: { back: PageView; previousRight: PageView | null; counted: boolean } | null = null;
   let progress = 0;
   let animation = 0;
 
@@ -159,7 +172,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   const finish = (): void => {
     if (!turning) return;
     const { counted } = turning;
-    renderPageHtml(left, turning.back);
+    turning.back.html(left);
     turning = null;
     stop();
     if (counted) handlers.onTurn();
@@ -181,13 +194,15 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
   const lift = (counted = true): void => {
     if (turning) finish();
     // Les deux faces de la feuille peuvent cacher une phrase sensée : le verso deviendra la page de gauche.
-    const backLines = newLines(handlers.nextFragment());
-    turning = { back: backLines, previousRight: rightLines, counted };
-    if (rightLines) drawPageTexture(front, rightLines, true, paper);
+    // Après n pages tournées, la feuille découvre les pages 2n (son verso, à gauche) et 2n + 1 (à droite).
+    const turned = handlers.turned();
+    const backPage = newPage(2 * turned, handlers.nextFragment());
+    turning = { back: backPage, previousRight: rightPage, counted };
+    if (rightPage) rightPage.texture(front, true, paper);
     else drawTitlePageTexture(front, design, paper);
-    drawPageTexture(back, backLines, false, paper);
+    backPage.texture(back, false, paper);
     renderer?.setPages(front, back);
-    showRight(newLines(handlers.nextFragment()));
+    showRight(newPage(2 * turned + 1, handlers.nextFragment()));
     // Dernière feuille : elle découvre l'intérieur de la couverture arrière, sans page.
     book.classList.toggle('last-page', handlers.lastLeaf());
     book.classList.add('turning');

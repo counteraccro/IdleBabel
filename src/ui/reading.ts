@@ -13,15 +13,43 @@ import { createDigitPage, isStrangeBook } from '../systems/strangeBook';
 import { coverDesign } from '../systems/coverDesign';
 import type { GameState } from '../core/state';
 import { DEBUG_BOOK_EVENT } from '../debug/events';
+import { createPages, type LeafPage } from './strangeBook/pages';
+import { STRANGE_PAPER } from './strangeBook/pageItems';
+import type { PageView } from './book/pageRender';
+
+/**
+ * Le livre étrange tenu en main : ses premières pages sont celles du grand livre (garde, sommaire,
+ * chiffres, sceaux), en petit et sans rien de cliquable ; ensuite, des chiffres jusqu'au bout.
+ */
+const createStrangePages = (state: GameState): ((position: number) => PageView | undefined) => {
+  let pages: LeafPage[] | null = null;
+  return (position) => {
+    // Le sommaire et les chapitres sont ceux du moment où l'on ouvre le livre (page 0 : on repart de zéro).
+    if (position <= 0 || !pages) pages = createPages(state, () => {});
+    const page = pages[position];
+    if (!page) return undefined;
+    return {
+      html: (target) => {
+        page.update();
+        target.replaceChildren(page.root);
+      },
+      texture: (canvas, spineOnLeft, paper) => page.paint(canvas, spineOnLeft, paper),
+    };
+  };
+};
 
 /** Le livre que le chercheur tient en main : chaque page tournée est une page lue. */
 export const createReading = (state: GameState): Component => {
   const root = el('section', 'reading');
   const strange = (): boolean => isStrangeBook(state.booksFinished);
+  const strangePages = createStrangePages(state);
   const book = createBook(t('ui.read'), {
     onTurn: () => readPage(state),
     onLeaf: () => turnBookPage(state),
     page: (length, fragment) => (strange() ? createDigitPage(length) : createPage(length, fragment)),
+    special: (position) => (strange() ? strangePages(position) : undefined),
+    turned: () => state.bookPage,
+    paper: () => (strange() ? STRANGE_PAPER : undefined),
     // Le livre étrange n'a que des chiffres : pas de phrase sensée.
     nextFragment: () => (strange() ? undefined : countFragment(state, rollFragment())),
     progress: () => bookProgress(state),

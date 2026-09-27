@@ -5,6 +5,7 @@ import { CHAPTERS, chapterShown, chapterTitle, contentsTitle, figureCaption, fig
 import { createItemsView, drawItems, folio, heading, type Item } from './pageItems';
 import { newsMark, plateHasNews, plateTitle, sealLegend, sealsTitle, completionItems, plateItems, platePages, type PlatePage } from './plates';
 import { markSealsSeen } from '../../systems/seals';
+import type { Paper } from '../book/pageRender';
 import type { GameState } from '../../core/state';
 
 /** Une page du grand livre : ses chiffres suivent la partie en direct. */
@@ -15,8 +16,8 @@ export interface LeafPage {
   shown: () => void;
   /** Efface la légende du sceau survolé. */
   reset: () => void;
-  /** Dessine la page sur la texture de la feuille qui tourne. */
-  paint: (canvas: HTMLCanvasElement, spineOnLeft: boolean) => void;
+  /** Dessine la page sur la texture de la feuille qui tourne (sur le papier `paper`, celui du grand livre par défaut). */
+  paint: (canvas: HTMLCanvasElement, spineOnLeft: boolean, paper?: Paper) => void;
 }
 
 
@@ -120,7 +121,7 @@ const createLeafPage = (layout: (hovered: string | null) => Item[], goTo: (page:
       hovered = null;
       render(layout(hovered));
     },
-    paint: (canvas, spineOnLeft) => drawItems(canvas, layout(hovered), spineOnLeft),
+    paint: (canvas, spineOnLeft, paper) => drawItems(canvas, layout(hovered), spineOnLeft, paper),
   };
   return page;
 };

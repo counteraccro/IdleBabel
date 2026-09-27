@@ -117,8 +117,8 @@ export const createItemsView = (target: HTMLElement, actions: ItemActions): ((it
 };
 
 /** Même page, dessinée sur la texture de la feuille. */
-export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft: boolean): void => {
-  const context = preparePageTexture(canvas, spineOnLeft, STRANGE_PAPER);
+export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft: boolean, paper: Paper = STRANGE_PAPER): void => {
+  const context = preparePageTexture(canvas, spineOnLeft, paper);
   context.textBaseline = 'alphabetic';
   for (const item of items) {
     if (item.kind === 'text') {
