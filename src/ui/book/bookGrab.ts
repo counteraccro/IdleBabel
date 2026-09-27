@@ -18,11 +18,17 @@ const DRAG_THRESHOLD_PX = 6;
 /** Distance à parcourir vers la gauche, en largeur de livre, pour tourner entièrement la page. */
 const FULL_TURN_WIDTH = 0.75;
 
-/**
- * `direction` : sens du geste, choisi à l'appui (1 : on tire vers la gauche, la page de droite
- * tourne ; -1 : on tire vers la droite, pour revenir en arrière). Le livre en main tire toujours à gauche.
- */
-export const attachGrab = (book: HTMLElement, handlers: GrabHandlers, direction: (event: PointerEvent) => 1 | -1 = () => 1): void => {
+export interface GrabOptions {
+  /**
+   * Sens du geste, choisi à l'appui (1 : on tire vers la gauche, la page de droite tourne ;
+   * -1 : on tire vers la droite, pour revenir en arrière). Le livre en main tire toujours à gauche.
+   */
+  direction?: (event: PointerEvent) => 1 | -1;
+  /** Éléments qui gardent leurs clics (cases, boutons posés sur la page) : ils ne tournent rien. */
+  ignore?: (target: EventTarget | null) => boolean;
+}
+
+export const attachGrab = (book: HTMLElement, handlers: GrabHandlers, { direction = () => 1, ignore = () => false }: GrabOptions = {}): void => {
   let startX = 0;
   let sign: 1 | -1 = 1;
   let pointerId: number | null = null;
@@ -37,7 +43,7 @@ export const attachGrab = (book: HTMLElement, handlers: GrabHandlers, direction:
   };
 
   book.addEventListener('pointerdown', (event) => {
-    if (event.button !== 0) return;
+    if (event.button !== 0 || ignore(event.target)) return;
     pointerId = event.pointerId;
     book.setPointerCapture(pointerId);
     startX = event.clientX;
@@ -68,6 +74,6 @@ export const attachGrab = (book: HTMLElement, handlers: GrabHandlers, direction:
 
   // Clavier (Entrée, Espace) : le navigateur envoie un clic sans pointeur.
   book.addEventListener('click', (event) => {
-    if (event.detail === 0) handlers.turn();
+    if (event.detail === 0 && !ignore(event.target)) handlers.turn();
   });
 };

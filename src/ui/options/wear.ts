@@ -78,11 +78,43 @@ const coffeeRing = (random: () => number, seed: number): string => {
     </g>`;
 };
 
+/**
+ * Le papier lui-même : petits carreaux à moitié effacés, bords assombris et encrassés, deux zones
+ * plus jaunes. Tout est dans l'image (et non en CSS) pour que la page affichée et sa photo sur la
+ * feuille qui tourne soient identiques au pixel près.
+ */
+const paperBase = (seed: number): string => `<defs>
+    <pattern id="grid-${seed}" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M0 0.5 H24 M0.5 0 V24" stroke="rgb(90,110,150)" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="vig-${seed}" cx="50%" cy="45%" r="72%">
+      <stop offset="0.45" stop-color="rgb(120,85,40)" stop-opacity="0"/><stop offset="1" stop-color="rgb(120,85,40)" stop-opacity="0.28"/>
+    </radialGradient>
+    <radialGradient id="spot1-${seed}" cx="85%" cy="90%" r="45%">
+      <stop offset="0" stop-color="rgb(150,105,50)" stop-opacity="0.2"/><stop offset="1" stop-color="rgb(150,105,50)" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="spot2-${seed}" cx="15%" cy="10%" r="40%">
+      <stop offset="0" stop-color="rgb(160,120,60)" stop-opacity="0.14"/><stop offset="1" stop-color="rgb(160,120,60)" stop-opacity="0"/>
+    </radialGradient>
+    ${(['0 0 1 0', '1 0 0 0', '0 0 0 1', '0 1 0 0'] as const)
+      .map((dir, i) => {
+        const [x1, y1, x2, y2] = dir.split(' ');
+        return `<linearGradient id="edge${i}-${seed}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">
+          <stop offset="0" stop-color="rgb(100,70,30)" stop-opacity="0.3"/><stop offset="0.06" stop-color="rgb(100,70,30)" stop-opacity="0"/></linearGradient>`;
+      })
+      .join('')}
+  </defs>
+  <rect width="${W}" height="${H}" fill="url(#grid-${seed})"/>
+  <rect width="${W}" height="${H}" fill="url(#spot1-${seed})"/>
+  <rect width="${W}" height="${H}" fill="url(#spot2-${seed})"/>
+  <rect width="${W}" height="${H}" fill="url(#vig-${seed})"/>
+  ${[0, 1, 2, 3].map((i) => `<rect width="${W}" height="${H}" fill="url(#edge${i}-${seed})"/>`).join('')}`;
+
 /** Papier : jaunissement inégal, fibres, rousseurs, crasse vers les bords, parfois une trace de tasse. */
 export const paperWear = (seed: number, { coffee = false } = {}): HTMLElement => {
   const random = seeded(seed);
   const s = Math.floor(random() * 1000);
-  const svg = `<defs>${edgeMask(`edge-${seed}`, 0.45)}</defs>
+  const svg = `${paperBase(seed)}<defs>${edgeMask(`edge-${seed}`, 0.45)}</defs>
     ${noise(`tone-${seed}`, { frequency: '0.009', octaves: 4, seed: s, color: [150, 105, 45], slope: 1.3, offset: -0.52 })}
     ${noise(`fiber-${seed}`, { frequency: '0.7 0.06', octaves: 2, seed: s + 1, color: [120, 95, 60], slope: 0.9, offset: -0.42 })}
     ${noise(`grime-${seed}`, { frequency: '0.035', octaves: 4, seed: s + 2, color: [85, 60, 30], slope: 1.6, offset: -0.45, mask: `edge-${seed}` })}

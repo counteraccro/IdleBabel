@@ -2,7 +2,8 @@ import { el } from '../dom';
 import { t } from '../../i18n';
 import { createLeafTurn } from '../strangeBook/leafTurn';
 import { leafGeometryFor } from '../book/leafRenderer';
-import { TURN_MS } from '../book/book';
+import { HELD_PROGRESS, RELEASE_MS, TURN_MS } from '../book/book';
+import { attachGrab } from '../book/bookGrab';
 import { preloadPage, snapshotPage } from './pageSnapshot';
 
 const FLIP_MS = 700;
@@ -48,13 +49,10 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
   const body = el('div', 'sketchbook-body');
   const left = el('div', 'sketchbook-half sketchbook-left');
   const right = el('div', 'sketchbook-half sketchbook-right');
-  // Coin corné en bas à droite de la page : on le prend pour tourner.
-  const corner = el('button', 'sketchbook-corner');
-  corner.setAttribute('aria-label', t('ui.nextPage'));
   // Feuille WebGL (papier qui s'enroule) et scène hors écran où l'on photographie les pages.
   const leaf = createLeafTurn();
   const stage = el('div', 'sketchbook-stage');
-  body.append(left, right, createRings(), corner, leaf.canvas);
+  body.append(left, right, createRings(), leaf.canvas);
 
   const previous = el('button', 'sketchbook-turn', '‹');
   const next = el('button', 'sketchbook-turn', '›');
@@ -95,7 +93,6 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
     body.style.transform = shift(position);
     body.classList.toggle('single', single());
     root.classList.toggle('closed', position < 0 || position >= count);
-    corner.hidden = position < 0 || position >= count;
     previous.disabled = position < 0;
     next.disabled = position >= count;
   };
@@ -109,20 +106,27 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
   const plainBack = (node: HTMLElement | null): HTMLElement =>
     node === content.front ? copy(content.inside)! : el('div', 'sketchbook-verso');
 
-  /** Une page de papier s'enroule autour de la spirale, photographiée recto (à droite) et verso (à gauche). */
-  const curl = async (recto: HTMLElement | null, verso: HTMLElement | null, forward: boolean): Promise<void> => {
+  /** Entre deux pages, c'est du papier : il s'enroule. Couverture et dos : du carton rigide. */
+  const isPaper = (from: number, target: number): boolean => from >= 0 && from < count && target >= 0 && target < count;
+
+  /**
+   * Une page de papier va tourner : on pose ce qu'elle découvre, puis la feuille WebGL la remplace,
+   * photographiée recto (à droite) et verso (à gauche), à son point de départ. Renvoie le sens.
+   */
+  const liftPaper = (from: number, target: number): boolean => {
+    const forward = target > from;
+    const moving = forward ? sides(from).right : sides(target).right;
+    const landing = forward ? sides(target).left : sides(from).left;
+    if (forward) place(right, sides(target).right);
+    else place(left, sides(target).left);
     const width = right.offsetWidth;
     const height = right.offsetHeight;
     leaf.fit(single(), leafGeometryFor(width / height));
     leaf.begin((front, back) => {
-      snapshotPage(recto, front, stage, width, height);
-      snapshotPage(verso, back, stage, width, height);
-    }, forward ? 0 : 1);
-    try {
-      await leaf.animate(forward ? 1 : 0, TURN_MS);
-    } finally {
-      leaf.end();
-    }
+      snapshotPage(moving, front, stage, width, height, 'left');
+      snapshotPage(single() ? null : landing, back, stage, width, height, 'right');
+    }, 0, !forward);
+    return forward;
   };
 
   /** Un plat de carton pivote d'un bloc autour de la spirale : son recto (à droite), son verso (à gauche). */
@@ -154,15 +158,10 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
     const moving = forward ? sides(from).right : sides(target).right;
     const landing = forward ? sides(target).left : sides(from).left;
     const verso = single() ? plainBack(moving) : copy(landing);
-    // Le coin corné appartient à la page de droite : il ne doit pas flotter pendant qu'elle bouge.
-    corner.hidden = true;
-    // Entre deux pages, c'est du papier : il s'enroule. Couverture et dos : du carton rigide.
-    const paper = from >= 0 && from < count && target >= 0 && target < count;
     try {
-      if (paper) {
-        if (forward) place(right, sides(target).right);
-        else place(left, sides(target).left);
-        await curl(moving, single() ? null : landing, forward);
+      if (isPaper(from, target)) {
+        liftPaper(from, target);
+        await leaf.animate(1, TURN_MS).finally(leaf.end);
       } else if (forward) {
         // La page part : on découvre déjà la suivante dessous, à droite.
         place(right, sides(target).right);
@@ -180,13 +179,65 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
 
   previous.addEventListener('click', () => void goTo(current - 1));
   next.addEventListener('click', () => void goTo(current + 1));
-  corner.addEventListener('click', () => void goTo(current + 1));
-  // Carnet fermé : un clic sur la couverture l'ouvre, un clic sur le dos le rouvre à la dernière page.
-  body.addEventListener('click', (event) => {
-    if ((event.target as HTMLElement).closest('.sketchbook-page, .sketchbook-corner')) return;
+
+  // Geste sur les pages, comme le livre étrange : clic, ou page tenue et tirée. Côté gauche on revient,
+  // côté droit on avance ; carnet fermé, il s'ouvre. Cases et boutons de la page gardent leurs clics.
+  let side: 1 | -1 = 1;
+  let held: { from: number; forward: boolean; fraction: number } | null = null;
+  const sideOf = (event: PointerEvent): 1 | -1 => {
+    const bounds = body.getBoundingClientRect();
+    side = event.clientX < bounds.left + bounds.width / 2 ? -1 : 1;
+    return side;
+  };
+  const openClosed = (): boolean => {
     if (current < 0) void goTo(0);
     else if (current >= count) void goTo(count - 1);
-  });
+    else return false;
+    return true;
+  };
+  attachGrab(
+    body,
+    {
+      turn: () => {
+        if (!openClosed()) void goTo(current + side);
+      },
+      grab: () => {
+        if (turning || openClosed()) return;
+        const target = current + side;
+        // Vers une couverture : le carton pivote d'un coup.
+        if (!isPaper(current, target)) return void goTo(target);
+        turning = true;
+        const from = current;
+        current = target;
+        const forward = liftPaper(from, target);
+        held = { from, forward, fraction: HELD_PROGRESS };
+        void leaf.animate(HELD_PROGRESS, 120);
+      },
+      move: (value) => {
+        if (!held) return;
+        held.fraction = HELD_PROGRESS + (1 - HELD_PROGRESS) * value;
+        leaf.draw(held.fraction);
+      },
+      release: async (value) => {
+        if (!held) return;
+        const { from, forward } = held;
+        const fraction = value > 0 ? HELD_PROGRESS + (1 - HELD_PROGRESS) * value : held.fraction;
+        held = null;
+        // Lâchée après la moitié, elle finit de tourner ; sinon elle retombe.
+        const completes = fraction > 0.5;
+        const to = completes ? 1 : 0;
+        try {
+          await leaf.animate(to, RELEASE_MS * Math.max(0.3, Math.abs(to - fraction)));
+        } finally {
+          if (!completes) current = from;
+          leaf.end();
+          show(current);
+          turning = false;
+        }
+      },
+    },
+    { direction: sideOf, ignore: (target) => !!(target as Element | null)?.closest?.('label, button, input, select, a') },
+  );
   const onKey = (event: KeyboardEvent): void => {
     if (!root.isConnected) return void window.removeEventListener('keydown', onKey);
     if (event.key === 'ArrowRight') void goTo(current + 1);

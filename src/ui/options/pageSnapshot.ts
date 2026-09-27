@@ -6,6 +6,8 @@
  * transparentes : le carton de la moitié de carnet se voit dessous.
  */
 const SCALE = 2;
+/** Bande le long du dos, là où passent les anneaux : laissée vide, la spirale reste visible. */
+const RING_STRIP = 17;
 const GRAPHITE = '#34302b';
 
 const images = new Map<string, HTMLImageElement>();
@@ -47,34 +49,10 @@ const clipPoints = (clip: string, width: number, height: number): [number, numbe
   });
 };
 
-/** Papier : même fond que la feuille CSS (teinte, carreaux, bords assombris). */
+/** Papier : la même teinte que la page CSS ; le reste (carreaux, bords, taches) vient de l'image d'usure. */
 const drawPaper = (ctx: CanvasRenderingContext2D, w: number, h: number): void => {
   ctx.fillStyle = '#e8dcbd';
   ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = 'rgba(90, 110, 150, 0.07)';
-  for (let y = 0; y < h; y += 24) ctx.fillRect(0, h - y - 1, w, 1);
-  for (let x = 0; x < w; x += 24) ctx.fillRect(x, 0, 1, h);
-  ctx.save();
-  ctx.translate(w / 2, h * 0.45);
-  ctx.scale(1, h / w);
-  const vignette = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.72);
-  vignette.addColorStop(0.45, 'rgba(120, 85, 40, 0)');
-  vignette.addColorStop(1, 'rgba(120, 85, 40, 0.28)');
-  ctx.fillStyle = vignette;
-  ctx.fillRect(-w, -w, 2 * w, 2 * w);
-  ctx.restore();
-  for (const [x0, y0, x1, y1, rx, ry, rw, rh] of [
-    [0, 0, 24, 0, 0, 0, 24, h],
-    [w, 0, w - 24, 0, w - 24, 0, 24, h],
-    [0, 0, 0, 24, 0, 0, w, 24],
-    [0, h, 0, h - 24, 0, h - 24, w, 24],
-  ]) {
-    const edge = ctx.createLinearGradient(x0, y0, x1, y1);
-    edge.addColorStop(0, 'rgba(100, 70, 30, 0.22)');
-    edge.addColorStop(1, 'rgba(100, 70, 30, 0)');
-    ctx.fillStyle = edge;
-    ctx.fillRect(rx, ry, rw, rh);
-  }
 };
 
 /** Chaque mot, à la place et dans la police où le navigateur l'a mis. */
@@ -163,9 +141,17 @@ const drawDoodles = (ctx: CanvasRenderingContext2D, root: HTMLElement): void => 
 /**
  * Photographie `page` (page de droite, verso, ou rien : papier nu) dans `canvas`, aux dimensions
  * d'une moitié de carnet (`width` × `height`). `stage` : conteneur hors écran, dans le carnet
- * (il en hérite les couleurs et les polices).
+ * (il en hérite les couleurs et les polices). `spine` : côté du dos sur cette image (à gauche pour
+ * une page de droite, à droite pour un verso) ; la bande des anneaux y reste transparente.
  */
-export const snapshotPage = (page: HTMLElement | null, canvas: HTMLCanvasElement, stage: HTMLElement, width: number, height: number): void => {
+export const snapshotPage = (
+  page: HTMLElement | null,
+  canvas: HTMLCanvasElement,
+  stage: HTMLElement,
+  width: number,
+  height: number,
+  spine: 'left' | 'right',
+): void => {
   canvas.width = Math.round(width * SCALE);
   canvas.height = Math.round(height * SCALE);
   const ctx = canvas.getContext('2d')!;
@@ -199,5 +185,6 @@ export const snapshotPage = (page: HTMLElement | null, canvas: HTMLCanvasElement
   ctx.restore();
   drawWords(ctx, copy, origin);
   drawPencil(ctx, copy, origin);
+  ctx.clearRect(spine === 'left' ? 0 : width - RING_STRIP, 0, RING_STRIP, height);
   stage.replaceChildren();
 };

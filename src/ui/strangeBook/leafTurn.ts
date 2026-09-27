@@ -18,8 +18,12 @@ export interface LeafTurn {
   canvas: HTMLCanvasElement;
   /** Double page (dos au milieu) ou page seule (dos à gauche), aux proportions de ces pages. */
   fit: (single: boolean, geometry?: LeafGeometry) => void;
-  /** Montre la feuille, recto et verso dessinés par `paint`, à l'avancement donné (0 : à droite, 1 : à gauche). */
-  begin: (paint: (front: HTMLCanvasElement, back: HTMLCanvasElement) => void, progress: number) => void;
+  /**
+   * Montre la feuille, recto (page de droite) et verso (page de gauche) dessinés par `paint`, à
+   * l'avancement donné. En avant, elle va de la droite (0) à la gauche (1) ; en arrière (`backward`),
+   * le mouvement est en reflet : elle part de la gauche (0) et se pose à droite (1).
+   */
+  begin: (paint: (front: HTMLCanvasElement, back: HTMLCanvasElement) => void, progress: number, backward?: boolean) => void;
   /** Page tenue : la feuille suit le pointeur (annule tout mouvement en cours). */
   draw: (progress: number) => void;
   /** Mouvement de la feuille jusqu'à `to` ; interrompu par un autre mouvement, il se termine sur place. */
@@ -55,8 +59,9 @@ export const createLeafTurn = (): LeafTurn => {
       renderer?.setGeometry(geometry);
       Object.assign(canvas.style, single ? box(geometry, 100, 0) : box(geometry, 50, 50));
     },
-    begin: (paint, value) => {
+    begin: (paint, value, backward = false) => {
       if (!renderer) return;
+      renderer.setMirrored(backward);
       paint(front, back);
       renderer.setPages(front, back);
       show(value);

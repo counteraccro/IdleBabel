@@ -219,7 +219,7 @@ export const createStrangeBookPage = (state: GameState, onBack: () => void): Com
         turning = false;
       },
     },
-    sideOf,
+    { direction: sideOf },
   );
 
   previous.addEventListener('click', () => void goTo(current - 1));

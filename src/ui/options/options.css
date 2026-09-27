@@ -67,7 +67,7 @@
   bottom: 0;
   left: 50%;
   width: 50%;
-  z-index: 3;
+  z-index: 6;
   transform-origin: left center;
   transform-style: preserve-3d;
 }
@@ -116,31 +116,11 @@
 
 /* Scène hors écran où l'on photographie une page avant qu'elle ne tourne (voir pageSnapshot.ts). */
 .sketchbook-stage { position: absolute; left: -10000px; top: 0; visibility: hidden; pointer-events: none; }
-/* La feuille WebGL passe sous la spirale : les anneaux la tiennent. */
-.sketchbook-body > .sb-leaf { z-index: 3; }
+/* La feuille qui tourne (papier WebGL ou carton) passe par-dessus la spirale et la cache. */
+.sketchbook-body > .sb-leaf { z-index: 6; }
 
-/* Coin corné en bas à droite de la page : on le prend pour tourner. */
-.sketchbook-corner {
-  position: absolute;
-  right: 6px;
-  bottom: 7px;
-  z-index: 5;
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  backdrop-filter: none;
-  /* Le dos du papier, aussi jauni et sali que le reste. */
-  background: linear-gradient(315deg, transparent 50%, #b9a57a 50%, #d6c69c 80%, #cbb88c);
-  box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.25);
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-  transform: rotate(180deg);
-  transition: width 0.15s, height 0.15s;
-}
-.sketchbook-corner:hover,
-.sketchbook-corner:focus-visible { width: 38px; height: 38px; outline: none; }
-.sketchbook-corner[hidden] { display: none; }
+/* Les pages se tournent au clic ou en les tenant, comme le livre étrange. */
+.sketchbook-body { cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; }
 .sketchbook.closed .sketchbook-body { cursor: pointer; }
 
 /* Carton kraft : couverture et dos. */
@@ -195,15 +175,8 @@
   font-size: 1.1rem;
   line-height: 1.5;
   text-shadow: none;
-  /* Papier jauni, plus sombre et encrassé vers les bords ; carreaux à moitié effacés. */
-  background:
-    radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(120, 85, 40, 0.28) 100%),
-    radial-gradient(ellipse at 85% 90%, rgba(150, 105, 50, 0.2), transparent 45%),
-    radial-gradient(ellipse at 15% 10%, rgba(160, 120, 60, 0.14), transparent 40%),
-    repeating-linear-gradient(0deg, rgba(90, 110, 150, 0.07) 0 1px, transparent 1px 24px),
-    repeating-linear-gradient(90deg, rgba(90, 110, 150, 0.07) 0 1px, transparent 1px 24px),
-    #e8dcbd;
-  box-shadow: inset 0 0 24px rgba(100, 70, 30, 0.3);
+  /* Papier jauni : seulement sa teinte ici ; carreaux, bords et taches sont dans paperWear (wear.ts). */
+  background: #e8dcbd;
   border-radius: 2px;
 }
 .wear { position: absolute; inset: 0; pointer-events: none; background-size: 100% 100%; border-radius: inherit; }

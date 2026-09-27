@@ -16,6 +16,8 @@ uniform float uAngle;
 uniform float PAGE_WIDTH;
 uniform float PAGE_HALF_HEIGHT;
 uniform vec2 VIEW;
+// -1 : mouvement en reflet autour du dos (on revient en arrière, la page de gauche part vers la droite).
+uniform float uMirror;
 out vec2 vUV;
 out vec3 vNormal;
 
@@ -45,6 +47,9 @@ void main() {
     position = vec3(onFold - across * (d - PI * uRadius), 2.0 * uRadius);
     normal = vec3(0.0, 0.0, -1.0);
   }
+  // En reflet, l'ordre des sommets s'inverse aussi : recto et verso s'échangent d'eux-mêmes.
+  position.x *= uMirror;
+  normal.x *= uMirror;
   vNormal = normal;
   vUV = aUV;
   float scale = EYE / (EYE - position.z);
@@ -55,6 +60,7 @@ const FRAGMENT = `#version 300 es
 precision highp float;
 in vec2 vUV;
 in vec3 vNormal;
+uniform float uMirror;
 uniform sampler2D uFront;
 uniform sampler2D uBack;
 out vec4 outColor;
@@ -71,6 +77,8 @@ void main() {
     texel = texture(uBack, vec2(1.0 - vUV.x, vUV.y));
     facing = dot(-normal, light);
   }
+  // En reflet, les faces sont inversées mais pas la lumière : la face vue reste éclairée de face.
+  facing *= uMirror;
   // Bords transparents de la texture (papier déchiré) : rien n'est dessiné.
   if (texel.a < 0.5) discard;
   vec3 color = texel.rgb;
@@ -111,6 +119,11 @@ export interface LeafRenderer {
   draw: (progress: number) => void;
   /** Proportions de la page (par défaut celles du livre en main). */
   setGeometry: (geometry: LeafGeometry) => void;
+  /**
+   * Retour en arrière : le même mouvement en reflet autour du dos. La feuille part alors de la
+   * gauche (verso visible) et se pose à droite (recto visible) quand l'avancement va de 0 à 1.
+   */
+  setMirrored: (mirrored: boolean) => void;
 }
 
 const compile = (gl: WebGL2RenderingContext, type: number, source: string): WebGLShader => {
@@ -193,6 +206,8 @@ const setUpLeafRenderer = (canvas: HTMLCanvasElement): LeafRenderer | null => {
     gl.uniform2f(uniform('VIEW'), geometry.view.x, geometry.view.y);
   };
   setGeometry(LEAF_GEOMETRY);
+  const setMirrored = (mirrored: boolean): void => gl.uniform1f(uniform('uMirror'), mirrored ? -1 : 1);
+  setMirrored(false);
 
   // Feuille vue en biais quand elle se courbe : sans filtrage anisotrope, la texture devient floue.
   const anisotropy = gl.getExtension('EXT_texture_filter_anisotropic');
@@ -238,5 +253,6 @@ const setUpLeafRenderer = (canvas: HTMLCanvasElement): LeafRenderer | null => {
       gl.drawElements(gl.TRIANGLES, grid.indices.length, gl.UNSIGNED_SHORT, 0);
     },
     setGeometry,
+    setMirrored,
   };
 };
