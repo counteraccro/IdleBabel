@@ -4,6 +4,7 @@ import { forceFragments } from '../systems/fragments';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
 import { pagesPerSecond } from '../systems/production';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed } from '../systems/strangeBook';
+import { STRANGE_BOOK_REWRITE } from '../ui/strangeBook/strangeBookPage';
 import { announceSeals, sealAll } from '../systems/seals';
 import { SEALS } from '../data/seals';
 import { DEBUG_BOOK_EVENT } from './events';
@@ -74,8 +75,10 @@ export const mountDebugPanel = (state: GameState): void => {
   const reveal = check('Statistiques visibles', 'livre accessible, tout débloqué, titre et légendes en clair', (on) => {
     revealStats(on);
     refreshBook();
-    // Livre étrange déjà ouvert : il est reconstruit avec ou sans les chiffres cachés.
-    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    // Livre étrange déjà ouvert : il se réécrit à la même page ; sinon l'écran est reconstruit (le
+    // livre devient accessible, ou ne l'est plus).
+    if (document.querySelector('.sb-page')) window.dispatchEvent(new Event(STRANGE_BOOK_REWRITE));
+    else window.dispatchEvent(new HashChangeEvent('hashchange'));
   });
   const strange = section(
     'Livre étrange',

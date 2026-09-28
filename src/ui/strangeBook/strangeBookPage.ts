@@ -13,6 +13,9 @@ import type { GameState } from '../../core/state';
 /** Écran étroit : une seule page à la fois au lieu d'une double page. */
 const NARROW = '(max-width: 720px)';
 
+/** Débogage : les légendes changent (en clair ou en Babel) ; le livre ouvert se réécrit sans se refermer. */
+export const STRANGE_BOOK_REWRITE = 'strangebook:rewrite';
+
 /**
  * Le livre étrange en grand, par-dessus le décor : fermé sur sa couverture, puis ouvert (sommaire,
  * pages qui tournent), et refermé sur son dos après la dernière page.
@@ -40,7 +43,7 @@ export const createStrangeBookPage = (state: GameState, onBack: () => void): Com
   let current = -1;
   let turning = false;
   let slots: HTMLElement[] = [];
-  const pages: LeafPage[] = createPages(state, (page) => void goTo(Math.floor(page / perSpread)));
+  let pages: LeafPage[] = createPages(state, (page) => void goTo(Math.floor(page / perSpread)));
   const spreadCount = (): number => Math.ceil(pages.length / perSpread);
   const covers = createStrangeCovers(book, () => perSpread === 1);
   const closedSide = (position: number): 'front' | 'back' | null =>
@@ -238,6 +241,18 @@ export const createStrangeBookPage = (state: GameState, onBack: () => void): Com
     if (!turning) layout();
   };
   narrow.addEventListener('change', onResize);
+
+  // Pages réécrites à la même place : des chapitres peuvent apparaître ou disparaître, la double page
+  // ouverte reste la même (ou la dernière s'il y en a moins). Pendant un tour de page, on attend la fin.
+  const rewrite = (): void => {
+    if (!root.isConnected) return window.removeEventListener(STRANGE_BOOK_REWRITE, rewrite);
+    if (turning) return void setTimeout(rewrite, 100);
+    const side = closedSide(current);
+    pages = createPages(state, (page) => void goTo(Math.floor(page / perSpread)));
+    current = side === 'front' ? -1 : side === 'back' ? spreadCount() : Math.min(current, spreadCount() - 1);
+    layout();
+  };
+  window.addEventListener(STRANGE_BOOK_REWRITE, rewrite);
 
   layout();
   return { root, update: () => pages.forEach((page) => page.update()) };
