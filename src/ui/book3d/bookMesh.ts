@@ -600,8 +600,10 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   }
   const leafBackGeometry = leafGeometry.clone();
   leafBackGeometry.setAttribute('uv', new THREE.BufferAttribute(backUv, 2));
-  // Le verso partage les positions du recto (même feuille), avec ses propres UV.
+  // Le verso partage les positions et les normales du recto (même feuille), avec ses propres UV : des
+  // normales à lui resteraient celles de la feuille à plat, et le verso retourné tomberait dans le noir.
   leafBackGeometry.setAttribute('position', leafGeometry.attributes.position);
+  leafBackGeometry.setAttribute('normal', leafGeometry.attributes.normal);
   const leafFront = new THREE.MeshStandardMaterial({ color: look.paper, roughness: 0.95, side: THREE.FrontSide });
   const leafBack = new THREE.MeshStandardMaterial({ color: look.paper, roughness: 0.95, side: THREE.BackSide });
   const leaf = new THREE.Group();

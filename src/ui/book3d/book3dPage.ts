@@ -103,7 +103,9 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
   // à droite, qui dessine la tranche et le dos.
   scene.add(new THREE.HemisphereLight(0xfff2dc, 0x4a3a28, 1.3));
   const lamp = new THREE.DirectionalLight(0xffe2b0, 2.4);
-  lamp.position.set(-1.5, 2, 2.5);
+  // À gauche, à mi-hauteur, à peine vers le lecteur : l'ombre d'une feuille qui tourne déborde d'elle en
+  // travers de la page, sur toute sa hauteur (venue de la tête du livre, elle glissait vers le bas).
+  lamp.position.set(-1.9, -0.4, 2.8);
   lamp.castShadow = true;
   lamp.shadow.mapSize.set(2048, 2048);
   lamp.shadow.camera.left = -1;
