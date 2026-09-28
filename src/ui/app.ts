@@ -5,6 +5,8 @@ import { createReading } from './reading';
 import { createFooter } from './footer';
 import { createOptionsPage } from './options/optionsPage';
 import { createStrangeBookPage } from './strangeBook/strangeBookPage';
+import { createWhiteBookPage } from './whiteBook/whiteBookPage';
+import { createBook3dPage } from './book3d/book3dPage';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { setLocale } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
@@ -13,9 +15,10 @@ import type { Component } from './dom';
 
 const OPTIONS_HASH = '#options';
 const STRANGE_BOOK_HASH = '#livre';
+const WHITE_BOOK_HASH = '#blanc';
 
 /**
- * Construit l'écran : le jeu, la page des options (adresse #options) ou le livre étrange (#livre) ;
+ * Construit l'écran : le jeu, la page des options (adresse #options), le livre blanc (#blanc) ou le livre étrange (#livre) ;
  * le bouton « retour » du navigateur ramène au jeu. Renvoie la fonction de mise à jour appelée à chaque tick.
  */
 /** Réglages qui s'appliquent à toute la page par une classe sur <html>. */
@@ -40,6 +43,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const game = (): Component[] => [
     createHeader({
       onOptions: open(OPTIONS_HASH),
+      onWhiteBook: open(WHITE_BOOK_HASH),
       onStrangeBook: open(STRANGE_BOOK_HASH),
       strangeBookFound: () => strangeBookFound(state),
       hasNewSeals: () => state.newSeals.length > 0,
@@ -75,6 +79,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
+    if (window.location.hash === WHITE_BOOK_HASH) return [createWhiteBookPage(state, back)];
+    // Prototype du livre en 3D (#livre3d), en attendant qu'il remplace les grands livres.
+    if (window.location.hash === '#livre3d') return [createBook3dPage(state, back)];
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state)) return [createStrangeBookPage(state, back)];
     return game();
   };

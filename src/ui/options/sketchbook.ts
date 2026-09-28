@@ -1,4 +1,5 @@
 import { el } from '../dom';
+import { createClosedEdges } from '../book/closedEdges';
 import { t } from '../../i18n';
 import { createLeafTurn } from '../strangeBook/leafTurn';
 import { leafGeometryFor } from '../book/leafRenderer';
@@ -8,6 +9,8 @@ import { preloadPage, snapshotPage } from './pageSnapshot';
 
 const FLIP_MS = 700;
 const EASING = 'cubic-bezier(0.45, 0, 0.25, 1)';
+/** Inclinaison du carnet fermé, la même que les grands livres. */
+const TILT = 'rotateX(30deg) rotateY(-18deg) rotateZ(-3deg)';
 /** Écran étroit : une page à la fois au lieu d'une double page. */
 const NARROW = '(max-width: 760px)';
 
@@ -53,7 +56,9 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
   const leaf = createLeafTurn();
   const stage = el('div', 'sketchbook-stage');
   const rings = createRings();
-  body.append(left, right, rings, leaf.canvas);
+  // Épaisseur du carnet fermé : ses feuilles vues de biais sous le carton.
+  const edges = createClosedEdges();
+  body.append(edges.root, left, right, rings, leaf.canvas);
 
   const previous = el('button', 'sketchbook-turn', '‹');
   const next = el('button', 'sketchbook-turn', '›');
@@ -77,10 +82,13 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
     if (single()) return { left: null, right: content.pages[position] };
     return { left: position === 0 ? insideCover : content.versos[position - 1], right: content.pages[position] };
   };
-  /** Fermé, le carnet est recentré sur la moitié qui reste visible. */
+  /**
+   * Fermé, le carnet est recentré sur la moitié qui reste visible, et incliné vers le lecteur pour
+   * montrer son épaisseur (l'inclinaison pivote autour du centre du carton : décalage d'abord).
+   */
   const shift = (position: number): string => {
-    if (single() || (position >= 0 && position < count)) return 'translateX(0%)';
-    return `translateX(${position < 0 ? -25 : 25}%)`;
+    if (position >= 0 && position < count) return 'rotateX(0deg) rotateY(0deg) translateX(0%)';
+    return `${TILT} translateX(${single() ? 0 : position < 0 ? -25 : 25}%)`;
   };
 
   const place = (half: HTMLElement, node: HTMLElement | null): void => {
@@ -94,6 +102,9 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
     body.style.transform = shift(position);
     body.classList.toggle('single', single());
     root.classList.toggle('closed', position < 0 || position >= count);
+    // En 3D tant qu'il est fermé : son épaisseur se voit (voir closedEdges).
+    root.classList.toggle('depth', position < 0 || position >= count);
+    edges.show(position < 0 ? 'front' : position >= count ? 'back' : null);
     previous.disabled = position < 0;
     next.disabled = position >= count;
   };
@@ -164,10 +175,15 @@ export const createSketchbook = (content: SketchbookContent): Sketchbook => {
         liftPaper(from, target);
         await leaf.animate(1, TURN_MS).finally(leaf.end);
       } else if (forward) {
+        // Ouvert depuis la couverture, ou refermé sur le dos : la tranche suit le carton.
+        root.classList.add('depth');
+        void edges.move(from < 0 ? 'front' : 'back', from >= 0, { duration: FLIP_MS, easing: EASING });
         // La page part : on découvre déjà la suivante dessous, à droite.
         place(right, sides(target).right);
         await flip(copy(moving), verso, 0, -180, shift(from), shift(target));
       } else {
+        root.classList.add('depth');
+        void edges.move(from >= count ? 'back' : 'front', from < count, { duration: FLIP_MS, easing: EASING });
         // La page revient de la gauche : on découvre déjà, à gauche, ce qu'elle cachait.
         place(left, sides(target).left);
         await flip(copy(moving), verso, -180, 0, shift(from), shift(target));

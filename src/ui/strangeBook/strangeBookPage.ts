@@ -1,39 +1,59 @@
 import './strangeBook.css';
 import { el, type Component } from '../dom';
 import { t } from '../../i18n';
-import { gutterCss, paperCss } from '../book/pageRender';
+import { gutterCss, paperCss, type Paper } from '../book/pageRender';
 import { STRANGE_PAPER, drawItems } from './pageItems';
 import { createPages, type LeafPage } from './pages';
 import { createLeafTurn } from './leafTurn';
 import { attachGrab } from '../book/bookGrab';
 import { HELD_PROGRESS, RELEASE_MS, TURN_MS } from '../book/book';
-import { createStrangeCovers } from './bookCovers';
+import { createStrangeCovers, type CoverLook } from './bookCovers';
+import { STRANGE_BINDING } from '../book/bindings';
+import { dressCovers } from '../book/coverArt';
+import { coverDesign } from '../../systems/coverDesign';
+import { STRANGE_BOOK_INDEX } from '../../systems/strangeBook';
 import type { GameState } from '../../core/state';
 
 /** Écran étroit : une seule page à la fois au lieu d'une double page. */
 const NARROW = '(max-width: 720px)';
 
-/** Débogage : les légendes changent (en clair ou en Babel) ; le livre ouvert se réécrit sans se refermer. */
-export const STRANGE_BOOK_REWRITE = 'strangebook:rewrite';
+/** Le contenu d'un grand livre a changé (débogage…) : le livre ouvert se réécrit sans se refermer. */
+export const BIG_BOOK_REWRITE = 'bigbook:rewrite';
+
+/** Ce qui distingue un grand livre d'un autre : ses pages, leur papier, sa reliure. */
+export interface BigBookOptions {
+  /**
+   * Pages dans l'ordre. `null` : pas de page à cette place, on y voit l'intérieur de la couverture
+   * (à gauche de la première page, à droite de la dernière). En page seule, ces places disparaissent.
+   */
+  pages: (goTo: (page: number) => void) => (LeafPage | null)[];
+  paper: Paper;
+  covers: CoverLook;
+  /** Classe ajoutée à la page (styles propres à ce livre). */
+  className?: string;
+}
 
 /**
- * Le livre étrange en grand, par-dessus le décor : fermé sur sa couverture, puis ouvert (sommaire,
- * pages qui tournent), et refermé sur son dos après la dernière page.
+ * Un grand livre, par-dessus le décor (livre étrange, livre blanc) : fermé sur sa couverture, puis
+ * ouvert (pages qui tournent), et refermé sur son dos après la dernière page.
  */
-export const createStrangeBookPage = (state: GameState, onBack: () => void): Component => {
-  const root = el('main', 'sb-page');
+export const createBigBookPage = (options: BigBookOptions, onBack: () => void): Component => {
+  const root = el('main', options.className ? `sb-page ${options.className}` : 'sb-page');
   const back = el('button', 'options-back', `← ${t('ui.back')}`);
   back.addEventListener('click', onBack);
 
   const book = el('div', 'sb-book');
-  book.style.setProperty('--sb-paper', paperCss(STRANGE_PAPER));
+  book.style.setProperty('--sb-paper', paperCss(options.paper));
   const spread = el('div', 'sb-spread');
   const leaf = createLeafTurn();
   const previous = el('button', 'sb-turn', '‹');
   const next = el('button', 'sb-turn', '›');
   previous.setAttribute('aria-label', t('ui.previousPage'));
   next.setAttribute('aria-label', t('ui.nextPage'));
-  book.append(spread);
+  // Tranchefiles : les bourrelets de fil en haut et en bas du dos, entre les deux pages (livre ouvert).
+  // Piles de pages sur les bords extérieurs (déjà lues à gauche, à lire à droite), et tranchefiles :
+  // les bourrelets de fil en haut et en bas du dos, entre les deux pages (livre ouvert).
+  book.append(spread, el('span', 'sb-stack left'), el('span', 'sb-stack right'), el('span', 'sb-headband top'), el('span', 'sb-headband bottom'));
   const nav = el('div', 'sb-nav');
   nav.append(previous, next);
   root.append(back, book, nav);
@@ -43,26 +63,33 @@ export const createStrangeBookPage = (state: GameState, onBack: () => void): Com
   let current = -1;
   let turning = false;
   let slots: HTMLElement[] = [];
-  let pages: LeafPage[] = createPages(state, (page) => void goTo(Math.floor(page / perSpread)));
-  const spreadCount = (): number => Math.ceil(pages.length / perSpread);
-  const covers = createStrangeCovers(book, () => perSpread === 1);
+  const makePages = (): (LeafPage | null)[] => options.pages((page) => void goTo(Math.floor(page / perSpread)));
+  let all = makePages();
+  const pages = (): (LeafPage | null)[] => (perSpread === 1 ? all.filter((page) => page !== null) : all);
+  const spreadCount = (): number => Math.ceil(pages().length / perSpread);
+  const covers = createStrangeCovers(book, () => perSpread === 1, options.covers);
   const closedSide = (position: number): 'front' | 'back' | null =>
     position < 0 ? 'front' : position >= spreadCount() ? 'back' : null;
-  const pageAt = (spreadIndex: number, slot: number): LeafPage | undefined => pages[spreadIndex * perSpread + slot];
-  const place = (slot: number, page: LeafPage | undefined): void => {
+  const pageAt = (spreadIndex: number, slot: number): LeafPage | null | undefined => pages()[spreadIndex * perSpread + slot];
+  const place = (slot: number, page: LeafPage | null | undefined): void => {
     // Une page qui arrive (ou revient) n'affiche plus la légende d'un sceau survolé la dernière fois.
     if (page && slots[slot].firstChild !== page.root) page.shown();
-    slots[slot].replaceChildren(page?.root ?? el('div', 'sb-paper'));
+    // Pas de page ici : la place reste nue, l'intérieur de la couverture se voit (classe bare-0, bare-1).
+    slots[slot].replaceChildren(...(page === null ? [] : [page?.root ?? el('div', 'sb-paper')]));
+    book.classList.toggle(`bare-${slot}`, page === null);
   };
   /** Texture d'une page, ou papier vierge (verso d'une page seule, page manquante). */
-  const paint = (page: LeafPage | undefined, canvas: HTMLCanvasElement, spineOnLeft: boolean): void => {
-    if (page) page.paint(canvas, spineOnLeft);
-    else drawItems(canvas, [], spineOnLeft);
+  const paint = (page: LeafPage | null | undefined, canvas: HTMLCanvasElement, spineOnLeft: boolean): void => {
+    if (page) page.paint(canvas, spineOnLeft, options.paper);
+    else drawItems(canvas, [], spineOnLeft, options.paper);
   };
 
   const refreshNav = (): void => {
     previous.disabled = current < 0;
     next.disabled = current >= spreadCount();
+    // Avancement dans le livre : la pile de gauche s'épaissit, celle de droite s'amincit.
+    const read = spreadCount() > 1 ? Math.min(1, Math.max(0, current / (spreadCount() - 1))) : 0;
+    book.style.setProperty('--read', read.toFixed(3));
   };
 
   const layout = (): void => {
@@ -245,15 +272,30 @@ export const createStrangeBookPage = (state: GameState, onBack: () => void): Com
   // Pages réécrites à la même place : des chapitres peuvent apparaître ou disparaître, la double page
   // ouverte reste la même (ou la dernière s'il y en a moins). Pendant un tour de page, on attend la fin.
   const rewrite = (): void => {
-    if (!root.isConnected) return window.removeEventListener(STRANGE_BOOK_REWRITE, rewrite);
+    if (!root.isConnected) return window.removeEventListener(BIG_BOOK_REWRITE, rewrite);
     if (turning) return void setTimeout(rewrite, 100);
     const side = closedSide(current);
-    pages = createPages(state, (page) => void goTo(Math.floor(page / perSpread)));
+    all = makePages();
     current = side === 'front' ? -1 : side === 'back' ? spreadCount() : Math.min(current, spreadCount() - 1);
     layout();
   };
-  window.addEventListener(STRANGE_BOOK_REWRITE, rewrite);
+  window.addEventListener(BIG_BOOK_REWRITE, rewrite);
 
   layout();
-  return { root, update: () => pages.forEach((page) => page.update()) };
+  return { root, update: () => all.forEach((page) => page?.update()) };
 };
+
+/** Le livre étrange : les statistiques, en cuir noir, sur papier gris. */
+export const createStrangeBookPage = (state: GameState, onBack: () => void): Component =>
+  createBigBookPage(
+    {
+      pages: (goTo) => createPages(state, goTo),
+      paper: STRANGE_PAPER,
+      covers: {
+        binding: STRANGE_BINDING,
+        edge: { paper: STRANGE_PAPER[1], line: '#a39d8b' },
+        dress: (outside) => dressCovers(outside, coverDesign(STRANGE_BOOK_INDEX)),
+      },
+    },
+    onBack,
+  );

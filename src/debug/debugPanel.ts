@@ -1,10 +1,11 @@
 import { el } from '../ui/dom';
 import { beyond, clarity } from '../systems/perception';
 import { addKnowledge, findChance, forceFinds } from '../systems/knowledge';
+import { currentTarget, segments, write } from '../systems/sentences';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
 import { pagesPerSecond } from '../systems/production';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed } from '../systems/strangeBook';
-import { STRANGE_BOOK_REWRITE } from '../ui/strangeBook/strangeBookPage';
+import { BIG_BOOK_REWRITE } from '../ui/strangeBook/strangeBookPage';
 import { announceSeals, sealAll } from '../systems/seals';
 import { SEALS } from '../data/seals';
 import { DEBUG_BOOK_EVENT } from './events';
@@ -20,9 +21,9 @@ export const isDebugEnabled = (): boolean => new URLSearchParams(window.location
 
 const PRESETS = [0, 100, 1_000, 10_000, 1_000_000];
 
-/** Livre étrange ouvert : il se réécrit à la même page (chapitres ou légendes qui changent). */
-const rewriteStrangeBook = (): void => {
-  if (document.querySelector('.sb-page')) window.dispatchEvent(new Event(STRANGE_BOOK_REWRITE));
+/** Grand livre ouvert (étrange, blanc) : il se réécrit à la même page (chapitres ou légendes qui changent). */
+const rewriteBigBook = (): void => {
+  if (document.querySelector('.sb-page')) window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
 };
 
 /** Le livre en main a changé (page, numéro, titres) : il se redessine. */
@@ -85,19 +86,28 @@ export const mountDebugPanel = (state: GameState): void => {
       buttons(
         ['+1', () => {
           addKnowledge(state, 1);
-          rewriteStrangeBook();
+          rewriteBigBook();
         }],
         ['+10', () => {
           addKnowledge(state, 10);
-          rewriteStrangeBook();
+          rewriteBigBook();
         }],
         ['Tout oublier', () => {
-          Object.assign(state, { knowledge: 0, cycleKnowledge: 0, lifetimeKnowledge: 0, finds: [], deciphered: [] });
+          Object.assign(state, { knowledge: 0, cycleKnowledge: 0, lifetimeKnowledge: 0, finds: [], written: {}, deciphered: [] });
           state.stats.fragments = 0;
-          rewriteStrangeBook();
+          rewriteBigBook();
         }],
       ),
-      'ajouter : sans rien trouver ; tout oublier : Connaissance, trouvailles et déchiffrage',
+      'ajouter : sans rien trouver ; tout oublier : Connaissance, trouvailles, livre blanc et déchiffrage',
+    ),
+    row(
+      'Livre blanc',
+      buttons(['Compléter la phrase en cours', () => {
+        const target = currentTarget(state);
+        if (target) write(state, target, segments(target).map((_, index) => index));
+        rewriteBigBook();
+      }]),
+      'découvre la méthode suivante',
     ),
     check('Trouvaille à chaque page', 'au lieu d’une page sur 200', forceFinds).root,
   );
@@ -107,7 +117,7 @@ export const mountDebugPanel = (state: GameState): void => {
     refreshBook();
     // Livre étrange déjà ouvert : il se réécrit à la même page ; sinon l'écran est reconstruit (le
     // livre devient accessible, ou ne l'est plus).
-    if (document.querySelector('.sb-page')) rewriteStrangeBook();
+    if (document.querySelector('.sb-page')) rewriteBigBook();
     else window.dispatchEvent(new HashChangeEvent('hashchange'));
   });
   const strange = section(

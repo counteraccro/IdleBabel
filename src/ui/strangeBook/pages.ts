@@ -74,22 +74,28 @@ const FIGURE_TOP = 190;
 const FIGURE_STEP = 125;
 
 /**
- * Partie encore illisible qui s'achète : un clic sur la zone `ask` fait écrire au crayon, en `noteY`,
- * ce qu'elle coûte ; un clic sur la note la paie.
+ * Offre au crayon : un clic sur la zone `ask` fait écrire la note en `noteY` (ce que ça coûte), un clic
+ * sur la note paie. Sert à déchiffrer le livre étrange, et à deviner un morceau dans le livre blanc.
  */
+export const pencilOffer = (note: string, asking: boolean, ask: { y: number; height: number }, noteY: number): Item[] => [
+  { kind: 'action', id: 'ask', ...ask },
+  ...(asking
+    ? [
+        { kind: 'text', text: note, x: 320, y: noteY, size: 26, align: 'center', face: 'hand', steady: true } satisfies Item,
+        { kind: 'action', id: 'pay', y: noteY - 8, height: 44 } satisfies Item,
+      ]
+    : []),
+];
+
+/** Note d'un prix en Connaissance : ce qu'on obtient, ou ce qu'il manque. */
+export const priceNote = (state: GameState, price: number, offer: string, short: string): string =>
+  t(state.knowledge >= price ? offer : short).replace('{n}', String(price));
+
+/** Partie encore illisible qui s'achète : la note au crayon propose de la déchiffrer. */
 const decipherItems = (state: GameState, part: PartId, asking: boolean, ask: { y: number; height: number }, noteY: number): Item[] => {
   const price = decipherPrice(state, part);
   if (price === undefined) return [];
-  const note = t(state.knowledge >= price ? 'strangeBook.decipher' : 'strangeBook.decipherShort').replace('{n}', String(price));
-  return [
-    { kind: 'action', id: 'ask', ...ask },
-    ...(asking
-      ? [
-          { kind: 'text', text: note, x: 320, y: noteY, size: 26, align: 'center', hand: true, steady: true } satisfies Item,
-          { kind: 'action', id: 'pay', y: noteY - 8, height: 44 } satisfies Item,
-        ]
-      : []),
-  ];
+  return pencilOffer(priceNote(state, price, 'strangeBook.decipher', 'strangeBook.decipherShort'), asking, ask, noteY);
 };
 
 const chapterItems = (state: GameState, chapter: Chapter, number: number, asking: boolean): Item[] => [
@@ -110,7 +116,7 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number, asking
 /** La page dont un sceau est survolé : une seule légende à la fois dans tout le livre. */
 let legendOwner: LeafPage | null = null;
 
-interface PageHooks {
+export interface PageHooks {
   /** La page arrive sous les yeux. */
   onShown?: () => void;
   /** Un de ses sceaux est survolé. */
@@ -120,12 +126,12 @@ interface PageHooks {
 }
 
 /** Ce qui change sur une page sans venir de la partie : le sceau survolé, la note au crayon ouverte. */
-interface PageView {
+export interface PageView {
   hovered: string | null;
   asking: boolean;
 }
 
-const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: number) => void, hooks: PageHooks = {}): LeafPage => {
+export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: number) => void, hooks: PageHooks = {}): LeafPage => {
   const root = el('div', 'sb-paper');
   const view: PageView = { hovered: null, asking: false };
   const render = createItemsView(root, {

@@ -50,7 +50,17 @@ const DAY_MS = 86_400_000;
 /** Trouvailles d'une sorte. */
 const found = (state: GameState, kind: string): number => state.finds.filter((find) => find.kind === kind).length;
 
-const TOOL_CAPTIONS: Record<string, string> = { diagonal: 'bruda vex' };
+const TOOL_CAPTIONS: Record<string, string> = {
+  diagonal: 'bruda vex',
+  finger: 'olmo dite',
+  thumb: 'parsu nel',
+  voice: 'vox teduri',
+  wide: 'larbe io',
+  double: 'dimpa roel',
+  mirror: 'cuprel ana',
+  lectern: 'lotiz perma',
+  ladder: 'escal u virn',
+};
 
 export const CHAPTERS: readonly Chapter[] = [
   {

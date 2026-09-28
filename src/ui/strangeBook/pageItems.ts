@@ -10,10 +10,30 @@ import { drawSeal, sealSvg, sigil, type Look } from './sigil';
  */
 export type Item =
   /**
-   * `steady` : le texte change sans l'effet de réécriture (légende qui suit la souris) ; `hand` : note
-   * au crayon, de la main du chercheur.
+   * `steady` : le texte change sans l'effet de réécriture (légende qui suit la souris). `face` : écriture
+   * du chercheur au crayon. `caps` : petites capitales. `ink` : symboles de Babel presque effacés
+   * (`noise`), ou lettres d'une phrase pas encore ordonnée (`ghost`). `gather` : les lettres viennent de
+   * s'ordonner, elles glissent à leur place depuis ailleurs sur la page (graine de leurs trajets).
    */
-  | { kind: 'text'; text: string; x: number; y: number; size: number; align: CanvasTextAlign; italic?: boolean; faded?: boolean; spacing?: number; steady?: boolean; gold?: boolean; hand?: boolean }
+  | {
+      kind: 'text';
+      text: string;
+      x: number;
+      y: number;
+      size: number;
+      align: CanvasTextAlign;
+      italic?: boolean;
+      faded?: boolean;
+      spacing?: number;
+      steady?: boolean;
+      gold?: boolean;
+      face?: 'hand';
+      caps?: boolean;
+      ink?: 'noise' | 'ghost';
+      gather?: number;
+      /** Apparition en fondu après ce délai (ms) : la page vient de changer d'aspect. */
+      reveal?: number;
+    }
   | { kind: 'dots'; x1: number; x2: number; y: number }
   /** Zone cliquable (entrée du sommaire) : rien n'est dessiné. */
   | { kind: 'link'; y: number; height: number; target: number }
@@ -37,16 +57,27 @@ const FADED = '#5d5f66';
 const GOLD = '#b8913a';
 const SERIF = "Georgia, 'Times New Roman', serif";
 /** Écriture et crayon du chercheur, les mêmes que dans son carnet. */
-const HAND = "'Nothing You Could Do', cursive";
+export const HAND = "'Nothing You Could Do', cursive";
 const PENCIL = '#4a463f';
+const PENCIL_FADED = '#aaa391';
+/** Livre blanc : symboles de Babel presque effacés, et lettres d'une phrase pas encore ordonnée. */
+export const NOISE_INK = '#d8d0bd';
+const GHOST_INK = '#bdb39c';
+export const SERIF_FONT = SERIF;
 
 /** Titre d'une page et numéro de page, au même endroit sur toutes les pages. */
 export const heading = (text: string): Item => ({ kind: 'text', text, x: 320, y: 100, size: 32, align: 'center', spacing: 6 });
 export const folio = (number: number): Item => ({ kind: 'text', text: String(number), x: 320, y: 730, size: 18, align: 'center', faded: true });
 
 type TextItem = Extract<Item, { kind: 'text' }>;
-const font = (item: TextItem, size: string): string => (item.hand ? `${size} ${HAND}` : `${item.italic ? 'italic ' : ''}${size} ${SERIF}`);
-const color = (item: TextItem): string => (item.hand ? PENCIL : item.gold ? GOLD : item.faded ? FADED : INK);
+const font = (item: TextItem, size: string): string =>
+  `${item.italic ? 'italic ' : ''}${item.caps ? 'small-caps ' : ''}${size} ${item.face === 'hand' ? HAND : SERIF}`;
+const color = (item: TextItem): string => {
+  if (item.ink === 'noise') return NOISE_INK;
+  if (item.ink === 'ghost') return GHOST_INK;
+  if (item.face === 'hand') return item.faded ? PENCIL_FADED : PENCIL;
+  return item.gold ? GOLD : item.faded ? FADED : INK;
+};
 /** Unité HTML : la page est un conteneur, 1 unité du repère = 100 / 640 cqw. */
 const unit = (value: number): string => `${((value * 100) / PAGE_TEXTURE.width).toFixed(3)}cqw`;
 
@@ -62,7 +93,13 @@ const placeText = (node: HTMLElement, item: TextItem): void => {
 
 const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement => {
   if (item.kind === 'text') {
-    const node = el('span', item.gold ? 'sb-text sb-gold' : 'sb-text', item.text);
+    const node = el('span', item.gold ? 'sb-text sb-gold' : 'sb-text');
+    if (item.gather === undefined) node.textContent = item.text;
+    else gatherLetters(node, item.text, item.gather);
+    if (item.reveal !== undefined) {
+      node.classList.add('sb-reveal');
+      node.style.animationDelay = `${item.reveal}ms`;
+    }
     placeText(node, item);
     return node;
   }
@@ -98,6 +135,25 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
   return node;
 };
 
+/** Hachage d'entiers : toujours le même résultat pour les mêmes nombres. */
+export const hash = (...values: number[]): number =>
+  values.reduce((h, value) => Math.imul(h ^ (value + 0x9e3779b9), 0x85ebca6b) >>> 0, 0x2545f491);
+
+/**
+ * Lettres qui viennent de s'ordonner (livre blanc) : chacune part d'un autre endroit de la page, pâle
+ * comme les symboles autour, et glisse jusqu'à sa place en fonçant, l'une après l'autre.
+ */
+const gatherLetters = (node: HTMLElement, text: string, seed: number): void => {
+  [...text].forEach((letter, index) => {
+    const span = el('span', 'sb-gather', letter);
+    const h = hash(seed, index);
+    span.style.setProperty('--dx', `${((h % 400) - 200) / 10}cqw`);
+    span.style.setProperty('--dy', `${(((h >>> 9) % 500) - 250) / 10}cqw`);
+    span.style.animationDelay = `${index * 60}ms`;
+    node.append(span);
+  });
+};
+
 /** Un chiffre qui change tremble à peine, comme s'il se réécrivait. */
 const rewrite = (node: HTMLElement, text: string): void => {
   node.textContent = text;
@@ -106,15 +162,21 @@ const rewrite = (node: HTMLElement, text: string): void => {
   node.classList.add('sb-shift');
 };
 
+const itemShape = (item: Item): string => {
+  if (item.kind === 'seal') return `seal:${item.look}:${item.fresh ?? false}`;
+  if (item.kind === 'action') return `action:${item.id}`;
+  if (item.kind === 'text') return `text:${item.x}:${item.y}:${item.faded ?? false}:${item.ink ?? ''}`;
+  return item.kind;
+};
+
 /** Page HTML : reconstruite si sa structure change, sinon seuls les textes changés sont réécrits. */
 export const createItemsView = (target: HTMLElement, actions: ItemActions): ((items: Item[]) => void) => {
   let shape = '';
   let nodes: HTMLElement[] = [];
   return (items) => {
-    // Un sceau qui change d'aspect (obtenu, vu) fait reconstruire la page.
-    const nextShape = items
-      .map((item) => (item.kind === 'seal' ? `seal:${item.look}:${item.fresh ?? false}` : item.kind === 'action' ? `action:${item.id}` : item.kind))
-      .join();
+    // Un sceau qui change d'aspect (obtenu, vu), un texte qui bouge ou change d'encre (mot trouvé du
+    // livre blanc) font reconstruire la page ; sinon seuls les textes sont réécrits.
+    const nextShape = items.map(itemShape).join();
     if (nextShape !== shape) {
       shape = nextShape;
       nodes = items.map((item) => createNode(item, actions));

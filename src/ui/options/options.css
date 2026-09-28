@@ -45,6 +45,18 @@
   perspective: 2200px;
   rotate: -1deg;
 }
+/* Carnet fermé en perspective : la page donne le point de vue, le carnet garde la 3D de son épaisseur. */
+.sketchbook { perspective: 1600px; }
+/* Une seule perspective, celle du carnet : celle du corps (pour la feuille qui tourne) s'y ajouterait. */
+.sketchbook.depth .sketchbook-body { transform-style: preserve-3d; perspective: none; }
+/* Tranche du carnet fermé (voir closedEdges.ts) : feuilles crème, carton kraft. */
+.sketchbook-body {
+  --edge-paper: #efe8d8;
+  --edge-line: #c9bfa8;
+  --leather: var(--kraft);
+  --leather-deep: #5e4629;
+}
+.sketchbook-body .closed-edges { --edge-depth: 22px; --edge-inset: 3px; }
 .sketchbook-body.single {
   grid-template-columns: 1fr;
   width: min(460px, calc(100vw - 32px));

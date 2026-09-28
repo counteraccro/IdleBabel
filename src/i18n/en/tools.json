@@ -1,6 +1,11 @@
 {
-  "diagonal": {
-    "name": "Diagonal Reading",
-    "description": "+0.1 page/s — the mind skips every other word."
-  }
+  "diagonal": { "name": "Diagonal Reading", "description": "+0.1 page/s — the mind skips every other word." },
+  "finger": { "name": "The Guiding Finger", "description": "+0.5 page/s — the eye no longer goes back." },
+  "thumb": { "name": "The Worn Thumb", "description": "+2.5 pages/s — pages turn without hesitation." },
+  "voice": { "name": "The Silenced Voice", "description": "+12 pages/s — no inner voice to slow things down." },
+  "wide": { "name": "The Wide Gaze", "description": "+55 pages/s — words read by the handful." },
+  "double": { "name": "Double Leafing", "description": "+250 pages/s — two hands, two volumes." },
+  "mirror": { "name": "The Copper Mirror", "description": "+1,100 pages/s — the glow falls on two pages." },
+  "lectern": { "name": "The Stone Lectern", "description": "+5,000 pages/s — a block torn from a railing." },
+  "ladder": { "name": "The Rolling Ladder", "description": "+22,000 pages/s — reading the high shelves without coming down." }
 }

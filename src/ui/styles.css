@@ -57,6 +57,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   padding: 14px 16px; backdrop-filter: blur(3px);
 }
 .panel h2 { margin: 0 0 10px; font-size: 1rem; font-weight: normal; letter-spacing: 0.06em; color: var(--accent); }
+.tools[hidden] { display: none; }
 .tools { grid-area: tools; align-self: center; max-height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 .tool { display: flex; flex-direction: column; gap: 4px; }
 .tool + .tool { border-top: 1px solid var(--border); padding-top: 12px; }
@@ -64,6 +65,11 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .tool-owned { color: var(--accent); font-variant-numeric: tabular-nums; }
 .tool p { margin: 0; color: var(--muted); font-size: 0.85rem; font-style: italic; }
 .tool-buy { align-self: stretch; margin-top: 4px; }
+.tool[hidden] { display: none; }
+/* Méthode tout juste découverte dans le livre blanc : elle apparaît doucement. */
+.tool.discovered { animation: tool-discovered 1.2s ease-out; }
+@keyframes tool-discovered { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .tool.discovered { animation: none; } }
 
 .counter {
   grid-area: counter; justify-self: center; align-self: start;

@@ -1,12 +1,13 @@
 import { el } from '../dom';
 import { gutterCss } from '../book/pageRender';
 import { createFlap } from '../book/bookFlap';
-import { dressCovers } from '../book/coverArt';
-import { applyBinding, STRANGE_BINDING } from '../book/bindings';
-import { coverDesign } from '../../systems/coverDesign';
-import { STRANGE_BOOK_INDEX } from '../../systems/strangeBook';
+import { applyBinding, type Binding } from '../book/bindings';
+import { cloneWithFreshIds } from '../cloneFresh';
+import { createClosedEdges } from '../book/closedEdges';
 
 const MOVE_MS = 750;
+/** Inclinaison du livre fermé : penché en arrière et vu un peu de la droite, pour montrer son épaisseur (sa tranche du bas, son dos bombé, un peu sa tranche de côté). */
+const TILT = 'rotateX(30deg) rotateY(-18deg) rotateZ(-3deg)';
 const EASING = 'cubic-bezier(0.45, 0, 0.25, 1)';
 
 /** Côté fermé : couverture de devant (avant la première page) ou dos (après la dernière). */
@@ -22,13 +23,24 @@ export interface StrangeCovers {
   reset: () => void;
 }
 
+/** Reliure d'un grand livre et décor de ses plats extérieurs. */
+export interface CoverLook {
+  binding: Binding;
+  /** Tranche du livre fermé : couleur des feuilles vues de profil, et de la ligne entre deux feuilles. */
+  edge: { paper: string; line: string };
+  dress: (outside: { front: HTMLElement; back: HTMLElement }) => void;
+}
+
 /**
- * Couvertures du grand livre : les rabats du livre en main (cuir intérieur, plat décoré).
+ * Couvertures d'un grand livre : les rabats du livre en main (cuir intérieur, plat décoré).
  * Double page : la couverture de devant se rabat sur la page de droite, le dos sur celle de gauche,
  * et le livre se recentre. Page seule : les deux rabats pivotent autour du bord gauche (le dos).
  */
-export const createStrangeCovers = (book: HTMLElement, single: () => boolean): StrangeCovers => {
-  applyBinding(book, STRANGE_BINDING);
+export const createStrangeCovers = (book: HTMLElement, single: () => boolean, look: CoverLook): StrangeCovers => {
+  applyBinding(book, look.binding);
+  book.style.setProperty('--edge-paper', look.edge.paper);
+  book.style.setProperty('--edge-line', look.edge.line);
+  const edges = createClosedEdges({ bound: true });
   const layer = el('div', 'sb-covers');
   const front = createFlap('left');
   const back = createFlap('right');
@@ -38,18 +50,29 @@ export const createStrangeCovers = (book: HTMLElement, single: () => boolean): S
   carried.back.style.setProperty('--gutter', gutterCss('90deg'));
   front.root.firstElementChild!.append(carried.front);
   back.root.firstElementChild!.append(carried.back);
-  dressCovers({ front: front.outside, back: back.outside }, coverDesign(STRANGE_BOOK_INDEX));
+  look.dress({ front: front.outside, back: back.outside });
   layer.append(front.root, back.root);
-  book.append(layer);
+  // La tranche sous les couvertures : elle ne se voit que livre fermé.
+  book.append(edges.root, layer);
 
   const flap = (side: ClosedSide): HTMLElement => (side === 'front' ? front : back).root;
   const angle = (side: ClosedSide): string => (side === 'front' ? 'rotateY(180deg)' : 'rotateY(-180deg)');
-  /** Livre fermé recentré : il n'occupe plus qu'une moitié de la double page. */
-  const shift = (side: ClosedSide): string => (single() ? 'none' : `translateX(${side === 'front' ? -25 : 25}%)`);
+  /**
+   * Livre fermé : recentré sur sa moitié visible, et incliné vers le lecteur (on voit sa tranche à
+   * droite et en dessous). L'inclinaison pivote autour du centre de la couverture : le décalage est
+   * appliqué avant elle.
+   */
+  const shift = (side: ClosedSide): string =>
+    `${TILT}${single() ? '' : ` translateX(${side === 'front' ? -25 : 25}%)`}`;
 
   const clear = (): void => {
     for (const element of [front.root, back.root, book]) element.getAnimations().forEach((a) => a.cancel());
-    book.classList.remove('closed', 'closed-front', 'closed-back', 'moving-front', 'moving-back');
+    book.classList.remove('closed', 'closed-front', 'closed-back', 'moving-front', 'moving-back', 'depth');
+    // Page emportée : elle ne sert que pendant le mouvement. Restée sur le rabat, elle se verrait
+    // par-dessus la page de gauche (l'intérieur du rabat reste visible).
+    carried.front.replaceChildren();
+    carried.back.replaceChildren();
+    edges.show(null);
   };
   const hold = (element: HTMLElement, transform: string): void => {
     element.animate([{ transform }], { duration: 0, fill: 'forwards' });
@@ -57,15 +80,17 @@ export const createStrangeCovers = (book: HTMLElement, single: () => boolean): S
 
   const showClosed = (side: ClosedSide): void => {
     clear();
-    book.classList.add('closed', `closed-${side}`);
+    book.classList.add('closed', `closed-${side}`, 'depth');
+    edges.show(side);
     hold(flap(side), angle(side));
     hold(book, shift(side));
   };
 
   const move = async (side: ClosedSide, page: HTMLElement | null, closing: boolean): Promise<void> => {
     clear();
-    carried[side].replaceChildren(...(page && !single() ? [page.cloneNode(true)] : []));
-    book.classList.add(`moving-${side}`);
+    carried[side].replaceChildren(...(page && !single() ? [cloneWithFreshIds(page)] : []));
+    // En 3D le temps du mouvement : l'épaisseur se voit tant que le livre n'est pas tout à fait ouvert.
+    book.classList.add(`moving-${side}`, 'depth');
     // Toujours animé, comme les pages : ouvrir et fermer le livre est un geste, pas une décoration.
     const options: KeyframeAnimationOptions = { duration: MOVE_MS, easing: EASING, fill: 'forwards' };
     const flat = 'rotateY(0deg)';
@@ -74,6 +99,7 @@ export const createStrangeCovers = (book: HTMLElement, single: () => boolean): S
     await Promise.all([
       flap(side).animate([{ transform: flapFrom }, { transform: flapTo }], options).finished,
       book.animate([{ transform: bookFrom }, { transform: bookTo }], options).finished,
+      edges.move(side, closing, options),
     ]);
     if (closing) showClosed(side);
     else clear();

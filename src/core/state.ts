@@ -1,4 +1,4 @@
-import type { ToolId } from '../data/tools';
+import { TOOLS, type ToolId } from '../data/tools';
 import type { HistoryEntry } from './history';
 import type { Locale } from '../i18n';
 import type { Find } from '../data/knowledge';
@@ -54,8 +54,10 @@ export interface GameState {
   cycleKnowledge: number;
   /** Connaissance trouvée depuis le début de la partie : ne baisse jamais, ni à l'Exil. */
   lifetimeKnowledge: number;
-  /** Mots, morceaux de phrase et phrases trouvés, dans l'ordre (pour reconstruire des phrases, plus tard). */
+  /** Mots, morceaux de phrase et phrases trouvés, dans l'ordre. */
   finds: Find[];
+  /** Livre blanc : morceaux écrits de chaque phrase (data/sentences.ts), gardés pour toujours. */
+  written: Record<string, number[]>;
   /** Parties du livre étrange déchiffrées en payant de la Connaissance : pour toujours. */
   deciphered: PartId[];
   /** Sceaux obtenus (voir data/seals.ts), avec leur date. */
@@ -70,7 +72,7 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   version: SAVE_VERSION,
   pages: 0,
   totalPagesRead: 0,
-  tools: { diagonal: 0 },
+  tools: Object.fromEntries(TOOLS.map((tool) => [tool.id, 0])) as Record<ToolId, number>,
   bookPage: 0,
   booksFinished: 0,
   locale,
@@ -80,6 +82,7 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   cycleKnowledge: 0,
   lifetimeKnowledge: 0,
   finds: [],
+  written: {},
   deciphered: [],
   seals: {},
   newSeals: [],

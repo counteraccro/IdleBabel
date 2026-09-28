@@ -173,3 +173,79 @@
 
 /* Page seule : les deux rabats pivotent autour du bord gauche (le dos) et reposent à gauche, ouverts. */
 .sb-book.single .book-flap { left: -100%; width: 100%; transform-origin: right center; }
+
+/*
+ * Tranchefiles du grand livre ouvert : un bourrelet de fil tressé en haut et en bas du dos, à cheval
+ * sur le bord des pages. Couleurs du fil : --headband-a et --headband-b (livre étrange : bleu nuit et
+ * gris ; les Connaissances : or et crème). Cachés livre fermé ou quand la couverture bouge.
+ */
+.sb-headband {
+  --headband-a: #3d4c68;
+  --headband-b: #a9adb6;
+  position: absolute;
+  left: 50%;
+  z-index: 4;
+  width: 22px;
+  height: 9px;
+  border-radius: 45%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.35), transparent 60%),
+    repeating-linear-gradient(100deg, var(--headband-a) 0 2px, var(--headband-b) 2px 3.5px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+.sb-headband.top { top: 9px; }
+.sb-headband.bottom { bottom: 9px; }
+.sb-book.single .sb-headband { left: 14px; }
+.sb-book.closed .sb-headband,
+.sb-book[class*='moving-'] .sb-headband { visibility: hidden; }
+.wb-page .sb-headband { --headband-a: #c8993f; --headband-b: #efe4c6; }
+
+/*
+ * Plats du grand livre : coins nettement arrondis côté tranche (le cuir s'use et s'arrondit là où on
+ * le saisit), à peine côté dos, où il rejoint le dos bombé. Le livre fermé montre le plat de devant
+ * (rabat de gauche retourné) ou celui de derrière (rabat de droite).
+ */
+.sb-covers .flap-left .flap-leather { border-radius: 3px 14px 14px 3px; }
+.sb-covers .flap-right .flap-leather { border-radius: 14px 3px 3px 14px; }
+.sb-covers .cover-art,
+.sb-covers .cover-vellum { border-radius: inherit; overflow: hidden; }
+
+/*
+ * Livre fermé en perspective (bookCovers.ts : inclinaison) : la page donne le point de vue, le livre
+ * garde la 3D de son épaisseur (closedEdges) tant qu'il est fermé ou en mouvement. Fermé, les deux
+ * moitiés de cuir intérieur sont cachées : dans la même 3D, elles passeraient devant la couverture.
+ */
+.sb-page { perspective: 1600px; }
+.sb-book.depth { transform-style: preserve-3d; }
+.sb-book.closed::before,
+.sb-book.closed::after { visibility: hidden; }
+
+/*
+ * Piles de pages du livre ouvert, sur les bords extérieurs, dans le débord de la couverture : les
+ * feuilles en escalier (les plus éloignées un peu plus basses et plus courtes). --read (0 à 1) :
+ * avancement ; à gauche les pages lues, à droite celles qui restent (au moins quelques feuilles).
+ */
+.sb-stack {
+  --stack: calc(2px + 9px * var(--read, 0));
+  position: absolute;
+  top: 15px;
+  bottom: 15px;
+  z-index: 2;
+  width: var(--stack);
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.28), transparent 70%),
+    repeating-linear-gradient(90deg, var(--edge-paper, #d8d3c4) 0 1.2px, var(--edge-line, #a39d8b) 1.2px 1.9px);
+}
+.sb-stack.left { left: calc(14px - var(--stack)); clip-path: polygon(0 1.2%, 100% 0, 100% 100%, 0 98.8%); }
+.sb-stack.right {
+  --stack: calc(2px + 9px * (1 - var(--read, 0)));
+  left: calc(100% - 14px);
+  transform: scaleX(-1);
+  clip-path: polygon(0 1.2%, 100% 0, 100% 100%, 0 98.8%);
+}
+.sb-book.single .sb-stack.left { display: none; }
+.sb-book.closed .sb-stack,
+.sb-book[class*='moving-'] .sb-stack { visibility: hidden; }

@@ -25,6 +25,10 @@
 .ribbon:focus-visible { color: #f3dc9c; border-color: rgba(224, 184, 112, 0.75); }
 .ribbon[hidden] { display: none; }
 .ribbon-strange { --cloth: #4a5b78; --leather: #1b2029; --leather-dark: #0b0d12; }
+/* Le livre blanc : vélin clair, lettres à l'encre, signet de lin. */
+.ribbon-white { --cloth: #b7ad94; --leather: #d4ccb7; --leather-dark: #a79f8a; color: #3b3326; text-shadow: none; border-color: rgba(96, 86, 64, 0.5); }
+.ribbon-white:hover,
+.ribbon-white:focus-visible { color: #1f1a12; border-color: rgba(96, 86, 64, 0.8); }
 
 /*
  * Le signet sort d'entre les pages : il part de derrière le bouton (sous son bord bas), ombré à la

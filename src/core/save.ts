@@ -15,6 +15,9 @@ export const loadGame = (defaultLocale: Locale): GameState => {
           ...saved,
           settings: { ...initial.settings, ...saved.settings },
           stats: { ...initial.stats, ...saved.stats },
+          tools: { ...initial.tools, ...saved.tools },
+          // Trouvailles d'avant le livre blanc (sans phrase) : oubliées.
+          finds: (saved.finds ?? []).filter((find) => typeof find.sentence === 'string'),
           totalPagesRead: saved.totalPagesRead ?? saved.pages,
         };
       }

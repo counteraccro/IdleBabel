@@ -1,0 +1,67 @@
+{
+  "title": "Les Connaissances",
+  "completion": "de ce livre s'est écrit",
+  "sentences": {
+    "diagonal": "Le cerveau / saute / un mot / sur deux.",
+    "finger": "Mon doigt / court sous la ligne ; / mes yeux / le suivent.",
+    "thumb": "Mon pouce / a appris / le coin / des pages.",
+    "voice": "Je lisais / à voix basse / dans ma tête. / Je me suis tu.",
+    "wide": "Je ne lis plus / des mots, / je lis / des poignées / de mots.",
+    "double": "Ma main gauche / ne fait rien ; / donnons-lui / un autre livre.",
+    "mirror": "Le cuivre / de la lampe / renvoie / assez de lumière / pour une seconde page.",
+    "lectern": "Un bloc / tombé de la rambarde / tient un livre / mieux que / mes bras.",
+    "ladder": "Les étagères / du haut / ne sont pas / plus loin : / il suffit / de ne plus / redescendre.",
+    "cup": "Une tasse / ébréchée ; / je buvais toujours / du côté / de l'ébréchure.",
+    "shelves": "Cinq étagères / par mur. / J'en ai compté / six, / une fois. / Je n'ai pas / recompté."
+  },
+  "guess": "deviner · {n} de Connaissance",
+  "guessShort": "il me faut {n} de Connaissance",
+  "methods": {
+    "diagonal": {
+      "description": "L'œil ne suit plus la ligne : il la traverse. Un mot sur deux suffit à deviner l'autre, et la page se vide deux fois plus vite.",
+      "quote": "Il y a dans chaque page un chemin plus court que la page. Les anciens bibliothécaires l'appelaient la pente : on y glisse sans lire, et l'on arrive en bas avec le sentiment d'avoir tout compris. Ils disaient aussi que ceux qui ne prennent que la pente finissent par ne plus savoir remonter.",
+      "source": "note en marge d'un volume sans titre"
+    },
+    "finger": {
+      "description": "Le doigt tient la ligne comme une rampe. L'œil ne revient plus en arrière : il ne fait que suivre.",
+      "quote": "On raconte qu'un lecteur avait usé son index à force de le passer sous les lignes. Il disait que le doigt lit avant l'œil, et que l'œil ne fait que confirmer. On a retrouvé, sur une étagère, un livre dont chaque ligne portait une trace brune, très fine, de la première à la dernière page.",
+      "source": "récit de la galerie des escaliers"
+    },
+    "thumb": {
+      "description": "Le pouce apprend le coin des pages, leur poids, leur résistance. Il les tourne avant qu'on ait décidé de les tourner.",
+      "quote": "Le papier de la Bibliothèque a partout la même épaisseur, le même grain, le même coin légèrement relevé. Qui l'a touché mille fois le reconnaît dans le noir. Certains prétendent que le coin n'a pas été relevé par l'usage, mais fait ainsi dès l'origine, pour une main qui n'était pas encore venue.",
+      "source": "volume 3 881, page 12"
+    },
+    "voice": {
+      "description": "La voix intérieure lisait à la vitesse de la parole. Tue, elle laisse passer les mots sans les prononcer.",
+      "quote": "Pendant des années, j'ai entendu ma propre voix me lire chaque ligne, patiente, un peu lasse. Un jour, elle s'est tue au milieu d'une phrase, et la phrase a continué sans elle. Je lis plus vite depuis. Mais il m'arrive, la nuit, de guetter cette voix dans le silence de l'hexagone, comme on guette un pas dans l'escalier.",
+      "source": "page arrachée, retrouvée pliée dans une lampe"
+    },
+    "wide": {
+      "description": "Le regard ne s'arrête plus sur chaque mot : il en saisit trois, quatre à la fois, comme on prend une poignée de sable.",
+      "quote": "Le mot n'est pas l'unité du sens, pas plus que le grain n'est l'unité du désert. Il faut regarder assez large pour que le hasard se compense lui-même. Le commentateur ajoute qu'un regard parfaitement large verrait la Bibliothèque entière d'un seul coup, et n'y lirait rien.",
+      "source": "Commentaire des commentaires, livre II"
+    },
+    "double": {
+      "description": "La main gauche tient un second volume. Deux livres ouverts, deux pages lues dans le temps d'une seule.",
+      "quote": "Il est écrit que tout livre a son double quelque part dans la Bibliothèque, identique à une virgule près. Lire deux livres à la fois, c'est espérer que la virgule soit sous nos yeux. Ceux qui ont essayé longtemps disent que les deux livres finissent par se répondre, et qu'il devient difficile de savoir lequel on lit.",
+      "source": "volume 102 667, page 409"
+    },
+    "mirror": {
+      "description": "Le cuivre poli de la lampe renvoie sa lueur sur une seconde page. On lit à deux endroits à la fois, dans la même lumière.",
+      "quote": "Les miroirs des couloirs doublent les galeries, et l'on en a conclu que la Bibliothèque ne l'était pas vraiment, puisqu'un miroir suffit à la feindre. Je crois le contraire. Le miroir n'imite rien : il lit, lui aussi. Il suffit de lui tendre une page pour s'en apercevoir.",
+      "source": "inscription sous un miroir, palier sans numéro"
+    },
+    "lectern": {
+      "description": "Un bloc tombé de la rambarde tient le livre ouvert. Les bras, libérés, ne tremblent plus.",
+      "quote": "Les rambardes s'effritent lentement, depuis toujours. Personne n'a jamais vu une pierre tomber dans le puits, et pourtant il en manque partout. Je pense qu'elles ne tombent pas : la Bibliothèque les offre, une à une, à qui a besoin de poser un livre.",
+      "source": "volume 58 004, page 1"
+    },
+    "ladder": {
+      "description": "L'échelle roule le long des rayonnages. Les étagères du haut ne sont plus un voyage : on lit sans redescendre.",
+      "quote": "Chaque mur a cinq étagères et chaque étagère trente-deux livres ; les plus hauts sont les moins lus, et donc, disent certains, les plus vrais. Monter, c'est choisir ce que personne n'a choisi. Une légende parle d'un lecteur qui ne redescendit jamais de son échelle, et qu'on entend encore, certaines nuits, tourner des pages au-dessus des lampes.",
+      "source": "légende de la galerie haute"
+    }
+  },
+  "stat": "Chacune : +{n} page/s · possédées : {count}"
+}

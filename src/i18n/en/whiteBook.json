@@ -1,0 +1,67 @@
+{
+  "title": "Knowledge",
+  "completion": "of this book has written itself",
+  "sentences": {
+    "diagonal": "The mind / skips / every other / word.",
+    "finger": "My finger / runs under the line; / my eyes / follow it.",
+    "thumb": "My thumb / has learned / the corner / of the pages.",
+    "voice": "I used to read / in a low voice / inside my head. / I fell silent.",
+    "wide": "I no longer read / words, / I read / handfuls / of words.",
+    "double": "My left hand / does nothing; / let us give it / another book.",
+    "mirror": "The copper / of the lamp / sends back / enough light / for a second page.",
+    "lectern": "A block / fallen from the railing / holds a book / better than / my arms.",
+    "ladder": "The top / shelves / are not / further away: / I only need / to stop / coming down.",
+    "cup": "A cup, / chipped; / I always drank / from the side / of the chip.",
+    "shelves": "Five shelves / per wall. / I counted / six, / once. / I did not / count again."
+  },
+  "guess": "guess · {n} Knowledge",
+  "guessShort": "I need {n} Knowledge",
+  "methods": {
+    "diagonal": {
+      "description": "The eye no longer follows the line: it crosses it. One word in two is enough to guess the other, and the page empties twice as fast.",
+      "quote": "There is in every page a path shorter than the page. The old librarians called it the slope: you slide down it without reading, and reach the bottom feeling you have understood everything. They also said that those who only take the slope end up forgetting how to climb back.",
+      "source": "note in the margin of an untitled volume"
+    },
+    "finger": {
+      "description": "The finger holds the line like a handrail. The eye no longer goes back: it only follows.",
+      "quote": "They say a reader wore down his forefinger from running it under the lines. He claimed the finger reads before the eye, and the eye merely agrees. On a shelf, a book was found in which every line bore a thin brown trace, from the first page to the last.",
+      "source": "tale from the gallery of stairs"
+    },
+    "thumb": {
+      "description": "The thumb learns the corner of the pages, their weight, their resistance. It turns them before you have decided to.",
+      "quote": "The paper of the Library has everywhere the same thickness, the same grain, the same slightly lifted corner. Whoever has touched it a thousand times knows it in the dark. Some claim the corner was not lifted by use, but made so from the beginning, for a hand that had not yet come.",
+      "source": "volume 3,881, page 12"
+    },
+    "voice": {
+      "description": "The inner voice read at the speed of speech. Silenced, it lets the words pass unspoken.",
+      "quote": "For years I heard my own voice reading every line to me, patient, a little weary. One day it fell silent in the middle of a sentence, and the sentence went on without it. I have read faster since. But at night I sometimes listen for that voice in the silence of the hexagon, as one listens for a step on the stairs.",
+      "source": "torn page, found folded inside a lamp"
+    },
+    "wide": {
+      "description": "The gaze no longer stops on each word: it seizes three, four at once, as one takes a handful of sand.",
+      "quote": "The word is not the unit of meaning, any more than the grain is the unit of the desert. One must look wide enough for chance to cancel itself out. The commentator adds that a perfectly wide gaze would see the whole Library at once, and read nothing in it.",
+      "source": "Commentary on the Commentaries, book II"
+    },
+    "double": {
+      "description": "The left hand holds a second volume. Two open books, two pages read in the time of one.",
+      "quote": "It is written that every book has its double somewhere in the Library, identical but for a comma. To read two books at once is to hope the comma is before your eyes. Those who tried for long say the two books end up answering each other, and it becomes hard to know which one you are reading.",
+      "source": "volume 102,667, page 409"
+    },
+    "mirror": {
+      "description": "The polished copper of the lamp casts its glow onto a second page. You read in two places at once, in the same light.",
+      "quote": "The mirrors in the corridors double the galleries, and some concluded that the Library is not truly so, since a mirror is enough to feign it. I believe the opposite. The mirror imitates nothing: it reads, too. You only have to hold a page out to it to see.",
+      "source": "inscription beneath a mirror, unnumbered landing"
+    },
+    "lectern": {
+      "description": "A block fallen from the railing holds the book open. The arms, freed, no longer tremble.",
+      "quote": "The railings have been crumbling slowly, forever. No one has ever seen a stone fall into the well, and yet stones are missing everywhere. I think they do not fall: the Library offers them, one by one, to whoever needs to set a book down.",
+      "source": "volume 58,004, page 1"
+    },
+    "ladder": {
+      "description": "The ladder rolls along the shelves. The top shelves are no longer a journey: you read without coming down.",
+      "quote": "Each wall has five shelves and each shelf thirty-two books; the highest are the least read, and therefore, some say, the truest. To climb is to choose what no one has chosen. A legend tells of a reader who never came down from his ladder, and who can still be heard, some nights, turning pages above the lamps.",
+      "source": "legend of the upper gallery"
+    }
+  },
+  "stat": "Each: +{n} page/s · owned: {count}"
+}
