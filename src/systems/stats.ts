@@ -11,12 +11,6 @@ export const trackPlay = (state: GameState, seconds: number): void => {
   state.stats.bestPagesPerSecond = Math.max(state.stats.bestPagesPerSecond, pagesPerSecond(state));
 };
 
-/** Compte la phrase sensée tirée pour une page, et la laisse passer. */
-export const countFragment = (state: GameState, fragment: string | undefined): string | undefined => {
-  if (fragment !== undefined) state.stats.fragments += 1;
-  return fragment;
-};
-
 // Les couvertures se déduisent du numéro du livre : on compte au fil des livres sans tout recalculer.
 let coversCounted = 0;
 let meaningfulSoFar = 0;

@@ -1,7 +1,7 @@
 import type { Book } from './book';
+// Au-delà, les pages ne tournent pas plus vite : le livre se feuillette en continu.
+import { MAX_TURNS_PER_SECOND } from '../../data/knowledge';
 
-/** Au-delà, les pages ne tournent pas plus vite : le livre se feuillette en continu. */
-const MAX_TURNS_PER_SECOND = 5;
 /** Durée d'une page tournée lentement, la même qu'au clic. */
 const SLOW_TURN_MS = 850;
 

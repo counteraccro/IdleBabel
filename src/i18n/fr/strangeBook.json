@@ -5,7 +5,8 @@
     "pages": "Pages",
     "books": "Livres",
     "time": "Temps",
-    "methods": "Méthodes"
+    "methods": "Méthodes",
+    "knowledge": "Connaissance"
   },
   "figures": {
     "totalPages": "pages lues à vie",
@@ -14,13 +15,18 @@
     "booksFinished": "livres terminés",
     "bookPage": "page du livre en cours",
     "meaningfulCovers": "couvertures porteuses de sens",
-    "fragments": "phrases sensées",
     "playTime": "temps de jeu",
     "startDate": "entrée dans la Bibliothèque",
     "days": "jours écoulés",
     "pagesPerSecond": "pages par seconde",
-    "bestPagesPerSecond": "record de pages par seconde"
+    "bestPagesPerSecond": "record de pages par seconde",
+    "knowledge": "connaissance à dépenser",
+    "lifetimeKnowledge": "connaissance trouvée à vie",
+    "finds": "mots · morceaux · phrases trouvés",
+    "findChance": "chance de trouvaille par page"
   },
+  "decipher": "déchiffrer · {n} de Connaissance",
+  "decipherShort": "il me faut {n} de Connaissance",
   "sealsTitle": "Sceaux",
   "sealsCompletion": "des sceaux apposés",
   "plates": {

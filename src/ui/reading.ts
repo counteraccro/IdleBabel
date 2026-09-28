@@ -3,8 +3,8 @@ import { t } from '../i18n';
 import { readPage } from '../systems/click';
 import { createBook } from './book/book';
 import { startAutoTurn } from './book/autoTurn';
-import { rollFragment } from '../systems/fragments';
-import { countFragment } from '../systems/stats';
+import { findText, gainFind, rollFind } from '../systems/knowledge';
+import type { Find } from '../data/knowledge';
 import { pagesPerSecond } from '../systems/production';
 import { PAGES_PER_BOOK, bookProgress, turnBookPage } from '../systems/books';
 import { STRANGE_BINDING, bindingFor, modernBindingFor } from './book/bindings';
@@ -43,15 +43,30 @@ export const createReading = (state: GameState): Component => {
   const root = el('section', 'reading');
   const strange = (): boolean => isStrangeBook(state.booksFinished);
   const strangePages = createStrangePages(state);
+  // Trouvaille de la feuille en train de tourner : gagnée quand elle se pose à gauche.
+  let pending: Find | undefined;
   const book = createBook(t('ui.read'), {
     onTurn: () => readPage(state),
-    onLeaf: () => turnBookPage(state),
+    onLeaf: () => {
+      if (pending) gainFind(state, pending);
+      pending = undefined;
+      return turnBookPage(state);
+    },
+    onFallBack: () => {
+      pending = undefined;
+    },
     page: (length, fragment) => (strange() ? createDigitPage(length) : createPage(length, fragment)),
     special: (position) => (strange() ? strangePages(position) : undefined),
     turned: () => state.bookPage,
     paper: () => (strange() ? STRANGE_PAPER : undefined),
-    // Le livre étrange n'a que des chiffres : pas de phrase sensée.
-    nextFragment: () => (strange() ? undefined : countFragment(state, rollFragment())),
+    // Une chance par page tournée, sur l'une ou l'autre des deux pages découvertes. Le livre étrange
+    // n'a que des chiffres : rien à y trouver.
+    leafFragments: () => {
+      pending = strange() ? undefined : rollFind(state);
+      if (!pending) return [undefined, undefined];
+      const text = findText(pending);
+      return Math.random() < 0.5 ? [text, undefined] : [undefined, text];
+    },
     progress: () => bookProgress(state),
     lastLeaf: () => state.bookPage === PAGES_PER_BOOK - 1,
     binding: () => {

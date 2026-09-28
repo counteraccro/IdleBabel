@@ -72,6 +72,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 }
 .value { font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
 .label { color: var(--muted); font-size: 0.9rem; }
+.label.knowledge { font-size: 0.8rem; letter-spacing: 0.04em; }
 
 /* Le livre tenu en main sort par le bas de l'écran. */
 .reading { grid-area: reading; justify-self: center; align-self: end; margin-bottom: -9vh; }

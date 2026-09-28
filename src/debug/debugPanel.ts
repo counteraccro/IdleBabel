@@ -1,6 +1,6 @@
 import { el } from '../ui/dom';
 import { beyond, clarity } from '../systems/perception';
-import { forceFragments } from '../systems/fragments';
+import { addKnowledge, findChance, forceFinds } from '../systems/knowledge';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
 import { pagesPerSecond } from '../systems/production';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed } from '../systems/strangeBook';
@@ -19,6 +19,11 @@ import type { GameState } from '../core/state';
 export const isDebugEnabled = (): boolean => new URLSearchParams(window.location.search).has('debug');
 
 const PRESETS = [0, 100, 1_000, 10_000, 1_000_000];
+
+/** Livre étrange ouvert : il se réécrit à la même page (chapitres ou légendes qui changent). */
+const rewriteStrangeBook = (): void => {
+  if (document.querySelector('.sb-page')) window.dispatchEvent(new Event(STRANGE_BOOK_REWRITE));
+};
 
 /** Le livre en main a changé (page, numéro, titres) : il se redessine. */
 const refreshBook = (): void => {
@@ -69,7 +74,32 @@ export const mountDebugPanel = (state: GameState): void => {
       refreshBook();
     }), 'numéro du livre : couverture, reliure'),
     row('Titres des couvertures', titles),
-    check('Phrase sensée à chaque page', 'au lieu d’une page sur 8', forceFragments).root,
+  );
+
+  const knowledge = section(
+    'Connaissance',
+    row('À dépenser', field(() => state.knowledge, (v) => (state.knowledge = v)), 'déchiffrer le livre étrange'),
+    row('Trouvée à vie', field(() => state.lifetimeKnowledge, (v) => (state.lifetimeKnowledge = v)), 'paliers : le livre étrange se déchiffre seul'),
+    row(
+      'Ajouter',
+      buttons(
+        ['+1', () => {
+          addKnowledge(state, 1);
+          rewriteStrangeBook();
+        }],
+        ['+10', () => {
+          addKnowledge(state, 10);
+          rewriteStrangeBook();
+        }],
+        ['Tout oublier', () => {
+          Object.assign(state, { knowledge: 0, cycleKnowledge: 0, lifetimeKnowledge: 0, finds: [], deciphered: [] });
+          state.stats.fragments = 0;
+          rewriteStrangeBook();
+        }],
+      ),
+      'ajouter : sans rien trouver ; tout oublier : Connaissance, trouvailles et déchiffrage',
+    ),
+    check('Trouvaille à chaque page', 'au lieu d’une page sur 200', forceFinds).root,
   );
 
   const reveal = check('Statistiques visibles', 'livre accessible, tout débloqué, titre et légendes en clair', (on) => {
@@ -77,7 +107,7 @@ export const mountDebugPanel = (state: GameState): void => {
     refreshBook();
     // Livre étrange déjà ouvert : il se réécrit à la même page ; sinon l'écran est reconstruit (le
     // livre devient accessible, ou ne l'est plus).
-    if (document.querySelector('.sb-page')) window.dispatchEvent(new Event(STRANGE_BOOK_REWRITE));
+    if (document.querySelector('.sb-page')) rewriteStrangeBook();
     else window.dispatchEvent(new HashChangeEvent('hashchange'));
   });
   const strange = section(
@@ -123,7 +153,7 @@ export const mountDebugPanel = (state: GameState): void => {
   toggle.addEventListener('click', () => setOpen(panel.classList.contains('collapsed')));
   header.append(el('strong', undefined, 'Débogage'), createFpsMeter('debug-fps', true), toggle);
   setOpen(wasOpen('panel'));
-  panel.append(header, pages, held, strange, status);
+  panel.append(header, pages, held, knowledge, strange, status);
   document.body.append(panel);
 
   setInterval(() => {
@@ -136,6 +166,7 @@ export const mountDebugPanel = (state: GameState): void => {
         ['Production', `${pagesPerSecond(state).toFixed(1)} pages/s`],
         ['Découverte', clarity(state).toFixed(2)],
         ['Au-delà', beyond(state).toFixed(2)],
+        ['Trouvailles', `${state.finds.length} (${(findChance(state) * 100).toLocaleString('fr-FR')} % par page)`],
         ['Livre étrange', state.booksFinished >= STRANGE_BOOK_INDEX ? 'trouvé' : `au livre n° ${STRANGE_BOOK_INDEX + 1}`],
       ].map(([label, value]) => {
         const line = el('div');

@@ -5,6 +5,9 @@ import { CHAPTERS, chapterShown, chapterTitle, contentsTitle, figureCaption, fig
 import { createItemsView, drawItems, folio, heading, type Item } from './pageItems';
 import { newsMark, plateHasNews, plateTitle, sealLegend, sealsTitle, completionItems, plateItems, platePages, type PlatePage } from './plates';
 import { markSealsSeen } from '../../systems/seals';
+import { decipher, decipherPrice } from '../../systems/decipher';
+import { t } from '../../i18n';
+import type { PartId } from '../../data/decipher';
 import type { Paper } from '../book/pageRender';
 import type { GameState } from '../../core/state';
 
@@ -38,17 +41,17 @@ const SUB_STEP = 40;
 
 /** Une entrée du sommaire ; `sub` : sous-entrée, en retrait et plus petite. */
 interface Entry {
-  title: () => string;
+  title: (state: GameState) => string;
   /** Du nouveau à voir (sceaux) : une étoile dorée dans la marge. */
   news?: () => boolean;
   page: number;
   sub?: boolean;
 }
 
-const contentsItems = (entries: Entry[]): Item[] => {
+const contentsItems = (state: GameState, entries: Entry[]): Item[] => {
   let y = ENTRY_TOP;
   return [
-    heading(contentsTitle()),
+    heading(contentsTitle(state)),
     ...entries.flatMap((entry): Item[] => {
       const size = entry.sub ? 20 : 26;
       const step = entry.sub ? SUB_STEP : ENTRY_STEP;
@@ -57,7 +60,7 @@ const contentsItems = (entries: Entry[]): Item[] => {
       const x = entry.sub ? 130 : 90;
       return [
         ...(entry.news?.() ? [newsMark(x - 12, top, size)] : []),
-        { kind: 'text', text: entry.title(), x, y: top, size, align: 'left', spacing: 2, faded: entry.sub },
+        { kind: 'text', text: entry.title(state), x, y: top, size, align: 'left', spacing: 2, faded: entry.sub },
         { kind: 'dots', x1: 330, x2: 520, y: top + size * 0.75 },
         { kind: 'text', text: String(entry.page + 1), x: 550, y: top, size, align: 'right', faded: entry.sub },
         { kind: 'link', y: top - 10, height: step - 4, target: entry.page },
@@ -70,17 +73,37 @@ const contentsItems = (entries: Entry[]): Item[] => {
 const FIGURE_TOP = 190;
 const FIGURE_STEP = 125;
 
-const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[] => [
-  heading(chapterTitle(chapter)),
+/**
+ * Partie encore illisible qui s'achète : un clic sur la zone `ask` fait écrire au crayon, en `noteY`,
+ * ce qu'elle coûte ; un clic sur la note la paie.
+ */
+const decipherItems = (state: GameState, part: PartId, asking: boolean, ask: { y: number; height: number }, noteY: number): Item[] => {
+  const price = decipherPrice(state, part);
+  if (price === undefined) return [];
+  const note = t(state.knowledge >= price ? 'strangeBook.decipher' : 'strangeBook.decipherShort').replace('{n}', String(price));
+  return [
+    { kind: 'action', id: 'ask', ...ask },
+    ...(asking
+      ? [
+          { kind: 'text', text: note, x: 320, y: noteY, size: 26, align: 'center', hand: true, steady: true } satisfies Item,
+          { kind: 'action', id: 'pay', y: noteY - 8, height: 44 } satisfies Item,
+        ]
+      : []),
+  ];
+};
+
+const chapterItems = (state: GameState, chapter: Chapter, number: number, asking: boolean): Item[] => [
+  heading(chapterTitle(state, chapter)),
   ...chapter.figures
     .filter((figure) => figureShown(state, figure))
     .flatMap((figure, index): Item[] => {
       const y = FIGURE_TOP + index * FIGURE_STEP;
       return [
         { kind: 'text', text: figure.value(state), x: 320, y, size: 52, align: 'center', spacing: 2 },
-        { kind: 'text', text: figureCaption(figure), x: 320, y: y + 64, size: 20, align: 'center', italic: true, faded: true, spacing: 3 },
+        { kind: 'text', text: figureCaption(state, chapter, figure), x: 320, y: y + 64, size: 20, align: 'center', italic: true, faded: true, spacing: 3 },
       ];
     }),
+  ...decipherItems(state, chapter.id, asking, { y: 140, height: 530 }, 676),
   folio(number),
 ];
 
@@ -92,36 +115,49 @@ interface PageHooks {
   onShown?: () => void;
   /** Un de ses sceaux est survolé. */
   onHover?: (id: string) => void;
+  /** Sa note au crayon est cliquée : payer pour déchiffrer. */
+  onPay?: () => void;
 }
 
-/** `layout` reçoit le sceau survolé sur cette page (sa légende s'y écrit). */
-const createLeafPage = (layout: (hovered: string | null) => Item[], goTo: (page: number) => void, hooks: PageHooks = {}): LeafPage => {
+/** Ce qui change sur une page sans venir de la partie : le sceau survolé, la note au crayon ouverte. */
+interface PageView {
+  hovered: string | null;
+  asking: boolean;
+}
+
+const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: number) => void, hooks: PageHooks = {}): LeafPage => {
   const root = el('div', 'sb-paper');
-  let hovered: string | null = null;
+  const view: PageView = { hovered: null, asking: false };
   const render = createItemsView(root, {
     goTo,
     hover: (id) => {
       if (legendOwner !== page) legendOwner?.reset();
       legendOwner = page;
       hooks.onHover?.(id);
-      hovered = id;
-      render(layout(hovered));
+      view.hovered = id;
+      render(layout(view));
+    },
+    act: (id) => {
+      if (id === 'pay') hooks.onPay?.();
+      view.asking = id === 'ask' && !view.asking;
+      render(layout(view));
     },
   });
-  render(layout(hovered));
+  render(layout(view));
   const page: LeafPage = {
     root,
-    update: () => render(layout(hovered)),
+    update: () => render(layout(view)),
     shown: () => {
       page.reset();
       hooks.onShown?.();
     },
     reset: () => {
-      if (hovered === null) return;
-      hovered = null;
-      render(layout(hovered));
+      if (view.hovered === null && !view.asking) return;
+      view.hovered = null;
+      view.asking = false;
+      render(layout(view));
     },
-    paint: (canvas, spineOnLeft, paper) => drawItems(canvas, layout(hovered), spineOnLeft, paper),
+    paint: (canvas, spineOnLeft, paper) => drawItems(canvas, layout(view), spineOnLeft, paper),
   };
   return page;
 };
@@ -139,11 +175,11 @@ export const createPages = (state: GameState, goTo: (page: number) => void): Lea
   const sealsPage = first + chapters.length + (blank ? 1 : 0);
   const plates: PlatePage[] = platePages(sealsPage + 1);
   const entries: Entry[] = [
-    ...chapters.map((chapter, index) => ({ title: () => chapterTitle(chapter), page: first + index })),
+    ...chapters.map((chapter, index) => ({ title: () => chapterTitle(state, chapter), page: first + index })),
     { title: sealsTitle, page: sealsPage, news: () => state.newSeals.length > 0 },
     ...plates
       .filter((plate) => plate.part === 0)
-      .map((plate) => ({ title: () => plateTitle(plate.plate), page: plate.page, sub: true, news: () => plateHasNews(state, plate.plate) })),
+      .map((plate) => ({ title: () => plateTitle(state, plate.plate), page: plate.page, sub: true, news: () => plateHasNews(state, plate.plate) })),
   ];
   // Sceaux nouveaux à l'ouverture du livre : ils luisent plus fort le temps de cette lecture, même une
   // fois leur planche vue (le signet, lui, s'éteint), jusqu'à ce qu'on les survole.
@@ -151,12 +187,23 @@ export const createPages = (state: GameState, goTo: (page: number) => void): Lea
   const isFresh = (id: string): boolean => fresh.has(id) || state.newSeals.includes(id);
   return [
     createLeafPage(titleItems, goTo),
-    createLeafPage(() => contentsItems(entries), goTo),
-    ...chapters.map((chapter, index) => createLeafPage(() => chapterItems(state, chapter, first + index + 1), goTo)),
+    createLeafPage(() => contentsItems(state, entries), goTo),
+    ...chapters.map((chapter, index) =>
+      createLeafPage(({ asking }) => chapterItems(state, chapter, first + index + 1, asking), goTo, {
+        onPay: () => decipher(state, chapter.id),
+      }),
+    ),
     ...(blank ? [createLeafPage(() => [folio(sealsPage)], goTo)] : []),
-    createLeafPage(() => completionItems(state, plates, sealsPage + 1), goTo),
+    createLeafPage(
+      ({ asking }) => [
+        ...completionItems(state, plates, sealsPage + 1),
+        ...decipherItems(state, 'seals', asking, { y: 170, height: 210 }, 352),
+      ],
+      goTo,
+      { onPay: () => decipher(state, 'seals') },
+    ),
     ...plates.map((plate) =>
-      createLeafPage((hovered) => plateItems(state, plate, sealLegend(state, hovered), isFresh), goTo, {
+      createLeafPage(({ hovered }) => plateItems(state, plate, sealLegend(state, hovered), isFresh), goTo, {
         onShown: () => markSealsSeen(state, plate.seals.map((seal) => seal.id)),
         onHover: (id) => {
           fresh.delete(id);

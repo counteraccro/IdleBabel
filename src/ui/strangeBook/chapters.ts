@@ -4,12 +4,15 @@ import { TOOLS } from '../../data/tools';
 import { PAGES_PER_BOOK } from '../../systems/books';
 import { pagesPerSecond } from '../../systems/production';
 import { meaningfulCovers } from '../../systems/stats';
+import { findChance } from '../../systems/knowledge';
+import { isDeciphered } from '../../systems/decipher';
 import { statsRevealed } from '../../systems/strangeBook';
+import type { PartId } from '../../data/decipher';
 import type { GameState } from '../../core/state';
 
 /**
  * Contenu du livre étrange : des chiffres sans légende. Les titres et les légendes sont en
- * symboles de Babel (mots fixes, toujours les mêmes) ; ils pourront devenir lisibles plus tard.
+ * symboles de Babel (mots fixes, toujours les mêmes) jusqu'à ce que la Connaissance les déchiffre.
  */
 export interface Figure {
   /** Clé de la légende en clair (strangeBook.figures.<id> ; tools.<id>.name pour une méthode). */
@@ -21,7 +24,8 @@ export interface Figure {
 }
 
 export interface Chapter {
-  id: string;
+  /** C'est aussi la partie à déchiffrer pour lire ses légendes. */
+  id: Exclude<PartId, 'contents' | 'seals'>;
   title: string;
   shown: (state: GameState) => boolean;
   figures: Figure[];
@@ -42,6 +46,9 @@ const clock = (seconds: number): string => {
 const startedAt = (state: GameState): number => state.history.find((e) => e.type === 'gameStarted')?.at ?? Date.now();
 
 const DAY_MS = 86_400_000;
+
+/** Trouvailles d'une sorte. */
+const found = (state: GameState, kind: string): number => state.finds.filter((find) => find.kind === kind).length;
 
 const TOOL_CAPTIONS: Record<string, string> = { diagonal: 'bruda vex' };
 
@@ -64,7 +71,6 @@ export const CHAPTERS: readonly Chapter[] = [
       { id: 'booksFinished', caption: 'odrez mui', value: (s) => number(s.booksFinished) },
       { id: 'bookPage', caption: 'faso lu tren', value: (s) => `${s.bookPage} / ${PAGES_PER_BOOK}` },
       { id: 'meaningfulCovers', caption: 'quel sabiro', value: (s) => number(meaningfulCovers(s)), shown: (s) => meaningfulCovers(s) > 0 },
-      { id: 'fragments', caption: 'nemo trax', value: (s) => number(s.stats.fragments), shown: (s) => s.stats.fragments > 0 },
     ],
   },
   {
@@ -96,15 +102,31 @@ export const CHAPTERS: readonly Chapter[] = [
       { id: 'bestPagesPerSecond', caption: 'amprel duc', value: (s) => formatNumber(s.stats.bestPagesPerSecond, getLocale()) },
     ],
   },
+  {
+    id: 'knowledge',
+    title: 'semavir',
+    shown: (s) => s.lifetimeKnowledge > 0,
+    figures: [
+      { id: 'knowledge', caption: 'olbi farent', value: (s) => number(s.knowledge) },
+      { id: 'lifetimeKnowledge', caption: 'tuzma led', value: (s) => number(s.lifetimeKnowledge) },
+      { id: 'finds', caption: 'pirno dalce vomi', value: (s) => ['word', 'piece', 'sentence'].map((kind) => number(found(s, kind))).join(' · ') },
+      {
+        id: 'findChance',
+        caption: 'gilo mepar',
+        value: (s) => new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(findChance(s)),
+      },
+    ],
+  },
 ];
 
 /** Débogage : « statistiques visibles » montre tous les chapitres, tous les chiffres, et les légendes en clair. */
 export const chapterShown = (state: GameState, chapter: Chapter): boolean => statsRevealed() || chapter.shown(state);
 export const figureShown = (state: GameState, figure: Figure): boolean => statsRevealed() || (figure.shown?.(state) ?? true);
 
-export const contentsTitle = (): string => (statsRevealed() ? t('strangeBook.contents') : CONTENTS_TITLE);
-export const chapterTitle = (chapter: Chapter): string => (statsRevealed() ? t(`strangeBook.chapters.${chapter.id}`) : chapter.title);
-export const figureCaption = (figure: Figure): string => {
-  if (!statsRevealed()) return figure.caption;
+export const contentsTitle = (state: GameState): string => (isDeciphered(state, 'contents') ? t('strangeBook.contents') : CONTENTS_TITLE);
+export const chapterTitle = (state: GameState, chapter: Chapter): string =>
+  isDeciphered(state, 'contents') ? t(`strangeBook.chapters.${chapter.id}`) : chapter.title;
+export const figureCaption = (state: GameState, chapter: Chapter, figure: Figure): string => {
+  if (!isDeciphered(state, chapter.id)) return figure.caption;
   return figure.id in TOOL_CAPTIONS ? t(`tools.${figure.id}.name`) : t(`strangeBook.figures.${figure.id}`);
 };

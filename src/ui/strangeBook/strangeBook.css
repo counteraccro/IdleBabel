@@ -71,6 +71,11 @@
   backdrop-filter: none;
 }
 .sb-link:hover, .sb-link:focus-visible { background: rgba(58, 74, 122, 0.08); }
+/* Légendes illisibles : un clic fait apparaître la note au crayon pour les déchiffrer. */
+.sb-action.ask { cursor: help; }
+.sb-action.ask:hover { background: none; }
+.sb-action.pay { left: 25%; right: 25%; }
+.sb-action.pay:hover, .sb-action.pay:focus-visible { background: rgba(74, 70, 63, 0.08); }
 
 /* Étoile qui signale du nouveau (sommaire) : dorée, elle luit discrètement. */
 .sb-gold { animation: sb-gold 2.8s ease-in-out infinite; }

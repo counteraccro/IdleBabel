@@ -38,8 +38,13 @@ export interface BookHandlers {
   turned: () => number;
   /** Papier des pages, s'il n'est pas celui de la couverture (jauni, ou blanc pour un livre moderne). */
   paper?: () => Paper | undefined;
-  /** Phrase sensée éventuelle à cacher dans la prochaine page. */
-  nextFragment: () => string | undefined;
+  /**
+   * Feuille soulevée : trouvaille éventuelle à surligner sur son verso (future page de gauche) et sur
+   * la nouvelle page de droite. Elle n'est lue que si la feuille finit de tourner (onLeaf).
+   */
+  leafFragments: () => [string | undefined, string | undefined];
+  /** La feuille retombe à droite sans avoir été tournée : ce qu'elle découvrait n'est pas lu. */
+  onFallBack?: () => void;
   /** Avancement dans le livre en main, de 0 à 1 : épaisseur des tranches. */
   progress: () => number;
   /** La page de droite est-elle la dernière du livre ? Dessous, il n'y a plus que la couverture. */
@@ -188,21 +193,23 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
     book.classList.remove('last-page');
     turning = null;
     stop();
+    handlers.onFallBack?.();
   };
 
   /** Soulève la page de droite : elle part sur la feuille, une nouvelle apparaît dessous. */
   const lift = (counted = true): void => {
     if (turning) finish();
-    // Les deux faces de la feuille peuvent cacher une phrase sensée : le verso deviendra la page de gauche.
+    // Les deux pages découvertes peuvent cacher une trouvaille : le verso deviendra la page de gauche.
     // Après n pages tournées, la feuille découvre les pages 2n (son verso, à gauche) et 2n + 1 (à droite).
     const turned = handlers.turned();
-    const backPage = newPage(2 * turned, handlers.nextFragment());
+    const [backFragment, rightFragment] = handlers.leafFragments();
+    const backPage = newPage(2 * turned, backFragment);
     turning = { back: backPage, previousRight: rightPage, counted };
     if (rightPage) rightPage.texture(front, true, paper);
     else drawTitlePageTexture(front, design, paper);
     backPage.texture(back, false, paper);
     renderer?.setPages(front, back);
-    showRight(newPage(2 * turned + 1, handlers.nextFragment()));
+    showRight(newPage(2 * turned + 1, rightFragment));
     // Dernière feuille : elle découvre l'intérieur de la couverture arrière, sans page.
     book.classList.toggle('last-page', handlers.lastLeaf());
     book.classList.add('turning');

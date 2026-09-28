@@ -3,7 +3,7 @@ import { createInitialState } from '../src/core/state';
 import { coverDesign } from '../src/systems/coverDesign';
 import { PAGES_PER_BOOK, turnBookPage } from '../src/systems/books';
 import { STRANGE_BOOK_INDEX, randomDigitText, strangeBookFound } from '../src/systems/strangeBook';
-import { countFragment, meaningfulCovers, trackPlay } from '../src/systems/stats';
+import { meaningfulCovers, trackPlay } from '../src/systems/stats';
 
 describe('livre étrange', () => {
   it("a un titre en symboles de Babel sans sens caché, et sa page de titre n'a que des chiffres", () => {
@@ -46,13 +46,6 @@ describe('statistiques', () => {
     state.tools.diagonal = 0;
     trackPlay(state, 0.1);
     expect(state.stats.bestPagesPerSecond).toBeCloseTo(0.3);
-  });
-
-  it('compte les phrases sensées sans les modifier', () => {
-    const state = createInitialState('fr');
-    expect(countFragment(state, undefined)).toBeUndefined();
-    expect(countFragment(state, 'une phrase')).toBe('une phrase');
-    expect(state.stats.fragments).toBe(1);
   });
 
   it('compte les couvertures porteuses de sens au fil des livres, et repart de zéro si le livre recule', () => {

@@ -3,6 +3,7 @@ import { formatNumber } from '../../core/format';
 import { PLATES, SEALS, type PlateId, type SealDef } from '../../data/seals';
 import { babelName, completion, countObtained, plateSeals, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
+import { isDeciphered } from '../../systems/decipher';
 import { folio, heading, type Item } from './pageItems';
 import type { GameState } from '../../core/state';
 
@@ -38,10 +39,13 @@ export const platePages = (first: number): PlatePage[] => {
   return pages;
 };
 
-// Titres et légendes : en symboles de Babel, en clair avec « Statistiques visibles » (débogage).
-// Titres d'un ou deux mots, comme ceux des chapitres (ils tiennent devant les points de conduite du sommaire).
-export const sealsTitle = (): string => (statsRevealed() ? t('strangeBook.sealsTitle') : babelName('seals', 1));
-export const plateTitle = (plate: PlateId): string => (statsRevealed() ? t(`strangeBook.plates.${plate}`) : babelName(`plate:${plate}`, 1));
+// Titres (lisibles avec le sommaire) et légendes (avec la partie « sceaux ») : en symboles de Babel
+// tant qu'ils ne sont pas déchiffrés. Titres d'un ou deux mots, comme ceux des chapitres (ils tiennent
+// devant les points de conduite du sommaire).
+export const sealsTitle = (state: GameState): string =>
+  isDeciphered(state, 'contents') ? t('strangeBook.sealsTitle') : babelName('seals', 1);
+export const plateTitle = (state: GameState, plate: PlateId): string =>
+  isDeciphered(state, 'contents') ? t(`strangeBook.plates.${plate}`) : babelName(`plate:${plate}`, 1);
 
 const sealText = (seal: SealDef): string => {
   const text = t(`strangeBook.seals.${seal.text}`);
@@ -57,7 +61,7 @@ export const sealLegend = (state: GameState, id: string | null): { name: string;
   const obtained = sealObtained(state, seal);
   const when = obtained ? date(state.seals[seal.id]) : '…';
   // Lisible : ce que le sceau récompense, puis sa date.
-  if (statsRevealed()) return { name: sealText(seal), text: when };
+  if (isDeciphered(state, 'seals')) return { name: sealText(seal), text: when };
   // Illisible comme le reste du livre (en symboles de Babel) ; la date, en chiffres.
   return { name: babelName(seal.id), text: obtained ? `${babelName(`${seal.id}:text`, 4)} — ${when}` : when };
 };
@@ -73,11 +77,11 @@ const LINE_STEP = 46;
 
 /** Introduction : la part des sceaux obtenus, et l'avancement de chaque planche. */
 export const completionItems = (state: GameState, plates: PlatePage[], number: number): Item[] => [
-  heading(sealsTitle()),
+  heading(sealsTitle(state)),
   { kind: 'text', text: `${Math.floor(completion(state) * 100)} %`, x: 320, y: 200, size: 84, align: 'center', spacing: 2 },
   {
     kind: 'text',
-    text: statsRevealed() ? t('strangeBook.sealsCompletion') : babelName('completion'),
+    text: isDeciphered(state, 'seals') ? t('strangeBook.sealsCompletion') : babelName('completion'),
     x: 320,
     y: 305,
     size: 20,
@@ -92,7 +96,7 @@ export const completionItems = (state: GameState, plates: PlatePage[], number: n
       const y = LINE_TOP + index * LINE_STEP;
       return [
         ...(plateHasNews(state, plate.plate) ? [newsMark(98, y, 22)] : []),
-        { kind: 'text', text: plateTitle(plate.plate), x: 110, y, size: 22, align: 'left', spacing: 2 },
+        { kind: 'text', text: plateTitle(state, plate.plate), x: 110, y, size: 22, align: 'left', spacing: 2 },
         { kind: 'dots', x1: 330, x2: 450, y: y + 17 },
         { kind: 'text', text: tally(state, plate.plate), x: 530, y, size: 22, align: 'right' },
         { kind: 'link', y: y - 8, height: LINE_STEP - 4, target: plate.page },
@@ -136,7 +140,7 @@ export const plateItems = (state: GameState, page: PlatePage, legend: { name: st
     });
   });
   return [
-    heading(plateTitle(page.plate)),
+    heading(plateTitle(state, page.plate)),
     { kind: 'text', text: `✦ ${tally(state, page.plate)}`, x: 320, y: 150, size: 20, align: 'center', italic: true, faded: true, spacing: 3 },
     ...seals,
     { kind: 'text', text: legend.name, x: 320, y: 590, size: 24, align: 'center', spacing: 4, steady: true },

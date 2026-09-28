@@ -1,3 +1,4 @@
+import '@fontsource/nothing-you-could-do/400.css';
 import { el } from '../dom';
 import { PAGE_TEXTURE } from '../book/pageLayout';
 import { cssBaseline, preparePageTexture, type Paper } from '../book/pageRender';
@@ -8,11 +9,16 @@ import { drawSeal, sealSvg, sigil, type Look } from './sigil';
  * description sert à la page HTML et à la feuille qui tourne en WebGL : elles sont identiques.
  */
 export type Item =
-  /** `steady` : le texte change sans l'effet de réécriture (légende qui suit la souris). */
-  | { kind: 'text'; text: string; x: number; y: number; size: number; align: CanvasTextAlign; italic?: boolean; faded?: boolean; spacing?: number; steady?: boolean; gold?: boolean }
+  /**
+   * `steady` : le texte change sans l'effet de réécriture (légende qui suit la souris) ; `hand` : note
+   * au crayon, de la main du chercheur.
+   */
+  | { kind: 'text'; text: string; x: number; y: number; size: number; align: CanvasTextAlign; italic?: boolean; faded?: boolean; spacing?: number; steady?: boolean; gold?: boolean; hand?: boolean }
   | { kind: 'dots'; x1: number; x2: number; y: number }
   /** Zone cliquable (entrée du sommaire) : rien n'est dessiné. */
   | { kind: 'link'; y: number; height: number; target: number }
+  /** Zone cliquable qui déclenche une action de la page (déchiffrer…) : rien n'est dessiné. */
+  | { kind: 'action'; id: string; y: number; height: number }
   /** Sceau : carré de côté `size` centré en `x`, `y` ; survolé, il écrit sa légende (`hover`). */
   | { kind: 'seal'; id: string; series: string; tier: number; look: Look; x: number; y: number; size: number; fresh?: boolean };
 
@@ -21,6 +27,7 @@ export interface ItemActions {
   goTo: (page: number) => void;
   /** Un sceau est survolé (ou touché). */
   hover?: (id: string) => void;
+  act?: (id: string) => void;
 }
 
 export const STRANGE_PAPER: Paper = ['#e4e0d4', '#d8d3c4', '#cbc5b3'];
@@ -29,13 +36,17 @@ const FADED = '#5d5f66';
 /** Or des sceaux, pour l'étoile qui signale du nouveau. */
 const GOLD = '#b8913a';
 const SERIF = "Georgia, 'Times New Roman', serif";
+/** Écriture et crayon du chercheur, les mêmes que dans son carnet. */
+const HAND = "'Nothing You Could Do', cursive";
+const PENCIL = '#4a463f';
 
 /** Titre d'une page et numéro de page, au même endroit sur toutes les pages. */
 export const heading = (text: string): Item => ({ kind: 'text', text, x: 320, y: 100, size: 32, align: 'center', spacing: 6 });
 export const folio = (number: number): Item => ({ kind: 'text', text: String(number), x: 320, y: 730, size: 18, align: 'center', faded: true });
 
 type TextItem = Extract<Item, { kind: 'text' }>;
-const font = (item: TextItem, size: string): string => `${item.italic ? 'italic ' : ''}${size} ${SERIF}`;
+const font = (item: TextItem, size: string): string => (item.hand ? `${size} ${HAND}` : `${item.italic ? 'italic ' : ''}${size} ${SERIF}`);
+const color = (item: TextItem): string => (item.hand ? PENCIL : item.gold ? GOLD : item.faded ? FADED : INK);
 /** Unité HTML : la page est un conteneur, 1 unité du repère = 100 / 640 cqw. */
 const unit = (value: number): string => `${((value * 100) / PAGE_TEXTURE.width).toFixed(3)}cqw`;
 
@@ -43,13 +54,13 @@ const placeText = (node: HTMLElement, item: TextItem): void => {
   node.style.top = unit(item.y);
   node.style.font = font(item, unit(item.size));
   node.style.letterSpacing = unit(item.spacing ?? 0);
-  node.style.color = item.gold ? GOLD : item.faded ? FADED : INK;
+  node.style.color = color(item);
   node.style.textAlign = item.align;
   node.style.left = item.align === 'left' ? unit(item.x) : '0';
   node.style.right = item.align === 'right' ? unit(PAGE_TEXTURE.width - item.x) : '0';
 };
 
-const createNode = (item: Item, { goTo, hover }: ItemActions): HTMLElement => {
+const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement => {
   if (item.kind === 'text') {
     const node = el('span', item.gold ? 'sb-text sb-gold' : 'sb-text', item.text);
     placeText(node, item);
@@ -78,11 +89,11 @@ const createNode = (item: Item, { goTo, hover }: ItemActions): HTMLElement => {
     node.addEventListener('pointerdown', (event) => event.stopPropagation());
     return node;
   }
-  const node = el('button', 'sb-link');
+  const node = el('button', item.kind === 'link' ? 'sb-link' : `sb-link sb-action ${item.id}`);
   node.style.top = unit(item.y);
   node.style.height = unit(item.height);
-  node.addEventListener('click', () => goTo(item.target));
-  // Le livre prend les appuis pour tourner les pages : une entrée du sommaire garde le sien.
+  node.addEventListener('click', () => (item.kind === 'link' ? goTo(item.target) : act?.(item.id)));
+  // Le livre prend les appuis pour tourner les pages : une entrée du sommaire ou une action garde le sien.
   node.addEventListener('pointerdown', (event) => event.stopPropagation());
   return node;
 };
@@ -101,7 +112,9 @@ export const createItemsView = (target: HTMLElement, actions: ItemActions): ((it
   let nodes: HTMLElement[] = [];
   return (items) => {
     // Un sceau qui change d'aspect (obtenu, vu) fait reconstruire la page.
-    const nextShape = items.map((item) => (item.kind === 'seal' ? `seal:${item.look}:${item.fresh ?? false}` : item.kind)).join();
+    const nextShape = items
+      .map((item) => (item.kind === 'seal' ? `seal:${item.look}:${item.fresh ?? false}` : item.kind === 'action' ? `action:${item.id}` : item.kind))
+      .join();
     if (nextShape !== shape) {
       shape = nextShape;
       nodes = items.map((item) => createNode(item, actions));
@@ -124,7 +137,7 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
     if (item.kind === 'text') {
       context.font = font(item, `${item.size}px`);
       context.letterSpacing = `${item.spacing ?? 0}px`;
-      context.fillStyle = item.gold ? GOLD : item.faded ? FADED : INK;
+      context.fillStyle = color(item);
       context.textAlign = item.align;
       // placeText règle la police par le raccourci `font`, qui remet line-height à normal.
       const baseline = cssBaseline(context, item.y);

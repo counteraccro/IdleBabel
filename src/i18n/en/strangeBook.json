@@ -5,7 +5,8 @@
     "pages": "Pages",
     "books": "Books",
     "time": "Time",
-    "methods": "Methods"
+    "methods": "Methods",
+    "knowledge": "Knowledge"
   },
   "figures": {
     "totalPages": "pages read in total",
@@ -14,13 +15,18 @@
     "booksFinished": "books finished",
     "bookPage": "page of the current book",
     "meaningfulCovers": "covers that meant something",
-    "fragments": "meaningful sentences",
     "playTime": "time played",
     "startDate": "entered the Library",
     "days": "days elapsed",
     "pagesPerSecond": "pages per second",
-    "bestPagesPerSecond": "best pages per second"
+    "bestPagesPerSecond": "best pages per second",
+    "knowledge": "knowledge to spend",
+    "lifetimeKnowledge": "knowledge found in all",
+    "finds": "words · pieces · sentences found",
+    "findChance": "chance of a find per page"
   },
+  "decipher": "decipher · {n} Knowledge",
+  "decipherShort": "I need {n} Knowledge",
   "sealsTitle": "Seals",
   "sealsCompletion": "of the seals set",
   "plates": {

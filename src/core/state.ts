@@ -1,6 +1,8 @@
 import type { ToolId } from '../data/tools';
 import type { HistoryEntry } from './history';
 import type { Locale } from '../i18n';
+import type { Find } from '../data/knowledge';
+import type { PartId } from '../data/decipher';
 
 export const SAVE_VERSION = 1;
 
@@ -24,7 +26,7 @@ export interface Stats {
   playSeconds: number;
   /** Meilleure production atteinte, en pages par seconde. */
   bestPagesPerSecond: number;
-  /** Phrases sensées apparues dans les pages. */
+  /** Trouvailles (mots, morceaux de phrase, phrases) apparues dans les pages. */
   fragments: number;
 }
 
@@ -46,6 +48,16 @@ export interface GameState {
   locale: Locale;
   settings: Settings;
   stats: Stats;
+  /** Connaissance à dépenser : chaque trouvaille en rapporte un point. */
+  knowledge: number;
+  /** Connaissance trouvée pendant ce cycle (seuil d'Exil) : ne baisse pas en dépensant. */
+  cycleKnowledge: number;
+  /** Connaissance trouvée depuis le début de la partie : ne baisse jamais, ni à l'Exil. */
+  lifetimeKnowledge: number;
+  /** Mots, morceaux de phrase et phrases trouvés, dans l'ordre (pour reconstruire des phrases, plus tard). */
+  finds: Find[];
+  /** Parties du livre étrange déchiffrées en payant de la Connaissance : pour toujours. */
+  deciphered: PartId[];
   /** Sceaux obtenus (voir data/seals.ts), avec leur date. */
   seals: Record<string, number>;
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
@@ -64,6 +76,11 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   locale,
   settings: { ...DEFAULT_SETTINGS },
   stats: { ...DEFAULT_STATS },
+  knowledge: 0,
+  cycleKnowledge: 0,
+  lifetimeKnowledge: 0,
+  finds: [],
+  deciphered: [],
   seals: {},
   newSeals: [],
   history: [{ type: 'gameStarted', at: now }],
