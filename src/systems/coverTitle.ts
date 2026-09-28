@@ -14,6 +14,12 @@ export const forceTitles = (kind: TitleOverride): void => {
   forced = kind;
 };
 
+/** Le titre du livre étrange se lit-il ? Réglé au démarrage (main.ts) : il suit le déchiffrage du sommaire. */
+let strangeTitleReadable = (): boolean => false;
+export const readStrangeTitleWith = (readable: () => boolean): void => {
+  strangeTitleReadable = readable;
+};
+
 const pickFrom = <T>(list: readonly T[], pick: number): T => list[Math.floor(pick * list.length)];
 
 export const hasMeaningfulTitle = (design: CoverDesign): boolean => (forced ?? design.sense.kind) === 'title';
@@ -21,8 +27,8 @@ export const hasMeaningfulTitle = (design: CoverDesign): boolean => (forced ?? d
 export const coverTitle = (design: CoverDesign): string[] => {
   const { slot, pick } = design.sense;
   const { words, titles } = messages().covers;
-  // Débogage « statistiques visibles » : le livre étrange porte son titre en clair.
-  if (design.strange && statsRevealed()) return [messages().strangeBook.title];
+  // Déchiffré (ou débogage « statistiques visibles ») : le livre étrange porte son titre en clair.
+  if (design.strange && (statsRevealed() || strangeTitleReadable())) return [messages().strangeBook.title];
   switch (forced ?? design.sense.kind) {
     case 'title':
       return [...pickFrom(titles, pick)];
