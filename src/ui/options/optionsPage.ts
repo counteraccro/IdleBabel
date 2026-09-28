@@ -53,10 +53,8 @@ const sheet = (number: number, ...content: HTMLElement[]): HTMLElement => {
 };
 
 /** Verso d'une page tournée : le papier, et ce que le chercheur y a griffonné. */
-let versoSeed = 50;
-const verso = (...content: HTMLElement[]): HTMLElement => {
+const verso = (seed: number, ...content: HTMLElement[]): HTMLElement => {
   const page = el('div', 'sketchbook-verso');
-  const seed = versoSeed++;
   page.style.clipPath = roughEdges(TEAR_SEED, 'right');
   page.append(paperWear(seed, { coffee: seed % 2 === 1 }), ...content);
   return page;
@@ -92,7 +90,8 @@ const backCover = (): HTMLElement => {
 let resumeAt: number | undefined;
 
 export const createOptionsPage = (state: GameState, handlers: OptionsHandlers): Component => {
-  const root = el('main', 'options-page');
+  // Reconstruite pour changer de langue : le carnet est déjà sorti, il ne remonte pas de la poche.
+  const root = el('main', resumeAt === undefined ? 'options-page' : 'options-page resumed');
   const back = el('button', 'options-back', `← ${t('ui.back')}`);
   back.addEventListener('click', handlers.onBack);
 
@@ -139,7 +138,8 @@ export const createOptionsPage = (state: GameState, handlers: OptionsHandlers): 
     ),
   ];
   // Versos des pages tournées : les croquis du chercheur (et, plus tard, peut-être des secrets).
-  const versos = [verso(createDoodle('hexagon', 7)), verso(createDoodle('books', 3)), verso()];
+  // Graines fixes : la page reconstruite (changement de langue) garde exactement les mêmes taches.
+  const versos = [verso(50, createDoodle('hexagon', 7)), verso(51, createDoodle('books', 3)), verso(52)];
 
   const book = createSketchbook({ front: frontCover(), inside: insideCover(), back: backCover(), pages, versos, start: resumeAt });
   resumeAt = undefined;

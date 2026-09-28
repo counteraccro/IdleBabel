@@ -32,6 +32,8 @@
 @keyframes sketchbook-rise {
   from { transform: translateY(45vh) rotate(5deg); opacity: 0; }
 }
+/* Page reconstruite pour changer de langue : seul le texte change. */
+.options-page.resumed .sketchbook { animation: none; }
 
 /* Ouvert : deux moitiés de part et d'autre de la spirale. Fermé : recentré sur l'une d'elles. */
 .sketchbook-body {
