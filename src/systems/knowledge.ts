@@ -13,6 +13,7 @@ import {
 import { PAGES_PER_BOOK } from './books';
 import { pagesPerSecond } from './production';
 import { currentTarget, isComplete, missing, segmentKind, segments, write, written } from './sentences';
+import { tellLore } from './lore';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -103,6 +104,8 @@ export const gainFind = (state: GameState, find: Find): void => {
   state.lifetimeKnowledge += 1;
   state.stats.fragments += 1;
   state.finds.push(find);
+  // La toute première : le joueur comprend une phrase, pour la première fois.
+  if (state.lifetimeKnowledge === 1) tellLore(state, 'firstKnowledge');
   if (find.duplicate) return;
   write(state, find.sentence, find.segment === undefined ? segments(find.sentence).map((_, index) => index) : [find.segment]);
 };

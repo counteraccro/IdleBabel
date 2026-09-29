@@ -7,6 +7,8 @@ import { pagesPerSecond } from '../systems/production';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed } from '../systems/strangeBook';
 import { BIG_BOOK_REWRITE } from '../ui/book3d/book3dBook';
 import { announceSeals, sealAll } from '../systems/seals';
+import { replayLore } from '../systems/lore';
+import { LORE } from '../data/lore';
 import { SEALS } from '../data/seals';
 import { DEBUG_BOOK_EVENT } from './events';
 import { buttons, check, numberInput, rememberOpen, row, section, wasOpen } from './debugControls';
@@ -148,6 +150,11 @@ export const mountDebugPanel = (state: GameState): void => {
         ['Tout débloquer', () => sealAll(state)],
       ),
       'une vision : sans rien débloquer ; tout débloquer : pour de vrai (effacer la sauvegarde pour revenir)',
+    ),
+    row(
+      'Lore',
+      buttons(...LORE.map((id): [string, () => void] => [id, () => replayLore(state, id)])),
+      'raconte de nouveau ce moment, même déjà lu',
     ),
   );
 

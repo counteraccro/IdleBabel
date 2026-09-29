@@ -88,27 +88,46 @@
 .modal-button:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
 
 /*
- * Sur le noir (la petite configuration avant le jeu) : pas de boîte. Le texte doré flotte dans
- * l'obscurité, comme un écran-titre ; le nom s'écrit sur un simple trait.
+ * Sans boîte (accueil, lore) : le texte doré flotte sur le fond, comme un écran-titre ou un récit ; un
+ * nom s'écrit sur un simple trait.
  */
-.modal-backdrop.black .modal {
-  width: min(520px, 100%);
+.modal-backdrop.bare .modal {
+  width: min(560px, 100%);
   gap: 28px;
   background: none;
   border: 0;
   box-shadow: none;
 }
-.modal-backdrop.black .modal-title { font-size: 2rem; letter-spacing: 0.2em; }
-.modal-backdrop.black .modal-inscription { font-size: 0.9rem; letter-spacing: 0.5em; }
-.modal-backdrop.black .modal-field input {
+/* Un récit se lit sur le décor : plus sombre que pour une simple question. */
+.modal-backdrop.dim.bare { background: rgba(3, 2, 1, 0.86); }
+.modal-backdrop.bare .modal-title { font-size: 2rem; letter-spacing: 0.2em; }
+.modal-backdrop.bare .modal-inscription { font-size: 0.9rem; letter-spacing: 0.5em; }
+.modal-backdrop.bare .modal-field input {
   font-size: 1.4rem;
   background: none;
   border: 0;
   border-bottom: 1px solid rgba(224, 184, 112, 0.4);
   border-radius: 0;
 }
-.modal-backdrop.black .modal-choices button,
-.modal-backdrop.black .modal-button { background: none; border-color: transparent; box-shadow: none; }
-.modal-backdrop.black .modal-choices .active,
-.modal-backdrop.black .modal-button.primary:not(:disabled) { border-color: transparent; border-bottom-color: rgba(224, 184, 112, 0.85); border-radius: 0; }
-.modal-backdrop.black .modal-button:hover:not(:disabled) { border-color: transparent; border-bottom-color: var(--modal-accent); }
+.modal-backdrop.bare .modal-choices button,
+.modal-backdrop.bare .modal-button { background: none; border-color: transparent; box-shadow: none; }
+.modal-backdrop.bare .modal-choices .active,
+.modal-backdrop.bare .modal-button.primary:not(:disabled) { border-color: transparent; border-bottom-color: rgba(224, 184, 112, 0.85); border-radius: 0; }
+.modal-backdrop.bare .modal-button:hover:not(:disabled) { border-color: transparent; border-bottom-color: var(--modal-accent); }
+
+/* Texte de lore : paragraphes en italique, qui apparaissent l'un après l'autre. */
+.modal-story { display: flex; flex-direction: column; gap: 14px; }
+.modal-story p {
+  font-size: 1.15rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: #e6d6b4;
+  opacity: 0;
+  animation: modal-story-in 1.2s ease forwards;
+}
+@keyframes modal-story-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+/* Le bouton attend la fin du récit. */
+.modal-story ~ .modal-actions { opacity: 0; animation: modal-story-in 0.8s ease forwards; }

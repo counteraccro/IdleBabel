@@ -28,6 +28,11 @@ export interface ModalOptions {
    * jeu (nom, langue), quand rien n'a encore commencé.
    */
   backdrop?: 'dim' | 'black';
+  /**
+   * Sans boîte : le texte doré flotte sur le fond, comme un écran-titre ou un récit (accueil, lore). Sinon
+   * l'écrin de cuir (confirmations, informations).
+   */
+  bare?: boolean;
   /** Échap ou un clic à côté la ferment (pas pour une question obligatoire). */
   dismissible?: boolean;
   onClose?: () => void;
@@ -51,10 +56,11 @@ export const openModal = ({
   body = [],
   actions = [],
   backdrop: shade = 'dim',
+  bare = false,
   dismissible = false,
   onClose,
 }: ModalOptions): Modal => {
-  const backdrop = el('div', `modal-backdrop ${shade}`);
+  const backdrop = el('div', `modal-backdrop ${shade}${bare ? ' bare' : ''}`);
   const card = el('form', `modal modal-${variant}`);
   card.setAttribute('role', 'dialog');
   card.setAttribute('aria-modal', 'true');

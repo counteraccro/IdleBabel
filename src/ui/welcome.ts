@@ -25,6 +25,7 @@ export const showWelcome = (onEnter: (name: string, locale: Locale) => void): vo
     body: [field, languages],
     // La petite configuration avant de lancer le jeu : rien derrière.
     backdrop: 'black',
+    bare: true,
     actions: [{ label: t('ui.enter'), kind: 'primary', onClick: () => onEnter(name(), getLocale()) }],
   });
   const [enter] = modal.buttons;
