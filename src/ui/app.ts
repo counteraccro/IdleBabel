@@ -1,7 +1,6 @@
 import { createHeader } from './header';
 import { createCounter } from './counter';
 import { createToolsPanel } from './toolsPanel';
-import { createReading } from './reading';
 import { createFooter } from './footer';
 import { createOptionsPage } from './options/optionsPage';
 import { createBook3dPage } from './book3d/book3dPage';
@@ -42,10 +41,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     else window.location.hash = '';
   };
 
-  // Essai (#petit-livre3d) : le livre en main en 3D, en attendant qu'il remplace celui du jeu.
-  const heldBook3d = (): Component => createHandReading3d(state);
-
-  const game = (reading: () => Component = () => createReading(state)): Component[] => [
+  const game = (): Component[] => [
     createHeader({
       onOptions: open(OPTIONS_HASH),
       onWhiteBook: open(WHITE_BOOK_HASH),
@@ -55,7 +51,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     }),
     createCounter(state),
     createToolsPanel(state),
-    reading(),
+    createHandReading3d(state),
     createFooter(state.settings),
   ];
 
@@ -85,7 +81,6 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
     if (window.location.hash === WHITE_BOOK_HASH) return [createBook3dPage(whiteBook3d(state), back)];
-    if (window.location.hash === '#petit-livre3d') return game(heldBook3d);
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state)) return [createBook3dPage(strangeBook3d(state), back)];
     return game();
   };

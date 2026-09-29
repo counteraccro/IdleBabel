@@ -195,7 +195,12 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
   let before = performance.now();
   let turning = false;
   const frame = (now: number): void => {
-    if (!root.isConnected) return renderer.dispose();
+    // Livre retiré (changement de langue, autre page) : son contexte WebGL est rendu tout de suite.
+    if (!root.isConnected) {
+      renderer.dispose();
+      renderer.forceContextLoss();
+      return;
+    }
     const dt = Math.min(0.05, (now - before) / 1000);
     before = now;
     if (autoTurn && turner) {
