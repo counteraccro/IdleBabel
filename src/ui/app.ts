@@ -74,6 +74,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         revealStats(false);
         Object.assign(state, createInitialState(state.locale), { settings: state.settings });
         saveGame(state);
+        // On repart de zéro à l'accueil du site : page rechargée, sans #options ni ?debug.
+        window.location.replace(import.meta.env.BASE_URL);
       },
       onBack: back,
     }),

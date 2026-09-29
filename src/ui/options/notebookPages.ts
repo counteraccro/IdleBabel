@@ -55,7 +55,7 @@ const drawMargins = (): Map<number, { note?: number; scribble?: string; at: numb
  * page, ses croquis au dos des feuilles, et ses remarques dans la marge.
  */
 export const createNotebookPages = (state: GameState, actions: NotebookActions) => {
-  /** Effacer la sauvegarde : la question posée, puis la réponse. */
+  /** Effacer la sauvegarde : la question posée, puis la réponse (le temps que la page d'accueil se recharge). */
   let reset: 'ask' | 'confirm' | 'done' = 'ask';
   // Tirées une fois : la page redessinée (case cochée, langue) garde ses remarques.
   const margins = drawMargins();
