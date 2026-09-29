@@ -1,15 +1,33 @@
 import * as THREE from 'three';
 
+/** Image d'un document SVG (texte), prête à dessiner sur un canvas. */
+export const svgMarkupImage = async (markup: string): Promise<HTMLImageElement> => {
+  const image = new Image();
+  image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(markup)}`;
+  await image.decode();
+  return image;
+};
+
 /** Image d'un SVG (élément déjà construit) à la taille voulue, prête à dessiner sur un canvas. */
-export const svgImage = async (svg: SVGSVGElement, width: number, height: number): Promise<HTMLImageElement> => {
+export const svgImage = (svg: SVGSVGElement, width: number, height: number): Promise<HTMLImageElement> => {
   const copy = svg.cloneNode(true) as SVGSVGElement;
   copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   copy.setAttribute('width', String(width));
   copy.setAttribute('height', String(height));
-  const image = new Image();
-  image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(copy.outerHTML)}`;
-  await image.decode();
-  return image;
+  return svgMarkupImage(copy.outerHTML);
+};
+
+/**
+ * Document SVG rendu une fois pour toutes sur un canvas : un SVG à filtres (bruit) serait recalculé à
+ * chaque dessin de l'image.
+ */
+export const rasterizeSvg = async (markup: string, width: number, height: number): Promise<HTMLCanvasElement> => {
+  const image = await svgMarkupImage(markup);
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext('2d')!.drawImage(image, 0, 0, width, height);
+  return canvas;
 };
 
 /** Texture tirée d'un canvas déjà dessiné. */

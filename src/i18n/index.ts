@@ -28,3 +28,6 @@ const lookup = (messages: unknown, path: string): string | undefined => {
 /** t('ui.read'), t('tools.diagonal.name') — repli sur le français, puis sur la clé. */
 export const t = (path: string): string =>
   lookup(LOCALES[current], path) ?? lookup(LOCALES[REFERENCE_LOCALE], path) ?? path;
+
+/** Nom d'une langue, écrit dans cette langue (« Français », « English »). */
+export const localeName = (locale: Locale): string => LOCALES[locale].notebook.languageName;

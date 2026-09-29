@@ -93,8 +93,6 @@
 }
 
 /* Feuille qui tourne (WebGL, voir leafTurn.ts) : déborde de la page pour pouvoir se lever vers le lecteur. */
-.sb-leaf { position: absolute; pointer-events: none; visibility: hidden; z-index: 5; }
-.sb-leaf.turning { visibility: visible; }
 
 /* Un chiffre qui change tremble à peine, comme s'il se réécrivait. */
 .sb-shift { animation: sb-shift 0.45s ease-out; }

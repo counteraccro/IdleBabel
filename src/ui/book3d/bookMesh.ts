@@ -42,8 +42,8 @@ export interface BookLook {
   leather: THREE.ColorRepresentation;
   edge: THREE.Texture;
   paper: THREE.ColorRepresentation;
-  /** Fil des tranchefiles (bourrelets en haut et en bas du pli). */
-  headband: THREE.Texture;
+  /** Fil des tranchefiles (bourrelets en haut et en bas du pli) ; sans : pas de tranchefiles (cahier agrafé). */
+  headband?: THREE.Texture;
   /** Couleur du signet (ruban de soie). */
   ribbon?: THREE.ColorRepresentation;
 }
@@ -274,7 +274,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   // Soie : un peu de lustre.
   const bandMaterial = new THREE.MeshStandardMaterial({ map: look.headband, roughness: 0.45 });
   const tall = height - 2 * shape.overhang;
-  const headbands = [tall / 2 + 0.004, -tall / 2 - 0.004].map((y) => {
+  const headbands = (look.headband ? [tall / 2 + 0.004, -tall / 2 - 0.004] : []).map((y) => {
     const mesh = new THREE.Mesh(band, bandMaterial);
     mesh.position.y = y;
     body.add(mesh);
@@ -359,7 +359,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     // Il sort du livre par-dessus la tranchefile du bas, sans la traverser (en haut, il est cousu dessous) :
     // son dernier point passe devant elle, et le bout qui pend part de là.
     const [, bottomBand] = headbands;
-    if (bottomBand.visible) {
+    if (bottomBand?.visible) {
       const clear = HEADBAND_RADIUS + 0.0015;
       for (const point of points[RIBBON_INSIDE]) {
         if (Math.abs(point[0] - bottomBand.position.x) > HEADBAND_LENGTH / 2) continue;

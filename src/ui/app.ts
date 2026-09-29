@@ -57,11 +57,12 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   const options = (): Component[] => [
     createOptionsPage(state, {
+      // Le cahier se réécrit lui-même, ouvert là où il est : l'écran n'est pas reconstruit.
       onLocale: (locale) => {
         state.locale = locale;
         setLocale(locale);
+        document.documentElement.lang = locale;
         saveGame(state);
-        render();
       },
       onSettings: () => {
         applySettings(state);

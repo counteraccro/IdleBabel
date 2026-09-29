@@ -1,13 +1,14 @@
-import { el } from '../dom';
-
 /**
- * Usure du carnet : un carnet qui a vécu dans une poche. Tout vient de bruit procédural (SVG
+ * Usure du cahier : un cahier qui a vécu dans une poche. Tout vient de bruit procédural (SVG
  * feTurbulence) plutôt que de formes dessinées, pour que les taches aient l'air vraies. L'image
- * est calculée une fois (fond d'image) : la page reste légère quand elle tourne.
+ * est calculée une fois, puis posée sur les textures des pages et des plats.
  * Tirée d'une graine : chaque page garde toujours les mêmes taches.
  */
-const W = 460;
-const H = 400;
+/** Aux proportions d'une page (4 × 5) : une trace de tasse reste ronde. */
+export const WEAR_WIDTH = 480;
+export const WEAR_HEIGHT = 600;
+const W = WEAR_WIDTH;
+const H = WEAR_HEIGHT;
 
 const seeded = (seed: number): (() => number) => {
   let a = seed * 9301 + 49297;
@@ -43,20 +44,14 @@ const noise = (
     <rect width="${W}" height="${H}" filter="url(#${id})"${mask ? ` mask="url(#${mask})"` : ''}/>`;
 };
 
-/** Masque plus fort vers les bords et les coins : là où les doigts et la poche usent le carnet. */
+/** Masque plus fort vers les bords et les coins : là où les doigts et la poche usent le cahier. */
 const edgeMask = (id: string, inner: number): string => `<radialGradient id="${id}-g" cx="50%" cy="50%" r="72%">
     <stop offset="${inner}" stop-color="black"/><stop offset="1" stop-color="white"/></radialGradient>
   <mask id="${id}"><rect width="${W}" height="${H}" fill="url(#${id}-g)"/></mask>`;
 
-const toBackground = (svg: string): string =>
-  `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}' preserveAspectRatio='none'>${svg}</svg>`)}")`;
-
-const layer = (className: string, svg: string): HTMLElement => {
-  const root = el('span', `wear ${className}`);
-  root.setAttribute('aria-hidden', 'true');
-  root.style.backgroundImage = toBackground(svg);
-  return root;
-};
+/** Document SVG complet, étiré sur toute l'image. */
+const toSvg = (svg: string): string =>
+  `<svg xmlns='http://www.w3.org/2000/svg' width='${W}' height='${H}' viewBox='0 0 ${W} ${H}' preserveAspectRatio='none'>${svg}</svg>`;
 
 /** Trace de tasse : un anneau cassé, épais par endroits, dont le bord a bu dans le papier. */
 const coffeeRing = (random: () => number, seed: number): string => {
@@ -78,15 +73,8 @@ const coffeeRing = (random: () => number, seed: number): string => {
     </g>`;
 };
 
-/**
- * Le papier lui-même : petits carreaux à moitié effacés, bords assombris et encrassés, deux zones
- * plus jaunes. Tout est dans l'image (et non en CSS) pour que la page affichée et sa photo sur la
- * feuille qui tourne soient identiques au pixel près.
- */
+/** Le papier lui-même : bords assombris et encrassés, deux zones plus jaunes (les carreaux sont dessinés à part). */
 const paperBase = (seed: number): string => `<defs>
-    <pattern id="grid-${seed}" width="24" height="24" patternUnits="userSpaceOnUse">
-      <path d="M0 0.5 H24 M0.5 0 V24" stroke="rgb(90,110,150)" stroke-opacity="0.08" stroke-width="1"/>
-    </pattern>
     <radialGradient id="vig-${seed}" cx="50%" cy="45%" r="72%">
       <stop offset="0.45" stop-color="rgb(120,85,40)" stop-opacity="0"/><stop offset="1" stop-color="rgb(120,85,40)" stop-opacity="0.28"/>
     </radialGradient>
@@ -104,14 +92,13 @@ const paperBase = (seed: number): string => `<defs>
       })
       .join('')}
   </defs>
-  <rect width="${W}" height="${H}" fill="url(#grid-${seed})"/>
   <rect width="${W}" height="${H}" fill="url(#spot1-${seed})"/>
   <rect width="${W}" height="${H}" fill="url(#spot2-${seed})"/>
   <rect width="${W}" height="${H}" fill="url(#vig-${seed})"/>
   ${[0, 1, 2, 3].map((i) => `<rect width="${W}" height="${H}" fill="url(#edge${i}-${seed})"/>`).join('')}`;
 
 /** Papier : jaunissement inégal, fibres, rousseurs, crasse vers les bords, parfois une trace de tasse. */
-export const paperWear = (seed: number, { coffee = false } = {}): HTMLElement => {
+export const paperWear = (seed: number, { coffee = false } = {}): string => {
   const random = seeded(seed);
   const s = Math.floor(random() * 1000);
   const svg = `${paperBase(seed)}<defs>${edgeMask(`edge-${seed}`, 0.45)}</defs>
@@ -121,15 +108,15 @@ export const paperWear = (seed: number, { coffee = false } = {}): HTMLElement =>
     ${noise(`fox-${seed}`, { frequency: '0.13', octaves: 2, seed: s + 3, color: [135, 85, 35], slope: 9, offset: -7.3, blur: 0.4 })}
     ${noise(`smear-${seed}`, { frequency: '0.004 0.02', octaves: 3, seed: s + 4, color: [70, 65, 60], slope: 1.2, offset: -0.62 })}
     ${coffee ? coffeeRing(random, s) : ''}`;
-  return layer('paper-wear', svg);
+  return toSvg(svg);
 };
 
 /**
- * Carton kraft : surtout uni, avec son grain de fibres ; la crasse s'accumule vers les bords, les
+ * Carton du plat : surtout uni, avec son grain de fibres ; la crasse s'accumule vers les bords, les
  * coins s'effilochent et s'éclaircissent, un pouce a laissé une trace sur le bord libre (`freeEdge`),
  * et une vieille auréole d'eau a presque disparu.
  */
-export const boardWear = (seed: number, { freeEdge = 'right' }: { freeEdge?: 'left' | 'right' } = {}): HTMLElement => {
+export const boardWear = (seed: number, { freeEdge = 'right' }: { freeEdge?: 'left' | 'right' } = {}): string => {
   const random = seeded(seed);
   const s = Math.floor(random() * 1000);
   const cx = 110 + random() * (W - 220);
@@ -157,29 +144,5 @@ export const boardWear = (seed: number, { freeEdge = 'right' }: { freeEdge?: 'le
     <ellipse cx="${freeEdge === 'right' ? W - 28 : 28}" cy="${thumbY}" rx="26" ry="36" fill="rgb(30,18,8)" fill-opacity="0.2" filter="url(#bsoft-${seed})"/>
     <ellipse cx="${cx}" cy="${cy}" rx="${50 + random() * 25}" ry="${40 + random() * 20}" fill="none"
       stroke="rgb(40,25,10)" stroke-opacity="0.13" stroke-width="1.6" filter="url(#btide-${seed})"/>`;
-  return layer('board-wear', svg);
-};
-
-/** Bords légèrement irréguliers (papier qui a vécu) sur les côtés libres de la page. */
-export const roughEdges = (seed: number, spine: 'left' | 'right'): string => {
-  const random = seeded(seed + 101);
-  // Papier élimé : petites dents, et de temps en temps une vraie encoche. En pourcentages simples
-  // (pas de calc) : la photo de la page (pageSnapshot.ts) relit ce contour pour découper le papier.
-  const jitter = (): number => (random() < 0.12 ? 1.2 + random() * 1.6 : random() * 1);
-  const pct = (value: number): string => `${value.toFixed(2)}%`;
-  const points: string[] = [];
-  const steps = 36;
-  const along = (i: number): number => (i * 100) / steps;
-  if (spine === 'left') {
-    points.push('0% 0%');
-    for (let i = 1; i <= steps; i++) points.push(`${pct(along(i))} ${pct(jitter())}`);
-    for (let i = 1; i <= steps; i++) points.push(`${pct(100 - jitter())} ${pct(along(i))}`);
-    for (let i = steps - 1; i >= 0; i--) points.push(`${pct(along(i))} ${pct(100 - jitter())}`);
-  } else {
-    points.push('100% 0%');
-    for (let i = 1; i <= steps; i++) points.push(`${pct(100 - along(i))} ${pct(jitter())}`);
-    for (let i = 1; i <= steps; i++) points.push(`${pct(jitter())} ${pct(along(i))}`);
-    for (let i = steps - 1; i >= 0; i--) points.push(`${pct(100 - along(i))} ${pct(100 - jitter())}`);
-  }
-  return `polygon(${points.join(', ')})`;
+  return toSvg(svg);
 };

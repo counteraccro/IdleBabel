@@ -1,7 +1,5 @@
-import { el } from '../dom';
-
 /**
- * Croquis au crayon dans les marges du carnet : chaque trait est repassé deux fois, un peu
+ * Croquis au crayon sur les pages du cahier : chaque trait est repassé deux fois, un peu
  * de travers, comme dessiné à main levée. Tirage fixe : les mêmes griffonnages à chaque ouverture.
  */
 type Point = [number, number];
@@ -54,9 +52,8 @@ const spiral = (random: () => number): string => {
 
 const DOODLES = { hexagon, books, spiral };
 
-export const createDoodle = (kind: keyof typeof DOODLES, seed: number): HTMLElement => {
-  const root = el('span', `doodle doodle-${kind}`);
-  root.setAttribute('aria-hidden', 'true');
-  root.innerHTML = `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">${DOODLES[kind](seeded(seed))}</svg>`;
-  return root;
-};
+export type DoodleKind = keyof typeof DOODLES;
+
+/** Document SVG du croquis (100 × 100), tracé de la couleur `color`, prêt à dessiner sur une texture. */
+export const doodleSvg = (kind: DoodleKind, seed: number, color: string): string =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 100 100" fill="none" stroke="${color}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">${DOODLES[kind](seeded(seed))}</svg>`;
