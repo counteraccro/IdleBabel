@@ -1,4 +1,5 @@
 import { createPages } from '../strangeBook/pages';
+import { PAGE_TEXTURE } from '../book/pageLayout';
 import { STRANGE_PAPER } from '../strangeBook/pageItems';
 import { STRANGE_BINDING } from '../book/bindings';
 import { coverDesign } from '../../systems/coverDesign';
@@ -13,8 +14,9 @@ import type { GameState } from '../../core/state';
  * droite (à gauche, l'intérieur de la couverture) : les pages du livre 2D décalées d'une place.
  */
 export const strangeBook3d = (state: GameState): Book3d => {
-  const pages = createPages(state, () => {}, 1);
-  return {
+  // Les pages du livre 2D désignent les pages par leur place dans la liste : une de moins qu'en 3D.
+  const pages = createPages(state, (page) => book.navigate?.(page + 1), 1);
+  const book: Book3d = {
     // Plus mince que les grands livres : quelques dizaines de pages.
     shape: { width: 0.8, height: 1, thickness: 0.1, board: 0.016, overhang: 0.012, corner: 0.03 },
     source: {
@@ -39,5 +41,7 @@ export const strangeBook3d = (state: GameState): Book3d => {
       };
     },
     live: true,
+    press: (index, x, y) => pages[index - 1]?.press(x, y) ?? false,
   };
+  return book;
 };

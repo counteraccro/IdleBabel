@@ -9,4 +9,11 @@ export interface Book3d {
   look: () => Promise<BookLook>;
   /** Pages qui suivent la partie (chiffres qui changent) : redessinées régulièrement. */
   live?: boolean;
+  /**
+   * Clic sur la page `index`, au point (x, y) de son image (repère de la texture) : true si un élément
+   * l'a pris (entrée du sommaire, sceau, note au crayon) ; la page ne tourne pas.
+   */
+  press?: (index: number, x: number, y: number) => boolean;
+  /** Le livre demande d'aller à une page (entrée du sommaire) : branché par la page 3D. */
+  navigate?: (index: number) => void;
 }

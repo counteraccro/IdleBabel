@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { el, type Component } from '../dom';
 import { t } from '../../i18n';
 import { createBookMesh } from './bookMesh';
+import { PAGE_TEXTURE } from '../book/pageLayout';
 import { createPageCache } from './pageCache';
 import { spreadCount } from './pageSource';
 import { createTurner, type Turner } from './turner';
@@ -98,6 +99,8 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     book = createBookMesh(shape, look);
     scene.add(book.root);
     turner = createTurner(book, createPageCache(source), spreads);
+    // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée.
+    spec.navigate = (index) => turner?.go(Math.floor(index / 2));
     // Débogage du prototype : accès au livre depuis la console.
     (window as unknown as { book3d?: unknown }).book3d = { book, turner, camera, controls };
   });
@@ -164,6 +167,15 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     step: (forward) => turn(shut > 0 ? false : Number(open.value) === 0 ? true : forward),
     busy: (on) => {
       controls.enabled = !on && !view.locked;
+    },
+    press: (hit) => {
+      const page = book?.pageUnder(hit);
+      if (!page || !turner?.idle || !spec.press) return false;
+      const index = 2 * turner.target + (page.side === 'right' ? 1 : 0);
+      if (!spec.press(index, page.u * PAGE_TEXTURE.width, page.v * PAGE_TEXTURE.height)) return false;
+      // La page a pu changer (légende d'un sceau, note au crayon) : redessinée.
+      turner.refresh();
+      return true;
     },
   });
   previous.addEventListener('click', () => turn(false));

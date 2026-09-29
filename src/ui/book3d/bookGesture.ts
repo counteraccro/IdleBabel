@@ -26,6 +26,8 @@ export interface BookGestureOptions {
   step: (forward: boolean) => void;
   /** Un geste commence (ou finit) sur le livre : la caméra ne doit pas tourner pendant. */
   busy: (on: boolean) => void;
+  /** Clic court sur le livre, là où le rayon l'a touché : true si la page l'a pris (sommaire…), rien ne tourne. */
+  press?: (hit: THREE.Intersection) => boolean;
 }
 
 /**
@@ -42,15 +44,14 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
     const bounds = canvas.getBoundingClientRect();
     return bounds.left + ((point.x + 1) / 2) * bounds.width;
   };
-  /** Point du livre sous le pointeur, dans son repère (x : distance au dos, y : hauteur) ; null : à côté. */
-  const onBook = (event: PointerEvent): THREE.Vector3 | null => {
+  /** Ce que le rayon du pointeur touche en premier sur le livre ; null : à côté. */
+  const onBook = (event: PointerEvent): THREE.Intersection | null => {
     const book = options.book();
     if (!book) return null;
     const bounds = canvas.getBoundingClientRect();
     const pointer = new THREE.Vector2(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -((event.clientY - bounds.top) / bounds.height) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObject(book, true)[0];
-    return hit ? book.worldToLocal(hit.point.clone()) : null;
+    return raycaster.intersectObject(book, true)[0] ?? null;
   };
   /** Coin de page sous le pointeur : 1 en haut, -1 en bas, 0 ailleurs. */
   const cornerOf = ({ x, y }: THREE.Vector3): number =>
@@ -60,12 +61,14 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
   // on le fait tourner en le tirant ; un clic l'ouvre).
   let active = false;
   let corner = 0;
+  let hit: THREE.Intersection | null = null;
   canvas.addEventListener(
     'pointerdown',
     (event) => {
-      const point = event.button === 0 ? onBook(event) : null;
-      active = point !== null;
-      corner = point ? cornerOf(point) : 0;
+      hit = event.button === 0 ? onBook(event) : null;
+      active = hit !== null;
+      const book = options.book();
+      corner = hit && book ? cornerOf(book.worldToLocal(hit.point.clone())) : 0;
       if (active && options.open()) options.busy(true);
     },
     { capture: true },
@@ -84,6 +87,8 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
     canvas,
     {
       turn: () => {
+        // Un élément de la page sous le clic (entrée du sommaire…) : il le prend, rien ne tourne.
+        if (hit && options.open() && options.press?.(hit)) return;
         // Un clic sur un coin : la page part de lui.
         const turner = options.turner();
         const to = (turner?.target ?? 0) + side;

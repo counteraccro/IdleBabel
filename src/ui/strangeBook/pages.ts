@@ -2,7 +2,7 @@ import { el } from '../dom';
 import { coverDesign, shelfMarkText } from '../../systems/coverDesign';
 import { STRANGE_BOOK_INDEX } from '../../systems/strangeBook';
 import { CHAPTERS, chapterShown, chapterTitle, contentsTitle, figureCaption, figureShown, type Chapter } from './chapters';
-import { createItemsView, drawItems, folio, heading, type Item } from './pageItems';
+import { createItemsView, drawItems, folio, heading, itemAt, pressItem, type Item, type ItemActions } from './pageItems';
 import { newsMark, plateHasNews, plateTitle, sealLegend, sealsTitle, completionItems, plateItems, platePages, type PlatePage } from './plates';
 import { markSealsSeen } from '../../systems/seals';
 import { decipher, decipherPrice } from '../../systems/decipher';
@@ -21,6 +21,11 @@ export interface LeafPage {
   reset: () => void;
   /** Dessine la page sur la texture de la feuille qui tourne (sur le papier `paper`, celui du grand livre par défaut). */
   paint: (canvas: HTMLCanvasElement, spineOnLeft: boolean, paper?: Paper) => void;
+  /**
+   * Clic au point (x, y) de la page dessinée (livre 3D, où la page n'est qu'une image) : le même effet
+   * qu'un clic sur la page HTML. false : rien de cliquable ici.
+   */
+  press: (x: number, y: number) => boolean;
 }
 
 
@@ -134,7 +139,7 @@ export interface PageView {
 export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: number) => void, hooks: PageHooks = {}): LeafPage => {
   const root = el('div', 'sb-paper');
   const view: PageView = { hovered: null, asking: false };
-  const render = createItemsView(root, {
+  const actions: ItemActions = {
     goTo,
     hover: (id) => {
       if (legendOwner !== page) legendOwner?.reset();
@@ -148,7 +153,8 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
       view.asking = id === 'ask' && !view.asking;
       render(layout(view));
     },
-  });
+  };
+  const render = createItemsView(root, actions);
   render(layout(view));
   const page: LeafPage = {
     root,
@@ -164,6 +170,7 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
       render(layout(view));
     },
     paint: (canvas, spineOnLeft, paper) => drawItems(canvas, layout(view), spineOnLeft, paper),
+    press: (x, y) => pressItem(itemAt(layout(view), x, y), actions),
   };
   return page;
 };

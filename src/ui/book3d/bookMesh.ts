@@ -45,6 +45,11 @@ export interface BookMesh {
    * pour les feuilles qui restent à droite (1 : aucune, on voit l'intérieur du plat arrière).
    */
   setProgress: (read: number, left?: number, right?: number) => void;
+  /**
+   * Page visible sous un point touché par un rayon (clic) : de quel côté, et où dans son image (u de
+   * gauche à droite, v de haut en bas, de 0 à 1). null : ce n'est pas une page visible (plat, tranche).
+   */
+  pageUnder: (hit: THREE.Intersection) => { side: 'left' | 'right'; u: number; v: number } | null;
   /** Contenu des deux pages visibles (null : papier vierge, ou l'intérieur de la couverture à gauche). */
   setPages: (left: THREE.Texture | null, right: THREE.Texture | null) => void;
   /**
@@ -761,6 +766,11 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
       }
       for (const mesh of leafMeshes) mesh.castShadow = turn < LEAF_SHADOW_END;
       poseLeaf(turn, corner, forward);
+    },
+    pageUnder: ({ object, face, uv }) => {
+      // Dessus de la pile de droite, dessous (retourné) de celle de gauche : les faces qui portent les pages.
+      const side = object === rightStack && face?.materialIndex === 1 ? 'right' : object === leftStack && face?.materialIndex === 2 ? 'left' : null;
+      return side && uv ? { side, u: uv.x, v: 1 - uv.y } : null;
     },
     setPages: (left, right) => {
       leftPage.map = left;

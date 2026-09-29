@@ -135,6 +135,28 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
   return node;
 };
 
+/**
+ * Élément cliquable sous le point (x, y) de la page (repère de la texture), comme les boutons de la
+ * page HTML : entrées du sommaire et actions sur 80 % de la largeur (la note au crayon, sur la moitié),
+ * sceaux sur leur carré. Le dernier posé l'emporte, comme dans la page.
+ */
+export const itemAt = (items: Item[], x: number, y: number): Item | undefined =>
+  [...items].reverse().find((item) => {
+    if (item.kind === 'seal') return item.look !== 'hidden' && Math.abs(x - item.x) <= item.size / 2 && Math.abs(y - item.y) <= item.size / 2;
+    if (item.kind !== 'link' && item.kind !== 'action') return false;
+    const margin = PAGE_TEXTURE.width * (item.kind === 'action' && item.id === 'pay' ? 0.25 : 0.1);
+    return x >= margin && x <= PAGE_TEXTURE.width - margin && y >= item.y && y <= item.y + item.height;
+  });
+
+/** Déclenche l'élément touché (lien, action, sceau) comme un clic sur la page HTML ; false : rien ici. */
+export const pressItem = (item: Item | undefined, { goTo, hover, act }: ItemActions): boolean => {
+  if (item?.kind === 'link') goTo(item.target);
+  else if (item?.kind === 'action') act?.(item.id);
+  else if (item?.kind === 'seal') hover?.(item.id);
+  else return false;
+  return true;
+};
+
 /** Hachage d'entiers : toujours le même résultat pour les mêmes nombres. */
 export const hash = (...values: number[]): number =>
   values.reduce((h, value) => Math.imul(h ^ (value + 0x9e3779b9), 0x85ebca6b) >>> 0, 0x2545f491);

@@ -6,10 +6,13 @@ import type { PageCache } from './pageCache';
  * en ~1,1 s (2 √(1 / ACCEL)).
  */
 const ACCEL = 3.3;
-/** Vitesse de pointe quand plusieurs pages sont demandées d'affilée (feuilletage). */
+/** Vitesse de pointe quand plusieurs pages sont demandées d'affilée, clic après clic (feuilletage). */
 const MAX_SPEED = 6;
-/** Au-delà de cet écart, on saute directement près de la page visée (sommaire) : seule la dernière tourne. */
-const JUMP = 6;
+/**
+ * Saut lointain (sommaire) : toutes les pages tournent jusqu'à la bonne, l'élan grandissant avec la
+ * distance pour que le feuilletage dure toujours ~1,6 s, de deux pages comme de deux cents.
+ */
+const RIFFLE_FROM = 2;
 /** Page tenue : vitesse à laquelle elle rattrape la souris (lisse les à-coups du pointeur). */
 const FOLLOW = 18;
 
@@ -48,6 +51,8 @@ export const createTurner = (book: BookMesh, pages: PageCache, spreads: number):
   let target = 0;
   let shown = 0;
   let speed = 0;
+  /** Élan du mouvement en cours (1 : une page, plus : un saut lointain qui feuillette). */
+  let pace = 1;
   let held: number | null = null;
   /** Coin par lequel la page en route a été prise (0 : tout le bord). */
   let corner = 0;
@@ -97,11 +102,7 @@ export const createTurner = (book: BookMesh, pages: PageCache, spreads: number):
       corner = from;
       // Page lâchée (qui finit de tourner ou retombe) : elle garde le sens de la prise, sans à-coup.
       if (held === null && target !== shown) forward = target > shown;
-      if (Math.abs(target - shown) > JUMP) {
-        shown = target - Math.sign(target - shown);
-        speed = 0;
-        apply();
-      }
+      pace = Math.max(1, Math.abs(target - shown) / RIFFLE_FROM);
     },
     jump: (spread) => {
       target = shown = clamp(spread);
@@ -123,8 +124,9 @@ export const createTurner = (book: BookMesh, pages: PageCache, spreads: number):
         return false;
       }
       // Vitesse voulue : de quoi freiner à temps pour s'arrêter pile sur la cible.
-      const wanted = Math.sign(remaining) * Math.min(MAX_SPEED, Math.sqrt(2 * ACCEL * Math.abs(remaining)));
-      const change = ACCEL * dt;
+      const accel = ACCEL * pace;
+      const wanted = Math.sign(remaining) * Math.min(MAX_SPEED * pace, Math.sqrt(2 * accel * Math.abs(remaining)));
+      const change = accel * dt;
       speed += Math.min(change, Math.max(-change, wanted - speed));
       const next = shown + speed * dt;
       // Arrivé (ou dépassé) : on se pose sur la cible.
