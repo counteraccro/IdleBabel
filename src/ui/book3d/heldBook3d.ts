@@ -29,13 +29,18 @@ const LOWER_MS = 500;
 const RAISE_MS = 550;
 /** Livre neuf fermé : sa couverture s'ouvre au clic. */
 const OPEN_MS = 900;
+/** Livre neuf, pages qui tournent seules : il reste fermé ce temps-là (on voit sa couverture), puis s'ouvre. */
+const SHOW_COVER_MS = 700;
 
 export interface HeldBookOptions {
   /** Option « le livre bouge » : les mains ne sont jamais parfaitement immobiles. */
   sway: () => boolean;
   /** Double page où s'ouvre le premier livre (les feuilles déjà tournées). */
   startSpread?: number;
-  /** Le livre suivant attend-il fermé qu'on l'ouvre d'un clic (pages qui tournent seules coupées) ? */
+  /**
+   * Le livre suivant, qui arrive toujours fermé, attend-il qu'on l'ouvre d'un clic (pages qui tournent
+   * seules coupées) ? Sinon, il s'ouvre seul après avoir montré sa couverture.
+   */
   stayClosed: () => boolean;
   /**
    * Une feuille s'est posée, le livre est ouvert à la double page `spread` : `counted` si le lecteur l'a
@@ -142,8 +147,8 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
   };
   /**
    * Dernière page tournée : le plat arrière se referme sur les pages pendant que le chercheur tourne le
-   * livre (on voit son dos), puis le livre descend et le suivant remonte entre ses mains : ouvert, ou
-   * fermé si les pages ne tournent pas seules.
+   * livre (on voit la tranche), puis le livre descend et le suivant remonte entre ses mains, fermé, sa
+   * couverture vers le lecteur.
    */
   const finish = async (): Promise<void> => {
     phase = 'busy';
@@ -152,13 +157,15 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
       pose.set({ shut: e });
     });
     await tweens.run(LOWER_MS, (e) => pose.set({ drop: e }), 'in');
-    const closed = options.stayClosed();
     current = current.next?.() ?? current;
-    await take(current, 0, closed);
+    await take(current, 0, true);
     pose.set({ shut: 0 });
     await tweens.run(RAISE_MS, (e) => pose.set({ drop: 1 - e }), 'out');
-    phase = closed ? 'closed' : 'reading';
+    closedAt = performance.now();
+    phase = 'closed';
   };
+  /** Depuis quand le livre neuf attend fermé. */
+  let closedAt = 0;
 
   /** Le lecteur tient une page : les mains ne bougent plus, les pages ne tournent pas seules. */
   let grabbing = false;
@@ -199,8 +206,8 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     const moving = turner?.update(dt) ?? false;
     // Sans la partie : posé sur l'intérieur du plat arrière, le livre est lu.
     if (!options.onLeaf && phase === 'reading' && !grabbing && turner?.idle && turner.target === spreads - 1) void finish();
-    // Pages qui tournent seules remises en route pendant qu'un livre attend fermé : on l'ouvre.
-    if (phase === 'closed' && !options.stayClosed()) void openBook();
+    // Pages qui tournent seules : le livre neuf s'ouvre de lui-même, une fois sa couverture vue.
+    if (phase === 'closed' && !options.stayClosed() && now - closedAt > SHOW_COVER_MS) void openBook();
     const animating = tweens.update(now, still.matches);
     if (resize()) {
       place();
@@ -235,6 +242,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     current = spec;
     phase = 'busy';
     void take(spec, spread, closed).then(() => {
+      closedAt = performance.now();
       phase = closed ? 'closed' : 'reading';
     });
   };
