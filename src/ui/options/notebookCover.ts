@@ -59,7 +59,10 @@ const drawLabel = (context: CanvasRenderingContext2D, name: string): void => {
   context.restore();
 };
 
-/** Tables de multiplication imprimées au dos, comme sur tous les cahiers d'écolier. */
+/**
+ * Tables de multiplication imprimées au dos, comme sur tous les cahiers d'écolier. Sauf qu'ici, tout
+ * donne 410 (idée de l'auteur).
+ */
 const drawTables = (context: CanvasRenderingContext2D): void => {
   const [x, y, width, height] = [110, 150, 580, 700];
   context.fillStyle = 'rgba(243, 239, 227, 0.9)';
@@ -75,7 +78,7 @@ const drawTables = (context: CanvasRenderingContext2D): void => {
   for (let table = 2; table <= 10; table++) {
     const [column, row] = [(table - 2) % 3, Math.floor((table - 2) / 3)];
     const [left, top] = [x + 40 + column * 180, y + 50 + row * 220];
-    for (let n = 1; n <= 10; n++) context.fillText(`${table} × ${n} = ${table * n}`, left, top + (n - 1) * 20);
+    for (let n = 1; n <= 10; n++) context.fillText(`${table} × ${n} = 410`, left, top + (n - 1) * 20);
   }
 };
 
