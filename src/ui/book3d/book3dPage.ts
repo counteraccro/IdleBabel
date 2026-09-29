@@ -12,6 +12,9 @@ import { createPageCache } from './pageCache';
 import { spreadCount, type PageSource } from './pageSource';
 import { createTurner, type Turner } from './turner';
 import { attachBookGesture } from './bookGesture';
+import { createLighting } from './lighting';
+import { createReadingView } from './readingView';
+import { isDebugEnabled } from '../../debug/debugPanel';
 import type { GameState } from '../../core/state';
 
 /** Durée de l'ouverture de la couverture. */
@@ -77,8 +80,14 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
   });
   const previous = el('button', undefined, '‹');
   const next = el('button', undefined, '›');
+  previous.setAttribute('aria-label', t('ui.previousPage'));
+  next.setAttribute('aria-label', t('ui.nextPage'));
+  const arrows = el('div', 'book3d-arrows');
+  arrows.append(previous, next);
+  // Les flèches, en option ; les réglages du modèle (ouverture, double page, vues) seulement en débogage.
   const controls_ = el('div', 'book3d-controls');
-  controls_.append(open, previous, next, spread, ...viewButtons);
+  if (isDebugEnabled()) controls_.append(open, arrows, spread, ...viewButtons);
+  else controls_.append(arrows);
   root.append(back, canvas, controls_);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -95,32 +104,10 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0.4, 0, 0);
   controls.enableDamping = true;
+  const view = createReadingView(camera, controls);
 
-  // Lumière de la pièce : une lueur chaude venue d'en haut à gauche (la lampe), qui porte les ombres ;
-  // un fond doux partout (aucune face ne tombe dans le noir) et un peu de lumière froide de la fenêtre,
-  // à droite, qui dessine la tranche et le dos.
-  scene.add(new THREE.HemisphereLight(0xfff2dc, 0x4a3a28, 1.3));
-  const lamp = new THREE.DirectionalLight(0xffe2b0, 2.4);
-  // À gauche, à mi-hauteur, à peine vers le lecteur : l'ombre d'une feuille qui tourne déborde d'elle en
-  // travers de la page, sur toute sa hauteur (venue de la tête du livre, elle glissait vers le bas).
-  lamp.position.set(-1.9, -0.4, 2.8);
-  lamp.castShadow = true;
-  lamp.shadow.mapSize.set(2048, 2048);
-  lamp.shadow.camera.left = -1;
-  lamp.shadow.camera.right = 1.5;
-  lamp.shadow.camera.top = 1;
-  lamp.shadow.camera.bottom = -1;
-  lamp.shadow.bias = -0.0015;
-  lamp.shadow.normalBias = 0.02;
-  lamp.shadow.radius = 4;
-  lamp.target.position.set(0.4, 0, 0);
-  scene.add(lamp, lamp.target);
-  const window_ = new THREE.DirectionalLight(0xc8d4ff, 0.6);
-  window_.position.set(2.5, 0.5, -1);
-  // Lumière douce venue de devant (la pièce) : le bord avant du bloc, ses feuilles, ne tombe pas dans le noir.
-  const room = new THREE.DirectionalLight(0xffe8c8, 0.9);
-  room.position.set(0.3, -2.5, 1.2);
-  scene.add(window_, room);
+  // Lumières réglées pour la vue de biais, autour du livre.
+  const lighting = createLighting(scene, new THREE.Vector3(1.7, -0.7, 1.9), new THREE.Vector3(0.4, 0, 0));
 
   let book: ReturnType<typeof createBookMesh> | null = null;
   let turner: Turner | null = null;
@@ -129,14 +116,21 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
     scene.add(book.root);
     turner = createTurner(book, createPageCache(source), spreads);
     // Débogage du prototype : accès au livre depuis la console.
-    (window as unknown as { book3d?: unknown }).book3d = { book, turner };
+    (window as unknown as { book3d?: unknown }).book3d = { book, turner, camera, controls };
   });
   let swinging = false;
   /** Plat arrière refermé sur les pages, en fin de livre (0 : ouvert, 1 : fermé). */
   let shut = 0;
-  /** Ouvre (ou referme) la couverture, ou le plat arrière en fin de livre, de là où il en est. */
-  const swing = (board: 'front' | 'back', target: number): void => {
-    const from = board === 'front' ? Number(open.value) : shut;
+  /**
+   * Ouvre (ou referme) la couverture, ou le plat arrière en fin de livre, de là où il en est. `flip` :
+   * refermé sur son dos, le livre se retourne sur sa couverture (les deux plats ensemble, livre fermé
+   * d'un bloc), puis revient au début.
+   */
+  const swing = (board: 'front' | 'back' | 'flip', target: number): void => {
+    const from = board === 'back' ? shut : Number(open.value);
+    // Le livre s'ouvre (couverture, ou plat arrière qui se relève) : la caméra rejoint la vue de lecture
+    // et s'y bloque ; il se referme : elle redevient libre.
+    view.begin(board === 'front' ? target === 1 : board === 'back' && target === 0);
     const start = performance.now();
     const duration = OPEN_MS * Math.abs(target - from);
     swinging = true;
@@ -144,14 +138,17 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
       const t = duration > 0 ? Math.min(1, (now - start) / duration) : 1;
       const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
       const value = from + (target - from) * eased;
-      if (board === 'front') {
+      if (board !== 'back') {
         open.value = String(value);
         book?.setOpen(value);
-      } else {
+      }
+      if (board !== 'front') {
         shut = value;
         book?.setShut(value);
       }
+      view.step(eased);
       if (t < 1) return void requestAnimationFrame(step);
+      if (board === 'flip') turner?.jump(0);
       swinging = false;
     };
     requestAnimationFrame(step);
@@ -159,8 +156,9 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
   /** Tourne une page de plus (ou de moins) ; des clics rapides s'enchaînent en feuilletage. */
   const turn = (forward: boolean): void => {
     if (!turner || swinging) return;
-    // Livre refermé sur son dos : seul le retour en arrière le rouvre.
-    if (shut > 0) return forward ? undefined : swing('back', 0);
+    // Livre refermé sur son dos : en avant, il se retourne sur sa couverture (fermé) ; en arrière, il se
+    // rouvre à la fin.
+    if (shut > 0) return forward ? swing('flip', 0) : swing('back', 0);
     // Livre fermé (ou entrouvert) : la flèche ouvre d'abord la couverture ; revenue à la première double
     // page, revenir en arrière la referme. À la dernière, avancer referme le plat arrière.
     const opening = Number(open.value);
@@ -182,11 +180,17 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
     // Livre fermé, d'un côté ou de l'autre : un clic n'importe où sur lui l'ouvre.
     step: (forward) => turn(shut > 0 ? false : Number(open.value) === 0 ? true : forward),
     busy: (on) => {
-      controls.enabled = !on;
+      controls.enabled = !on && !view.locked;
     },
   });
   previous.addEventListener('click', () => turn(false));
   next.addEventListener('click', () => turn(true));
+  const onKey = (event: KeyboardEvent): void => {
+    if (!root.isConnected) return void window.removeEventListener('keydown', onKey);
+    if (event.key === 'ArrowRight') turn(true);
+    if (event.key === 'ArrowLeft') turn(false);
+  };
+  window.addEventListener('keydown', onKey);
   open.addEventListener('input', () => book?.setOpen(Number(open.value)));
   spread.addEventListener('input', () => turner?.go(Number(spread.value)));
 
@@ -206,6 +210,9 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
     before = now;
     resize();
     controls.update();
+    // Livre fermé (d'un côté ou de l'autre), on le fait tourner : la lumière suit la face qu'on regarde.
+    // Fermé : les deux plats l'un sur l'autre (couverture fermée, ou plat arrière refermé sur elle).
+    lighting.follow(camera, controls.target, 1 - (Number(open.value) - shut));
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   };

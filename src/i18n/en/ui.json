@@ -19,6 +19,8 @@
   "no": "Cancel",
   "bookSway": "The book moves in your hands",
   "bookSwayHint": "The book sways gently, as if held at arm's length. When off, it stays still.",
+  "pageArrows": "Arrows to turn the pages",
+  "pageArrowsHint": "Two ‹ › arrows below the books. Without them: click a page (or pull it by a corner), or use the ← and → keys.",
   "display": "Display",
   "showFps": "Show frames per second",
   "showFpsHint": "A small counter in the bottom left, to check the game stays smooth on your device.",

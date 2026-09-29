@@ -10,4 +10,7 @@
 }
 .book3d-page .options-back { align-self: flex-start; }
 .book3d-canvas { flex: 1; width: 100%; min-height: 0; cursor: grab; }
-.book3d-controls { display: flex; gap: 24px; padding-bottom: 8px; }
+.book3d-controls { display: flex; gap: 24px; padding-bottom: 8px; min-height: 30px; }
+.book3d-arrows { display: flex; gap: 12px; }
+/* Flèches en option (réglage « Flèches pour tourner les pages ») : la place reste, le livre ne bouge pas. */
+:root:not(.page-arrows) .book3d-arrows { visibility: hidden; }

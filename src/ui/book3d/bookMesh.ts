@@ -297,6 +297,8 @@ const LEAF_STEPS = 40;
  * presque par la tranche et son ombre n'est plus qu'une bande sombre qui balaie la page de droite.
  */
 const LEAF_SHADOW_END = 0.4;
+/** De même pour les plats (couverture qui s'ouvre, plat arrière qui se referme), passé ce point de leur course. */
+const BOARD_SHADOW_END = 0.3;
 /** Rangées de la feuille, sur sa hauteur : prise par un coin, chacune tourne à son rythme. */
 const LEAF_ROWS = 16;
 /** Avance du coin saisi sur le bord opposé, en part du tour (au plus fort, à mi-course). */
@@ -514,6 +516,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     const [rx, rz] = rotate([hx, hz], backAngle);
     body.rotation.y = -backAngle;
     body.position.set(hx - rx, 0, hz - rz);
+    front.castShadow = frontAngle < BOARD_SHADOW_END * Math.PI;
+    back.castShadow = backAngle < BOARD_SHADOW_END * Math.PI;
     onOpen();
   };
   const clamp = (amount: number): number => Math.PI * Math.min(1, Math.max(0, amount));
@@ -721,6 +725,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
       object.receiveShadow = true;
     }
   });
+  // Sauf les plats en pleine course (voir BOARD_SHADOW_END).
+  open();
 
   return {
     root,

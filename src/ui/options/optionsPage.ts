@@ -119,6 +119,10 @@ export const createOptionsPage = (state: GameState, handlers: OptionsHandlers): 
           state.settings.bookSway = value;
           handlers.onSettings();
         }),
+        createToggle(t('ui.pageArrows'), t('ui.pageArrowsHint'), state.settings.pageArrows, (value) => {
+          state.settings.pageArrows = value;
+          handlers.onSettings();
+        }),
       ),
     ),
     sheet(

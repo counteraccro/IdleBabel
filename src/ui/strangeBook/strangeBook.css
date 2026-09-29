@@ -140,6 +140,8 @@
 }
 
 .sb-nav { display: flex; gap: 12px; }
+/* Flèches en option (réglage « Flèches pour tourner les pages ») : la place reste, le livre ne bouge pas. */
+:root:not(.page-arrows) .sb-nav { visibility: hidden; }
 .sb-turn { font-size: 1.4rem; line-height: 1; padding: 4px 18px; }
 
 @media (prefers-reduced-motion: reduce) {

@@ -56,7 +56,8 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
   const cornerOf = ({ x, y }: THREE.Vector3): number =>
     Math.abs(x) < options.width * (1 - CORNER_WIDTH) || Math.abs(y) < options.height * (0.5 - CORNER_HEIGHT) ? 0 : Math.sign(y);
 
-  // Avant la caméra (écouteur en capture) : un appui sur le livre ne le fait pas pivoter.
+  // Avant la caméra (écouteur en capture) : un appui sur le livre ouvert ne le fait pas pivoter (fermé,
+  // on le fait tourner en le tirant ; un clic l'ouvre).
   let active = false;
   let corner = 0;
   canvas.addEventListener(
@@ -65,7 +66,7 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
       const point = event.button === 0 ? onBook(event) : null;
       active = point !== null;
       corner = point ? cornerOf(point) : 0;
-      if (active) options.busy(true);
+      if (active && options.open()) options.busy(true);
     },
     { capture: true },
   );

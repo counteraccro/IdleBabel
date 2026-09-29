@@ -24,6 +24,7 @@ const WHITE_BOOK_HASH = '#blanc';
 /** Réglages qui s'appliquent à toute la page par une classe sur <html>. */
 const applySettings = (state: GameState): void => {
   document.documentElement.classList.toggle('reduce-blur', state.settings.reduceBlur);
+  document.documentElement.classList.toggle('page-arrows', state.settings.pageArrows);
 };
 
 export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {

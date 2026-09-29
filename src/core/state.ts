@@ -16,6 +16,8 @@ export interface Settings {
   showFps: boolean;
   /** Pas d'effet de flou (chiffres du livre étrange qui se réécrivent). */
   reduceBlur: boolean;
+  /** Flèches ‹ › sous les livres pour tourner les pages (sinon : clic sur la page, touches ← →). */
+  pageArrows: boolean;
 }
 
 /** Chiffres de la partie, relevés en silence : le joueur ne les découvre que plus tard. */
@@ -32,7 +34,7 @@ export interface Stats {
 
 export const DEFAULT_STATS: Stats = { clicks: 0, playSeconds: 0, bestPagesPerSecond: 0, fragments: 0 };
 
-export const DEFAULT_SETTINGS: Settings = { autoTurn: true, bookSway: true, showFps: false, reduceBlur: false };
+export const DEFAULT_SETTINGS: Settings = { autoTurn: true, bookSway: true, showFps: false, reduceBlur: false, pageArrows: false };
 
 export interface GameState {
   version: number;

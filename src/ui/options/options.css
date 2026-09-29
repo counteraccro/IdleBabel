@@ -288,6 +288,8 @@
 .sketchbook-verso .doodle { top: 50%; left: 50%; width: 46%; height: 60%; transform: translate(-50%, -50%) rotate(-4deg); }
 
 .sketchbook-nav { display: flex; gap: 12px; }
+/* Flèches en option (réglage « Flèches pour tourner les pages ») : la place reste, le carnet ne bouge pas. */
+:root:not(.page-arrows) .sketchbook-nav { visibility: hidden; }
 .sketchbook-turn { font-size: 1.4rem; line-height: 1; padding: 4px 18px; }
 
 @media (max-width: 760px) {
