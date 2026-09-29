@@ -48,6 +48,8 @@ export interface GameState {
   /** Livres lus jusqu'au bout. */
   booksFinished: number;
   locale: Locale;
+  /** Nom du joueur, demandé à l'arrivée (welcome.ts) : sur l'étiquette du cahier, et plus tard dans les textes. */
+  playerName: string;
   settings: Settings;
   stats: Stats;
   /** Connaissance à dépenser : chaque trouvaille en rapporte un point. */
@@ -78,6 +80,7 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   bookPage: 0,
   booksFinished: 0,
   locale,
+  playerName: '',
   settings: { ...DEFAULT_SETTINGS },
   stats: { ...DEFAULT_STATS },
   knowledge: 0,

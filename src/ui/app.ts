@@ -11,6 +11,7 @@ import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { setLocale } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
 import { createInitialState, type GameState } from '../core/state';
+import { showWelcome } from './welcome';
 import type { Component } from './dom';
 
 const OPTIONS_HASH = '#options';
@@ -96,5 +97,14 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   window.addEventListener('hashchange', render);
   render();
+  // Nouvelle partie (ou partie d'avant le nom) : le joueur se présente et choisit sa langue.
+  if (!state.playerName)
+    showWelcome((name, locale) => {
+      state.playerName = name;
+      state.locale = locale;
+      setLocale(locale);
+      saveGame(state);
+      render();
+    });
   return () => components.forEach((c) => c.update());
 };

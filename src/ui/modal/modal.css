@@ -1,0 +1,66 @@
+/*
+ * Modales du jeu (modal.ts) : un seul style, réglé ici par ses variables ; les variantes ne changent que
+ * l'accent. Style provisoire : le panneau sombre et doré de l'interface.
+ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(5, 4, 3, 0.72);
+  backdrop-filter: blur(3px);
+}
+/* Avant le jeu (nom, langue) : rien derrière, le noir complet. */
+.modal-backdrop.black { background: #000; backdrop-filter: none; }
+.modal {
+  --modal-accent: var(--accent);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: min(400px, 100%);
+  padding: 30px 32px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  color: var(--ink);
+}
+.modal-danger { --modal-accent: #d9745f; }
+.modal-notice { --modal-accent: var(--muted); }
+.modal-title { margin: 0; font-weight: normal; font-size: 1.5rem; letter-spacing: 0.08em; color: var(--modal-accent); }
+.modal p { margin: 0; line-height: 1.5; color: var(--muted); }
+
+/* Champs et choix dans une modale. */
+.modal-field { display: flex; flex-direction: column; gap: 8px; color: var(--muted); }
+.modal-field input {
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 1.2rem;
+  text-align: center;
+  color: var(--ink);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.modal-field input:focus { outline: none; border-color: var(--modal-accent); }
+.modal-choices { display: flex; justify-content: center; gap: 10px; }
+
+.modal-actions { display: flex; justify-content: center; gap: 12px; }
+.modal-choices button,
+.modal-button {
+  padding: 6px 16px;
+  font: inherit;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.modal-choices .active { color: var(--modal-accent); border-color: var(--modal-accent); }
+.modal-button.primary { padding: 8px 28px; font-size: 1.1rem; color: var(--ink); }
+.modal-button.danger { color: #d9745f; border-color: rgba(217, 116, 95, 0.5); }
+.modal-button:hover:not(:disabled) { border-color: var(--modal-accent); color: var(--modal-accent); }
+.modal-button:disabled { opacity: 0.4; cursor: default; }

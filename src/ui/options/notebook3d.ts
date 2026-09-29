@@ -61,7 +61,7 @@ export const notebook3d = (state: GameState, actions: NotebookActions): Book3d =
       ]);
       wears = wear;
       sketches = { hexagon, books, spiral };
-      const cover = await notebookCover(t('ui.options'), scratch);
+      const cover = await notebookCover(t('ui.options'), state.playerName, scratch);
       return {
         cover: cover.front,
         back: cover.back,

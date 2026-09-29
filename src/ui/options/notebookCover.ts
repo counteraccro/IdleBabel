@@ -27,8 +27,8 @@ const roundRect = (context: CanvasRenderingContext2D, x: number, y: number, widt
   context.roundRect(x, y, width, height, radius);
 };
 
-/** Étiquette collée sur la couverture : cadre imprimé, lignes, et le nom du cahier écrit au stylo. */
-const drawLabel = (context: CanvasRenderingContext2D, name: string): void => {
+/** Étiquette collée sur la couverture : cadre imprimé, lignes, le nom du cahier et, dessous, celui du joueur, au stylo. */
+const drawLabel = (context: CanvasRenderingContext2D, name: string, owner: string): void => {
   const [x, y, width, height] = [170, 210, 460, 230];
   context.save();
   context.translate(x + width / 2, y + height / 2);
@@ -57,6 +57,8 @@ const drawLabel = (context: CanvasRenderingContext2D, name: string): void => {
   context.textAlign = 'center';
   context.textBaseline = 'alphabetic';
   context.fillText(name, x + width / 2, y + height * 0.42 - 6);
+  context.font = `40px ${PEN_FONT}`;
+  context.fillText(owner, x + width / 2, y + height * 0.62 - 6, width - 100);
   context.restore();
 };
 
@@ -98,6 +100,7 @@ const drawTables = (context: CanvasRenderingContext2D): void => {
 /** Textures du cahier : couverture à étiquette, dos aux tables, carte nue dedans et au pli. */
 export const notebookCover = async (
   name: string,
+  owner: string,
   spiral: CanvasImageSource,
 ): Promise<{ front: THREE.CanvasTexture; back: THREE.CanvasTexture; inside: THREE.CanvasTexture; spine: THREE.CanvasTexture }> => {
   const [[front, frontContext], [back, backContext], [inside], [spine]] = await Promise.all([
@@ -106,7 +109,7 @@ export const notebookCover = async (
     card(INSIDE, 6, 'right'),
     card(CARD, 7, 'right'),
   ]);
-  drawLabel(frontContext, name);
+  drawLabel(frontContext, name, owner);
   drawTables(backContext);
   // Une spirale grattée dans la carte, dans un coin du dos.
   backContext.globalAlpha = 0.5;
