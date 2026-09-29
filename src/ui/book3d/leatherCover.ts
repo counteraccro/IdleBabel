@@ -27,7 +27,7 @@ const canvas = (): [HTMLCanvasElement, CanvasRenderingContext2D] => {
   return [node, node.getContext('2d')!];
 };
 
-/** Le cuir : plus sombre sur les bords, comme les plats du livre 2D. */
+/** Le cuir : plus sombre sur les bords, comme les couvertures du livre en main. */
 const leather = (context: CanvasRenderingContext2D, binding: Binding): void => {
   const glow = context.createRadialGradient(WIDTH / 2, HEIGHT / 2, WIDTH * 0.1, WIDTH / 2, HEIGHT / 2, WIDTH * 0.8);
   glow.addColorStop(0, binding.leather);
@@ -99,7 +99,7 @@ const wear = async (context: CanvasRenderingContext2D, design: CoverDesign, stre
 
 /**
  * Plats de cuir d'un livre ancien en texture, pour le livre 3D : le même décor que les couvertures du
- * livre 2D (coverArt.ts) — titre doré, encadrement, fleuron et usure devant ; filet et cote derrière.
+ * livre en main (coverArt.ts) — titre doré, encadrement, fleuron et usure devant ; filet et cote derrière.
  */
 export const leatherCover = async (design: CoverDesign, binding: Binding): Promise<LeatherCover> => {
   const [front, frontContext] = canvas();

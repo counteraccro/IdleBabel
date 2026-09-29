@@ -1,3 +1,4 @@
+import './strangeBook.css';
 import { el } from '../dom';
 import { LEAF_GEOMETRY, createLeafRenderer, type LeafGeometry } from '../book/leafRenderer';
 import { easeInOut } from '../book/book';

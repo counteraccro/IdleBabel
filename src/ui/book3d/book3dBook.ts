@@ -1,6 +1,9 @@
 import type { BookLook, BookShape } from './bookMesh';
 import type { PageSource } from './pageSource';
 
+/** Le contenu d'un grand livre a changé (débogage…) : le livre ouvert se réécrit sans se refermer. */
+export const BIG_BOOK_REWRITE = 'bigbook:rewrite';
+
 /** Un livre montré en 3D : sa forme, ses pages, son apparence (plats, tranche, papier). */
 export interface Book3d {
   shape: BookShape;

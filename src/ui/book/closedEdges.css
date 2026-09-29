@@ -130,6 +130,3 @@
 }
 .closed-edges.front .edge-spine { left: calc(var(--edge-depth) * -0.45); border-radius: 100% 0 0 100% / 50% 0 0 50%; }
 .closed-edges.back .edge-spine { right: calc(var(--edge-depth) * -0.45); border-radius: 0 100% 100% 0 / 0 50% 50% 0; }
-
-/* Grands livres (étrange, Connaissances) : épais, plats solides. */
-.sb-book .closed-edges { --edge-depth: 36px; --edge-inset: 4px; --edge-plate: 4px; }

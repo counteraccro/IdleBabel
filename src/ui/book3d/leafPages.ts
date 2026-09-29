@@ -10,8 +10,8 @@ import type { Book3d } from './book3dBook';
 export const BLOCK_PAGES = 410;
 
 /**
- * Relie un livre 3D aux pages d'un grand livre (celles du livre 2D) : dessin sur la texture, clics,
- * survol, pages vues, réécriture. `offset` : place en 3D de la première page de la liste (le livre 3D
+ * Relie un livre 3D aux pages d'un grand livre (une liste de LeafPage, que le livre en main lit aussi en
+ * HTML) : dessin sur la texture, clics, survol, pages vues, réécriture. `offset` : place en 3D de la première page de la liste (le livre 3D
  * garde la page 0, à gauche de la première double page, pour l'intérieur de la couverture).
  */
 export const leafPagesBook = (

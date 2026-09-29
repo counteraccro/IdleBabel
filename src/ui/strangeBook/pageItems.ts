@@ -1,4 +1,5 @@
 import '@fontsource/caveat/400.css';
+import './strangeBook.css';
 import { el } from '../dom';
 import { PAGE_TEXTURE } from '../book/pageLayout';
 import { cssBaseline, preparePageTexture, type Paper } from '../book/pageRender';

@@ -12,8 +12,7 @@ import { attachBookGesture } from './bookGesture';
 import { createLighting } from './lighting';
 import { createReadingView } from './readingView';
 import { isDebugEnabled } from '../../debug/debugPanel';
-import { BIG_BOOK_REWRITE } from '../strangeBook/strangeBookPage';
-import type { Book3d } from './book3dBook';
+import { BIG_BOOK_REWRITE, type Book3d } from './book3dBook';
 
 /** Durée de l'ouverture de la couverture. */
 const OPEN_MS = 1100;

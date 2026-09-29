@@ -5,7 +5,7 @@ import { currentTarget, segments, write } from '../systems/sentences';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
 import { pagesPerSecond } from '../systems/production';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed } from '../systems/strangeBook';
-import { BIG_BOOK_REWRITE } from '../ui/strangeBook/strangeBookPage';
+import { BIG_BOOK_REWRITE } from '../ui/book3d/book3dBook';
 import { announceSeals, sealAll } from '../systems/seals';
 import { SEALS } from '../data/seals';
 import { DEBUG_BOOK_EVENT } from './events';
@@ -21,8 +21,8 @@ export const isDebugEnabled = (): boolean => new URLSearchParams(window.location
 
 const PRESETS = [0, 100, 1_000, 10_000, 1_000_000];
 
-/** Un grand livre est ouvert (étrange, blanc ; en 2D ou en 3D). */
-const bigBookOpen = (): boolean => document.querySelector('.sb-page, .book3d-page') !== null;
+/** Un grand livre est ouvert (étrange, blanc). */
+const bigBookOpen = (): boolean => document.querySelector('.book3d-page') !== null;
 
 /** Grand livre ouvert : il se réécrit à la même page (chapitres ou légendes qui changent). */
 const rewriteBigBook = (): void => {

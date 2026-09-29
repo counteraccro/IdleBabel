@@ -18,7 +18,7 @@ export const whiteBook3d = (state: GameState): Book3d => {
     // Proportions d'un grand livre : 4 × 5, épais (410 pages), plats solides qui débordent un peu.
     // Plats qui débordent nettement des pages : le coin carré du bloc reste caché sous leur coin arrondi.
     shape: { width: 0.8, height: 1, thickness: 0.16, board: 0.018, overhang: 0.02, corner: 0.035 },
-    // La liste du livre 2D commence déjà par l'intérieur de la couverture (null) : mêmes places qu'en 3D.
+    // La liste des pages commence déjà par l'intérieur de la couverture (null) : mêmes places qu'en 3D.
     ...leafPagesBook(() => createWhiteBookPages(state, (page) => book.navigate?.(page)), 0, WHITE_PAPER),
     look: async () => {
       const [cover, back, spine] = await Promise.all([vellumTexture(3, true), vellumTexture(11, false), vellumTexture(19, false, false)]);

@@ -12,14 +12,14 @@ import type { GameState } from '../../core/state';
 
 /**
  * Le livre étrange : les statistiques, en cuir noir, sur papier gris. La garde est la première page de
- * droite (à gauche, l'intérieur de la couverture) : les pages du livre 2D décalées d'une place.
+ * droite (à gauche, l'intérieur de la couverture) : les pages de la liste (createPages) décalées d'une place.
  */
 export const strangeBook3d = (state: GameState): Book3d => {
   const book: Book3d = {
     // 410 pages, comme le livre blanc : un livre épais.
     // Plats qui débordent nettement des pages : fermé, on distingue bien la couverture du bloc.
     shape: { width: 0.8, height: 1, thickness: 0.16, board: 0.018, overhang: 0.02, corner: 0.035 },
-    // Les pages du livre 2D désignent les pages par leur place dans la liste : une de moins qu'en 3D.
+    // Les pages de la liste désignent les pages par leur place dans la liste : une de moins qu'en 3D.
     ...leafPagesBook(() => createPages(state, (page) => book.navigate?.(page + 1), 1), 1, STRANGE_PAPER),
     look: async () => {
       const { front, back, plain } = await leatherCover(coverDesign(STRANGE_BOOK_INDEX), STRANGE_BINDING);

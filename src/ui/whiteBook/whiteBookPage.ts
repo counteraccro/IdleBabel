@@ -1,4 +1,3 @@
-import './whiteBook.css';
 import type { Paper } from '../book/pageRender';
 
 /** Papier du livre blanc : un vélin crème (le livre lui-même est en 3D, book3d/whiteBook3d.ts). */
