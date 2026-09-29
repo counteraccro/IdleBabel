@@ -34,18 +34,25 @@ export interface BookMesh {
   /** Plat de devant, qui pivote sur le dos pour ouvrir le livre (0 : fermé, 1 : ouvert à plat). */
   setOpen: (amount: number) => void;
   /**
+   * Plat arrière, qui se referme sur les pages en fin de livre (0 : ouvert à plat, 1 : livre fermé sur son
+   * dos, posé à gauche). À utiliser livre ouvert, à la dernière double page.
+   */
+  setShut: (amount: number) => void;
+  /**
    * Avancement dans le livre (0 : début, 1 : fin) : épaisseur des piles de feuilles de chaque côté.
    * `left` : les feuilles déjà posées à gauche, si elles diffèrent (pendant qu'une feuille tourne, celles
-   * qui n'ont pas encore atterri ; 0 : aucune, on voit l'intérieur de la couverture).
+   * qui n'ont pas encore atterri ; 0 : aucune, on voit l'intérieur de la couverture). `right` : de même
+   * pour les feuilles qui restent à droite (1 : aucune, on voit l'intérieur du plat arrière).
    */
-  setProgress: (read: number, left?: number) => void;
+  setProgress: (read: number, left?: number, right?: number) => void;
   /** Contenu des deux pages visibles (null : papier vierge, ou l'intérieur de la couverture à gauche). */
   setPages: (left: THREE.Texture | null, right: THREE.Texture | null) => void;
   /**
    * Feuille qui tourne autour du pli : `turn` de 0 (posée à droite) à 1 (posée à gauche), `front` son
    * recto (la page de droite), `back` son verso (la page de gauche d'après). null : pas de feuille.
+   * `corner` : prise par un coin (1 : en haut, -1 : en bas), elle part de lui, dans le sens `forward`.
    */
-  setLeaf: (turn: number | null, front?: THREE.Texture | null, back?: THREE.Texture | null) => void;
+  setLeaf: (turn: number | null, front?: THREE.Texture | null, back?: THREE.Texture | null, corner?: number, forward?: boolean) => void;
 }
 
 /** Épaisseur du cuir du dos (part de l'épaisseur du livre), et aplatissement de son arrondi. */
@@ -285,6 +292,15 @@ const pageProfile = (x: number, lift: number, opened: number, width: number, sta
 
 /** Segments de la feuille qui tourne, le long de sa largeur. */
 const LEAF_STEPS = 40;
+/**
+ * La feuille ne porte d'ombre qu'en se soulevant de la pile de droite : passé ce point, la lampe l'éclaire
+ * presque par la tranche et son ombre n'est plus qu'une bande sombre qui balaie la page de droite.
+ */
+const LEAF_SHADOW_END = 0.4;
+/** Rangées de la feuille, sur sa hauteur : prise par un coin, chacune tourne à son rythme. */
+const LEAF_ROWS = 16;
+/** Avance du coin saisi sur le bord opposé, en part du tour (au plus fort, à mi-course). */
+const CORNER_LEAD = 0.2;
 /** Points le long d'une page, plus serrés près du pli où elle se courbe. */
 const PAGE_STEPS = 40;
 
@@ -439,7 +455,11 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   let cut = thickness / 2 - board;
   /** Partage vu de la pile de gauche : le même, sauf pendant qu'une feuille tourne. */
   let cutLeft = cut;
+  /** Ouverture : écart entre les deux moitiés (0 : fermé, π : à plat). */
   let angle = 0;
+  /** Angle de la couverture, et du plat arrière qui se referme en fin de livre. */
+  let frontAngle = 0;
+  let backAngle = 0;
   let leftAngle = 0;
   let rightAngle = 0;
   /** Point de couture, au fond du dos (sur le plat arrière, à x = 0). */
@@ -485,11 +505,18 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     return [lx, lz + seam];
   };
   // Ouverture : les moitiés tournent, la reliure suit ; les pages se creusent vers le pli.
-  const open = (amount: number): void => {
-    angle = Math.PI * Math.min(1, Math.max(0, amount));
+  const open = (): void => {
+    angle = frontAngle - backAngle;
     pose();
+    // Refermé sur son dos : tout le livre bascule autour de la charnière de la moitié gauche, qui reste
+    // à plat pendant que le plat arrière se relève.
+    const [hx, hz] = place('left', [0, cutLeft]);
+    const [rx, rz] = rotate([hx, hz], backAngle);
+    body.rotation.y = -backAngle;
+    body.position.set(hx - rx, 0, hz - rz);
     onOpen();
   };
+  const clamp = (amount: number): number => Math.PI * Math.min(1, Math.max(0, amount));
 
   // Plat de derrière : retourné (sa face extérieure regarde -z), coins arrondis toujours côté tranche.
   const back = new THREE.Mesh(geometry, [backMaterial, leather, insideMaterial]);
@@ -529,6 +556,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   });
   let read = 0;
   let readLeft = 0;
+  let readRight = 0;
   let opened = 0;
   /**
    * Courbure du livre ouvert : de combien un plat (et la pile qu'il porte) se relève vers ses pages, à
@@ -552,8 +580,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   const rebuild = (): void => {
     // Hauteur où le bloc se partage : tout à droite au début, tout à gauche à la fin.
     const split = (value: number): number =>
-      value <= 0 ? half : Math.min(half - sheets, Math.max(-half + sheets, half - 2 * half * value));
-    cut = split(read);
+      value <= 0 ? half : value >= 1 ? -half : Math.min(half - sheets, Math.max(-half + sheets, half - 2 * half * value));
+    cut = split(readRight);
     cutLeft = split(readLeft);
     pose();
     rightStack.geometry.dispose();
@@ -562,13 +590,15 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     // Les feuilles remontent au pli d'autant plus que les deux côtés sont épais : au milieu du livre,
     // beaucoup ; au début et à la fin (une seule pile), la page reste plane jusqu'au pli.
     const lift = curve(cut);
-    rightStack.geometry = stackGeometry(shape, inner, half, -half, cut, 1, bulge, opened, lift, curl);
+    rightStack.geometry =
+      readRight >= 1 ? new THREE.BufferGeometry() : stackGeometry(shape, inner, half, -half, cut, 1, bulge, opened, lift, curl);
     leftStack.geometry =
       readLeft <= 0
         ? new THREE.BufferGeometry()
         : stackGeometry(shape, inner, half, cutLeft, half, -1, bulge, opened, lift, (x) => -curl(x));
     for (const bend of bendBoards) bend();
     leftStack.visible = readLeft > 0;
+    rightStack.visible = readRight < 1;
     // Tranchefiles : au fond du pli.
     for (const mesh of headbands) {
       // Posés sur le dos étalé, au fond du pli, à ses deux bouts.
@@ -576,13 +606,14 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
       mesh.visible = opened > 0.3;
     }
   };
-  const progress = (value: number, left = value): void => {
+  const progress = (value: number, left = value, right = value): void => {
     read = Math.min(1, Math.max(0, value));
     readLeft = Math.min(read, Math.max(0, left));
+    readRight = Math.max(read, Math.min(1, right));
     rebuild();
   };
   progress(0);
-  open(0);
+  open();
   onOpen = (): void => {
     const next = angle / Math.PI;
     if (Math.abs(next - opened) < 1e-3) return;
@@ -591,7 +622,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   };
 
   // Feuille qui tourne : une bande souple le long de la largeur de la page, recto et verso.
-  const leafGeometry = new THREE.PlaneGeometry(1, 1, LEAF_STEPS, 1);
+  const leafGeometry = new THREE.PlaneGeometry(1, 1, LEAF_STEPS, LEAF_ROWS);
   const leafUv = leafGeometry.attributes.uv;
   const backUv = new Float32Array(leafUv.array.length);
   for (let i = 0; i < leafUv.count; i++) {
@@ -607,7 +638,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   const leafFront = new THREE.MeshStandardMaterial({ color: look.paper, roughness: 0.95, side: THREE.FrontSide });
   const leafBack = new THREE.MeshStandardMaterial({ color: look.paper, roughness: 0.95, side: THREE.BackSide });
   const leaf = new THREE.Group();
-  leaf.add(new THREE.Mesh(leafGeometry, leafFront), new THREE.Mesh(leafBackGeometry, leafBack));
+  const leafMeshes = [new THREE.Mesh(leafGeometry, leafFront), new THREE.Mesh(leafBackGeometry, leafBack)];
+  leaf.add(...leafMeshes);
   leaf.visible = false;
   body.add(leaf);
   const fore = shape.width - shape.overhang;
@@ -615,32 +647,12 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
    * Pose la feuille à `turn` : elle tourne autour du pli (x = 0, à la hauteur du partage) ; le bord
    * libre traîne derrière la reliure, la feuille se courbe ; posée, elle épouse le creux du pli.
    */
-  const poseLeaf = (turn: number): void => {
+  const poseLeaf = (turn: number, corner: number, forward: boolean): void => {
     const position = leafGeometry.attributes.position;
-    // De la page de droite (angle de la moitié droite) à celle de gauche (angle de la moitié gauche).
-    const base = rightAngle + (leftAngle - rightAngle) * turn;
-    const lag = 0.9 * Math.sin(Math.PI * turn);
-    const rest = 1 - Math.sin(Math.PI * turn);
-    let x = 0;
-    let z = 0;
-    const points: Point[] = [];
-    for (let i = 0; i <= LEAF_STEPS; i++) {
-      const along = i / LEAF_STEPS;
-      points.push([x, z]);
-      // Angle de la feuille le long de sa largeur : au pli elle est en avance, au bord elle traîne.
-      const phi = base + lag * (0.35 - along);
-      x += (fore / LEAF_STEPS) * Math.cos(phi);
-      z += (fore / LEAF_STEPS) * Math.sin(phi);
-    }
-    // Posée, elle prend la forme de la page sur laquelle elle repose : sa hauteur au-dessus du point
-    // de couture, du côté de la pile qu'elle quitte ou qu'elle rejoint (au-dessus de la feuille).
-    const thickness = curve(cut);
-    const landing = (cut + half) * (1 - turn) + (half - cutLeft) * turn;
-    const up = turn < 0.5 ? 1 : -1;
-    const [nx, nz] = [-Math.sin(base) * up, Math.cos(base) * up];
     // Les deux piles, chacune dans le repère de sa moitié inclinée (x le long du plat depuis le pli,
     // z au-dessus du point de couture) : la feuille ne passe jamais sous leur page du dessus, sinon,
     // en tournant, elle traverserait leur bosse au pli (d'autant plus haute que la pile est épaisse).
+    const thickness = curve(cut);
     const stacks = [
       { lean: sag, dir: 1, stack: cut + half },
       { lean: -sag, dir: -1, stack: readLeft > 0 ? half - cutLeft : 0 },
@@ -657,13 +669,43 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
       }
       return point;
     };
+    /** Une rangée de la feuille (sa coupe à une hauteur donnée), tournée de `turn`. */
+    const row = (turn: number): Point[] => {
+      // De la page de droite (angle de la moitié droite) à celle de gauche (angle de la moitié gauche).
+      const base = rightAngle + (leftAngle - rightAngle) * turn;
+      const lag = 0.9 * Math.sin(Math.PI * turn);
+      const rest = 1 - Math.sin(Math.PI * turn);
+      // Posée, elle prend la forme de la page sur laquelle elle repose : sa hauteur au-dessus du point
+      // de couture, du côté de la pile qu'elle quitte ou qu'elle rejoint (au-dessus de la feuille).
+      const landing = (cut + half) * (1 - turn) + (half - cutLeft) * turn;
+      const up = turn < 0.5 ? 1 : -1;
+      const [nx, nz] = [-Math.sin(base) * up, Math.cos(base) * up];
+      let x = 0;
+      let z = 0;
+      const points: Point[] = [];
+      for (let i = 0; i <= LEAF_STEPS; i++) {
+        const across = (i / LEAF_STEPS) * fore;
+        const rise = rest * (landing + pageProfile(across, thickness, opened, fore, landing) + curl(across)) + 0.0008;
+        // Cousue au point de couture, elle tourne autour de lui, d'une pile à l'autre.
+        points.push(above([x + rise * nx, z + rise * nz]));
+        // Angle de la feuille le long de sa largeur : au pli elle est en avance, au bord elle traîne.
+        const phi = base + lag * (0.35 - i / LEAF_STEPS);
+        x += (fore / LEAF_STEPS) * Math.cos(phi);
+        z += (fore / LEAF_STEPS) * Math.sin(phi);
+      }
+      return points;
+    };
+    // Prise par un coin (1 : en haut, -1 : en bas), la feuille part de lui : le coin saisi mène, le
+    // bord opposé suit en retard, la feuille se décolle en diagonale. L'écart s'efface à l'arrivée.
+    const lead = CORNER_LEAD * Math.abs(corner) * Math.sin(Math.PI * turn) * (forward ? 1 : -1);
+    const rows: Point[][] = [];
+    for (let r = 0; r <= LEAF_ROWS; r++) {
+      const height = r / LEAF_ROWS;
+      const toward = corner > 0 ? height : corner < 0 ? 1 - height : 0.5;
+      rows.push(row(Math.min(1, Math.max(0, turn + lead * (toward - 0.5) * 2))));
+    }
     for (let i = 0; i < position.count; i++) {
-      const step = Math.round(leafUv.getX(i) * LEAF_STEPS);
-      const [px, pz] = points[step];
-      const across = (step / LEAF_STEPS) * fore;
-      const rise = rest * (landing + pageProfile(across, thickness, opened, fore, landing) + curl(across)) + 0.0008;
-      // Cousue au point de couture, elle tourne autour de lui, d'une pile à l'autre.
-      const [lx, lz] = above([px + rise * nx, pz + rise * nz]);
+      const [lx, lz] = rows[Math.round(leafUv.getY(i) * LEAF_ROWS)][Math.round(leafUv.getX(i) * LEAF_STEPS)];
       position.setXYZ(i, lx, (leafUv.getY(i) - 0.5) * tall, seam + lz);
     }
     position.needsUpdate = true;
@@ -682,9 +724,16 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
 
   return {
     root,
-    setOpen: open,
+    setOpen: (amount) => {
+      frontAngle = clamp(amount);
+      open();
+    },
+    setShut: (amount) => {
+      backAngle = clamp(amount);
+      open();
+    },
     setProgress: progress,
-    setLeaf: (turn, front = null, back = null) => {
+    setLeaf: (turn, front = null, back = null, corner = 0, forward = true) => {
       leaf.visible = turn !== null;
       if (turn === null) return;
       for (const [material, map] of [[leafFront, front], [leafBack, back]] as const) {
@@ -694,7 +743,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
           material.needsUpdate = true;
         }
       }
-      poseLeaf(turn);
+      for (const mesh of leafMeshes) mesh.castShadow = turn < LEAF_SHADOW_END;
+      poseLeaf(turn, corner, forward);
     },
     setPages: (left, right) => {
       leftPage.map = left;

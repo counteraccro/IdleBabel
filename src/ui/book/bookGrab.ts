@@ -26,9 +26,11 @@ export interface GrabOptions {
   direction?: (event: PointerEvent) => 1 | -1;
   /** Éléments qui gardent leurs clics (cases, boutons posés sur la page) : ils ne tournent rien. */
   ignore?: (target: EventTarget | null) => boolean;
+  /** Distance à tirer, en pixels, pour tourner la page entière (par défaut : 3/4 de la largeur de l'élément). */
+  span?: () => number;
 }
 
-export const attachGrab = (book: HTMLElement, handlers: GrabHandlers, { direction = () => 1, ignore = () => false }: GrabOptions = {}): void => {
+export const attachGrab = (book: HTMLElement, handlers: GrabHandlers, { direction = () => 1, ignore = () => false, span }: GrabOptions = {}): void => {
   let startX = 0;
   let sign: 1 | -1 = 1;
   let pointerId: number | null = null;
@@ -57,7 +59,8 @@ export const attachGrab = (book: HTMLElement, handlers: GrabHandlers, { directio
     const dx = (startX - event.clientX) * sign;
     if (!grabbing && Math.abs(dx) > DRAG_THRESHOLD_PX) grab();
     if (!grabbing) return;
-    progress = Math.min(1, Math.max(0, dx / (book.getBoundingClientRect().width * FULL_TURN_WIDTH)));
+    const full = span ? span() : book.getBoundingClientRect().width * FULL_TURN_WIDTH;
+    progress = Math.min(1, Math.max(0, dx / full));
     handlers.move(progress);
   });
 

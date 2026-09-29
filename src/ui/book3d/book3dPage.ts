@@ -8,12 +8,14 @@ import { createBookMesh, type BookShape } from './bookMesh';
 import { braidTexture, edgeTexture, svgTexture } from './textures';
 import { createWhiteBookPages } from '../whiteBook/pages';
 import { WHITE_PAPER } from '../whiteBook/whiteBookPage';
-import { PAGE_TEXTURE } from '../book/pageLayout';
-import type { LeafPage } from '../strangeBook/pages';
+import { createPageCache } from './pageCache';
+import { spreadCount, type PageSource } from './pageSource';
+import { createTurner, type Turner } from './turner';
+import { attachBookGesture } from './bookGesture';
 import type { GameState } from '../../core/state';
 
-/** Durée d'une page qui tourne. */
-const TURN_MS = 1100;
+/** Durée de l'ouverture de la couverture. */
+const OPEN_MS = 1100;
 
 /** Proportions d'un grand livre : 4 × 5, épais (410 pages), plats solides qui débordent un peu. */
 const SHAPE: BookShape = { width: 0.8, height: 1, thickness: 0.16, board: 0.018, overhang: 0.012, corner: 0.035 };
@@ -26,19 +28,6 @@ const vellumTexture = (seed: number, stamped: boolean, ornaments = true): Promis
  * Prototype : le livre des Connaissances fermé, en vraie 3D (Three.js) — une seule caméra, une seule
  * lumière. On le fait tourner à la souris pour juger le rendu sous tous les angles.
  */
-/** Page du livre dessinée sur un canvas (le même dessin que la feuille qui tourne), en texture. */
-const pageTexture = (page: LeafPage | null | undefined, spineOnLeft: boolean): THREE.CanvasTexture | null => {
-  if (!page) return null;
-  const canvas = document.createElement('canvas');
-  canvas.width = PAGE_TEXTURE.width;
-  canvas.height = PAGE_TEXTURE.height;
-  page.paint(canvas, spineOnLeft, WHITE_PAPER);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = 8;
-  return texture;
-};
-
 export const createBook3dPage = (state: GameState, onBack: () => void): Component => {
   const root = el('main', 'book3d-page');
   const back = el('button', 'options-back', `← ${t('ui.back')}`);
@@ -52,7 +41,16 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
   open.value = '0';
   // Avancement : quelle double page est ouverte (0 : la page de titre).
   const leaves = createWhiteBookPages(state, () => {});
-  const spreads = Math.ceil(leaves.length / 2);
+  // Sans les pages vierges de la fin (le livre 2D en ajoute une pour finir sur une double page) : la
+  // dernière feuille qui tourne découvre le plat arrière.
+  const source: PageSource = {
+    count: leaves.length - [...leaves].reverse().findIndex((leaf) => leaf !== null),
+    paint: (index, canvas, spineOnLeft) => {
+      leaves[index]?.paint(canvas, spineOnLeft, WHITE_PAPER);
+      return !!leaves[index];
+    },
+  };
+  const spreads = spreadCount(source);
   const spread = el('input');
   spread.type = 'range';
   spread.min = '0';
@@ -125,81 +123,72 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
   scene.add(window_, room);
 
   let book: ReturnType<typeof createBookMesh> | null = null;
+  let turner: Turner | null = null;
   void Promise.all([vellumTexture(3, true), vellumTexture(11, false), vellumTexture(19, false, false)]).then(([cover, backCover, spine]) => {
     book = createBookMesh(SHAPE, { cover, back: backCover, inside: spine, spine, leather: 0xe8dcc0, edge: edgeTexture('#d6ae5a', '#a47d2e'), paper: 0xf3eee2, headband: braidTexture('#c8993f', '#efe4c6') });
     scene.add(book.root);
-    showSpread();
+    turner = createTurner(book, createPageCache(source), spreads);
     // Débogage du prototype : accès au livre depuis la console.
-    (window as unknown as { book3d?: unknown }).book3d = book;
+    (window as unknown as { book3d?: unknown }).book3d = { book, turner };
   });
-  const showSpread = (): void => {
-    if (!book) return;
-    const index = Number(spread.value);
-    book.setProgress(spreads > 1 ? index / (spreads - 1) : 0);
-    book.setPages(pageTexture(leaves[index * 2], false), pageTexture(leaves[index * 2 + 1], true));
-  };
-  /**
-   * Tourne une page : la feuille (recto : la page de droite, verso : la page de gauche d'après) passe
-   * de droite à gauche (ou revient), et on découvre dessous la page suivante.
-   */
-  let turning = false;
-  /** Ouvre (ou referme) la couverture, de là où elle en est. */
-  const swing = (target: number): void => {
-    const from = Number(open.value);
+  let swinging = false;
+  /** Plat arrière refermé sur les pages, en fin de livre (0 : ouvert, 1 : fermé). */
+  let shut = 0;
+  /** Ouvre (ou referme) la couverture, ou le plat arrière en fin de livre, de là où il en est. */
+  const swing = (board: 'front' | 'back', target: number): void => {
+    const from = board === 'front' ? Number(open.value) : shut;
     const start = performance.now();
-    const duration = TURN_MS * Math.abs(target - from);
-    turning = true;
+    const duration = OPEN_MS * Math.abs(target - from);
+    swinging = true;
     const step = (now: number): void => {
       const t = duration > 0 ? Math.min(1, (now - start) / duration) : 1;
       const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
-      open.value = String(from + (target - from) * eased);
-      book?.setOpen(Number(open.value));
+      const value = from + (target - from) * eased;
+      if (board === 'front') {
+        open.value = String(value);
+        book?.setOpen(value);
+      } else {
+        shut = value;
+        book?.setShut(value);
+      }
       if (t < 1) return void requestAnimationFrame(step);
-      turning = false;
+      swinging = false;
     };
     requestAnimationFrame(step);
   };
+  /** Tourne une page de plus (ou de moins) ; des clics rapides s'enchaînent en feuilletage. */
   const turn = (forward: boolean): void => {
-    const from = Number(spread.value);
-    const to = from + (forward ? 1 : -1);
-    if (!book || turning) return;
-    // Livre fermé (ou entrouvert) : la flèche ouvre d'abord la couverture ; à la première double page,
-    // revenir en arrière la referme.
+    if (!turner || swinging) return;
+    // Livre refermé sur son dos : seul le retour en arrière le rouvre.
+    if (shut > 0) return forward ? undefined : swing('back', 0);
+    // Livre fermé (ou entrouvert) : la flèche ouvre d'abord la couverture ; revenue à la première double
+    // page, revenir en arrière la referme. À la dernière, avancer referme le plat arrière.
     const opening = Number(open.value);
-    if (forward && opening < 1) return swing(1);
-    if (!forward && from === 0 && opening > 0) return swing(0);
-    if (to < 0 || to >= spreads) return;
-    turning = true;
-    const front = pageTexture(leaves[(forward ? from : to) * 2 + 1], true);
-    const back = pageTexture(leaves[(forward ? to : from) * 2], false);
-    // Dessous : la page qu'on découvre ; de l'autre côté, celle que la feuille va recouvrir.
-    book.setPages(
-      pageTexture(leaves[(forward ? from : to) * 2], false),
-      pageTexture(leaves[(forward ? to : from) * 2 + 1], true),
-    );
-    const start = performance.now();
-    const at = (index: number): number => (spreads > 1 ? index / (spreads - 1) : 0);
-    const step = (now: number): void => {
-      const t = Math.min(1, (now - start) / TURN_MS);
-      const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
-      // Les piles passent d'un côté à l'autre pendant que la feuille tourne : rien ne saute à la fin.
-      // Sauf à la première double page : à gauche, rien que l'intérieur de la couverture, tant que la
-      // feuille n'y est pas posée (ou dès qu'elle s'en soulève).
-      const read = at(from) + (at(to) - at(from)) * eased;
-      book?.setProgress(read, Math.min(from, to) === 0 ? 0 : read);
-      book?.setLeaf(forward ? eased : 1 - eased, front, back);
-      if (t < 1) return void requestAnimationFrame(step);
-      book?.setLeaf(null);
-      spread.value = String(to);
-      showSpread();
-      turning = false;
-    };
-    requestAnimationFrame(step);
+    if (forward && opening < 1) return swing('front', 1);
+    if (!forward && turner.target === 0 && opening > 0) return swing('front', 0);
+    if (forward && turner.target === spreads - 1) return turner.idle ? swing('back', 1) : undefined;
+    turner.go(turner.target + (forward ? 1 : -1));
+    spread.value = String(turner.target);
   };
+  attachBookGesture({
+    canvas,
+    camera,
+    book: () => book?.root ?? null,
+    turner: () => turner,
+    spreads,
+    width: SHAPE.width,
+    height: SHAPE.height,
+    open: () => !swinging && shut === 0 && Number(open.value) === 1,
+    // Livre fermé, d'un côté ou de l'autre : un clic n'importe où sur lui l'ouvre.
+    step: (forward) => turn(shut > 0 ? false : Number(open.value) === 0 ? true : forward),
+    busy: (on) => {
+      controls.enabled = !on;
+    },
+  });
   previous.addEventListener('click', () => turn(false));
   next.addEventListener('click', () => turn(true));
   open.addEventListener('input', () => book?.setOpen(Number(open.value)));
-  spread.addEventListener('input', showSpread);
+  spread.addEventListener('input', () => turner?.go(Number(spread.value)));
 
   const resize = (): void => {
     const { clientWidth: width, clientHeight: height } = canvas;
@@ -208,8 +197,13 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   };
-  const frame = (): void => {
+  let before = performance.now();
+  const frame = (now: number): void => {
     if (!root.isConnected) return renderer.dispose();
+    turner?.update(Math.min(0.05, (now - before) / 1000));
+    // Page prise à la main et lâchée : le curseur suit la double page où le livre s'arrête.
+    if (turner && document.activeElement !== spread) spread.value = String(turner.target);
+    before = now;
     resize();
     controls.update();
     renderer.render(scene, camera);
