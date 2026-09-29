@@ -60,6 +60,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
       camera.position.set(...position);
       controls.target.set(0, 0, 0);
       controls.update();
+      invalidate();
     });
     return button;
   });
@@ -94,8 +95,19 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
   // Lumières réglées pour la vue de biais, autour du livre.
   const lighting = createLighting(scene, new THREE.Vector3(1.7, -0.7, 1.9), new THREE.Vector3(0.4, 0, 0));
 
+  // Rendu à la demande : l'image n'est refaite que si quelque chose a changé (page qui tourne, plat qui
+  // pivote, caméra, taille, pages redessinées). Livre posé, la carte graphique se repose.
+  let dirty = true;
+  const invalidate = (): void => {
+    dirty = true;
+  };
   let book: ReturnType<typeof createBookMesh> | null = null;
   let turner: Turner | null = null;
+  /** Les pages ont changé (partie, sceau survolé, note au crayon) : redessinées, puis montrées. */
+  const refresh = (): void => {
+    turner?.refresh();
+    invalidate();
+  };
   void spec.look().then((look) => {
     book = createBookMesh(shape, look);
     scene.add(book.root);
@@ -104,7 +116,8 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     spec.navigate = (index) => turner?.go(Math.floor(index / 2));
     if (spec.bookmark !== undefined) book.setRibbon(spreads > 1 ? Math.floor(spec.bookmark / 2) / (spreads - 1) : 0, spreads > 1 ? 1 / (spreads - 1) : 1);
     // Débogage du prototype : accès au livre depuis la console.
-    (window as unknown as { book3d?: unknown }).book3d = { book, turner, camera, controls };
+    (window as unknown as { book3d?: unknown }).book3d = { book, turner, camera, controls, invalidate };
+    invalidate();
   });
   let swinging = false;
   /** Plat arrière refermé sur les pages, en fin de livre (0 : ouvert, 1 : fermé). */
@@ -135,6 +148,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
         book?.setShut(value);
       }
       view.step(eased);
+      invalidate();
       if (t < 1) return void requestAnimationFrame(step);
       if (board === 'flip') turner?.jump(0);
       swinging = false;
@@ -181,7 +195,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
       if (!page || !turner?.idle || !view.locked) return void (canvas.style.cursor = '');
       const [index, x, y] = [2 * turner.target + (page.side === 'right' ? 1 : 0), page.u * PAGE_TEXTURE.width, page.v * PAGE_TEXTURE.height];
       canvas.style.cursor = spec.pointable?.(index, x, y) ? 'pointer' : '';
-      if (spec.hover?.(index, x, y)) turner.refresh();
+      if (spec.hover?.(index, x, y)) refresh();
     },
     press: (hit) => {
       // Le signet : les pages tournent jusqu'au sommaire.
@@ -194,7 +208,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
       const index = 2 * turner.target + (page.side === 'right' ? 1 : 0);
       if (!spec.press(index, page.u * PAGE_TEXTURE.width, page.v * PAGE_TEXTURE.height)) return false;
       // La page a pu changer (légende d'un sceau, note au crayon) : redessinée.
-      turner.refresh();
+      refresh();
       return true;
     },
   });
@@ -207,21 +221,28 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     if (event.key === 'Home') backToBookmark();
   };
   window.addEventListener('keydown', onKey);
-  open.addEventListener('input', () => book?.setOpen(Number(open.value)));
+  open.addEventListener('input', () => {
+    book?.setOpen(Number(open.value));
+    invalidate();
+  });
   spread.addEventListener('input', () => turner?.go(Number(spread.value)));
 
-  const resize = (): void => {
+  /** Suit la taille du canvas ; true s'il a changé de taille. */
+  let size = '';
+  const resize = (): boolean => {
     const { clientWidth: width, clientHeight: height } = canvas;
-    if (!width || !height) return;
+    if (!width || !height || `${width}x${height}` === size) return false;
+    size = `${width}x${height}`;
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    return true;
   };
   // Pages qui suivent la partie : redessinées de temps en temps, jamais pendant qu'une page tourne.
   if (spec.live) {
     const timer = window.setInterval(() => {
       if (!root.isConnected) return window.clearInterval(timer);
-      if (turner?.idle && Number(open.value) === 1 && shut === 0) turner.refresh();
+      if (turner?.idle && Number(open.value) === 1 && shut === 0) refresh();
     }, LIVE_MS);
   }
   /** Double page déjà signalée comme vue (null : aucune, ou livre fermé). */
@@ -231,7 +252,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     if (!root.isConnected) return window.removeEventListener(BIG_BOOK_REWRITE, rewrite);
     spec.rewrite?.();
     shownSpread = null;
-    turner?.refresh();
+    refresh();
   };
   window.addEventListener(BIG_BOOK_REWRITE, rewrite);
   /** Livre posé, ouvert sur une double page : ses deux pages arrivent sous les yeux (une fois). */
@@ -246,22 +267,29 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     spec.shown(2 * shownSpread);
     spec.shown(2 * shownSpread + 1);
     // Une planche vue éteint ses étoiles de nouveauté : la double page est redessinée.
-    turner.refresh();
+    refresh();
   };
   let before = performance.now();
+  /** Des pages tournaient à l'image d'avant : la dernière, celle où elles se posent, est encore à montrer. */
+  let turning = false;
   const frame = (now: number): void => {
     if (!root.isConnected) return renderer.dispose();
-    turner?.update(Math.min(0.05, (now - before) / 1000));
+    const moving = turner?.update(Math.min(0.05, (now - before) / 1000)) ?? false;
     notifyShown();
     // Page prise à la main et lâchée : le curseur suit la double page où le livre s'arrête.
     if (turner && document.activeElement !== spread) spread.value = String(turner.target);
     before = now;
-    resize();
-    controls.update();
-    // Livre fermé (d'un côté ou de l'autre), on le fait tourner : la lumière suit la face qu'on regarde.
-    // Fermé : les deux plats l'un sur l'autre (couverture fermée, ou plat arrière refermé sur elle).
-    lighting.follow(camera, controls.target, 1 - (Number(open.value) - shut));
-    renderer.render(scene, camera);
+    const resized = resize();
+    // Caméra qu'on fait tourner, ou qui finit sur son élan.
+    const orbiting = controls.update();
+    if (moving || turning || resized || orbiting || dirty) {
+      // Livre fermé (d'un côté ou de l'autre), on le fait tourner : la lumière suit la face qu'on regarde.
+      // Fermé : les deux plats l'un sur l'autre (couverture fermée, ou plat arrière refermé sur elle).
+      lighting.follow(camera, controls.target, 1 - (Number(open.value) - shut));
+      renderer.render(scene, camera);
+      dirty = false;
+    }
+    turning = moving;
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
