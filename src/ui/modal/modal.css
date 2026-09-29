@@ -1,6 +1,8 @@
 /*
  * Modales du jeu (modal.ts) : un seul style, réglé ici ; les variantes ne changent que l'accent. Style
- * choisi par l'auteur : cuir et dorure (le ton des boutons de l'en-tête), avec des symboles de Babel.
+ * choisi par l'auteur : l'écrin aux coins brisés. Cuir sombre (le ton des boutons de l'en-tête), coins
+ * coupés, double filet et filigranes dorés qui débordent des angles, symboles de Babel qui s'échappent
+ * des côtés : une modale qui n'a pas l'air d'une boîte.
  */
 .modal-backdrop {
   position: fixed;
@@ -8,30 +10,109 @@
   z-index: 20;
   display: grid;
   place-items: center;
-  padding: 16px;
+  padding: 24px 40px;
   background: rgba(5, 4, 3, 0.72);
   backdrop-filter: blur(3px);
 }
 /* Avant le jeu (nom, langue) : rien derrière, le noir complet. */
 .modal-backdrop.black { background: #000; backdrop-filter: none; }
-.modal {
+
+/* Coins coupés : le cuir, et les filets qui en suivent le contour. */
+.modal-frame,
+.modal,
+.modal-filet {
+  --cut: 22px;
+}
+.modal,
+.modal::before,
+.modal-filet,
+.modal-filet::before {
+  clip-path: polygon(
+    var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut)
+  );
+}
+
+.modal-frame {
   --modal-accent: #e0b870;
-  --gold: rgba(224, 184, 112, 0.45);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: min(420px, 100%);
-  padding: 22px 36px;
-  color: #efe3c8;
-  text-align: center;
-  /* Cuir sombre, double filet doré repoussé à l'intérieur. */
-  background: linear-gradient(180deg, #3a2216, #1f110a);
-  border: 1px solid rgba(224, 184, 112, 0.55);
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 6px #2b180f, inset 0 0 0 7px var(--gold), 0 14px 40px rgba(0, 0, 0, 0.75);
+  position: relative;
+  width: min(440px, 100%);
+  /* Le cuir découpé ne porte pas d'ombre : l'écrin entier en projette une. */
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.75));
 }
 .modal-danger { --modal-accent: #e08a6a; }
 .modal-notice { --modal-accent: #cdb892; }
+
+/* Filet extérieur : l'or au bord, le cuir juste dedans. */
+.modal {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 38px 42px;
+  color: #efe3c8;
+  text-align: center;
+  background: rgba(224, 184, 112, 0.6);
+}
+.modal::before {
+  --cut: 21px;
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -2;
+  background: linear-gradient(180deg, #3a2216, #1f110a);
+}
+/* Filet intérieur, plus pâle, à 8 px du bord. */
+.modal-filet {
+  --cut: 16px;
+  position: absolute;
+  inset: 8px;
+  z-index: -1;
+  background: rgba(224, 184, 112, 0.35);
+  pointer-events: none;
+}
+.modal-filet::before {
+  --cut: 15px;
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(180deg, #382115, #20120a);
+}
+
+/* Filigranes dorés qui débordent des quatre angles. */
+.modal-corner {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  color: #e0b870;
+  filter: drop-shadow(0 1px 1px #000);
+  pointer-events: none;
+}
+.modal-corner svg { display: block; width: 100%; height: 100%; }
+.modal-corner.tl { top: -16px; left: -16px; }
+.modal-corner.tr { top: -16px; right: -16px; transform: scaleX(-1); }
+.modal-corner.bl { bottom: -16px; left: -16px; transform: scaleY(-1); }
+.modal-corner.br { bottom: -16px; right: -16px; transform: scale(-1); }
+
+/* Colonnes de symboles de Babel qui s'échappent des côtés, effacées vers leurs bouts. */
+.modal-spill {
+  position: absolute;
+  top: 18%;
+  bottom: 18%;
+  writing-mode: vertical-rl;
+  font-size: 0.85rem;
+  letter-spacing: 0.45em;
+  color: rgba(224, 184, 112, 0.45);
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 25%, #000 75%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 25%, #000 75%, transparent);
+}
+.modal-spill.left { left: -30px; }
+.modal-spill.right { right: -30px; transform: rotate(180deg); }
+
 .modal-title {
   margin: 0;
   font-weight: normal;
@@ -42,17 +123,6 @@
   text-shadow: 0 1px 0 #000;
 }
 .modal p { margin: 0; line-height: 1.5; color: #cdb892; }
-
-/* Symboles de Babel dorés, presque effacés, le long du filet du haut et du bas. */
-.modal-inscription {
-  font-size: 0.8rem;
-  letter-spacing: 0.35em;
-  color: rgba(224, 184, 112, 0.5);
-  text-shadow: 0 1px 0 #000;
-  white-space: nowrap;
-  overflow: hidden;
-  user-select: none;
-}
 
 /* Champs et choix dans une modale. */
 .modal-field { display: flex; flex-direction: column; gap: 8px; color: #cdb892; }
@@ -87,38 +157,10 @@
 .modal-button:hover:not(:disabled) { border-color: var(--modal-accent); color: var(--modal-accent); }
 .modal-button:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
 
-/*
- * Sans boîte (accueil, lore) : le texte doré flotte sur le fond, comme un écran-titre ou un récit ; un
- * nom s'écrit sur un simple trait.
- */
-.modal-backdrop.bare .modal {
-  width: min(560px, 100%);
-  gap: 28px;
-  background: none;
-  border: 0;
-  box-shadow: none;
-}
-/* Un récit se lit sur le décor : plus sombre que pour une simple question. */
-.modal-backdrop.dim.bare { background: rgba(3, 2, 1, 0.86); }
-.modal-backdrop.bare .modal-title { font-size: 2rem; letter-spacing: 0.2em; }
-.modal-backdrop.bare .modal-inscription { font-size: 0.9rem; letter-spacing: 0.5em; }
-.modal-backdrop.bare .modal-field input {
-  font-size: 1.4rem;
-  background: none;
-  border: 0;
-  border-bottom: 1px solid rgba(224, 184, 112, 0.4);
-  border-radius: 0;
-}
-.modal-backdrop.bare .modal-choices button,
-.modal-backdrop.bare .modal-button { background: none; border-color: transparent; box-shadow: none; }
-.modal-backdrop.bare .modal-choices .active,
-.modal-backdrop.bare .modal-button.primary:not(:disabled) { border-color: transparent; border-bottom-color: rgba(224, 184, 112, 0.85); border-radius: 0; }
-.modal-backdrop.bare .modal-button:hover:not(:disabled) { border-color: transparent; border-bottom-color: var(--modal-accent); }
-
 /* Texte de lore : paragraphes en italique, qui apparaissent l'un après l'autre. */
 .modal-story { display: flex; flex-direction: column; gap: 14px; }
 .modal-story p {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-style: italic;
   line-height: 1.6;
   color: #e6d6b4;

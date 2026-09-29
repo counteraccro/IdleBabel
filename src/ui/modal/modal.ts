@@ -28,11 +28,6 @@ export interface ModalOptions {
    * jeu (nom, langue), quand rien n'a encore commencé.
    */
   backdrop?: 'dim' | 'black';
-  /**
-   * Sans boîte : le texte doré flotte sur le fond, comme un écran-titre ou un récit (accueil, lore). Sinon
-   * l'écrin de cuir (confirmations, informations).
-   */
-  bare?: boolean;
   /** Échap ou un clic à côté la ferment (pas pour une question obligatoire). */
   dismissible?: boolean;
   onClose?: () => void;
@@ -46,9 +41,15 @@ export interface Modal {
   close: () => void;
 }
 
+/** Filigrane doré d'un coin de l'écrin (coin haut gauche ; les trois autres en sont des reflets). */
+const CORNER = `<svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+  <path d="M4 40 V14 Q4 4 14 4 H40"/><path d="M10 34 V18 Q10 10 18 10 H34" opacity=".6"/><path d="M14 4 Q22 16 10 22"/>
+  <circle cx="22" cy="22" r="4" fill="currentColor"/><path d="M40 4 q8 -2 10 6 q-6 -2 -8 2"/><path d="M4 40 q-2 8 6 10 q-2 -6 2 -8"/></svg>`;
+
 /**
- * Modale commune à tout le jeu (voir modal.css) : un écrin de cuir doré au centre, le décor assombri derrière.
- * Le style se règle en un seul endroit ; chaque modale ne fournit que son contenu.
+ * Modale commune à tout le jeu (voir modal.css) : un écrin de cuir aux coins brisés, filets et filigranes
+ * dorés qui débordent des angles, symboles de Babel qui s'échappent des côtés. Le style se règle en un
+ * seul endroit ; chaque modale ne fournit que son contenu.
  */
 export const openModal = ({
   title,
@@ -56,11 +57,11 @@ export const openModal = ({
   body = [],
   actions = [],
   backdrop: shade = 'dim',
-  bare = false,
   dismissible = false,
   onClose,
 }: ModalOptions): Modal => {
-  const backdrop = el('div', `modal-backdrop ${shade}${bare ? ' bare' : ''}`);
+  const backdrop = el('div', `modal-backdrop ${shade}`);
+  const frame = el('div', `modal-frame modal-${variant}`);
   const card = el('form', `modal modal-${variant}`);
   card.setAttribute('role', 'dialog');
   card.setAttribute('aria-modal', 'true');
@@ -98,15 +99,21 @@ export const openModal = ({
   if (dismissible) backdrop.addEventListener('click', (event) => event.target === backdrop && close());
   document.addEventListener('keydown', onKey);
   footer.append(...buttons);
-  // Inscriptions dorées en symboles de Babel, gravées en haut et en bas du cuir : tirées de la variante
-  // et du nombre de boutons, les mêmes pour une même modale, quelle que soit la langue.
-  const inscription = (seed: string): HTMLElement => {
-    const line = el('span', 'modal-inscription', babelName(`modal:${variant}:${actions.length}:${seed}`, 3));
-    line.setAttribute('aria-hidden', 'true');
-    return line;
+  card.append(el('span', 'modal-filet'), heading, ...body, ...(buttons.length ? [footer] : []));
+  // Colonnes de symboles de Babel qui s'échappent des deux côtés : tirées du titre, les mêmes pour une
+  // même modale.
+  const spill = (side: 'left' | 'right'): HTMLElement => {
+    const column = el('span', `modal-spill ${side}`, babelName(`modal:${title}:${side}`, 6));
+    column.setAttribute('aria-hidden', 'true');
+    return column;
   };
-  card.append(inscription('top'), heading, ...body, ...(buttons.length ? [footer] : []), inscription('bottom'));
-  backdrop.append(card);
+  const corners = ['tl', 'tr', 'bl', 'br'].map((corner) => {
+    const node = el('span', `modal-corner ${corner}`);
+    node.innerHTML = CORNER;
+    return node;
+  });
+  frame.append(card, spill('left'), spill('right'), ...corners);
+  backdrop.append(frame);
   document.body.append(backdrop);
   return { root: card, title: heading, buttons, close };
 };

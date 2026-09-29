@@ -32,7 +32,6 @@ export const mountLore = (state: GameState): (() => void) => {
     });
     const modal = openModal({
       title: story.title.replaceAll('{name}', state.playerName),
-      bare: true,
       body: [text],
       actions: [{ label: t('lore.continue'), kind: 'primary' }],
       onClose: () => {
