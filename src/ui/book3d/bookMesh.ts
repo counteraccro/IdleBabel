@@ -525,6 +525,10 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   // deux côtés : la coque du dos reste pleine sous tous les angles.
   const leather = new THREE.MeshStandardMaterial({ map: look.cover, color: look.leather, roughness: 0.65, side: THREE.DoubleSide });
   const coverMaterial = new THREE.MeshStandardMaterial({ map: look.cover, roughness: 0.7 });
+  // Le plat arrière est le même plat retourné (demi-tour autour de x) : son image tournerait avec lui, tête
+  // en bas et vue de dos. Tournée d'un demi-tour, elle se lit droite, la cote en bas.
+  look.back.center.set(0.5, 0.5);
+  look.back.rotation = Math.PI;
   const backMaterial = new THREE.MeshStandardMaterial({ map: look.back, roughness: 0.7 });
   const insideMaterial = new THREE.MeshStandardMaterial({ map: look.inside, roughness: 0.75 });
   const geometry = boardGeometry(shape);

@@ -7,10 +7,10 @@ import type { Binding } from '../book/bindings';
 import { canvasTexture, svgImage } from './textures';
 
 /** Taille d'un plat en texture : la proportion de l'usure (100 × 125). */
-const WIDTH = 800;
-const HEIGHT = 1000;
+export const WIDTH = 800;
+export const HEIGHT = 1000;
 /** Centième de la largeur du plat (le `cqw` du CSS des couvertures). */
-const CQW = WIDTH / 100;
+export const CQW = WIDTH / 100;
 const GOLD = '#d9b56a';
 
 export interface LeatherCover {
@@ -20,7 +20,7 @@ export interface LeatherCover {
   plain: THREE.CanvasTexture;
 }
 
-const canvas = (): [HTMLCanvasElement, CanvasRenderingContext2D] => {
+export const canvas = (): [HTMLCanvasElement, CanvasRenderingContext2D] => {
   const node = document.createElement('canvas');
   node.width = WIDTH;
   node.height = HEIGHT;

@@ -13,6 +13,7 @@ import { layoutPage } from '../book/pageLayout';
 import { MODERN_PAPER, OLD_PAPER, drawPageTexture } from '../book/pageRender';
 import { drawTitlePageTexture } from '../book/titlePage';
 import { leatherCover } from './leatherCover';
+import { modernCover } from './modernCover';
 import { headbandTexture } from './headband';
 import { edgeTexture } from './textures';
 import type { Book3d } from './book3dBook';
@@ -59,7 +60,8 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
       },
     },
     look: async () => {
-      const { front, back, plain } = await leatherCover(design, binding);
+      // Un livre moderne a une couverture d'éditeur ; les autres, du cuir.
+      const { front, back, plain } = await (design.modern && !strange ? modernCover : leatherCover)(design, binding);
       return {
         cover: front,
         back,
