@@ -12,6 +12,8 @@ export interface Book3d {
   look: () => Promise<BookLook>;
   /** Page où est glissé le signet (le sommaire) : un clic sur lui, ou la touche Début, y ramène. */
   bookmark?: number;
+  /** Pages qui tournent seules, livre ouvert (le livre en main, au rythme de la production), par seconde. */
+  turnsPerSecond?: () => number;
   /** Pages qui suivent la partie (chiffres qui changent) : redessinées régulièrement. */
   live?: boolean;
   /**

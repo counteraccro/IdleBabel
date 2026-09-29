@@ -11,6 +11,7 @@ import { createTurner, type Turner } from './turner';
 import { attachBookGesture } from './bookGesture';
 import { createLighting } from './lighting';
 import { createReadingView } from './readingView';
+import { createAutoTurn3d } from './autoTurn3d';
 import { isDebugEnabled } from '../../debug/debugPanel';
 import { BIG_BOOK_REWRITE, type Book3d } from './book3dBook';
 
@@ -119,6 +120,9 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     invalidate();
   });
   let swinging = false;
+  /** Le lecteur appuie sur le livre ouvert (page tenue) : les pages ne tournent pas seules. */
+  let grabbing = false;
+  const autoTurn = spec.turnsPerSecond ? createAutoTurn3d(spec.turnsPerSecond) : null;
   /** Plat arrière refermé sur les pages, en fin de livre (0 : ouvert, 1 : fermé). */
   let shut = 0;
   /**
@@ -186,6 +190,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     // Livre fermé, d'un côté ou de l'autre : un clic n'importe où sur lui l'ouvre.
     step: (forward) => turn(shut > 0 ? false : Number(open.value) === 0 ? true : forward),
     busy: (on) => {
+      grabbing = on;
       controls.enabled = !on && !view.locked;
     },
     hover: (hit) => {
@@ -273,7 +278,9 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
   let turning = false;
   const frame = (now: number): void => {
     if (!root.isConnected) return renderer.dispose();
-    const moving = turner?.update(Math.min(0.05, (now - before) / 1000)) ?? false;
+    const dt = Math.min(0.05, (now - before) / 1000);
+    if (autoTurn && turner) autoTurn(dt, turner, spreads - 1, !swinging && !grabbing && shut === 0 && Number(open.value) === 1);
+    const moving = turner?.update(dt) ?? false;
     notifyShown();
     // Page prise à la main et lâchée : le curseur suit la double page où le livre s'arrête.
     if (turner && document.activeElement !== spread) spread.value = String(turner.target);
