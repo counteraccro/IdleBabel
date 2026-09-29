@@ -1,7 +1,7 @@
 import './strangeBook.css';
 import { el } from '../dom';
 import { LEAF_GEOMETRY, createLeafRenderer, type LeafGeometry } from '../book/leafRenderer';
-import { easeInOut } from '../book/book';
+import { easeInOut } from '../book/leafTiming';
 
 /** Place de la page de droite dans le canevas (voir LeafGeometry), en pourcentage de la double page. */
 const box = (geometry: LeafGeometry, pageWidth: number, spine: number): Record<'left' | 'top' | 'width' | 'height', string> => {

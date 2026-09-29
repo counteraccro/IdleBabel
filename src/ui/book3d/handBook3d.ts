@@ -20,11 +20,11 @@ import type { Book3d } from './book3dBook';
 import type { HandFinds } from './handFinds';
 import type { GameState } from '../../core/state';
 
-/** Longueur d'une page de charabia, comme dans le livre en main (book.ts). */
+/** Longueur d'une page de charabia. */
 const PAGE_LENGTH = 700;
 
 /**
- * Le livre tenu en main, en 3D : le n° `index` (même couverture, même papier que le livre 2D), ses 410
+ * Le livre tenu en main, en 3D : le n° `index` (sa couverture tirée de son numéro, son papier), ses 410
  * pages de charabia de Babel après la page de titre ; ses pages tournent seules au rythme de la production.
  * Ses trouvailles surlignées viennent de `finds` (handFinds.ts) ; la partie est tenue par
  * handReading3d.ts. Le livre étrange a les siennes : les pages du grand livre, puis des chiffres.

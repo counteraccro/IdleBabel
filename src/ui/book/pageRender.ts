@@ -1,4 +1,3 @@
-import { el } from '../dom';
 import {
   PAGE_FONT,
   PAGE_FONT_SIZE,
@@ -8,33 +7,10 @@ import {
   type PageLines,
 } from './pageLayout';
 
-/** Page HTML (pages fixes du livre) : les lignes déjà calculées, à l'échelle de la page. */
-/**
- * Une page du livre en main : sa version HTML (posée à plat) et sa version dessinée (la feuille qui
- * tourne). D'ordinaire des lignes de texte (textPage) ; le livre étrange y met aussi ses propres pages.
- */
-export interface PageView {
-  html: (target: HTMLElement) => void;
-  texture: (canvas: HTMLCanvasElement, spineOnLeft: boolean, paper: Paper) => void;
-}
-
-/** Numéro de page, en bas au centre, comme celui des grands livres (pageItems.ts) ; même place en HTML (book.css). */
+/** Numéro de page, en bas au centre, comme celui des grands livres (pageItems.ts). */
 const PAGE_NUMBER_TOP = 730;
 const PAGE_NUMBER_FONT = `18px Georgia, 'Times New Roman', serif`;
 const PAGE_NUMBER_INK = 'rgba(52, 36, 22, 0.55)';
-
-export const renderPageHtml = (target: HTMLElement, lines: PageLines, pageNumber?: string): void => {
-  const text = el('span', 'page-text');
-  for (const line of lines) {
-    const row = el('span', 'page-line');
-    for (const piece of line) {
-      row.append(piece.fragment ? el('mark', 'fragment', piece.text) : document.createTextNode(piece.text));
-    }
-    text.append(row);
-  }
-  target.replaceChildren(text);
-  if (pageNumber) target.append(el('span', 'page-number', pageNumber));
-};
 
 const TEXTURE_SCALE = 2;
 
@@ -43,13 +19,9 @@ export type Paper = readonly [string, string, string];
 export const OLD_PAPER: Paper = ['#efe2c4', '#e2d1ab', '#d6c299'];
 export const MODERN_PAPER: Paper = ['#f8f6f0', '#f0ede5', '#e6e2d8'];
 
-/** Même papier pour les pages fixes (CSS) et la feuille qui tourne (canevas). */
-export const paperCss = (paper: Paper): string => `linear-gradient(180deg, ${paper[0]}, ${paper[1]} 70%, ${paper[2]})`;
-
 /**
  * Ombre de la gouttière, du dos vers la tranche (position en fraction de la largeur de page) :
  * le papier s'enfonce dans la reliure (creux sombre), se courbe (léger reflet), puis s'étale à plat.
- * Même profil pour les pages fixes (CSS) et la feuille qui tourne (canevas).
  */
 const GUTTER: readonly [number, string][] = [
   [0, 'rgba(45, 25, 10, 0.5)'],
@@ -60,10 +32,6 @@ const GUTTER: readonly [number, string][] = [
   [0.88, 'rgba(0, 0, 0, 0)'],
   [1, 'rgba(60, 35, 15, 0.18)'],
 ];
-
-/** Dégradé CSS de la gouttière ; `toward` : sens du dos vers la tranche (90deg si le dos est à gauche). */
-export const gutterCss = (toward: '90deg' | '270deg'): string =>
-  `linear-gradient(${toward}, ${GUTTER.map(([at, color]) => `${color} ${(at * 100).toFixed(1)}%`).join(', ')})`;
 
 /** Hauteurs de la police courante du contexte au-dessus et au-dessous de la ligne de base. */
 const fontBox = (context: CanvasRenderingContext2D): { ascent: number; descent: number } => {
@@ -156,9 +124,3 @@ export const drawPageTexture = (
     }
   });
 };
-
-/** Page de texte (charabia de Babel, fragment surligné), avec son numéro imprimé. */
-export const textPage = (lines: PageLines, pageNumber?: string): PageView => ({
-  html: (target) => renderPageHtml(target, lines, pageNumber),
-  texture: (canvas, spineOnLeft, paper) => drawPageTexture(canvas, lines, spineOnLeft, paper, pageNumber),
-});

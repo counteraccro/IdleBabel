@@ -1,9 +1,4 @@
-import './coverArt.css';
 import { el } from '../dom';
-import { shelfMarkText, type CoverDesign } from '../../systems/coverDesign';
-import { coverTitle } from '../../systems/coverTitle';
-import { createWear } from './coverWear';
-import { modernBack, modernFront } from './coverModern';
 
 /** Fleurons dorés au centre de la couverture de devant (dessins fixes, choisis par la couverture). */
 const ORNAMENTS = [
@@ -26,31 +21,9 @@ const ORNAMENTS = [
   '<ellipse cx="20" cy="12" rx="4" ry="9"/><ellipse cx="20" cy="12" rx="4" ry="9" transform="rotate(120 20 20)"/><ellipse cx="20" cy="12" rx="4" ry="9" transform="rotate(240 20 20)"/><circle cx="20" cy="20" r="3"/>',
 ];
 
+/** Un fleuron, en SVG dessiné en `currentColor` (la couverture 3D le peint en or : leatherCover.ts). */
 export const ornament = (index: number): HTMLElement => {
   const root = el('span', 'cover-ornament');
   root.innerHTML = `<svg viewBox="0 0 40 40" fill="currentColor" aria-hidden="true">${ORNAMENTS[index]}</svg>`;
   return root;
-};
-
-/** Livre ancien, devant : titre doré, encadrement, fleuron, usure. */
-const front = (design: CoverDesign): HTMLElement => {
-  const root = el('span', 'cover-art');
-  const title = el('span', 'cover-title');
-  for (const word of coverTitle(design)) title.append(el('span', undefined, word));
-  if (design.frame > 0) root.append(el('span', `cover-frame frame-${design.frame}`));
-  root.append(title, ornament(design.ornament), createWear(design));
-  return root;
-};
-
-/** Livre ancien, derrière : un filet et la cote. */
-const back = (design: CoverDesign): HTMLElement => {
-  const root = el('span', 'cover-art');
-  root.append(el('span', 'cover-frame frame-1'), createWear(design), el('span', 'cover-mark', shelfMarkText(design)));
-  return root;
-};
-
-/** Habille les plats extérieurs : couverture de devant et de derrière, ancienne ou moderne. */
-export const dressCovers = (outside: { front: HTMLElement; back: HTMLElement }, design: CoverDesign): void => {
-  outside.front.replaceChildren(design.modern ? modernFront(design) : front(design));
-  outside.back.replaceChildren(design.modern ? modernBack(design) : back(design));
 };

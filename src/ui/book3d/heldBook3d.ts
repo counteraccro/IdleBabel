@@ -23,7 +23,7 @@ const FILL = 0.86;
  * lecteur en tournant (en part de la hauteur de la page visée plus haut que le dos).
  */
 const RAISE = 0.18;
-/** Fin du livre, comme le livre 2D (bookClose.ts) : il se referme, descend, le suivant remonte. */
+/** Fin du livre : il se referme, descend, le suivant remonte. */
 const CLOSE_MS = 1000;
 const LOWER_MS = 500;
 const RAISE_MS = 550;

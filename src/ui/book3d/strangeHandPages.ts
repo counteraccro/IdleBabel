@@ -12,7 +12,7 @@ const PAGE_LENGTH = 700;
 const FIRST_PAGE = 2;
 
 /**
- * Le livre étrange tenu en main (comme le livre 2D, reading.ts) : après sa page de titre, les pages du
+ * Le livre étrange tenu en main : après sa page de titre, les pages du
  * grand livre (garde, sommaire, chiffres, sceaux), en petit et sans rien de cliquable ; ensuite, des
  * chiffres jusqu'au bout. Le sommaire et les chapitres sont ceux du moment où le livre est ouvert ; chaque
  * page garde les valeurs du moment où elle est dessinée. Renvoie de quoi dessiner une page (à partir de 2).

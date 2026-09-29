@@ -1,5 +1,3 @@
-import './titlePage.css';
-import { el } from '../dom';
 import { PAGE_TEXTURE } from './pageLayout';
 import { cssBaseline, preparePageTexture, type Paper } from './pageRender';
 import { shelfMarkText, type CoverDesign } from '../../systems/coverDesign';
@@ -55,34 +53,6 @@ const layout = (design: CoverDesign): Item[] => (design.modern ? modernLayout(de
 /** Police CSS ou canevas d'un texte, à la taille donnée. */
 const font = (item: Extract<Item, { kind: 'text' }>, size: string): string =>
   `${item.italic ? 'italic ' : ''}${item.bold ? '800 ' : ''}${size} ${item.family}`;
-
-/** Unité HTML : largeur de page en cqw pour une unité du repère de la texture. */
-const unit = (value: number): string => `${((value * 100) / PAGE_TEXTURE.width).toFixed(3)}cqw`;
-
-export const renderTitlePageHtml = (target: HTMLElement, design: CoverDesign): void => {
-  const root = el('span', 'title-page');
-  for (const item of layout(design)) {
-    const node = el('span', `title-${item.kind}`);
-    node.style.top = unit(item.y);
-    node.style.color = item.color;
-    if (item.kind === 'text') {
-      node.textContent = item.text;
-      node.style.font = font(item, unit(item.size));
-      node.style.letterSpacing = unit(item.spacing);
-    } else if (item.kind === 'rule') {
-      node.style.width = unit(item.width);
-      node.style.height = unit(item.thickness);
-      node.style.marginLeft = unit(-item.width / 2);
-    } else {
-      node.style.width = unit(item.size);
-      node.style.height = unit(item.size);
-      node.style.marginLeft = unit(-item.size / 2);
-      node.style.marginTop = unit(-item.size / 2);
-    }
-    root.append(node);
-  }
-  target.replaceChildren(root);
-};
 
 export const drawTitlePageTexture = (canvas: HTMLCanvasElement, design: CoverDesign, paper: Paper): void => {
   const context = preparePageTexture(canvas, true, paper);

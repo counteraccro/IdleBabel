@@ -98,8 +98,8 @@ const wear = async (context: CanvasRenderingContext2D, design: CoverDesign, stre
 };
 
 /**
- * Plats de cuir d'un livre ancien en texture, pour le livre 3D : le même décor que les couvertures du
- * livre en main (coverArt.ts) — titre doré, encadrement, fleuron et usure devant ; filet et cote derrière.
+ * Plats de cuir d'un livre ancien en texture, pour le livre 3D, tirés de sa couverture (coverDesign.ts) :
+ * titre doré, encadrement, fleuron (coverArt.ts) et usure devant ; filet et cote derrière.
  */
 export const leatherCover = async (design: CoverDesign, binding: Binding): Promise<LeatherCover> => {
   const [front, frontContext] = canvas();

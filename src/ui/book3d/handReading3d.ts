@@ -8,7 +8,7 @@ import type { Component } from '../dom';
 import type { GameState } from '../../core/state';
 
 /**
- * Le livre que le chercheur tient en main, en 3D, branché sur la partie comme le livre 2D (reading.ts) :
+ * Le livre que le chercheur tient en main, en 3D, branché sur la partie :
  * chaque feuille tournée par le lecteur est une page lue, chaque feuille posée fait avancer le livre et
  * donne sa trouvaille ; au bout de 410, il se referme et le chercheur en prend un autre.
  */

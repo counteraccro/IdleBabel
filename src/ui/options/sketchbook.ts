@@ -3,7 +3,7 @@ import { createClosedEdges } from '../book/closedEdges';
 import { t } from '../../i18n';
 import { createLeafTurn } from '../strangeBook/leafTurn';
 import { leafGeometryFor } from '../book/leafRenderer';
-import { HELD_PROGRESS, RELEASE_MS, TURN_MS } from '../book/book';
+import { HELD_PROGRESS, RELEASE_MS, TURN_MS } from '../book/leafTiming';
 import { attachGrab } from '../book/bookGrab';
 import { preloadPage, snapshotPage } from './pageSnapshot';
 

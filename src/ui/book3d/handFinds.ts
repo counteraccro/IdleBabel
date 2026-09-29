@@ -11,8 +11,7 @@ interface Hidden {
 }
 
 /**
- * Trouvailles du livre 3D en main (mots, morceaux de phrase, phrases entières), comme le livre 2D
- * (reading.ts) : chaque double page a sa chance d'en cacher une, tirée la première fois qu'on la dessine
+ * Trouvailles du livre 3D en main (mots, morceaux de phrase, phrases entières) : chaque double page a sa chance d'en cacher une, tirée la première fois qu'on la dessine
  * (le livre prépare ses pages un peu d'avance), surlignée sur l'une de ses deux pages, et gagnée quand la
  * feuille qui la découvre se pose. Les pages se redessinent à l'identique : le tirage est gardé.
  */

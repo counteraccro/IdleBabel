@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 
-/** Le livre penche un peu de côté, comme tenu d'une main plus haute que l'autre (book.css). */
+/** Le livre penche un peu de côté, comme tenu d'une main plus haute que l'autre. */
 const ROLL = THREE.MathUtils.degToRad(-1.5);
-/** Balancement des mains qui tiennent le livre : durée d'un cycle, comme le livre 2D (book.css). */
+/** Balancement des mains qui tiennent le livre : durée d'un cycle. */
 const SWAY_S = 7;
 /** Livre refermé sur son dos : le chercheur le tourne pour le reposer, on voit la tranche des pages (radians). */
 const TURN = -0.9;

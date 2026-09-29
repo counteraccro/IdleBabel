@@ -91,7 +91,7 @@ const rect = (context: CanvasRenderingContext2D, color: string, x: number, y: nu
   context.fillRect(x * CQW, y * CQW, width * CQW, height * CQW);
 };
 
-/** Les trois mises en page d'éditeur (coverModern.css du livre 2D). */
+/** Les trois mises en page d'éditeur. */
 const LAYOUTS: ((context: CanvasRenderingContext2D, design: CoverDesign) => void)[] = [
   // Visuel géométrique : titre en haut, grand disque qui déborde en bas à droite, son ombre décalée.
   (context, design) => {
@@ -201,7 +201,7 @@ const back = (context: CanvasRenderingContext2D, design: CoverDesign): void => {
 };
 
 /**
- * Plats d'un livre moderne en texture, pour le livre 3D (comme coverModern.ts du livre 2D) : couverture
+ * Plats d'un livre moderne en texture, pour le livre 3D : couverture
  * d'éditeur lisse et brillante, peu usée, dans l'une des trois mises en page ; au dos, résumé,
  * code-barres et cote. Le dos et l'intérieur : la toile unie.
  */

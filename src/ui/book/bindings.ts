@@ -33,9 +33,3 @@ export const modernBindingFor = (index: number): Binding => MODERN_BINDINGS[inde
 
 /** Reliure du n-ième livre : deux livres qui se suivent n'ont jamais la même. */
 export const bindingFor = (index: number): Binding => BINDINGS[index % BINDINGS.length];
-
-export const applyBinding = (element: HTMLElement, binding: Binding): void => {
-  element.style.setProperty('--leather-dark', binding.dark);
-  element.style.setProperty('--leather', binding.leather);
-  element.style.setProperty('--leather-deep', binding.deep);
-};
