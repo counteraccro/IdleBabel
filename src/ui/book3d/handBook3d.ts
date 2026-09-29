@@ -22,8 +22,7 @@ const PAGE_LENGTH = 700;
  * même papier), ses 410 pages de charabia de Babel après la page de titre ; ses pages tournent seules au
  * rythme de la production. Purement visuel : rien n'est compté dans la partie.
  */
-export const handBook3d = (state: GameState): Book3d => {
-  const index = state.booksFinished;
+export const handBook3d = (state: GameState, index = state.booksFinished): Book3d => {
   const design = coverDesign(index);
   const paper = design.modern ? MODERN_PAPER : OLD_PAPER;
   return {
@@ -31,8 +30,9 @@ export const handBook3d = (state: GameState): Book3d => {
     shape: { width: 0.8, height: 1, thickness: 0.12, board: 0.012, overhang: 0.035, corner: 0.03, arch: 2.5, sag: 0.12 },
     source: {
       // Page 0 : l'intérieur de la couverture ; 1 : la page de titre ; puis le texte. Le livre en main
-      // compte ses feuilles (410 tournées par livre) : deux pages chacune.
-      count: 2 * PAGES_PER_BOOK + 2,
+      // compte ses feuilles, page de titre comprise (410 tournées par livre) : deux pages chacune, et
+      // après la dernière, l'intérieur du plat arrière.
+      count: 2 * PAGES_PER_BOOK + 1,
       paint: (page, canvas, spineOnLeft) => {
         if (page === 0) return false;
         if (page === 1) {
@@ -59,6 +59,7 @@ export const handBook3d = (state: GameState): Book3d => {
         headband: headbandTexture(binding.leather, '#d9c48f'),
       };
     },
+    next: () => handBook3d(state, index + 1),
     turnsPerSecond: () => (state.settings.autoTurn ? Math.min(pagesPerSecond(state), MAX_TURNS_PER_SECOND) : 0),
   };
 };

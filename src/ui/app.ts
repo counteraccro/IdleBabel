@@ -45,7 +45,11 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   // Essai (#petit-livre3d) : le livre en main en 3D, en attendant qu'il remplace celui du jeu.
   const heldBook3d = (): Component =>
-    createHeldBook3d(handBook3d(state), { sway: () => state.settings.bookSway, startSpread: state.bookPage });
+    createHeldBook3d(handBook3d(state), {
+      sway: () => state.settings.bookSway,
+      startSpread: state.bookPage,
+      stayClosed: () => !state.settings.autoTurn,
+    });
 
   const game = (reading: () => Component = () => createReading(state)): Component[] => [
     createHeader({
