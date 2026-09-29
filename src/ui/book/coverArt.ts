@@ -26,7 +26,7 @@ const ORNAMENTS = [
   '<ellipse cx="20" cy="12" rx="4" ry="9"/><ellipse cx="20" cy="12" rx="4" ry="9" transform="rotate(120 20 20)"/><ellipse cx="20" cy="12" rx="4" ry="9" transform="rotate(240 20 20)"/><circle cx="20" cy="20" r="3"/>',
 ];
 
-const ornament = (index: number): HTMLElement => {
+export const ornament = (index: number): HTMLElement => {
   const root = el('span', 'cover-ornament');
   root.innerHTML = `<svg viewBox="0 0 40 40" fill="currentColor" aria-hidden="true">${ORNAMENTS[index]}</svg>`;
   return root;

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-/** Dessine un SVG (élément déjà construit) sur un canvas, pour en faire une texture. */
-export const svgTexture = async (svg: SVGSVGElement, width: number, height: number): Promise<THREE.CanvasTexture> => {
+/** Image d'un SVG (élément déjà construit) à la taille voulue, prête à dessiner sur un canvas. */
+export const svgImage = async (svg: SVGSVGElement, width: number, height: number): Promise<HTMLImageElement> => {
   const copy = svg.cloneNode(true) as SVGSVGElement;
   copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   copy.setAttribute('width', String(width));
@@ -9,14 +9,25 @@ export const svgTexture = async (svg: SVGSVGElement, width: number, height: numb
   const image = new Image();
   image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(copy.outerHTML)}`;
   await image.decode();
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  canvas.getContext('2d')!.drawImage(image, 0, 0, width, height);
+  return image;
+};
+
+/** Texture tirée d'un canvas déjà dessiné. */
+export const canvasTexture = (canvas: HTMLCanvasElement): THREE.CanvasTexture => {
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 8;
   return texture;
+};
+
+/** Dessine un SVG (élément déjà construit) sur un canvas, pour en faire une texture. */
+export const svgTexture = async (svg: SVGSVGElement, width: number, height: number): Promise<THREE.CanvasTexture> => {
+  const image = await svgImage(svg, width, height);
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext('2d')!.drawImage(image, 0, 0, width, height);
+  return canvasTexture(canvas);
 };
 
 /**

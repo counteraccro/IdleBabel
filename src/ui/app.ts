@@ -7,6 +7,8 @@ import { createOptionsPage } from './options/optionsPage';
 import { createStrangeBookPage } from './strangeBook/strangeBookPage';
 import { createWhiteBookPage } from './whiteBook/whiteBookPage';
 import { createBook3dPage } from './book3d/book3dPage';
+import { whiteBook3d } from './book3d/whiteBook3d';
+import { strangeBook3d } from './book3d/strangeBook3d';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { setLocale } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
@@ -81,8 +83,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
     if (window.location.hash === WHITE_BOOK_HASH) return [createWhiteBookPage(state, back)];
-    // Prototype du livre en 3D (#livre3d), en attendant qu'il remplace les grands livres.
-    if (window.location.hash === '#livre3d') return [createBook3dPage(state, back)];
+    // Prototype du livre en 3D, en attendant qu'il remplace les grands livres : le livre blanc
+    // (#livre3d) ou le livre étrange (#livre3d-etrange).
+    if (window.location.hash === '#livre3d') return [createBook3dPage(whiteBook3d(state), back)];
+    if (window.location.hash === '#livre3d-etrange') return [createBook3dPage(strangeBook3d(state), back)];
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state)) return [createStrangeBookPage(state, back)];
     return game();
   };

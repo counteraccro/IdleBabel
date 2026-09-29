@@ -171,13 +171,16 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
 /**
  * Toutes les pages : garde, sommaire, un chapitre par page (ceux déjà débloqués), puis les sceaux :
  * une page d'introduction (avancement) et leurs planches.
+ * `offset` : place de la garde dans le livre (0 : à gauche de la première double page, comme le livre
+ * 2D ; 1 : à droite, le livre 3D gardant la gauche pour l'intérieur de la couverture). Les numéros de
+ * page restent ceux de la liste.
  */
-export const createPages = (state: GameState, goTo: (page: number) => void): LeafPage[] => {
+export const createPages = (state: GameState, goTo: (page: number) => void, offset = 0): LeafPage[] => {
   const chapters = CHAPTERS.filter((chapter) => chapterShown(state, chapter));
   const first = 2;
   // Les sceaux commencent sur une page impaire (à gauche, face à leur première planche) : sinon, une
   // page blanche est laissée avant eux.
-  const blank = (first + chapters.length) % 2 === 1;
+  const blank = (offset + first + chapters.length) % 2 === 1;
   const sealsPage = first + chapters.length + (blank ? 1 : 0);
   const plates: PlatePage[] = platePages(sealsPage + 1);
   const entries: Entry[] = [

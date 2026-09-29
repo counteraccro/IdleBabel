@@ -301,6 +301,13 @@ const LEAF_SHADOW_END = 0.4;
 const BOARD_SHADOW_END = 0.3;
 /** Rangées de la feuille, sur sa hauteur : prise par un coin, chacune tourne à son rythme. */
 const LEAF_ROWS = 16;
+/**
+ * Écart entre la feuille qui tourne et ce qu'elle frôle : une pile de pages, ou, sans pile (première ou
+ * dernière feuille), l'intérieur d'un plat. Plus grand sur un plat : si près, la carte graphique ne sait
+ * plus lequel est devant et les deux surfaces clignotent l'une à travers l'autre.
+ */
+const LEAF_GAP = 0.0008;
+const LEAF_BOARD_GAP = 0.003;
 /** Avance du coin saisi sur le bord opposé, en part du tour (au plus fort, à mi-course). */
 const CORNER_LEAD = 0.2;
 /** Points le long d'une page, plus serrés près du pli où elle se courbe. */
@@ -668,7 +675,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
         const along = u * dir;
         if (along <= 0 || along > fore) continue;
         const page = stack > 0 ? stack + pageProfile(along, thickness, opened, fore, stack) : 0;
-        const floor = page + curl(along) + 0.0008;
+        const floor = page + curl(along) + (stack > 0 ? LEAF_GAP : LEAF_BOARD_GAP);
         if (v < floor) point = rotate([u, floor], lean);
       }
       return point;
@@ -682,6 +689,9 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
       // Posée, elle prend la forme de la page sur laquelle elle repose : sa hauteur au-dessus du point
       // de couture, du côté de la pile qu'elle quitte ou qu'elle rejoint (au-dessus de la feuille).
       const landing = (cut + half) * (1 - turn) + (half - cutLeft) * turn;
+      // Au-dessus d'un plat nu (pas de pile du côté qu'elle quitte ou rejoint), un peu plus d'écart.
+      const bare = (side: number): number => (side > 0 ? 0 : 1);
+      const gap = LEAF_GAP + (LEAF_BOARD_GAP - LEAF_GAP) * (bare(cut + half) * (1 - turn) + bare(readLeft > 0 ? half - cutLeft : 0) * turn);
       const up = turn < 0.5 ? 1 : -1;
       const [nx, nz] = [-Math.sin(base) * up, Math.cos(base) * up];
       let x = 0;
@@ -689,7 +699,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
       const points: Point[] = [];
       for (let i = 0; i <= LEAF_STEPS; i++) {
         const across = (i / LEAF_STEPS) * fore;
-        const rise = rest * (landing + pageProfile(across, thickness, opened, fore, landing) + curl(across)) + 0.0008;
+        const rise = rest * (landing + pageProfile(across, thickness, opened, fore, landing) + curl(across)) + gap;
         // Cousue au point de couture, elle tourne autour de lui, d'une pile à l'autre.
         points.push(above([x + rise * nx, z + rise * nz]));
         // Angle de la feuille le long de sa largeur : au pli elle est en avance, au bord elle traîne.

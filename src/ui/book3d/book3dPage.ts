@@ -3,35 +3,27 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { el, type Component } from '../dom';
 import { t } from '../../i18n';
-import { createVellum } from '../whiteBook/vellum';
-import { createBookMesh, type BookShape } from './bookMesh';
-import { braidTexture, edgeTexture, svgTexture } from './textures';
-import { createWhiteBookPages } from '../whiteBook/pages';
-import { WHITE_PAPER } from '../whiteBook/whiteBookPage';
+import { createBookMesh } from './bookMesh';
 import { createPageCache } from './pageCache';
-import { spreadCount, type PageSource } from './pageSource';
+import { spreadCount } from './pageSource';
 import { createTurner, type Turner } from './turner';
 import { attachBookGesture } from './bookGesture';
 import { createLighting } from './lighting';
 import { createReadingView } from './readingView';
 import { isDebugEnabled } from '../../debug/debugPanel';
-import type { GameState } from '../../core/state';
+import type { Book3d } from './book3dBook';
 
 /** Durée de l'ouverture de la couverture. */
 const OPEN_MS = 1100;
 
-/** Proportions d'un grand livre : 4 × 5, épais (410 pages), plats solides qui débordent un peu. */
-const SHAPE: BookShape = { width: 0.8, height: 1, thickness: 0.16, board: 0.018, overhang: 0.012, corner: 0.035 };
-
-/** Plat de vélin rendu en image, à la taille d'une texture. */
-const vellumTexture = (seed: number, stamped: boolean, ornaments = true): Promise<THREE.CanvasTexture> =>
-  svgTexture(createVellum(seed, stamped, { ornaments }).querySelector('svg')!, 800, 1000);
+/** Pages qui suivent la partie : redessinées à ce rythme, livre posé. */
+const LIVE_MS = 1000;
 
 /**
- * Prototype : le livre des Connaissances fermé, en vraie 3D (Three.js) — une seule caméra, une seule
- * lumière. On le fait tourner à la souris pour juger le rendu sous tous les angles.
+ * Prototype : un livre en vraie 3D (Three.js). Fermé, on le fait tourner à la souris ; ouvert, on le
+ * lit, caméra bloquée, en tournant ses pages à la main.
  */
-export const createBook3dPage = (state: GameState, onBack: () => void): Component => {
+export const createBook3dPage = (spec: Book3d, onBack: () => void): Component => {
   const root = el('main', 'book3d-page');
   const back = el('button', 'options-back', `← ${t('ui.back')}`);
   back.addEventListener('click', onBack);
@@ -43,16 +35,7 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
   open.step = '0.01';
   open.value = '0';
   // Avancement : quelle double page est ouverte (0 : la page de titre).
-  const leaves = createWhiteBookPages(state, () => {});
-  // Sans les pages vierges de la fin (le livre 2D en ajoute une pour finir sur une double page) : la
-  // dernière feuille qui tourne découvre le plat arrière.
-  const source: PageSource = {
-    count: leaves.length - [...leaves].reverse().findIndex((leaf) => leaf !== null),
-    paint: (index, canvas, spineOnLeft) => {
-      leaves[index]?.paint(canvas, spineOnLeft, WHITE_PAPER);
-      return !!leaves[index];
-    },
-  };
+  const { shape, source } = spec;
   const spreads = spreadCount(source);
   const spread = el('input');
   spread.type = 'range';
@@ -111,8 +94,8 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
 
   let book: ReturnType<typeof createBookMesh> | null = null;
   let turner: Turner | null = null;
-  void Promise.all([vellumTexture(3, true), vellumTexture(11, false), vellumTexture(19, false, false)]).then(([cover, backCover, spine]) => {
-    book = createBookMesh(SHAPE, { cover, back: backCover, inside: spine, spine, leather: 0xe8dcc0, edge: edgeTexture('#d6ae5a', '#a47d2e'), paper: 0xf3eee2, headband: braidTexture('#c8993f', '#efe4c6') });
+  void spec.look().then((look) => {
+    book = createBookMesh(shape, look);
     scene.add(book.root);
     turner = createTurner(book, createPageCache(source), spreads);
     // Débogage du prototype : accès au livre depuis la console.
@@ -174,8 +157,8 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
     book: () => book?.root ?? null,
     turner: () => turner,
     spreads,
-    width: SHAPE.width,
-    height: SHAPE.height,
+    width: shape.width,
+    height: shape.height,
     open: () => !swinging && shut === 0 && Number(open.value) === 1,
     // Livre fermé, d'un côté ou de l'autre : un clic n'importe où sur lui l'ouvre.
     step: (forward) => turn(shut > 0 ? false : Number(open.value) === 0 ? true : forward),
@@ -201,6 +184,13 @@ export const createBook3dPage = (state: GameState, onBack: () => void): Componen
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   };
+  // Pages qui suivent la partie : redessinées de temps en temps, jamais pendant qu'une page tourne.
+  if (spec.live) {
+    const timer = window.setInterval(() => {
+      if (!root.isConnected) return window.clearInterval(timer);
+      if (turner?.idle && Number(open.value) === 1 && shut === 0) turner.refresh();
+    }, LIVE_MS);
+  }
   let before = performance.now();
   const frame = (now: number): void => {
     if (!root.isConnected) return renderer.dispose();
