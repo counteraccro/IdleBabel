@@ -4,6 +4,7 @@ import { createWhiteBookPages } from '../whiteBook/pages';
 import { WHITE_PAPER } from '../whiteBook/whiteBookPage';
 import { headbandTexture } from './headband';
 import { edgeTexture, svgTexture } from './textures';
+import { leafPagesBook } from './leafPages';
 import type { Book3d } from './book3dBook';
 import type { GameState } from '../../core/state';
 
@@ -13,20 +14,12 @@ const vellumTexture = (seed: number, stamped: boolean, ornaments = true): Promis
 
 /** Le livre des Connaissances : vélin crème, tranche dorée, grand et épais. */
 export const whiteBook3d = (state: GameState): Book3d => {
-  const leaves = createWhiteBookPages(state, () => {});
-  return {
+  const book: Book3d = {
     // Proportions d'un grand livre : 4 × 5, épais (410 pages), plats solides qui débordent un peu.
     // Plats qui débordent nettement des pages : le coin carré du bloc reste caché sous leur coin arrondi.
     shape: { width: 0.8, height: 1, thickness: 0.16, board: 0.018, overhang: 0.02, corner: 0.035 },
-    source: {
-      // Sans les pages vierges de la fin (le livre 2D en ajoute une pour finir sur une double page) :
-      // la dernière feuille qui tourne découvre le plat arrière.
-      count: leaves.length - [...leaves].reverse().findIndex((leaf) => leaf !== null),
-      paint: (index, canvas, spineOnLeft) => {
-        leaves[index]?.paint(canvas, spineOnLeft, WHITE_PAPER);
-        return !!leaves[index];
-      },
-    },
+    // La liste du livre 2D commence déjà par l'intérieur de la couverture (null) : mêmes places qu'en 3D.
+    ...leafPagesBook(() => createWhiteBookPages(state, (page) => book.navigate?.(page)), 0, WHITE_PAPER),
     look: async () => {
       const [cover, back, spine] = await Promise.all([vellumTexture(3, true), vellumTexture(11, false), vellumTexture(19, false, false)]);
       return {
@@ -40,5 +33,8 @@ export const whiteBook3d = (state: GameState): Book3d => {
         headband: headbandTexture('#c8993f', '#efe4c6'),
       };
     },
+    // Phrases qui se complètent, notes au crayon : les pages suivent la partie.
+    live: true,
   };
+  return book;
 };
