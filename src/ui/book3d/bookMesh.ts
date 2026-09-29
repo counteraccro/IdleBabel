@@ -19,6 +19,13 @@ export interface BookShape {
    * fort pour un livre mince vu de biais (le livre en main) : sinon, le haut des pages paraît droit.
    */
   arch?: number;
+  /**
+   * Inclinaison de chaque moitié ouverte, dos au plus bas (SAG par défaut), et relevé des plats en arc
+   * jusqu'à la tranche (CURL par défaut). Tenu en main, le livre se creuse : au milieu, le bord de la
+   * couverture plonge derrière les pages.
+   */
+  sag?: number;
+  curl?: number;
 }
 
 export interface BookLook {
@@ -204,9 +211,9 @@ const boardGeometry = (shape: BookShape, from = 0): THREE.BufferGeometry => {
   return result;
 };
 
-/** Livre ouvert : inclinaison de chaque moitié, tranches relevées, dos au plus bas (radians). */
+/** Livre ouvert : inclinaison de chaque moitié, tranches relevées, dos au plus bas (radians, BookShape.sag). */
 const SAG = 0.025;
-/** Livre ouvert : hauteur dont les plats se relèvent en arc jusqu'à la tranche (le dos au plus bas). */
+/** Livre ouvert : hauteur dont les plats se relèvent en arc jusqu'à la tranche (le dos au plus bas, BookShape.curl). */
 const CURL = 0.03;
 /** Largeur du mors : la bande de cuir souple entre le dos et le plat de devant, qui se plie. */
 const JOINT = 0.04;
@@ -588,7 +595,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     const amount = angle / Math.PI;
     // Le dos s'enfonce : les deux moitiés s'inclinent autour du point de couture, tranches relevées
     // (la reliure en « ∪ » très ouvert, les pages qui montent en arc de part et d'autre du pli).
-    sag = SAG * amount;
+    sag = (shape.sag ?? SAG) * amount;
     lower = 2 * cutLeft * amount;
     leftAngle = angle - sag;
     rightAngle = sag;
@@ -768,7 +775,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
    * Courbure du livre ouvert : de combien un plat (et la pile qu'il porte) se relève vers ses pages, à
    * la distance x du dos. Nulle au dos, de plus en plus forte vers la tranche : la reliure fait un arc.
    */
-  const curl = (x: number): number => CURL * opened * (Math.max(0, x) / shape.width) ** 2;
+  const curl = (x: number): number => (shape.curl ?? CURL) * opened * (Math.max(0, x) / shape.width) ** 2;
   /** Un plat qui se courbe avec l'ouverture ; `from` : distance au dos du début de sa géométrie. */
   const bendable = (mesh: THREE.Mesh, from: number) => {
     const position = mesh.geometry.attributes.position;
