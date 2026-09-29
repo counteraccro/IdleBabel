@@ -14,6 +14,11 @@ export interface BookShape {
   overhang: number;
   /** Arrondi des coins côté tranche. */
   corner: number;
+  /**
+   * Hauteur du bombement des pages ouvertes, en part de l'épaisseur qui le porte (ARCH par défaut). Plus
+   * fort pour un livre mince vu de biais (le livre en main) : sinon, le haut des pages paraît droit.
+   */
+  arch?: number;
 }
 
 export interface BookLook {
@@ -351,7 +356,7 @@ const createBinding = ({ width, height, thickness, board }: BookShape) => {
   return { spine: spine.geometry, joint: joint.geometry, bend };
 };
 
-/** Hauteur du bombement des pages (part de l'épaisseur qui le porte), livre grand ouvert. */
+/** Hauteur du bombement des pages (part de l'épaisseur qui le porte), livre grand ouvert (BookShape.arch). */
 const ARCH = 0.8;
 /** Où les pages sont au plus haut (part de la largeur de la page, depuis le pli). */
 const PEAK = 0.24;
@@ -364,13 +369,13 @@ const smooth = (t: number): number => t * t * (3 - 2 * t);
  * Forme de la page visible d'une pile ouverte, à la distance `x` du pli (écart à sa hauteur à plat),
  * comme un livre posé ouvert : au pli, toutes les feuilles de la pile (`stack` : son épaisseur)
  * convergent au fond du dos, où elles sont cousues ; de là, la page monte en arc de cercle (verticale
- * au pli, à plat à son sommet), puis redescend doucement jusqu'à la tranche. `lift` : l'épaisseur qui
- * porte le bombement (nulle quand un côté n'a pas de pages : la page ne fait que plonger au pli).
+ * au pli, à plat à son sommet), puis redescend doucement jusqu'à la tranche. `lift` : la hauteur du
+ * bombement (nulle quand un côté n'a pas de pages : la page ne fait que plonger au pli).
  */
 const pageProfile = (x: number, lift: number, opened: number, width: number, stack: number): number => {
   if (opened <= 0) return 0;
   const t = Math.min(1, Math.max(0, x / width));
-  const arch = ARCH * Math.max(0, lift);
+  const arch = Math.max(0, lift);
   if (t >= PEAK) return arch * opened * (1 - smooth((t - PEAK) / (1 - PEAK)));
   // Du point de couture (-stack) au sommet (+arch) : raide au pli, sans jamais y être tout à fait
   // verticale (inclinée avec sa moitié, elle passerait sur la page d'en face), à plat au sommet.
@@ -572,7 +577,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     const least = Math.min(split + depth, depth - split);
     // Elle naît en douceur quand une pile devient très mince (dernières feuilles) : pas de saut quand la
     // dernière feuille se pose ou se soulève.
-    return Math.max(0.45 * depth, least) * Math.min(1, least / (0.15 * depth));
+    return (shape.arch ?? ARCH) * Math.max(0.45 * depth, least) * Math.min(1, least / (0.15 * depth));
   };
   let onOpen = (): void => {};
   /** Place les deux moitiés (partage, ouverture, inclinaison) et déforme la reliure. */

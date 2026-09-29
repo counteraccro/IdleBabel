@@ -28,7 +28,7 @@ export const handBook3d = (state: GameState): Book3d => {
   const paper = design.modern ? MODERN_PAPER : OLD_PAPER;
   return {
     // Un livre ordinaire : plus mince que les grands livres, plats plus fins.
-    shape: { width: 0.8, height: 1, thickness: 0.12, board: 0.012, overhang: 0.035, corner: 0.03 },
+    shape: { width: 0.8, height: 1, thickness: 0.12, board: 0.012, overhang: 0.035, corner: 0.03, arch: 2.5 },
     source: {
       // Page 0 : l'intérieur de la couverture ; 1 : la page de titre ; puis le texte. Le livre en main
       // compte ses feuilles (410 tournées par livre) : deux pages chacune.
