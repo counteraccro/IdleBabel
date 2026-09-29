@@ -191,6 +191,9 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     const forward = event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowRight';
     if (!forward && event.key !== 'ArrowLeft') return;
     event.preventDefault();
+    // Touche gardée enfoncée : le navigateur répète l'appui ~30 fois par seconde. Chaque page tournée
+    // étant une page lue, ce serait un clic automatique : un appui, une page, comme à la souris.
+    if (event.repeat) return;
     step(forward);
   });
   const autoTurn = first.autoTurn ? createAutoTurn3d(first.autoTurn) : null;
