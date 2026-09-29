@@ -71,7 +71,11 @@ export const createTurner = (
   /** Signale chaque feuille posée depuis la dernière fois ; en arrière, rien (elles le seront à nouveau). */
   const land = (): void => {
     const reached = Math.floor(shown + 1e-6);
-    while (landed < reached) onLand?.(++landed);
+    // Pas d'onLand?.(++landed) : sans onLand, l'argument n'est pas évalué et la boucle ne finit jamais.
+    while (landed < reached) {
+      landed += 1;
+      onLand?.(landed);
+    }
     landed = Math.min(landed, Math.ceil(shown - 1e-6));
   };
 
