@@ -55,24 +55,3 @@ export const edgeTexture = (paper: string, line: string): THREE.CanvasTexture =>
   texture.colorSpace = THREE.SRGBColorSpace;
   return texture;
 };
-
-/** Fil tressé des tranchefiles : des rayures obliques de deux couleurs. */
-export const braidTexture = (a: string, b: string): THREE.CanvasTexture => {
-  const canvas = document.createElement('canvas');
-  canvas.width = 128;
-  canvas.height = 32;
-  const context = canvas.getContext('2d')!;
-  context.fillStyle = b;
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.strokeStyle = a;
-  context.lineWidth = 5;
-  for (let x = -32; x < canvas.width + 32; x += 12) {
-    context.beginPath();
-    context.moveTo(x, 0);
-    context.lineTo(x + 16, canvas.height);
-    context.stroke();
-  }
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  return texture;
-};

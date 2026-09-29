@@ -60,6 +60,12 @@
   height: 0.234cqw;
   background: repeating-linear-gradient(90deg, #5d5f66 0 0.234cqw, transparent 0.234cqw 0.9375cqw);
 }
+.sb-underline {
+  position: absolute;
+  height: 0.25cqw;
+  background: repeating-linear-gradient(90deg, #aaa391 0 0.625cqw, transparent 0.625cqw 1.094cqw);
+  pointer-events: none;
+}
 .sb-link {
   position: absolute;
   left: 10%;

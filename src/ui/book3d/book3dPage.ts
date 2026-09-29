@@ -101,6 +101,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     turner = createTurner(book, createPageCache(source), spreads);
     // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée.
     spec.navigate = (index) => turner?.go(Math.floor(index / 2));
+    if (spec.bookmark !== undefined) book.setRibbon(spreads > 1 ? Math.floor(spec.bookmark / 2) / (spreads - 1) : 0, spreads > 1 ? 1 / (spreads - 1) : 1);
     // Débogage du prototype : accès au livre depuis la console.
     (window as unknown as { book3d?: unknown }).book3d = { book, turner, camera, controls };
   });
@@ -139,6 +140,11 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     };
     requestAnimationFrame(step);
   };
+  /** Retour au signet (le sommaire), livre ouvert : toutes les pages tournent jusqu'à lui. */
+  const backToBookmark = (): void => {
+    if (!turner || spec.bookmark === undefined || swinging || shut > 0 || Number(open.value) < 1) return;
+    turner.go(Math.floor(spec.bookmark / 2));
+  };
   /** Tourne une page de plus (ou de moins) ; des clics rapides s'enchaînent en feuilletage. */
   const turn = (forward: boolean): void => {
     if (!turner || swinging) return;
@@ -169,6 +175,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
       controls.enabled = !on && !view.locked;
     },
     hover: (hit) => {
+      if (hit && book?.isRibbon(hit.object)) return void (canvas.style.cursor = 'pointer');
       const page = hit ? book?.pageUnder(hit) : null;
       if (!page || !turner?.idle || !view.locked) return void (canvas.style.cursor = '');
       const [index, x, y] = [2 * turner.target + (page.side === 'right' ? 1 : 0), page.u * PAGE_TEXTURE.width, page.v * PAGE_TEXTURE.height];
@@ -176,6 +183,11 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
       if (spec.hover?.(index, x, y)) turner.refresh();
     },
     press: (hit) => {
+      // Le signet : les pages tournent jusqu'au sommaire.
+      if (book?.isRibbon(hit.object) && spec.bookmark !== undefined) {
+        backToBookmark();
+        return true;
+      }
       const page = book?.pageUnder(hit);
       if (!page || !turner?.idle || !spec.press) return false;
       const index = 2 * turner.target + (page.side === 'right' ? 1 : 0);
@@ -191,6 +203,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     if (!root.isConnected) return void window.removeEventListener('keydown', onKey);
     if (event.key === 'ArrowRight') turn(true);
     if (event.key === 'ArrowLeft') turn(false);
+    if (event.key === 'Home') backToBookmark();
   };
   window.addEventListener('keydown', onKey);
   open.addEventListener('input', () => book?.setOpen(Number(open.value)));

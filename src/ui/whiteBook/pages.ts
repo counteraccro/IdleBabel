@@ -3,7 +3,7 @@ import { SENTENCES, type SentenceDef } from '../../data/sentences';
 import { completion, guess, guessPrice, isComplete, written } from '../../systems/sentences';
 import { babelize, seedOf } from './babelMask';
 import { sentenceBody } from './sentencePage';
-import { folio, type Item } from '../strangeBook/pageItems';
+import { folio, type Item, type TextItem } from '../strangeBook/pageItems';
 import { createLeafPage, pencilOffer, priceNote, type LeafPage } from '../strangeBook/pages';
 import type { GameState } from '../../core/state';
 
@@ -21,21 +21,24 @@ const sentenceLayout = (state: GameState, sentence: SentenceDef, number: number,
   const price = guessPrice(state, sentence.id);
   const known = isComplete(state, sentence.id);
   const name = sentence.tool ? t(`tools.${sentence.tool}.name`) : '';
+  // Nom de la méthode, en symboles tant que la phrase n'est pas complète : c'est lui que la devinette
+  // révèle, souligné au crayon.
+  const title: TextItem = {
+    kind: 'text',
+    text: known ? name : babelize(name, seedOf(`${sentence.id}:name`)),
+    x: 320,
+    y: NAME_Y,
+    size: 22,
+    align: 'center',
+    caps: true,
+    spacing: 3,
+    ink: known ? undefined : 'ghost',
+  };
   return [
     { kind: 'seal', id: `whiteBook:${sentence.id}`, series: `whiteBook:${sentence.id}`, tier: 0, look: known ? 'gold' : 'embossed', x: 320, y: SEAL_Y, size: SEAL_SIZE },
-    {
-      kind: 'text',
-      text: known ? name : babelize(name, seedOf(`${sentence.id}:name`)),
-      x: 320,
-      y: NAME_Y,
-      size: 22,
-      align: 'center',
-      caps: true,
-      spacing: 3,
-      ink: known ? undefined : 'ghost',
-    },
+    title,
     ...sentenceBody(state, sentence, 240, { known, reveal: known && fresh(-1), fresh }),
-    ...(price === undefined ? [] : pencilOffer(priceNote(state, price, 'whiteBook.guess', 'whiteBook.guessShort'), asking, { y: 230, height: 440 }, 20)),
+    ...(price === undefined ? [] : pencilOffer(priceNote(state, price, 'whiteBook.guess', 'whiteBook.guessShort'), asking, 20, [title])),
     folio(number),
   ];
 };

@@ -4,7 +4,7 @@ import { PLATES, SEALS, type PlateId, type SealDef } from '../../data/seals';
 import { babelName, completion, countObtained, plateSeals, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
 import { isDeciphered } from '../../systems/decipher';
-import { folio, heading, type Item } from './pageItems';
+import { folio, heading, type Item, type TextItem } from './pageItems';
 import type { GameState } from '../../core/state';
 
 /**
@@ -75,21 +75,24 @@ const tally = (state: GameState, plate: PlateId): string => {
 const LINE_TOP = 400;
 const LINE_STEP = 46;
 
+/** Légende du pourcentage des sceaux (illisible tant que les sceaux ne sont pas déchiffrés). */
+export const completionCaption = (state: GameState): TextItem => ({
+  kind: 'text',
+  text: isDeciphered(state, 'seals') ? t('strangeBook.sealsCompletion') : babelName('completion'),
+  x: 320,
+  y: 305,
+  size: 20,
+  align: 'center',
+  italic: true,
+  faded: true,
+  spacing: 3,
+});
+
 /** Introduction : la part des sceaux obtenus, et l'avancement de chaque planche. */
 export const completionItems = (state: GameState, plates: PlatePage[], number: number): Item[] => [
   heading(sealsTitle(state)),
   { kind: 'text', text: `${Math.floor(completion(state) * 100)} %`, x: 320, y: 200, size: 84, align: 'center', spacing: 2 },
-  {
-    kind: 'text',
-    text: isDeciphered(state, 'seals') ? t('strangeBook.sealsCompletion') : babelName('completion'),
-    x: 320,
-    y: 305,
-    size: 20,
-    align: 'center',
-    italic: true,
-    faded: true,
-    spacing: 3,
-  },
+  completionCaption(state),
   ...plates
     .filter((plate) => plate.part === 0)
     .flatMap((plate, index): Item[] => {

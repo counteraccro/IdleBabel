@@ -2,7 +2,8 @@ import type * as THREE from 'three';
 import { createVellum } from '../whiteBook/vellum';
 import { createWhiteBookPages } from '../whiteBook/pages';
 import { WHITE_PAPER } from '../whiteBook/whiteBookPage';
-import { braidTexture, edgeTexture, svgTexture } from './textures';
+import { headbandTexture } from './headband';
+import { edgeTexture, svgTexture } from './textures';
 import type { Book3d } from './book3dBook';
 import type { GameState } from '../../core/state';
 
@@ -35,7 +36,7 @@ export const whiteBook3d = (state: GameState): Book3d => {
         leather: 0xe8dcc0,
         edge: edgeTexture('#d6ae5a', '#a47d2e'),
         paper: 0xf3eee2,
-        headband: braidTexture('#c8993f', '#efe4c6'),
+        headband: headbandTexture('#c8993f', '#efe4c6'),
       };
     },
   };

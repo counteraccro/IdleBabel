@@ -1,4 +1,4 @@
-import '@fontsource/nothing-you-could-do/400.css';
+import '@fontsource/caveat/400.css';
 import { el } from '../dom';
 import { PAGE_TEXTURE } from '../book/pageLayout';
 import { cssBaseline, preparePageTexture, type Paper } from '../book/pageRender';
@@ -35,10 +35,15 @@ export type Item =
       reveal?: number;
     }
   | { kind: 'dots'; x1: number; x2: number; y: number }
+  /** Soulignement en pointillé au crayon : ce que le chercheur n'a pas su lire (un clic propose de déchiffrer). */
+  | { kind: 'underline'; x1: number; x2: number; y: number }
   /** Zone cliquable (entrée du sommaire) : rien n'est dessiné. */
   | { kind: 'link'; y: number; height: number; target: number }
-  /** Zone cliquable qui déclenche une action de la page (déchiffrer…) : rien n'est dessiné. */
-  | { kind: 'action'; id: string; y: number; height: number }
+  /**
+   * Zone cliquable qui déclenche une action de la page (déchiffrer…) : rien n'est dessiné. Sur 80 % de
+   * la largeur, ou sur `width` à partir de `x` (le petit « ? » au crayon).
+   */
+  | { kind: 'action'; id: string; y: number; height: number; x?: number; width?: number }
   /** Sceau : carré de côté `size` centré en `x`, `y` ; survolé, il écrit sa légende (`hover`). */
   | { kind: 'seal'; id: string; series: string; tier: number; look: Look; x: number; y: number; size: number; fresh?: boolean };
 
@@ -57,7 +62,7 @@ const FADED = '#5d5f66';
 const GOLD = '#b8913a';
 const SERIF = "Georgia, 'Times New Roman', serif";
 /** Écriture et crayon du chercheur, les mêmes que dans son carnet. */
-export const HAND = "'Nothing You Could Do', cursive";
+export const HAND = "'Caveat', cursive";
 const PENCIL = '#4a463f';
 const PENCIL_FADED = '#aaa391';
 /** Livre blanc : symboles de Babel presque effacés, et lettres d'une phrase pas encore ordonnée. */
@@ -69,7 +74,7 @@ export const SERIF_FONT = SERIF;
 export const heading = (text: string): Item => ({ kind: 'text', text, x: 320, y: 100, size: 32, align: 'center', spacing: 6 });
 export const folio = (number: number): Item => ({ kind: 'text', text: String(number), x: 320, y: 730, size: 18, align: 'center', faded: true });
 
-type TextItem = Extract<Item, { kind: 'text' }>;
+export type TextItem = Extract<Item, { kind: 'text' }>;
 const font = (item: TextItem, size: string): string =>
   `${item.italic ? 'italic ' : ''}${item.caps ? 'small-caps ' : ''}${size} ${item.face === 'hand' ? HAND : SERIF}`;
 const color = (item: TextItem): string => {
@@ -78,6 +83,18 @@ const color = (item: TextItem): string => {
   if (item.face === 'hand') return item.faded ? PENCIL_FADED : PENCIL;
   return item.gold ? GOLD : item.faded ? FADED : INK;
 };
+let measurer: CanvasRenderingContext2D | null = null;
+/** Largeur d'un texte de la page, dans le repère de la texture. */
+export const textWidth = (item: TextItem): number => {
+  measurer ??= document.createElement('canvas').getContext('2d')!;
+  measurer.font = font(item, `${item.size}px`);
+  measurer.letterSpacing = `${item.spacing ?? 0}px`;
+  return measurer.measureText(item.text).width;
+};
+/** Bord gauche d'un texte de la page (centré : au milieu de la page, comme au dessin). */
+export const textLeft = (item: TextItem): number =>
+  item.align === 'center' ? (PAGE_TEXTURE.width - textWidth(item)) / 2 : item.align === 'right' ? item.x - textWidth(item) : item.x;
+
 /** Unité HTML : la page est un conteneur, 1 unité du repère = 100 / 640 cqw. */
 const unit = (value: number): string => `${((value * 100) / PAGE_TEXTURE.width).toFixed(3)}cqw`;
 
@@ -103,8 +120,8 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
     placeText(node, item);
     return node;
   }
-  if (item.kind === 'dots') {
-    const node = el('span', 'sb-dots');
+  if (item.kind === 'dots' || item.kind === 'underline') {
+    const node = el('span', item.kind === 'dots' ? 'sb-dots' : 'sb-underline');
     node.style.top = unit(item.y);
     node.style.left = unit(item.x1);
     node.style.width = unit(item.x2 - item.x1);
@@ -129,6 +146,11 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
   const node = el('button', item.kind === 'link' ? 'sb-link' : `sb-link sb-action ${item.id}`);
   node.style.top = unit(item.y);
   node.style.height = unit(item.height);
+  if (item.kind === 'action' && item.x !== undefined) {
+    node.style.left = unit(item.x);
+    node.style.width = unit(item.width ?? 0);
+    node.style.right = 'auto';
+  }
   node.addEventListener('click', () => (item.kind === 'link' ? goTo(item.target) : act?.(item.id)));
   // Le livre prend les appuis pour tourner les pages : une entrée du sommaire ou une action garde le sien.
   node.addEventListener('pointerdown', (event) => event.stopPropagation());
@@ -145,7 +167,9 @@ export const itemAt = (items: Item[], x: number, y: number): Item | undefined =>
     if (item.kind === 'seal') return item.look !== 'hidden' && Math.abs(x - item.x) <= item.size / 2 && Math.abs(y - item.y) <= item.size / 2;
     if (item.kind !== 'link' && item.kind !== 'action') return false;
     const margin = PAGE_TEXTURE.width * (item.kind === 'action' && item.id === 'pay' ? 0.25 : 0.1);
-    return x >= margin && x <= PAGE_TEXTURE.width - margin && y >= item.y && y <= item.y + item.height;
+    const [left, right] =
+      item.kind === 'action' && item.x !== undefined ? [item.x, item.x + (item.width ?? 0)] : [margin, PAGE_TEXTURE.width - margin];
+    return x >= left && x <= right && y >= item.y && y <= item.y + item.height;
   });
 
 /** Déclenche l'élément touché (lien, action, sceau) comme un clic sur la page HTML ; false : rien ici. */
@@ -229,6 +253,10 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
     } else if (item.kind === 'dots') {
       context.fillStyle = FADED;
       for (let x = item.x1; x < item.x2; x += 6) context.fillRect(x, item.y, 1.5, 1.5);
+    } else if (item.kind === 'underline') {
+      // Tirets courts au crayon, un peu irréguliers : tracés à la main.
+      context.fillStyle = PENCIL_FADED;
+      for (let x = item.x1, n = 0; x < item.x2; x += 7, n++) context.fillRect(x, item.y + ((n * 7) % 3) * 0.4, Math.min(4, item.x2 - x), 1.6);
     } else if (item.kind === 'seal') {
       drawSeal(context, sigil(item.series, item.tier), item.look, item.x - item.size / 2, item.y - item.size / 2, item.size);
     }

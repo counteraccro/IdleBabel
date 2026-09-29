@@ -2,8 +2,8 @@ import { el } from '../dom';
 import { coverDesign, shelfMarkText } from '../../systems/coverDesign';
 import { STRANGE_BOOK_INDEX } from '../../systems/strangeBook';
 import { CHAPTERS, chapterShown, chapterTitle, contentsTitle, figureCaption, figureShown, type Chapter } from './chapters';
-import { createItemsView, drawItems, folio, heading, itemAt, pressItem, type Item, type ItemActions } from './pageItems';
-import { newsMark, plateHasNews, plateTitle, sealLegend, sealsTitle, completionItems, plateItems, platePages, type PlatePage } from './plates';
+import { createItemsView, drawItems, folio, heading, itemAt, pressItem, textLeft, textWidth, type Item, type ItemActions, type TextItem } from './pageItems';
+import { newsMark, plateHasNews, plateTitle, sealLegend, sealsTitle, completionCaption, completionItems, plateItems, platePages, type PlatePage } from './plates';
 import { markSealsSeen } from '../../systems/seals';
 import { decipher, decipherPrice } from '../../systems/decipher';
 import { t } from '../../i18n';
@@ -86,14 +86,22 @@ const FIGURE_TOP = 190;
 const FIGURE_STEP = 125;
 
 /**
- * Offre au crayon : un clic sur la zone `ask` fait écrire la note en `noteY` (ce que ça coûte), un clic
- * sur la note paie. Sert à déchiffrer le livre étrange, et à deviner un morceau dans le livre blanc.
+ * Offre au crayon : ce que le chercheur n'a pas su lire (`marked` : légendes, nom) est souligné d'un
+ * pointillé ; un clic sur un texte souligné fait écrire la note en `noteY` (ce que ça coûte), un clic
+ * sur la note paie. Le reste de la page tourne comme les autres. Sert à déchiffrer le livre étrange, et
+ * à deviner un morceau dans le livre blanc.
  */
-export const pencilOffer = (note: string, asking: boolean, ask: { y: number; height: number }, noteY: number): Item[] => [
-  { kind: 'action', id: 'ask', ...ask },
+export const pencilOffer = (note: string, asking: boolean, noteY: number, marked: TextItem[]): Item[] => [
+  ...marked.flatMap((text): Item[] => {
+    const [left, width] = [textLeft(text), textWidth(text)];
+    return [
+      { kind: 'underline', x1: left, x2: left + width, y: text.y + text.size * 1.3 },
+      { kind: 'action', id: 'ask', x: left - 10, width: width + 20, y: text.y - 6, height: text.size * 1.6 + 12 },
+    ];
+  }),
   ...(asking
     ? [
-        { kind: 'text', text: note, x: 320, y: noteY, size: 26, align: 'center', face: 'hand', steady: true } satisfies Item,
+        { kind: 'text', text: note, x: 320, y: noteY, size: 30, align: 'center', face: 'hand', steady: true } satisfies Item,
         { kind: 'action', id: 'pay', y: noteY - 8, height: 44 } satisfies Item,
       ]
     : []),
@@ -103,27 +111,38 @@ export const pencilOffer = (note: string, asking: boolean, ask: { y: number; hei
 export const priceNote = (state: GameState, price: number, offer: string, short: string): string =>
   t(state.knowledge >= price ? offer : short).replace('{n}', String(price));
 
-/** Partie encore illisible qui s'achète : la note au crayon propose de la déchiffrer. */
-const decipherItems = (state: GameState, part: PartId, asking: boolean, ask: { y: number; height: number }, noteY: number): Item[] => {
+/** Partie encore illisible qui s'achète : ses légendes soulignées, la note au crayon propose de la déchiffrer. */
+const decipherItems = (state: GameState, part: PartId, asking: boolean, noteY: number, marked: TextItem[]): Item[] => {
   const price = decipherPrice(state, part);
   if (price === undefined) return [];
-  return pencilOffer(priceNote(state, price, 'strangeBook.decipher', 'strangeBook.decipherShort'), asking, ask, noteY);
+  return pencilOffer(priceNote(state, price, 'strangeBook.decipher', 'strangeBook.decipherShort'), asking, noteY, marked);
 };
 
-const chapterItems = (state: GameState, chapter: Chapter, number: number, asking: boolean): Item[] => [
-  heading(chapterTitle(state, chapter)),
-  ...chapter.figures
-    .filter((figure) => figureShown(state, figure))
-    .flatMap((figure, index): Item[] => {
-      const y = FIGURE_TOP + index * FIGURE_STEP;
-      return [
-        { kind: 'text', text: figure.value(state), x: 320, y, size: 52, align: 'center', spacing: 2 },
-        { kind: 'text', text: figureCaption(state, chapter, figure), x: 320, y: y + 64, size: 20, align: 'center', italic: true, faded: true, spacing: 3 },
-      ];
+const chapterItems = (state: GameState, chapter: Chapter, number: number, asking: boolean): Item[] => {
+  const figures = chapter.figures.filter((figure) => figureShown(state, figure));
+  const captions = figures.map(
+    (figure, index): TextItem => ({
+      kind: 'text',
+      text: figureCaption(state, chapter, figure),
+      x: 320,
+      y: FIGURE_TOP + index * FIGURE_STEP + 64,
+      size: 20,
+      align: 'center',
+      italic: true,
+      faded: true,
+      spacing: 3,
     }),
-  ...decipherItems(state, chapter.id, asking, { y: 140, height: 530 }, 676),
-  folio(number),
-];
+  );
+  return [
+    heading(chapterTitle(state, chapter)),
+    ...figures.flatMap((figure, index): Item[] => [
+      { kind: 'text', text: figure.value(state), x: 320, y: FIGURE_TOP + index * FIGURE_STEP, size: 52, align: 'center', spacing: 2 },
+      captions[index],
+    ]),
+    ...decipherItems(state, chapter.id, asking, 676, captions),
+    folio(number),
+  ];
+};
 
 /** La page dont un sceau est survolé : une seule légende à la fois dans tout le livre. */
 let legendOwner: LeafPage | null = null;
@@ -227,7 +246,7 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
     createLeafPage(
       ({ asking }) => [
         ...completionItems(state, plates, sealsPage + 1),
-        ...decipherItems(state, 'seals', asking, { y: 170, height: 210 }, 352),
+        ...decipherItems(state, 'seals', asking, 352, [completionCaption(state)]),
       ],
       goTo,
       { onPay: () => decipher(state, 'seals') },

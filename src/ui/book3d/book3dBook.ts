@@ -7,6 +7,8 @@ export interface Book3d {
   source: PageSource;
   /** Textures des plats et de la tranche : dessinées une fois, à l'ouverture de la page. */
   look: () => Promise<BookLook>;
+  /** Page où est glissé le signet (le sommaire) : un clic sur lui, ou la touche Début, y ramène. */
+  bookmark?: number;
   /** Pages qui suivent la partie (chiffres qui changent) : redessinées régulièrement. */
   live?: boolean;
   /**

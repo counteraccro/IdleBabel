@@ -20,7 +20,7 @@
   "bookSway": "Le livre bouge dans les mains",
   "bookSwayHint": "Le livre oscille doucement, comme tenu à bout de bras. Désactivé, il reste immobile.",
   "pageArrows": "Flèches pour tourner les pages",
-  "pageArrowsHint": "Deux flèches ‹ › sous les livres. Sans elles : cliquer sur une page (ou la tirer par un coin), ou les touches ← et → du clavier.",
+  "pageArrowsHint": "Deux flèches ‹ › sous les livres. Sans elles : cliquer sur une page (ou la tirer par un coin), ou les touches ← et → du clavier (Début : retour au sommaire).",
   "display": "Affichage",
   "showFps": "Afficher les images par seconde",
   "showFpsHint": "Un petit compteur en bas à gauche, pour vérifier que le jeu reste fluide sur votre appareil.",
