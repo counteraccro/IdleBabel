@@ -20,6 +20,10 @@ export interface Book3d {
   hover?: (index: number, x: number, y: number) => boolean;
   /** Quelque chose de cliquable au point (x, y) de la page `index` (la main du pointeur). */
   pointable?: (index: number, x: number, y: number) => boolean;
+  /** La page `index` arrive sous les yeux, livre posé (sceaux vus, légende survolée effacée). */
+  shown?: (index: number) => void;
+  /** Le contenu a changé (débogage…) : les pages se refont, le livre reste ouvert là où il est. */
+  rewrite?: () => void;
   /** Le livre demande d'aller à une page (entrée du sommaire) : branché par la page 3D. */
   navigate?: (index: number) => void;
 }

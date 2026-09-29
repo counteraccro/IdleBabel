@@ -2,17 +2,12 @@ import './strangeBook.css';
 import { el, type Component } from '../dom';
 import { t } from '../../i18n';
 import { gutterCss, paperCss, type Paper } from '../book/pageRender';
-import { STRANGE_PAPER, drawItems } from './pageItems';
-import { createPages, type LeafPage } from './pages';
+import { drawItems } from './pageItems';
+import type { LeafPage } from './pages';
 import { createLeafTurn } from './leafTurn';
 import { attachGrab } from '../book/bookGrab';
 import { HELD_PROGRESS, RELEASE_MS, TURN_MS } from '../book/book';
 import { createStrangeCovers, type CoverLook } from './bookCovers';
-import { STRANGE_BINDING } from '../book/bindings';
-import { dressCovers } from '../book/coverArt';
-import { coverDesign } from '../../systems/coverDesign';
-import { STRANGE_BOOK_INDEX } from '../../systems/strangeBook';
-import type { GameState } from '../../core/state';
 
 /** Écran étroit : une seule page à la fois au lieu d'une double page. */
 const NARROW = '(max-width: 720px)';
@@ -284,18 +279,3 @@ export const createBigBookPage = (options: BigBookOptions, onBack: () => void): 
   layout();
   return { root, update: () => all.forEach((page) => page?.update()) };
 };
-
-/** Le livre étrange : les statistiques, en cuir noir, sur papier gris. */
-export const createStrangeBookPage = (state: GameState, onBack: () => void): Component =>
-  createBigBookPage(
-    {
-      pages: (goTo) => createPages(state, goTo),
-      paper: STRANGE_PAPER,
-      covers: {
-        binding: STRANGE_BINDING,
-        edge: { paper: STRANGE_PAPER[1], line: '#a39d8b' },
-        dress: (outside) => dressCovers(outside, coverDesign(STRANGE_BOOK_INDEX)),
-      },
-    },
-    onBack,
-  );

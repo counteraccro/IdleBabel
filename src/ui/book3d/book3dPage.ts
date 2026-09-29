@@ -12,6 +12,7 @@ import { attachBookGesture } from './bookGesture';
 import { createLighting } from './lighting';
 import { createReadingView } from './readingView';
 import { isDebugEnabled } from '../../debug/debugPanel';
+import { BIG_BOOK_REWRITE } from '../strangeBook/strangeBookPage';
 import type { Book3d } from './book3dBook';
 
 /** Durée de l'ouverture de la couverture. */
@@ -21,8 +22,8 @@ const OPEN_MS = 1100;
 const LIVE_MS = 1000;
 
 /**
- * Prototype : un livre en vraie 3D (Three.js). Fermé, on le fait tourner à la souris ; ouvert, on le
- * lit, caméra bloquée, en tournant ses pages à la main.
+ * Un grand livre en vraie 3D (Three.js) : le livre étrange (#livre), le livre blanc en essai (#livre3d).
+ * Fermé, on le fait tourner à la souris ; ouvert, on le lit, caméra bloquée, en tournant ses pages à la main.
  */
 export const createBook3dPage = (spec: Book3d, onBack: () => void): Component => {
   const root = el('main', 'book3d-page');
@@ -223,10 +224,35 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
       if (turner?.idle && Number(open.value) === 1 && shut === 0) turner.refresh();
     }, LIVE_MS);
   }
+  /** Double page déjà signalée comme vue (null : aucune, ou livre fermé). */
+  let shownSpread: number | null = null;
+  // Contenu réécrit (débogage…) : les pages se refont, le livre reste ouvert à la même double page.
+  const rewrite = (): void => {
+    if (!root.isConnected) return window.removeEventListener(BIG_BOOK_REWRITE, rewrite);
+    spec.rewrite?.();
+    shownSpread = null;
+    turner?.refresh();
+  };
+  window.addEventListener(BIG_BOOK_REWRITE, rewrite);
+  /** Livre posé, ouvert sur une double page : ses deux pages arrivent sous les yeux (une fois). */
+  const notifyShown = (): void => {
+    const settled = turner?.idle && !swinging && shut === 0 && Number(open.value) === 1;
+    if (!turner || !settled) {
+      if (!swinging && Number(open.value) === 0) shownSpread = null;
+      return;
+    }
+    if (shownSpread === turner.target || !spec.shown) return;
+    shownSpread = turner.target;
+    spec.shown(2 * shownSpread);
+    spec.shown(2 * shownSpread + 1);
+    // Une planche vue éteint ses étoiles de nouveauté : la double page est redessinée.
+    turner.refresh();
+  };
   let before = performance.now();
   const frame = (now: number): void => {
     if (!root.isConnected) return renderer.dispose();
     turner?.update(Math.min(0.05, (now - before) / 1000));
+    notifyShown();
     // Page prise à la main et lâchée : le curseur suit la double page où le livre s'arrête.
     if (turner && document.activeElement !== spread) spread.value = String(turner.target);
     before = now;

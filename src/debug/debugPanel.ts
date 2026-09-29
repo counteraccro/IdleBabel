@@ -21,9 +21,12 @@ export const isDebugEnabled = (): boolean => new URLSearchParams(window.location
 
 const PRESETS = [0, 100, 1_000, 10_000, 1_000_000];
 
-/** Grand livre ouvert (étrange, blanc) : il se réécrit à la même page (chapitres ou légendes qui changent). */
+/** Un grand livre est ouvert (étrange, blanc ; en 2D ou en 3D). */
+const bigBookOpen = (): boolean => document.querySelector('.sb-page, .book3d-page') !== null;
+
+/** Grand livre ouvert : il se réécrit à la même page (chapitres ou légendes qui changent). */
 const rewriteBigBook = (): void => {
-  if (document.querySelector('.sb-page')) window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
+  if (bigBookOpen()) window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
 };
 
 /** Le livre en main a changé (page, numéro, titres) : il se redessine. */
@@ -117,7 +120,7 @@ export const mountDebugPanel = (state: GameState): void => {
     refreshBook();
     // Livre étrange déjà ouvert : il se réécrit à la même page ; sinon l'écran est reconstruit (le
     // livre devient accessible, ou ne l'est plus).
-    if (document.querySelector('.sb-page')) rewriteBigBook();
+    if (bigBookOpen()) rewriteBigBook();
     else window.dispatchEvent(new HashChangeEvent('hashchange'));
   });
   const strange = section(

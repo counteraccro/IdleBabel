@@ -23,7 +23,8 @@ const BLOCK_PAGES = 410;
  */
 export const strangeBook3d = (state: GameState): Book3d => {
   // Les pages du livre 2D désignent les pages par leur place dans la liste : une de moins qu'en 3D.
-  const pages = createPages(state, (page) => book.navigate?.(page + 1), 1);
+  const makePages = () => createPages(state, (page) => book.navigate?.(page + 1), 1);
+  let pages = makePages();
   const book: Book3d = {
     // 410 pages, comme le livre blanc : un livre épais.
     // Plats qui débordent nettement des pages : fermé, on distingue bien la couverture du bloc.
@@ -56,6 +57,10 @@ export const strangeBook3d = (state: GameState): Book3d => {
     press: (index, x, y) => pages[index - 1]?.press(x, y) ?? false,
     hover: (index, x, y) => pages[index - 1]?.hover(x, y) ?? false,
     pointable: (index, x, y) => pages[index - 1]?.pointable(x, y) ?? false,
+    shown: (index) => pages[index - 1]?.shown(),
+    rewrite: () => {
+      pages = makePages();
+    },
   };
   return book;
 };
