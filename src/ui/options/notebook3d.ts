@@ -47,7 +47,7 @@ export const notebook3d = (state: GameState, actions: NotebookActions): Book3d =
     },
     pointable: (index, x, y) => zoneAt(zonesOf(index), x, y) !== undefined,
     // Secret : regarder le dos du cahier, et ses multiplications qui donnent toutes 410.
-    closedOnBack: () => sealEvent(state, 'notebookBack'),
+    backSeen: () => sealEvent(state, 'notebookBack'),
     look: async () => {
       // Les pages s'écrivent avec ces polices : chargées avant le premier dessin.
       await Promise.all([document.fonts.load(`24px ${PEN_FONT}`), document.fonts.load(`20px ${HAND}`)]);

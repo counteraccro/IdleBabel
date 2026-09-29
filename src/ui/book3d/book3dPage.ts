@@ -152,7 +152,6 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
       invalidate();
       if (t < 1) return void requestAnimationFrame(step);
       if (board === 'flip') turner?.jump(0);
-      if (board === 'back' && target === 1) spec.closedOnBack?.();
       swinging = false;
     };
     requestAnimationFrame(step);
@@ -260,6 +259,23 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     // Une planche vue éteint ses étoiles de nouveauté : la double page est redessinée.
     refresh();
   };
+  /** Le dos du livre fermé a déjà été vu (backSeen). */
+  let backSeen = false;
+  /** Point de vue par rapport au livre (de la cible vers la caméra), pour savoir quelle face on regarde. */
+  const eye = new THREE.Vector3();
+  /**
+   * Livre fermé, posé : on regarde son dos de face (à 60° près) ? Fermé sur sa couverture, le dos
+   * regarde -z ; refermé sur son dos (après la dernière page), le livre s'est retourné, il regarde +z.
+   */
+  const notifyBackSeen = (): void => {
+    if (backSeen || !spec.backSeen || swinging) return;
+    const onCover = Number(open.value) === 0 && shut === 0;
+    if (!onCover && shut !== 1) return;
+    eye.subVectors(camera.position, controls.target).normalize();
+    if ((onCover ? -eye.z : eye.z) < 0.5) return;
+    backSeen = true;
+    spec.backSeen();
+  };
   let before = performance.now();
   /** Des pages tournaient à l'image d'avant : la dernière, celle où elles se posent, est encore à montrer. */
   let turning = false;
@@ -281,6 +297,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     const resized = resize();
     // Caméra qu'on fait tourner, ou qui finit sur son élan.
     const orbiting = controls.update();
+    notifyBackSeen();
     if (moving || turning || resized || orbiting || dirty) {
       // Livre fermé (d'un côté ou de l'autre), on le fait tourner : la lumière suit la face qu'on regarde.
       // Fermé : les deux plats l'un sur l'autre (couverture fermée, ou plat arrière refermé sur elle).
