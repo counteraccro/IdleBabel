@@ -2,6 +2,7 @@ import type * as THREE from 'three';
 import { canvasTexture, rasterizeSvg } from '../book3d/textures';
 import { boardWear, WEAR_HEIGHT, WEAR_WIDTH } from './wear';
 import { PEN_FONT } from './notebookInk';
+import { getLocale } from '../../i18n';
 
 /** Couverture souple d'un cahier d'écolier : carte bleu-vert passé ; dedans, la carte nue, plus claire. */
 const CARD = '#3f6c76';
@@ -60,9 +61,16 @@ const drawLabel = (context: CanvasRenderingContext2D, name: string): void => {
 };
 
 /**
- * Tables de multiplication imprimées au dos, comme sur tous les cahiers d'écolier. Sauf qu'ici, tout
- * donne 410 (idée de l'auteur).
+ * Au dos, là où les cahiers d'écolier impriment leurs tables : la « table de 410 », de vraies
+ * multiplications qui donnent toutes 410 (idée de l'auteur). En entiers (410 = 2 × 5 × 41), puis en
+ * décimaux exacts, avec la virgule de la langue.
  */
+const FACTORS = [
+  [1, 2, 5, 10, 41, 82, 205, 410],
+  [4, 8, 16, 20, 25, 40, 50, 80],
+  [100, 125, 200, 250, 400, 500, 1000, 0.5],
+];
+
 const drawTables = (context: CanvasRenderingContext2D): void => {
   const [x, y, width, height] = [110, 150, 580, 700];
   context.fillStyle = 'rgba(243, 239, 227, 0.9)';
@@ -72,14 +80,19 @@ const drawTables = (context: CanvasRenderingContext2D): void => {
   context.lineWidth = 2;
   context.stroke();
   context.fillStyle = PRINT;
-  context.font = "17px Georgia, 'Times New Roman', serif";
+  context.font = "20px Georgia, 'Times New Roman', serif";
   context.textAlign = 'left';
   context.textBaseline = 'alphabetic';
-  for (let table = 2; table <= 10; table++) {
-    const [column, row] = [(table - 2) % 3, Math.floor((table - 2) / 3)];
-    const [left, top] = [x + 40 + column * 180, y + 50 + row * 220];
-    for (let n = 1; n <= 10; n++) context.fillText(`${table} × ${n} = 410`, left, top + (n - 1) * 20);
-  }
+  const number = (value: number): string => value.toLocaleString(getLocale(), { maximumFractionDigits: 3 });
+  const lines = FACTORS.map((column) => column.map((factor) => `${number(factor)} × ${number(410 / factor)} = 410`));
+  // Colonnes aussi larges que leur plus long calcul, l'espace restant partagé entre elles.
+  const widths = lines.map((column) => Math.max(...column.map((line) => context.measureText(line).width)));
+  const gap = (width - widths.reduce((sum, w) => sum + w, 0)) / (widths.length + 1);
+  let left = x + gap;
+  lines.forEach((column, i) => {
+    column.forEach((line, row) => context.fillText(line, left, y + 110 + row * 72));
+    left += widths[i] + gap;
+  });
 };
 
 /** Textures du cahier : couverture à étiquette, dos aux tables, carte nue dedans et au pli. */

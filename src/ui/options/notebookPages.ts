@@ -20,24 +20,35 @@ export const NOTEBOOK_PAGES = 25;
 /** Ce qu'une page peut dessiner d'autre que l'écriture : les croquis, déjà tracés. */
 export type Sketches = Record<DoodleKind, CanvasImageSource>;
 
-/** Annotations étranges dans la marge : page, rang de la remarque (notebook.notes), hauteur. */
-const MARGIN_NOTES: [page: number, note: number, at: number][] = [
-  [3, 0, 0.3],
-  [2, 1, 0.55],
-  [4, 2, 0.6],
-  [5, 3, 0.75],
-  [6, 4, 0.5],
-  [8, 5, 0.35],
-  [13, 6, 0.6],
-  [17, 7, 0.45],
-  [22, 8, 0.5],
-];
 /** Signes griffonnés en travers de la marge. */
-const SCRIBBLES: [page: number, text: string, at: number][] = [
-  [1, '410 ?', 0.82],
-  [5, '?', 0.3],
-  [11, '410', 0.2],
-];
+const SCRIBBLES = ['410 ?', '?', '410'];
+/** Remarques présentes à chaque ouverture (sur les 9 de notebook.notes). */
+const NOTES_SHOWN = 6;
+
+const shuffle = <T>(list: T[]): T[] => {
+  const copy = [...list];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+};
+const between = (low: number, high: number): number => low + Math.random() * (high - low);
+
+/**
+ * Ce qui est griffonné dans la marge, tiré à chaque ouverture du cahier (idée de l'auteur) : quelques
+ * remarques et signes, sur des pages au hasard, jamais deux sur la même. On ne retrouve jamais le cahier
+ * tout à fait comme on l'a laissé.
+ */
+const drawMargins = (): Map<number, { note?: number; scribble?: string; at: number }> => {
+  const pages = shuffle(Array.from({ length: NOTEBOOK_PAGES - 1 }, (_, i) => i + 1));
+  const notes = shuffle(Array.from({ length: messages().notebook.notes.length }, (_, i) => i)).slice(0, NOTES_SHOWN);
+  const margins = new Map<number, { note?: number; scribble?: string; at: number }>();
+  // Une remarque (jusqu'à 520 unités de long, centrée) tient dans la page entre 35 et 65 % de sa hauteur.
+  notes.forEach((note, i) => margins.set(pages[i], { note, at: between(0.35, 0.65) }));
+  SCRIBBLES.forEach((scribble, i) => margins.set(pages[notes.length + i], { scribble, at: between(0.15, 0.85) }));
+  return margins;
+};
 
 /**
  * Le cahier d'options : ce que le chercheur a noté sur la première page, puis les réglages page après
@@ -46,6 +57,8 @@ const SCRIBBLES: [page: number, text: string, at: number][] = [
 export const createNotebookPages = (state: GameState, actions: NotebookActions) => {
   /** Effacer la sauvegarde : la question posée, puis la réponse. */
   let reset: 'ask' | 'confirm' | 'done' = 'ask';
+  // Tirées une fois : la page redessinée (case cochée, langue) garde ses remarques.
+  const margins = drawMargins();
   const setting = (key: 'autoTurn' | 'bookSway' | 'pageArrows' | 'showFps' | 'reduceBlur') => (): void => {
     state.settings[key] = !state.settings[key];
     actions.onSettings();
@@ -92,8 +105,8 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
     content[index]?.(w, sketches);
     // Il a numéroté les premières pages, puis a cessé.
     if (index >= 1 && index <= 5) w.folio(index, spineOnLeft);
-    const notes = messages().notebook.notes;
-    for (const [page, note, at] of MARGIN_NOTES) if (page === index) w.margin(notes[note], at);
-    for (const [page, text, at] of SCRIBBLES) if (page === index) w.scribble(text, at);
+    const margin = margins.get(index);
+    if (margin?.note !== undefined) w.margin(messages().notebook.notes[margin.note], margin.at);
+    if (margin?.scribble) w.scribble(margin.scribble, margin.at);
   };
 };
