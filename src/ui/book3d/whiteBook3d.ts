@@ -16,7 +16,8 @@ export const whiteBook3d = (state: GameState): Book3d => {
   const leaves = createWhiteBookPages(state, () => {});
   return {
     // Proportions d'un grand livre : 4 × 5, épais (410 pages), plats solides qui débordent un peu.
-    shape: { width: 0.8, height: 1, thickness: 0.16, board: 0.018, overhang: 0.012, corner: 0.035 },
+    // Plats qui débordent nettement des pages : le coin carré du bloc reste caché sous leur coin arrondi.
+    shape: { width: 0.8, height: 1, thickness: 0.16, board: 0.018, overhang: 0.02, corner: 0.035 },
     source: {
       // Sans les pages vierges de la fin (le livre 2D en ajoute une pour finir sur une double page) :
       // la dernière feuille qui tourne découvre le plat arrière.

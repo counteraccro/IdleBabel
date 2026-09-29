@@ -125,7 +125,8 @@ const boardFace = (shape: BookShape, from: number, z: number, up: boolean): numb
   const inside = (x: number, y: number): [number, number] => {
     for (const { center, edge } of corners) {
       const [cx, cy] = center;
-      if (x <= cx || Math.abs(y - cy) > round || (cy < height / 2 ? y > cy : y < cy)) continue;
+      // Tolérance : les rangées du quadrillage tombent aux arrondis de calcul près sur le bord du plat.
+      if (x <= cx || Math.abs(y - cy) > round + 1e-9 || (cy < height / 2 ? y > cy : y < cy)) continue;
       const angle = Math.atan2(y - cy, x - cx);
       let best = edge[0];
       for (const point of edge) {
@@ -140,7 +141,8 @@ const boardFace = (shape: BookShape, from: number, z: number, up: boolean): numb
   const lines = (length: number, count: number, cuts: [number, number][]): number[] => {
     const regular = Array.from({ length: count + 1 }, (_, i) => (length * i) / count);
     const all = [...regular.filter((v) => cuts.every(([from, to]) => v < from || v > to)), ...cuts.flatMap(([from, to]) => Array.from({ length: CORNER_STEPS + 1 }, (_, i) => from + ((to - from) * i) / CORNER_STEPS))];
-    return [...new Set(all.sort((a, b) => a - b))];
+    // Sans doublons (à un rien près : une ligne régulière et une ligne du coin peuvent se confondre).
+    return all.sort((a, b) => a - b).filter((v, i, sorted) => i === 0 || v - sorted[i - 1] > 1e-9);
   };
   const xs = lines(width, FACE_COLUMNS, [[width - round, width]]);
   const ys = lines(height, FACE_ROWS, [[0, round], [height - round, height]]);
