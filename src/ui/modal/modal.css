@@ -1,6 +1,6 @@
 /*
- * Modales du jeu (modal.ts) : un seul style, réglé ici par ses variables ; les variantes ne changent que
- * l'accent. Style provisoire : le panneau sombre et doré de l'interface.
+ * Modales du jeu (modal.ts) : un seul style, réglé ici ; les variantes ne changent que l'accent. Style
+ * choisi par l'auteur : cuir et dorure (le ton des boutons de l'en-tête), avec des symboles de Babel.
  */
 .modal-backdrop {
   position: fixed;
@@ -15,35 +15,56 @@
 /* Avant le jeu (nom, langue) : rien derrière, le noir complet. */
 .modal-backdrop.black { background: #000; backdrop-filter: none; }
 .modal {
-  --modal-accent: var(--accent);
+  --modal-accent: #e0b870;
+  --gold: rgba(224, 184, 112, 0.45);
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  width: min(400px, 100%);
-  padding: 30px 32px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+  gap: 20px;
+  width: min(420px, 100%);
+  padding: 22px 36px;
+  color: #efe3c8;
   text-align: center;
-  color: var(--ink);
+  /* Cuir sombre, double filet doré repoussé à l'intérieur. */
+  background: linear-gradient(180deg, #3a2216, #1f110a);
+  border: 1px solid rgba(224, 184, 112, 0.55);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 6px #2b180f, inset 0 0 0 7px var(--gold), 0 14px 40px rgba(0, 0, 0, 0.75);
 }
-.modal-danger { --modal-accent: #d9745f; }
-.modal-notice { --modal-accent: var(--muted); }
-.modal-title { margin: 0; font-weight: normal; font-size: 1.5rem; letter-spacing: 0.08em; color: var(--modal-accent); }
-.modal p { margin: 0; line-height: 1.5; color: var(--muted); }
+.modal-danger { --modal-accent: #e08a6a; }
+.modal-notice { --modal-accent: #cdb892; }
+.modal-title {
+  margin: 0;
+  font-weight: normal;
+  font-size: 1.45rem;
+  font-variant: small-caps;
+  letter-spacing: 0.14em;
+  color: var(--modal-accent);
+  text-shadow: 0 1px 0 #000;
+}
+.modal p { margin: 0; line-height: 1.5; color: #cdb892; }
+
+/* Symboles de Babel dorés, presque effacés, le long du filet du haut et du bas. */
+.modal-inscription {
+  font-size: 0.8rem;
+  letter-spacing: 0.35em;
+  color: rgba(224, 184, 112, 0.5);
+  text-shadow: 0 1px 0 #000;
+  white-space: nowrap;
+  overflow: hidden;
+  user-select: none;
+}
 
 /* Champs et choix dans une modale. */
-.modal-field { display: flex; flex-direction: column; gap: 8px; color: var(--muted); }
+.modal-field { display: flex; flex-direction: column; gap: 8px; color: #cdb892; }
 .modal-field input {
   padding: 8px 10px;
   font: inherit;
   font-size: 1.2rem;
   text-align: center;
-  color: var(--ink);
+  color: #f3dc9c;
   background: rgba(0, 0, 0, 0.35);
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  border: 1px solid rgba(224, 184, 112, 0.4);
+  border-radius: 3px;
 }
 .modal-field input:focus { outline: none; border-color: var(--modal-accent); }
 .modal-choices { display: flex; justify-content: center; gap: 10px; }
@@ -53,14 +74,15 @@
 .modal-button {
   padding: 6px 16px;
   font: inherit;
-  color: var(--muted);
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  color: #cdb892;
+  background: linear-gradient(180deg, #4a2c1c, #2a170d);
+  border: 1px solid rgba(224, 184, 112, 0.35);
+  border-radius: 3px;
   cursor: pointer;
 }
-.modal-choices .active { color: var(--modal-accent); border-color: var(--modal-accent); }
-.modal-button.primary { padding: 8px 28px; font-size: 1.1rem; color: var(--ink); }
-.modal-button.danger { color: #d9745f; border-color: rgba(217, 116, 95, 0.5); }
+.modal-choices .active,
+.modal-button.primary { color: #f3dc9c; border-color: rgba(224, 184, 112, 0.85); box-shadow: 0 0 8px rgba(224, 184, 112, 0.25); }
+.modal-button.primary { padding: 8px 28px; font-size: 1.1rem; }
+.modal-button.danger { color: #f0a48a; border-color: rgba(224, 138, 106, 0.7); }
 .modal-button:hover:not(:disabled) { border-color: var(--modal-accent); color: var(--modal-accent); }
-.modal-button:disabled { opacity: 0.4; cursor: default; }
+.modal-button:disabled { opacity: 0.4; cursor: default; box-shadow: none; }

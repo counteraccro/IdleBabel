@@ -1,5 +1,6 @@
 import './modal.css';
 import { el } from '../dom';
+import { babelName } from '../../systems/seals';
 
 /**
  * Variante d'une modale : la même carte, un accent différent. `danger` : une action qu'on ne peut pas
@@ -41,7 +42,7 @@ export interface Modal {
 }
 
 /**
- * Modale commune à tout le jeu (voir modal.css) : le décor s'assombrit derrière une carte au centre.
+ * Modale commune à tout le jeu (voir modal.css) : un écrin de cuir doré au centre, le décor assombri derrière.
  * Le style se règle en un seul endroit ; chaque modale ne fournit que son contenu.
  */
 export const openModal = ({
@@ -91,7 +92,14 @@ export const openModal = ({
   if (dismissible) backdrop.addEventListener('click', (event) => event.target === backdrop && close());
   document.addEventListener('keydown', onKey);
   footer.append(...buttons);
-  card.append(heading, ...body, ...(buttons.length ? [footer] : []));
+  // Inscriptions dorées en symboles de Babel, gravées en haut et en bas du cuir : tirées de la variante
+  // et du nombre de boutons, les mêmes pour une même modale, quelle que soit la langue.
+  const inscription = (seed: string): HTMLElement => {
+    const line = el('span', 'modal-inscription', babelName(`modal:${variant}:${actions.length}:${seed}`, 3));
+    line.setAttribute('aria-hidden', 'true');
+    return line;
+  };
+  card.append(inscription('top'), heading, ...body, ...(buttons.length ? [footer] : []), inscription('bottom'));
   backdrop.append(card);
   document.body.append(backdrop);
   return { root: card, title: heading, buttons, close };
