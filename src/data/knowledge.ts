@@ -36,7 +36,7 @@ export const DUPLICATE_SHARE = 0.2;
 export const GUESS_PRICE = 2;
 
 /** Pages tournées seules au plus par seconde (autoTurn.ts) : la même limite hors-ligne. */
-export const MAX_TURNS_PER_SECOND = 5;
+export const MAX_TURNS_PER_SECOND = 8;
 
 /** Absence prise en compte au plus (conception §10). */
 export const MAX_AWAY_SECONDS = 8 * 3600;

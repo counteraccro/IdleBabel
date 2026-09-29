@@ -3,7 +3,7 @@ import { coverDesign } from '../../systems/coverDesign';
 import { pageNumberLabel } from '../../systems/pageNumber';
 import { pagesPerSecond } from '../../systems/production';
 import { PAGES_PER_BOOK } from '../../systems/books';
-import { MAX_TURNS_PER_SECOND } from '../../data/knowledge';
+import { maxTurnsPerSecond } from '../../systems/knowledge';
 import { hashText, seeded } from '../../core/random';
 import { bindingFor, modernBindingFor } from '../book/bindings';
 import { layoutPage } from '../book/pageLayout';
@@ -64,6 +64,6 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
       };
     },
     next: () => handBook3d(state, index + 1, finds),
-    turnsPerSecond: () => (state.settings.autoTurn ? Math.min(pagesPerSecond(state), MAX_TURNS_PER_SECOND) : 0),
+    turnsPerSecond: () => (state.settings.autoTurn ? Math.min(pagesPerSecond(state), maxTurnsPerSecond()) : 0),
   };
 };

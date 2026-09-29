@@ -1,6 +1,6 @@
 import { el } from '../ui/dom';
 import { beyond, clarity } from '../systems/perception';
-import { addKnowledge, findChance, forceFinds } from '../systems/knowledge';
+import { addKnowledge, findChance, forceFinds, maxTurnsPerSecond, setTurnCap } from '../systems/knowledge';
 import { currentTarget, segments, write } from '../systems/sentences';
 import { forceTitles, type TitleOverride } from '../systems/coverTitle';
 import { pagesPerSecond } from '../systems/production';
@@ -78,6 +78,7 @@ export const mountDebugPanel = (state: GameState): void => {
       refreshBook();
     }), 'numéro du livre : couverture, reliure'),
     row('Titres des couvertures', titles),
+    row('Défilement', field(maxTurnsPerSecond, setTurnCap), 'pages/s au plus quand elles tournent seules (8 par défaut ; 0 : remettre)'),
   );
 
   const knowledge = section(

@@ -21,6 +21,14 @@ export const forceFinds = (on: boolean): void => {
   forced = on;
 };
 
+/** Débogage : plafond des pages qui tournent seules, à la place de MAX_TURNS_PER_SECOND. */
+let turnCap = MAX_TURNS_PER_SECOND;
+export const setTurnCap = (value: number): void => {
+  turnCap = value > 0 ? value : MAX_TURNS_PER_SECOND;
+};
+/** Pages tournées seules au plus par seconde, à l'écran comme hors-ligne. */
+export const maxTurnsPerSecond = (): number => turnCap;
+
 /** Chance qu'une page tournée cache une trouvaille (les bonus s'ajouteront ici). */
 export const findChance = (_state: GameState): number => (forced ? 1 : BASE_FIND_CHANCE);
 
@@ -105,7 +113,7 @@ export const gainFind = (state: GameState, find: Find): void => {
  */
 export const findWhileAway = (state: GameState, seconds: number, random: () => number = Math.random): number => {
   if (!state.settings.autoTurn || seconds <= 0) return 0;
-  const turned = Math.min(pagesPerSecond(state), MAX_TURNS_PER_SECOND) * Math.min(seconds, MAX_AWAY_SECONDS);
+  const turned = Math.min(pagesPerSecond(state), maxTurnsPerSecond()) * Math.min(seconds, MAX_AWAY_SECONDS);
   // Nombre attendu, arrondi au hasard : la moyenne est juste, et une courte absence peut rapporter.
   const count = Math.floor(turned * findChance(state) + random());
   for (let i = 0; i < count; i++) gainFind(state, drawFind(state, random));
