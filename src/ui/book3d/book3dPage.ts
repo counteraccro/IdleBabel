@@ -23,7 +23,7 @@ const OPEN_MS = 1100;
 const LIVE_MS = 1000;
 
 /**
- * Un grand livre en vraie 3D (Three.js) : le livre étrange (#livre), le livre blanc en essai (#livre3d).
+ * Un grand livre en vraie 3D (Three.js) : le livre étrange (#livre), le livre blanc (#blanc).
  * Fermé, on le fait tourner à la souris ; ouvert, on le lit, caméra bloquée, en tournant ses pages à la main.
  */
 export const createBook3dPage = (spec: Book3d, onBack: () => void): Component => {
@@ -79,7 +79,10 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 20);
-  const { renderer, resize } = createBookRenderer(canvas, camera);
+  const { renderer, resize, destroy } = createBookRenderer(canvas, camera);
+  /** Vie de la page : quand elle quitte l'écran, tous ses écouteurs sont retirés d'un coup. */
+  const lifetime = new AbortController();
+  const { signal } = lifetime;
   // Le compromis : un peu au-dessus et à droite du livre, qui montre sa tranche du bas et de côté.
   camera.position.set(1.7, -0.7, 1.9);
   const controls = new OrbitControls(camera, canvas);
@@ -110,14 +113,14 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée.
     spec.navigate = (index) => turner?.go(Math.floor(index / 2));
     if (spec.bookmark !== undefined) book.setRibbon(spreads > 1 ? Math.floor(spec.bookmark / 2) / (spreads - 1) : 0, spreads > 1 ? 1 / (spreads - 1) : 1);
-    // Débogage du prototype : accès au livre depuis la console.
-    (window as unknown as { book3d?: unknown }).book3d = { book, turner, camera, controls, invalidate };
+    // Débogage : accès au livre depuis la console (?debug seulement).
+    if (isDebugEnabled()) (window as unknown as { book3d?: unknown }).book3d = { book, turner, camera, controls, invalidate };
     invalidate();
   });
   let swinging = false;
   /** Le lecteur appuie sur le livre ouvert (page tenue) : les pages ne tournent pas seules. */
   let grabbing = false;
-  const autoTurn = spec.turnsPerSecond ? createAutoTurn3d(spec.turnsPerSecond) : null;
+  const autoTurn = spec.autoTurn ? createAutoTurn3d(spec.autoTurn) : null;
   /** Plat arrière refermé sur les pages, en fin de livre (0 : ouvert, 1 : fermé). */
   let shut = 0;
   /**
@@ -210,16 +213,16 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
       refresh();
       return true;
     },
+    signal,
   });
   previous.addEventListener('click', () => turn(false));
   next.addEventListener('click', () => turn(true));
   const onKey = (event: KeyboardEvent): void => {
-    if (!root.isConnected) return void window.removeEventListener('keydown', onKey);
     if (event.key === 'ArrowRight') turn(true);
     if (event.key === 'ArrowLeft') turn(false);
     if (event.key === 'Home') backToBookmark();
   };
-  window.addEventListener('keydown', onKey);
+  window.addEventListener('keydown', onKey, { signal });
   open.addEventListener('input', () => {
     book?.setOpen(Number(open.value));
     invalidate();
@@ -229,20 +232,19 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
   // Pages qui suivent la partie : redessinées de temps en temps, jamais pendant qu'une page tourne.
   if (spec.live) {
     const timer = window.setInterval(() => {
-      if (!root.isConnected) return window.clearInterval(timer);
       if (turner?.idle && Number(open.value) === 1 && shut === 0) refresh();
     }, LIVE_MS);
+    signal.addEventListener('abort', () => window.clearInterval(timer));
   }
   /** Double page déjà signalée comme vue (null : aucune, ou livre fermé). */
   let shownSpread: number | null = null;
   // Contenu réécrit (débogage…) : les pages se refont, le livre reste ouvert à la même double page.
   const rewrite = (): void => {
-    if (!root.isConnected) return window.removeEventListener(BIG_BOOK_REWRITE, rewrite);
     spec.rewrite?.();
     shownSpread = null;
     refresh();
   };
-  window.addEventListener(BIG_BOOK_REWRITE, rewrite);
+  window.addEventListener(BIG_BOOK_REWRITE, rewrite, { signal });
   /** Livre posé, ouvert sur une double page : ses deux pages arrivent sous les yeux (une fois). */
   const notifyShown = (): void => {
     const settled = turner?.idle && !swinging && shut === 0 && Number(open.value) === 1;
@@ -261,7 +263,13 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
   /** Des pages tournaient à l'image d'avant : la dernière, celle où elles se posent, est encore à montrer. */
   let turning = false;
   const frame = (now: number): void => {
-    if (!root.isConnected) return renderer.dispose();
+    // Page quittée : écouteurs retirés, livre et contexte WebGL libérés tout de suite.
+    if (!root.isConnected) {
+      lifetime.abort();
+      controls.dispose();
+      destroy(scene);
+      return;
+    }
     const dt = Math.min(0.05, (now - before) / 1000);
     if (autoTurn && turner) autoTurn(dt, turner, spreads - 1, !swinging && !grabbing && shut === 0 && Number(open.value) === 1);
     const moving = turner?.update(dt) ?? false;

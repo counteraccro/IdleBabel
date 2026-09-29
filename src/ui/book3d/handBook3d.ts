@@ -1,7 +1,7 @@
 import { createPage } from '../../systems/babelText';
 import { coverDesign } from '../../systems/coverDesign';
 import { pageNumberLabel } from '../../systems/pageNumber';
-import { pagesPerSecond } from '../../systems/production';
+import { producedWholePages } from '../../systems/production';
 import { PAGES_PER_BOOK } from '../../systems/books';
 import { maxTurnsPerSecond } from '../../systems/knowledge';
 import { hashText, seeded } from '../../core/random';
@@ -75,6 +75,7 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
       };
     },
     next: () => handBook3d(state, index + 1, finds),
-    turnsPerSecond: () => (state.settings.autoTurn ? Math.min(pagesPerSecond(state), maxTurnsPerSecond()) : 0),
+    // Une page tourne à chaque page entière produite : en même temps que le compteur (plafonné).
+    autoTurn: { produced: producedWholePages, max: () => (state.settings.autoTurn ? maxTurnsPerSecond() : 0) },
   };
 };

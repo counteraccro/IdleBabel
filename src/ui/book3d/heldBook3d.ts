@@ -9,7 +9,8 @@ import { createTurner, type Turner } from './turner';
 import { attachBookGesture } from './bookGesture';
 import { createLighting } from './lighting';
 import { createAutoTurn3d } from './autoTurn3d';
-import { createBookRenderer } from './renderer3d';
+import { createBookRenderer, disposeObject } from './renderer3d';
+import { isDebugEnabled } from '../../debug/debugPanel';
 import { createHeldPose } from './heldPose';
 import { createTweens } from './tweens';
 import type { Book3d } from './book3dBook';
@@ -54,18 +55,9 @@ export interface HeldBookOptions {
 /** Le livre en main, avec de quoi le remplacer (débogage : page ou livre changés à la main). */
 export interface HeldBook extends Component {
   reset: (spec: Book3d, spread: number, closed: boolean) => void;
+  /** Vie du livre : interrompue quand il quitte l'écran (pour y attacher des écouteurs). */
+  signal: AbortSignal;
 }
-
-/** Libère un livre qu'on a reposé : ses formes, ses matières et leurs images. */
-const disposeBook = (book: BookMesh): void =>
-  book.root.traverse((object) => {
-    if (!(object instanceof THREE.Mesh)) return;
-    object.geometry.dispose();
-    for (const material of [object.material].flat()) {
-      for (const value of Object.values(material)) if (value instanceof THREE.Texture) value.dispose();
-      material.dispose();
-    }
-  });
 
 /**
  * Le livre tenu en main, en 3D : ouvert devant le lecteur, vu à la première personne, caméra fixe. Il
@@ -76,6 +68,8 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
   const root = el('section', 'reading held-book3d');
   const canvas = el('canvas', 'held-book3d-canvas');
   canvas.setAttribute('role', 'button');
+  // Au clavier aussi : Tab pour l'atteindre, puis Entrée, Espace ou → pour tourner la page.
+  canvas.tabIndex = 0;
   canvas.setAttribute('aria-label', t('ui.read'));
   root.append(canvas);
 
@@ -84,7 +78,8 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
   const spreads = spreadCount(first.source);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 20);
-  const { renderer, resize } = createBookRenderer(canvas, camera);
+  const { renderer, resize, destroy } = createBookRenderer(canvas, camera);
+  const lifetime = new AbortController();
   /** Recule la caméra pour que le livre ouvert tienne dans la largeur du canvas. */
   const place = (): void => {
     const width = 2 * (shape.width + shape.overhang);
@@ -112,7 +107,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     const look = await spec.look();
     if (book) {
       hands.remove(book.root);
-      disposeBook(book);
+      disposeObject(book.root);
     }
     book = createBookMesh(shape, look);
     book.setOpen(closed ? 0 : 1);
@@ -169,6 +164,13 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
 
   /** Le lecteur tient une page : les mains ne bougent plus, les pages ne tournent pas seules. */
   let grabbing = false;
+  /** Un pas en avant (ou en arrière) : clic, prise d'une page qui n'existe pas, ou clavier. */
+  const step = (forward: boolean): void => {
+    if (phase === 'closed') return void openBook();
+    if (!turner || phase !== 'reading' || (!forward && options.onLeaf)) return;
+    const to = turner.target + (forward ? 1 : -1);
+    if (to >= 0 && to < spreads) turner.go(to);
+  };
   attachBookGesture({
     canvas,
     camera,
@@ -178,18 +180,20 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     width: shape.width,
     height: shape.height,
     open: () => phase === 'reading',
-    step: (forward) => {
-      if (phase === 'closed') return void openBook();
-      if (!turner || phase !== 'reading' || (!forward && options.onLeaf)) return;
-      const to = turner.target + (forward ? 1 : -1);
-      if (to >= 0 && to < spreads) turner.go(to);
-    },
+    step,
     busy: (on) => {
       grabbing = on;
     },
     backward: !options.onLeaf,
+    signal: lifetime.signal,
   });
-  const autoTurn = first.turnsPerSecond ? createAutoTurn3d(first.turnsPerSecond) : null;
+  canvas.addEventListener('keydown', (event) => {
+    const forward = event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowRight';
+    if (!forward && event.key !== 'ArrowLeft') return;
+    event.preventDefault();
+    step(forward);
+  });
+  const autoTurn = first.autoTurn ? createAutoTurn3d(first.autoTurn) : null;
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   let before = performance.now();
@@ -197,8 +201,8 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
   const frame = (now: number): void => {
     // Livre retiré (changement de langue, autre page) : son contexte WebGL est rendu tout de suite.
     if (!root.isConnected) {
-      renderer.dispose();
-      renderer.forceContextLoss();
+      lifetime.abort();
+      destroy(scene);
       return;
     }
     const dt = Math.min(0.05, (now - before) / 1000);
@@ -230,8 +234,8 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
-  // Débogage : accès au livre depuis la console (window.book3d.turner.hold…).
-  (window as unknown as { book3d?: unknown }).book3d = {
+  // Débogage : accès au livre depuis la console (window.book3d.turner.hold…), ?debug seulement.
+  if (isDebugEnabled()) (window as unknown as { book3d?: unknown }).book3d = {
     get book() {
       return book;
     },
@@ -251,5 +255,5 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
       phase = closed ? 'closed' : 'reading';
     });
   };
-  return { root, update: () => {}, reset };
+  return { root, update: () => {}, reset, signal: lifetime.signal };
 };

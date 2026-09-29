@@ -26,10 +26,9 @@ export const createHandReading3d = (state: GameState): Component => {
   });
   // Débogage : page ou numéro du livre changés à la main, le livre en main suit.
   const onDebugBook = (): void => {
-    if (!held.root.isConnected) return window.removeEventListener(DEBUG_BOOK_EVENT, onDebugBook);
     const closed = state.bookPage === 0 && !state.settings.autoTurn;
     held.reset(handBook3d(state, state.booksFinished, finds), state.bookPage, closed);
   };
-  window.addEventListener(DEBUG_BOOK_EVENT, onDebugBook);
+  window.addEventListener(DEBUG_BOOK_EVENT, onDebugBook, { signal: held.signal });
   return held;
 };

@@ -32,6 +32,8 @@ export interface BookGestureOptions {
   press?: (hit: THREE.Intersection) => boolean;
   /** Souris qui passe (sans bouton appuyé) : ce qu'elle survole sur le livre, null à côté. */
   hover?: (hit: THREE.Intersection | null) => void;
+  /** Vie du livre : quand il quitte l'écran, les écouteurs posés sur la fenêtre sont retirés. */
+  signal: AbortSignal;
 }
 
 /**
@@ -83,8 +85,8 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
   canvas.addEventListener('pointermove', (event) => {
     if (event.buttons === 0 && event.pointerType === 'mouse') options.hover?.(onBook(event));
   });
-  window.addEventListener('pointerup', () => options.busy(false));
-  window.addEventListener('pointercancel', () => options.busy(false));
+  window.addEventListener('pointerup', () => options.busy(false), { signal: options.signal });
+  window.addEventListener('pointercancel', () => options.busy(false), { signal: options.signal });
 
   let side: 1 | -1 = 1;
   let held: number | null = null;

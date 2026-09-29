@@ -25,12 +25,13 @@ export const mountScene = async (perception: { clarity: () => number; beyond: ()
   canvas.setAttribute('aria-hidden', 'true');
   document.body.prepend(canvas);
 
-  const image = await loadImage(base + SCENE.image);
-  const depth = await loadDepth(base + SCENE.depth, image, SCENE.vanishing);
   let started = false;
   try {
+    const image = await loadImage(base + SCENE.image);
+    const depth = await loadDepth(base + SCENE.depth, image, SCENE.vanishing);
     started = startScene(canvas, { image, depth, vanishing: SCENE.vanishing, fogColor: SCENE.fogColor, ...perception });
   } catch (error) {
+    // Image introuvable ou WebGL2 en panne : le fond reste sombre, ou l'image fixe si elle se charge.
     console.error('Scène animée indisponible, image fixe affichée à la place.', error);
   }
   if (!started) {

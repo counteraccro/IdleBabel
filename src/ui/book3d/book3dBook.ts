@@ -1,5 +1,6 @@
 import type { BookLook, BookShape } from './bookMesh';
 import type { PageSource } from './pageSource';
+import type { AutoTurnSource } from './autoTurn3d';
 
 /** Le contenu d'un grand livre a changé (débogage…) : le livre ouvert se réécrit sans se refermer. */
 export const BIG_BOOK_REWRITE = 'bigbook:rewrite';
@@ -14,8 +15,8 @@ export interface Book3d {
   bookmark?: number;
   /** Le livre qu'on prend quand celui-ci est terminé (le livre en main : le suivant sur l'étagère). */
   next?: () => Book3d;
-  /** Pages qui tournent seules, livre ouvert (le livre en main, au rythme de la production), par seconde. */
-  turnsPerSecond?: () => number;
+  /** Pages qui tournent seules, livre ouvert (le livre en main, au rythme de la production). */
+  autoTurn?: AutoTurnSource;
   /** Pages qui suivent la partie (chiffres qui changent) : redessinées régulièrement. */
   live?: boolean;
   /**

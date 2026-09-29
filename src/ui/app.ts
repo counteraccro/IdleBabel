@@ -17,16 +17,16 @@ const OPTIONS_HASH = '#options';
 const STRANGE_BOOK_HASH = '#livre';
 const WHITE_BOOK_HASH = '#blanc';
 
-/**
- * Construit l'écran : le jeu, la page des options (adresse #options), le livre blanc (#blanc) ou le livre étrange (#livre) ;
- * le bouton « retour » du navigateur ramène au jeu. Renvoie la fonction de mise à jour appelée à chaque tick.
- */
 /** Réglages qui s'appliquent à toute la page par une classe sur <html>. */
 const applySettings = (state: GameState): void => {
   document.documentElement.classList.toggle('reduce-blur', state.settings.reduceBlur);
   document.documentElement.classList.toggle('page-arrows', state.settings.pageArrows);
 };
 
+/**
+ * Construit l'écran : le jeu, la page des options (adresse #options), le livre blanc (#blanc) ou le livre étrange (#livre) ;
+ * le bouton « retour » du navigateur ramène au jeu. Renvoie la fonction de mise à jour appelée à chaque tick.
+ */
 export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   let components: Component[] = [];
   applySettings(state);

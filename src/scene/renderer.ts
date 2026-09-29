@@ -14,7 +14,6 @@ export interface SceneOptions {
   fogColor: [number, number, number];
 }
 
-
 const compile = (gl: WebGL2RenderingContext, type: number, source: string): WebGLShader => {
   const shader = gl.createShader(type)!;
   gl.shaderSource(shader, source);
@@ -74,12 +73,14 @@ export const startScene = (canvas: HTMLCanvasElement, options: SceneOptions): bo
   window.addEventListener('resize', resize);
 
   const pointer = createPointer();
+  // Cherchés une fois : ils changent à chaque image.
+  const [uPointer, uClarity, uBeyond, uTime] = ['uPointer', 'uClarity', 'uBeyond', 'uTime'].map(uniform);
   const frame = (time: number): void => {
     pointer.step();
-    gl.uniform2f(uniform('uPointer'), pointer.current.x, pointer.current.y);
-    gl.uniform1f(uniform('uClarity'), options.clarity());
-    gl.uniform1f(uniform('uBeyond'), options.beyond());
-    gl.uniform1f(uniform('uTime'), time / 1000);
+    gl.uniform2f(uPointer, pointer.current.x, pointer.current.y);
+    gl.uniform1f(uClarity, options.clarity());
+    gl.uniform1f(uBeyond, options.beyond());
+    gl.uniform1f(uTime, time / 1000);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     requestAnimationFrame(frame);
   };

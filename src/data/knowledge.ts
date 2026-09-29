@@ -35,7 +35,7 @@ export const DUPLICATE_SHARE = 0.2;
 /** Prix en Connaissance pour deviner le dernier morceau d'une phrase. */
 export const GUESS_PRICE = 2;
 
-/** Pages tournées seules au plus par seconde (autoTurn.ts) : la même limite hors-ligne. */
+/** Pages tournées seules au plus par seconde (ui/book3d/autoTurn3d.ts) : la même limite hors-ligne. */
 export const MAX_TURNS_PER_SECOND = 8;
 
 /** Absence prise en compte au plus (conception §10). */

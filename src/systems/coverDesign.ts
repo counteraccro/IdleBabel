@@ -1,4 +1,5 @@
 import { LETTERS } from './babelText';
+import { seeded } from '../core/random';
 import { STRANGE_BOOK_INDEX, randomDigitText } from './strangeBook';
 
 /** Couverture d'un livre de la Bibliothèque, tirée de son numéro : toujours la même pour un livre donné. */
@@ -43,22 +44,6 @@ const WALLS = 4;
 const SHELVES = 5;
 const VOLUMES = 32;
 
-/** Générateur pseudo-aléatoire à graine (mulberry32) : même numéro de livre, même couverture. */
-const seeded = (seed: number): (() => number) => {
-  // Le numéro est d'abord brassé : sans ça, deux livres voisins auraient des couvertures presque identiques.
-  let a = seed ^ 0x9e3779b9;
-  a = Math.imul(a ^ (a >>> 16), 0x85ebca6b);
-  a = Math.imul(a ^ (a >>> 13), 0xc2b2ae35);
-  a = (a ^ (a >>> 16)) >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-};
-
 const between = (random: () => number, min: number, max: number): number => min + Math.floor(random() * (max - min + 1));
 
 const word = (random: () => number): string =>
@@ -68,6 +53,7 @@ const senseKind = (roll: number): CoverDesign['sense']['kind'] =>
   roll < TITLE_CHANCE ? 'title' : roll < TITLE_CHANCE + WORD_CHANCE ? 'word' : 'none';
 
 export const coverDesign = (bookIndex: number): CoverDesign => {
+  // Même numéro de livre, même couverture.
   const random = seeded(bookIndex);
   const title = Array.from({ length: between(random, 1, 3) }, () => word(random));
   const design: CoverDesign = {

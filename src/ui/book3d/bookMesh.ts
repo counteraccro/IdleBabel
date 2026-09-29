@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import { createHeadbandGeometry, HEADBAND_LENGTH, HEADBAND_RADIUS } from './headband';
 import { createRibbon, RIBBON_INSIDE, RIBBON_TAIL, RIBBON_WIDTH, type RibbonPoint } from './ribbon';
+import { boardGeometry } from './boardGeometry';
+import { JOINT, createBinding, type Point } from './binding';
+import { ARCH, pageProfile, stackGeometry } from './pageStack';
 
 /** Dimensions d'un livre, en unités de scène (hauteur 1). */
 export interface BookShape {
@@ -84,311 +87,12 @@ export interface BookMesh {
   setLeaf: (turn: number | null, front?: THREE.Texture | null, back?: THREE.Texture | null, corner?: number, forward?: boolean) => void;
 }
 
-/** Épaisseur du cuir du dos (part de l'épaisseur du livre), et aplatissement de son arrondi. */
+/** Épaisseur du cuir du dos (part de l'épaisseur du livre). */
 const SPINE_LEATHER = 0.08;
-const SPINE_BULGE = 0.55;
-
-/** Contour d'un plat : rectangle à la taille du livre, coins arrondis côté tranche (x = largeur). */
-const boardShape = ({ width, height, corner }: BookShape): THREE.Shape => {
-  const shape = new THREE.Shape();
-  const [left, right, bottom, top] = [0, width, 0, height];
-  const round = Math.max(0.001, corner);
-  shape.moveTo(left, bottom);
-  shape.lineTo(right - round, bottom);
-  shape.quadraticCurveTo(right, bottom, right, bottom + round);
-  shape.lineTo(right, top - round);
-  shape.quadraticCurveTo(right, top, right - round, top);
-  shape.lineTo(left, top);
-  shape.closePath();
-  return shape;
-};
-
-/**
- * Plat, du dos + `from` jusqu'à la tranche : le contour extrudé sur son épaisseur.
- * UV : la position rapportée à tout le plat (0 à 1), pour que la couverture se poursuive sans
- * raccord sur le mors ; les chants reprennent la même peau. Origine : l'arête côté dos, face intérieure.
- */
-/** Colonnes et rangées de la grille d'une face de plat. */
-const FACE_COLUMNS = 24;
-const FACE_ROWS = 12;
-/** Pas du quadrillage dans le carré d'un coin arrondi (comme les segments de la courbe du contour). */
-const CORNER_STEPS = 10;
-
-/**
- * Une face de plat (à la hauteur z) en grille de triangles, dans le contour du plat (coins arrondis côté
- * tranche) ; `up` : tournée vers +z (dehors), sinon vers -z (vers les pages).
- */
-const boardFace = (shape: BookShape, from: number, z: number, up: boolean): number[] => {
-  const width = shape.width - from;
-  const { height } = shape;
-  const round = Math.max(0.001, shape.corner);
-  // Les deux coins arrondis, comme le contour : une courbe de la tranche vers le haut ou le bas.
-  const corners = [
-    { center: [width - round, round], curve: [[width - round, 0], [width, 0], [width, round]] },
-    { center: [width - round, height - round], curve: [[width, height - round], [width, height], [width - round, height]] },
-  ].map(({ center, curve: [a, b, c] }) => ({
-    center,
-    edge: Array.from({ length: 33 }, (_, i) => {
-      const t = i / 32;
-      return [0, 1].map((k) => (1 - t) ** 2 * a[k] + 2 * (1 - t) * t * b[k] + t ** 2 * c[k]);
-    }),
-  }));
-  /** Un point de la grille, ramené dans le contour s'il tombe hors d'un coin arrondi. */
-  const inside = (x: number, y: number): [number, number] => {
-    for (const { center, edge } of corners) {
-      const [cx, cy] = center;
-      // Tolérance : les rangées du quadrillage tombent aux arrondis de calcul près sur le bord du plat.
-      if (x <= cx || Math.abs(y - cy) > round + 1e-9 || (cy < height / 2 ? y > cy : y < cy)) continue;
-      const angle = Math.atan2(y - cy, x - cx);
-      let best = edge[0];
-      for (const point of edge) {
-        if (Math.abs(Math.atan2(point[1] - cy, point[0] - cx) - angle) < Math.abs(Math.atan2(best[1] - cy, best[0] - cx) - angle)) best = point;
-      }
-      if (Math.hypot(x - cx, y - cy) > Math.hypot(best[0] - cx, best[1] - cy)) return [best[0], best[1]];
-    }
-    return [x, y];
-  };
-  // Colonnes et rangées régulières, plus un quadrillage serré dans le carré de chaque coin : sans lui, un
-  // coin ne tient qu'à un ou deux points de la grille, reliés en corde (un coin cassé, un trou).
-  const lines = (length: number, count: number, cuts: [number, number][]): number[] => {
-    const regular = Array.from({ length: count + 1 }, (_, i) => (length * i) / count);
-    const all = [...regular.filter((v) => cuts.every(([from, to]) => v < from || v > to)), ...cuts.flatMap(([from, to]) => Array.from({ length: CORNER_STEPS + 1 }, (_, i) => from + ((to - from) * i) / CORNER_STEPS))];
-    // Sans doublons (à un rien près : une ligne régulière et une ligne du coin peuvent se confondre).
-    return all.sort((a, b) => a - b).filter((v, i, sorted) => i === 0 || v - sorted[i - 1] > 1e-9);
-  };
-  const xs = lines(width, FACE_COLUMNS, [[width - round, width]]);
-  const ys = lines(height, FACE_ROWS, [[0, round], [height - round, height]]);
-  const grid = ys.map((y) => xs.map((x) => inside(x, y)));
-  const out: number[] = [];
-  const push = (...points: [number, number][]): void => {
-    for (const [x, y] of up ? points : [points[0], points[2], points[1]]) out.push(x, y, z);
-  };
-  for (let row = 0; row < ys.length - 1; row++) {
-    for (let column = 0; column < xs.length - 1; column++) {
-      const [a, b, c, d] = [grid[row][column], grid[row][column + 1], grid[row + 1][column + 1], grid[row + 1][column]];
-      push(a, b, c);
-      push(a, c, d);
-    }
-  }
-  return out;
-};
-
-const boardGeometry = (shape: BookShape, from = 0): THREE.BufferGeometry => {
-  // Arêtes franches : un plat arrondi creuserait un sillon là où il rejoint le mors ou le dos, et le
-  // glisser dessous ferait se chevaucher deux surfaces (bords noirs qui scintillent).
-  const geometry = new THREE.ExtrudeGeometry(boardShape({ ...shape, width: shape.width - from }), {
-    depth: shape.board,
-    bevelEnabled: false,
-    curveSegments: 10,
-  });
-  // Le plat occupe z de 0 (face intérieure) à son épaisseur (face extérieure).
-  // Deux peaux : dehors la couverture (groupe 0), dedans le contre-plat (groupe 2) ; chants : groupe 1.
-  // L'extrusion ne met des points que sur le contour : les deux faces seraient des plans tendus entre
-  // leurs bords, et, courbées avec le livre ouvert, passeraient devant une pile de pages très mince. Elles
-  // sont refaites en grille, qui suit la courbure partout.
-  const source = geometry.index ? geometry.toNonIndexed() : geometry;
-  const at = source.attributes.position;
-  const edges: number[] = [];
-  for (let k = 0; k < at.count; k += 3) {
-    const z = [0, 1, 2].map((corner) => at.getZ(k + corner));
-    const flat = Math.abs(z[1] - z[0]) < 1e-6 && Math.abs(z[2] - z[0]) < 1e-6;
-    if (!flat) for (let corner = 0; corner < 3; corner++) edges.push(at.getX(k + corner), at.getY(k + corner), at.getZ(k + corner));
-  }
-  const outer = boardFace(shape, from, shape.board, true);
-  const inner = boardFace(shape, from, 0, false);
-  const positions = [...outer, ...edges, ...inner];
-  const result = new THREE.BufferGeometry();
-  result.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  const uvs: number[] = [];
-  for (let i = 0; i < positions.length; i += 3) uvs.push((positions[i] + from) / shape.width, positions[i + 1] / shape.height);
-  result.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-  result.addGroup(0, outer.length / 3, 0);
-  result.addGroup(outer.length / 3, edges.length / 3, 1);
-  result.addGroup((outer.length + edges.length) / 3, inner.length / 3, 2);
-  result.translate(0, -shape.height / 2, 0);
-  result.computeVertexNormals();
-  geometry.dispose();
-  return result;
-};
-
 /** Livre ouvert : inclinaison de chaque moitié, tranches relevées, dos au plus bas (radians, BookShape.sag). */
 const SAG = 0.025;
 /** Livre ouvert : hauteur dont les plats se relèvent en arc jusqu'à la tranche (le dos au plus bas, BookShape.curl). */
 const CURL = 0.03;
-/** Largeur du mors : la bande de cuir souple entre le dos et le plat de devant, qui se plie. */
-const JOINT = 0.04;
-/** Segments de la reliure : le tour du dos, puis le mors. */
-const SPINE_STEPS = 30;
-const JOINT_STEPS = 4;
-
-/** Un point (x, z) dans le plan de la tête du livre. */
-type Point = readonly [number, number];
-
-/** Un point de la surface de la reliure, et sa normale (vers l'extérieur du livre). */
-interface Sample {
-  x: number;
-  z: number;
-  nx: number;
-  nz: number;
-}
-
-/**
- * Une bande de cuir de l'épaisseur d'un plat, sur toute la hauteur du livre, qui suit une suite de
- * points. Groupes : 0 le dessus (la peau, texture `uFor`), 1 le dessous (l'intérieur), 2 les tranches
- * (tête, queue).
- */
-const createStrip = (steps: number, height: number, board: number, uFor: (step: number) => number) => {
-  const count = (steps + 1) * 2 * 2; // pas × (haut, bas) × (dessus, dessous)
-  const positions = new Float32Array(count * 3);
-  const normals = new Float32Array(count * 3);
-  const uvs = new Float32Array(count * 2);
-  const index = (step: number, end: number, layer: number): number => (layer * (steps + 1) + step) * 2 + end;
-  const outside: number[] = [];
-  const inside: number[] = [];
-  const rest: number[] = [];
-  for (let step = 0; step < steps; step++) {
-    const [a, b, c, d] = [index(step, 0, 0), index(step + 1, 0, 0), index(step + 1, 1, 0), index(step, 1, 0)];
-    // Dessus : faces tournées vers l'extérieur du livre.
-    outside.push(a, c, b, a, d, c);
-    const [e, f, g, h] = [index(step, 0, 1), index(step + 1, 0, 1), index(step + 1, 1, 1), index(step, 1, 1)];
-    inside.push(e, f, g, e, g, h);
-    // Tête et queue : le cuir vu par sa tranche, entre dessus et dessous.
-    rest.push(index(step, 1, 0), index(step + 1, 1, 0), index(step + 1, 1, 1), index(step, 1, 0), index(step + 1, 1, 1), index(step, 1, 1));
-    rest.push(index(step, 0, 0), index(step + 1, 0, 1), index(step + 1, 0, 0), index(step, 0, 0), index(step, 0, 1), index(step + 1, 0, 1));
-  }
-  for (let step = 0; step <= steps; step++) {
-    for (let end = 0; end < 2; end++) {
-      for (let layer = 0; layer < 2; layer++) {
-        const i = index(step, end, layer);
-        uvs[i * 2] = uFor(step);
-        // Même sens que les plats : le haut du livre (end 0, y = +hauteur/2) en haut de l'image.
-        uvs[i * 2 + 1] = end === 0 ? 1 : 0;
-      }
-    }
-  }
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
-  geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-  geometry.setIndex([...outside, ...inside, ...rest]);
-  geometry.addGroup(0, outside.length, 0);
-  geometry.addGroup(outside.length, inside.length, 1);
-  geometry.addGroup(outside.length + inside.length, rest.length, 2);
-  /** Place la bande : le dessus sur les points, le dessous une épaisseur de cuir vers l'intérieur. */
-  const follow = (samples: Sample[]): void => {
-    samples.forEach(({ x, z, nx, nz }, step) => {
-      for (let layer = 0; layer < 2; layer++) {
-        const side = layer === 0 ? 1 : -1;
-        for (let end = 0; end < 2; end++) {
-          const i = index(step, end, layer);
-          positions[i * 3] = x - layer * board * nx;
-          positions[i * 3 + 1] = end === 0 ? height / 2 : -height / 2;
-          positions[i * 3 + 2] = z - layer * board * nz;
-          // Normale exacte (perpendiculaire à la courbe) : le cuir prend la lumière comme les plats.
-          normals[i * 3] = nx * side;
-          normals[i * 3 + 1] = 0;
-          normals[i * 3 + 2] = nz * side;
-        }
-      }
-    });
-    geometry.attributes.position.needsUpdate = true;
-    geometry.attributes.normal.needsUpdate = true;
-    geometry.computeBoundingSphere();
-  };
-  return { geometry, follow };
-};
-
-/** Une courbe de Bézier cubique échantillonnée : points et normales (vers l'extérieur du livre). */
-const bezier = (controls: readonly Point[], steps: number): Sample[] =>
-  Array.from({ length: steps + 1 }, (_, i) => {
-    const t = i / steps;
-    const u = 1 - t;
-    const w = [u * u * u, 3 * u * u * t, 3 * u * t * t, t * t * t];
-    const dw = [-3 * u * u, 3 * u * u - 6 * u * t, 6 * u * t - 3 * t * t, 3 * t * t];
-    const pick = (k: number[], axis: 0 | 1): number => k.reduce((sum, c, j) => sum + c * controls[j][axis], 0);
-    const [tx, tz] = [pick(dw, 0), pick(dw, 1)];
-    const length = Math.hypot(tx, tz);
-    // Courbe réduite à un point (dos aplati, livre grand ouvert) : normale vers le bas, sous le livre.
-    return length < 1e-9
-      ? { x: pick(w, 0), z: pick(w, 1), nx: 0, nz: -1 }
-      : { x: pick(w, 0), z: pick(w, 1), nx: -tz / length, nz: tx / length };
-  });
-
-/**
- * La reliure : une bande de cuir souple du plat arrière au plat de devant, en deux morceaux qui se
- * raccordent sans cassure. Le dos : fermé, un demi-ovale bombé derrière les feuilles (du bas du dos à
- * son haut) ; en s'ouvrant, il roule et s'aplatit, jusqu'à passer à plat sous le livre. Le mors : la
- * bande entre le haut du dos et le plat de devant, dans le prolongement de la couverture. Deux peaux :
- * le dos (sans ornement) et le mors (la couverture, sans raccord).
- */
-const createBinding = ({ width, height, thickness, board }: BookShape) => {
-  const spine = createStrip(SPINE_STEPS, height, board, (step) => step / SPINE_STEPS);
-  const joint = createStrip(JOINT_STEPS, height, board, (step) => ((step / JOINT_STEPS) * JOINT) / width);
-  const top = thickness / 2;
-  /** Bombé du dos fermé ; 4/3 × rayon : une Bézier cubique qui suit un demi-ovale. */
-  const reach = (4 / 3) * SPINE_BULGE * top;
-  const rotate = ([x, z]: Point, angle: number): Point => [x * Math.cos(angle) - z * Math.sin(angle), x * Math.sin(angle) + z * Math.cos(angle)];
-  /**
-   * `place` : où se trouve un point d'une moitié du livre (couverture et pages lues à gauche ; plat
-   * arrière et pages à lire à droite), `left`, `right` : leurs rotations ; `openness` (0 à 1) : ouvert,
-   * le dos ne bombe plus : il passe à plat sous le pli. Le dos va du plat arrière au haut
-   * du dos, qui suit la couverture ; le mors, droit, prolonge la couverture.
-   */
-  const bend = (place: (side: 'left' | 'right', point: Point) => Point, left: number, right: number, openness: number): void => {
-    const flat = 1 - openness;
-    const start = place('right', [0, -top]);
-    const outward = rotate([-flat, 0], right);
-    const summit = place('left', [0, top]);
-    const heading = rotate([flat, 0], left);
-    spine.follow(
-      bezier(
-        [
-          start,
-          [start[0] + reach * outward[0], start[1] + reach * outward[1]],
-          [summit[0] - reach * heading[0], summit[1] - reach * heading[1]],
-          summit,
-        ],
-        SPINE_STEPS,
-      ),
-    );
-    const edge = place('left', [JOINT, top]);
-    const along = rotate([1, 0], left);
-    joint.follow(
-      Array.from({ length: JOINT_STEPS + 1 }, (_, i) => {
-        const t = i / JOINT_STEPS;
-        return { x: summit[0] + (edge[0] - summit[0]) * t, z: summit[1] + (edge[1] - summit[1]) * t, nx: -along[1], nz: along[0] };
-      }),
-    );
-  };
-  return { spine: spine.geometry, joint: joint.geometry, bend };
-};
-
-/** Hauteur du bombement des pages (part de l'épaisseur qui le porte), livre grand ouvert (BookShape.arch). */
-const ARCH = 0.8;
-/** Où les pages sont au plus haut (part de la largeur de la page, depuis le pli). */
-const PEAK = 0.24;
-/** Raideur de la montée depuis le pli (pente de départ : RISE fois la pente moyenne jusqu'au sommet). */
-const RISE = 5;
-
-const smooth = (t: number): number => t * t * (3 - 2 * t);
-
-/**
- * Forme de la page visible d'une pile ouverte, à la distance `x` du pli (écart à sa hauteur à plat),
- * comme un livre posé ouvert : au pli, toutes les feuilles de la pile (`stack` : son épaisseur)
- * convergent au fond du dos, où elles sont cousues ; de là, la page monte en arc de cercle (verticale
- * au pli, à plat à son sommet), puis redescend doucement jusqu'à la tranche. `lift` : la hauteur du
- * bombement (nulle quand un côté n'a pas de pages : la page ne fait que plonger au pli).
- */
-const pageProfile = (x: number, lift: number, opened: number, width: number, stack: number): number => {
-  if (opened <= 0) return 0;
-  const t = Math.min(1, Math.max(0, x / width));
-  const arch = Math.max(0, lift);
-  if (t >= PEAK) return arch * opened * (1 - smooth((t - PEAK) / (1 - PEAK)));
-  // Du point de couture (-stack) au sommet (+arch) : raide au pli, sans jamais y être tout à fait
-  // verticale (inclinée avec sa moitié, elle passerait sur la page d'en face), à plat au sommet.
-  const rise = 1 - (1 - t / PEAK) ** RISE;
-  return (-stack + (stack + arch) * rise) * opened;
-};
 
 /** Segments de la feuille qui tourne, le long de sa largeur. */
 const LEAF_STEPS = 40;
@@ -410,108 +114,11 @@ const LEAF_GAP = 0.0008;
 const LEAF_BOARD_GAP = 0.003;
 /** Avance du coin saisi sur le bord opposé, en part du tour (au plus fort, à mi-course). */
 const CORNER_LEAD = 0.2;
-/** Points le long d'une page, plus serrés près du pli où elle se courbe. */
-const PAGE_STEPS = 40;
-
 /**
- * Une pile de feuilles, vue par sa tête : entre les hauteurs `z0` et `z1` du bloc (le bloc entier va
- * de -half à +half, entre les plats), dos (x = 0) arrondi comme l'intérieur de la coque (demi-ellipse
- * de rayon `inner`, aplatie comme elle), extrudée sur la hauteur du livre moins les débords.
- * `side` : la page visible (1 le dessus, -1 le dessous, 0 aucune) prend la forme d'une page ouverte
- * (`pageProfile`, selon `opened` ; `lift` : l'épaisseur qui la tire vers le haut au pli). `bulge` : bombé du dos des feuilles (1 fermé, 0 ouvert à plat).
- * Groupes de matériau : 0 les bords (la tranche, la tête, la queue), 1 le dessus, 2 le dessous, 3 le
- * dos arrondi (au fond du pli : du papier).
- * UV : sur les bords, v suit l'épaisseur (les lignes des feuilles leur restent parallèles) ; dessus
- * et dessous, la page entière (u du dos vers la tranche ; dessous vu de l'autre côté, u inversé).
+ * Écart d'épaisseur (part de la demi-épaisseur du bloc) à partir duquel les piles sont reconstruites : en
+ * dessous, une fraction de pixel. Environ deux feuilles pour un livre de 410 pages.
  */
-const stackGeometry = (
-  { width, height, overhang }: BookShape,
-  inner: number,
-  half: number,
-  z0: number,
-  z1: number,
-  side = 0,
-  bulge = 1,
-  opened = 0,
-  lift = 0,
-  curl: (x: number) => number = () => 0,
-): THREE.BufferGeometry => {
-  // Dos arrondi des feuilles : il remplit la reliure du livre fermé ; ouvert, il s'aplatit (`bulge`
-  // tend vers 0), sinon il déborderait par-dessus la page d'en face.
-  const back = (z: number): number => -bulge * SPINE_BULGE * inner * Math.sqrt(Math.max(0, 1 - (z / inner) ** 2));
-  const fore = width - overhang;
-  // Page visible : creusée au pli, bombée ensuite ; la pile garde toujours un peu d'épaisseur. Toute
-  // la pile suit la courbure de son plat (`curl` : son décalage, à la distance x du dos).
-  const shape = (x: number): number => pageProfile(x, lift, opened, fore, z1 - z0);
-  const top = (x: number): number => curl(x) + (side > 0 ? Math.max(z0 + 0.001, z1 + shape(x)) : z1);
-  const bottom = (x: number): number => curl(x) + (side < 0 ? Math.min(z1 - 0.001, z0 - shape(x)) : z0);
-  const along = Array.from({ length: PAGE_STEPS + 1 }, (_, i) => fore * (i / PAGE_STEPS) ** 2);
-  const section = new THREE.Shape();
-  // Dessous, de la tranche au dos ; le dos arrondi ; dessus, du dos à la tranche.
-  section.moveTo(fore, bottom(fore));
-  for (let i = PAGE_STEPS - 1; i >= 1; i--) section.lineTo(along[i], bottom(along[i]));
-  const [from, to] = [bottom(0), top(0)];
-  for (let i = 0; i <= 12; i++) {
-    const z = from + ((to - from) * i) / 12;
-    section.lineTo(back(z), z);
-  }
-  for (let i = 1; i <= PAGE_STEPS; i++) section.lineTo(along[i], top(along[i]));
-  section.closePath();
-  const tall = height - 2 * overhang;
-  const extruded = new THREE.ExtrudeGeometry(section, { depth: tall, bevelEnabled: false, curveSegments: 1 });
-  // Le profil (x, z du livre) est dans le plan de la forme ; l'extrusion devient la hauteur (y).
-  extruded.rotateX(Math.PI / 2);
-  extruded.translate(0, tall / 2, 0);
-  const source = extruded.toNonIndexed();
-  source.computeVertexNormals();
-  const position = source.attributes.position;
-  const uv = source.attributes.uv;
-  const on = (surface: (x: number) => number, i: number): boolean =>
-    position.getX(i) > 0.002 && Math.abs(position.getZ(i) - surface(position.getX(i))) < 1e-5;
-  const groups: number[][] = [[], [], [], []];
-  for (let triangle = 0; triangle < position.count / 3; triangle++) {
-    const corners = [0, 1, 2].map((corner) => triangle * 3 + corner);
-    // Tête et queue (les deux bouts de l'extrusion) : de la tranche, pas des pages.
-    const cap = corners.every((i) => Math.abs(position.getY(i) - position.getY(corners[0])) < 1e-6);
-    // Dos arrondi de la pile (côté x ≤ 0) : au fond du pli, le papier qui s'enroule vers la couture.
-    const fold = corners.every((i) => position.getX(i) <= 0.0021);
-    const group = cap ? 0 : fold ? 3 : corners.every((i) => on(top, i)) ? 1 : corners.every((i) => on(bottom, i)) ? 2 : 0;
-    groups[group].push(triangle);
-    for (const i of corners) {
-      const across = Math.min(1, Math.max(0, position.getX(i) / fore));
-      const up = (position.getY(i) + tall / 2) / tall;
-      if (group === 1) uv.setXY(i, across, up);
-      else if (group === 2) uv.setXY(i, 1 - across, up);
-      else {
-        // Chaque feuille suit la forme de la pile : sa ligne garde sa place entre le dessous et le dessus
-        // à cette distance du pli (les lignes montent vers le pli avec la page du dessus).
-        const x = position.getX(i);
-        const low = bottom(Math.max(0, x));
-        const high = top(Math.max(0, x));
-        const share = high - low > 1e-6 ? (position.getZ(i) - low) / (high - low) : 0;
-        const sheet = z0 + Math.min(1, Math.max(0, share)) * (z1 - z0);
-        uv.setXY(i, up, (sheet + half) / (2 * half));
-      }
-    }
-  }
-  const order = groups.flat();
-  const result = new THREE.BufferGeometry();
-  for (const name of Object.keys(source.attributes)) {
-    const attribute = source.attributes[name];
-    const size = attribute.itemSize;
-    const data = new Float32Array(order.length * 3 * size);
-    order.forEach((triangle, index) => {
-      for (let k = 0; k < 3 * size; k++) data[index * 3 * size + k] = attribute.array[triangle * 3 * size + k];
-    });
-    result.setAttribute(name, new THREE.BufferAttribute(data, size));
-  }
-  let start = 0;
-  groups.forEach((triangles, group) => {
-    result.addGroup(start, triangles.length * 3, group);
-    start += triangles.length * 3;
-  });
-  return result;
-};
+const STACK_STEP = 0.01;
 
 /**
  * Un livre relié fermé, en 3D : deux plats épais aux coins arrondis, le bloc des feuilles (plus
@@ -772,6 +379,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     }
     ribbon.lay(points);
   };
+  /** Les piles ont déjà été construites une fois. */
+  let built = false;
   let readLeft = 0;
   let readRight = 0;
   let opened = 0;
@@ -827,8 +436,20 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   };
   const progress = (value: number, left = value, right = value): void => {
     read = Math.min(1, Math.max(0, value));
+    const [wasLeft, wasRight] = [readLeft, readRight];
     readLeft = Math.min(read, Math.max(0, left));
     readRight = Math.max(read, Math.min(1, right));
+    // Pendant qu'une page tourne, l'avancement change à chaque image, mais les piles ne bougent que d'une
+    // feuille par page : reconstruites seulement quand l'écart se voit (ou qu'une pile naît ou disparaît).
+    const moved = (a: number, b: number): boolean => Math.abs(2 * half * (a - b)) > STACK_STEP * half;
+    const emptied = (wasLeft <= 0) !== (readLeft <= 0) || (wasRight >= 1) !== (readRight >= 1);
+    if (built && !emptied && !moved(readLeft, wasLeft) && !moved(readRight, wasRight)) {
+      // Rien à refaire : les piles gardent leur forme ; seul le signet suit l'avancement exact.
+      readLeft = wasLeft;
+      readRight = wasRight;
+      return layRibbon();
+    }
+    built = true;
     rebuild();
   };
   progress(0);
