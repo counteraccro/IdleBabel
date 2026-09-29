@@ -11,6 +11,7 @@ import { STRANGE_BINDING, bindingFor, modernBindingFor } from './book/bindings';
 import { createPage } from '../systems/babelText';
 import { createDigitPage, isStrangeBook } from '../systems/strangeBook';
 import { coverDesign } from '../systems/coverDesign';
+import { pageNumberLabel } from '../systems/pageNumber';
 import type { GameState } from '../core/state';
 import { DEBUG_BOOK_EVENT } from '../debug/events';
 import { createPages, type LeafPage } from './strangeBook/pages';
@@ -57,6 +58,8 @@ export const createReading = (state: GameState): Component => {
     },
     page: (length, fragment) => (strange() ? createDigitPage(length) : createPage(length, fragment)),
     special: (position) => (strange() ? strangePages(position) : undefined),
+    // Place 0 : la page 2 du livre (au dos de la page de titre). Le livre étrange n'a que des chiffres.
+    pageNumber: (position) => (strange() ? undefined : pageNumberLabel(state.booksFinished, position + 2)),
     turned: () => state.bookPage,
     paper: () => (strange() ? STRANGE_PAPER : undefined),
     // Une chance par page tournée, sur l'une ou l'autre des deux pages découvertes. Le livre étrange

@@ -159,3 +159,16 @@
 .book .sb-paper * { pointer-events: none; }
 /* En petit, les points de conduite gardent au moins un pixel. */
 .book .sb-dots { height: max(1px, 0.234cqw); }
+
+/* Numéro imprimé en bas de page (voir PAGE_NUMBER_TOP et PAGE_NUMBER_FONT dans pageRender.ts). */
+.page-number {
+  position: absolute;
+  top: 114.06cqw;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 2.8125cqw;
+  line-height: normal;
+  color: rgba(52, 36, 22, 0.55);
+}

@@ -1,5 +1,6 @@
 import { createPage } from '../../systems/babelText';
 import { coverDesign } from '../../systems/coverDesign';
+import { pageNumberLabel } from '../../systems/pageNumber';
 import { pagesPerSecond } from '../../systems/production';
 import { PAGES_PER_BOOK } from '../../systems/books';
 import { MAX_TURNS_PER_SECOND } from '../../data/knowledge';
@@ -41,7 +42,7 @@ export const handBook3d = (state: GameState, index = state.booksFinished): Book3
         }
         // Même livre, même page : même charabia (la page se redessine à l'identique quand on y revient).
         const random = seeded(hashText(`${index}:${page}`));
-        drawPageTexture(canvas, layoutPage(createPage(PAGE_LENGTH, undefined, random)), spineOnLeft, paper);
+        drawPageTexture(canvas, layoutPage(createPage(PAGE_LENGTH, undefined, random)), spineOnLeft, paper, pageNumberLabel(index, page));
         return true;
       },
     },

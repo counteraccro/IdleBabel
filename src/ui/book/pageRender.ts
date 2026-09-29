@@ -18,7 +18,12 @@ export interface PageView {
   texture: (canvas: HTMLCanvasElement, spineOnLeft: boolean, paper: Paper) => void;
 }
 
-export const renderPageHtml = (target: HTMLElement, lines: PageLines): void => {
+/** Numéro de page, en bas au centre, comme celui des grands livres (pageItems.ts) ; même place en HTML (book.css). */
+const PAGE_NUMBER_TOP = 730;
+const PAGE_NUMBER_FONT = `18px Georgia, 'Times New Roman', serif`;
+const PAGE_NUMBER_INK = 'rgba(52, 36, 22, 0.55)';
+
+export const renderPageHtml = (target: HTMLElement, lines: PageLines, pageNumber?: string): void => {
   const text = el('span', 'page-text');
   for (const line of lines) {
     const row = el('span', 'page-line');
@@ -28,6 +33,7 @@ export const renderPageHtml = (target: HTMLElement, lines: PageLines): void => {
     text.append(row);
   }
   target.replaceChildren(text);
+  if (pageNumber) target.append(el('span', 'page-number', pageNumber));
 };
 
 const TEXTURE_SCALE = 2;
@@ -117,8 +123,17 @@ export const drawPageTexture = (
   lines: PageLines,
   spineOnLeft: boolean,
   paperColors: Paper = OLD_PAPER,
+  pageNumber?: string,
 ): void => {
   const context = preparePageTexture(canvas, spineOnLeft, paperColors);
+  if (pageNumber) {
+    context.font = PAGE_NUMBER_FONT;
+    context.textAlign = 'center';
+    context.textBaseline = 'alphabetic';
+    context.fillStyle = PAGE_NUMBER_INK;
+    context.fillText(pageNumber, PAGE_TEXTURE.width / 2, cssBaseline(context, PAGE_NUMBER_TOP));
+    context.textAlign = 'start';
+  }
   context.font = PAGE_FONT;
   context.textBaseline = 'alphabetic';
   const lineHeight = PAGE_FONT_SIZE * PAGE_LINE_HEIGHT;
@@ -142,8 +157,8 @@ export const drawPageTexture = (
   });
 };
 
-/** Page de texte (charabia de Babel, fragment surligné). */
-export const textPage = (lines: PageLines): PageView => ({
-  html: (target) => renderPageHtml(target, lines),
-  texture: (canvas, spineOnLeft, paper) => drawPageTexture(canvas, lines, spineOnLeft, paper),
+/** Page de texte (charabia de Babel, fragment surligné), avec son numéro imprimé. */
+export const textPage = (lines: PageLines, pageNumber?: string): PageView => ({
+  html: (target) => renderPageHtml(target, lines, pageNumber),
+  texture: (canvas, spineOnLeft, paper) => drawPageTexture(canvas, lines, spineOnLeft, paper, pageNumber),
 });

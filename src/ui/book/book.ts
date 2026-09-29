@@ -34,6 +34,8 @@ export interface BookHandlers {
    * dans le livre : 0 pour la page de gauche après la première page tournée, 1 pour celle de droite, etc.
    */
   special?: (position: number) => PageView | undefined;
+  /** Numéro imprimé en bas de la page à la place `position` (voir `special`), s'il y en a un. */
+  pageNumber?: (position: number) => string | undefined;
   /** Pages déjà tournées dans le livre en main. */
   turned: () => number;
   /** Papier des pages, s'il n'est pas celui de la couverture (jauni, ou blanc pour un livre moderne). */
@@ -86,7 +88,7 @@ export const createBook = (label: string, handlers: BookHandlers): Book => {
 
   /** Page à la place `position` dans l'ordre de lecture (voir BookHandlers.special). */
   const newPage = (position: number, fragment?: string): PageView =>
-    handlers.special?.(position) ?? textPage(layoutPage(handlers.page(PAGE_LENGTH, fragment)));
+    handlers.special?.(position) ?? textPage(layoutPage(handlers.page(PAGE_LENGTH, fragment)), handlers.pageNumber?.(position));
   // Page de droite : une page, ou la page de titre (première page d'un livre, rightPage vaut alors null).
   let rightPage: PageView | null = null;
   const showRight = (page: PageView | null): void => {
