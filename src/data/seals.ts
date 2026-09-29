@@ -27,6 +27,9 @@ const series = (id: string, plate: PlateId, value: (state: GameState) => number,
 /** Un sceau seul. */
 const seal = (id: string, plate: PlateId, reached: (state: GameState) => boolean): SealDef => ({ id, plate, text: id, reached });
 
+/** Un secret qui tient à un geste, pas à l'état de la partie : apposé par sealEvent (systems/seals.ts). */
+const secret = (id: string): SealDef => seal(id, 'secrets', () => false);
+
 const K = 1_000;
 const M = 1_000_000;
 const G = 1_000_000_000;
@@ -50,4 +53,6 @@ export const SEALS: readonly SealDef[] = [
   seal('strangeBook', 'secrets', (s) => s.booksFinished >= STRANGE_BOOK_INDEX),
   seal('insomnia', 'secrets', () => new Date().getHours() === 3),
   seal('still', 'secrets', (s) => !s.settings.bookSway),
+  // Le cahier d'options refermé sur son dos, où toutes les multiplications donnent 410.
+  secret('notebookBack'),
 ];

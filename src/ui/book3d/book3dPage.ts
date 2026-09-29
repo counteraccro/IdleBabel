@@ -152,6 +152,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
       invalidate();
       if (t < 1) return void requestAnimationFrame(step);
       if (board === 'flip') turner?.jump(0);
+      if (board === 'back' && target === 1) spec.closedOnBack?.();
       swinging = false;
     };
     requestAnimationFrame(step);

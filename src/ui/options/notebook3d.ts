@@ -6,6 +6,7 @@ import { loadPaperWear, NOTEBOOK_PAPER, paintNotebookPaper } from './notebookPap
 import { createNotebookPages, NOTEBOOK_PAGES, type NotebookActions, type Sketches } from './notebookPages';
 import { notebookCover } from './notebookCover';
 import { HAND } from '../strangeBook/pageItems';
+import { sealEvent } from '../../systems/seals';
 import type { Book3d } from '../book3d/book3dBook';
 import type { GameState } from '../../core/state';
 
@@ -45,6 +46,8 @@ export const notebook3d = (state: GameState, actions: NotebookActions): Book3d =
       return zone !== undefined;
     },
     pointable: (index, x, y) => zoneAt(zonesOf(index), x, y) !== undefined,
+    // Secret : regarder le dos du cahier, et ses multiplications qui donnent toutes 410.
+    closedOnBack: () => sealEvent(state, 'notebookBack'),
     look: async () => {
       // Les pages s'écrivent avec ces polices : chargées avant le premier dessin.
       await Promise.all([document.fonts.load(`24px ${PEN_FONT}`), document.fonts.load(`20px ${HAND}`)]);

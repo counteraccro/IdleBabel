@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { SEALS } from '../src/data/seals';
-import { babelName, checkSeals, completion } from '../src/systems/seals';
+import { babelName, checkSeals, completion, sealEvent } from '../src/systems/seals';
 import { LOCALES } from '../src/i18n/locales';
 
 describe('sceaux', () => {
@@ -12,6 +12,16 @@ describe('sceaux', () => {
     expect(state.seals['pagesRead-1']).toBe(1234);
     expect(state.seals['pagesRead-100']).toBe(1234);
     expect(state.seals['pagesRead-10000']).toBeUndefined();
+  });
+
+  it('scelle un secret sur un geste, une seule fois, et jamais par le tick', () => {
+    const state = createInitialState('fr');
+    checkSeals(state, 1);
+    expect(state.seals.notebookBack).toBeUndefined();
+    sealEvent(state, 'notebookBack', 5);
+    sealEvent(state, 'notebookBack', 6);
+    expect(state.seals.notebookBack).toBe(5);
+    expect(state.newSeals.filter((id) => id === 'notebookBack')).toHaveLength(1);
   });
 
   it("garde la date d'origine d'un sceau déjà obtenu", () => {

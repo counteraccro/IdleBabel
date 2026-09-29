@@ -32,6 +32,8 @@ export interface Book3d {
   shown?: (index: number) => void;
   /** Le contenu a changé (débogage…) : les pages se refont, le livre reste ouvert là où il est. */
   rewrite?: () => void;
+  /** Le livre vient de se refermer sur son dos, après sa dernière page (le cahier d'options : un secret). */
+  closedOnBack?: () => void;
   /** Le livre demande d'aller à une page (entrée du sommaire) : branché par la page 3D. */
   navigate?: (index: number) => void;
 }

@@ -36,6 +36,14 @@ export const checkSeals = (state: GameState, now = Date.now()): void => {
   if (sealed.length) announceSeals(sealed);
 };
 
+/** Un secret qui tient à un geste (voir `secret` dans data/seals.ts) : scellé et annoncé, une seule fois. */
+export const sealEvent = (state: GameState, id: string, now = Date.now()): void => {
+  if (id in state.seals || !SEALS.some((seal) => seal.id === id)) return;
+  state.seals[id] = now;
+  state.newSeals.push(id);
+  announceSeals([id]);
+};
+
 /** Le joueur a vu ces sceaux dans le livre étrange. */
 export const markSealsSeen = (state: GameState, ids: readonly string[]): void => {
   if (ids.some((id) => state.newSeals.includes(id))) state.newSeals = state.newSeals.filter((id) => !ids.includes(id));
