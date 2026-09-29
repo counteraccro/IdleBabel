@@ -1,0 +1,15 @@
+/* Livre 3D tenu en main (voir heldBook3d.ts) : à la place du livre 2D, en bas de l'écran de jeu. */
+.held-book3d { margin-bottom: -6vh; }
+.held-book3d-canvas {
+  display: block;
+  width: min(60vw, 740px, 80vh);
+  aspect-ratio: 1.35;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 760px) {
+  .held-book3d-canvas { width: 96vw; }
+}

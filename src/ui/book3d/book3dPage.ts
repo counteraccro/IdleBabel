@@ -11,6 +11,7 @@ import { createTurner, type Turner } from './turner';
 import { attachBookGesture } from './bookGesture';
 import { createLighting } from './lighting';
 import { createReadingView } from './readingView';
+import { createBookRenderer } from './renderer3d';
 import { createAutoTurn3d } from './autoTurn3d';
 import { isDebugEnabled } from '../../debug/debugPanel';
 import { BIG_BOOK_REWRITE, type Book3d } from './book3dBook';
@@ -76,15 +77,9 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
   else controls_.append(arrows);
   root.append(back, canvas, controls_);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  // Ombres portées adoucies : la couverture qui déborde assombrit les feuilles dessous.
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 20);
+  const { renderer, resize } = createBookRenderer(canvas, camera);
   // Le compromis : un peu au-dessus et à droite du livre, qui montre sa tranche du bas et de côté.
   camera.position.set(1.7, -0.7, 1.9);
   const controls = new OrbitControls(camera, canvas);
@@ -231,17 +226,6 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
   });
   spread.addEventListener('input', () => turner?.go(Number(spread.value)));
 
-  /** Suit la taille du canvas ; true s'il a changé de taille. */
-  let size = '';
-  const resize = (): boolean => {
-    const { clientWidth: width, clientHeight: height } = canvas;
-    if (!width || !height || `${width}x${height}` === size) return false;
-    size = `${width}x${height}`;
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    return true;
-  };
   // Pages qui suivent la partie : redessinées de temps en temps, jamais pendant qu'une page tourne.
   if (spec.live) {
     const timer = window.setInterval(() => {
