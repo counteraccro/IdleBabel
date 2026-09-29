@@ -24,6 +24,8 @@ export interface BookGestureOptions {
   open: () => boolean;
   /** Un pas en avant ou en arrière, couvertures comprises (clic, ou prise d'une page qui n'existe pas). */
   step: (forward: boolean) => void;
+  /** false : les pages ne se tournent qu'en avant (le livre en main : une page lue ne se relit pas). */
+  backward?: boolean;
   /** Un geste commence (ou finit) sur le livre : la caméra ne doit pas tourner pendant. */
   busy: (on: boolean) => void;
   /** Clic court sur le livre, là où le rayon l'a touché : true si la page l'a pris (sommaire…), rien ne tourne. */
@@ -97,6 +99,7 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
       turn: () => {
         // Un élément de la page sous le clic (entrée du sommaire…) : il le prend, rien ne tourne.
         if (hit && options.open() && options.press?.(hit)) return;
+        if (side === -1 && options.backward === false && options.open()) return;
         // Un clic sur un coin : la page part de lui.
         const turner = options.turner();
         const to = (turner?.target ?? 0) + side;
@@ -106,6 +109,7 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
       grab: () => {
         const turner = options.turner();
         if (!turner || !options.open() || !turner.idle) return;
+        if (side === -1 && options.backward === false) return;
         const to = turner.target + side;
         // Pas de page de ce côté : c'est la couverture (ou le plat arrière) qu'on referme.
         if (to < 0 || to >= options.spreads) return options.step(side === 1);

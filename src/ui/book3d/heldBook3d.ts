@@ -37,6 +37,18 @@ export interface HeldBookOptions {
   startSpread?: number;
   /** Le livre suivant attend-il fermé qu'on l'ouvre d'un clic (pages qui tournent seules coupées) ? */
   stayClosed: () => boolean;
+  /**
+   * Une feuille s'est posée, le livre est ouvert à la double page `spread` : `counted` si le lecteur l'a
+   * tournée (les pages qui tournent seules sont déjà comptées par la production). Renvoie true si le
+   * livre est terminé : il se referme. Sans elle, le livre se referme à sa dernière double page.
+   * Les pages ne se tournent alors qu'en avant.
+   */
+  onLeaf?: (spread: number, counted: boolean) => boolean;
+}
+
+/** Le livre en main, avec de quoi le remplacer (débogage : page ou livre changés à la main). */
+export interface HeldBook extends Component {
+  reset: (spec: Book3d, spread: number, closed: boolean) => void;
 }
 
 /** Libère un livre qu'on a reposé : ses formes, ses matières et leurs images. */
@@ -55,7 +67,7 @@ const disposeBook = (book: BookMesh): void =>
  * bouge à peine, comme tenu par des mains (option « le livre bouge »), et ses pages se tournent au clic,
  * à la main ou seules, au rythme de la production. Terminé, il se referme et le suivant le remplace.
  */
-export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): Component => {
+export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldBook => {
   const root = el('section', 'reading held-book3d');
   const canvas = el('canvas', 'held-book3d-canvas');
   canvas.setAttribute('role', 'button');
@@ -100,11 +112,19 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): Compo
     book = createBookMesh(shape, look);
     book.setOpen(closed ? 0 : 1);
     hands.add(book.root);
-    turner = createTurner(book, createPageCache(spec.source), spreads);
+    auto.clear();
+    turner = createTurner(book, createPageCache(spec.source), spreads, land);
     turner.jump(spread);
     pose.set({ closed: closed ? 1 : 0 });
     dirty = true;
   };
+  /** Doubles pages où mènent des feuilles tournées seules (non comptées). */
+  const auto = new Set<number>();
+  /** Une feuille s'est posée : comptée si le lecteur l'a tournée ; fin du livre si la partie le dit. */
+  function land(spread: number): void {
+    const counted = !auto.delete(spread);
+    if (options.onLeaf?.(spread, counted)) void finish();
+  }
   let current = first;
   void take(first, options.startSpread ?? 0, false).then(() => {
     phase = 'reading';
@@ -153,13 +173,14 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): Compo
     open: () => phase === 'reading',
     step: (forward) => {
       if (phase === 'closed') return void openBook();
-      if (!turner || phase !== 'reading') return;
+      if (!turner || phase !== 'reading' || (!forward && options.onLeaf)) return;
       const to = turner.target + (forward ? 1 : -1);
       if (to >= 0 && to < spreads) turner.go(to);
     },
     busy: (on) => {
       grabbing = on;
     },
+    backward: !options.onLeaf,
   });
   const autoTurn = first.turnsPerSecond ? createAutoTurn3d(first.turnsPerSecond) : null;
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -170,10 +191,14 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): Compo
     if (!root.isConnected) return renderer.dispose();
     const dt = Math.min(0.05, (now - before) / 1000);
     before = now;
-    if (autoTurn && turner) autoTurn(dt, turner, spreads - 1, phase === 'reading' && !grabbing);
+    if (autoTurn && turner) {
+      const aimed = turner.target;
+      autoTurn(dt, turner, spreads - 1, phase === 'reading' && !grabbing);
+      if (turner.target > aimed) auto.add(turner.target);
+    }
     const moving = turner?.update(dt) ?? false;
-    // Posé sur l'intérieur du plat arrière : le livre est lu.
-    if (phase === 'reading' && !grabbing && turner?.idle && turner.target === spreads - 1) void finish();
+    // Sans la partie : posé sur l'intérieur du plat arrière, le livre est lu.
+    if (!options.onLeaf && phase === 'reading' && !grabbing && turner?.idle && turner.target === spreads - 1) void finish();
     // Pages qui tournent seules remises en route pendant qu'un livre attend fermé : on l'ouvre.
     if (phase === 'closed' && !options.stayClosed()) void openBook();
     const animating = tweens.update(now, still.matches);
@@ -205,5 +230,13 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): Compo
     hands,
     pose,
   };
-  return { root, update: () => {} };
+  const reset = (spec: Book3d, spread: number, closed: boolean): void => {
+    if (phase === 'busy') return;
+    current = spec;
+    phase = 'busy';
+    void take(spec, spread, closed).then(() => {
+      phase = closed ? 'closed' : 'reading';
+    });
+  };
+  return { root, update: () => {}, reset };
 };

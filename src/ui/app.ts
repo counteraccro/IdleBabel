@@ -7,8 +7,7 @@ import { createOptionsPage } from './options/optionsPage';
 import { createBook3dPage } from './book3d/book3dPage';
 import { whiteBook3d } from './book3d/whiteBook3d';
 import { strangeBook3d } from './book3d/strangeBook3d';
-import { handBook3d } from './book3d/handBook3d';
-import { createHeldBook3d } from './book3d/heldBook3d';
+import { createHandReading3d } from './book3d/handReading3d';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { setLocale } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
@@ -44,12 +43,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   };
 
   // Essai (#petit-livre3d) : le livre en main en 3D, en attendant qu'il remplace celui du jeu.
-  const heldBook3d = (): Component =>
-    createHeldBook3d(handBook3d(state), {
-      sway: () => state.settings.bookSway,
-      startSpread: state.bookPage,
-      stayClosed: () => !state.settings.autoTurn,
-    });
+  const heldBook3d = (): Component => createHandReading3d(state);
 
   const game = (reading: () => Component = () => createReading(state)): Component[] => [
     createHeader({

@@ -13,6 +13,7 @@ import { leatherCover } from './leatherCover';
 import { headbandTexture } from './headband';
 import { edgeTexture } from './textures';
 import type { Book3d } from './book3dBook';
+import type { HandFinds } from './handFinds';
 import type { GameState } from '../../core/state';
 
 /** Longueur d'une page de charabia, comme dans le livre en main (book.ts). */
@@ -21,9 +22,11 @@ const PAGE_LENGTH = 700;
 /**
  * Essai (#petit-livre3d) : le livre tenu en main, en 3D. Celui qu'on lit en ce moment (même couverture,
  * même papier), ses 410 pages de charabia de Babel après la page de titre ; ses pages tournent seules au
- * rythme de la production. Purement visuel : rien n'est compté dans la partie.
+ * rythme de la production. Ses trouvailles surlignées viennent de `finds` (handFinds.ts) ; la partie
+ * est tenue par handReading3d.ts.
  */
-export const handBook3d = (state: GameState, index = state.booksFinished): Book3d => {
+export const handBook3d = (state: GameState, index = state.booksFinished, finds?: HandFinds): Book3d => {
+  finds?.open(index);
   const design = coverDesign(index);
   const paper = design.modern ? MODERN_PAPER : OLD_PAPER;
   return {
@@ -42,7 +45,7 @@ export const handBook3d = (state: GameState, index = state.booksFinished): Book3
         }
         // Même livre, même page : même charabia (la page se redessine à l'identique quand on y revient).
         const random = seeded(hashText(`${index}:${page}`));
-        drawPageTexture(canvas, layoutPage(createPage(PAGE_LENGTH, undefined, random)), spineOnLeft, paper, pageNumberLabel(index, page));
+        drawPageTexture(canvas, layoutPage(createPage(PAGE_LENGTH, finds?.fragment(page), random)), spineOnLeft, paper, pageNumberLabel(index, page));
         return true;
       },
     },
@@ -60,7 +63,7 @@ export const handBook3d = (state: GameState, index = state.booksFinished): Book3
         headband: headbandTexture(binding.leather, '#d9c48f'),
       };
     },
-    next: () => handBook3d(state, index + 1),
+    next: () => handBook3d(state, index + 1, finds),
     turnsPerSecond: () => (state.settings.autoTurn ? Math.min(pagesPerSecond(state), MAX_TURNS_PER_SECOND) : 0),
   };
 };

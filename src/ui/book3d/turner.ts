@@ -45,7 +45,13 @@ export interface Turner {
  * cible change en route (clics rapides, retour en arrière). Entre deux doubles pages n et n + 1, la
  * feuille (recto : page 2n + 1, verso : page 2n + 2) est à mi-course.
  */
-export const createTurner = (book: BookMesh, pages: PageCache, spreads: number): Turner => {
+export const createTurner = (
+  book: BookMesh,
+  pages: PageCache,
+  spreads: number,
+  /** Une feuille se pose à gauche : le livre est ouvert à la double page `spread` (une fois par feuille). */
+  onLand?: (spread: number) => void,
+): Turner => {
   const last = Math.max(0, spreads - 1);
   const clamp = (spread: number): number => Math.min(last, Math.max(0, Math.round(spread)));
   let target = 0;
@@ -60,6 +66,14 @@ export const createTurner = (book: BookMesh, pages: PageCache, spreads: number):
   let forward = true;
   /** Pages posées actuellement sur le livre (gauche, droite, recto et verso de la feuille), pour ne rien refaire. */
   let laid = '';
+  /** Dernière double page atteinte en avançant (les feuilles déjà signalées posées). */
+  let landed = 0;
+  /** Signale chaque feuille posée depuis la dernière fois ; en arrière, rien (elles le seront à nouveau). */
+  const land = (): void => {
+    const reached = Math.floor(shown + 1e-6);
+    while (landed < reached) onLand?.(++landed);
+    landed = Math.min(landed, Math.ceil(shown - 1e-6));
+  };
 
   const apply = (force = false): void => {
     const spread = Math.min(Math.floor(shown), Math.max(0, last - 1));
@@ -105,7 +119,7 @@ export const createTurner = (book: BookMesh, pages: PageCache, spreads: number):
       pace = Math.max(1, Math.abs(target - shown) / RIFFLE_FROM);
     },
     jump: (spread) => {
-      target = shown = clamp(spread);
+      target = shown = landed = clamp(spread);
       speed = 0;
       apply();
     },
@@ -115,6 +129,7 @@ export const createTurner = (book: BookMesh, pages: PageCache, spreads: number):
         shown += (held - shown) * (1 - Math.exp(-FOLLOW * dt));
         speed = dt > 0 ? (shown - before) / dt : 0;
         apply();
+        land();
         return true;
       }
       const remaining = target - shown;
@@ -137,6 +152,7 @@ export const createTurner = (book: BookMesh, pages: PageCache, spreads: number):
         shown = next;
       }
       apply();
+      land();
       return shown !== target;
     },
     refresh: () => {
