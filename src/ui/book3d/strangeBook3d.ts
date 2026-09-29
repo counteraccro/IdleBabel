@@ -42,6 +42,8 @@ export const strangeBook3d = (state: GameState): Book3d => {
     },
     live: true,
     press: (index, x, y) => pages[index - 1]?.press(x, y) ?? false,
+    hover: (index, x, y) => pages[index - 1]?.hover(x, y) ?? false,
+    pointable: (index, x, y) => pages[index - 1]?.pointable(x, y) ?? false,
   };
   return book;
 };

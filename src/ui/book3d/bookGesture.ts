@@ -28,6 +28,8 @@ export interface BookGestureOptions {
   busy: (on: boolean) => void;
   /** Clic court sur le livre, là où le rayon l'a touché : true si la page l'a pris (sommaire…), rien ne tourne. */
   press?: (hit: THREE.Intersection) => boolean;
+  /** Souris qui passe (sans bouton appuyé) : ce qu'elle survole sur le livre, null à côté. */
+  hover?: (hit: THREE.Intersection | null) => void;
 }
 
 /**
@@ -51,7 +53,10 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
     const bounds = canvas.getBoundingClientRect();
     const pointer = new THREE.Vector2(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -((event.clientY - bounds.top) / bounds.height) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    return raycaster.intersectObject(book, true)[0] ?? null;
+    // Le rayon traverse aussi ce qui est caché (la feuille qui tourne, posée mais masquée, couvre la page
+    // de gauche) : seul compte ce qu'on voit.
+    const shown = (object: THREE.Object3D | null): boolean => !object || (object.visible && shown(object.parent));
+    return raycaster.intersectObject(book, true).find((hit) => shown(hit.object)) ?? null;
   };
   /** Coin de page sous le pointeur : 1 en haut, -1 en bas, 0 ailleurs. */
   const cornerOf = ({ x, y }: THREE.Vector3): number =>
@@ -73,6 +78,9 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
     },
     { capture: true },
   );
+  canvas.addEventListener('pointermove', (event) => {
+    if (event.buttons === 0 && event.pointerType === 'mouse') options.hover?.(onBook(event));
+  });
   window.addEventListener('pointerup', () => options.busy(false));
   window.addEventListener('pointercancel', () => options.busy(false));
 

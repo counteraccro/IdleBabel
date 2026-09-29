@@ -14,6 +14,10 @@ export interface Book3d {
    * l'a pris (entrée du sommaire, sceau, note au crayon) ; la page ne tourne pas.
    */
   press?: (index: number, x: number, y: number) => boolean;
+  /** Souris au point (x, y) de la page `index` : true si la page a changé (légende d'un sceau survolé). */
+  hover?: (index: number, x: number, y: number) => boolean;
+  /** Quelque chose de cliquable au point (x, y) de la page `index` (la main du pointeur). */
+  pointable?: (index: number, x: number, y: number) => boolean;
   /** Le livre demande d'aller à une page (entrée du sommaire) : branché par la page 3D. */
   navigate?: (index: number) => void;
 }

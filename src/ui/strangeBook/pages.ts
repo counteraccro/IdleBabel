@@ -26,6 +26,13 @@ export interface LeafPage {
    * qu'un clic sur la page HTML. false : rien de cliquable ici.
    */
   press: (x: number, y: number) => boolean;
+  /**
+   * Souris au point (x, y) de la page dessinée : un sceau survolé écrit sa légende. true : la page a
+   * changé (à redessiner).
+   */
+  hover: (x: number, y: number) => boolean;
+  /** Quelque chose de cliquable au point (x, y) de la page dessinée (pour la main du pointeur). */
+  pointable: (x: number, y: number) => boolean;
 }
 
 
@@ -171,6 +178,13 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
     },
     paint: (canvas, spineOnLeft, paper) => drawItems(canvas, layout(view), spineOnLeft, paper),
     press: (x, y) => pressItem(itemAt(layout(view), x, y), actions),
+    hover: (x, y) => {
+      const item = itemAt(layout(view), x, y);
+      if (item?.kind !== 'seal' || item.id === view.hovered) return false;
+      actions.hover?.(item.id);
+      return true;
+    },
+    pointable: (x, y) => itemAt(layout(view), x, y) !== undefined,
   };
   return page;
 };

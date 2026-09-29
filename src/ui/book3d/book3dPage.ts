@@ -168,6 +168,13 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
     busy: (on) => {
       controls.enabled = !on && !view.locked;
     },
+    hover: (hit) => {
+      const page = hit ? book?.pageUnder(hit) : null;
+      if (!page || !turner?.idle || !view.locked) return void (canvas.style.cursor = '');
+      const [index, x, y] = [2 * turner.target + (page.side === 'right' ? 1 : 0), page.u * PAGE_TEXTURE.width, page.v * PAGE_TEXTURE.height];
+      canvas.style.cursor = spec.pointable?.(index, x, y) ? 'pointer' : '';
+      if (spec.hover?.(index, x, y)) turner.refresh();
+    },
     press: (hit) => {
       const page = book?.pageUnder(hit);
       if (!page || !turner?.idle || !spec.press) return false;
