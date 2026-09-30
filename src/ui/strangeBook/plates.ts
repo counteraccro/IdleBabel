@@ -1,5 +1,5 @@
 import { getLocale, t } from '../../i18n';
-import { formatNumber } from '../../core/format';
+import { formatNumber, writeDigits } from '../../core/format';
 import { PLATES, SEALS, type PlateId, type SealDef } from '../../data/seals';
 import { babelName, completion, countObtained, plateSeals, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
@@ -52,7 +52,8 @@ const sealText = (seal: SealDef): string => {
   return seal.tier ? text.replace('{n}', formatNumber(seal.tier.n, getLocale())) : text;
 };
 
-const date = (at: number): string => new Date(at).toLocaleDateString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' });
+const date = (at: number): string =>
+  writeDigits(new Date(at).toLocaleDateString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' }));
 
 /** Légende du sceau survolé : son nom en symboles, et ce qu'il récompense une fois obtenu. */
 export const sealLegend = (state: GameState, id: string | null): { name: string; text: string } => {
@@ -69,7 +70,7 @@ export const sealLegend = (state: GameState, id: string | null): { name: string;
 /** Obtenus sur total ; les secrets ne disent pas combien il en reste. */
 const tally = (state: GameState, plate: PlateId): string => {
   const seals = plateSeals(plate);
-  return `${countObtained(state, seals)} / ${plate === 'secrets' && !statsRevealed() ? '?' : seals.length}`;
+  return writeDigits(`${countObtained(state, seals)} / ${plate === 'secrets' && !statsRevealed() ? '?' : seals.length}`);
 };
 
 const LINE_TOP = 400;
@@ -91,7 +92,7 @@ export const completionCaption = (state: GameState): TextItem => ({
 /** Introduction : la part des sceaux obtenus, et l'avancement de chaque planche. */
 export const completionItems = (state: GameState, plates: PlatePage[], number: number): Item[] => [
   ...heading(sealsTitle(state)),
-  { kind: 'text', text: `${Math.floor(completion(state) * 100)} %`, x: 320, y: 200, size: 84, align: 'center', spacing: 2 },
+  { kind: 'text', text: writeDigits(`${Math.floor(completion(state) * 100)} %`), x: 320, y: 200, size: 84, align: 'center', spacing: 2 },
   completionCaption(state),
   ...plates
     .filter((plate) => plate.part === 0)

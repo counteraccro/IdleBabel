@@ -1,5 +1,5 @@
 import { getLocale, t } from '../../i18n';
-import { formatNumber } from '../../core/format';
+import { formatNumber, writeDigits } from '../../core/format';
 import { TOOLS } from '../../data/tools';
 import { PAGES_PER_BOOK } from '../../systems/books';
 import { pagesPerSecond } from '../../systems/production';
@@ -79,7 +79,7 @@ export const CHAPTERS: readonly Chapter[] = [
     shown: () => true,
     figures: [
       { id: 'booksFinished', caption: 'odrez mui', value: (s) => number(s.booksFinished) },
-      { id: 'bookPage', caption: 'faso lu tren', value: (s) => `${s.bookPage} / ${PAGES_PER_BOOK}` },
+      { id: 'bookPage', caption: 'faso lu tren', value: (s) => writeDigits(`${s.bookPage} / ${PAGES_PER_BOOK}`) },
       { id: 'meaningfulCovers', caption: 'quel sabiro', value: (s) => number(meaningfulCovers(s)), shown: (s) => meaningfulCovers(s) > 0 },
     ],
   },
@@ -88,11 +88,12 @@ export const CHAPTERS: readonly Chapter[] = [
     title: 'ecrubo',
     shown: () => true,
     figures: [
-      { id: 'playTime', caption: 'tisal ore', value: (s) => clock(s.stats.playSeconds) },
+      { id: 'playTime', caption: 'tisal ore', value: (s) => writeDigits(clock(s.stats.playSeconds)) },
       {
         id: 'startDate',
         caption: 'gonda vi pel',
-        value: (s) => new Date(startedAt(s)).toLocaleDateString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        value: (s) =>
+          writeDigits(new Date(startedAt(s)).toLocaleDateString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' })),
       },
       { id: 'days', caption: 'ruma teo', value: (s) => number((Date.now() - startedAt(s)) / DAY_MS) },
     ],
@@ -127,7 +128,7 @@ export const CHAPTERS: readonly Chapter[] = [
       {
         id: 'findChance',
         caption: 'gilo mepar',
-        value: (s) => new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(findChance(s)),
+        value: (s) => writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(findChance(s))),
       },
     ],
   },

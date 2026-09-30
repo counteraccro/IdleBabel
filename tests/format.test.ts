@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatNumber } from '../src/core/format';
+import { formatNumber, setNotation, writeDigits } from '../src/core/format';
 
 const fr = (value: number, notation: Parameters<typeof formatNumber>[2]): string => formatNumber(value, 'fr', notation).replace(/\s/g, ' ');
 
@@ -38,5 +38,18 @@ describe('formatNumber', () => {
     expect(fr(999_999_999, 'words')).toBe('1 milliard');
     expect(formatNumber(2_500_000_000, 'en', 'words')).toBe('2.5 billion');
     expect(fr(1e40, 'words')).toBe('1,00e40');
+  });
+});
+
+describe('writeDigits', () => {
+  it('ne change rien hors de la notation Babel', () => {
+    setNotation('full');
+    expect(writeDigits('53:07:42')).toBe('53:07:42');
+  });
+
+  it('change chaque chiffre en son sceau, le reste tel quel', () => {
+    setNotation('babel');
+    expect(writeDigits('1:05')).toBe('◆:◇⬘');
+    setNotation('full');
   });
 });

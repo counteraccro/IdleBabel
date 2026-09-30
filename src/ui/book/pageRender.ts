@@ -1,8 +1,10 @@
+import { babelTextWidth, drawBabelText, hasBabelDigits } from '../babelDigits';
 import { PAGE_FONT, PAGE_FONT_SIZE, PAGE_LINE_HEIGHT, PAGE_PADDING, PAGE_TEXTURE, type PageLines } from './pageLayout';
 
 /** Numéro de page, en bas au centre, comme celui des grands livres (pageItems.ts). */
 const PAGE_NUMBER_TOP = 730;
-const PAGE_NUMBER_FONT = `18px Georgia, 'Times New Roman', serif`;
+const PAGE_NUMBER_SIZE = 18;
+const PAGE_NUMBER_FONT = `${PAGE_NUMBER_SIZE}px Georgia, 'Times New Roman', serif`;
 const PAGE_NUMBER_INK = 'rgba(52, 36, 22, 0.55)';
 
 const TEXTURE_SCALE = 2;
@@ -108,7 +110,11 @@ export const drawPageTexture = (
     context.textAlign = 'center';
     context.textBaseline = 'alphabetic';
     context.fillStyle = PAGE_NUMBER_INK;
-    context.fillText(pageNumber, PAGE_TEXTURE.width / 2, cssBaseline(context, PAGE_NUMBER_TOP));
+    const baseline = cssBaseline(context, PAGE_NUMBER_TOP);
+    if (hasBabelDigits(pageNumber)) {
+      const left = (PAGE_TEXTURE.width - babelTextWidth(context, pageNumber, PAGE_NUMBER_SIZE)) / 2;
+      drawBabelText(context, pageNumber, left, PAGE_NUMBER_TOP, PAGE_NUMBER_SIZE, baseline);
+    } else context.fillText(pageNumber, PAGE_TEXTURE.width / 2, baseline);
     context.textAlign = 'start';
   }
   context.font = PAGE_FONT;

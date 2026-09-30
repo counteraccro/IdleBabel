@@ -1,7 +1,8 @@
 import '@fontsource/nothing-you-could-do/400.css';
 import { HAND, hash } from '../strangeBook/pageItems';
 import { cssBaseline } from '../book/pageRender';
-import { drawBabelNumber, hasBabelDigits } from '../babelDigits';
+import { babelTextWidth, drawBabelText, hasBabelDigits } from '../babelDigits';
+import { writeDigits } from '../../core/format';
 import { GRID, MARGIN, TEXT_LEFT, TEXT_RIGHT } from './notebookPaper';
 
 /** Écriture du chercheur : stylo bille bleu pour les réglages, crayon pour ses remarques. */
@@ -211,7 +212,7 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
       write(label, TEXT_LEFT + 2 * GRID, top, pen(24), PEN, PEN_LINE);
       item++;
       // En chiffres de Babel, l'exemple montre les sceaux dorés tels qu'ils s'afficheront.
-      if (hasBabelDigits(example)) drawBabelNumber(context, example, TEXT_LEFT + 2 * GRID + exampleAt, top + 7, 20);
+      if (hasBabelDigits(example)) drawBabelText(context, example, TEXT_LEFT + 2 * GRID + exampleAt, top + 7, 20);
       else write(example, TEXT_LEFT + 2 * GRID + exampleAt, top, pencil(23), PENCIL, PEN_LINE);
       top += PEN_LINE + GRID / 2;
       zones.push({ x: TEXT_LEFT - GRID / 2, y: start, width: TEXT_RIGHT - TEXT_LEFT + GRID / 2, height: PEN_LINE, act });
@@ -330,7 +331,9 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
       context.fillStyle = PENCIL;
       context.textAlign = 'center';
       context.textBaseline = 'alphabetic';
-      context.fillText(String(number), spineOnLeft ? 600 : MARGIN / 2, 770);
+      const text = writeDigits(String(number));
+      if (!hasBabelDigits(text)) context.fillText(text, spineOnLeft ? 600 : MARGIN / 2, 770);
+      else drawBabelText(context, text, (spineOnLeft ? 600 : MARGIN / 2) - babelTextWidth(context, text, 20) / 2, 752, 20);
     },
   };
 };

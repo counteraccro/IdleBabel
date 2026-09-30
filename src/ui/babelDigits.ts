@@ -1,3 +1,4 @@
+import { el } from './dom';
 import { babelDigit } from '../core/format';
 
 /**
@@ -64,8 +65,31 @@ const svgDigit = (digit: number, width: number): string => {
 };
 
 /**
- * Écrit un nombre dans un élément HTML : ses chiffres de Babel dessinés, le reste en texte. `size` : taille
- * approximative du texte en pixels (épaisseur des traits). Ne refait rien si le nombre n'a pas changé.
+ * Un texte coupé en morceaux : les chiffres de Babel (dessinés), les signes d'un nombre (point des
+ * milliers, virgule entre deux chiffres, dessinés en or) et le reste (écrit dans la police du texte).
+ */
+type Part = { digit: number } | { mark: '.' | ',' } | { text: string };
+
+const parts = (text: string): Part[] => {
+  const chars = [...text];
+  const result: Part[] = [];
+  chars.forEach((char, i) => {
+    const digit = babelDigit(char);
+    if (digit >= 0) result.push({ digit });
+    else if ((char === '.' || char === ',') && babelDigit(chars[i - 1] ?? '') >= 0 && babelDigit(chars[i + 1] ?? '') >= 0)
+      result.push({ mark: char });
+    else {
+      const last = result.at(-1);
+      if (last && 'text' in last) last.text += char;
+      else result.push({ text: char });
+    }
+  });
+  return result;
+};
+
+/**
+ * Écrit un texte dans un élément HTML : ses chiffres de Babel dessinés, le reste en texte. `size` : taille
+ * approximative du texte en pixels (épaisseur des traits). Ne refait rien si le texte n'a pas changé.
  */
 export const setNumberText = (node: HTMLElement, text: string, size = 16): void => {
   if (node.dataset.number === text) return;
@@ -76,35 +100,65 @@ export const setNumberText = (node: HTMLElement, text: string, size = 16): void 
   }
   ensureGradient();
   node.setAttribute('aria-label', text);
-  node.innerHTML = [...text]
-    .map((char) => {
-      const digit = babelDigit(char);
-      if (digit >= 0) return svgDigit(digit, stroke(size));
-      // Point des milliers, virgule des décimales : rien d'autre ne sort de formatNumber en Babel.
-      return `<span class="babel-sign">${char === '.' ? '·' : ','}</span>`;
-    })
-    .join('');
+  node.replaceChildren(
+    ...parts(text).map((part): Node => {
+      if ('digit' in part) {
+        const holder = document.createElement('template');
+        holder.innerHTML = svgDigit(part.digit, stroke(size));
+        return holder.content.firstChild!;
+      }
+      if ('mark' in part) return el('span', 'babel-sign', part.mark === '.' ? '·' : ',');
+      return document.createTextNode(part.text);
+    }),
+  );
 };
 
-/** Largeur d'un nombre en chiffres de Babel écrit en `size` pixels (texte autour non compris). */
-export const babelNumberWidth = (text: string, size: number): number =>
-  [...text].reduce((width, char) => width + (babelDigit(char) >= 0 ? DIGIT_WIDTH : SIGN_WIDTH) * size, 0);
+/**
+ * Largeur d'un texte en chiffres de Babel écrit en `size` pixels ; le reste du texte est mesuré dans la
+ * police de `context`.
+ */
+export const babelTextWidth = (context: CanvasRenderingContext2D, text: string, size: number): number =>
+  parts(text).reduce(
+    (width, part) =>
+      width + ('digit' in part ? DIGIT_WIDTH * size : 'mark' in part ? SIGN_WIDTH * size : context.measureText(part.text).width),
+    0,
+  );
 
 /**
- * Dessine un nombre en chiffres de Babel sur un canevas : `left` son bord gauche, `top` le haut de la
- * ligne de hauteur `size`.
+ * Dessine un texte aux chiffres de Babel sur un canevas : `left` son bord gauche, `top` le haut de la
+ * ligne de hauteur `size`, `baseline` la ligne d'écriture du reste du texte (police et couleur de
+ * `context`, déjà réglées).
  */
-export const drawBabelNumber = (context: CanvasRenderingContext2D, text: string, left: number, top: number, size: number): void => {
-  context.save();
+export const drawBabelText = (
+  context: CanvasRenderingContext2D,
+  text: string,
+  left: number,
+  top: number,
+  size: number,
+  baseline = top + size * 0.8,
+): void => {
   let x = left;
-  for (const char of text) {
-    const digit = babelDigit(char);
-    if (digit < 0) {
-      // Point des milliers : un petit losange doré à mi-hauteur ; virgule : un trait en bas.
+  const ink = context.fillStyle;
+  for (const part of parts(text)) {
+    if ('text' in part) {
+      context.save();
+      context.textAlign = 'left';
+      context.textBaseline = 'alphabetic';
+      context.fillStyle = ink;
+      context.fillText(part.text, x, baseline);
+      x += context.measureText(part.text).width;
+      context.restore();
+      continue;
+    }
+    if ('mark' in part) {
+      // Point des milliers : un petit carré doré à mi-hauteur ; virgule : un trait en bas.
+      const width = SIGN_WIDTH * size;
+      context.save();
       context.fillStyle = GOLD[1][1];
-      if (char === '.') context.fillRect(x + (SIGN_WIDTH * size) / 2 - size * 0.05, top + size * 0.45, size * 0.1, size * 0.1);
-      else if (char === ',') context.fillRect(x + (SIGN_WIDTH * size) / 2 - size * 0.04, top + size * 0.72, size * 0.08, size * 0.2);
-      x += SIGN_WIDTH * size;
+      if (part.mark === '.') context.fillRect(x + width / 2 - size * 0.05, top + size * 0.45, size * 0.1, size * 0.1);
+      else context.fillRect(x + width / 2 - size * 0.04, top + size * 0.72, size * 0.08, size * 0.2);
+      context.restore();
+      x += width;
       continue;
     }
     const scale = (size * 0.88) / 104;
@@ -118,7 +172,7 @@ export const drawBabelNumber = (context: CanvasRenderingContext2D, text: string,
     context.lineWidth = stroke(size);
     context.lineCap = 'round';
     context.lineJoin = 'round';
-    for (const shape of SHAPES[digit]) {
+    for (const shape of SHAPES[part.digit]) {
       if ('d' in shape) context.stroke(new Path2D(shape.d));
       else {
         context.beginPath();
@@ -130,5 +184,4 @@ export const drawBabelNumber = (context: CanvasRenderingContext2D, text: string,
     context.restore();
     x += DIGIT_WIDTH * size;
   }
-  context.restore();
 };

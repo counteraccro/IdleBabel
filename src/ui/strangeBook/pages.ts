@@ -29,8 +29,8 @@ import {
 } from './plates';
 import { markSealsSeen } from '../../systems/seals';
 import { decipher, decipherPrice } from '../../systems/decipher';
-import { t } from '../../i18n';
-import { currentNotation } from '../../core/format';
+import { getLocale, t } from '../../i18n';
+import { currentNotation, formatNumber, writeDigits } from '../../core/format';
 import type { PartId } from '../../data/decipher';
 import type { Paper } from '../book/pageRender';
 import type { GameState } from '../../core/state';
@@ -97,7 +97,7 @@ const contentsItems = (state: GameState, entries: Entry[]): Item[] => {
         ...(entry.news?.() ? [newsMark(x - 12, top, size)] : []),
         { kind: 'text', text: entry.title(state), x, y: top, size, align: 'left', spacing: 2, faded: entry.sub },
         { kind: 'dots', x1: 330, x2: 520, y: top + size * 0.75 },
-        { kind: 'text', text: String(entry.page + 1), x: 550, y: top, size, align: 'right', faded: entry.sub },
+        { kind: 'text', text: writeDigits(String(entry.page + 1)), x: 550, y: top, size, align: 'right', faded: entry.sub },
         { kind: 'link', y: top - 10, height: step - 4, target: entry.page },
       ];
     }),
@@ -132,7 +132,7 @@ export const pencilOffer = (note: string, asking: boolean, noteY: number, marked
 
 /** Note d'un prix en Connaissance : ce qu'on obtient, ou ce qu'il manque. */
 export const priceNote = (state: GameState, price: number, offer: string, short: string): string =>
-  t(state.knowledge >= price ? offer : short).replace('{n}', String(price));
+  t(state.knowledge >= price ? offer : short).replace('{n}', formatNumber(price, getLocale()));
 
 /** Partie encore illisible qui s'achète : ses légendes soulignées, la note au crayon propose de la déchiffrer. */
 const decipherItems = (state: GameState, part: PartId, asking: boolean, noteY: number, marked: TextItem[]): Item[] => {

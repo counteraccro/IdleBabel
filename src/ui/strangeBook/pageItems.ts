@@ -4,7 +4,8 @@ import { el } from '../dom';
 import { PAGE_TEXTURE } from '../book/pageLayout';
 import { cssBaseline, preparePageTexture, type Paper } from '../book/pageRender';
 import { drawSeal, sealSvg, sigil, type Look } from './sigil';
-import { babelNumberWidth, drawBabelNumber, hasBabelDigits, setNumberText } from '../babelDigits';
+import { writeDigits } from '../../core/format';
+import { babelTextWidth, drawBabelText, hasBabelDigits, setNumberText } from '../babelDigits';
 import { BIG_BOOK_REWRITE } from '../book3d/book3dBook';
 
 /**
@@ -128,7 +129,7 @@ export const heading = (text: string, chapter?: number): Item[] => [
 ];
 export const folio = (number: number): Item => ({
   kind: 'text',
-  text: String(number),
+  text: writeDigits(String(number)),
   x: 320,
   y: 730,
   size: 18,
@@ -154,7 +155,7 @@ export const textWidth = (item: TextItem): number => {
   measurer.letterSpacing = `${item.spacing ?? 0}px`;
   if (!item.initial) {
     measurer.font = font(item, `${item.size}px`);
-    return measurer.measureText(item.text).width;
+    return hasBabelDigits(item.text) ? babelTextWidth(measurer, item.text, item.size) : measurer.measureText(item.text).width;
   }
   const [first, rest] = splitInitial(item.text);
   measurer.font = font(item, `${item.size * INITIAL_SCALE}px`);
@@ -353,9 +354,11 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
       context.fillStyle = color(item);
       context.fillText(rest, left + head, baseline);
     } else if (item.kind === 'text' && hasBabelDigits(item.text)) {
-      const width = babelNumberWidth(item.text, item.size);
-      const left = item.align === 'center' ? (PAGE_TEXTURE.width - width) / 2 : item.align === 'right' ? item.x - width : item.x;
-      drawBabelNumber(context, item.text, left, item.y, item.size);
+      // Chiffres de Babel : dessinés un à un, le reste du texte dans sa police, calé comme dans la page HTML.
+      context.font = font(item, `${item.size}px`);
+      context.letterSpacing = '0px';
+      context.fillStyle = color(item);
+      drawBabelText(context, item.text, textLeft(item), item.y, item.size, cssBaseline(context, item.y));
     } else if (item.kind === 'text') {
       context.font = font(item, `${item.size}px`);
       context.letterSpacing = `${item.spacing ?? 0}px`;

@@ -1,5 +1,6 @@
 import { LETTERS } from './babelText';
 import { hashText, seeded } from '../core/random';
+import { writeDigits } from '../core/format';
 
 /** Part des pages dont le numéro imprimé est le vrai : les autres ne portent que des symboles de Babel. */
 export const TRUE_PAGE_NUMBER_CHANCE = 0.2;
@@ -16,7 +17,7 @@ const SYMBOLS = `${LETTERS},.`;
 export const pageNumberLabel = (book: number, page: number): string | undefined => {
   if (page < 2) return undefined;
   const random = seeded(hashText(`${book}:${page}:numéro`));
-  if (random() < TRUE_PAGE_NUMBER_CHANCE) return String(Math.floor(page / 2));
+  if (random() < TRUE_PAGE_NUMBER_CHANCE) return writeDigits(String(Math.floor(page / 2)));
   const length = 1 + Math.floor(random() * 3);
   return Array.from({ length }, () => SYMBOLS[Math.floor(random() * SYMBOLS.length)]).join('');
 };
