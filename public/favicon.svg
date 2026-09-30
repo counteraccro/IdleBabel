@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Le sceau d'Idle Babel : favicon, et hexagone du titre du jeu (ui/gameTitle.ts). -->
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7e2a6"/>
+      <stop offset=".5" stop-color="#d9a94e"/>
+      <stop offset="1" stop-color="#a8762c"/>
+    </linearGradient>
+  </defs>
+  <polygon points="50,6 88.1,28 88.1,72 50,94 11.9,72 11.9,28" fill="none" stroke="url(#gold)" stroke-width="7.5"/>
+  <polygon points="50,22 74.2,36 74.2,64 50,78 25.8,64 25.8,36" fill="none" stroke="url(#gold)" stroke-width="5.5"/>
+  <circle cx="50" cy="50" r="7" fill="#e8c776"/>
+</svg>

@@ -2,6 +2,7 @@ import './pile3d.css';
 import { el } from './dom';
 import { t } from '../i18n';
 import { createPile3d } from './book3d/pile3d';
+import { createGameTitle } from './gameTitle';
 import type { Book3d } from './book3d/book3dBook';
 import type { Component } from './dom';
 
@@ -44,6 +45,6 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     written = count;
     pile.away(handlers.openBook());
   };
-  root.append(el('h1', undefined, 'Idle Babel'), pile.root);
+  root.append(createGameTitle(), pile.root);
   return { root, update };
 };
