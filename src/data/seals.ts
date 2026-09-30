@@ -53,6 +53,8 @@ export const SEALS: readonly SealDef[] = [
   seal('strangeBook', 'secrets', (s) => s.booksFinished >= STRANGE_BOOK_INDEX),
   seal('insomnia', 'secrets', () => new Date().getHours() === 3),
   seal('still', 'secrets', (s) => !s.settings.bookSway),
+  // Les nombres écrits en chiffres de Babel (option « Nombres » du cahier).
+  seal('babelDigits', 'secrets', (s) => s.settings.notation === 'babel'),
   // Le cahier d'options refermé sur son dos, où toutes les multiplications donnent 410.
   secret('notebookBack'),
 ];
