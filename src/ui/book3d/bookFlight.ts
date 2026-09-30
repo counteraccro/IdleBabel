@@ -18,6 +18,8 @@ interface Lens {
  * fait partir de là.
  */
 export interface FlightStart {
+  /** Le livre de la pile qui vole (son identifiant). */
+  book: string;
   /** Le livre dans le repère de la caméra de la pile. */
   position: THREE.Vector3;
   rotation: THREE.Quaternion;
@@ -33,24 +35,27 @@ const lensOf = (camera: THREE.PerspectiveCamera, rect: { left: number; top: numb
 });
 
 let pending: FlightStart | null = null;
-/** Le vol en cours : où en est le livre (0 : dans la pile, 1 : posé dans la page), et s'il y retourne. */
-let current: { amount: number; home: boolean } | null = null;
+/**
+ * Les vols en cours, chacun le sien : un livre peut retourner à la pile pendant qu'un autre en part (clic
+ * sur la pile juste après un retour).
+ */
+const flights = new Set<{ book: string; home: boolean }>();
 
-/** Où en est le livre qui vole (null : aucun vol). */
-export const flightAmount = (): number | null => current?.amount ?? null;
+/** Un livre vole-t-il (de la pile vers sa page, ou retour) ? */
+export const flying = (): boolean => flights.size > 0;
 
-/** Un livre retourne à la pile : il n'y est pas encore, sa place reste vide même si le jeu est revenu. */
-export const flyingHome = (): boolean => current?.home ?? false;
+/** Les livres qui retournent à la pile : pas encore arrivés, leur place reste vide même si le jeu est revenu. */
+export const flyingHome = (): string[] => [...flights].filter((flight) => flight.home).map((flight) => flight.book);
 
 /** La pile note le livre cliqué, juste avant d'ouvrir sa page. */
-export const launchFlight = (root: THREE.Object3D, camera: THREE.PerspectiveCamera, canvas: HTMLCanvasElement): void => {
+export const launchFlight = (book: string, root: THREE.Object3D, camera: THREE.PerspectiveCamera, canvas: HTMLCanvasElement): void => {
   root.updateWorldMatrix(true, false);
   camera.updateMatrixWorld();
   const seen = camera.matrixWorldInverse.clone().multiply(root.matrixWorld);
   const position = new THREE.Vector3();
   const rotation = new THREE.Quaternion();
   seen.decompose(position, rotation, new THREE.Vector3());
-  pending = { position, rotation, lens: lensOf(camera, canvas.getBoundingClientRect()), at: performance.now() };
+  pending = { book, position, rotation, lens: lensOf(camera, canvas.getBoundingClientRect()), at: performance.now() };
 };
 
 /** La page du livre reprend le départ noté (une fois), s'il vient d'être noté. */
@@ -65,6 +70,8 @@ export interface Flight {
   step: (now: number) => boolean;
   /** Où en est le livre : 0 dans la pile, 1 posé dans la page. */
   readonly amount: number;
+  /** Vol abandonné (page quittée en plein vol, vol remplacé par le retour) : la pile ne l'attend plus. */
+  stop: () => void;
 }
 
 /**
@@ -93,9 +100,10 @@ export const createFlight = (
   const rotation = new THREE.Quaternion();
   const one = new THREE.Vector3(1, 1, 1);
   let amount = home ? 1 : 0;
+  const entry = { book: start.book, home };
+  flights.add(entry);
   const place = (value: number): void => {
     amount = value;
-    current = { amount: value, home };
     // Le livre, de sa place devant la caméra de la pile à sa place devant celle de la page.
     position.lerpVectors(start.position, restPosition, value);
     rotation.slerpQuaternions(start.rotation, restRotation, value);
@@ -135,7 +143,7 @@ export const createFlight = (
       // sur la pile (sans quoi il s'y arrête net, à pleine vitesse).
       place(home ? 1 - (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2) : 1 - (1 - t) ** 3);
       if (t < 1) return true;
-      current = null;
+      flights.delete(entry);
       if (!home) {
         root.position.set(0, 0, 0);
         root.quaternion.identity();
@@ -145,6 +153,9 @@ export const createFlight = (
     },
     get amount() {
       return amount;
+    },
+    stop: () => {
+      flights.delete(entry);
     },
   };
 };

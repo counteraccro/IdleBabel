@@ -128,6 +128,8 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     root.classList.remove('arriving');
     root.classList.add('leaving', 'homing');
     canvas.classList.add('flying');
+    // Retour en pleine arrivée : le vol d'aller est abandonné, celui du retour part de là où il en était.
+    flight?.stop();
     flight = createFlight(flightStart, book.root, camera, stage.getBoundingClientRect(), true);
     onBack();
   };
@@ -262,6 +264,8 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   previous.addEventListener('click', () => turn(false));
   next.addEventListener('click', () => turn(true));
   const onKey = (event: KeyboardEvent): void => {
+    // Un récit s'affiche par-dessus : le livre derrière ne tourne pas ses pages.
+    if (document.querySelector('.modal-backdrop')) return;
     if (event.key === 'ArrowRight') turn(true);
     if (event.key === 'ArrowLeft') turn(false);
     if (event.key === 'Home') backToBookmark();
@@ -326,6 +330,8 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   const frame = (now: number): void => {
     // Page quittée : écouteurs retirés, livre et contexte WebGL libérés tout de suite.
     if (!root.isConnected) {
+      // Quittée en plein vol (bouton précédent du navigateur) : la pile n'attend plus ce livre.
+      flight?.stop();
       lifetime.abort();
       controls.dispose();
       destroy(scene);

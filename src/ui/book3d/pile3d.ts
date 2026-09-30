@@ -5,12 +5,13 @@ import { createBookRenderer } from './renderer3d';
 import { createLighting } from './lighting';
 import { isDebugEnabled } from '../../debug/enabled';
 import type { Book3d } from './book3dBook';
-import { flightAmount, flyingHome, launchFlight } from './bookFlight';
+import { flying, flyingHome, launchFlight } from './bookFlight';
 
 /** Un livre de la pile : son nom (légende au survol), son modèle 3D, ce qu'il ouvre, comment il est posé. */
 export interface PileBook {
   id: string;
-  label: string;
+  /** Relu à chaque mise à jour : la langue peut changer pendant que la pile reste à l'écran. */
+  label: () => string;
   book: () => Book3d;
   onOpen: () => void;
   /** Couché, le dos vers le lecteur, de travers : tourné de tant (radians), décalé de tant (unités de scène). */
@@ -34,6 +35,8 @@ export interface Pile3d {
   shake: (id: string) => void;
   /** Le contour du livre luit doucement tant que quelque chose l'attend (des sceaux nouveaux). */
   news: (id: string, on: boolean) => void;
+  /** Noms des livres réécrits dans la langue courante (boutons, légende au survol). */
+  relabel: () => void;
 }
 
 /** Contour doré du livre survolé : sa couleur, son épaisseur (unités de scène). */
@@ -123,7 +126,7 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
   const slots: Slot[] = books.map((spec) => {
     const pivot = new THREE.Group();
     scene.add(pivot);
-    const button = el('button', 'pile3d-button', spec.label);
+    const button = el('button', 'pile3d-button', spec.label());
     button.addEventListener('click', () => open(slot));
     button.addEventListener('focus', () => (slot.aim = 1));
     button.addEventListener('blur', () => (slot.aim = 0));
@@ -287,7 +290,7 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     hovered = slot;
     if (slot) slot.aim = 1;
     canvas.style.cursor = slot ? 'pointer' : '';
-    caption.textContent = slot?.spec.label ?? '';
+    caption.textContent = slot?.spec.label() ?? '';
     caption.classList.toggle('shown', slot !== null);
   };
   canvas.addEventListener('pointermove', (event) => hover(slotAt(event)));
@@ -307,7 +310,7 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     const mesh = slot.body?.children[0];
     if (mesh && !still.matches) {
       slot.outline.opacity = 0;
-      launchFlight(mesh, camera, canvas);
+      launchFlight(slot.spec.id, mesh, camera, canvas);
     }
     wanted = slot.spec.id;
     applyAway();
@@ -315,11 +318,11 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
   }
 
   /**
-   * Dessine la pile ; `flying` : un livre vole (null : aucun). Les livres posés sur lui (plus haut dans la
+   * Dessine la pile ; `flight` : un livre vole. Les livres posés sur lui (plus haut dans la
    * pile) sont d'abord dessinés seuls et recopiés dans le calque du dessus, puis le reste dans la pile.
    */
-  const draw = (flying: number | null): void => {
-    const away = flying === null ? undefined : slots.find((slot) => slot.away && slot.shown && !slot.standing);
+  const draw = (flight: boolean): void => {
+    const away = !flight ? undefined : slots.find((slot) => slot.away && slot.shown && !slot.standing);
     const above = away ? slots.filter((slot) => slot.pivot.visible && !slot.standing && slots.indexOf(slot) > slots.indexOf(away)) : [];
     if (above.length > 0 && overlayContext) {
       const below = slots.filter((slot) => slot.pivot.visible && !above.includes(slot));
@@ -355,11 +358,11 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     const dt = Math.min(0.05, (now - before) / 1000);
     before = now;
     // Un livre vole vers une page ou en revient : la pile est redessinée tant qu'il vole (sa place en creux).
-    const flying = flightAmount();
-    let moving = flying !== null || wasFlying;
-    wasFlying = flying !== null;
+    const flight = flying();
+    let moving = flight || wasFlying;
+    wasFlying = flight;
     // Vol fini : le livre revenu reprend sa place.
-    if (flying === null) applyAway();
+    applyAway();
     /** Où en est une animation lancée à `at`, de durée `ms` (null : finie, ou pas lancée). */
     const progress = (at: number | null, ms: number): number | null => (at === null || still.matches ? null : Math.min(1, (now - at) / ms));
     for (const slot of slots) {
@@ -406,7 +409,7 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
       dirty = true;
     }
     if (moving || dirty) {
-      draw(flying);
+      draw(flight);
       dirty = false;
     }
     requestAnimationFrame(frame);
@@ -417,13 +420,14 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
   let wanted: string | null = null;
   /**
    * Cache le livre ouvert, sa place gardée ; un livre qui retourne à la pile reste caché jusqu'à ce qu'il
-   * y soit (le jeu revient à l'écran pendant son vol).
+   * y soit (le jeu revient à l'écran pendant son vol), même si un autre en part entre-temps.
    */
   function applyAway(): void {
-    const id = flyingHome() ? (slots.find((slot) => slot.away)?.spec.id ?? wanted) : wanted;
+    const hidden = new Set(flyingHome());
+    if (wanted) hidden.add(wanted);
     let changed = false;
     for (const slot of slots) {
-      const away = slot.spec.id === id;
+      const away = hidden.has(slot.spec.id);
       if (slot.away === away) continue;
       slot.away = away;
       slot.button.disabled = away;
@@ -454,6 +458,13 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     news: (id, on) => {
       const slot = find(id);
       if (slot) slot.news = on;
+    },
+    relabel: () => {
+      for (const slot of slots) {
+        const label = slot.spec.label();
+        if (slot.button.textContent !== label) slot.button.textContent = label;
+      }
+      if (hovered) caption.textContent = hovered.spec.label();
     },
   };
   // Débogage : la pile depuis la console (window.pile3d.shake('white')…), ?debug seulement.

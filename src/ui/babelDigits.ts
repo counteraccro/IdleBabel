@@ -95,6 +95,7 @@ export const setNumberText = (node: HTMLElement, text: string, size = 16): void 
   if (node.dataset.number === text) return;
   node.dataset.number = text;
   if (!hasBabelDigits(text)) {
+    node.removeAttribute('aria-label');
     node.textContent = text;
     return;
   }
