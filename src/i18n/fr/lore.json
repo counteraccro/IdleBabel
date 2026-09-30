@@ -33,9 +33,10 @@
   "firstBook": {
     "title": "La voix",
     "text": [
-      "Des livres, partout : sur les murs, par terre…",
-      "Et puis cette voix dans votre tête : quel est le sens de tout cela ?",
-      "Instinctivement, vous attrapez un livre…"
+      "Vous levez les yeux du livre blanc. Rien n'a changé : l'ombre, le silence, les étagères qui n'en finissent pas.",
+      "Puis une voix. Dans votre tête. Ce n'est pas la vôtre… ou peut-être que si.",
+      "« Quel est le sens de tout cela ? »",
+      "Sans savoir pourquoi, votre main se tend vers l'étagère la plus proche. Elle se referme sur un livre."
     ],
     "button": "Lire le livre"
   },
