@@ -130,7 +130,9 @@
     "goodNight": "Bonne nuit, / à demain.",
     "notAlone": "Tu n'es pas / seul.",
     "behindYou": "Je suis / derrière toi.",
-    "fortyTwo": "La réponse / à la grande question / sur la vie, l'univers / et le reste : / 42."
+    "fortyTwo": "La réponse / à la grande question / sur la vie, l'univers / et le reste : / 42.",
+    "knowsName": "Je sais / comment tu t'appelles. / C'est / {name}.",
+    "trueName": "Ton vrai nom / n'est pas / {name}, / mais / {babel}."
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",

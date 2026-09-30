@@ -130,7 +130,9 @@
     "goodNight": "Good night, / see you tomorrow.",
     "notAlone": "You are not / alone.",
     "behindYou": "I am / behind you.",
-    "fortyTwo": "The answer / to the ultimate question / of life, the universe / and everything: / 42."
+    "fortyTwo": "The answer / to the ultimate question / of life, the universe / and everything: / 42.",
+    "knowsName": "I know / your name. / It is / {name}.",
+    "trueName": "Your true name / is not / {name}, / but / {babel}."
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",

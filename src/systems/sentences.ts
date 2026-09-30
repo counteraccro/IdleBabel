@@ -1,15 +1,18 @@
 import { messages } from '../i18n';
 import { SENTENCES } from '../data/sentences';
 import { GUESS_PRICE, type FindKind } from '../data/knowledge';
+import { withReaderName } from './readerName';
 import type { ToolId } from '../data/tools';
 import type { GameState } from '../core/state';
 
 /** Les phrases du livre blanc, et ce qui en est écrit. */
 
-/** Morceaux d'une phrase, dans la langue courante. */
+/** Morceaux d'une phrase, dans la langue courante (avec le nom du joueur, voir readerName.ts). */
 export const segments = (id: string): string[] => {
   const text = (messages().whiteBook.sentences as Record<string, string>)[id] ?? '';
-  return text.split('/').map((segment) => segment.trim());
+  return withReaderName(text)
+    .split('/')
+    .map((segment) => segment.trim());
 };
 
 /** Auteur ou référence d'une citation célèbre (whiteBook.sources), montré une fois la phrase complète. */

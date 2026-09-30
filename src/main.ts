@@ -11,6 +11,7 @@ import { mountDebugPanel } from './debug/debugPanel';
 import { isDebugEnabled } from './debug/enabled';
 import { readStrangeTitleWith } from './systems/coverTitle';
 import { isDeciphered } from './systems/decipher';
+import { readReaderNameWith } from './systems/readerName';
 
 const AUTOSAVE_MS = 10_000;
 
@@ -18,6 +19,7 @@ const state = loadGame(detectLocale());
 setLocale(state.locale);
 watchAbsence(state);
 readStrangeTitleWith(() => isDeciphered(state, 'contents'));
+readReaderNameWith(() => state.playerName);
 state.lastTick = Date.now(); // pas encore de pages lues hors-ligne dans le prototype
 
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);

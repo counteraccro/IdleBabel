@@ -25,7 +25,7 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'warmCloset',
   ],
   // Le livre qui te parle (phrases de l'auteur, 30/09).
-  speaks: ['iSeeYou', 'iKnowYou', 'iKnowMe', 'never', 'almost', 'alreadyFound', 'notAlone', 'behindYou'],
+  speaks: ['iSeeYou', 'iKnowYou', 'iKnowMe', 'never', 'almost', 'alreadyFound', 'notAlone', 'behindYou', 'knowsName', 'trueName'],
   // Citations célèbres : la Bibliothèque contient aussi tout ce qui a déjà été dit (idée de l'auteur, 30/09).
   said: [
     'yourFather',
