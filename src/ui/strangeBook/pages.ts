@@ -28,6 +28,7 @@ import {
   type PlatePage,
 } from './plates';
 import { markSealsSeen } from '../../systems/seals';
+import { sentencesSection, sentencesShown, sentencesTitle } from './sentencesChapter';
 import { decipher, decipherPrice } from '../../systems/decipher';
 import { getLocale, t } from '../../i18n';
 import { currentNotation, formatNumber, writeDigits } from '../../core/format';
@@ -73,6 +74,8 @@ const titleItems = (): Item[] => {
 const ENTRY_TOP = 180;
 const ENTRY_STEP = 56;
 const SUB_STEP = 40;
+/** Bas du sommaire, au-dessus du numéro de page : au-delà, les lignes se resserrent. */
+const ENTRY_BOTTOM = 700;
 
 /** Une entrée du sommaire ; `sub` : sous-entrée, en retrait et plus petite. */
 interface Entry {
@@ -85,11 +88,13 @@ interface Entry {
 
 const contentsItems = (state: GameState, entries: Entry[]): Item[] => {
   let y = ENTRY_TOP;
+  const height = entries.reduce((sum, entry) => sum + (entry.sub ? SUB_STEP : ENTRY_STEP), 0);
+  const squeeze = Math.min(1, (ENTRY_BOTTOM - ENTRY_TOP) / height);
   return [
     ...heading(contentsTitle(state)),
     ...entries.flatMap((entry): Item[] => {
       const size = entry.sub ? 20 : 26;
-      const step = entry.sub ? SUB_STEP : ENTRY_STEP;
+      const step = (entry.sub ? SUB_STEP : ENTRY_STEP) * squeeze;
       const top = y;
       y += step;
       const x = entry.sub ? 130 : 90;
@@ -257,7 +262,8 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
 };
 
 /**
- * Toutes les pages : garde, sommaire, un chapitre par page (ceux déjà débloqués), puis les sceaux :
+ * Toutes les pages : garde, sommaire, un chapitre par page (ceux déjà débloqués), les Connaissances
+ * (toutes les phrases, sentencesChapter.ts), puis les sceaux :
  * une page d'introduction (avancement) et leurs planches.
  * `offset` : place de la garde dans le livre (0 : à gauche de la première double page, comme le livre
  * 2D ; 1 : à droite, le livre 3D gardant la gauche pour l'intérieur de la couverture). Les numéros de
@@ -266,13 +272,20 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
 export const createPages = (state: GameState, goTo: (page: number) => void, offset = 0): LeafPage[] => {
   const chapters = CHAPTERS.filter((chapter) => chapterShown(state, chapter));
   const first = 2;
-  // Les sceaux commencent sur une page impaire (à gauche, face à leur première planche) : sinon, une
-  // page blanche est laissée avant eux.
-  const blank = (offset + first + chapters.length) % 2 === 1;
-  const sealsPage = first + chapters.length + (blank ? 1 : 0);
+  // Les Connaissances (toutes les phrases) et les sceaux commencent chacun sur une page de gauche, face
+  // à leur première page de contenu : sinon, une page blanche est laissée avant eux.
+  const onLeft = (page: number): number => ((offset + page) % 2 === 1 ? page + 1 : page);
+  const afterChapters = first + chapters.length;
+  const sentencesPage = sentencesShown(state) ? onLeft(afterChapters) : afterChapters;
+  const sentences = sentencesShown(state) ? sentencesSection(state, CHAPTERS.length + 1, sentencesPage) : { pages: [], entries: [] };
+  const beforeSeals = sentencesPage + sentences.pages.length;
+  const sealsPage = onLeft(beforeSeals);
+  const blankPage = (page: number): LeafPage => createLeafPage(() => [folio(page + 1)], goTo);
   const plates: PlatePage[] = platePages(sealsPage + 1);
   const entries: Entry[] = [
     ...chapters.map((chapter, index) => ({ title: () => chapterTitle(state, chapter), page: first + index })),
+    ...(sentences.pages.length > 0 ? [{ title: sentencesTitle, page: sentencesPage }] : []),
+    ...sentences.entries.map((entry) => ({ title: entry.title, page: entry.page, sub: true })),
     { title: sealsTitle, page: sealsPage, news: () => state.newSeals.length > 0 },
     ...plates
       .filter((plate) => plate.part === 0)
@@ -295,7 +308,9 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
         onPay: () => decipher(state, chapter.id),
       }),
     ),
-    ...(blank ? [createLeafPage(() => [folio(sealsPage)], goTo)] : []),
+    ...(sentencesPage > afterChapters ? [blankPage(afterChapters)] : []),
+    ...sentences.pages.map((layout) => createLeafPage(layout, goTo)),
+    ...(sealsPage > beforeSeals ? [blankPage(beforeSeals)] : []),
     createLeafPage(
       ({ asking }) => [
         ...completionItems(state, plates, sealsPage + 1),

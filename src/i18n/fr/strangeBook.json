@@ -6,8 +6,15 @@
     "books": "Volumes",
     "time": "Heures",
     "methods": "Manières",
-    "knowledge": "Révélations"
+    "knowledge": "Révélations",
+    "sentences": "Connaissances"
   },
+  "sentenceKinds": {
+    "method": "Méthodes",
+    "memory": "Souvenirs",
+    "anomaly": "Anomalies"
+  },
+  "sentencesCompletion": "phrases qui te sont revenues · {percent}",
   "figures": {
     "totalPages": "pages que tes yeux ont traversées",
     "stock": "pages dont tu te souviens encore",

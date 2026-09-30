@@ -6,8 +6,15 @@
     "books": "Volumes",
     "time": "Hours",
     "methods": "Ways",
-    "knowledge": "Revelations"
+    "knowledge": "Revelations",
+    "sentences": "Knowledge"
   },
+  "sentenceKinds": {
+    "method": "Methods",
+    "memory": "Memories",
+    "anomaly": "Anomalies"
+  },
+  "sentencesCompletion": "sentences that have come back to you · {percent}",
   "figures": {
     "totalPages": "pages your eyes have crossed",
     "stock": "pages you still remember",

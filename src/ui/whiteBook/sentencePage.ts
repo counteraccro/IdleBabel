@@ -19,9 +19,11 @@ export interface SentenceView {
   fresh: (segment: number) => boolean;
 }
 
-/** La phrase, mot à mot : les morceaux trouvés à l'encre, les autres en symboles fantômes. */
-const sentenceWords = (state: GameState, sentence: SentenceDef, fresh: (segment: number) => boolean): Word[] => {
-  const done = written(state, sentence.id);
+/**
+ * La phrase, mot à mot : les morceaux trouvés (`done`) à l'encre, les autres en symboles fantômes (les
+ * mêmes dans le livre blanc et dans le livre étrange).
+ */
+export const sentenceWords = (sentence: SentenceDef, done: number[], fresh: (segment: number) => boolean = () => false): Word[] => {
   const words = segments(sentence.id).flatMap((text, segment) => {
     const found = done.includes(segment);
     const shown = found ? text : babelize(text, seedOf(`${sentence.id}:${segment}`));
@@ -44,7 +46,7 @@ const sentenceWords = (state: GameState, sentence: SentenceDef, fresh: (segment:
  */
 export const sentenceBody = (state: GameState, sentence: SentenceDef, top: number, view: SentenceView): Item[] => {
   const delay = (ms: number): number | undefined => (view.reveal ? ms : undefined);
-  const words = sentenceWords(state, sentence, view.fresh);
+  const words = sentenceWords(sentence, written(state, sentence.id), view.fresh);
   const tool = TOOLS.find((candidate) => candidate.id === sentence.tool);
   if (!tool) {
     // Souvenir, anomalie : la phrase seule, au milieu de la page.
