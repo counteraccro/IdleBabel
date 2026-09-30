@@ -72,6 +72,12 @@ describe('Connaissance', () => {
     expect(drawFind(state, sequence(0.99, 0.1))).toEqual({ kind: 'sentence', sentence: 'diagonal' });
   });
 
+  it('ne tire jamais dans une méthode suivante : les méthodes se découvrent dans l’ordre', () => {
+    const state = started();
+    const later = SENTENCES.filter((sentence) => sentence.kind === 'method' && sentence.id !== 'diagonal').map((sentence) => sentence.id);
+    for (let i = 0; i < 2000; i++) expect(later).not.toContain(drawFind(state, Math.random).sentence);
+  });
+
   it('écrit la trouvaille et rapporte un point, même un doublon', () => {
     const state = started();
     gainFind(state, { kind: 'word', sentence: 'finger', segment: 0 });

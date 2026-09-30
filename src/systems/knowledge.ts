@@ -67,14 +67,17 @@ const missingSegment = (state: GameState, id: string, kind: FindKind, random: ()
 
 /**
  * Ce que cache la page : surtout des morceaux de la phrase de méthode en cours, parfois d'une autre
- * phrase, parfois un morceau déjà écrit ; rarement une phrase entière. `lucky` : la toute première
+ * phrase (jamais d'une méthode suivante : elles se découvrent dans l'ordre), parfois un morceau déjà
+ * écrit ; rarement une phrase entière. `lucky` : la toute première
  * trouvaille, la phrase entière de la première méthode (la Lecture Diagonale), qui se découvre d'un coup.
  */
 export const drawFind = (state: GameState, random: () => number, lucky = false): Find => {
   const target = currentTarget(state);
   if (lucky && target) return { kind: 'sentence', sentence: target };
   const kind = drawKind(random);
-  const open = SENTENCES.filter((sentence) => !isComplete(state, sentence.id)).map((sentence) => sentence.id);
+  // Seule la méthode en cours se trouve : les suivantes attendent leur tour.
+  const open = SENTENCES.filter((sentence) => !isComplete(state, sentence.id) && (sentence.kind !== 'method' || sentence.id === target))
+    .map((sentence) => sentence.id);
   const started = SENTENCES.filter((sentence) => written(state, sentence.id).length > 0).map((sentence) => sentence.id);
   if (open.length === 0 || (kind !== 'sentence' && started.length > 0 && random() < DUPLICATE_SHARE)) {
     const sentence = pick(started.length > 0 ? started : SENTENCES.map((s) => s.id), random);
