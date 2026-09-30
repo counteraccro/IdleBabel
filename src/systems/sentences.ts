@@ -12,6 +12,9 @@ export const segments = (id: string): string[] => {
   return text.split('/').map((segment) => segment.trim());
 };
 
+/** Auteur ou référence d'une citation célèbre (whiteBook.sources), montré une fois la phrase complète. */
+export const sentenceSource = (id: string): string | undefined => (messages().whiteBook.sources as Record<string, string>)[id];
+
 /** Un ou deux mots (avec l'article) : un mot ; au-delà, un morceau de phrase. */
 export const segmentKind = (text: string): Exclude<FindKind, 'sentence'> => (text.split(' ').length <= 2 ? 'word' : 'piece');
 

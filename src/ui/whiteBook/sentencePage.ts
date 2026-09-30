@@ -1,7 +1,7 @@
 import { getLocale, t } from '../../i18n';
 import { formatNumber } from '../../core/format';
 import { TOOLS } from '../../data/tools';
-import { segments, written } from '../../systems/sentences';
+import { isComplete, segments, sentenceSource, written } from '../../systems/sentences';
 import { babelize, seedOf } from './babelMask';
 import { paragraph, wordsParagraph, type Word } from './paragraph';
 import type { SentenceDef } from '../../data/sentences';
@@ -38,6 +38,19 @@ export const sentenceWords = (sentence: SentenceDef, done: number[], fresh: (seg
   return words;
 };
 
+/** Auteur ou référence d'une citation, sous elle, à droite de la colonne. */
+export const sourceItem = (source: string, y: number, size: number, reveal?: number): Item => ({
+  kind: 'text',
+  text: `— ${source}`,
+  x: 560,
+  y,
+  size,
+  align: 'right',
+  italic: true,
+  faded: true,
+  reveal,
+});
+
 /**
  * Corps d'une page du livre blanc, sous le sceau et le nom : la phrase en épigraphe ; pour une
  * méthode, ses chiffres, ce qu'elle fait et une citation obscure tirée d'un volume de la Bibliothèque.
@@ -49,8 +62,11 @@ export const sentenceBody = (state: GameState, sentence: SentenceDef, top: numbe
   const words = sentenceWords(sentence, written(state, sentence.id), view.fresh);
   const tool = TOOLS.find((candidate) => candidate.id === sentence.tool);
   if (!tool) {
-    // Souvenir, anomalie : la phrase seule, au milieu de la page.
-    return wordsParagraph(words, top + 120, { ...COLUMN, size: 24, line: 34, align: 'center', italic: true, reveal: delay(0) }).items;
+    // Souvenir, anomalie : la phrase seule, au milieu de la page ; une citation, son auteur dessous une
+    // fois complète.
+    const alone = wordsParagraph(words, top + 120, { ...COLUMN, size: 24, line: 34, align: 'center', italic: true, reveal: delay(0) });
+    const source = isComplete(state, sentence.id) ? sentenceSource(sentence.id) : undefined;
+    return [...alone.items, ...(source ? [sourceItem(source, alone.bottom + 12, 18, delay(600))] : [])];
   }
   const text = (key: string): string => {
     const real = t(`whiteBook.methods.${tool.id}.${key}`);

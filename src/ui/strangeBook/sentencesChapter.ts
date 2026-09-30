@@ -1,10 +1,10 @@
 import { getLocale, t } from '../../i18n';
 import { currentNotation, writeDigits } from '../../core/format';
 import { SENTENCES, type SentenceDef, type SentenceKind } from '../../data/sentences';
-import { isComplete, segments, written } from '../../systems/sentences';
+import { isComplete, segments, sentenceSource, written } from '../../systems/sentences';
 import { isDeciphered } from '../../systems/decipher';
 import { statsRevealed } from '../../systems/strangeBook';
-import { sentenceWords } from '../whiteBook/sentencePage';
+import { sentenceWords, sourceItem } from '../whiteBook/sentencePage';
 import { wordsParagraph } from '../whiteBook/paragraph';
 import { folio, heading, type Item } from './pageItems';
 import type { GameState } from '../../core/state';
@@ -27,6 +27,8 @@ const TOP = 190;
 /** Bas des phrases, avec de la marge : une phrase qui gagne une ligne en se remplissant tient encore. */
 const BOTTOM = 660;
 const SENTENCE_GAP = 20;
+/** Ligne de l'auteur d'une citation (sa place est gardée tant qu'elle n'est pas trouvée). */
+const SOURCE_LINE = 26;
 const COLUMN = { left: 80, width: 480, size: 21, line: 29, align: 'center', italic: true } as const;
 /** Lignes des sortes sur la page d'introduction (comme les planches des sceaux). */
 const LINE_TOP = 360;
@@ -50,7 +52,7 @@ const tally = (state: GameState, sentences: readonly SentenceDef[]): string =>
 const sentenceHeight = (sentence: SentenceDef): number => {
   const all = segments(sentence.id).map((_, index) => index);
   const tallest = Math.max(...[all, []].map((done) => wordsParagraph(sentenceWords(sentence, done), 0, COLUMN).bottom));
-  return tallest + SENTENCE_GAP;
+  return tallest + (sentenceSource(sentence.id) ? SOURCE_LINE : 0) + SENTENCE_GAP;
 };
 
 /** Les phrases d'une sorte réparties en pages. */
@@ -75,9 +77,10 @@ const kindItems = (state: GameState, kind: SentenceKind, sentences: SentenceDef[
   return [
     ...heading(kindTitle(state, kind)),
     ...sentences.flatMap((sentence) => {
-      const items = wordsParagraph(sentenceWords(sentence, written(state, sentence.id)), y, COLUMN).items;
+      const text = wordsParagraph(sentenceWords(sentence, written(state, sentence.id)), y, COLUMN);
+      const source = isComplete(state, sentence.id) ? sentenceSource(sentence.id) : undefined;
       y += sentenceHeight(sentence);
-      return items;
+      return [...text.items, ...(source ? [sourceItem(source, text.bottom, 16)] : [])];
     }),
     folio(number),
   ];

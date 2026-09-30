@@ -27,6 +27,11 @@ describe('phrases du livre blanc', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it('ont un auteur (citations) qui renvoie à une phrase existante, dans chaque langue', () => {
+    const ids = new Set(SENTENCES.map((sentence) => sentence.id));
+    for (const messages of Object.values(LOCALES)) for (const id of Object.keys(messages.whiteBook.sources)) expect(ids, id).toContain(id);
+  });
+
   it('ont le même nombre de morceaux dans chaque langue', () => {
     for (const sentence of SENTENCES) {
       const counts = Object.values(LOCALES).map(
