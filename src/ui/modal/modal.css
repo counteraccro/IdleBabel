@@ -15,9 +15,15 @@
   backdrop-filter: blur(3px);
 }
 /* Avant le jeu (nom, langue) : rien derrière, le noir complet. */
-.modal-backdrop.black { background: #000; backdrop-filter: none; }
+.modal-backdrop.black {
+  background: #000;
+  backdrop-filter: none;
+}
 /* Presque noir, sans flou : on distingue juste ce qui est derrière (le livre qu'on vient de prendre). */
-.modal-backdrop.light { background: rgba(5, 4, 3, 0.8); backdrop-filter: none; }
+.modal-backdrop.light {
+  background: rgba(5, 4, 3, 0.8);
+  backdrop-filter: none;
+}
 
 /* Coins coupés : le cuir, et les filets qui en suivent le contour. */
 .modal-frame,
@@ -30,8 +36,14 @@
 .modal-filet,
 .modal-filet::before {
   clip-path: polygon(
-    var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)),
-    calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut)
+    var(--cut) 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut)),
+    0 var(--cut)
   );
 }
 
@@ -42,8 +54,12 @@
   /* Le cuir découpé ne porte pas d'ombre : l'écrin entier en projette une. */
   filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.75));
 }
-.modal-danger { --modal-accent: #e08a6a; }
-.modal-notice { --modal-accent: #cdb892; }
+.modal-danger {
+  --modal-accent: #e08a6a;
+}
+.modal-notice {
+  --modal-accent: #cdb892;
+}
 
 /* Filet extérieur : l'or au bord, le cuir juste dedans. */
 .modal {
@@ -91,11 +107,30 @@
   filter: drop-shadow(0 1px 1px #000);
   pointer-events: none;
 }
-.modal-corner svg { display: block; width: 100%; height: 100%; }
-.modal-corner.tl { top: -16px; left: -16px; }
-.modal-corner.tr { top: -16px; right: -16px; transform: scaleX(-1); }
-.modal-corner.bl { bottom: -16px; left: -16px; transform: scaleY(-1); }
-.modal-corner.br { bottom: -16px; right: -16px; transform: scale(-1); }
+.modal-corner svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.modal-corner.tl {
+  top: -16px;
+  left: -16px;
+}
+.modal-corner.tr {
+  top: -16px;
+  right: -16px;
+  transform: scaleX(-1);
+}
+.modal-corner.bl {
+  bottom: -16px;
+  left: -16px;
+  transform: scaleY(-1);
+}
+.modal-corner.br {
+  bottom: -16px;
+  right: -16px;
+  transform: scale(-1);
+}
 
 /* Colonnes de symboles de Babel qui s'échappent des côtés, effacées vers leurs bouts. */
 .modal-spill {
@@ -112,8 +147,13 @@
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 25%, #000 75%, transparent);
   mask-image: linear-gradient(180deg, transparent, #000 25%, #000 75%, transparent);
 }
-.modal-spill.left { left: -30px; }
-.modal-spill.right { right: -30px; transform: rotate(180deg); }
+.modal-spill.left {
+  left: -30px;
+}
+.modal-spill.right {
+  right: -30px;
+  transform: rotate(180deg);
+}
 
 .modal-title {
   margin: 0;
@@ -124,10 +164,19 @@
   color: var(--modal-accent);
   text-shadow: 0 1px 0 #000;
 }
-.modal p { margin: 0; line-height: 1.5; color: #cdb892; }
+.modal p {
+  margin: 0;
+  line-height: 1.5;
+  color: #cdb892;
+}
 
 /* Champs et choix dans une modale. */
-.modal-field { display: flex; flex-direction: column; gap: 8px; color: #cdb892; }
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #cdb892;
+}
 .modal-field input {
   padding: 8px 10px;
   font: inherit;
@@ -138,10 +187,21 @@
   border: 1px solid rgba(224, 184, 112, 0.4);
   border-radius: 3px;
 }
-.modal-field input:focus { outline: none; border-color: var(--modal-accent); }
-.modal-choices { display: flex; justify-content: center; gap: 10px; }
+.modal-field input:focus {
+  outline: none;
+  border-color: var(--modal-accent);
+}
+.modal-choices {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
 
-.modal-actions { display: flex; justify-content: center; gap: 12px; }
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
 .modal-choices button,
 .modal-button {
   padding: 6px 16px;
@@ -153,14 +213,35 @@
   cursor: pointer;
 }
 .modal-choices .active,
-.modal-button.primary { color: #f3dc9c; border-color: rgba(224, 184, 112, 0.85); box-shadow: 0 0 8px rgba(224, 184, 112, 0.25); }
-.modal-button.primary { padding: 8px 28px; font-size: 1.1rem; }
-.modal-button.danger { color: #f0a48a; border-color: rgba(224, 138, 106, 0.7); }
-.modal-button:hover:not(:disabled) { border-color: var(--modal-accent); color: var(--modal-accent); }
-.modal-button:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+.modal-button.primary {
+  color: #f3dc9c;
+  border-color: rgba(224, 184, 112, 0.85);
+  box-shadow: 0 0 8px rgba(224, 184, 112, 0.25);
+}
+.modal-button.primary {
+  padding: 8px 28px;
+  font-size: 1.1rem;
+}
+.modal-button.danger {
+  color: #f0a48a;
+  border-color: rgba(224, 138, 106, 0.7);
+}
+.modal-button:hover:not(:disabled) {
+  border-color: var(--modal-accent);
+  color: var(--modal-accent);
+}
+.modal-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: none;
+}
 
 /* Texte de lore : paragraphes en italique, qui apparaissent l'un après l'autre. */
-.modal-story { display: flex; flex-direction: column; gap: 14px; }
+.modal-story {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 .modal-story p {
   font-size: 1.1rem;
   font-style: italic;
@@ -170,13 +251,34 @@
   animation: modal-story-in 1.2s ease forwards;
 }
 @keyframes modal-story-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 /* Le bouton attend la fin du récit. */
-.modal-story ~ .modal-actions { opacity: 0; animation: modal-story-in 0.8s ease forwards; }
+.modal-story ~ .modal-actions {
+  opacity: 0;
+  animation: modal-story-in 0.8s ease forwards;
+}
 /* Le nom attend la fin du récit, comme le bouton. */
-.modal-story ~ .modal-field { opacity: 0; animation: modal-story-in 0.8s ease forwards; }
+.modal-story ~ .modal-field {
+  opacity: 0;
+  animation: modal-story-in 0.8s ease forwards;
+}
 /* Voile noir entre deux écrans (moment de lore qui mène ailleurs, ui/lore.ts), au-dessus des modales. */
-.modal-veil { position: fixed; inset: 0; z-index: 30; background: #000; pointer-events: none; transition: opacity 0.8s ease; }
-.modal-veil.lifting { opacity: 0; }
+.modal-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: #000;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+.modal-veil.lifting {
+  opacity: 0;
+}

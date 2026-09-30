@@ -15,8 +15,7 @@ const corner = (i: number, r: number): [number, number] => {
   return [50 + r * Math.cos(a), 50 + r * Math.sin(a)];
 };
 const fixed = (value: number): string => value.toFixed(1);
-const hexagon = (r: number): string =>
-  `M${[0, 1, 2, 3, 4, 5].map((i) => corner(i, r).map(fixed).join(' ')).join(' L')} Z`;
+const hexagon = (r: number): string => `M${[0, 1, 2, 3, 4, 5].map((i) => corner(i, r).map(fixed).join(' ')).join(' L')} Z`;
 
 export const sigil = (series: string, tier = 0): Shape[] => {
   const random = seeded(hashText(series));

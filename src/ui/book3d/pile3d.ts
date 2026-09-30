@@ -141,7 +141,24 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     });
     const holder = new THREE.Group();
     pivot.add(holder);
-    const slot: Slot = { spec, pivot, outline, body: null, holder, standing: false, size: new THREE.Vector3(), base: new THREE.Vector3(), shown: true, away: false, glow: 0, aim: 0, shakeAt: null, arriveAt: null, news: false, button };
+    const slot: Slot = {
+      spec,
+      pivot,
+      outline,
+      body: null,
+      holder,
+      standing: false,
+      size: new THREE.Vector3(),
+      base: new THREE.Vector3(),
+      shown: true,
+      away: false,
+      glow: 0,
+      aim: 0,
+      shakeAt: null,
+      arriveAt: null,
+      news: false,
+      button,
+    };
     const book = spec.book();
     void book.look().then((look) => {
       const mesh = createBookMesh(book.shape, look);
@@ -231,7 +248,11 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     const half = THREE.MathUtils.degToRad(camera.fov / 2);
     const distance = (sphere.radius * 0.62) / Math.sin(Math.min(half, Math.atan(Math.tan(half) * camera.aspect)));
     const flat = distance * Math.cos(ELEVATION);
-    camera.position.set(sphere.center.x + flat * Math.sin(AZIMUTH), sphere.center.y + distance * Math.sin(ELEVATION), sphere.center.z + flat * Math.cos(AZIMUTH));
+    camera.position.set(
+      sphere.center.x + flat * Math.sin(AZIMUTH),
+      sphere.center.y + distance * Math.sin(ELEVATION),
+      sphere.center.z + flat * Math.cos(AZIMUTH),
+    );
     camera.lookAt(sphere.center);
     lighting.follow(camera, sphere.center, 1);
   };
@@ -247,7 +268,10 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     // Le rayon touche aussi les objets cachés (la feuille qui tourne, masquée dans un livre fermé, qui
     // dépasse du livre) : seul compte ce qu'on voit.
     const hit = raycaster
-      .intersectObjects(slots.filter((slot) => slot.pivot.visible).map((slot) => slot.pivot), true)
+      .intersectObjects(
+        slots.filter((slot) => slot.pivot.visible).map((slot) => slot.pivot),
+        true,
+      )
       .find((candidate) => {
         for (let object: THREE.Object3D | null = candidate.object; object; object = object.parent) if (!object.visible) return false;
         return true;
@@ -301,7 +325,8 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
       renderer.render(scene, camera);
       const rect = canvas.getBoundingClientRect();
       Object.assign(overlay.style, { left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
-      if (overlay.width !== canvas.width || overlay.height !== canvas.height) [overlay.width, overlay.height] = [canvas.width, canvas.height];
+      if (overlay.width !== canvas.width || overlay.height !== canvas.height)
+        [overlay.width, overlay.height] = [canvas.width, canvas.height];
       overlayContext.clearRect(0, 0, overlay.width, overlay.height);
       overlayContext.drawImage(canvas, 0, 0);
       if (!overlay.isConnected) document.body.append(overlay);
@@ -336,7 +361,11 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     const progress = (at: number | null, ms: number): number | null => (at === null || still.matches ? null : Math.min(1, (now - at) / ms));
     for (const slot of slots) {
       if (!slot.pivot.visible) continue;
-      const newsGlow = slot.news ? (still.matches ? NEWS_GLOW : NEWS_GLOW * (0.5 - 0.5 * Math.cos((now / 1000 / NEWS_S) * 2 * Math.PI))) : 0;
+      const newsGlow = slot.news
+        ? still.matches
+          ? NEWS_GLOW
+          : NEWS_GLOW * (0.5 - 0.5 * Math.cos((now / 1000 / NEWS_S) * 2 * Math.PI))
+        : 0;
       const aim = Math.max(slot.aim, newsGlow);
       slot.glow = still.matches ? aim : slot.glow + (aim - slot.glow) * Math.min(1, dt * GLOW_RATE);
       if (Math.abs(aim - slot.glow) > 0.002 || (slot.news && !still.matches)) moving = true;

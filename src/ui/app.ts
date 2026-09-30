@@ -57,19 +57,19 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   // L'en-tête reste à l'écran d'une page à l'autre : la pile ne se recharge pas, le livre ouvert y laisse
   // sa place vide et y revient.
   const header = createHeader({
-      onOptions: open(OPTIONS_HASH),
-      onWhiteBook: open(WHITE_BOOK_HASH),
-      onStrangeBook: open(STRANGE_BOOK_HASH),
-      books: {
-        options: () => notebook3d(state, { onLocale: () => {}, onSettings: () => {}, onReset: () => {} }),
-        white: () => whiteBook3d(state),
-        strange: () => strangeBook3d(state),
-      },
-      strangeBookFound: () => strangeBookFound(state),
-      hasNewSeals: () => state.newSeals.length > 0,
-      writtenCount: () => Object.values(state.written).reduce((sum, done) => sum + done.length, 0),
-      openBook,
-    });
+    onOptions: open(OPTIONS_HASH),
+    onWhiteBook: open(WHITE_BOOK_HASH),
+    onStrangeBook: open(STRANGE_BOOK_HASH),
+    books: {
+      options: () => notebook3d(state, { onLocale: () => {}, onSettings: () => {}, onReset: () => {} }),
+      white: () => whiteBook3d(state),
+      strange: () => strangeBook3d(state),
+    },
+    strangeBookFound: () => strangeBookFound(state),
+    hasNewSeals: () => state.newSeals.length > 0,
+    writtenCount: () => Object.values(state.written).reduce((sum, done) => sum + done.length, 0),
+    openBook,
+  });
 
   const game = (): Component[] => [
     header,
@@ -119,7 +119,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       };
       return [header, createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : undefined)];
     }
-    if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state)) return [header, createBook3dPage(strangeBook3d(state), back)];
+    if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state))
+      return [header, createBook3dPage(strangeBook3d(state), back)];
     return game();
   };
 

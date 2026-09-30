@@ -35,7 +35,7 @@ describe('pages qui tournent (livre 3D)', () => {
     expect(landed).toEqual([1, 2, 3, 4]);
   });
 
-  it("ne signale rien en revenant en arrière, et reste dans le livre", () => {
+  it('ne signale rien en revenant en arrière, et reste dans le livre', () => {
     const landed: number[] = [];
     const turner = createTurner(book, pages, 3, (spread) => landed.push(spread));
     turner.jump(2);

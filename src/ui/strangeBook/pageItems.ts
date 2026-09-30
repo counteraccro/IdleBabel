@@ -109,11 +109,31 @@ const roman = (value: number): string => {
 export const heading = (text: string, chapter?: number): Item[] => [
   ...(chapter === undefined
     ? []
-    : [{ kind: 'text', text: roman(chapter), x: 320, y: 44, size: 18, align: 'center', spacing: 8, gold: true, face: 'title' } satisfies Item]),
+    : [
+        {
+          kind: 'text',
+          text: roman(chapter),
+          x: 320,
+          y: 44,
+          size: 18,
+          align: 'center',
+          spacing: 8,
+          gold: true,
+          face: 'title',
+        } satisfies Item,
+      ]),
   { kind: 'text', text: text.toLocaleUpperCase(), x: 320, y: 72, size: 30, align: 'center', spacing: 6, face: 'title', initial: true },
   { kind: 'rule', y: 134, width: 220 },
 ];
-export const folio = (number: number): Item => ({ kind: 'text', text: String(number), x: 320, y: 730, size: 18, align: 'center', faded: true });
+export const folio = (number: number): Item => ({
+  kind: 'text',
+  text: String(number),
+  x: 320,
+  y: 730,
+  size: 18,
+  align: 'center',
+  faded: true,
+});
 
 export type TextItem = Extract<Item, { kind: 'text' }>;
 const font = (item: TextItem, size: string): string =>
@@ -226,7 +246,8 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
  */
 export const itemAt = (items: Item[], x: number, y: number): Item | undefined =>
   [...items].reverse().find((item) => {
-    if (item.kind === 'seal') return item.look !== 'hidden' && Math.abs(x - item.x) <= item.size / 2 && Math.abs(y - item.y) <= item.size / 2;
+    if (item.kind === 'seal')
+      return item.look !== 'hidden' && Math.abs(x - item.x) <= item.size / 2 && Math.abs(y - item.y) <= item.size / 2;
     if (item.kind !== 'link' && item.kind !== 'action') return false;
     const margin = PAGE_TEXTURE.width * (item.kind === 'action' && item.id === 'pay' ? 0.25 : 0.1);
     const [left, right] =
@@ -349,7 +370,8 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
     } else if (item.kind === 'underline') {
       // Tirets courts au crayon, un peu irréguliers : tracés à la main.
       context.fillStyle = PENCIL_FADED;
-      for (let x = item.x1, n = 0; x < item.x2; x += 7, n++) context.fillRect(x, item.y + ((n * 7) % 3) * 0.4, Math.min(4, item.x2 - x), 1.6);
+      for (let x = item.x1, n = 0; x < item.x2; x += 7, n++)
+        context.fillRect(x, item.y + ((n * 7) % 3) * 0.4, Math.min(4, item.x2 - x), 1.6);
     } else if (item.kind === 'seal') {
       drawSeal(context, sigil(item.series, item.tier), item.look, item.x - item.size / 2, item.y - item.size / 2, item.size);
     }

@@ -55,7 +55,10 @@ export const attachBookGesture = (options: BookGestureOptions): void => {
     const book = options.book();
     if (!book) return null;
     const bounds = canvas.getBoundingClientRect();
-    const pointer = new THREE.Vector2(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -((event.clientY - bounds.top) / bounds.height) * 2 + 1);
+    const pointer = new THREE.Vector2(
+      ((event.clientX - bounds.left) / bounds.width) * 2 - 1,
+      -((event.clientY - bounds.top) / bounds.height) * 2 + 1,
+    );
     raycaster.setFromCamera(pointer, camera);
     // Le rayon traverse aussi ce qui est caché (la feuille qui tourne, posée mais masquée, couvre la page
     // de gauche) : seul compte ce qu'on voit.

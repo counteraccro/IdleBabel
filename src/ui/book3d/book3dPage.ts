@@ -150,7 +150,8 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     turner = createTurner(book, createPageCache(source), spreads);
     // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée.
     spec.navigate = (index) => turner?.go(Math.floor(index / 2));
-    if (spec.bookmark !== undefined) book.setRibbon(spreads > 1 ? Math.floor(spec.bookmark / 2) / (spreads - 1) : 0, spreads > 1 ? 1 / (spreads - 1) : 1);
+    if (spec.bookmark !== undefined)
+      book.setRibbon(spreads > 1 ? Math.floor(spec.bookmark / 2) / (spreads - 1) : 0, spreads > 1 ? 1 / (spreads - 1) : 1);
     // Débogage : accès au livre depuis la console (?debug seulement).
     if (isDebugEnabled()) (window as unknown as { book3d?: unknown }).book3d = { book, turner, camera, controls, invalidate };
     invalidate();
@@ -234,7 +235,11 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
       if (hit && book?.isRibbon(hit.object)) return void (canvas.style.cursor = 'pointer');
       const page = hit ? book?.pageUnder(hit) : null;
       if (!page || !turner?.idle || !view.locked) return void (canvas.style.cursor = '');
-      const [index, x, y] = [2 * turner.target + (page.side === 'right' ? 1 : 0), page.u * PAGE_TEXTURE.width, page.v * PAGE_TEXTURE.height];
+      const [index, x, y] = [
+        2 * turner.target + (page.side === 'right' ? 1 : 0),
+        page.u * PAGE_TEXTURE.width,
+        page.v * PAGE_TEXTURE.height,
+      ];
       canvas.style.cursor = spec.pointable?.(index, x, y) ? 'pointer' : '';
       if (spec.hover?.(index, x, y)) refresh();
     },

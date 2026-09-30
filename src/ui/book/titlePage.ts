@@ -8,7 +8,17 @@ import { coverTitle, hasMeaningfulTitle } from '../../systems/coverTitle';
  * texture, 640 × 800) sert à la page HTML et à la feuille qui tourne, pour qu'elles soient identiques.
  */
 type Item =
-  | { kind: 'text'; text: string; y: number; size: number; family: string; italic?: boolean; bold?: boolean; spacing: number; color: string }
+  | {
+      kind: 'text';
+      text: string;
+      y: number;
+      size: number;
+      family: string;
+      italic?: boolean;
+      bold?: boolean;
+      spacing: number;
+      color: string;
+    }
   | { kind: 'rule'; y: number; width: number; thickness: number; color: string }
   | { kind: 'lozenge'; y: number; size: number; color: string }
   | { kind: 'mark'; y: number; size: number; color: string };
@@ -27,8 +37,26 @@ const oldLayout = (design: CoverDesign): Item[] => {
   }
   items.push({ kind: 'rule', y: y + 12, width: 140, thickness: 1.5, color: OLD_INK });
   const subtitle = design.blurb.split(' ').slice(0, 6);
-  items.push({ kind: 'text', text: subtitle.slice(0, 3).join(' '), y: y + 42, size: 20, family: SERIF, italic: true, spacing: 0, color: OLD_INK });
-  items.push({ kind: 'text', text: subtitle.slice(3).join(' '), y: y + 70, size: 20, family: SERIF, italic: true, spacing: 0, color: OLD_INK });
+  items.push({
+    kind: 'text',
+    text: subtitle.slice(0, 3).join(' '),
+    y: y + 42,
+    size: 20,
+    family: SERIF,
+    italic: true,
+    spacing: 0,
+    color: OLD_INK,
+  });
+  items.push({
+    kind: 'text',
+    text: subtitle.slice(3).join(' '),
+    y: y + 70,
+    size: 20,
+    family: SERIF,
+    italic: true,
+    spacing: 0,
+    color: OLD_INK,
+  });
   items.push({ kind: 'lozenge', y: 530, size: 22, color: OLD_INK });
   items.push({ kind: 'text', text: shelfMarkText(design), y: 690, size: 16, family: SERIF, spacing: 4, color: OLD_INK });
   return items;
@@ -40,7 +68,16 @@ const modernLayout = (design: CoverDesign): Item[] => {
   let y = 240;
   const meaningful = hasMeaningfulTitle(design);
   for (const word of coverTitle(design)) {
-    items.push({ kind: 'text', text: meaningful ? word : word.charAt(0).toUpperCase() + word.slice(1), y, size: 42, family: SANS, bold: true, spacing: 0, color: MODERN_INK });
+    items.push({
+      kind: 'text',
+      text: meaningful ? word : word.charAt(0).toUpperCase() + word.slice(1),
+      y,
+      size: 42,
+      family: SANS,
+      bold: true,
+      spacing: 0,
+      color: MODERN_INK,
+    });
     y += 48;
   }
   items.push({ kind: 'rule', y: y + 18, width: 60, thickness: 4, color: MODERN_INK });

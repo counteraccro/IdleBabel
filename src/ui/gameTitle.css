@@ -1,28 +1,66 @@
 /* Le titre du jeu (gameTitle.ts) : hexagone doré, « Babel » en or gravé, « Idle » calé après le B. */
-.game-title { display: flex; align-items: center; gap: 12px; margin: 0; letter-spacing: normal; font-weight: normal; }
-.game-title-seal { width: 44px; height: 44px; flex: none; filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8)); }
-.game-title-stack { display: flex; flex-direction: column; line-height: 1; font-family: 'Cinzel', Georgia, serif; }
+.game-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  letter-spacing: normal;
+  font-weight: normal;
+}
+.game-title-seal {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
+}
+.game-title-stack {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  font-family: 'Cinzel', Georgia, serif;
+}
 .game-title-idle {
-  font-size: 0.7rem; letter-spacing: 0.7em; color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.7em;
+  color: var(--muted);
   /* Après le B, un peu descendu : dans le creux au-dessus de « abel ». */
-  padding-left: 1.75rem; margin-bottom: -7px;
+  padding-left: 1.75rem;
+  margin-bottom: -7px;
 }
 .game-title-babel {
-  font-size: 1.35rem; font-weight: 600; letter-spacing: 0.16em;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
 }
 /* Grand B, le reste en petites capitales (Cinzel n'a que des capitales). */
-.game-title-letter:first-child { font-size: 1.55em; }
-.game-title-letter { display: inline-block; position: relative; }
+.game-title-letter:first-child {
+  font-size: 1.55em;
+}
+.game-title-letter {
+  display: inline-block;
+  position: relative;
+}
 /* L'or sur chaque lettre : posé sur le mot entier, une lettre en fondu sortirait du masque et disparaîtrait. */
 .game-title-real {
   background: linear-gradient(180deg, #f7e2a6 0%, #d9a94e 45%, #9a6c26 55%, #e8c776 100%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   transition: opacity 0.9s ease;
 }
 .game-title-symbol {
-  position: absolute; left: 0; right: 0; text-align: center;
-  color: #c9b48a; opacity: 0; transition: opacity 0.9s ease;
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #c9b48a;
+  opacity: 0;
+  transition: opacity 0.9s ease;
 }
-.game-title-letter.scrambled .game-title-real { opacity: 0; }
-.game-title-letter.scrambled .game-title-symbol { opacity: 0.75; }
+.game-title-letter.scrambled .game-title-real {
+  opacity: 0;
+}
+.game-title-letter.scrambled .game-title-symbol {
+  opacity: 0.75;
+}

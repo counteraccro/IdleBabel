@@ -76,8 +76,9 @@ export const drawFind = (state: GameState, random: () => number, lucky = false):
   if (lucky && target) return { kind: 'sentence', sentence: target };
   const kind = drawKind(random);
   // Seule la méthode en cours se trouve : les suivantes attendent leur tour.
-  const open = SENTENCES.filter((sentence) => !isComplete(state, sentence.id) && (sentence.kind !== 'method' || sentence.id === target))
-    .map((sentence) => sentence.id);
+  const open = SENTENCES.filter(
+    (sentence) => !isComplete(state, sentence.id) && (sentence.kind !== 'method' || sentence.id === target),
+  ).map((sentence) => sentence.id);
   const started = SENTENCES.filter((sentence) => written(state, sentence.id).length > 0).map((sentence) => sentence.id);
   if (open.length === 0 || (kind !== 'sentence' && started.length > 0 && random() < DUPLICATE_SHARE)) {
     const sentence = pick(started.length > 0 ? started : SENTENCES.map((s) => s.id), random);

@@ -9,7 +9,10 @@ import { SENTENCES } from '../src/data/sentences';
 import { LOCALES } from '../src/i18n/locales';
 
 /** Tirages rejoués dans l'ordre, puis 0,5. */
-const sequence = (...values: number[]) => () => values.shift() ?? 0.5;
+const sequence =
+  (...values: number[]) =>
+  () =>
+    values.shift() ?? 0.5;
 
 /** Une partie où la première trouvaille (le coup de chance) a déjà eu lieu. */
 const started = () => {
@@ -21,7 +24,9 @@ const started = () => {
 describe('phrases du livre blanc', () => {
   it('ont le même nombre de morceaux dans chaque langue', () => {
     for (const sentence of SENTENCES) {
-      const counts = Object.values(LOCALES).map((messages) => (messages.whiteBook.sentences as Record<string, string>)[sentence.id]?.split('/').length);
+      const counts = Object.values(LOCALES).map(
+        (messages) => (messages.whiteBook.sentences as Record<string, string>)[sentence.id]?.split('/').length,
+      );
       expect(new Set(counts).size, sentence.id).toBe(1);
       expect(counts[0], sentence.id).toBeGreaterThan(1);
     }
@@ -32,7 +37,11 @@ describe('phrases du livre blanc', () => {
     expect(toolUnlocked(state, 'diagonal')).toBe(false);
     expect(currentTarget(state)).toBe('diagonal');
     expect(completion(state)).toBe(0);
-    write(state, 'diagonal', segments('diagonal').map((_, index) => index));
+    write(
+      state,
+      'diagonal',
+      segments('diagonal').map((_, index) => index),
+    );
     expect(toolUnlocked(state, 'diagonal')).toBe(true);
     expect(completion(state)).toBeGreaterThan(0);
     expect(toolUnlocked(state, 'finger')).toBe(false);

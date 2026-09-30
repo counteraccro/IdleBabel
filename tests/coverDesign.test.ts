@@ -8,7 +8,7 @@ describe('couvertures', () => {
     expect(coverDesign(42)).not.toEqual(coverDesign(43));
   });
 
-  it("écrit les titres avec les lettres de Babel", () => {
+  it('écrit les titres avec les lettres de Babel', () => {
     for (let i = 0; i < 200; i++) {
       if (isStrangeBook(i)) continue;
       const { title } = coverDesign(i);

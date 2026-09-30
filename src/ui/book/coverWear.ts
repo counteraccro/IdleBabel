@@ -24,7 +24,10 @@ export const createWear = (design: CoverDesign, { strength = 1, grain = true } =
     })
     .join('');
   const patches = design.scuffs
-    .map(({ x, y, size }) => `<ellipse cx="${(x * 100).toFixed(1)}" cy="${(y * 125).toFixed(1)}" rx="${(size * 30).toFixed(1)}" ry="${(size * 20).toFixed(1)}"/>`)
+    .map(
+      ({ x, y, size }) =>
+        `<ellipse cx="${(x * 100).toFixed(1)}" cy="${(y * 125).toFixed(1)}" rx="${(size * 30).toFixed(1)}" ry="${(size * 20).toFixed(1)}"/>`,
+    )
     .join('');
   const root = el('span', 'cover-wear');
   root.innerHTML = `<svg viewBox="0 0 100 125" preserveAspectRatio="none" aria-hidden="true">

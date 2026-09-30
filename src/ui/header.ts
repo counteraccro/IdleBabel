@@ -28,8 +28,25 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
   // étrange trouvé plus tard, et le cahier tout en haut, bien de travers (on voit sa couverture).
   const pile = createPile3d([
     { id: 'white', label: t('ui.whiteBook'), book: handlers.books.white, onOpen: handlers.onWhiteBook, yaw: 0.02, dx: 0, dz: 0 },
-    { id: 'strange', label: t('ui.strangeBook'), book: handlers.books.strange, onOpen: handlers.onStrangeBook, yaw: 0.06, dx: -0.05, dz: -0.02 },
-    { id: 'options', label: t('ui.options'), book: handlers.books.options, onOpen: handlers.onOptions, yaw: -0.4, dx: 0.2, dz: -0.1, tilt: 0.05 },
+    {
+      id: 'strange',
+      label: t('ui.strangeBook'),
+      book: handlers.books.strange,
+      onOpen: handlers.onStrangeBook,
+      yaw: 0.06,
+      dx: -0.05,
+      dz: -0.02,
+    },
+    {
+      id: 'options',
+      label: t('ui.options'),
+      book: handlers.books.options,
+      onOpen: handlers.onOptions,
+      yaw: -0.4,
+      dx: 0.2,
+      dz: -0.1,
+      tilt: 0.05,
+    },
   ]);
   // Déjà trouvé à l'affichage : le livre est là. Trouvé pendant la partie : il tombe sur la pile.
   let found = handlers.strangeBookFound();

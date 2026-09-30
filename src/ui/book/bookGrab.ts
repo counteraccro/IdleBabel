@@ -30,7 +30,11 @@ export interface GrabOptions {
   span?: () => number;
 }
 
-export const attachGrab = (book: HTMLElement, handlers: GrabHandlers, { direction = () => 1, ignore = () => false, span }: GrabOptions = {}): void => {
+export const attachGrab = (
+  book: HTMLElement,
+  handlers: GrabHandlers,
+  { direction = () => 1, ignore = () => false, span }: GrabOptions = {},
+): void => {
   let startX = 0;
   let sign: 1 | -1 = 1;
   let pointerId: number | null = null;

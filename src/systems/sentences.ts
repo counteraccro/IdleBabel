@@ -20,7 +20,9 @@ export const written = (state: GameState, id: string): number[] => state.written
 
 export const missing = (state: GameState, id: string): number[] => {
   const done = written(state, id);
-  return segments(id).map((_, index) => index).filter((index) => !done.includes(index));
+  return segments(id)
+    .map((_, index) => index)
+    .filter((index) => !done.includes(index));
 };
 
 export const isComplete = (state: GameState, id: string): boolean => missing(state, id).length === 0;
@@ -50,8 +52,7 @@ export const completion = (state: GameState): number => {
 };
 
 /** Il ne manque qu'un morceau : la Connaissance peut le deviner. */
-export const guessPrice = (state: GameState, id: string): number | undefined =>
-  missing(state, id).length === 1 ? GUESS_PRICE : undefined;
+export const guessPrice = (state: GameState, id: string): number | undefined => (missing(state, id).length === 1 ? GUESS_PRICE : undefined);
 
 export const guess = (state: GameState, id: string): boolean => {
   const price = guessPrice(state, id);

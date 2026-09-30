@@ -17,7 +17,13 @@ const NAME_Y = 182;
  * (en symboles tant qu'elle n'est pas découverte), le corps de la page, et (note au crayon du
  * chercheur, dans la marge du haut) deviner le dernier morceau.
  */
-const sentenceLayout = (state: GameState, sentence: SentenceDef, number: number, asking: boolean, fresh: (segment: number) => boolean): Item[] => {
+const sentenceLayout = (
+  state: GameState,
+  sentence: SentenceDef,
+  number: number,
+  asking: boolean,
+  fresh: (segment: number) => boolean,
+): Item[] => {
   const price = guessPrice(state, sentence.id);
   const known = isComplete(state, sentence.id);
   const name = sentence.tool ? t(`tools.${sentence.tool}.name`) : '';
@@ -35,7 +41,16 @@ const sentenceLayout = (state: GameState, sentence: SentenceDef, number: number,
     ink: known ? undefined : 'ghost',
   };
   return [
-    { kind: 'seal', id: `whiteBook:${sentence.id}`, series: `whiteBook:${sentence.id}`, tier: 0, look: known ? 'gold' : 'embossed', x: 320, y: SEAL_Y, size: SEAL_SIZE },
+    {
+      kind: 'seal',
+      id: `whiteBook:${sentence.id}`,
+      series: `whiteBook:${sentence.id}`,
+      tier: 0,
+      look: known ? 'gold' : 'embossed',
+      x: 320,
+      y: SEAL_Y,
+      size: SEAL_SIZE,
+    },
     title,
     ...sentenceBody(state, sentence, 240, { known, reveal: known && fresh(-1), fresh }),
     ...(price === undefined ? [] : pencilOffer(priceNote(state, price, 'whiteBook.guess', 'whiteBook.guessShort'), asking, 20, [title])),

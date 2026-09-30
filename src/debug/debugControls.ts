@@ -42,7 +42,11 @@ export const row = (label: string, control: HTMLElement, hint?: string): HTMLEle
 };
 
 /** Case à cocher : la case d'abord, puis son libellé. */
-export const check = (label: string, hint: string, onChange: (checked: boolean) => void): { root: HTMLElement; input: HTMLInputElement } => {
+export const check = (
+  label: string,
+  hint: string,
+  onChange: (checked: boolean) => void,
+): { root: HTMLElement; input: HTMLInputElement } => {
   const input = el('input');
   input.type = 'checkbox';
   input.addEventListener('change', () => onChange(input.checked));

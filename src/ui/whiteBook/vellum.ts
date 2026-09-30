@@ -39,7 +39,10 @@ export const createVellum = (seed: number, stamped: boolean, { ornaments = true 
     [5, 120],
     [95, 120],
   ]
-    .map(([cx, cy]) => `<polygon points="${hexagon(cx, cy, 2.6)}" fill="url(#${id}-gold)" stroke="rgba(70, 50, 20, 0.5)" stroke-width="0.25"/>`)
+    .map(
+      ([cx, cy]) =>
+        `<polygon points="${hexagon(cx, cy, 2.6)}" fill="url(#${id}-gold)" stroke="rgba(70, 50, 20, 0.5)" stroke-width="0.25"/>`,
+    )
     .join('');
   const gilding = `<g fill="none">
       <rect x="5" y="5" width="90" height="115" stroke="rgba(70, 50, 20, 0.45)" stroke-width="1.4" transform="translate(0.25 0.35)"/>

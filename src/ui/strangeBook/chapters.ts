@@ -119,7 +119,11 @@ export const CHAPTERS: readonly Chapter[] = [
     figures: [
       { id: 'knowledge', caption: 'olbi farent', value: (s) => number(s.knowledge) },
       { id: 'lifetimeKnowledge', caption: 'tuzma led', value: (s) => number(s.lifetimeKnowledge) },
-      { id: 'finds', caption: 'pirno dalce vomi', value: (s) => ['word', 'piece', 'sentence'].map((kind) => number(found(s, kind))).join(' · ') },
+      {
+        id: 'finds',
+        caption: 'pirno dalce vomi',
+        value: (s) => ['word', 'piece', 'sentence'].map((kind) => number(found(s, kind))).join(' · '),
+      },
       {
         id: 'findChance',
         caption: 'gilo mepar',

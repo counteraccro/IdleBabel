@@ -1,45 +1,138 @@
 /* Les méthodes de lecture en nid d'abeille (methodHive.ts) : les sceaux du livre blanc, sans panneau. */
 .method-hive {
-  position: relative; display: block; overflow: visible;
+  position: relative;
+  display: block;
+  overflow: visible;
   --seal: 50px;
 }
 .method-seal {
-  position: absolute; width: var(--seal); height: calc(var(--seal) * 1.1547);
-  padding: 0; border: 0; background: none; backdrop-filter: none; border-radius: 0; cursor: pointer;
-  transition: transform 0.18s, filter 0.18s;
+  position: absolute;
+  width: var(--seal);
+  height: calc(var(--seal) * 1.1547);
+  padding: 0;
+  border: 0;
+  background: none;
+  backdrop-filter: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    transform 0.18s,
+    filter 0.18s;
 }
-.method-seal[hidden] { display: none; }
-.method-rim, .method-core { position: absolute; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
-.method-rim { inset: 0; background: #5b4a33; transition: background 0.3s; }
-.method-core { inset: 2px; background: radial-gradient(circle at 50% 35%, #3a2616, #150d07); }
-.method-sigil { position: absolute; left: 12%; top: 14%; width: 76%; height: 66%; opacity: 0.35; transition: opacity 0.3s; }
+.method-seal[hidden] {
+  display: none;
+}
+.method-rim,
+.method-core {
+  position: absolute;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+.method-rim {
+  inset: 0;
+  background: #5b4a33;
+  transition: background 0.3s;
+}
+.method-core {
+  inset: 2px;
+  background: radial-gradient(circle at 50% 35%, #3a2616, #150d07);
+}
+.method-sigil {
+  position: absolute;
+  left: 12%;
+  top: 14%;
+  width: 76%;
+  height: 66%;
+  opacity: 0.35;
+  transition: opacity 0.3s;
+}
 .method-count {
-  position: absolute; left: 0; right: 0; bottom: 13%; text-align: center; line-height: 1;
-  font-family: 'Cinzel', Georgia, serif; font-size: calc(var(--seal) * 0.2); color: #8b7a5c; font-variant-numeric: tabular-nums;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 13%;
+  text-align: center;
+  line-height: 1;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: calc(var(--seal) * 0.2);
+  color: #8b7a5c;
+  font-variant-numeric: tabular-nums;
 }
 /* Assez de pages pour en acheter une : doré, il luit. */
-.method-seal.ready { filter: drop-shadow(0 0 6px rgba(232, 199, 118, 0.55)); }
-.method-seal.ready .method-rim { background: linear-gradient(180deg, #e8c776, #a8762c); }
-.method-seal.ready .method-sigil { opacity: 1; }
-.method-seal.ready .method-count { color: #e8c776; }
-.method-seal.ready:hover, .method-seal.ready:focus-visible { transform: scale(1.1); z-index: 2; filter: drop-shadow(0 0 10px rgba(232, 199, 118, 0.7)); }
-.method-seal:not(.ready) { cursor: default; }
-.method-seal:focus-visible { outline: none; }
-.method-seal:active.ready { transform: scale(1.02); }
+.method-seal.ready {
+  filter: drop-shadow(0 0 6px rgba(232, 199, 118, 0.55));
+}
+.method-seal.ready .method-rim {
+  background: linear-gradient(180deg, #e8c776, #a8762c);
+}
+.method-seal.ready .method-sigil {
+  opacity: 1;
+}
+.method-seal.ready .method-count {
+  color: #e8c776;
+}
+.method-seal.ready:hover,
+.method-seal.ready:focus-visible {
+  transform: scale(1.1);
+  z-index: 2;
+  filter: drop-shadow(0 0 10px rgba(232, 199, 118, 0.7));
+}
+.method-seal:not(.ready) {
+  cursor: default;
+}
+.method-seal:focus-visible {
+  outline: none;
+}
+.method-seal:active.ready {
+  transform: scale(1.02);
+}
 /* Découverte pendant la partie : le sceau apparaît à sa place. */
-.method-seal.discovered { animation: method-discovered 1.2s ease-out; }
-@keyframes method-discovered { from { opacity: 0; transform: scale(0.6); } }
+.method-seal.discovered {
+  animation: method-discovered 1.2s ease-out;
+}
+@keyframes method-discovered {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
 
 .method-tip {
-  position: absolute; left: calc(100% + 14px); z-index: 5; width: 220px; padding: 7px 10px;
-  background: rgba(10, 8, 6, 0.92); border-left: 1px solid #c9a45a; font-size: 0.8rem;
-  pointer-events: none; opacity: 0; transition: opacity 0.15s;
+  position: absolute;
+  left: calc(100% + 14px);
+  z-index: 5;
+  width: 220px;
+  padding: 7px 10px;
+  background: rgba(10, 8, 6, 0.92);
+  border-left: 1px solid #c9a45a;
+  font-size: 0.8rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
 }
-.method-tip.shown { opacity: 1; }
-.method-tip strong { display: block; font-family: 'Cinzel', Georgia, serif; font-weight: normal; letter-spacing: 0.04em; }
-.method-tip em { display: block; color: var(--muted); margin: 3px 0; }
-.method-tip-price { color: #e8c776; }
-.method-tip-price.short { color: #8b7a5c; }
+.method-tip.shown {
+  opacity: 1;
+}
+.method-tip strong {
+  display: block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  letter-spacing: 0.04em;
+}
+.method-tip em {
+  display: block;
+  color: var(--muted);
+  margin: 3px 0;
+}
+.method-tip-price {
+  color: #e8c776;
+}
+.method-tip-price.short {
+  color: #8b7a5c;
+}
 @media (prefers-reduced-motion: reduce) {
-  .method-seal, .method-seal.discovered { animation: none; transition: none; }
+  .method-seal,
+  .method-seal.discovered {
+    animation: none;
+    transition: none;
+  }
 }

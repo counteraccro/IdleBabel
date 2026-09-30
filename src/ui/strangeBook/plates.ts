@@ -118,7 +118,12 @@ export const newsMark = (x: number, y: number, size: number): Item => ({ kind: '
  * Une page de planche : titre, compte, alvéoles, et la légende du sceau survolé. `fresh` : sceaux tout
  * juste obtenus, qui luisent plus fort jusqu'à ce qu'on les survole.
  */
-export const plateItems = (state: GameState, page: PlatePage, legend: { name: string; text: string }, fresh: (id: string) => boolean): Item[] => {
+export const plateItems = (
+  state: GameState,
+  page: PlatePage,
+  legend: { name: string; text: string },
+  fresh: (id: string) => boolean,
+): Item[] => {
   let index = 0;
   const seals = ROWS.flatMap((count, row): Item[] => {
     const inRow = page.seals.slice(index, index + count);
@@ -144,7 +149,17 @@ export const plateItems = (state: GameState, page: PlatePage, legend: { name: st
   });
   return [
     ...heading(plateTitle(state, page.plate)),
-    { kind: 'text', text: `✦ ${tally(state, page.plate)}`, x: 320, y: 150, size: 20, align: 'center', italic: true, faded: true, spacing: 3 },
+    {
+      kind: 'text',
+      text: `✦ ${tally(state, page.plate)}`,
+      x: 320,
+      y: 150,
+      size: 20,
+      align: 'center',
+      italic: true,
+      faded: true,
+      spacing: 3,
+    },
     ...seals,
     { kind: 'text', text: legend.name, x: 320, y: 590, size: 24, align: 'center', spacing: 4, steady: true },
     { kind: 'text', text: legend.text, x: 320, y: 630, size: 18, align: 'center', italic: true, faded: true, steady: true },

@@ -2,8 +2,31 @@ import { el } from '../dom';
 import { coverDesign, shelfMarkText } from '../../systems/coverDesign';
 import { STRANGE_BOOK_INDEX } from '../../systems/strangeBook';
 import { CHAPTERS, chapterShown, chapterTitle, contentsTitle, figureCaption, figureShown, type Chapter } from './chapters';
-import { createItemsView, drawItems, folio, heading, itemAt, pressItem, textLeft, textWidth, type Item, type ItemActions, type TextItem } from './pageItems';
-import { newsMark, plateHasNews, plateTitle, sealLegend, sealsTitle, completionCaption, completionItems, plateItems, platePages, type PlatePage } from './plates';
+import {
+  createItemsView,
+  drawItems,
+  folio,
+  heading,
+  itemAt,
+  pressItem,
+  textLeft,
+  textWidth,
+  type Item,
+  type ItemActions,
+  type TextItem,
+} from './pageItems';
+import {
+  newsMark,
+  plateHasNews,
+  plateTitle,
+  sealLegend,
+  sealsTitle,
+  completionCaption,
+  completionItems,
+  plateItems,
+  platePages,
+  type PlatePage,
+} from './plates';
 import { markSealsSeen } from '../../systems/seals';
 import { decipher, decipherPrice } from '../../systems/decipher';
 import { t } from '../../i18n';
@@ -34,7 +57,6 @@ export interface LeafPage {
   /** Quelque chose de cliquable au point (x, y) de la page dessinée (pour la main du pointeur). */
   pointable: (x: number, y: number) => boolean;
 }
-
 
 /** Page de garde : les chiffres de la page de titre du livre tenu en main, et sa cote. */
 const titleItems = (): Item[] => {
@@ -131,19 +153,18 @@ const fitCaption = (item: TextItem): TextItem => {
 
 const chapterItems = (state: GameState, chapter: Chapter, number: number, asking: boolean): Item[] => {
   const figures = chapter.figures.filter((figure) => figureShown(state, figure));
-  const captions = figures.map(
-    (figure, index): TextItem =>
-      fitCaption({
-        kind: 'text',
-        text: figureCaption(state, chapter, figure),
-        x: 320,
-        y: FIGURE_TOP + index * FIGURE_STEP + 64,
-        size: 20,
-        align: 'center',
-        italic: true,
-        faded: true,
-        spacing: 3,
-      }),
+  const captions = figures.map((figure, index): TextItem =>
+    fitCaption({
+      kind: 'text',
+      text: figureCaption(state, chapter, figure),
+      x: 320,
+      y: FIGURE_TOP + index * FIGURE_STEP + 64,
+      size: 20,
+      align: 'center',
+      italic: true,
+      faded: true,
+      spacing: 3,
+    }),
   );
   return [
     ...heading(chapterTitle(state, chapter), CHAPTERS.indexOf(chapter) + 1),
@@ -240,7 +261,12 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
     { title: sealsTitle, page: sealsPage, news: () => state.newSeals.length > 0 },
     ...plates
       .filter((plate) => plate.part === 0)
-      .map((plate) => ({ title: () => plateTitle(state, plate.plate), page: plate.page, sub: true, news: () => plateHasNews(state, plate.plate) })),
+      .map((plate) => ({
+        title: () => plateTitle(state, plate.plate),
+        page: plate.page,
+        sub: true,
+        news: () => plateHasNews(state, plate.plate),
+      })),
   ];
   // Sceaux nouveaux à l'ouverture du livre : ils luisent plus fort le temps de cette lecture, même une
   // fois leur planche vue (le signet, lui, s'éteint), jusqu'à ce qu'on les survole.
@@ -265,7 +291,11 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
     ),
     ...plates.map((plate) =>
       createLeafPage(({ hovered }) => plateItems(state, plate, sealLegend(state, hovered), isFresh), goTo, {
-        onShown: () => markSealsSeen(state, plate.seals.map((seal) => seal.id)),
+        onShown: () =>
+          markSealsSeen(
+            state,
+            plate.seals.map((seal) => seal.id),
+          ),
         onHover: (id) => {
           fresh.delete(id);
           markSealsSeen(state, [id]);

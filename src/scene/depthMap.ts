@@ -3,11 +3,7 @@
  * le point de fuite est au fond (la fenêtre), les bords de l'image sont les plus proches.
  * À remplacer par une vraie carte (Depth Anything) : public/scenes/<scène>-depth.png.
  */
-export const createPerspectiveDepth = (
-  width: number,
-  height: number,
-  vanishing: { x: number; y: number },
-): HTMLCanvasElement => {
+export const createPerspectiveDepth = (width: number, height: number, vanishing: { x: number; y: number }): HTMLCanvasElement => {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;

@@ -55,7 +55,13 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
         }
         // Même livre, même page : même charabia (la page se redessine à l'identique quand on y revient).
         const random = seeded(hashText(`${index}:${page}`));
-        drawPageTexture(canvas, layoutPage(createPage(PAGE_LENGTH, finds?.fragment(page), random)), spineOnLeft, paper, pageNumberLabel(index, page));
+        drawPageTexture(
+          canvas,
+          layoutPage(createPage(PAGE_LENGTH, finds?.fragment(page), random)),
+          spineOnLeft,
+          paper,
+          pageNumberLabel(index, page),
+        );
         return true;
       },
     },

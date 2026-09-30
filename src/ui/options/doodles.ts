@@ -25,7 +25,11 @@ const sketch = (points: Point[], random: () => number, closed = false): string =
 /** Un hexagone de la Bibliothèque, vu de haut, avec des étagères sur ses murs. */
 const hexagon = (random: () => number): string => {
   const corner = (i: number, r: number): Point => [50 + r * Math.cos((Math.PI / 3) * i), 50 + r * Math.sin((Math.PI / 3) * i)];
-  let paths = sketch(Array.from({ length: 6 }, (_, i) => corner(i, 40)), random, true);
+  let paths = sketch(
+    Array.from({ length: 6 }, (_, i) => corner(i, 40)),
+    random,
+    true,
+  );
   for (const side of [0, 1, 3, 4]) {
     const [a, b] = [corner(side, 33), corner(side + 1, 33)];
     paths += sketch([a, b], random);
@@ -40,7 +44,26 @@ const books = (random: () => number): string =>
     [18, 48, 66, 16],
     [8, 34, 72, 14],
   ]
-    .map(([x, y, w, h]) => sketch([[x, y], [x + w, y], [x + w, y + h], [x, y + h]], random, true) + sketch([[x + 8, y + 3], [x + 8, y + h - 3]], random))
+    .map(
+      ([x, y, w, h]) =>
+        sketch(
+          [
+            [x, y],
+            [x + w, y],
+            [x + w, y + h],
+            [x, y + h],
+          ],
+          random,
+          true,
+        ) +
+        sketch(
+          [
+            [x + 8, y + 3],
+            [x + 8, y + h - 3],
+          ],
+          random,
+        ),
+    )
     .join('');
 
 /** L'escalier en spirale qui relie les étages. */

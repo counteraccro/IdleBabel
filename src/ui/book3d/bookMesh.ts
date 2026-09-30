@@ -213,7 +213,10 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     lower = 2 * cutLeft * amount;
     leftAngle = angle - sag;
     rightAngle = sag;
-    for (const [part, turn, lean, drop, split] of [[leftHalf, angle, -sag, lower, cutLeft], [rightHalf, 0, sag, 0, cut]] as const) {
+    for (const [part, turn, lean, drop, split] of [
+      [leftHalf, angle, -sag, lower, cutLeft],
+      [rightHalf, 0, sag, 0, cut],
+    ] as const) {
       part.lean.position.set(0, 0, seam);
       part.lean.rotation.y = -lean;
       part.pivot.position.set(0, 0, split - drop - seam);
@@ -448,7 +451,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     // Pendant qu'une page tourne, l'avancement change à chaque image, mais les piles ne bougent que d'une
     // feuille par page : reconstruites seulement quand l'écart se voit (ou qu'une pile naît ou disparaît).
     const moved = (a: number, b: number): boolean => Math.abs(2 * half * (a - b)) > STACK_STEP * half;
-    const emptied = (wasLeft <= 0) !== (readLeft <= 0) || (wasRight >= 1) !== (readRight >= 1);
+    const emptied = wasLeft <= 0 !== readLeft <= 0 || wasRight >= 1 !== readRight >= 1;
     if (built && !emptied && !moved(readLeft, wasLeft) && !moved(readRight, wasRight)) {
       // Rien à refaire : les piles gardent leur forme ; seul le signet suit l'avancement exact.
       readLeft = wasLeft;
@@ -589,7 +592,10 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     setLeaf: (turn, front = null, back = null, corner = 0, forward = true) => {
       leaf.visible = turn !== null;
       leafTurn = turn;
-      for (const [material, map] of [[leafFront, front], [leafBack, back]] as const) {
+      for (const [material, map] of [
+        [leafFront, front],
+        [leafBack, back],
+      ] as const) {
         glow.show(material, turn === null ? null : map);
         if (turn === null) continue;
         if (material.map !== map) {
@@ -606,7 +612,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     },
     pageUnder: ({ object, face, uv }) => {
       // Dessus de la pile de droite, dessous (retourné) de celle de gauche : les faces qui portent les pages.
-      const side = object === rightStack && face?.materialIndex === 1 ? 'right' : object === leftStack && face?.materialIndex === 2 ? 'left' : null;
+      const side =
+        object === rightStack && face?.materialIndex === 1 ? 'right' : object === leftStack && face?.materialIndex === 2 ? 'left' : null;
       return side && uv ? { side, u: uv.x, v: 1 - uv.y } : null;
     },
     setRibbon: (at, spread = 1) => {

@@ -26,7 +26,9 @@ const sentenceWords = (state: GameState, sentence: SentenceDef, fresh: (segment:
     const found = done.includes(segment);
     const shown = found ? text : babelize(text, seedOf(`${sentence.id}:${segment}`));
     const gather = found && fresh(segment);
-    return shown.split(' ').map((word): Word => ({ text: word, key: found ? `found:${segment}` : 'ghost', ink: found ? undefined : 'ghost', gather }));
+    return shown
+      .split(' ')
+      .map((word): Word => ({ text: word, key: found ? `found:${segment}` : 'ghost', ink: found ? undefined : 'ghost', gather }));
   });
   words[0] = { ...words[0], text: `« ${words[0].text}` };
   const last = words.length - 1;
@@ -58,7 +60,12 @@ export const sentenceBody = (state: GameState, sentence: SentenceDef, top: numbe
   const stat = t('whiteBook.stat')
     .replace('{n}', formatNumber(tool.pagesPerSecond, getLocale()))
     .replace('{count}', formatNumber(state.tools[tool.id], getLocale()));
-  const description = paragraph(text('description'), statTop + 46, { ...COLUMN, size: 21, line: 30, align: 'left', reveal: delay(400) }, ink);
+  const description = paragraph(
+    text('description'),
+    statTop + 46,
+    { ...COLUMN, size: 21, line: 30, align: 'left', reveal: delay(400) },
+    ink,
+  );
   const separatorTop = description.bottom + 16;
   const quote = paragraph(
     text('quote'),
@@ -70,7 +77,20 @@ export const sentenceBody = (state: GameState, sentence: SentenceDef, top: numbe
     ...epigraph.items,
     // Les chiffres de la méthode ne se montrent qu'une fois découverte : rien à deviner avant.
     ...(view.known
-      ? [{ kind: 'text', text: stat, x: 320, y: statTop, size: 15, align: 'center', faded: true, caps: true, spacing: 1, reveal: delay(250) } satisfies Item]
+      ? [
+          {
+            kind: 'text',
+            text: stat,
+            x: 320,
+            y: statTop,
+            size: 15,
+            align: 'center',
+            faded: true,
+            caps: true,
+            spacing: 1,
+            reveal: delay(250),
+          } satisfies Item,
+        ]
       : []),
     ...description.items,
     { kind: 'text', text: '·   ·   ·', x: 320, y: separatorTop, size: 18, align: 'center', faded: true, reveal: delay(800) },

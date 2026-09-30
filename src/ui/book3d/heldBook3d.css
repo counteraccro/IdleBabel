@@ -1,5 +1,7 @@
 /* Livre 3D tenu en main (voir heldBook3d.ts), en bas de l'écran de jeu. */
-.held-book3d { margin-bottom: -2vh; }
+.held-book3d {
+  margin-bottom: -2vh;
+}
 .held-book3d-canvas {
   display: block;
   width: min(60vw, 740px, 80vh);
@@ -12,5 +14,7 @@
   outline: none;
 }
 @media (max-width: 760px) {
-  .held-book3d-canvas { width: 96vw; }
+  .held-book3d-canvas {
+    width: 96vw;
+  }
 }

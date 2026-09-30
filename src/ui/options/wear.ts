@@ -24,7 +24,16 @@ const seeded = (seed: number): (() => number) => {
  */
 const noise = (
   id: string,
-  { frequency, octaves = 3, seed, color, slope, offset, blur = 0, mask }: {
+  {
+    frequency,
+    octaves = 3,
+    seed,
+    color,
+    slope,
+    offset,
+    blur = 0,
+    mask,
+  }: {
     frequency: string;
     octaves?: number;
     seed: number;
@@ -122,7 +131,12 @@ export const boardWear = (seed: number, { freeEdge = 'right' }: { freeEdge?: 'le
   const cx = 110 + random() * (W - 220);
   const cy = 100 + random() * (H - 200);
   const thumbY = H * (0.35 + random() * 0.3);
-  const corners = [[0, 0], [W, 0], [0, H], [W, H]]
+  const corners = [
+    [0, 0],
+    [W, 0],
+    [0, H],
+    [W, H],
+  ]
     .map(([x, y]) => `<circle cx="${x}" cy="${y}" r="${22 + random() * 16}" fill="white"/>`)
     .join('');
   const svg = `<defs>${edgeMask(`bedge-${seed}`, 0.62)}

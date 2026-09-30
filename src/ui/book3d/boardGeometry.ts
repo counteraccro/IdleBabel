@@ -32,8 +32,22 @@ const boardFace = (shape: BookShape, from: number, z: number, up: boolean): numb
   const round = Math.max(0.001, shape.corner);
   // Les deux coins arrondis, comme le contour : une courbe de la tranche vers le haut ou le bas.
   const corners = [
-    { center: [width - round, round], curve: [[width - round, 0], [width, 0], [width, round]] },
-    { center: [width - round, height - round], curve: [[width, height - round], [width, height], [width - round, height]] },
+    {
+      center: [width - round, round],
+      curve: [
+        [width - round, 0],
+        [width, 0],
+        [width, round],
+      ],
+    },
+    {
+      center: [width - round, height - round],
+      curve: [
+        [width, height - round],
+        [width, height],
+        [width - round, height],
+      ],
+    },
   ].map(({ center, curve: [a, b, c] }) => ({
     center,
     edge: Array.from({ length: 33 }, (_, i) => {
@@ -50,7 +64,8 @@ const boardFace = (shape: BookShape, from: number, z: number, up: boolean): numb
       const angle = Math.atan2(y - cy, x - cx);
       let best = edge[0];
       for (const point of edge) {
-        if (Math.abs(Math.atan2(point[1] - cy, point[0] - cx) - angle) < Math.abs(Math.atan2(best[1] - cy, best[0] - cx) - angle)) best = point;
+        if (Math.abs(Math.atan2(point[1] - cy, point[0] - cx) - angle) < Math.abs(Math.atan2(best[1] - cy, best[0] - cx) - angle))
+          best = point;
       }
       if (Math.hypot(x - cx, y - cy) > Math.hypot(best[0] - cx, best[1] - cy)) return [best[0], best[1]];
     }
@@ -60,12 +75,18 @@ const boardFace = (shape: BookShape, from: number, z: number, up: boolean): numb
   // coin ne tient qu'à un ou deux points de la grille, reliés en corde (un coin cassé, un trou).
   const lines = (length: number, count: number, cuts: [number, number][]): number[] => {
     const regular = Array.from({ length: count + 1 }, (_, i) => (length * i) / count);
-    const all = [...regular.filter((v) => cuts.every(([from, to]) => v < from || v > to)), ...cuts.flatMap(([from, to]) => Array.from({ length: CORNER_STEPS + 1 }, (_, i) => from + ((to - from) * i) / CORNER_STEPS))];
+    const all = [
+      ...regular.filter((v) => cuts.every(([from, to]) => v < from || v > to)),
+      ...cuts.flatMap(([from, to]) => Array.from({ length: CORNER_STEPS + 1 }, (_, i) => from + ((to - from) * i) / CORNER_STEPS)),
+    ];
     // Sans doublons (à un rien près : une ligne régulière et une ligne du coin peuvent se confondre).
     return all.sort((a, b) => a - b).filter((v, i, sorted) => i === 0 || v - sorted[i - 1] > 1e-9);
   };
   const xs = lines(width, FACE_COLUMNS, [[width - round, width]]);
-  const ys = lines(height, FACE_ROWS, [[0, round], [height - round, height]]);
+  const ys = lines(height, FACE_ROWS, [
+    [0, round],
+    [height - round, height],
+  ]);
   const grid = ys.map((y) => xs.map((x) => inside(x, y)));
   const out: number[] = [];
   const push = (...points: [number, number][]): void => {

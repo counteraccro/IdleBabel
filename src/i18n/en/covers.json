@@ -1,5 +1,22 @@
 {
-  "words": ["mirror", "staircase", "lamp", "hexagon", "sand", "silence", "dust", "infinity", "traveller", "memory", "outside", "light", "catalogue", "door", "dream", "tiger"],
+  "words": [
+    "mirror",
+    "staircase",
+    "lamp",
+    "hexagon",
+    "sand",
+    "silence",
+    "dust",
+    "infinity",
+    "traveller",
+    "memory",
+    "outside",
+    "light",
+    "catalogue",
+    "door",
+    "dream",
+    "tiger"
+  ],
   "titles": [
     ["A Treatise", "on Mirrors"],
     ["The", "Hexagons"],

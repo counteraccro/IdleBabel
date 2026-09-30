@@ -18,10 +18,26 @@ import enLore from './en/lore.json';
  * copier le dossier fr/, traduire les fichiers, puis déclarer la langue ici.
  * Le français est la référence : le type Messages impose les mêmes clés partout.
  */
-const fr = { ui: frUi, tools: frTools, whiteBook: frWhiteBook, covers: frCovers, strangeBook: frStrangeBook, notebook: frNotebook, lore: frLore };
+const fr = {
+  ui: frUi,
+  tools: frTools,
+  whiteBook: frWhiteBook,
+  covers: frCovers,
+  strangeBook: frStrangeBook,
+  notebook: frNotebook,
+  lore: frLore,
+};
 export type Messages = typeof fr;
 
-const en: Messages = { ui: enUi, tools: enTools, whiteBook: enWhiteBook, covers: enCovers, strangeBook: enStrangeBook, notebook: enNotebook, lore: enLore };
+const en: Messages = {
+  ui: enUi,
+  tools: enTools,
+  whiteBook: enWhiteBook,
+  covers: enCovers,
+  strangeBook: enStrangeBook,
+  notebook: enNotebook,
+  lore: enLore,
+};
 
 export const LOCALES = { fr, en } satisfies Record<string, Messages>;
 export const REFERENCE_LOCALE = 'fr';

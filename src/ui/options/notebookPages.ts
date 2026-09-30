@@ -70,7 +70,13 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
     1: (w) => {
       w.title(t('ui.options'));
       w.heading(t('ui.language'));
-      w.choices(AVAILABLE_LOCALES.map((locale) => ({ label: localeName(locale), active: locale === getLocale(), act: () => actions.onLocale(locale) })));
+      w.choices(
+        AVAILABLE_LOCALES.map((locale) => ({
+          label: localeName(locale),
+          active: locale === getLocale(),
+          act: () => actions.onLocale(locale),
+        })),
+      );
     },
     2: (w, sketches) => w.sketch(sketches.hexagon, 360, 380, 300),
     3: (w) => {
@@ -91,10 +97,14 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
       else {
         w.note(t('ui.resetConfirm'));
         w.skip(1);
-        w.link(t('ui.yes'), () => {
-          reset = 'done';
-          actions.onReset();
-        }, true);
+        w.link(
+          t('ui.yes'),
+          () => {
+            reset = 'done';
+            actions.onReset();
+          },
+          true,
+        );
         w.link(t('ui.no'), () => (reset = 'ask'));
       }
     },

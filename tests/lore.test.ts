@@ -19,10 +19,16 @@ describe('lore', () => {
 
   it('se déclenche à la toute première trouvaille, pas aux suivantes', () => {
     const state = createInitialState('fr');
-    gainFind(state, drawFind(state, () => 0.5, true));
+    gainFind(
+      state,
+      drawFind(state, () => 0.5, true),
+    );
     expect(state.lorePending).toEqual(['firstKnowledge']);
     loreRead(state, 'firstKnowledge');
-    gainFind(state, drawFind(state, () => 0.5));
+    gainFind(
+      state,
+      drawFind(state, () => 0.5),
+    );
     expect(state.lorePending).toEqual([]);
   });
 

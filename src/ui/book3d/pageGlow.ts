@@ -23,11 +23,9 @@ export const createPageGlow = () => {
       material.emissive.set(0x000000);
       material.onBeforeCompile = (shader) => {
         shader.uniforms.glowTime = time;
-        shader.fragmentShader = shader.fragmentShader
-          .replace('#include <common>', '#include <common>\nuniform float glowTime;')
-          .replace(
-            '#include <emissivemap_fragment>',
-            `#ifdef USE_EMISSIVEMAP
+        shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\nuniform float glowTime;').replace(
+          '#include <emissivemap_fragment>',
+          `#ifdef USE_EMISSIVEMAP
               vec3 glowMask = texture2D(emissiveMap, vEmissiveMapUv).rgb;
               float breath = 1.0 - ${BREATH.toFixed(3)} * (0.5 + 0.5 * cos(glowTime * ${((2 * Math.PI) / BREATH_S).toFixed(4)}));
               float band = fract(glowTime / ${SHEEN_S.toFixed(2)}) * 2.6 - 0.8;
@@ -35,7 +33,7 @@ export const createPageGlow = () => {
               float sheen = exp(-across * across * 90.0);
               totalEmissiveRadiance *= glowMask * (${GLOW.toFixed(3)} * breath + ${SHEEN.toFixed(3)} * sheen);
             #endif`,
-          );
+        );
       };
       materials.push(material);
     },

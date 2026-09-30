@@ -47,20 +47,51 @@ export const mountDebugPanel = (state: GameState): void => {
 
   const pages = section(
     'Pages et production',
-    row('Stock', field(() => state.pages, (v) => (state.pages = v)), 'pages à dépenser'),
-    row('Lues à vie', field(() => state.totalPagesRead, (v) => (state.totalPagesRead = v)), "dissipent l'obscurité du décor"),
+    row(
+      'Stock',
+      field(
+        () => state.pages,
+        (v) => (state.pages = v),
+      ),
+      'pages à dépenser',
+    ),
+    row(
+      'Lues à vie',
+      field(
+        () => state.totalPagesRead,
+        (v) => (state.totalPagesRead = v),
+      ),
+      "dissipent l'obscurité du décor",
+    ),
     row(
       'Régler les deux à',
-      buttons(...PRESETS.map((value): [string, () => void] => [value.toLocaleString('fr-FR'), () => {
-        state.pages = value;
-        state.totalPagesRead = value;
-      }])),
+      buttons(
+        ...PRESETS.map((value): [string, () => void] => [
+          value.toLocaleString('fr-FR'),
+          () => {
+            state.pages = value;
+            state.totalPagesRead = value;
+          },
+        ]),
+      ),
     ),
-    row('Lecture diagonale', field(() => state.tools.diagonal, (v) => (state.tools.diagonal = v)), '10 = 1 page/s ; 50 = pages en continu'),
+    row(
+      'Lecture diagonale',
+      field(
+        () => state.tools.diagonal,
+        (v) => (state.tools.diagonal = v),
+      ),
+      '10 = 1 page/s ; 50 = pages en continu',
+    ),
   );
 
   const titles = el('select');
-  for (const [value, text] of [['', 'tels que tirés'], ['none', 'charabia'], ['word', 'un vrai mot'], ['title', 'titre entier']]) {
+  for (const [value, text] of [
+    ['', 'tels que tirés'],
+    ['none', 'charabia'],
+    ['word', 'un vrai mot'],
+    ['title', 'titre entier'],
+  ]) {
     const option = el('option', undefined, text);
     option.value = value;
     titles.append(option);
@@ -71,48 +102,94 @@ export const mountDebugPanel = (state: GameState): void => {
   });
   const held = section(
     'Livre en main',
-    row('Page', field(() => state.bookPage, (v) => {
-      state.bookPage = Math.min(v, 409);
-      refreshBook();
-    }, 409), '0 à 409 ; 405 : le livre se referme bientôt'),
-    row('Livres terminés', field(() => state.booksFinished, (v) => {
-      state.booksFinished = v;
-      refreshBook();
-    }), 'numéro du livre : couverture, reliure'),
+    row(
+      'Page',
+      field(
+        () => state.bookPage,
+        (v) => {
+          state.bookPage = Math.min(v, 409);
+          refreshBook();
+        },
+        409,
+      ),
+      '0 à 409 ; 405 : le livre se referme bientôt',
+    ),
+    row(
+      'Livres terminés',
+      field(
+        () => state.booksFinished,
+        (v) => {
+          state.booksFinished = v;
+          refreshBook();
+        },
+      ),
+      'numéro du livre : couverture, reliure',
+    ),
     row('Titres des couvertures', titles),
     row('Défilement', field(maxTurnsPerSecond, setTurnCap), 'pages/s au plus quand elles tournent seules (8 par défaut ; 0 : remettre)'),
   );
 
   const knowledge = section(
     'Connaissance',
-    row('À dépenser', field(() => state.knowledge, (v) => (state.knowledge = v)), 'déchiffrer le livre étrange'),
-    row('Trouvée à vie', field(() => state.lifetimeKnowledge, (v) => (state.lifetimeKnowledge = v)), 'paliers : le livre étrange se déchiffre seul'),
+    row(
+      'À dépenser',
+      field(
+        () => state.knowledge,
+        (v) => (state.knowledge = v),
+      ),
+      'déchiffrer le livre étrange',
+    ),
+    row(
+      'Trouvée à vie',
+      field(
+        () => state.lifetimeKnowledge,
+        (v) => (state.lifetimeKnowledge = v),
+      ),
+      'paliers : le livre étrange se déchiffre seul',
+    ),
     row(
       'Ajouter',
       buttons(
-        ['+1', () => {
-          addKnowledge(state, 1);
-          rewriteBigBook();
-        }],
-        ['+10', () => {
-          addKnowledge(state, 10);
-          rewriteBigBook();
-        }],
-        ['Tout oublier', () => {
-          Object.assign(state, { knowledge: 0, cycleKnowledge: 0, lifetimeKnowledge: 0, finds: [], written: {}, deciphered: [] });
-          state.stats.fragments = 0;
-          rewriteBigBook();
-        }],
+        [
+          '+1',
+          () => {
+            addKnowledge(state, 1);
+            rewriteBigBook();
+          },
+        ],
+        [
+          '+10',
+          () => {
+            addKnowledge(state, 10);
+            rewriteBigBook();
+          },
+        ],
+        [
+          'Tout oublier',
+          () => {
+            Object.assign(state, { knowledge: 0, cycleKnowledge: 0, lifetimeKnowledge: 0, finds: [], written: {}, deciphered: [] });
+            state.stats.fragments = 0;
+            rewriteBigBook();
+          },
+        ],
       ),
       'ajouter : sans rien trouver ; tout oublier : Connaissance, trouvailles, livre blanc et déchiffrage',
     ),
     row(
       'Livre blanc',
-      buttons(['Compléter la phrase en cours', () => {
-        const target = currentTarget(state);
-        if (target) write(state, target, segments(target).map((_, index) => index));
-        rewriteBigBook();
-      }]),
+      buttons([
+        'Compléter la phrase en cours',
+        () => {
+          const target = currentTarget(state);
+          if (target)
+            write(
+              state,
+              target,
+              segments(target).map((_, index) => index),
+            );
+          rewriteBigBook();
+        },
+      ]),
       'découvre la méthode suivante',
     ),
     check('Trouvaille à chaque page', 'au lieu d’une page sur 200', forceFinds).root,
@@ -132,14 +209,20 @@ export const mountDebugPanel = (state: GameState): void => {
     row(
       'Raccourcis',
       buttons(
-        ['Le prendre en main', () => {
-          state.booksFinished = STRANGE_BOOK_INDEX;
-          state.bookPage = 0;
-          refreshBook();
-        }],
-        ['L’ouvrir en grand', () => {
-          window.location.hash = '#livre';
-        }],
+        [
+          'Le prendre en main',
+          () => {
+            state.booksFinished = STRANGE_BOOK_INDEX;
+            state.bookPage = 0;
+            refreshBook();
+          },
+        ],
+        [
+          'L’ouvrir en grand',
+          () => {
+            window.location.hash = '#livre';
+          },
+        ],
       ),
       'le prendre en main le rend aussi accessible',
     ),

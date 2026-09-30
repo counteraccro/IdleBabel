@@ -107,9 +107,25 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
       item++;
       const width = write(text, TEXT_LEFT, top, pen(46), PEN, 4 * GRID);
       const y = top + 4 * GRID - 4;
-      stroke([[TEXT_LEFT - 4, y], [TEXT_LEFT + width * 0.5, y + 1.5], [TEXT_LEFT + width + 8, y - 1]], PEN, 2);
+      stroke(
+        [
+          [TEXT_LEFT - 4, y],
+          [TEXT_LEFT + width * 0.5, y + 1.5],
+          [TEXT_LEFT + width + 8, y - 1],
+        ],
+        PEN,
+        2,
+      );
       item++;
-      stroke([[TEXT_LEFT + 6, y + 6], [TEXT_LEFT + width * 0.6, y + 7], [TEXT_LEFT + width + 2, y + 4]], PEN, 1.6);
+      stroke(
+        [
+          [TEXT_LEFT + 6, y + 6],
+          [TEXT_LEFT + width * 0.6, y + 7],
+          [TEXT_LEFT + width + 2, y + 4],
+        ],
+        PEN,
+        1.6,
+      );
       top += 6 * GRID;
     },
     /** Titre d'une partie, souligné. */
@@ -118,7 +134,15 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
       const width = write(text, TEXT_LEFT, top, pen(32), PEN, PEN_LINE);
       const y = top + PEN_LINE - 3;
       item++;
-      stroke([[TEXT_LEFT - 2, y], [TEXT_LEFT + width / 2, y + 1], [TEXT_LEFT + width + 4, y - 0.5]], PEN, 1.7);
+      stroke(
+        [
+          [TEXT_LEFT - 2, y],
+          [TEXT_LEFT + width / 2, y + 1],
+          [TEXT_LEFT + width + 4, y - 0.5],
+        ],
+        PEN,
+        1.7,
+      );
       top += PEN_LINE + GRID;
     },
     /** Case dessinée à la main, cochée d'une croix ; l'explication au crayon dessous. Un clic la coche ou la décoche. */
@@ -127,13 +151,42 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
       const start = top;
       // Case d'un carreau, un peu plus grande, posée sur la ligne.
       const [x, y, size] = [TEXT_LEFT, top + GRID - 2, GRID + 2];
-      stroke([[x, y], [x + size, y + 0.5], [x + size - 0.5, y + size], [x + 0.5, y + size + 0.5], [x, y - 1]], PEN, 1.6, 0.8);
+      stroke(
+        [
+          [x, y],
+          [x + size, y + 0.5],
+          [x + size - 0.5, y + size],
+          [x + 0.5, y + size + 0.5],
+          [x, y - 1],
+        ],
+        PEN,
+        1.6,
+        0.8,
+      );
       if (checked) {
         item++;
         // Croix appuyée, qui déborde de la case : tracée vite.
-        stroke([[x - 3, y - 4], [x + size / 2, y + size / 2 + 1], [x + size + 4, y + size + 3]], PEN, 2.4, 1.5);
+        stroke(
+          [
+            [x - 3, y - 4],
+            [x + size / 2, y + size / 2 + 1],
+            [x + size + 4, y + size + 3],
+          ],
+          PEN,
+          2.4,
+          1.5,
+        );
         item++;
-        stroke([[x + size + 3, y - 5], [x + size / 2 + 1, y + size / 2], [x - 2, y + size + 4]], PEN, 2.4, 1.5);
+        stroke(
+          [
+            [x + size + 3, y - 5],
+            [x + size / 2 + 1, y + size / 2],
+            [x - 2, y + size + 4],
+          ],
+          PEN,
+          2.4,
+          1.5,
+        );
       }
       item++;
       write(label, TEXT_LEFT + 2 * GRID, top, pen(24), PEN, PEN_LINE);
@@ -151,7 +204,8 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
           // Entouré d'un trait qui fait un peu plus d'un tour, sans se refermer tout à fait.
           const [cx, cy, rx, ry] = [x + width / 2, top + PEN_LINE / 2 + 2, width / 2 + 14, PEN_LINE / 2 + 5];
           const points: Point[] = [];
-          for (let a = -2.4; a < -2.4 + Math.PI * 2.25; a += 0.2) points.push([cx + rx * Math.cos(a) * (1 + a * 0.012), cy + ry * Math.sin(a)]);
+          for (let a = -2.4; a < -2.4 + Math.PI * 2.25; a += 0.2)
+            points.push([cx + rx * Math.cos(a) * (1 + a * 0.012), cy + ry * Math.sin(a)]);
           item++;
           stroke(points, PEN, 1.6, 1.2);
         }
@@ -165,9 +219,24 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
       item++;
       const color = danger ? RED_PEN : PEN;
       const y = top + PEN_LINE / 2 + 3;
-      stroke([[TEXT_LEFT, y], [TEXT_LEFT + 22, y]], color, 1.8);
+      stroke(
+        [
+          [TEXT_LEFT, y],
+          [TEXT_LEFT + 22, y],
+        ],
+        color,
+        1.8,
+      );
       item++;
-      stroke([[TEXT_LEFT + 14, y - 6], [TEXT_LEFT + 23, y], [TEXT_LEFT + 14, y + 6]], color, 1.8);
+      stroke(
+        [
+          [TEXT_LEFT + 14, y - 6],
+          [TEXT_LEFT + 23, y],
+          [TEXT_LEFT + 14, y + 6],
+        ],
+        color,
+        1.8,
+      );
       item++;
       const width = write(text, TEXT_LEFT + 2 * GRID, top, pen(24), color, PEN_LINE);
       zones.push({ x: TEXT_LEFT - GRID / 2, y: top, width: width + 3 * GRID, height: PEN_LINE, act });

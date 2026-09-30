@@ -86,7 +86,13 @@ const strangeCover = (design: CoverDesign, random: () => number): CoverDesign =>
 
 /** Chiffres romains, pour la cote gravée au dos. */
 export const toRoman = (value: number): string => {
-  const numerals: [number, string][] = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+  const numerals: [number, string][] = [
+    [10, 'X'],
+    [9, 'IX'],
+    [5, 'V'],
+    [4, 'IV'],
+    [1, 'I'],
+  ];
   let rest = value;
   let result = '';
   for (const [amount, numeral] of numerals) {

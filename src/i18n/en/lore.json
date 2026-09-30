@@ -2,12 +2,7 @@
   "continue": "Continue",
   "awakening": {
     "title": "The awakening",
-    "text": [
-      "You wake up in a dark room.",
-      "The floor is cold. The air smells of dust and old paper.",
-      "Where are you?",
-      "Who are you?"
-    ],
+    "text": ["You wake up in a dark room.", "The floor is cold. The air smells of dust and old paper.", "Where are you?", "Who are you?"],
     "name": "Your name… it comes back to you:",
     "enter": "I remember"
   },

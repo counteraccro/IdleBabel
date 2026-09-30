@@ -115,7 +115,10 @@ export const createBinding = ({ width, height, thickness, board }: BookShape) =>
   const top = thickness / 2;
   /** Bombé du dos fermé ; 4/3 × rayon : une Bézier cubique qui suit un demi-ovale. */
   const reach = (4 / 3) * SPINE_BULGE * top;
-  const rotate = ([x, z]: Point, angle: number): Point => [x * Math.cos(angle) - z * Math.sin(angle), x * Math.sin(angle) + z * Math.cos(angle)];
+  const rotate = ([x, z]: Point, angle: number): Point => [
+    x * Math.cos(angle) - z * Math.sin(angle),
+    x * Math.sin(angle) + z * Math.cos(angle),
+  ];
   /**
    * `place` : où se trouve un point d'une moitié du livre (couverture et pages lues à gauche ; plat
    * arrière et pages à lire à droite), `left`, `right` : leurs rotations ; `openness` (0 à 1) : ouvert,

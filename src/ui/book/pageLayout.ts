@@ -24,8 +24,7 @@ const measure = (text: string): number => {
   return measureContext.measureText(text).width;
 };
 
-const maxLines = (): number =>
-  Math.floor((PAGE_TEXTURE.height - 2 * PAGE_PADDING.y) / (PAGE_FONT_SIZE * PAGE_LINE_HEIGHT));
+const maxLines = (): number => Math.floor((PAGE_TEXTURE.height - 2 * PAGE_PADDING.y) / (PAGE_FONT_SIZE * PAGE_LINE_HEIGHT));
 
 /** Coupe la page en lignes (par mots, un mot trop long est coupé) ; ce qui dépasse est ignoré. */
 export const layoutPage = (page: PageContent): PageLines => {

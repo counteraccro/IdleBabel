@@ -60,7 +60,14 @@ export const wordsParagraph = (words: Word[], top: number, style: ParagraphStyle
     line.forEach((word, position) => {
       const last = runs[runs.length - 1];
       if (last && last.words[0].key === word.key) last.words.push(word);
-      else runs.push({ start: line.slice(0, position).map((w) => `${w.text} `).join(''), words: [word] });
+      else
+        runs.push({
+          start: line
+            .slice(0, position)
+            .map((w) => `${w.text} `)
+            .join(''),
+          words: [word],
+        });
     });
     return runs.map(({ start: before, words: run }): Item => {
       const first = run[0];

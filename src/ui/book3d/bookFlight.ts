@@ -75,7 +75,13 @@ export interface Flight {
  * vol, le canvas couvre toute la fenêtre (le livre part de l'en-tête, hors du cadre `frame` de la page).
  * `home` : le vol à l'envers, le livre retourne dans la pile (retour au jeu) ; la caméra garde son angle.
  */
-export const createFlight = (start: FlightStart, root: THREE.Object3D, camera: THREE.PerspectiveCamera, frame: DOMRect, home = false): Flight => {
+export const createFlight = (
+  start: FlightStart,
+  root: THREE.Object3D,
+  camera: THREE.PerspectiveCamera,
+  frame: DOMRect,
+  home = false,
+): Flight => {
   camera.updateMatrixWorld();
   const rest = lensOf(camera, frame);
   // Le livre posé (à l'origine), vu de la caméra de la page.

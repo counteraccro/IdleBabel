@@ -1,5 +1,22 @@
 {
-  "words": ["miroir", "escalier", "lampe", "hexagone", "sable", "silence", "poussière", "infini", "voyageur", "mémoire", "dehors", "lumière", "catalogue", "porte", "rêve", "tigre"],
+  "words": [
+    "miroir",
+    "escalier",
+    "lampe",
+    "hexagone",
+    "sable",
+    "silence",
+    "poussière",
+    "infini",
+    "voyageur",
+    "mémoire",
+    "dehors",
+    "lumière",
+    "catalogue",
+    "porte",
+    "rêve",
+    "tigre"
+  ],
   "titles": [
     ["Traité", "des miroirs"],
     ["Les", "Hexagones"],

@@ -1,11 +1,4 @@
-import {
-  PAGE_FONT,
-  PAGE_FONT_SIZE,
-  PAGE_LINE_HEIGHT,
-  PAGE_PADDING,
-  PAGE_TEXTURE,
-  type PageLines,
-} from './pageLayout';
+import { PAGE_FONT, PAGE_FONT_SIZE, PAGE_LINE_HEIGHT, PAGE_PADDING, PAGE_TEXTURE, type PageLines } from './pageLayout';
 
 /** Numéro de page, en bas au centre, comme celui des grands livres (pageItems.ts). */
 const PAGE_NUMBER_TOP = 730;

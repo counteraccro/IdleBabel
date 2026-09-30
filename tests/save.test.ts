@@ -57,7 +57,13 @@ describe('sauvegarde', () => {
     const state = createInitialState('fr');
     localStorage.setItem(
       SAVE_KEY,
-      JSON.stringify({ ...state, finds: [{ kind: 'word', text: 'ancien' }, { kind: 'word', sentence: 'diagonal', segment: 0 }] }),
+      JSON.stringify({
+        ...state,
+        finds: [
+          { kind: 'word', text: 'ancien' },
+          { kind: 'word', sentence: 'diagonal', segment: 0 },
+        ],
+      }),
     );
     expect(loadGame('fr').finds).toEqual([{ kind: 'word', sentence: 'diagonal', segment: 0 }]);
   });
