@@ -55,18 +55,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 }
 .panel h2 { margin: 0 0 10px; font-size: 1rem; font-weight: normal; letter-spacing: 0.06em; color: var(--accent); }
 .tools[hidden] { display: none; }
-.tools { grid-area: tools; align-self: center; max-height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-.tool { display: flex; flex-direction: column; gap: 4px; }
-.tool + .tool { border-top: 1px solid var(--border); padding-top: 12px; }
-.tool-title { display: flex; justify-content: space-between; gap: 8px; }
-.tool-owned { color: var(--accent); font-variant-numeric: tabular-nums; }
-.tool p { margin: 0; color: var(--muted); font-size: 0.85rem; font-style: italic; }
-.tool-buy { align-self: stretch; margin-top: 4px; }
-.tool[hidden] { display: none; }
-/* Méthode tout juste découverte dans le livre blanc : elle apparaît doucement. */
-.tool.discovered { animation: tool-discovered 1.2s ease-out; }
-@keyframes tool-discovered { from { opacity: 0; transform: translateY(-4px); } }
-@media (prefers-reduced-motion: reduce) { .tool.discovered { animation: none; } }
+.tools { grid-area: tools; align-self: center; }
 
 .counter {
   grid-area: counter; justify-self: center; align-self: start;
@@ -96,7 +85,7 @@ footer {
     gap: 10px; padding: 14px 16px;
   }
   header { flex-wrap: wrap; row-gap: 8px; }
-  .tools { max-height: 30vh; }
+  .tools { justify-self: center; }
   .reading { margin-bottom: -8vh; }
   footer { flex-direction: row; justify-content: space-between; }
 }

@@ -5,6 +5,7 @@
   "read": "Turn a page",
   "owned": "Owned",
   "buy": "Buy",
+  "nextCost": "Next: {n} pages",
   "reset": "Erase save",
   "build": "Build of",
   "options": "Options",

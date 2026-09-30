@@ -1,6 +1,6 @@
 import { createHeader } from './header';
 import { createCounter } from './counter';
-import { createToolsPanel } from './toolsPanel';
+import { createMethodHive } from './methods/methodHive';
 import { createFooter } from './footer';
 import { createOptionsPage } from './options/optionsPage';
 import { createBook3dPage } from './book3d/book3dPage';
@@ -74,7 +74,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const game = (): Component[] => [
     header,
     createCounter(state),
-    createToolsPanel(state),
+    createMethodHive(state),
     createHandReading3d(state),
     createFooter(state.settings),
   ];
