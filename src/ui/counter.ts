@@ -1,6 +1,7 @@
 import { el, type Component } from './dom';
 import { getLocale, t } from '../i18n';
 import { formatNumber } from '../core/format';
+import { setNumberText } from './babelDigits';
 import { pagesPerSecond } from '../systems/production';
 import type { GameState } from '../core/state';
 
@@ -24,13 +25,13 @@ export const createCounter = (state: GameState): Component => {
   };
 
   const update = (): void => {
-    set(pages, formatNumber(Math.floor(state.pages), getLocale()));
+    setNumberText(pages, formatNumber(Math.floor(state.pages), getLocale()), 42);
     set(pagesLabel, `${t('ui.pages')} · `);
-    set(speed, formatNumber(pagesPerSecond(state), getLocale()));
+    setNumberText(speed, formatNumber(pagesPerSecond(state), getLocale()), 14);
     set(perSecond, t('ui.perSecond'));
     knowledge.hidden = state.lifetimeKnowledge === 0;
     set(knowledgeLabel, `${t('ui.knowledge')} `);
-    set(carried, formatNumber(state.knowledge, getLocale()));
+    setNumberText(carried, formatNumber(state.knowledge, getLocale()), 13);
   };
   update();
   return { root, update };

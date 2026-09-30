@@ -1,6 +1,7 @@
 import '@fontsource/nothing-you-could-do/400.css';
 import { HAND, hash } from '../strangeBook/pageItems';
 import { cssBaseline } from '../book/pageRender';
+import { drawBabelNumber, hasBabelDigits } from '../babelDigits';
 import { GRID, MARGIN, TEXT_LEFT, TEXT_RIGHT } from './notebookPaper';
 
 /** Écriture du chercheur : stylo bille bleu pour les réglages, crayon pour ses remarques. */
@@ -209,7 +210,9 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
       item++;
       write(label, TEXT_LEFT + 2 * GRID, top, pen(24), PEN, PEN_LINE);
       item++;
-      write(example, TEXT_LEFT + 2 * GRID + exampleAt, top, pencil(23), PENCIL, PEN_LINE);
+      // En chiffres de Babel, l'exemple montre les sceaux dorés tels qu'ils s'afficheront.
+      if (hasBabelDigits(example)) drawBabelNumber(context, example, TEXT_LEFT + 2 * GRID + exampleAt, top + 7, 20);
+      else write(example, TEXT_LEFT + 2 * GRID + exampleAt, top, pencil(23), PENCIL, PEN_LINE);
       top += PEN_LINE + GRID / 2;
       zones.push({ x: TEXT_LEFT - GRID / 2, y: start, width: TEXT_RIGHT - TEXT_LEFT + GRID / 2, height: PEN_LINE, act });
     },

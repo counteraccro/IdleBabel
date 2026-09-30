@@ -14,7 +14,7 @@ describe('formatNumber', () => {
     expect(fr(25_000_000, 'short')).toBe('25 M');
     expect(fr(25_000_000, 'scientific')).toBe('2,50e7');
     expect(fr(25_000_000, 'engineering')).toBe('25,0e6');
-    expect(fr(25_000_000, 'babel')).toBe('vs.zzz.zzz');
+    expect(fr(25_000_000, 'babel')).toBe('◈⬘.◇◇◇.◇◇◇');
   });
 
   it("passe à la puissance suivante quand l'arrondi déborde", () => {
@@ -23,8 +23,8 @@ describe('formatNumber', () => {
   });
 
   it('garde une décimale en Babel sous 100', () => {
-    expect(fr(2.5, 'babel')).toBe('v,s');
-    expect(fr(1234, 'babel')).toBe('x.vut');
+    expect(fr(2.5, 'babel')).toBe('◈,⬘');
+    expect(fr(1234, 'babel')).toBe('◆.◈⬖⬗');
   });
 
   it('passe en scientifique au-delà des abréviations', () => {

@@ -4,7 +4,7 @@ import { LOCALES } from '../i18n/locales';
 /**
  * Façons d'écrire les grands nombres, au choix du joueur (cahier d'options) : en entier, en toutes
  * lettres (25 millions), en abrégé (25 M), scientifique (2,50e7), ingénieur (25,0e6, puissance multiple
- * de 3), ou en symboles de Babel (un symbole par chiffre, comme une écriture inconnue).
+ * de 3), ou en symboles de Babel (un sceau par chiffre, comme une écriture inconnue).
  */
 export const NOTATIONS = ['full', 'words', 'short', 'scientific', 'engineering', 'babel'] as const;
 export type Notation = (typeof NOTATIONS)[number];
@@ -24,10 +24,14 @@ const LARGE = 1_000;
 const SHORT_LIMIT = 1e15;
 
 /**
- * Chiffres de Babel : dix des 22 lettres de la Bibliothèque, toujours les mêmes. Le point sépare les
- * milliers, la virgule les décimales : les deux signes de ponctuation de Borges.
+ * Chiffres de Babel, de 0 à 9 : dessinés comme les sceaux (ui/babelDigits.ts). Dans le texte, chacun
+ * est tenu par un losange, repère que l'affichage remplace par son dessin (et qui reste lisible là où
+ * il ne l'est pas). Le point sépare les milliers, la virgule les décimales : la ponctuation de Borges.
  */
-const BABEL_DIGITS = 'zxvutsrqpo';
+const BABEL_DIGITS = [...'◇◆◈⬖⬗⬘⬙❖◊⟡'];
+
+/** Chiffre (0 à 9) que tient ce caractère, ou -1. */
+export const babelDigit = (char: string): number => BABEL_DIGITS.indexOf(char);
 
 const full = (value: number, locale: Locale): string =>
   new Intl.NumberFormat(locale, { maximumFractionDigits: value < 100 ? 1 : 0 }).format(value);
@@ -68,9 +72,10 @@ const words = (value: number, locale: Locale): string => {
 
 const babel = (value: number): string => {
   const [whole, fraction] = (value < 100 ? Math.round(value * 10) / 10 : Math.round(value)).toString().split('.');
-  const letters = (digits: string): string => [...digits].map((digit) => BABEL_DIGITS[Number(digit)]).join('');
-  const grouped = letters(whole).replace(/\B(?=(.{3})+$)/g, '.');
-  return fraction ? `${grouped},${letters(fraction)}` : grouped;
+  const diamonds = (digits: string): string => [...digits].map((digit) => BABEL_DIGITS[Number(digit)]).join('');
+  const glyphs = [...diamonds(whole)];
+  const grouped = glyphs.map((glyph, i) => (i > 0 && (glyphs.length - i) % 3 === 0 ? `.${glyph}` : glyph)).join('');
+  return fraction ? `${grouped},${diamonds(fraction)}` : grouped;
 };
 
 export const formatNumber = (value: number, locale: Locale, notation: Notation = current): string => {

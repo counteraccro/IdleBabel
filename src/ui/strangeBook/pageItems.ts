@@ -4,6 +4,7 @@ import { el } from '../dom';
 import { PAGE_TEXTURE } from '../book/pageLayout';
 import { cssBaseline, preparePageTexture, type Paper } from '../book/pageRender';
 import { drawSeal, sealSvg, sigil, type Look } from './sigil';
+import { babelNumberWidth, drawBabelNumber, hasBabelDigits, setNumberText } from '../babelDigits';
 import { BIG_BOOK_REWRITE } from '../book3d/book3dBook';
 
 /**
@@ -193,7 +194,8 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
   }
   if (item.kind === 'text') {
     const node = el('span', `sb-text${item.gold ? ' sb-gold' : ''}${item.initial ? ' sb-initial' : ''}`);
-    if (item.gather === undefined) node.textContent = item.text;
+    if (hasBabelDigits(item.text)) setNumberText(node, item.text, item.size);
+    else if (item.gather === undefined) node.textContent = item.text;
     else gatherLetters(node, item.text, item.gather);
     if (item.reveal !== undefined) {
       node.classList.add('sb-reveal');
@@ -313,7 +315,18 @@ export const createItemsView = (target: HTMLElement, actions: ItemActions): ((it
       return;
     }
     items.forEach((item, index) => {
-      if (item.kind !== 'text' || nodes[index].textContent === item.text) return;
+      if (item.kind !== 'text') return;
+      // Chiffres de Babel : dessinés dans l'élément, ils ne se comparent pas à son texte.
+      if (hasBabelDigits(item.text) || nodes[index].dataset.number !== undefined) {
+        if (nodes[index].dataset.number === item.text) return;
+        if (hasBabelDigits(item.text)) setNumberText(nodes[index], item.text, item.size);
+        else {
+          delete nodes[index].dataset.number;
+          nodes[index].textContent = item.text;
+        }
+        return;
+      }
+      if (nodes[index].textContent === item.text) return;
       if (item.steady) nodes[index].textContent = item.text;
       else rewrite(nodes[index], item.text);
     });
@@ -339,6 +352,10 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
       context.font = font(item, `${item.size}px`);
       context.fillStyle = color(item);
       context.fillText(rest, left + head, baseline);
+    } else if (item.kind === 'text' && hasBabelDigits(item.text)) {
+      const width = babelNumberWidth(item.text, item.size);
+      const left = item.align === 'center' ? (PAGE_TEXTURE.width - width) / 2 : item.align === 'right' ? item.x - width : item.x;
+      drawBabelNumber(context, item.text, left, item.y, item.size);
     } else if (item.kind === 'text') {
       context.font = font(item, `${item.size}px`);
       context.letterSpacing = `${item.spacing ?? 0}px`;

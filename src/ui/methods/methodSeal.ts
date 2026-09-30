@@ -1,4 +1,5 @@
 import { el } from '../dom';
+import { setNumberText } from '../babelDigits';
 import { sigil } from '../strangeBook/sigil';
 import { SENTENCES } from '../../data/sentences';
 import type { ToolId } from '../../data/tools';
@@ -36,7 +37,7 @@ export const createMethodSeal = (id: ToolId): MethodSeal => {
   return {
     root,
     show: (value, affordable) => {
-      count.textContent = value;
+      setNumberText(count, value, 11);
       root.classList.toggle('ready', affordable);
     },
   };

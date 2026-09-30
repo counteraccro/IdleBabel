@@ -1,3 +1,4 @@
+import { setNumberText } from '../babelDigits';
 import './methodHive.css';
 import { el, type Component } from '../dom';
 import { getLocale, t } from '../../i18n';
@@ -113,7 +114,7 @@ export const createMethodHive = (state: GameState): Component => {
       seal.root.setAttribute('aria-label', `${name}, ${count}. ${t(`tools.${id}.description`)} ${price}`);
       if (pointed === id) {
         tipTitle.textContent = `${name} · `;
-        tipCount.textContent = count;
+        setNumberText(tipCount, count, 14);
         tipText.textContent = t(`tools.${id}.description`);
         tipPrice.textContent = price;
         tipPrice.classList.toggle('short', state.pages < cost);
