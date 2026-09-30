@@ -7,7 +7,8 @@ import { mountApp } from './ui/app';
 import { mountSealVisions } from './ui/sealVision';
 import { mountScene } from './scene';
 import { beyond, clarity } from './systems/perception';
-import { isDebugEnabled, mountDebugPanel } from './debug/debugPanel';
+import { mountDebugPanel } from './debug/debugPanel';
+import { isDebugEnabled } from './debug/enabled';
 import { readStrangeTitleWith } from './systems/coverTitle';
 import { isDeciphered } from './systems/decipher';
 

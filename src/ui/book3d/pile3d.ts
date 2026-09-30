@@ -3,7 +3,7 @@ import { el } from '../dom';
 import { createBookMesh } from './bookMesh';
 import { createBookRenderer } from './renderer3d';
 import { createLighting } from './lighting';
-import { isDebugEnabled } from '../../debug/debugPanel';
+import { isDebugEnabled } from '../../debug/enabled';
 import type { Book3d } from './book3dBook';
 import { flightAmount, flyingHome, launchFlight } from './bookFlight';
 
@@ -87,6 +87,8 @@ interface Slot {
   arriveAt: number | null;
   news: boolean;
   button: HTMLButtonElement;
+  /** Couverture qui vit (livre de débogage). */
+  tick?: (now: number) => boolean;
 }
 
 /**
@@ -160,6 +162,7 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
       button,
     };
     const book = spec.book();
+    slot.tick = book.tick;
     void book.look().then((look) => {
       const mesh = createBookMesh(book.shape, look);
       mesh.setOpen(0);
@@ -397,6 +400,7 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
       slot.pivot.rotation.set(0, 0, roll + tilt);
       slot.pivot.position.set(slot.base.x, slot.base.y + rest + drop + hop, slot.base.z);
     }
+    for (const slot of slots) if (slot.shown && slot.tick?.(now)) dirty = true;
     if (resize()) {
       fit();
       dirty = true;

@@ -1,6 +1,6 @@
 import { el } from '../ui/dom';
 
-/** Briques du panneau de débogage : sections repliables, lignes « libellé — contrôle — aide ». */
+/** Briques de la barre de débogage : lignes « libellé — contrôle — aide », ouverture mémorisée. */
 
 const OPEN_KEY = 'idle-babel-debug-open';
 
@@ -12,7 +12,7 @@ const readOpen = (): Record<string, boolean> => {
   }
 };
 
-/** Mémorise si un élément (section ou panneau entier) est ouvert. */
+/** Mémorise si un élément (fiche ou barre entière) est ouvert. */
 export const rememberOpen = (key: string, open: boolean): void => {
   try {
     localStorage.setItem(OPEN_KEY, JSON.stringify({ ...readOpen(), [key]: open }));
@@ -22,15 +22,6 @@ export const rememberOpen = (key: string, open: boolean): void => {
 };
 
 export const wasOpen = (key: string, fallback = true): boolean => readOpen()[key] ?? fallback;
-
-/** Section repliable ; ouverte ou fermée comme la dernière fois (mémorisé dans ce navigateur). */
-export const section = (title: string, ...rows: HTMLElement[]): HTMLElement => {
-  const details = el('details', 'debug-section');
-  details.open = wasOpen(title);
-  details.addEventListener('toggle', () => rememberOpen(title, details.open));
-  details.append(el('summary', undefined, title), ...rows);
-  return details;
-};
 
 /** Ligne : libellé, contrôle, et une courte aide en dessous. */
 export const row = (label: string, control: HTMLElement, hint?: string): HTMLElement => {

@@ -10,14 +10,16 @@ export interface HeaderHandlers {
   onOptions: () => void;
   onWhiteBook: () => void;
   onStrangeBook: () => void;
+  /** Le livre de débogage : seulement avec ?debug (sinon absent de la pile). */
+  onDebugBook?: () => void;
   /** Les modèles 3D des trois livres du joueur. */
-  books: { options: () => Book3d; white: () => Book3d; strange: () => Book3d };
+  books: { options: () => Book3d; white: () => Book3d; strange: () => Book3d; debug?: () => Book3d };
   /** Le livre étrange a-t-il été trouvé ? Il n'est avec les autres qu'ensuite. */
   strangeBookFound: () => boolean;
   /** Des sceaux obtenus attendent d'être vus : le contour du livre étrange luit. */
   hasNewSeals: () => boolean;
   /** Le livre ouvert en ce moment (sa page à l'écran), absent de la pile ; null : le jeu. */
-  openBook: () => 'white' | 'strange' | 'options' | null;
+  openBook: () => 'white' | 'strange' | 'options' | 'debug' | null;
   /** Morceaux écrits dans le livre blanc : quand il y en a un de plus, le livre sursaute. */
   writtenCount: () => number;
 }
@@ -47,6 +49,10 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
       dz: -0.1,
       tilt: 0.05,
     },
+    // Débogage : la plaque d'obsidienne posée sur tout le reste, sa couverture vers le ciel.
+    ...(handlers.books.debug && handlers.onDebugBook
+      ? [{ id: 'debug', label: 'Débogage', book: handlers.books.debug, onOpen: handlers.onDebugBook, yaw: 0.25, dx: -0.12, dz: 0.06 }]
+      : []),
   ]);
   // Déjà trouvé à l'affichage : le livre est là. Trouvé pendant la partie : il tombe sur la pile.
   let found = handlers.strangeBookFound();

@@ -283,6 +283,48 @@ footer {
 .debug-label {
   color: var(--ink);
 }
+.debug-value {
+  color: var(--accent);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+/* Fiche d'un sujet choisi dans le livre de débogage : son nom, la croix qui le retire. */
+.debug-card summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.debug-unpin {
+  margin-left: auto;
+  padding: 0 5px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.debug-open-book {
+  padding: 0 7px;
+  font: inherit;
+  line-height: 1.4;
+}
+.debug-empty {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+/* Morceaux d'une phrase, sceaux d'une planche : écrits en clair, manquants estompés et barrés. */
+.debug-segments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 3px 0;
+}
+.debug-segments button {
+  padding: 1px 5px;
+  font-size: 11px;
+}
+.debug-segments .missing {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
 .fps {
   opacity: 0.7;
   font-variant-numeric: tabular-nums;

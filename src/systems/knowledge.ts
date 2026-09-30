@@ -21,6 +21,7 @@ let forced = false;
 export const forceFinds = (on: boolean): void => {
   forced = on;
 };
+export const isForcingFinds = (): boolean => forced;
 
 /** Débogage : plafond des pages qui tournent seules, à la place de MAX_TURNS_PER_SECOND. */
 let turnCap = MAX_TURNS_PER_SECOND;

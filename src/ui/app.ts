@@ -15,6 +15,8 @@ import { createInitialState, type GameState } from '../core/state';
 import { showWelcome } from './welcome';
 import { loreTold, tellLore } from '../systems/lore';
 import { mountLore } from './lore';
+import { isDebugEnabled, DEBUG_BOOK_HASH } from '../debug/enabled';
+import { debugBook3d } from '../debug/book/debugBook3d';
 import type { Component } from './dom';
 
 const OPTIONS_HASH = '#options';
@@ -48,22 +50,26 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   };
 
   /** Le livre dont la page est ouverte (null : le jeu). */
-  const openBook = (): 'white' | 'strange' | 'options' | null => {
+  const openBook = (): 'white' | 'strange' | 'options' | 'debug' | null => {
     const hash = window.location.hash;
     if (hash === OPTIONS_HASH) return 'options';
+    if (hash === DEBUG_BOOK_HASH && debugging) return 'debug';
     if (hash === WHITE_BOOK_HASH) return 'white';
     return hash === STRANGE_BOOK_HASH && strangeBookFound(state) ? 'strange' : null;
   };
   // L'en-tête reste à l'écran d'une page à l'autre : la pile ne se recharge pas, le livre ouvert y laisse
   // sa place vide et y revient.
+  const debugging = isDebugEnabled();
   const header = createHeader({
     onOptions: open(OPTIONS_HASH),
     onWhiteBook: open(WHITE_BOOK_HASH),
     onStrangeBook: open(STRANGE_BOOK_HASH),
+    onDebugBook: debugging ? open(DEBUG_BOOK_HASH) : undefined,
     books: {
       options: () => notebook3d(state, { onLocale: () => {}, onSettings: () => {}, onReset: () => {} }),
       white: () => whiteBook3d(state),
       strange: () => strangeBook3d(state),
+      debug: debugging ? debugBook3d : undefined,
     },
     strangeBookFound: () => strangeBookFound(state),
     hasNewSeals: () => state.newSeals.length > 0,
@@ -108,6 +114,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
+    if (window.location.hash === DEBUG_BOOK_HASH && debugging) return [header, createBook3dPage(debugBook3d(), back)];
     if (window.location.hash === WHITE_BOOK_HASH) {
       tellLore(state, 'whiteBook');
       // Tant qu'il n'en est jamais sorti, le joueur ne connaît pas encore le jeu : il lève les yeux du

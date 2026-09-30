@@ -187,6 +187,8 @@ export interface PageHooks {
   onHover?: (id: string) => void;
   /** Sa note au crayon est cliquée : payer pour déchiffrer. */
   onPay?: () => void;
+  /** Une autre action de la page est cliquée (une entrée du livre de débogage). */
+  onAct?: (id: string) => void;
 }
 
 /** Ce qui change sur une page sans venir de la partie : le sceau survolé, la note au crayon ouverte. */
@@ -209,6 +211,7 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
     },
     act: (id) => {
       if (id === 'pay') hooks.onPay?.();
+      else if (id !== 'ask') hooks.onAct?.(id);
       view.asking = id === 'ask' && !view.asking;
       render(layout(view));
     },

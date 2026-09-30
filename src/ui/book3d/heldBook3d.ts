@@ -10,7 +10,7 @@ import { attachBookGesture } from './bookGesture';
 import { createLighting } from './lighting';
 import { createAutoTurn3d } from './autoTurn3d';
 import { createBookRenderer, disposeObject } from './renderer3d';
-import { isDebugEnabled } from '../../debug/debugPanel';
+import { isDebugEnabled } from '../../debug/enabled';
 import { createHeldPose } from './heldPose';
 import { createTweens } from './tweens';
 import type { Book3d } from './book3dBook';

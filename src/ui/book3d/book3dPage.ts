@@ -13,7 +13,7 @@ import { createLighting } from './lighting';
 import { createReadingView } from './readingView';
 import { createBookRenderer } from './renderer3d';
 import { createAutoTurn3d } from './autoTurn3d';
-import { isDebugEnabled } from '../../debug/debugPanel';
+import { isDebugEnabled } from '../../debug/enabled';
 import { BIG_BOOK_REWRITE, type Book3d } from './book3dBook';
 import { createFlight, takeFlight, type Flight } from './bookFlight';
 
@@ -361,6 +361,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     // Pendant le vol, la caméra ne bouge pas (sur son élan, elle décalerait le point d'arrivée).
     const orbiting = !flight && !homing && controls.update();
     notifyBackSeen();
+    if (spec.tick?.(now)) dirty = true;
     if (moving || turning || resized || orbiting || dirty || flight) {
       // Livre fermé (d'un côté ou de l'autre), on le fait tourner : la lumière suit la face qu'on regarde.
       // Fermé : les deux plats l'un sur l'autre (couverture fermée, ou plat arrière refermé sur elle).
