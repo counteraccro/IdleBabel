@@ -2,14 +2,53 @@ import { el } from './dom';
 import { openModal } from './modal/modal';
 import { messages, t } from '../i18n';
 import { loreRead, onLore } from '../systems/lore';
+import { LORE_IN_THE_DARK, type LoreId } from '../data/lore';
 import type { GameState } from '../core/state';
 
 /** Écart entre deux paragraphes qui apparaissent (voir .modal-story dans modal.css). */
-const PARAGRAPH_MS = 1600;
+export const PARAGRAPH_MS = 1600;
+
+/**
+ * Un récit dont les paragraphes apparaissent l'un après l'autre (textes à remplir, réécrits sans relancer
+ * l'apparition).
+ */
+export const storyLines = (count: number): { root: HTMLElement; lines: HTMLElement[] } => {
+  const root = el('div', 'modal-story');
+  const lines = Array.from({ length: count }, (_, index) => {
+    const line = el('p');
+    line.style.animationDelay = `${index * PARAGRAPH_MS}ms`;
+    return line;
+  });
+  root.append(...lines);
+  return { root, lines };
+};
+
+/** Où mène un moment une fois lu (adresse de l'écran à ouvrir, voir ui/app.ts). */
+const LEADS_TO: Partial<Record<LoreId, string>> = { lookAround: '#blanc' };
+
+/** Le temps que l'écran suivant se construise (livre 3D) sous le voile noir, avant qu'il se lève. */
+const VEIL_HOLD_MS = 250;
+/** Durée du lever du voile (voir .modal-veil dans modal.css). */
+const VEIL_LIFT_MS = 800;
+
+/**
+ * Change d'écran derrière un voile noir qui se lève ensuite : sans lui, on verrait le jeu entre deux
+ * modales, puis l'écran suivant se construire.
+ */
+const goThroughTheDark = (hash: string): void => {
+  const veil = el('div', 'modal-veil');
+  document.body.append(veil);
+  window.location.hash = hash;
+  // Levé au bout d'un temps, sans attendre l'arrivée sur l'écran ni la fin de la transition : si l'une
+  // ou l'autre ne vient pas (déjà sur cette adresse, transitions coupées), le voile ne reste pas.
+  setTimeout(() => veil.classList.add('lifting'), VEIL_HOLD_MS);
+  setTimeout(() => veil.remove(), VEIL_HOLD_MS + VEIL_LIFT_MS);
+};
 
 /**
  * Raconte les moments de lore en attente (systems/lore.ts), un à la fois : le récit flotte sur le décor
- * assombri, ses paragraphes apparaissent l'un après l'autre, puis « Continuer ». Rien ne se raconte
+ * assombri, ses paragraphes apparaissent l'un après l'autre, puis « Continuer » (ou le bouton propre au
+ * moment, lore.<id>.button). Rien ne se raconte
  * avant que le joueur ne se soit présenté (accueil). Renvoie de quoi relancer le récit (accueil fermé).
  */
 export const mountLore = (state: GameState): (() => void) => {
@@ -17,26 +56,25 @@ export const mountLore = (state: GameState): (() => void) => {
   const next = (): void => {
     const id = state.lorePending[0];
     if (telling || !id || !state.playerName) return;
-    const story = (messages().lore as unknown as Record<string, { title: string; text: string[] } | undefined>)[id];
+    const story = (messages().lore as unknown as Record<string, { title: string; text: string[]; button?: string } | undefined>)[id];
     // Un moment sans texte (retiré depuis) : oublié.
     if (!story) {
       loreRead(state, id);
       return next();
     }
     telling = true;
-    const text = el('div', 'modal-story');
-    story.text.forEach((paragraph, index) => {
-      const line = el('p', undefined, paragraph.replaceAll('{name}', state.playerName));
-      line.style.animationDelay = `${index * PARAGRAPH_MS}ms`;
-      text.append(line);
-    });
+    const text = storyLines(story.text.length);
+    text.lines.forEach((line, index) => (line.textContent = story.text[index].replaceAll('{name}', state.playerName)));
     const modal = openModal({
       title: story.title.replaceAll('{name}', state.playerName),
-      body: [text],
-      actions: [{ label: t('lore.continue'), kind: 'primary' }],
+      body: [text.root],
+      backdrop: (LORE_IN_THE_DARK as readonly string[]).includes(id) ? 'black' : 'dim',
+      actions: [{ label: story.button ?? t('lore.continue'), kind: 'primary' }],
       onClose: () => {
         loreRead(state, id);
         telling = false;
+        const leadsTo = LEADS_TO[id as LoreId];
+        if (leadsTo) goThroughTheDark(leadsTo);
         next();
       },
     });

@@ -96,6 +96,21 @@ export const openModal = ({
     actions[index].onClick?.();
     if (!actions[index].keepOpen) close();
   });
+  // Un récit qui apparaît paragraphe par paragraphe (.modal-story) : un clic n'importe où l'affiche en
+  // entier, sans rien déclencher d'autre (le bouton encore invisible ne compte pas).
+  backdrop.addEventListener(
+    'click',
+    (event) => {
+      const telling = card
+        .getAnimations({ subtree: true })
+        .filter((animation) => (animation as CSSAnimation).animationName === 'modal-story-in' && animation.playState !== 'finished');
+      if (!telling.length) return;
+      telling.forEach((animation) => animation.finish());
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    { capture: true },
+  );
   if (dismissible) backdrop.addEventListener('click', (event) => event.target === backdrop && close());
   document.addEventListener('keydown', onKey);
   footer.append(...buttons);

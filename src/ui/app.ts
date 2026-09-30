@@ -12,6 +12,7 @@ import { setLocale } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
 import { createInitialState, type GameState } from '../core/state';
 import { showWelcome } from './welcome';
+import { tellLore } from '../systems/lore';
 import { mountLore } from './lore';
 import type { Component } from './dom';
 
@@ -85,7 +86,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
-    if (window.location.hash === WHITE_BOOK_HASH) return [createBook3dPage(whiteBook3d(state), back)];
+    if (window.location.hash === WHITE_BOOK_HASH) {
+      tellLore(state, 'whiteBook');
+      return [createBook3dPage(whiteBook3d(state), back)];
+    }
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state)) return [createBook3dPage(strangeBook3d(state), back)];
     return game();
   };
@@ -106,6 +110,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       state.playerName = name;
       state.locale = locale;
       setLocale(locale);
+      tellLore(state, 'lookAround');
       saveGame(state);
       render();
       tellPendingLore();

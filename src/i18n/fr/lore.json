@@ -1,5 +1,35 @@
 {
   "continue": "Continuer",
+  "awakening": {
+    "title": "Le réveil",
+    "text": [
+      "Vous vous réveillez dans une salle sombre.",
+      "Le sol est froid. Il flotte une odeur de poussière et de vieux papier.",
+      "Où êtes-vous ?",
+      "Qui êtes-vous ?"
+    ],
+    "name": "Votre nom… il vous revient :",
+    "enter": "Je me souviens"
+  },
+  "lookAround": {
+    "title": "Nulle part",
+    "text": [
+      "Vous regardez autour de vous. Tout est sombre. Vos yeux s'habituent, lentement.",
+      "Des livres. Partout. Du sol jusqu'au plafond, à perte de vue.",
+      "Vous ne reconnaissez rien. Aucun souvenir du chemin jusqu'ici.",
+      "Votre main gauche serre quelque chose. Deux livres : un étrange cahier, votre nom sur l'étiquette… et un livre blanc.",
+      "D'où viennent-ils ?"
+    ],
+    "button": "Ouvrir cet étrange livre blanc"
+  },
+  "whiteBook": {
+    "title": "Le livre blanc",
+    "text": [
+      "Quel étrange livre…",
+      "Pourquoi vous semble-t-il si familier ?",
+      "Et pourtant, vous n'arrivez pas à le comprendre."
+    ]
+  },
   "firstKnowledge": {
     "title": "Une phrase",
     "text": [

@@ -173,3 +173,8 @@
 }
 /* Le bouton attend la fin du récit. */
 .modal-story ~ .modal-actions { opacity: 0; animation: modal-story-in 0.8s ease forwards; }
+/* Le nom attend la fin du récit, comme le bouton. */
+.modal-story ~ .modal-field { opacity: 0; animation: modal-story-in 0.8s ease forwards; }
+/* Voile noir entre deux écrans (moment de lore qui mène ailleurs, ui/lore.ts), au-dessus des modales. */
+.modal-veil { position: fixed; inset: 0; z-index: 30; background: #000; pointer-events: none; transition: opacity 0.8s ease; }
+.modal-veil.lifting { opacity: 0; }
