@@ -14,10 +14,8 @@
   "lookAround": {
     "title": "Nulle part",
     "text": [
-      "Vous regardez autour de vous. Tout est sombre. Vos yeux s'habituent, lentement.",
-      "Des livres. Partout. Du sol jusqu'au plafond, à perte de vue.",
-      "Vous ne reconnaissez rien. Aucun souvenir du chemin jusqu'ici.",
-      "Votre main gauche serre quelque chose. Deux livres : un étrange cahier, votre nom sur l'étiquette… et un livre blanc.",
+      "Vos yeux s'habituent à l'ombre. Des livres, du sol au plafond, à perte de vue.",
+      "Votre main gauche serre deux livres : un étrange cahier à votre nom, et un livre blanc.",
       "D'où viennent-ils ?"
     ],
     "button": "Ouvrir cet étrange livre blanc"

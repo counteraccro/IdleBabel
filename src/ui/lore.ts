@@ -6,7 +6,7 @@ import { LORE_BACKDROP, type LoreId } from '../data/lore';
 import type { GameState } from '../core/state';
 
 /** Écart entre deux paragraphes qui apparaissent (voir .modal-story dans modal.css). */
-export const PARAGRAPH_MS = 1600;
+export const PARAGRAPH_MS = 1200;
 
 /**
  * Un récit dont les paragraphes apparaissent l'un après l'autre (textes à remplir, réécrits sans relancer

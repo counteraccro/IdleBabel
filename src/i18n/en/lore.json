@@ -14,10 +14,8 @@
   "lookAround": {
     "title": "Nowhere",
     "text": [
-      "You look around. Everything is dark. Your eyes adjust, slowly.",
-      "Books. Everywhere. From floor to ceiling, as far as the eye can see.",
-      "You recognise nothing. No memory of the way here.",
-      "Your left hand is clutching something. Two books: a strange notebook, your name on the label… and a white book.",
+      "Your eyes adjust to the dark. Books, from floor to ceiling, as far as the eye can see.",
+      "Your left hand is clutching two books: a strange notebook bearing your name, and a white book.",
       "Where did they come from?"
     ],
     "button": "Open this strange white book"
