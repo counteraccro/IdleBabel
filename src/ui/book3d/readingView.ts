@@ -11,10 +11,11 @@ export interface ReadingView {
   readonly locked: boolean;
   /**
    * Le livre s'ouvre (true) : la caméra part de là où elle est vers la vue de lecture, puis s'y bloque.
-   * Il se referme (false) : elle reste où elle est et redevient libre (on fait tourner le livre fermé).
+   * Il se referme (false) : elle garde son angle, glisse avec le livre jusqu'à `rest` (le milieu du livre
+   * fermé, autour duquel on le fait tourner ensuite) et redevient libre.
    */
-  begin: (reading: boolean) => void;
-  /** Avancement du mouvement vers la vue de lecture, de 0 à 1 (au rythme du plat qui s'ouvre). */
+  begin: (reading: boolean, rest?: THREE.Vector3) => void;
+  /** Avancement du mouvement (vers la vue de lecture, ou vers le livre fermé), de 0 à 1 (au rythme du plat). */
   step: (amount: number) => void;
 }
 
@@ -24,20 +25,29 @@ export const createReadingView = (camera: THREE.PerspectiveCamera, controls: Orb
   const from = new THREE.Spherical();
   const to = new THREE.Spherical();
   const fromTarget = new THREE.Vector3();
+  const toTarget = new THREE.Vector3();
+  const fromCamera = new THREE.Vector3();
   const now = new THREE.Spherical();
   const offset = new THREE.Vector3();
   let locked = false;
   let moving = false;
+  /** Le livre se referme : la caméra glisse sans tourner. */
+  let closing = false;
   return {
     get locked() {
       return locked;
     },
-    begin: (reading) => {
+    begin: (reading, rest) => {
       locked = reading;
-      moving = reading;
+      moving = true;
+      closing = !reading;
       controls.enabled = !reading;
-      if (!reading) return;
       fromTarget.copy(controls.target);
+      if (closing) {
+        toTarget.copy(rest ?? controls.target);
+        fromCamera.copy(camera.position);
+        return;
+      }
       from.setFromVector3(offset.copy(camera.position).sub(fromTarget));
       // Assez de recul pour tout le livre ouvert, même sur un écran étroit.
       const fit = OPEN_WIDTH / 2 / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / Math.max(0.1, camera.aspect);
@@ -50,6 +60,13 @@ export const createReadingView = (camera: THREE.PerspectiveCamera, controls: Orb
     },
     step: (amount) => {
       if (!moving) return;
+      if (closing) {
+        controls.target.lerpVectors(fromTarget, toTarget, amount);
+        camera.position.copy(fromCamera).add(offset.subVectors(controls.target, fromTarget));
+        controls.update();
+        if (amount >= 1) moving = false;
+        return;
+      }
       const mix = (a: number, b: number): number => a + (b - a) * amount;
       now.set(mix(from.radius, to.radius), mix(from.phi, to.phi), mix(from.theta, to.theta));
       controls.target.lerpVectors(fromTarget, READING.target, amount);

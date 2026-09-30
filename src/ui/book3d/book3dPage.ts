@@ -77,6 +77,11 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
   else controls_.append(arrows);
   root.append(back, canvas, controls_);
 
+  /**
+   * Milieu du livre fermé, autour duquel on le fait tourner : fermé sur sa couverture, il est posé à droite
+   * du dos ; refermé sur son dos (après la dernière page), à gauche.
+   */
+  const closedOn = (side: 'front' | 'back'): THREE.Vector3 => new THREE.Vector3(((side === 'front' ? 1 : -1) * shape.width) / 2, 0, 0);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 20);
   const { renderer, resize, destroy } = createBookRenderer(canvas, camera);
@@ -86,7 +91,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
   // Le compromis : un peu au-dessus et à droite du livre, qui montre sa tranche du bas et de côté.
   camera.position.set(1.7, -0.7, 1.9);
   const controls = new OrbitControls(camera, canvas);
-  controls.target.set(0.4, 0, 0);
+  controls.target.copy(closedOn('front'));
   controls.enableDamping = true;
   const view = createReadingView(camera, controls);
 
@@ -131,8 +136,9 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void): Component =>
   const swing = (board: 'front' | 'back' | 'flip', target: number): void => {
     const from = board === 'back' ? shut : Number(open.value);
     // Le livre s'ouvre (couverture, ou plat arrière qui se relève) : la caméra rejoint la vue de lecture
-    // et s'y bloque ; il se referme : elle redevient libre.
-    view.begin(board === 'front' ? target === 1 : board === 'back' && target === 0);
+    // et s'y bloque ; il se referme : elle garde son angle et glisse jusqu'au milieu du livre fermé, autour
+    // duquel il tourne ensuite, puis redevient libre.
+    view.begin(board === 'front' ? target === 1 : board === 'back' && target === 0, closedOn(board === 'back' ? 'back' : 'front'));
     const start = performance.now();
     const duration = OPEN_MS * Math.abs(target - from);
     swinging = true;
