@@ -16,6 +16,8 @@
 }
 /* Avant le jeu (nom, langue) : rien derrière, le noir complet. */
 .modal-backdrop.black { background: #000; backdrop-filter: none; }
+/* Presque noir, sans flou : on distingue juste ce qui est derrière (le livre qu'on vient de prendre). */
+.modal-backdrop.light { background: rgba(5, 4, 3, 0.8); backdrop-filter: none; }
 
 /* Coins coupés : le cuir, et les filets qui en suivent le contour. */
 .modal-frame,

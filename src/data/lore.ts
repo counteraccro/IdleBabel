@@ -8,11 +8,16 @@ export const LORE = [
   'lookAround',
   /** Le livre blanc ouvert pour la première fois (ui/app.ts) : familier, et pourtant illisible. */
   'whiteBook',
+  /** En sortant du livre blanc la première fois (« Regarder autour de moi », ui/app.ts) : il prend un livre. */
+  'firstBook',
   /** La toute première trouvaille lue : une phrase qu'on comprend (systems/knowledge.ts). */
   'firstKnowledge',
 ] as const;
 
 export type LoreId = (typeof LORE)[number];
 
-/** Moments racontés sur fond noir, sans le décor derrière (le chercheur n'y voit encore rien). */
-export const LORE_IN_THE_DARK: readonly LoreId[] = ['lookAround'];
+/**
+ * Fond d'un moment, s'il n'est pas le décor assombri : noir (le chercheur n'y voit encore rien), ou à
+ * peine voilé (il découvre la pièce et le livre qu'il vient de prendre).
+ */
+export const LORE_BACKDROP: Partial<Record<LoreId, 'black' | 'light'>> = { lookAround: 'black', firstBook: 'light' };

@@ -24,10 +24,10 @@ export interface ModalOptions {
   body?: HTMLElement[];
   actions?: ModalAction[];
   /**
-   * Fond : le décor assombri (par défaut), ou tout noir (`black`) : la petite configuration avant le
-   * jeu (nom, langue), quand rien n'a encore commencé.
+   * Fond : le décor assombri (par défaut), tout noir (`black`) quand rien n'a encore commencé, ou à
+   * peine voilé (`light`) pour laisser voir ce qui est derrière.
    */
-  backdrop?: 'dim' | 'black';
+  backdrop?: 'dim' | 'black' | 'light';
   /** Échap ou un clic à côté la ferment (pas pour une question obligatoire). */
   dismissible?: boolean;
   onClose?: () => void;

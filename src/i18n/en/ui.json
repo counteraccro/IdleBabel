@@ -9,6 +9,7 @@
   "build": "Build of",
   "options": "Options",
   "back": "Back to the game",
+  "lookAround": "Look around me",
   "language": "Language",
   "reading": "Reading",
   "autoTurn": "Pages turn by themselves",

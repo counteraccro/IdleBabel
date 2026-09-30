@@ -2,7 +2,7 @@ import { el } from './dom';
 import { openModal } from './modal/modal';
 import { messages, t } from '../i18n';
 import { loreRead, onLore } from '../systems/lore';
-import { LORE_IN_THE_DARK, type LoreId } from '../data/lore';
+import { LORE_BACKDROP, type LoreId } from '../data/lore';
 import type { GameState } from '../core/state';
 
 /** Écart entre deux paragraphes qui apparaissent (voir .modal-story dans modal.css). */
@@ -68,7 +68,7 @@ export const mountLore = (state: GameState): (() => void) => {
     const modal = openModal({
       title: story.title.replaceAll('{name}', state.playerName),
       body: [text.root],
-      backdrop: (LORE_IN_THE_DARK as readonly string[]).includes(id) ? 'black' : 'dim',
+      backdrop: LORE_BACKDROP[id as LoreId] ?? 'dim',
       actions: [{ label: story.button ?? t('lore.continue'), kind: 'primary' }],
       onClose: () => {
         loreRead(state, id);

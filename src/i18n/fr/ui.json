@@ -9,6 +9,7 @@
   "build": "Version du",
   "options": "Options",
   "back": "Retour au jeu",
+  "lookAround": "Regarder autour de moi",
   "language": "Langue",
   "reading": "Lecture",
   "autoTurn": "Les pages tournent seules",

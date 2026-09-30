@@ -8,11 +8,11 @@ import { whiteBook3d } from './book3d/whiteBook3d';
 import { strangeBook3d } from './book3d/strangeBook3d';
 import { createHandReading3d } from './book3d/handReading3d';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
-import { setLocale } from '../i18n';
+import { setLocale, t } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
 import { createInitialState, type GameState } from '../core/state';
 import { showWelcome } from './welcome';
-import { tellLore } from '../systems/lore';
+import { loreTold, tellLore } from '../systems/lore';
 import { mountLore } from './lore';
 import type { Component } from './dom';
 
@@ -88,7 +88,14 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     if (window.location.hash === OPTIONS_HASH) return options();
     if (window.location.hash === WHITE_BOOK_HASH) {
       tellLore(state, 'whiteBook');
-      return [createBook3dPage(whiteBook3d(state), back)];
+      // Tant qu'il n'en est jamais sorti, le joueur ne connaît pas encore le jeu : il lève les yeux du
+      // livre, et le récit continue (firstBook).
+      const first = !loreTold(state, 'firstBook');
+      const leave = (): void => {
+        tellLore(state, 'firstBook');
+        back();
+      };
+      return [createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : undefined)];
     }
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state)) return [createBook3dPage(strangeBook3d(state), back)];
     return game();

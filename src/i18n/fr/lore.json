@@ -30,6 +30,15 @@
       "Et pourtant, vous n'arrivez pas à le comprendre."
     ]
   },
+  "firstBook": {
+    "title": "La voix",
+    "text": [
+      "Des livres, partout : sur les murs, par terre…",
+      "Et puis cette voix dans votre tête : quel est le sens de tout cela ?",
+      "Instinctivement, vous attrapez un livre…"
+    ],
+    "button": "Lire le livre"
+  },
   "firstKnowledge": {
     "title": "Une phrase",
     "text": [

@@ -38,6 +38,8 @@ export interface HeldBookOptions {
   sway: () => boolean;
   /** Double page où s'ouvre le premier livre (les feuilles déjà tournées). */
   startSpread?: number;
+  /** Le premier livre arrive fermé, comme les suivants (il attend alors `stayClosed`). */
+  startClosed?: boolean;
   /**
    * Le livre suivant, qui arrive toujours fermé, attend-il qu'on l'ouvre d'un clic (pages qui tournent
    * seules coupées) ? Sinon, il s'ouvre seul après avoir montré sa couverture.
@@ -126,8 +128,9 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     if (options.onLeaf?.(spread, counted)) void finish();
   }
   let current = first;
-  void take(first, options.startSpread ?? 0, false).then(() => {
-    phase = 'reading';
+  void take(first, options.startSpread ?? 0, options.startClosed ?? false).then(() => {
+    closedAt = performance.now();
+    phase = options.startClosed ? 'closed' : 'reading';
   });
 
   /** Livre neuf fermé : sa couverture s'ouvre, il se recentre sur ses deux pages. */

@@ -14,10 +14,21 @@ import type { GameState } from '../../core/state';
  */
 export const createHandReading3d = (state: GameState): Component => {
   const finds = createHandFinds(state);
+  // Tout début de partie : le chercheur vient d'attraper ce livre (lore firstBook). Il reste fermé tant
+  // que le récit n'est pas lu, puis s'ouvre (« Lire le livre »), même si les pages ne tournent pas seules.
+  let waitingForLore = state.bookPage === 0 && !state.loreSeen.includes('firstBook');
   const held = createHeldBook3d(handBook3d(state, state.booksFinished, finds), {
     sway: () => state.settings.bookSway,
     startSpread: state.bookPage,
-    stayClosed: () => !state.settings.autoTurn,
+    startClosed: waitingForLore,
+    stayClosed: () => {
+      if (waitingForLore) {
+        if (!state.loreSeen.includes('firstBook')) return true;
+        waitingForLore = false;
+        return false;
+      }
+      return !state.settings.autoTurn;
+    },
     onLeaf: (spread, counted) => {
       if (counted) readPage(state);
       finds.gain(spread);

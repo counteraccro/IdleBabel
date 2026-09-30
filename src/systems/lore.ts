@@ -10,9 +10,12 @@ export const onLore = (listener: LoreListener): (() => void) => {
   return () => listeners.delete(listener);
 };
 
+/** Ce moment a déjà été déclenché (lu, ou en attente de l'être). */
+export const loreTold = (state: GameState, id: LoreId): boolean => state.loreSeen.includes(id) || state.lorePending.includes(id);
+
 /** Déclenche un moment de lore : il attend son tour (sauvegardé), une seule fois par partie. */
 export const tellLore = (state: GameState, id: LoreId): void => {
-  if (state.loreSeen.includes(id) || state.lorePending.includes(id)) return;
+  if (loreTold(state, id)) return;
   state.lorePending.push(id);
   listeners.forEach((listener) => listener());
 };
