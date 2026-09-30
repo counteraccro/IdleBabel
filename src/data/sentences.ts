@@ -27,6 +27,17 @@ export const SENTENCES: readonly SentenceDef[] = [
   { id: 'ladder', kind: 'method', tool: 'ladder' },
   { id: 'cup', kind: 'memory' },
   { id: 'shelves', kind: 'anomaly' },
+  // La structure de la Bibliothèque (chiffres de Borges), qui ne tombe jamais juste.
+  { id: 'thirtyOne', kind: 'anomaly' },
+  { id: 'stairs', kind: 'anomaly' },
+  { id: 'hallMirror', kind: 'anomaly' },
+  { id: 'extraLine', kind: 'anomaly' },
+  { id: 'lamps', kind: 'anomaly' },
+  { id: 'passages', kind: 'anomaly' },
+  { id: 'airShaft', kind: 'anomaly' },
+  { id: 'symbols', kind: 'anomaly' },
+  { id: 'inkStain', kind: 'anomaly' },
+  { id: 'warmCloset', kind: 'anomaly' },
   // Le livre qui te parle (phrases de l'auteur, 30/09).
   { id: 'iSeeYou', kind: 'anomaly' },
   { id: 'iKnowYou', kind: 'anomaly' },
