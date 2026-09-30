@@ -12,7 +12,13 @@
     "lectern": "A block / fallen from the railing / holds a book / better than / my arms.",
     "ladder": "The top / shelves / are not / further away: / I only need / to stop / coming down.",
     "cup": "A cup, / chipped; / I always drank / from the side / of the chip.",
-    "shelves": "Five shelves / per wall. / I counted / six, / once. / I did not / count again."
+    "shelves": "Five shelves / per wall. / I counted / six, / once. / I did not / count again.",
+    "iSeeYou": "I / see you.",
+    "iKnowYou": "I know / who you are.",
+    "iKnowMe": "I know / who I am.",
+    "never": "You will never / find it.",
+    "almost": "You are / almost there.",
+    "alreadyFound": "You have / already found it."
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",

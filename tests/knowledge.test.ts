@@ -22,6 +22,11 @@ const started = () => {
 };
 
 describe('phrases du livre blanc', () => {
+  it('ont des identifiants uniques (les morceaux écrits sont rangés par identifiant)', () => {
+    const ids = SENTENCES.map((sentence) => sentence.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
   it('ont le même nombre de morceaux dans chaque langue', () => {
     for (const sentence of SENTENCES) {
       const counts = Object.values(LOCALES).map(

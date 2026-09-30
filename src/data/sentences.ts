@@ -27,4 +27,11 @@ export const SENTENCES: readonly SentenceDef[] = [
   { id: 'ladder', kind: 'method', tool: 'ladder' },
   { id: 'cup', kind: 'memory' },
   { id: 'shelves', kind: 'anomaly' },
+  // Le livre qui te parle (phrases de l'auteur, 30/09).
+  { id: 'iSeeYou', kind: 'anomaly' },
+  { id: 'iKnowYou', kind: 'anomaly' },
+  { id: 'iKnowMe', kind: 'anomaly' },
+  { id: 'never', kind: 'anomaly' },
+  { id: 'almost', kind: 'anomaly' },
+  { id: 'alreadyFound', kind: 'anomaly' },
 ];

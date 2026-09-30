@@ -12,7 +12,13 @@
     "lectern": "Un bloc / tombé de la rambarde / tient un livre / mieux que / mes bras.",
     "ladder": "Les étagères / du haut / ne sont pas / plus loin : / il suffit / de ne plus / redescendre.",
     "cup": "Une tasse / ébréchée ; / je buvais toujours / du côté / de l'ébréchure.",
-    "shelves": "Cinq étagères / par mur. / J'en ai compté / six, / une fois. / Je n'ai pas / recompté."
+    "shelves": "Cinq étagères / par mur. / J'en ai compté / six, / une fois. / Je n'ai pas / recompté.",
+    "iSeeYou": "Je / te vois.",
+    "iKnowYou": "Je sais / qui tu es.",
+    "iKnowMe": "Je sais / qui je suis.",
+    "never": "Tu ne trouveras / jamais.",
+    "almost": "Tu y es / presque.",
+    "alreadyFound": "Tu l'as / déjà trouvée."
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",
