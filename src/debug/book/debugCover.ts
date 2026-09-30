@@ -114,10 +114,60 @@ const paintSheen = (context: CanvasRenderingContext2D): void => {
   context.fillRect(0, 0, WIDTH, HEIGHT);
 };
 
+/**
+ * Le dos : toute la texture s'étire sur sa largeur (le dos bombé, d'un plat à l'autre), à peine un
+ * sixième de sa hauteur. Le titre est donc écrit à part, dans ces proportions, puis tourné pour se lire
+ * de haut en bas (le haut des lettres vers la couverture) et élargi à toute la texture.
+ */
+const SPINE_ACROSS = 150;
+
+const paintSpine = (context: CanvasRenderingContext2D): void => {
+  paintSlab(context, false);
+  const line = document.createElement('canvas');
+  line.width = HEIGHT;
+  line.height = SPINE_ACROSS;
+  const ink = line.getContext('2d')!;
+  const size = 64;
+  ink.font = `700 ${size}px Cinzel, Georgia, serif`;
+  ink.letterSpacing = `${size * 0.3}px`;
+  ink.textAlign = 'center';
+  ink.textBaseline = 'middle';
+  const gold = ink.createLinearGradient(0, SPINE_ACROSS / 2 - size / 2, 0, SPINE_ACROSS / 2 + size / 2);
+  gold.addColorStop(0, '#fff6d8');
+  gold.addColorStop(0.55, '#d9a94e');
+  gold.addColorStop(1, '#8a5f22');
+  ink.shadowColor = 'rgba(240, 200, 110, 0.5)';
+  ink.shadowBlur = 8;
+  ink.fillStyle = gold;
+  ink.fillText('DÉBOGAGE', HEIGHT / 2 + size * 0.15, SPINE_ACROSS / 2 + 4);
+  ink.shadowBlur = 0;
+  // Deux filets dorés en travers du dos, en tête et en queue, un losange au milieu de chacun.
+  ink.strokeStyle = GOLD;
+  ink.lineWidth = 3;
+  for (const x of [90, HEIGHT - 90]) {
+    ink.beginPath();
+    ink.moveTo(x, 22);
+    ink.lineTo(x, SPINE_ACROSS - 22);
+    ink.stroke();
+    ink.save();
+    ink.translate(x + (x < HEIGHT / 2 ? 34 : -34), SPINE_ACROSS / 2);
+    ink.rotate(Math.PI / 4);
+    ink.strokeRect(-9, -9, 18, 18);
+    ink.restore();
+  }
+  context.save();
+  context.translate(WIDTH, 0);
+  context.rotate(Math.PI / 2);
+  context.drawImage(line, 0, 0, HEIGHT, WIDTH);
+  context.restore();
+};
+
 export interface DebugCover {
   front: THREE.CanvasTexture;
   back: THREE.CanvasTexture;
   plain: THREE.CanvasTexture;
+  /** Le dos, titré. */
+  spine: THREE.CanvasTexture;
   /** Fait vivre le cadre (à chaque image) : true si la couverture a changé. */
   tick: (now: number) => boolean;
 }
@@ -165,6 +215,8 @@ export const debugCover = async (): Promise<DebugCover> => {
   paintSheen(backContext);
   const [plain, plainContext] = make();
   paintSlab(plainContext, false);
+  const [spine, spineContext] = make();
+  paintSpine(spineContext);
 
   const frontTexture = canvasTexture(front);
   // Changements prévus : à tel instant, telle place s'allume (lettre) ou s'éteint (null).
@@ -176,6 +228,7 @@ export const debugCover = async (): Promise<DebugCover> => {
     front: frontTexture,
     back: canvasTexture(back),
     plain: canvasTexture(plain),
+    spine: canvasTexture(spine),
     tick: (now) => {
       if (still) return false;
       if (now >= nextWord) {

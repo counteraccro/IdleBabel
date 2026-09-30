@@ -26,7 +26,7 @@ export const debugBook3d = (): Book3d => {
         cover: cover.front,
         back: cover.back,
         inside: cover.plain,
-        spine: cover.plain,
+        spine: cover.spine,
         // Teinte des chants et du dos : la pierre de la couverture, à peine assombrie.
         leather: 0xc8c8d0,
         edge: edgeTexture(DEBUG_PAPER[1], '#9d9a90'),
