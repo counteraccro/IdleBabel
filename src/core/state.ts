@@ -1,3 +1,4 @@
+import type { Notation } from './format';
 import { TOOLS, type ToolId } from '../data/tools';
 import type { HistoryEntry } from './history';
 import type { Locale } from '../i18n';
@@ -18,6 +19,8 @@ export interface Settings {
   reduceBlur: boolean;
   /** Flèches ‹ › sous les livres pour tourner les pages (sinon : clic sur la page, touches ← →). */
   pageArrows: boolean;
+  /** Façon d'écrire les grands nombres (core/format.ts). */
+  notation: Notation;
 }
 
 /** Chiffres de la partie, relevés en silence : le joueur ne les découvre que plus tard. */
@@ -34,7 +37,14 @@ export interface Stats {
 
 export const DEFAULT_STATS: Stats = { clicks: 0, playSeconds: 0, bestPagesPerSecond: 0, fragments: 0 };
 
-export const DEFAULT_SETTINGS: Settings = { autoTurn: true, bookSway: true, showFps: false, reduceBlur: false, pageArrows: false };
+export const DEFAULT_SETTINGS: Settings = {
+  autoTurn: true,
+  bookSway: true,
+  showFps: false,
+  reduceBlur: false,
+  pageArrows: false,
+  notation: 'full',
+};
 
 export interface GameState {
   version: number;

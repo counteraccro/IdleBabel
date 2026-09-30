@@ -1,4 +1,5 @@
 import { el } from '../../ui/dom';
+import { currentNotation, formatNumber } from '../../core/format';
 import { chips, clampCount, numberInput, row, shortCount, showCount, stepper, toggle } from '../debugControls';
 import type { GameState } from '../../core/state';
 
@@ -138,8 +139,9 @@ export const createKit = (): { rows: HTMLElement; kit: CardKit; update: () => vo
   return { rows: body, kit, update: () => updaters.forEach((update) => update()) };
 };
 
-/** Nombres lisibles : 1 234 567, et au plus deux décimales. */
-export const format = (value: number): string => value.toLocaleString('fr-FR', { maximumFractionDigits: 2 });
+/** Nombres lisibles : 1 234 567 (ou la notation choisie dans les options), au plus deux décimales. */
+export const format = (value: number): string =>
+  value >= 1_000 ? formatNumber(value, 'fr') : value.toLocaleString('fr-FR', { maximumFractionDigits: 2 });
 
 /** Durée courte : 42 s, 3 min 20 s, 2 h 05. */
 export const duration = (seconds: number): string => {
@@ -150,5 +152,8 @@ export const duration = (seconds: number): string => {
   return `${Math.floor(s / 3600)} h ${String(Math.floor((s % 3600) / 60)).padStart(2, '0')}`;
 };
 
-/** Nombre court pour une fiche repliée : 950, 12 k, 1,2 M. */
-export const compact = (value: number): string => value.toLocaleString('fr-FR', { notation: 'compact', maximumFractionDigits: 1 });
+/** Nombre court pour une fiche repliée : 950, 12 k, 1,2 M (ou la notation choisie, sauf l'entière). */
+export const compact = (value: number): string =>
+  currentNotation() === 'full'
+    ? value.toLocaleString('fr-FR', { notation: 'compact', maximumFractionDigits: 1 })
+    : formatNumber(value, 'fr');

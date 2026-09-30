@@ -194,11 +194,16 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
       top += paragraph(hint, TEXT_LEFT + 2 * GRID, top) + GRID;
       zones.push({ x: TEXT_LEFT - GRID / 2, y: start, width: TEXT_RIGHT - TEXT_LEFT + GRID / 2, height: top - start - GRID, act });
     },
-    /** Choix sur une ligne (langues) : le choisi est entouré. */
+    /** Choix à la suite (langues, notations), sur plusieurs lignes s'il le faut : le choisi est entouré. */
     choices: (options: { label: string; active: boolean; act: () => void }[]): void => {
       let x = TEXT_LEFT + GRID;
       for (const option of options) {
         item++;
+        context.font = pen(28);
+        if (x > TEXT_LEFT + GRID && x + context.measureText(option.label).width > TEXT_RIGHT) {
+          x = TEXT_LEFT + GRID;
+          top += PEN_LINE + GRID;
+        }
         const width = write(option.label, x, top, pen(28), PEN, PEN_LINE);
         if (option.active) {
           // Entouré d'un trait qui fait un peu plus d'un tour, sans se refermer tout à fait.

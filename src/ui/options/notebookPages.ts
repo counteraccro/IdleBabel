@@ -1,4 +1,5 @@
 import { AVAILABLE_LOCALES, getLocale, localeName, messages, t, type Locale } from '../../i18n';
+import { NOTATIONS, formatNumber } from '../../core/format';
 import type { DoodleKind } from './doodles';
 import type { Writer } from './notebookInk';
 import type { GameState } from '../../core/state';
@@ -19,6 +20,9 @@ export const NOTEBOOK_PAGES = 25;
 
 /** Ce qu'une page peut dessiner d'autre que l'écriture : les croquis, déjà tracés. */
 export type Sketches = Record<DoodleKind, CanvasImageSource>;
+
+/** Nombre écrit de chaque façon dans le choix des notations. */
+const NOTATION_SAMPLE = 12_345_678;
 
 /** Signes griffonnés en travers de la marge. */
 const SCRIBBLES = ['410 ?', '?', '410'];
@@ -91,6 +95,21 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
       toggle(w, 'showFps');
       toggle(w, 'reduceBlur');
       w.skip(1);
+      // Le même nombre, écrit de chaque façon : on choisit celle qu'on lit le mieux.
+      w.heading(t('ui.numbers'));
+      w.choices(
+        NOTATIONS.map((notation) => ({
+          label: formatNumber(NOTATION_SAMPLE, getLocale(), notation),
+          active: notation === state.settings.notation,
+          act: () => {
+            state.settings.notation = notation;
+            actions.onSettings();
+          },
+        })),
+      );
+    },
+    6: (w, sketches) => w.sketch(sketches.spiral, 360, 420, 280),
+    7: (w) => {
       w.heading(t('ui.save'));
       if (reset === 'ask') w.link(t('ui.reset'), () => (reset = 'confirm'), true);
       else if (reset === 'done') w.note(t('notebook.resetDone'));
@@ -114,7 +133,7 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
   return (index: number, w: Writer, sketches: Sketches, spineOnLeft: boolean): void => {
     content[index]?.(w, sketches);
     // Il a numéroté les premières pages, puis a cessé.
-    if (index >= 1 && index <= 5) w.folio(index, spineOnLeft);
+    if (index >= 1 && index <= 7) w.folio(index, spineOnLeft);
     const margin = margins.get(index);
     if (margin?.note !== undefined) w.margin(messages().notebook.notes[margin.note], margin.at);
     if (margin?.scribble) w.scribble(margin.scribble, margin.at);
