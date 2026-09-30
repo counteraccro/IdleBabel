@@ -90,7 +90,7 @@ export const completionCaption = (state: GameState): TextItem => ({
 
 /** Introduction : la part des sceaux obtenus, et l'avancement de chaque planche. */
 export const completionItems = (state: GameState, plates: PlatePage[], number: number): Item[] => [
-  heading(sealsTitle(state)),
+  ...heading(sealsTitle(state)),
   { kind: 'text', text: `${Math.floor(completion(state) * 100)} %`, x: 320, y: 200, size: 84, align: 'center', spacing: 2 },
   completionCaption(state),
   ...plates
@@ -143,7 +143,7 @@ export const plateItems = (state: GameState, page: PlatePage, legend: { name: st
     });
   });
   return [
-    heading(plateTitle(state, page.plate)),
+    ...heading(plateTitle(state, page.plate)),
     { kind: 'text', text: `✦ ${tally(state, page.plate)}`, x: 320, y: 150, size: 20, align: 'center', italic: true, faded: true, spacing: 3 },
     ...seals,
     { kind: 'text', text: legend.name, x: 320, y: 590, size: 24, align: 'center', spacing: 4, steady: true },

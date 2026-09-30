@@ -105,3 +105,7 @@
 }
 /* Option « Réduire les effets de flou ». */
 .reduce-blur .sb-shift { animation: none; }
+/* Titres (heading) : lettrine dorée, et filet doré à losange dessous. */
+.sb-initial::first-letter { font-size: 1.5em; color: #b8913a; }
+.sb-rule { position: absolute; height: 1px; background: linear-gradient(90deg, transparent, rgba(168, 130, 58, 0.9) 45%, transparent 45%, transparent 55%, rgba(168, 130, 58, 0.9) 55%, transparent); }
+.sb-rule::after { content: ''; position: absolute; left: 50%; top: 50%; width: 0.9cqw; height: 0.9cqw; border: 1px solid #b8913a; transform: translate(-50%, -50%) rotate(45deg); }

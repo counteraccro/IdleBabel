@@ -4,6 +4,7 @@ import { el } from '../dom';
 import { PAGE_TEXTURE } from '../book/pageLayout';
 import { cssBaseline, preparePageTexture, type Paper } from '../book/pageRender';
 import { drawSeal, sealSvg, sigil, type Look } from './sigil';
+import { BIG_BOOK_REWRITE } from '../book3d/book3dBook';
 
 /**
  * Éléments d'une page du livre étrange, dans le repère de la texture (640 × 800). Une seule
@@ -28,7 +29,10 @@ export type Item =
       spacing?: number;
       steady?: boolean;
       gold?: boolean;
-      face?: 'hand';
+      /** `hand` : écriture du chercheur au crayon ; `title` : capitales gravées des titres (Cinzel). */
+      face?: 'hand' | 'title';
+      /** Titre : la première lettre en grand et dorée (lettrine). */
+      initial?: boolean;
       caps?: boolean;
       ink?: 'noise' | 'ghost';
       gather?: number;
@@ -36,6 +40,8 @@ export type Item =
       reveal?: number;
     }
   | { kind: 'dots'; x1: number; x2: number; y: number }
+  /** Filet doré sous un titre, un losange au milieu ; centré, de largeur `width`. */
+  | { kind: 'rule'; y: number; width: number }
   /** Soulignement en pointillé au crayon : ce que le chercheur n'a pas su lire (un clic propose de déchiffrer). */
   | { kind: 'underline'; x1: number; x2: number; y: number }
   /** Zone cliquable (entrée du sommaire) : rien n'est dessiné. */
@@ -62,6 +68,13 @@ const FADED = '#5d5f66';
 /** Or des sceaux, pour l'étoile qui signale du nouveau. */
 const GOLD = '#b8913a';
 const SERIF = "Georgia, 'Times New Roman', serif";
+/** Titres : les capitales du titre du jeu (chargées dans index.html). */
+const TITLE = "'Cinzel', Georgia, serif";
+/** Lettrine : tant de fois la taille du titre. */
+const INITIAL_SCALE = 1.5;
+// Les pages sont dessinées sur des textures : une police pas encore chargée y resterait en Georgia. Une fois
+// Cinzel arrivée, les grands livres ouverts se redessinent.
+void document.fonts?.load(`600 30px ${TITLE}`).then(() => window.dispatchEvent(new Event(BIG_BOOK_REWRITE)));
 /** Écriture et crayon du chercheur, les mêmes que dans son carnet. */
 export const HAND = "'Caveat', cursive";
 const PENCIL = '#4a463f';
@@ -71,13 +84,42 @@ export const NOISE_INK = '#d8d0bd';
 const GHOST_INK = '#bdb39c';
 export const SERIF_FONT = SERIF;
 
-/** Titre d'une page et numéro de page, au même endroit sur toutes les pages. */
-export const heading = (text: string): Item => ({ kind: 'text', text, x: 320, y: 100, size: 32, align: 'center', spacing: 6 });
+const ROMAN: readonly [number, string][] = [
+  [10, 'X'],
+  [9, 'IX'],
+  [5, 'V'],
+  [4, 'IV'],
+  [1, 'I'],
+];
+const roman = (value: number): string => {
+  let rest = value;
+  let text = '';
+  for (const [amount, letters] of ROMAN)
+    while (rest >= amount) {
+      text += letters;
+      rest -= amount;
+    }
+  return text;
+};
+
+/**
+ * Titre d'une page, au même endroit sur toutes les pages : capitales gravées, lettrine dorée, filet et
+ * losange dessous ; `chapter` : le numéro du chapitre en chiffre romain doré au-dessus.
+ */
+export const heading = (text: string, chapter?: number): Item[] => [
+  ...(chapter === undefined
+    ? []
+    : [{ kind: 'text', text: roman(chapter), x: 320, y: 44, size: 18, align: 'center', spacing: 8, gold: true, face: 'title' } satisfies Item]),
+  { kind: 'text', text: text.toLocaleUpperCase(), x: 320, y: 72, size: 30, align: 'center', spacing: 6, face: 'title', initial: true },
+  { kind: 'rule', y: 134, width: 220 },
+];
 export const folio = (number: number): Item => ({ kind: 'text', text: String(number), x: 320, y: 730, size: 18, align: 'center', faded: true });
 
 export type TextItem = Extract<Item, { kind: 'text' }>;
 const font = (item: TextItem, size: string): string =>
-  `${item.italic ? 'italic ' : ''}${item.caps ? 'small-caps ' : ''}${size} ${item.face === 'hand' ? HAND : SERIF}`;
+  `${item.italic ? 'italic ' : ''}${item.caps ? 'small-caps ' : ''}${item.face === 'title' ? '600 ' : ''}${size} ${
+    item.face === 'hand' ? HAND : item.face === 'title' ? TITLE : SERIF
+  }`;
 const color = (item: TextItem): string => {
   if (item.ink === 'noise') return NOISE_INK;
   if (item.ink === 'ghost') return GHOST_INK;
@@ -88,9 +130,21 @@ let measurer: CanvasRenderingContext2D | null = null;
 /** Largeur d'un texte de la page, dans le repère de la texture. */
 export const textWidth = (item: TextItem): number => {
   measurer ??= document.createElement('canvas').getContext('2d')!;
-  measurer.font = font(item, `${item.size}px`);
   measurer.letterSpacing = `${item.spacing ?? 0}px`;
-  return measurer.measureText(item.text).width;
+  if (!item.initial) {
+    measurer.font = font(item, `${item.size}px`);
+    return measurer.measureText(item.text).width;
+  }
+  const [first, rest] = splitInitial(item.text);
+  measurer.font = font(item, `${item.size * INITIAL_SCALE}px`);
+  const head = measurer.measureText(first).width;
+  measurer.font = font(item, `${item.size}px`);
+  return head + measurer.measureText(rest).width;
+};
+/** Lettrine : la première lettre, et le reste. */
+const splitInitial = (text: string): [string, string] => {
+  const [first = '', ...rest] = [...text];
+  return [first, rest.join('')];
 };
 /** Bord gauche d'un texte de la page (centré : au milieu de la page, comme au dessin). */
 export const textLeft = (item: TextItem): number =>
@@ -110,8 +164,15 @@ const placeText = (node: HTMLElement, item: TextItem): void => {
 };
 
 const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement => {
+  if (item.kind === 'rule') {
+    const node = el('span', 'sb-rule');
+    node.style.top = unit(item.y);
+    node.style.left = unit(320 - item.width / 2);
+    node.style.width = unit(item.width);
+    return node;
+  }
   if (item.kind === 'text') {
-    const node = el('span', item.gold ? 'sb-text sb-gold' : 'sb-text');
+    const node = el('span', `sb-text${item.gold ? ' sb-gold' : ''}${item.initial ? ' sb-initial' : ''}`);
     if (item.gather === undefined) node.textContent = item.text;
     else gatherLetters(node, item.text, item.gather);
     if (item.reveal !== undefined) {
@@ -243,7 +304,21 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
   const context = preparePageTexture(canvas, spineOnLeft, paper);
   context.textBaseline = 'alphabetic';
   for (const item of items) {
-    if (item.kind === 'text') {
+    if (item.kind === 'text' && item.initial) {
+      // Lettrine : la ligne a la hauteur de la grande lettre (comme ::first-letter dans la page HTML).
+      const [first, rest] = splitInitial(item.text);
+      const left = textLeft(item);
+      context.letterSpacing = `${item.spacing ?? 0}px`;
+      context.textAlign = 'left';
+      context.font = font(item, `${item.size * INITIAL_SCALE}px`);
+      const baseline = cssBaseline(context, item.y);
+      context.fillStyle = GOLD;
+      context.fillText(first, left, baseline);
+      const head = context.measureText(first).width;
+      context.font = font(item, `${item.size}px`);
+      context.fillStyle = color(item);
+      context.fillText(rest, left + head, baseline);
+    } else if (item.kind === 'text') {
       context.font = font(item, `${item.size}px`);
       context.letterSpacing = `${item.spacing ?? 0}px`;
       context.fillStyle = color(item);
@@ -251,6 +326,23 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
       // placeText règle la police par le raccourci `font`, qui remet line-height à normal.
       const baseline = cssBaseline(context, item.y);
       context.fillText(item.text, item.align === 'center' ? PAGE_TEXTURE.width / 2 : item.x, baseline);
+    } else if (item.kind === 'rule') {
+      // Deux traits qui s'effacent vers les bouts, un losange au milieu.
+      const half = item.width / 2;
+      for (const side of [-1, 1]) {
+        const gradient = context.createLinearGradient(320, 0, 320 + side * half, 0);
+        gradient.addColorStop(0, 'rgba(168, 130, 58, 0.9)');
+        gradient.addColorStop(1, 'rgba(168, 130, 58, 0)');
+        context.fillStyle = gradient;
+        context.fillRect(side < 0 ? 320 - half : 328, item.y - 0.75, half - 8, 1.5);
+      }
+      context.save();
+      context.translate(320, item.y);
+      context.rotate(Math.PI / 4);
+      context.strokeStyle = GOLD;
+      context.lineWidth = 1.5;
+      context.strokeRect(-4, -4, 8, 8);
+      context.restore();
     } else if (item.kind === 'dots') {
       context.fillStyle = FADED;
       for (let x = item.x1; x < item.x2; x += 6) context.fillRect(x, item.y, 1.5, 1.5);
