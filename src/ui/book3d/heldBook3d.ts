@@ -69,9 +69,8 @@ export interface HeldBook extends Component {
 export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldBook => {
   const root = el('section', 'reading held-book3d');
   const canvas = el('canvas', 'held-book3d-canvas');
-  canvas.setAttribute('role', 'button');
-  // Au clavier aussi : Tab pour l'atteindre, puis Entrée, Espace ou → pour tourner la page.
-  canvas.tabIndex = 0;
+  // Au clavier, sans avoir à cliquer sur le livre d'abord : Entrée, Espace ou → tournent la page (voir onKey).
+  canvas.setAttribute('role', 'img');
   canvas.setAttribute('aria-label', t('ui.read'));
   root.append(canvas);
 
@@ -190,7 +189,13 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     backward: !options.onLeaf,
     signal: lifetime.signal,
   });
-  canvas.addEventListener('keydown', (event) => {
+  window.addEventListener('keydown', (event) => {
+    // Écran qui s'en va (fondu), fenêtre de lore ouverte, ou touche destinée à un champ ou à un bouton
+    // (Entrée, Espace) : le livre n'y répond pas.
+    if (root.closest('.screen-out') || document.querySelector('.modal-backdrop')) return;
+    const target = event.target as HTMLElement;
+    if (target.closest('input, textarea, select, [contenteditable]')) return;
+    if ((event.key === 'Enter' || event.key === ' ') && target.closest('button, a')) return;
     const forward = event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowRight';
     if (!forward && event.key !== 'ArrowLeft') return;
     event.preventDefault();
@@ -198,7 +203,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     // étant une page lue, ce serait un clic automatique : un appui, une page, comme à la souris.
     if (event.repeat) return;
     step(forward);
-  });
+  }, { signal: lifetime.signal });
   const autoTurn = first.autoTurn ? createAutoTurn3d(first.autoTurn) : null;
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 

@@ -11,8 +11,6 @@
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
-/* Atteint au clavier : un liseré doré discret autour du livre. */
-.held-book3d-canvas:focus-visible { outline: 1px solid rgba(224, 184, 112, 0.5); outline-offset: -1px; border-radius: 6px; }
 @media (max-width: 760px) {
   .held-book3d-canvas { width: 96vw; }
 }
