@@ -162,6 +162,46 @@ const paintSpine = (context: CanvasRenderingContext2D): void => {
   context.restore();
 };
 
+/**
+ * Le plat arrière : l'envers de la couverture. Le même cadre de symboles, immobile ; au centre, au lieu
+ * de la profondeur, le sceau de Babel fermé (celui du titre du jeu), en or pâle ; en bas, la devise.
+ */
+const paintBack = (context: CanvasRenderingContext2D): void => {
+  paintSlab(context, false);
+  context.lineWidth = 1.2 * U;
+  context.lineCap = 'round';
+  context.lineJoin = 'round';
+  context.strokeStyle = ENGRAVED;
+  RING.forEach(([x, y], i) => drawGlyph(context, hash(i, 104), x * U, y * U));
+  const gold = context.createLinearGradient(0, 80 * U, 0, 170 * U);
+  gold.addColorStop(0, '#f7e2a6');
+  gold.addColorStop(0.5, '#d9a94e');
+  gold.addColorStop(1, '#a8762c');
+  context.strokeStyle = gold;
+  context.globalAlpha = 0.55;
+  context.lineWidth = 3.4 * U;
+  hexagon(context, 44 * U, 0);
+  context.stroke();
+  context.lineWidth = 2.4 * U;
+  hexagon(context, 28 * U, 0);
+  context.stroke();
+  context.fillStyle = '#e8c776';
+  context.beginPath();
+  context.arc(120 * U, 125 * U, 3.2 * U, 0, Math.PI * 2);
+  context.fill();
+  context.globalAlpha = 0.7;
+  context.font = `600 ${7.5 * U}px Cinzel, Georgia, serif`;
+  context.letterSpacing = `${0.2 * 7.5 * U}px`;
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillStyle = '#d9b56a';
+  context.fillText('TOUT CE QUI EST', 120 * U, 214 * U);
+  context.fillText('TOUT CE QUI PEUT ÊTRE', 120 * U, 229 * U);
+  context.globalAlpha = 1;
+  context.letterSpacing = '0px';
+  paintSheen(context);
+};
+
 export interface DebugCover {
   front: THREE.CanvasTexture;
   back: THREE.CanvasTexture;
@@ -211,8 +251,7 @@ export const debugCover = async (): Promise<DebugCover> => {
   paintFront();
 
   const [back, backContext] = make();
-  paintSlab(backContext, false);
-  paintSheen(backContext);
+  paintBack(backContext);
   const [plain, plainContext] = make();
   paintSlab(plainContext, false);
   const [spine, spineContext] = make();

@@ -64,6 +64,7 @@ export const METHOD_SUBJECTS: DebugSubject[] = TOOLS.map((tool) => {
       kit.info('Achat possible', () => {
         const missing = nextToolCost(state, tool.id) - state.pages;
         if (missing <= 0) return 'maintenant';
+        if (pagesPerSecond(state) === 0) return 'jamais seul : rien ne produit';
         return `dans ${duration(missing / pagesPerSecond(state))}`;
       });
     },
