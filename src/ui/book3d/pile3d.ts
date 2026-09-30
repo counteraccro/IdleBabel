@@ -1,0 +1,360 @@
+import * as THREE from 'three';
+import { el } from '../dom';
+import { createBookMesh } from './bookMesh';
+import { createBookRenderer } from './renderer3d';
+import { isDebugEnabled } from '../../debug/debugPanel';
+import type { Book3d } from './book3dBook';
+
+/** Un livre de la pile : son nom (légende au survol), son modèle 3D, ce qu'il ouvre, comment il est posé. */
+export interface PileBook {
+  id: string;
+  label: string;
+  book: () => Book3d;
+  onOpen: () => void;
+  /** Couché, le dos vers le lecteur, de travers : tourné de tant (radians), décalé de tant (unités de scène). */
+  yaw: number;
+  dx: number;
+  dz: number;
+  /** Posé négligemment : penché de tant (radians), un bout plus haut que l'autre. */
+  tilt?: number;
+}
+
+export interface Pile3d {
+  root: HTMLElement;
+  /** Montre ou cache un livre (le livre étrange, trouvé plus tard) ; `arrive` : il tombe sur la pile. */
+  show: (id: string, shown: boolean, arrive?: boolean) => void;
+  /** Le livre sursaute et tremble, son contour s'allume un instant (un mot s'est écrit dans le livre blanc). */
+  shake: (id: string) => void;
+  /** Le contour du livre luit doucement tant que quelque chose l'attend (des sceaux nouveaux). */
+  news: (id: string, on: boolean) => void;
+}
+
+/** Au clic, le livre est soulevé et tourné vers le lecteur, puis il s'ouvre. */
+const LIFT = 0.22;
+const LIFT_TILT = THREE.MathUtils.degToRad(35);
+const LIFT_MS = 380;
+/** Contour doré du livre survolé : sa couleur, son épaisseur (unités de scène). */
+const OUTLINE_GOLD = 0xf0c870;
+const OUTLINE = 0.022;
+/** Vitesse à laquelle le contour s'allume et s'éteint (par seconde). */
+const GLOW_RATE = 12;
+/** Sursaut : sa durée, sa hauteur, et combien il tremble (radians). */
+const SHAKE_MS = 900;
+const SHAKE_HOP = 0.06;
+const SHAKE_ROLL = THREE.MathUtils.degToRad(4);
+/** Des nouveautés : le contour luit à demi, sur ce rythme. */
+const NEWS_GLOW = 0.7;
+const NEWS_S = 2.6;
+/** Livre qui arrive : il tombe de cette hauteur, en tant de temps. */
+const ARRIVE_DROP = 1.2;
+const ARRIVE_MS = 700;
+/** Livres couchés l'un sur l'autre, au plus ; le suivant est posé debout à côté de la pile. */
+const STACK_MAX = 4;
+/** Écart entre la pile et le livre debout. */
+const STAND_GAP = 0.03;
+/**
+ * La pile vue presque à hauteur d'yeux, un peu au-dessus (radians au-dessus de l'horizon) et un peu de
+ * droite (on voit le bout des pages).
+ */
+const ELEVATION = THREE.MathUtils.degToRad(16);
+const AZIMUTH = THREE.MathUtils.degToRad(22);
+
+interface Slot {
+  spec: PileBook;
+  /** Posé au milieu du dessous du livre : il se soulève et tourne autour. */
+  pivot: THREE.Group;
+  /** Le contour doré : une coque un peu plus grande que le livre, vue de l'intérieur. */
+  outline: THREE.MeshBasicMaterial;
+  /** Le livre et son contour, tournés ensemble : couché ou debout (null : pas encore chargé). */
+  body: THREE.Group | null;
+  holder: THREE.Group;
+  /** Debout à côté de la pile (au-delà de STACK_MAX), ou couché dessus. */
+  standing: boolean;
+  /** Taille du livre posé (largeur en x, hauteur en y). */
+  size: THREE.Vector3;
+  /** Où il est posé (le milieu de son dessous). */
+  base: THREE.Vector3;
+  shown: boolean;
+  /** Contour (0 à 1) : où il en est, et où il va (survol). */
+  glow: number;
+  aim: number;
+  shakeAt: number | null;
+  liftAt: number | null;
+  arriveAt: number | null;
+  news: boolean;
+  button: HTMLButtonElement;
+}
+
+/**
+ * Les livres du joueur, dans l'en-tête : les vrais livres 3D en miniature (livre blanc, cahier d'options,
+ * livre étrange), posés en vrac les uns sur les autres. Au survol, un contour doré entoure le livre ; au
+ * clic, il est soulevé vers le lecteur, puis s'ouvre. Des boutons invisibles les doublent pour le clavier.
+ * Les livres sont empilés dans l'ordre de la liste, le premier en dessous ; au-delà de STACK_MAX, debout
+ * à côté de la pile.
+ */
+export const createPile3d = (books: PileBook[]): Pile3d => {
+  const root = el('nav', 'pile3d');
+  const canvas = el('canvas', 'pile3d-canvas');
+  const caption = el('div', 'pile3d-caption');
+  root.append(canvas, caption);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(22, 1, 0.1, 30);
+  const { renderer, resize, destroy } = createBookRenderer(canvas, camera);
+  renderer.shadowMap.enabled = false;
+  scene.add(new THREE.HemisphereLight(0xfff2dc, 0x3a2c1e, 1.5));
+  const lamp = new THREE.DirectionalLight(0xffe2b0, 2.2);
+  lamp.position.set(-1.5, 3, 2);
+  scene.add(lamp);
+
+  let dirty = true;
+  const slots: Slot[] = books.map((spec) => {
+    const pivot = new THREE.Group();
+    scene.add(pivot);
+    const button = el('button', 'pile3d-button', spec.label);
+    button.addEventListener('click', () => open(slot));
+    button.addEventListener('focus', () => (slot.aim = 1));
+    button.addEventListener('blur', () => (slot.aim = 0));
+    root.append(button);
+    // Repoussé en profondeur : là où est le livre, le livre passe devant (sinon, sur un livre mince, le
+    // liseré couvre sa couverture).
+    const outline = new THREE.MeshBasicMaterial({
+      color: OUTLINE_GOLD,
+      side: THREE.BackSide,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+      toneMapped: false,
+      polygonOffset: true,
+      polygonOffsetFactor: 6,
+      polygonOffsetUnits: 6,
+    });
+    const holder = new THREE.Group();
+    pivot.add(holder);
+    const slot: Slot = { spec, pivot, outline, body: null, holder, standing: false, size: new THREE.Vector3(), base: new THREE.Vector3(), shown: true, glow: 0, aim: 0, shakeAt: null, liftAt: null, arriveAt: null, news: false, button };
+    const book = spec.book();
+    void book.look().then((look) => {
+      const mesh = createBookMesh(book.shape, look);
+      mesh.setOpen(0);
+      const body = new THREE.Group();
+      body.add(mesh.root);
+      // Le contour : le livre recopié en or, grossi d'un rien autour de son centre, dont on ne voit que
+      // l'intérieur (derrière le livre) : il dépasse tout autour, comme un liseré.
+      const bounds = new THREE.Box3().setFromObject(mesh.root);
+      const center = bounds.getCenter(new THREE.Vector3());
+      const size = bounds.getSize(new THREE.Vector3());
+      const hull = mesh.root.clone(true);
+      // La souris le traverse : elle touche le livre, pas ce liseré (qui déborde sur ses voisins).
+      hull.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          object.material = outline;
+          object.raycast = () => {};
+        }
+      });
+      hull.position.sub(center);
+      const shell = new THREE.Group();
+      shell.add(hull);
+      shell.position.copy(center);
+      // Un livre mince (le cahier) ne gonfle pas en épaisseur : son liseré resterait une dalle.
+      const grow = (length: number): number => 1 + (2 * Math.min(OUTLINE, length * 0.2)) / length;
+      shell.scale.set(grow(size.x), grow(size.y), grow(size.z));
+      body.add(shell);
+      holder.add(body);
+      slot.body = body;
+      pose(slot, false);
+      layout();
+    });
+    return slot;
+  });
+
+  /**
+   * Couche le livre (la couverture vers le haut) ou le met debout, le dos vers le lecteur, un peu de
+   * travers ; le milieu de son dessous sur le pivot.
+   */
+  function pose(slot: Slot, standing: boolean): void {
+    const { body, holder } = slot;
+    if (!body) return;
+    slot.standing = standing;
+    body.rotation.x = standing ? 0 : -Math.PI / 2;
+    holder.position.set(0, 0, 0);
+    holder.rotation.y = Math.PI / 2 + slot.spec.yaw;
+    holder.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(body.children[0]);
+    holder.position.set(-(box.min.x + box.max.x) / 2, -box.min.y, -(box.min.z + box.max.z) / 2);
+    box.getSize(slot.size);
+  }
+  /** Empile les livres montrés (STACK_MAX au plus), met le suivant debout à côté, et cadre le tout. */
+  function layout(): void {
+    let y = 0;
+    let stacked = 0;
+    let right = 0;
+    const standing: Slot[] = [];
+    for (const slot of slots) {
+      slot.pivot.visible = slot.shown && slot.body !== null;
+      if (!slot.pivot.visible) continue;
+      const stand = stacked >= STACK_MAX;
+      if (stand !== slot.standing) pose(slot, stand);
+      if (stand) {
+        standing.push(slot);
+        continue;
+      }
+      stacked += 1;
+      slot.base.set(slot.spec.dx, y, slot.spec.dz);
+      y += slot.size.y;
+      right = Math.max(right, slot.spec.dx + slot.size.x / 2);
+    }
+    for (const slot of standing) {
+      slot.base.set(right + STAND_GAP + slot.size.x / 2, 0, slot.spec.dz);
+      right += STAND_GAP + slot.size.x;
+    }
+    for (const slot of slots) slot.pivot.position.copy(slot.base);
+    fit();
+    dirty = true;
+  }
+  /** La caméra, un peu au-dessus et de face : toute la pile tient dans le canvas. */
+  const fit = (): void => {
+    const box = new THREE.Box3();
+    for (const slot of slots) if (slot.pivot.visible) box.expandByObject(slot.pivot);
+    if (box.isEmpty()) return;
+    const sphere = box.getBoundingSphere(new THREE.Sphere());
+    const half = THREE.MathUtils.degToRad(camera.fov / 2);
+    const distance = (sphere.radius * 0.62) / Math.sin(Math.min(half, Math.atan(Math.tan(half) * camera.aspect)));
+    const flat = distance * Math.cos(ELEVATION);
+    camera.position.set(sphere.center.x + flat * Math.sin(AZIMUTH), sphere.center.y + distance * Math.sin(ELEVATION), sphere.center.z + flat * Math.cos(AZIMUTH));
+    camera.lookAt(sphere.center);
+  };
+
+  // Survol : un contour doré ; au clic, le livre est soulevé, puis s'ouvre.
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  let hovered: Slot | null = null;
+  const slotAt = (event: MouseEvent): Slot | null => {
+    const rect = canvas.getBoundingClientRect();
+    pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
+    raycaster.setFromCamera(pointer, camera);
+    // Le rayon touche aussi les objets cachés (la feuille qui tourne, masquée dans un livre fermé, qui
+    // dépasse du livre) : seul compte ce qu'on voit.
+    const hit = raycaster
+      .intersectObjects(slots.filter((slot) => slot.pivot.visible).map((slot) => slot.pivot), true)
+      .find((candidate) => {
+        for (let object: THREE.Object3D | null = candidate.object; object; object = object.parent) if (!object.visible) return false;
+        return true;
+      });
+    return slots.find((slot) => hit && slot.pivot.getObjectById(hit.object.id)) ?? null;
+  };
+  const hover = (slot: Slot | null): void => {
+    if (hovered === slot) return;
+    if (hovered) hovered.aim = 0;
+    hovered = slot;
+    if (slot) slot.aim = 1;
+    canvas.style.cursor = slot ? 'pointer' : '';
+    caption.textContent = slot?.spec.label ?? '';
+    caption.classList.toggle('shown', slot !== null);
+  };
+  canvas.addEventListener('pointermove', (event) => hover(slotAt(event)));
+  canvas.addEventListener('pointerleave', () => hover(null));
+  canvas.addEventListener('click', (event) => {
+    const slot = slotAt(event);
+    if (slot) open(slot);
+  });
+
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  /** Clic sur un livre : il est soulevé vers le lecteur, puis il s'ouvre. */
+  function open(slot: Slot): void {
+    if (slot.liftAt !== null) return;
+    if (still.matches) return slot.spec.onOpen();
+    slot.liftAt = performance.now();
+  }
+
+  let before = performance.now();
+  let mounted = false;
+  const frame = (now: number): void => {
+    // Pile retirée (autre écran) : son contexte WebGL est rendu tout de suite.
+    if (!root.isConnected) {
+      if (mounted) return destroy(scene);
+    } else mounted = true;
+    const dt = Math.min(0.05, (now - before) / 1000);
+    before = now;
+    let moving = false;
+    /** Où en est une animation lancée à `at`, de durée `ms` (null : finie, ou pas lancée). */
+    const progress = (at: number | null, ms: number): number | null => (at === null || still.matches ? null : Math.min(1, (now - at) / ms));
+    for (const slot of slots) {
+      if (!slot.pivot.visible) continue;
+      const newsGlow = slot.news ? (still.matches ? NEWS_GLOW : NEWS_GLOW * (0.5 - 0.5 * Math.cos((now / 1000 / NEWS_S) * 2 * Math.PI))) : 0;
+      const aim = Math.max(slot.aim, newsGlow);
+      slot.glow = still.matches ? aim : slot.glow + (aim - slot.glow) * Math.min(1, dt * GLOW_RATE);
+      if (Math.abs(aim - slot.glow) > 0.002 || (slot.news && !still.matches)) moving = true;
+      else slot.glow = aim;
+      // Sursaut : il se soulève d'un rien, tremble, et retombe ; son contour s'allume.
+      let flash = 0;
+      let hop = 0;
+      let roll = 0;
+      const shaking = progress(slot.shakeAt, SHAKE_MS);
+      if (shaking === null || shaking >= 1) slot.shakeAt = null;
+      else {
+        flash = Math.sin(Math.PI * shaking);
+        hop = SHAKE_HOP * Math.sin(Math.PI * shaking);
+        roll = SHAKE_ROLL * Math.sin(shaking * 6 * Math.PI) * (1 - shaking);
+        moving = true;
+      }
+      let drop = 0;
+      const arriving = progress(slot.arriveAt, ARRIVE_MS);
+      if (arriving === null || arriving >= 1) slot.arriveAt = null;
+      else {
+        drop = ARRIVE_DROP * (1 - arriving) ** 3;
+        moving = true;
+      }
+      let lift = 0;
+      if (slot.liftAt !== null) {
+        const t = Math.min(1, (now - slot.liftAt) / LIFT_MS);
+        lift = 1 - (1 - t) ** 3;
+        moving = true;
+        if (t >= 1) {
+          slot.liftAt = null;
+          slot.spec.onOpen();
+        }
+      }
+      slot.outline.opacity = Math.max(slot.glow, flash);
+      // Penché, il tourne autour du milieu de son dessous : relevé d'autant, son bout bas ne rentre pas
+      // dans le livre du dessous.
+      const tilt = slot.standing ? 0 : (slot.spec.tilt ?? 0);
+      const rest = (slot.size.x / 2) * Math.sin(Math.abs(tilt));
+      slot.pivot.rotation.set(LIFT_TILT * lift, 0, roll + tilt);
+      slot.pivot.position.set(slot.base.x, slot.base.y + rest + drop + hop + LIFT * lift, slot.base.z);
+    }
+    if (resize()) {
+      fit();
+      dirty = true;
+    }
+    if (moving || dirty) {
+      renderer.render(scene, camera);
+      dirty = false;
+    }
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+
+  const find = (id: string): Slot | undefined => slots.find((slot) => slot.spec.id === id);
+  const pile: Pile3d = {
+    root,
+    show: (id, shown, arrive = false) => {
+      const slot = find(id);
+      if (!slot || slot.shown === shown) return;
+      slot.shown = shown;
+      slot.button.hidden = !shown;
+      if (shown && arrive) slot.arriveAt = performance.now();
+      layout();
+    },
+    shake: (id) => {
+      const slot = find(id);
+      if (slot) slot.shakeAt = performance.now();
+    },
+    news: (id, on) => {
+      const slot = find(id);
+      if (slot) slot.news = on;
+    },
+  };
+  // Débogage : la pile depuis la console (window.pile3d.shake('white')…), ?debug seulement.
+  if (isDebugEnabled()) (window as unknown as { pile3d?: Pile3d }).pile3d = pile;
+  return pile;
+};

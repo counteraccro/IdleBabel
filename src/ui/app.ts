@@ -7,6 +7,7 @@ import { createBook3dPage } from './book3d/book3dPage';
 import { whiteBook3d } from './book3d/whiteBook3d';
 import { strangeBook3d } from './book3d/strangeBook3d';
 import { createHandReading3d } from './book3d/handReading3d';
+import { notebook3d } from './options/notebook3d';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { setLocale, t } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
@@ -49,8 +50,14 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       onOptions: open(OPTIONS_HASH),
       onWhiteBook: open(WHITE_BOOK_HASH),
       onStrangeBook: open(STRANGE_BOOK_HASH),
+      books: {
+        options: () => notebook3d(state, { onLocale: () => {}, onSettings: () => {}, onReset: () => {} }),
+        white: () => whiteBook3d(state),
+        strange: () => strangeBook3d(state),
+      },
       strangeBookFound: () => strangeBookFound(state),
       hasNewSeals: () => state.newSeals.length > 0,
+      writtenCount: () => Object.values(state.written).reduce((sum, done) => sum + done.length, 0),
     }),
     createCounter(state),
     createToolsPanel(state),

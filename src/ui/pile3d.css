@@ -1,0 +1,23 @@
+/*
+ * Les livres du joueur, posés en vrac en haut à droite (book3d/pile3d.ts). Leur nom s'écrit dessous au
+ * survol ; des boutons invisibles les doublent pour le clavier.
+ */
+.pile3d { position: fixed; top: 4px; right: 28px; }
+.pile3d-canvas { display: block; width: 180px; height: 120px; }
+.pile3d-caption {
+  margin-top: -10px;
+  text-align: center; font-size: 0.78rem; font-variant: small-caps; letter-spacing: 0.1em;
+  color: var(--accent); text-shadow: var(--shadow);
+  opacity: 0; transition: opacity 0.2s;
+  pointer-events: none;
+}
+.pile3d-caption.shown { opacity: 1; }
+.pile3d-button {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); border: 0; white-space: nowrap;
+}
+/* Téléphone : la pile suit le titre, dans l'en-tête. */
+@media (max-width: 760px) {
+  .pile3d { position: static; }
+  .pile3d-canvas { width: 130px; height: 100px; }
+}
