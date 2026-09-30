@@ -3,6 +3,8 @@ import { createInitialState } from '../src/core/state';
 import { SEALS } from '../src/data/seals';
 import { babelName, checkSeals, completion, sealEvent } from '../src/systems/seals';
 import { LOCALES } from '../src/i18n/locales';
+import { ANOMALIES } from '../src/data/anomalies';
+import { segments, write } from '../src/systems/sentences';
 
 describe('sceaux', () => {
   it('scelle un palier atteint, avec sa date, et pas les suivants', () => {
@@ -22,6 +24,27 @@ describe('sceaux', () => {
     sealEvent(state, 'notebookBack', 6);
     expect(state.seals.notebookBack).toBe(5);
     expect(state.newSeals.filter((id) => id === 'notebookBack')).toHaveLength(1);
+  });
+
+  it("scelle une famille d'anomalies quand toutes ses phrases sont complètes", () => {
+    const state = createInitialState('fr');
+    const [last, ...rest] = ANOMALIES.filter((anomaly) => anomaly.family === 'speaks');
+    for (const anomaly of rest)
+      write(
+        state,
+        anomaly.id,
+        segments(anomaly.id).map((_, index) => index),
+      );
+    checkSeals(state, 1);
+    expect(state.seals['anomalies-speaks']).toBeUndefined();
+    write(
+      state,
+      last.id,
+      segments(last.id).map((_, index) => index),
+    );
+    checkSeals(state, 2);
+    expect(state.seals['anomalies-speaks']).toBe(2);
+    expect(state.seals['anomalies-said']).toBeUndefined();
   });
 
   it("garde la date d'origine d'un sceau déjà obtenu", () => {

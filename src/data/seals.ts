@@ -1,6 +1,8 @@
 import type { GameState } from '../core/state';
 import { STRANGE_BOOK_INDEX } from '../systems/strangeBook';
 import { meaningfulCovers } from '../systems/stats';
+import { isComplete } from '../systems/sentences';
+import { ANOMALIES, ANOMALY_FAMILIES } from './anomalies';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
@@ -45,6 +47,12 @@ export const SEALS: readonly SealDef[] = [
   ...series('meaningfulCovers', 'books', meaningfulCovers, [1, 10, 100]),
 
   ...series('fragments', 'fragments', (s) => s.stats.fragments, [1, 10, 100, K]),
+  // Une famille d'anomalies complète (data/anomalies.ts).
+  ...ANOMALY_FAMILIES.map((family) =>
+    seal(`anomalies-${family}`, 'fragments', (s) =>
+      ANOMALIES.filter((anomaly) => anomaly.family === family).every((anomaly) => isComplete(s, anomaly.id)),
+    ),
+  ),
 
   ...series('playTime', 'time', (s) => s.stats.playSeconds / HOUR, [1, 10, 100]),
 

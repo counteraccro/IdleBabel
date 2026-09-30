@@ -58,6 +58,22 @@
     "insomnia": "Lis à l'heure où tout dort, entre trois et quatre heures",
     "notebookBack": "410 ?",
     "still": "Garde le livre immobile, sans trembler",
-    "babelDigits": "Apprends les chiffres de la Bibliothèque"
+    "babelDigits": "Apprends les chiffres de la Bibliothèque",
+    "anomalies-structure": "Compte ce qui ne tombe jamais juste",
+    "anomalies-speaks": "Entends tout ce que je t'ai dit",
+    "anomalies-said": "Retrouve tout ce qui a déjà été dit",
+    "anomalies-others": "Suis la trace de tous ceux d'avant",
+    "anomalies-unwritten": "Lis ce qui ne devrait pas être écrit",
+    "anomalies-numbers": "Soutiens le vertige des nombres",
+    "anomalies-ordinary": "Trouve le banal au milieu de l'infini"
+  },
+  "anomalyFamilies": {
+    "structure": "La structure",
+    "speaks": "Le livre te parle",
+    "said": "Ce qui a déjà été dit",
+    "others": "Les autres",
+    "unwritten": "Ce qui n'est pas écrit",
+    "numbers": "Les calculs",
+    "ordinary": "Les phrases banales"
   }
 }

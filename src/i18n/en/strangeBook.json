@@ -58,6 +58,22 @@
     "insomnia": "Read in the hour when all sleeps, between three and four",
     "notebookBack": "410?",
     "still": "Keep the book still, without trembling",
-    "babelDigits": "Learn the numbers of the Library"
+    "babelDigits": "Learn the numbers of the Library",
+    "anomalies-structure": "Count what never adds up",
+    "anomalies-speaks": "Hear all I have told you",
+    "anomalies-said": "Find all that has already been said",
+    "anomalies-others": "Follow the trail of all who came before",
+    "anomalies-unwritten": "Read what should not be written",
+    "anomalies-numbers": "Endure the vertigo of numbers",
+    "anomalies-ordinary": "Find the ordinary amid the infinite"
+  },
+  "anomalyFamilies": {
+    "structure": "The Structure",
+    "speaks": "The Book Speaks",
+    "said": "What Was Already Said",
+    "others": "The Others",
+    "unwritten": "The Unwritten",
+    "numbers": "The Reckoning",
+    "ordinary": "Ordinary Words"
   }
 }
