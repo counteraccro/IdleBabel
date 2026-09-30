@@ -129,8 +129,8 @@ button:disabled {
   color: var(--muted);
   font-size: 0.9rem;
 }
-/* Nombres écrits en symboles de Babel (option « Nombres ») : dorés, comme le titre du jeu. */
-.notation-babel .number {
+/* Nombres du jeu (compteur, méthodes) : dorés, comme le titre du jeu, quelle que soit la notation. */
+.number {
   background: linear-gradient(180deg, #f7e2a6 0%, #d9a94e 45%, #9a6c26 55%, #e8c776 100%);
   -webkit-background-clip: text;
   background-clip: text;

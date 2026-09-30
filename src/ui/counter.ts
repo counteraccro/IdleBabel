@@ -11,7 +11,7 @@ export const createCounter = (state: GameState): Component => {
   // Connaissance : la ligne n'apparaît qu'avec la première trouvaille.
   const knowledge = el('div', 'label knowledge');
   root.append(value, rate, knowledge);
-  // Les nombres dans leur propre élément : en symboles de Babel, ils sont dorés (classe number).
+  // Les nombres dans leur propre élément, dorés (classe number).
   const [pages, speed, carried] = [el('span', 'number'), el('span', 'number'), el('span', 'number')];
   const pagesLabel = document.createTextNode('');
   const perSecond = document.createTextNode('');
