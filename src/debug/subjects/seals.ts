@@ -18,24 +18,26 @@ const ALL: DebugSubject = {
   chapter: 'seals',
   name: 'Tous les sceaux',
   description: 'Combien sont obtenus, une vision, tout débloquer.',
+  peek: (state) => `${countObtained(state, SEALS)}/${SEALS.length}`,
   build: (kit, state) => {
     kit.info('Obtenus', () => `${countObtained(state, SEALS)} / ${SEALS.length}`);
     kit.info('Pas encore vus', () => String(state.newSeals.length));
-    kit.buttons(
-      '',
+    kit.actions(
       [
-        ['Une vision', () => announceSeals([SEALS[Math.floor(Math.random() * SEALS.length)].id])],
-        ['Tout débloquer', () => (sealAll(state), rewriteBigBook())],
-        [
-          'Tout reprendre',
-          () => {
-            state.seals = {};
-            state.newSeals = [];
-            rewriteBigBook();
-          },
-        ],
+        'Une vision',
+        () => announceSeals([SEALS[Math.floor(Math.random() * SEALS.length)].id]),
+        { title: 'Annonce un sceau sans rien débloquer' },
       ],
-      'une vision : sans rien débloquer ; tout reprendre : ceux déjà atteints reviennent aussitôt',
+      ['Tout débloquer', () => (sealAll(state), rewriteBigBook())],
+      [
+        'Tout reprendre',
+        () => {
+          state.seals = {};
+          state.newSeals = [];
+          rewriteBigBook();
+        },
+        { danger: true, title: 'Ceux déjà atteints reviennent aussitôt' },
+      ],
     );
   },
 };
@@ -46,9 +48,9 @@ const PLATE_SUBJECTS: DebugSubject[] = PLATES.map((plate) => ({
   chapter: 'seals',
   name: `Planche ${PLATE_NAMES[plate]}`,
   description: 'Ses sceaux un par un, à apposer ou reprendre.',
+  peek: (state) => `${countObtained(state, plateSeals(plate))}/${plateSeals(plate).length}`,
   build: (kit, state) => {
     const seals = plateSeals(plate);
-    kit.info('Obtenus', () => `${countObtained(state, seals)} / ${seals.length}`);
     const list = el('div', 'debug-segments');
     let shown = '';
     const draw = (): void => {
@@ -73,14 +75,19 @@ const PLATE_SUBJECTS: DebugSubject[] = PLATES.map((plate) => ({
       );
     };
     kit.custom(list);
-    kit.info('Au clic', () => {
-      const now = seals.map((seal) => (seal.id in state.seals ? 1 : 0)).join('');
-      if (now !== shown) {
-        shown = now;
-        draw();
-      }
-      return 'apposer ou reprendre';
-    });
+    kit.info(
+      'Obtenus',
+      () => {
+        // Relu avec les autres lignes : les sceaux se redessinent quand ils changent.
+        const now = seals.map((seal) => (seal.id in state.seals ? 1 : 0)).join('');
+        if (now !== shown) {
+          shown = now;
+          draw();
+        }
+        return `${countObtained(state, seals)} / ${seals.length}`;
+      },
+      'Un clic sur un sceau l’appose ou le reprend.',
+    );
   },
 }));
 

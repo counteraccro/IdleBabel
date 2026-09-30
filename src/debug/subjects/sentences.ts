@@ -20,9 +20,8 @@ export const SENTENCE_SUBJECTS: DebugSubject[] = SENTENCES.map((sentence) => ({
   chapter: 'sentences',
   name: () => (sentence.tool ? `${t(`tools.${sentence.tool}.name`)} (phrase)` : `« ${opening(sentence.id)} »`),
   description: `${KINDS[sentence.kind]} : ses morceaux, un par un.`,
+  peek: (state) => `${written(state, sentence.id).length}/${segments(sentence.id).length}`,
   build: (kit, state) => {
-    kit.info('Sorte', () => KINDS[sentence.kind] + (currentTarget(state) === sentence.id ? ', en cours' : ''));
-    kit.info('Écrits', () => `${written(state, sentence.id).length} / ${segments(sentence.id).length}`);
     // Les morceaux : écrits en clair, manquants barrés ; un clic écrit ou efface le morceau.
     const list = el('div', 'debug-segments');
     const draw = (): void => {
@@ -41,20 +40,26 @@ export const SENTENCE_SUBJECTS: DebugSubject[] = SENTENCES.map((sentence) => ({
       );
     };
     kit.custom(list);
+    kit.info('Sorte', () => KINDS[sentence.kind] + (currentTarget(state) === sentence.id ? ', en cours' : ''));
+    kit.progress('Écrits', () => [written(state, sentence.id).length, segments(sentence.id).length]);
     let shown = '';
-    kit.info('Deviner', () => {
-      // Relu avec les autres lignes : les morceaux se redessinent quand ce qui est écrit change.
-      const now = written(state, sentence.id).join(',');
-      if (now !== shown || list.childElementCount === 0) {
-        shown = now;
-        draw();
-      }
-      const price = guessPrice(state, sentence.id);
-      return price === undefined ? 'non (il manque plus d’un morceau, ou rien)' : `oui, ${price} 🧠`;
-    });
-    kit.buttons('', [
+    kit.info(
+      'Deviner',
+      () => {
+        // Relu avec les autres lignes : les morceaux se redessinent quand ce qui est écrit change.
+        const now = written(state, sentence.id).join(',');
+        if (now !== shown || list.childElementCount === 0) {
+          shown = now;
+          draw();
+        }
+        const price = guessPrice(state, sentence.id);
+        return price === undefined ? 'non' : `oui, ${price} 🧠`;
+      },
+      'Possible quand il ne manque qu’un morceau.',
+    );
+    kit.actions(
       ['Compléter', () => completeSentence(state, sentence.id)],
-      ['Effacer', () => eraseSentence(state, sentence.id)],
-    ]);
+      ['Effacer', () => eraseSentence(state, sentence.id), { danger: true }],
+    );
   },
 }));

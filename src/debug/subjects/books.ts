@@ -1,5 +1,4 @@
 import { el } from '../../ui/dom';
-import { row } from '../debugControls';
 import { maxTurnsPerSecond, setTurnCap } from '../../systems/knowledge';
 import { forceTitles, type TitleOverride } from '../../systems/coverTitle';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed, strangeBookFound } from '../../systems/strangeBook';
@@ -12,7 +11,7 @@ import { format, type DebugSubject } from './subject';
 
 /** Menu des titres de couverture : tels que tirés, ou tous d'une sorte. */
 const titlesMenu = (): HTMLElement => {
-  const titles = el('select');
+  const titles = el('select', 'debug-field');
   for (const [value, text] of [
     ['', 'tels que tirés'],
     ['none', 'charabia'],
@@ -27,7 +26,7 @@ const titlesMenu = (): HTMLElement => {
     forceTitles((titles.value || undefined) as TitleOverride);
     refreshBook();
   });
-  return row('Titres des couvertures', titles);
+  return titles;
 };
 
 export const BOOK_SUBJECTS: DebugSubject[] = [
@@ -36,6 +35,7 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
     chapter: 'books',
     name: 'Le livre en main',
     description: 'Sa page, son numéro, les titres des couvertures, le défilement.',
+    peek: (state) => `livre ${state.booksFinished + 1} · p. ${state.bookPage}`,
     build: (kit, state) => {
       kit.number(
         'Page',
@@ -44,8 +44,7 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
           state.bookPage = Math.min(v, 409);
           refreshBook();
         },
-        '0 à 409 ; 405 : le livre se referme bientôt',
-        409,
+        { hint: '0 à 409 ; 405 : le livre se referme bientôt.', max: 409 },
       );
       kit.number(
         'Livres terminés',
@@ -54,10 +53,12 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
           state.booksFinished = v;
           refreshBook();
         },
-        'numéro du livre : couverture, reliure',
+        { hint: 'Numéro du livre : couverture, reliure.', steps: true },
       );
-      kit.custom(titlesMenu());
-      kit.number('Défilement', maxTurnsPerSecond, setTurnCap, 'pages/s au plus quand elles tournent seules (8 par défaut ; 0 : remettre)');
+      kit.row('Titres', titlesMenu(), 'Titres des couvertures.');
+      kit.number('Défilement', maxTurnsPerSecond, setTurnCap, {
+        hint: 'Pages/s au plus quand elles tournent seules (8 par défaut ; 0 : remettre).',
+      });
     },
   },
   {
@@ -65,10 +66,11 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
     chapter: 'books',
     name: 'Le livre blanc',
     description: 'Ce qui est écrit, la phrase en cours.',
+    peek: (state) => `${format(completion(state) * 100)} %`,
     build: (kit, state) => {
       kit.info('Écrit', () => `${format(completion(state) * 100)} % des morceaux`);
-      kit.info('Phrase en cours', () => currentTarget(state) ?? 'aucune (toutes les méthodes trouvées)');
-      kit.buttons('', [
+      kit.info('Phrase en cours', () => currentTarget(state) ?? 'aucune', 'Aucune : toutes les méthodes sont trouvées.');
+      kit.actions(
         [
           'Compléter la phrase en cours',
           () => {
@@ -83,8 +85,9 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
             state.written = {};
             rewriteBigBook();
           },
+          { danger: true },
         ],
-      ]);
+      );
     },
   },
   {
@@ -92,35 +95,31 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
     chapter: 'books',
     name: 'Le livre étrange',
     description: 'Trouvé ou non, statistiques en clair, déchiffrage.',
+    peek: (state) => (strangeBookFound(state) ? 'trouvé' : 'pas trouvé'),
     build: (kit, state) => {
-      kit.info('Trouvé', () => (strangeBookFound(state) ? 'oui' : `au livre n° ${STRANGE_BOOK_INDEX + 1}`));
-      kit.check('Statistiques visibles', 'livre accessible, tout débloqué, titre et légendes en clair', statsRevealed, (on) => {
+      kit.check('Statistiques visibles', 'Livre accessible, tout débloqué, titre et légendes en clair.', statsRevealed, (on) => {
         revealStats(on);
         refreshBook();
         // Livre étrange déjà ouvert : il se réécrit à la même page ; sinon l'écran est reconstruit.
         if (bigBookOpen()) rewriteBigBook();
         else rebuildScreen();
       });
-      kit.buttons(
-        'Raccourcis',
-        [
-          [
-            'Le prendre en main',
-            () => {
-              state.booksFinished = STRANGE_BOOK_INDEX;
-              state.bookPage = 0;
-              refreshBook();
-            },
-          ],
-          ['L’ouvrir en grand', () => (window.location.hash = '#livre')],
-        ],
-        'le prendre en main le rend aussi accessible',
-      );
-      kit.info('Déchiffré', () => {
+      kit.info('Trouvé', () => (strangeBookFound(state) ? 'oui' : `au livre n° ${STRANGE_BOOK_INDEX + 1}`));
+      kit.progress('Déchiffré', () => {
         const parts = Object.keys(PARTS) as PartId[];
-        return `${parts.filter((part) => isDeciphered(state, part)).length} / ${parts.length} parties`;
+        return [parts.filter((part) => isDeciphered(state, part)).length, parts.length];
       });
-      kit.buttons('', [
+      kit.actions(
+        [
+          'Le prendre en main',
+          () => {
+            state.booksFinished = STRANGE_BOOK_INDEX;
+            state.bookPage = 0;
+            refreshBook();
+          },
+          { title: 'Le rend aussi accessible' },
+        ],
+        ['L’ouvrir en grand', () => (window.location.hash = '#livre')],
         [
           'Tout déchiffrer',
           () => {
@@ -134,8 +133,9 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
             state.deciphered = [];
             rewriteBigBook();
           },
+          { danger: true },
         ],
-      ]);
+      );
     },
   },
 ];

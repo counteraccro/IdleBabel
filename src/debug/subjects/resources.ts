@@ -1,79 +1,82 @@
 import { pagesPerSecond } from '../../systems/production';
 import { addKnowledge, findChance, forceFinds, isForcingFinds } from '../../systems/knowledge';
 import { rewriteBigBook } from '../refresh';
-import { format, type DebugSubject } from './subject';
+import { compact, format, type DebugSubject } from './subject';
 
 const PRESETS = [0, 100, 1_000, 10_000, 1_000_000];
 
+/** Libellés repris du livre étrange (chapitres Lectures et Révélations), en plus court. */
 export const RESOURCE_SUBJECTS: DebugSubject[] = [
   {
     id: 'pages',
     chapter: 'resources',
     name: 'Les pages',
-    description: 'Le stock à dépenser, les pages lues à vie, la production.',
+    description: 'En mémoire, traversées, par seconde.',
+    peek: (state) => `${compact(state.pages)} · ${compact(pagesPerSecond(state))}/s`,
     build: (kit, state) => {
       kit.number(
-        'Stock',
+        'En mémoire',
         () => state.pages,
         (v) => (state.pages = v),
-        'pages à dépenser',
+        { hint: '« Pages dont tu te souviens encore » : celles qu’on dépense.' },
       );
       kit.number(
-        'Lues à vie',
+        'Traversées',
         () => state.totalPagesRead,
         (v) => (state.totalPagesRead = v),
-        "dissipent l'obscurité du décor",
+        { hint: '« Pages que tes yeux ont traversées » : dissipent l’obscurité du décor.' },
       );
-      kit.buttons(
-        'Régler les deux à',
-        PRESETS.map((value) => [
-          format(value),
-          () => {
-            state.pages = value;
-            state.totalPagesRead = value;
-          },
-        ]),
+      kit.presets(
+        'Régler les deux',
+        PRESETS,
+        (value) => {
+          state.pages = value;
+          state.totalPagesRead = value;
+        },
+        'Règle les pages en mémoire et les pages traversées d’un coup.',
       );
-      kit.info('Production', () => `${format(pagesPerSecond(state))} pages/s`);
+      kit.info('Par seconde', () => `${format(pagesPerSecond(state))} pages/s`, '« Pages qui passent sous tes yeux à chaque seconde. »');
     },
   },
   {
     id: 'knowledge',
     chapter: 'resources',
     name: 'La Connaissance',
-    description: 'À dépenser, trouvée à vie, chance de trouvaille par page.',
+    description: 'Portée, donnée, chance de comprendre à chaque page.',
+    peek: (state) => `${compact(state.knowledge)} 🧠`,
     build: (kit, state) => {
       kit.number(
-        'À dépenser',
+        'Portée',
         () => state.knowledge,
         (v) => (state.knowledge = v),
-        'déchiffrer le livre étrange, deviner un morceau',
+        {
+          hint: '« Connaissance que tu portes » : déchiffre le livre étrange, devine un morceau. Les + la donnent aussi (paliers compris), sans rien trouver ; les − ne retirent que la portée.',
+          steps: true,
+          step: (delta) => {
+            if (delta > 0) addKnowledge(state, delta);
+            else state.knowledge = Math.max(0, state.knowledge + delta);
+            rewriteBigBook();
+          },
+        },
       );
       kit.number(
-        'Trouvée à vie',
+        'Donnée',
         () => state.lifetimeKnowledge,
         (v) => (state.lifetimeKnowledge = v),
-        'paliers : le livre étrange se déchiffre seul',
+        { hint: '« Connaissance qui t’a été donnée » : ses paliers déchiffrent seuls le livre étrange.' },
       );
-      kit.buttons(
-        'Ajouter',
-        [
-          ['+1', () => (addKnowledge(state, 1), rewriteBigBook())],
-          ['+10', () => (addKnowledge(state, 10), rewriteBigBook())],
-          [
-            'Tout oublier',
-            () => {
-              Object.assign(state, { knowledge: 0, cycleKnowledge: 0, lifetimeKnowledge: 0, finds: [], written: {}, deciphered: [] });
-              state.stats.fragments = 0;
-              rewriteBigBook();
-            },
-          ],
-        ],
-        'ajouter : sans rien trouver ; tout oublier : Connaissance, trouvailles, livre blanc et déchiffrage',
-      );
-      kit.check('Trouvaille à chaque page', 'au lieu d’une page sur 200', isForcingFinds, forceFinds);
-      kit.info('Chance par page', () => `${format(findChance(state) * 100)} %`);
-      kit.info('Trouvailles', () => format(state.finds.length));
+      kit.check('Toujours trouver', 'Une trouvaille à chaque page, au lieu d’une page sur 200.', isForcingFinds, forceFinds);
+      kit.info('Chance', () => `${format(findChance(state) * 100)} %`, '« Ta chance, à chaque page, de comprendre quelque chose. »');
+      kit.info('Fragments', () => format(state.finds.length), '« Mots · morceaux · phrases arrachés au hasard. »');
+      kit.actions([
+        'Tout oublier',
+        () => {
+          Object.assign(state, { knowledge: 0, cycleKnowledge: 0, lifetimeKnowledge: 0, finds: [], written: {}, deciphered: [] });
+          state.stats.fragments = 0;
+          rewriteBigBook();
+        },
+        { danger: true, title: 'Connaissance, trouvailles, livre blanc et déchiffrage' },
+      ]);
     },
   },
 ];

@@ -187,37 +187,78 @@ footer {
   }
 }
 
-/* Panneau de débogage (?debug) : sections repliables, une ligne par réglage avec son aide. */
+/*
+ * Barre de débogage (?debug) : une fiche par sujet choisi dans le livre de débogage. Réglages alignés
+ * à droite, puis ce qu'on lit (plus pâle), puis les actions ; l'aide s'affiche au survol des libellés.
+ */
 .debug {
+  --debug-danger: #d9826a;
   position: fixed;
   right: 12px;
   bottom: 12px;
   z-index: 10;
-  width: 280px;
+  width: 320px;
   max-height: calc(100vh - 24px);
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 10px 12px;
-  background: rgba(8, 6, 5, 0.92);
-  border: 1px dashed var(--accent);
-  border-radius: 4px;
-  font-family: ui-monospace, Menlo, monospace;
-  font-size: 12px;
+  background: rgba(8, 6, 5, 0.94);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
+  font:
+    12px/1.35 system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.debug button {
+  padding: 2px 8px;
+  font-size: 11px;
+  background: #2a2016;
+  backdrop-filter: none;
+}
+.debug button:hover {
+  border-color: var(--accent);
 }
 .debug-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  padding: 7px 8px 7px 12px;
+  background: rgb(8, 6, 5);
+  border-bottom: 1px solid var(--border);
+}
+.debug-header strong {
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
 .debug-header .debug-fps {
   margin-left: auto;
+  font-size: 11px;
 }
-.debug-toggle {
-  padding: 0 7px;
-  font: inherit;
-  line-height: 1.4;
+.debug .debug-icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+.debug .debug-icon:hover {
+  color: var(--accent);
+  border-color: var(--border);
+}
+.debug-icon svg {
+  width: 14px;
+  height: 14px;
 }
 .debug.collapsed {
   width: auto;
@@ -225,90 +266,251 @@ footer {
 .debug.collapsed > :not(.debug-header) {
   display: none;
 }
-.debug-section {
-  border-top: 1px solid var(--border);
-  padding-top: 6px;
+.debug.collapsed .debug-header {
+  border-bottom: 0;
 }
-.debug-section summary {
-  cursor: pointer;
-  color: var(--accent);
-  margin-bottom: 4px;
-}
-.debug-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 2px 8px;
-  padding: 3px 0;
-}
-.debug-row > .debug-buttons {
-  grid-column: 1 / -1;
-}
-.debug-hint {
-  grid-column: 1 / -1;
+.debug-empty {
+  margin: 0;
+  padding: 10px 12px;
   color: var(--muted);
   font-size: 11px;
 }
-.debug-check {
-  grid-template-columns: auto 1fr;
+/* Fiche : titre, valeur clé quand elle est repliée, croix au survol. */
+.debug-card {
+  border-bottom: 1px solid rgba(201, 164, 106, 0.15);
+}
+.debug-card:last-child {
+  border-bottom: 0;
+}
+.debug-card > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 6px 10px;
   cursor: pointer;
 }
-.debug input[type='number'],
-.debug select {
-  width: 110px;
-  font: inherit;
-  background: #1a140f;
-  color: var(--ink);
-  border: 1px solid var(--border);
-  padding: 3px 4px;
+.debug-card > summary::-webkit-details-marker {
+  display: none;
 }
-.debug input[type='checkbox'] {
-  margin: 0;
-  accent-color: var(--accent);
+.debug-card > summary::before {
+  content: '';
+  flex: none;
+  border-left: 4px solid var(--muted);
+  border-top: 3.5px solid transparent;
+  border-bottom: 3.5px solid transparent;
+  transition: transform 0.15s;
 }
-.debug-buttons {
+.debug-card[open] > summary::before {
+  transform: rotate(90deg);
+}
+.debug-card-title {
+  color: var(--accent);
+  font-weight: 600;
+}
+.debug-peek {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.debug-card[open] .debug-peek {
+  display: none;
+}
+.debug .debug-unpin {
+  flex: none;
+  visibility: hidden;
+  font-size: 11px;
+}
+.debug-card[open] .debug-unpin {
+  margin-left: auto;
+}
+.debug-card:hover .debug-unpin {
+  visibility: visible;
+}
+.debug-card-rows {
+  padding: 0 12px 8px 22px;
+}
+.debug-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  flex-direction: column;
+  gap: 5px;
 }
-.debug-buttons button {
-  padding: 2px 6px;
-  font-size: 12px;
-}
-.debug-readout > div {
+/* Ligne : libellé à gauche, contrôle ou valeur alignés à droite. */
+.debug-row {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 1px 0;
+  gap: 10px;
+  min-height: 22px;
 }
 .debug-label {
   color: var(--ink);
 }
-.debug-value {
-  color: var(--accent);
-  text-align: right;
-  font-variant-numeric: tabular-nums;
+.debug-label.read {
+  color: var(--muted);
 }
-/* Fiche d'un sujet choisi dans le livre de débogage : son nom, la croix qui le retire. */
-.debug-card summary {
+.debug-label[data-hint] {
+  position: relative;
+  cursor: help;
+  text-decoration: underline dotted rgba(184, 166, 132, 0.5);
+  text-underline-offset: 3px;
+}
+.debug-label[data-hint]:hover::after {
+  content: attr(data-hint);
+  position: absolute;
+  left: 0;
+  top: calc(100% + 4px);
+  z-index: 3;
+  width: 220px;
+  padding: 6px 8px;
+  background: #1e1711;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--ink);
+  font-size: 11px;
+  line-height: 1.4;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+}
+.debug-value {
+  color: var(--ink);
+  text-align: right;
+}
+.debug .debug-field {
+  width: 84px;
+  flex: none;
+  padding: 3px 6px;
+  font: inherit;
+  text-align: right;
+  color: var(--ink);
+  background: #1a140f;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.debug select.debug-field {
+  width: auto;
+  text-align: left;
+}
+.debug .debug-field:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.debug-stepper {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
 }
-.debug-unpin {
-  margin-left: auto;
-  padding: 0 5px;
-  font-size: 11px;
-  line-height: 1.4;
-}
-.debug-open-book {
-  padding: 0 7px;
-  font: inherit;
-  line-height: 1.4;
-}
-.debug-empty {
-  margin: 4px 0 0;
+.debug .debug-stepper button,
+.debug .debug-chips button {
+  min-width: 22px;
+  padding: 1px 4px;
+  font-size: 10.5px;
+  background: transparent;
   color: var(--muted);
-  font-size: 11px;
+}
+.debug .debug-stepper button:hover,
+.debug .debug-chips button:hover {
+  color: var(--ink);
+}
+.debug .debug-stepper .debug-field {
+  width: 60px;
+  margin: 0 3px;
+  text-align: center;
+}
+.debug-chips {
+  display: flex;
+}
+.debug .debug-chips button {
+  border-radius: 0;
+  margin-left: -1px;
+  padding: 1px 6px;
+}
+.debug .debug-chips button:first-child {
+  border-radius: 3px 0 0 3px;
+}
+.debug .debug-chips button:last-child {
+  border-radius: 0 3px 3px 0;
+}
+.debug-switch {
+  position: relative;
+  flex: none;
+  width: 28px;
+  height: 16px;
+}
+.debug-switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.debug-switch span {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: #2a2016;
+  border: 1px solid var(--border);
+  pointer-events: none;
+}
+.debug-switch span::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform 0.15s;
+}
+.debug-switch input:checked + span {
+  background: rgba(224, 184, 112, 0.3);
+  border-color: var(--accent);
+}
+.debug-switch input:checked + span::after {
+  transform: translateX(12px);
+  background: var(--accent);
+}
+.debug-pieces {
+  display: flex;
+  gap: 2px;
+  color: var(--ink);
+}
+.debug-pieces i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+}
+.debug-pieces i.done {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.debug-sep {
+  height: 1px;
+  margin: 2px 0;
+  background: rgba(201, 164, 106, 0.12);
+}
+/* Actions en bas de fiche ; celles qui effacent, à part et en rouge sourd. */
+.debug-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px dashed rgba(201, 164, 106, 0.2);
+}
+.debug .debug-actions .danger {
+  background: transparent;
+  color: var(--debug-danger);
+  border-color: rgba(217, 130, 106, 0.45);
+}
+.debug .debug-actions .danger:hover {
+  border-color: var(--debug-danger);
+}
+.debug-actions .danger:first-of-type {
+  margin-left: auto;
 }
 /* Morceaux d'une phrase, sceaux d'une planche : écrits en clair, manquants estompés et barrés. */
 .debug-segments {
@@ -317,9 +519,8 @@ footer {
   gap: 4px;
   padding: 3px 0;
 }
-.debug-segments button {
+.debug .debug-segments button {
   padding: 1px 5px;
-  font-size: 11px;
 }
 .debug-segments .missing {
   opacity: 0.55;

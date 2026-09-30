@@ -1,21 +1,22 @@
 import { beyond, clarity } from '../../systems/perception';
-import { format, type DebugSubject } from './subject';
+import { compact, format, type DebugSubject } from './subject';
 
 export const DISPLAY_SUBJECTS: DebugSubject[] = [
   {
     id: 'scene',
     chapter: 'display',
     name: 'Le décor',
-    description: 'La pièce qui s’éclaire avec les pages lues à vie.',
+    description: 'La pièce qui s’éclaire avec les pages traversées.',
+    peek: (state) => `${compact(state.totalPagesRead)} traversées`,
     build: (kit, state) => {
-      kit.info('Découverte', () => format(clarity(state)));
-      kit.info('Au-delà', () => format(beyond(state)));
       kit.number(
-        'Pages lues à vie',
+        'Pages traversées',
         () => state.totalPagesRead,
         (v) => (state.totalPagesRead = v),
-        'la pièce est révélée vers 2 500',
+        { hint: 'La pièce est révélée vers 2 500.' },
       );
+      kit.info('Découverte', () => format(clarity(state)));
+      kit.info('Au-delà', () => format(beyond(state)));
     },
   },
 ];
