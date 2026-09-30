@@ -355,8 +355,9 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
       context.fillText(rest, left + head, baseline);
     } else if (item.kind === 'text' && hasBabelDigits(item.text)) {
       // Chiffres de Babel : dessinés un à un, le reste du texte dans sa police, calé comme dans la page HTML.
+      // Même espacement qu'à la mesure (textLeft) : sinon le texte, plus étroit, n'est plus centré.
       context.font = font(item, `${item.size}px`);
-      context.letterSpacing = '0px';
+      context.letterSpacing = `${item.spacing ?? 0}px`;
       context.fillStyle = color(item);
       drawBabelText(context, item.text, textLeft(item), item.y, item.size, cssBaseline(context, item.y));
     } else if (item.kind === 'text') {
