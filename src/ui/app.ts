@@ -85,16 +85,15 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     openBook,
   });
 
-  const game = (): Component[] => [
-    header,
-    createCounter(state),
-    createMethodHive(state),
-    createHandReading3d(state),
-    createFooter(state.settings),
-  ];
+  // Le compteur aussi : au-dessus du jeu comme des livres ouverts, il ne clignote pas d'un écran à l'autre.
+  const counter = createCounter(state);
+  const lasting: Component[] = [header, counter];
+
+  const game = (): Component[] => [header, counter, createMethodHive(state), createHandReading3d(state), createFooter(state.settings)];
 
   const options = (): Component[] => [
     header,
+    counter,
     createOptionsPage(state, {
       // Le cahier se réécrit lui-même, ouvert là où il est : l'écran n'est pas reconstruit.
       onLocale: (locale) => {
@@ -122,7 +121,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
-    if (window.location.hash === DEBUG_BOOK_HASH && debugging) return [header, createBook3dPage(debugBook3d(), back)];
+    if (window.location.hash === DEBUG_BOOK_HASH && debugging) return [header, counter, createBook3dPage(debugBook3d(), back)];
     if (window.location.hash === WHITE_BOOK_HASH) {
       tellLore(state, 'whiteBook');
       // Tant qu'il n'en est jamais sorti, le joueur ne connaît pas encore le jeu : il lève les yeux du
@@ -132,18 +131,18 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         tellLore(state, 'firstBook');
         back();
       };
-      return [header, createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : undefined)];
+      return [header, counter, createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : undefined)];
     }
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state))
-      return [header, createBook3dPage(strangeBook3d(state), back)];
+      return [header, counter, createBook3dPage(strangeBook3d(state), back)];
     return game();
   };
 
   const render = (): void => {
     document.documentElement.lang = state.locale;
-    // L'en-tête reste ; le reste de l'écran d'avant s'efface puis s'en va, le nouveau apparaît en fondu (la
-    // page d'un livre venu de la pile gère elle-même son arrivée).
-    const leaving = components.filter((c) => c !== header);
+    // L'en-tête et le compteur restent ; le reste de l'écran d'avant s'efface puis s'en va, le nouveau
+    // apparaît en fondu (la page d'un livre venu de la pile gère elle-même son arrivée).
+    const leaving = components.filter((c) => !lasting.includes(c));
     components = screen();
     for (const old of leaving) {
       // Livre qui retourne à la pile : sa page reste jusqu'à ce qu'il y soit, puis s'en va d'elle-même.
@@ -153,8 +152,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       window.setTimeout(() => old.root.remove(), SCREEN_FADE_MS);
     }
     if (!header.root.isConnected) root.prepend(header.root);
+    if (!counter.root.isConnected) header.root.after(counter.root);
     for (const c of components) {
-      if (c === header) continue;
+      if (lasting.includes(c)) continue;
       if (openBook() === null && leaving.length > 0) {
         c.root.classList.add('screen-in');
         // Fondu fini, l'animation est retirée : elle tiendrait l'opacité à 1 et empêcherait le fondu de sortie.

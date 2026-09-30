@@ -119,6 +119,13 @@ button:disabled {
   align-items: center;
   gap: 2px;
   text-shadow: var(--shadow);
+  /* Au-dessus de la page d'un livre ouvert (qui couvre toute la grille). */
+  position: relative;
+  z-index: 2;
+}
+/* Livre ouvert : le compteur ne retient pas la souris, le livre dessous se prend et se tourne partout. */
+#app.book-open .counter {
+  pointer-events: none;
 }
 .value {
   font-size: 2.6rem;
