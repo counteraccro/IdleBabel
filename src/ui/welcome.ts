@@ -6,6 +6,9 @@ import { getLocale, messages, t, type Locale } from '../i18n';
 /** Assez pour un prénom et un nom, pas plus : il doit tenir sur l'étiquette du cahier. */
 export const PLAYER_NAME_MAX = 24;
 
+/** Ce qui n'a rien à faire dans un nom : tout sauf lettres, chiffres, espace, trait d'union, apostrophe. */
+const NOT_IN_A_NAME = /[^\p{L}\p{M}\p{N} '’-]/gu;
+
 /**
  * Le réveil, au début d'une partie : un court récit (lore.awakening) qui se termine sur la question du
  * nom. Obligatoire : rien ne se joue avant d'être entré. La langue est celle du navigateur (changée
@@ -37,6 +40,15 @@ export const showWelcome = (onEnter: (name: string, locale: Locale) => void): vo
   field.style.animationDelay = told;
   modal.root.querySelector<HTMLElement>('.modal-actions')!.style.animationDelay = told;
   setTimeout(() => input.focus(), story.lines.length * PARAGRAPH_MS);
-  input.addEventListener('input', () => (enter.disabled = name() === ''));
+  input.addEventListener('input', () => {
+    // Un nom, pas un symbole : lettres (accents compris), chiffres, espace, trait d'union, apostrophe.
+    const clean = input.value.replace(NOT_IN_A_NAME, '');
+    if (clean !== input.value) {
+      const caret = (input.selectionStart ?? clean.length) - (input.value.length - clean.length);
+      input.value = clean;
+      input.setSelectionRange(caret, caret);
+    }
+    enter.disabled = name() === '';
+  });
   enter.disabled = true;
 };
