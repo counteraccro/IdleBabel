@@ -15,6 +15,8 @@ export interface HeaderHandlers {
   strangeBookFound: () => boolean;
   /** Des sceaux obtenus attendent d'être vus : le contour du livre étrange luit. */
   hasNewSeals: () => boolean;
+  /** Le livre ouvert en ce moment (sa page à l'écran), absent de la pile ; null : le jeu. */
+  openBook: () => 'white' | 'strange' | 'options' | null;
   /** Morceaux écrits dans le livre blanc : quand il y en a un de plus, le livre sursaute. */
   writtenCount: () => number;
 }
@@ -40,6 +42,7 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     const count = handlers.writtenCount();
     if (count > written) pile.shake('white');
     written = count;
+    pile.away(handlers.openBook());
   };
   root.append(el('h1', undefined, 'Idle Babel'), pile.root);
   return { root, update };

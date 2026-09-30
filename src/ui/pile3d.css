@@ -2,7 +2,12 @@
  * Les livres du joueur, posés en vrac en haut à droite (book3d/pile3d.ts). Leur nom s'écrit dessous au
  * survol ; des boutons invisibles les doublent pour le clavier.
  */
-.pile3d { position: fixed; top: 4px; right: 28px; }
+/*
+ * Sous le livre qui vole (book3d.css, z-index 5) : il passe au-dessus des livres de dessous ; ceux posés
+ * sur lui sont recopiés dans le calque du dessus (.pile3d-overlay), il sort de sous eux.
+ */
+.pile3d { position: fixed; top: 4px; right: 28px; z-index: 4; }
+.pile3d-overlay { position: fixed; z-index: 2; pointer-events: none; }
 .pile3d-canvas { display: block; width: 180px; height: 120px; }
 .pile3d-caption {
   margin-top: -10px;
@@ -21,3 +26,5 @@
   .pile3d { position: static; }
   .pile3d-canvas { width: 130px; height: 100px; }
 }
+/* Page d'un livre : la pile reste, le titre du jeu laisse sa place au bouton de retour. */
+#app.book-open h1 { visibility: hidden; }

@@ -20,6 +20,8 @@ import type { Component } from './dom';
 const OPTIONS_HASH = '#options';
 const STRANGE_BOOK_HASH = '#livre';
 const WHITE_BOOK_HASH = '#blanc';
+/** Changement d'écran : l'ancien s'efface en fondu pendant que le nouveau apparaît (voir .screen-out). */
+const SCREEN_FADE_MS = 800;
 
 /** Réglages qui s'appliquent à toute la page par une classe sur <html>. */
 const applySettings = (state: GameState): void => {
@@ -45,8 +47,16 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     else window.location.hash = '';
   };
 
-  const game = (): Component[] => [
-    createHeader({
+  /** Le livre dont la page est ouverte (null : le jeu). */
+  const openBook = (): 'white' | 'strange' | 'options' | null => {
+    const hash = window.location.hash;
+    if (hash === OPTIONS_HASH) return 'options';
+    if (hash === WHITE_BOOK_HASH) return 'white';
+    return hash === STRANGE_BOOK_HASH && strangeBookFound(state) ? 'strange' : null;
+  };
+  // L'en-tête reste à l'écran d'une page à l'autre : la pile ne se recharge pas, le livre ouvert y laisse
+  // sa place vide et y revient.
+  const header = createHeader({
       onOptions: open(OPTIONS_HASH),
       onWhiteBook: open(WHITE_BOOK_HASH),
       onStrangeBook: open(STRANGE_BOOK_HASH),
@@ -58,7 +68,11 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       strangeBookFound: () => strangeBookFound(state),
       hasNewSeals: () => state.newSeals.length > 0,
       writtenCount: () => Object.values(state.written).reduce((sum, done) => sum + done.length, 0),
-    }),
+      openBook,
+    });
+
+  const game = (): Component[] => [
+    header,
     createCounter(state),
     createToolsPanel(state),
     createHandReading3d(state),
@@ -66,6 +80,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   ];
 
   const options = (): Component[] => [
+    header,
     createOptionsPage(state, {
       // Le cahier se réécrit lui-même, ouvert là où il est : l'écran n'est pas reconstruit.
       onLocale: (locale) => {
@@ -102,16 +117,43 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         tellLore(state, 'firstBook');
         back();
       };
-      return [createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : undefined)];
+      return [header, createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : undefined)];
     }
-    if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state)) return [createBook3dPage(strangeBook3d(state), back)];
+    if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state)) return [header, createBook3dPage(strangeBook3d(state), back)];
     return game();
   };
 
   const render = (): void => {
     document.documentElement.lang = state.locale;
+    // L'en-tête reste ; le reste de l'écran d'avant s'efface puis s'en va, le nouveau apparaît en fondu (la
+    // page d'un livre venu de la pile gère elle-même son arrivée).
+    const leaving = components.filter((c) => c !== header);
     components = screen();
-    root.replaceChildren(...components.map((c) => c.root));
+    for (const old of leaving) {
+      // Livre qui retourne à la pile : sa page reste jusqu'à ce qu'il y soit, puis s'en va d'elle-même.
+      if (old.root.classList.contains('homing')) continue;
+      old.root.classList.remove('screen-in');
+      old.root.classList.add('screen-out');
+      window.setTimeout(() => old.root.remove(), SCREEN_FADE_MS);
+    }
+    if (!header.root.isConnected) root.prepend(header.root);
+    for (const c of components) {
+      if (c === header) continue;
+      if (openBook() === null && leaving.length > 0) {
+        c.root.classList.add('screen-in');
+        // Fondu fini, l'animation est retirée : elle tiendrait l'opacité à 1 et empêcherait le fondu de sortie.
+        const done = (event: AnimationEvent): void => {
+          if (event.target !== c.root) return;
+          c.root.classList.remove('screen-in');
+          c.root.removeEventListener('animationend', done);
+        };
+        c.root.addEventListener('animationend', done);
+      }
+      root.append(c.root);
+    }
+    // Page d'un livre : le titre du jeu laisse sa place au bouton de retour.
+    root.classList.toggle('book-open', openBook() !== null);
+    header.update();
   };
 
   window.addEventListener('hashchange', render);

@@ -2,8 +2,10 @@ import * as THREE from 'three';
 import { el } from '../dom';
 import { createBookMesh } from './bookMesh';
 import { createBookRenderer } from './renderer3d';
+import { createLighting } from './lighting';
 import { isDebugEnabled } from '../../debug/debugPanel';
 import type { Book3d } from './book3dBook';
+import { flightAmount, flyingHome, launchFlight } from './bookFlight';
 
 /** Un livre de la pile : son nom (légende au survol), son modèle 3D, ce qu'il ouvre, comment il est posé. */
 export interface PileBook {
@@ -23,16 +25,17 @@ export interface Pile3d {
   root: HTMLElement;
   /** Montre ou cache un livre (le livre étrange, trouvé plus tard) ; `arrive` : il tombe sur la pile. */
   show: (id: string, shown: boolean, arrive?: boolean) => void;
+  /**
+   * Le livre est ouvert devant le lecteur (sa page) : sa place dans la pile reste vide, les autres ne
+   * bougent pas ; il y revient en fin de retour.
+   */
+  away: (id: string | null) => void;
   /** Le livre sursaute et tremble, son contour s'allume un instant (un mot s'est écrit dans le livre blanc). */
   shake: (id: string) => void;
   /** Le contour du livre luit doucement tant que quelque chose l'attend (des sceaux nouveaux). */
   news: (id: string, on: boolean) => void;
 }
 
-/** Au clic, le livre est soulevé et tourné vers le lecteur, puis il s'ouvre. */
-const LIFT = 0.22;
-const LIFT_TILT = THREE.MathUtils.degToRad(35);
-const LIFT_MS = 380;
 /** Contour doré du livre survolé : sa couleur, son épaisseur (unités de scène). */
 const OUTLINE_GOLD = 0xf0c870;
 const OUTLINE = 0.022;
@@ -75,11 +78,12 @@ interface Slot {
   /** Où il est posé (le milieu de son dessous). */
   base: THREE.Vector3;
   shown: boolean;
+  /** Ouvert devant le lecteur : caché, sa place gardée. */
+  away: boolean;
   /** Contour (0 à 1) : où il en est, et où il va (survol). */
   glow: number;
   aim: number;
   shakeAt: number | null;
-  liftAt: number | null;
   arriveAt: number | null;
   news: boolean;
   button: HTMLButtonElement;
@@ -88,7 +92,7 @@ interface Slot {
 /**
  * Les livres du joueur, dans l'en-tête : les vrais livres 3D en miniature (livre blanc, cahier d'options,
  * livre étrange), posés en vrac les uns sur les autres. Au survol, un contour doré entoure le livre ; au
- * clic, il est soulevé vers le lecteur, puis s'ouvre. Des boutons invisibles les doublent pour le clavier.
+ * clic, sa page s'ouvre et il y glisse vers le lecteur (bookFlight.ts). Des boutons invisibles les doublent pour le clavier.
  * Les livres sont empilés dans l'ordre de la liste, le premier en dessous ; au-delà de STACK_MAX, debout
  * à côté de la pile.
  */
@@ -102,10 +106,16 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
   const camera = new THREE.PerspectiveCamera(22, 1, 0.1, 30);
   const { renderer, resize, destroy } = createBookRenderer(canvas, camera);
   renderer.shadowMap.enabled = false;
-  scene.add(new THREE.HemisphereLight(0xfff2dc, 0x3a2c1e, 1.5));
-  const lamp = new THREE.DirectionalLight(0xffe2b0, 2.2);
-  lamp.position.set(-1.5, 3, 2);
-  scene.add(lamp);
+  renderer.autoClear = false;
+  /**
+   * Pendant un vol, les livres posés sur celui qui vole, recopiés dans un calque au-dessus de lui (la
+   * pile elle-même est dessous) : il sort de sous eux, et passe au-dessus des livres de dessous.
+   */
+  const overlay = el('canvas', 'pile3d-overlay');
+  const overlayContext = overlay.getContext('2d');
+  // Les lumières de la page des livres (la vue de biais), tournées avec la caméra comme là-bas pour un livre
+  // fermé : le livre qui vole de l'une à l'autre garde le même éclairage.
+  const lighting = createLighting(scene, new THREE.Vector3(1.7, -0.7, 1.9), new THREE.Vector3(0.4, 0, 0));
 
   let dirty = true;
   const slots: Slot[] = books.map((spec) => {
@@ -131,7 +141,7 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     });
     const holder = new THREE.Group();
     pivot.add(holder);
-    const slot: Slot = { spec, pivot, outline, body: null, holder, standing: false, size: new THREE.Vector3(), base: new THREE.Vector3(), shown: true, glow: 0, aim: 0, shakeAt: null, liftAt: null, arriveAt: null, news: false, button };
+    const slot: Slot = { spec, pivot, outline, body: null, holder, standing: false, size: new THREE.Vector3(), base: new THREE.Vector3(), shown: true, away: false, glow: 0, aim: 0, shakeAt: null, arriveAt: null, news: false, button };
     const book = spec.book();
     void book.look().then((look) => {
       const mesh = createBookMesh(book.shape, look);
@@ -190,8 +200,8 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     let right = 0;
     const standing: Slot[] = [];
     for (const slot of slots) {
-      slot.pivot.visible = slot.shown && slot.body !== null;
-      if (!slot.pivot.visible) continue;
+      slot.pivot.visible = slot.shown && !slot.away && slot.body !== null;
+      if (!slot.shown || slot.body === null) continue;
       const stand = stacked >= STACK_MAX;
       if (stand !== slot.standing) pose(slot, stand);
       if (stand) {
@@ -214,7 +224,8 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
   /** La caméra, un peu au-dessus et de face : toute la pile tient dans le canvas. */
   const fit = (): void => {
     const box = new THREE.Box3();
-    for (const slot of slots) if (slot.pivot.visible) box.expandByObject(slot.pivot);
+    // Un livre ouvert ailleurs compte quand même : la pile ne se recadre pas sans lui.
+    for (const slot of slots) if (slot.shown && slot.body) box.expandByObject(slot.body);
     if (box.isEmpty()) return;
     const sphere = box.getBoundingSphere(new THREE.Sphere());
     const half = THREE.MathUtils.degToRad(camera.fov / 2);
@@ -222,9 +233,10 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     const flat = distance * Math.cos(ELEVATION);
     camera.position.set(sphere.center.x + flat * Math.sin(AZIMUTH), sphere.center.y + distance * Math.sin(ELEVATION), sphere.center.z + flat * Math.cos(AZIMUTH));
     camera.lookAt(sphere.center);
+    lighting.follow(camera, sphere.center, 1);
   };
 
-  // Survol : un contour doré ; au clic, le livre est soulevé, puis s'ouvre.
+  // Survol : un contour doré ; au clic, le livre s'ouvre.
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   let hovered: Slot | null = null;
@@ -259,13 +271,52 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
   });
 
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
-  /** Clic sur un livre : il est soulevé vers le lecteur, puis il s'ouvre. */
+  /**
+   * Clic sur un livre : sa page s'ouvre, le livre part d'ici (même place à l'écran, même angle) et glisse
+   * vers le lecteur en grandissant.
+   */
   function open(slot: Slot): void {
-    if (slot.liftAt !== null) return;
-    if (still.matches) return slot.spec.onOpen();
-    slot.liftAt = performance.now();
+    if (slot.away) return;
+    const mesh = slot.body?.children[0];
+    if (mesh && !still.matches) {
+      slot.outline.opacity = 0;
+      launchFlight(mesh, camera, canvas);
+    }
+    wanted = slot.spec.id;
+    applyAway();
+    slot.spec.onOpen();
   }
 
+  /**
+   * Dessine la pile ; `flying` : un livre vole (null : aucun). Les livres posés sur lui (plus haut dans la
+   * pile) sont d'abord dessinés seuls et recopiés dans le calque du dessus, puis le reste dans la pile.
+   */
+  const draw = (flying: number | null): void => {
+    const away = flying === null ? undefined : slots.find((slot) => slot.away && slot.shown && !slot.standing);
+    const above = away ? slots.filter((slot) => slot.pivot.visible && !slot.standing && slots.indexOf(slot) > slots.indexOf(away)) : [];
+    if (above.length > 0 && overlayContext) {
+      const below = slots.filter((slot) => slot.pivot.visible && !above.includes(slot));
+      for (const slot of below) slot.pivot.visible = false;
+      renderer.clear();
+      renderer.render(scene, camera);
+      const rect = canvas.getBoundingClientRect();
+      Object.assign(overlay.style, { left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
+      if (overlay.width !== canvas.width || overlay.height !== canvas.height) [overlay.width, overlay.height] = [canvas.width, canvas.height];
+      overlayContext.clearRect(0, 0, overlay.width, overlay.height);
+      overlayContext.drawImage(canvas, 0, 0);
+      if (!overlay.isConnected) document.body.append(overlay);
+      for (const slot of below) slot.pivot.visible = true;
+      for (const slot of above) slot.pivot.visible = false;
+      renderer.clear();
+      renderer.render(scene, camera);
+      for (const slot of above) slot.pivot.visible = true;
+      return;
+    }
+    overlay.remove();
+    renderer.clear();
+    renderer.render(scene, camera);
+  };
+  let wasFlying = false;
   let before = performance.now();
   let mounted = false;
   const frame = (now: number): void => {
@@ -275,7 +326,12 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     } else mounted = true;
     const dt = Math.min(0.05, (now - before) / 1000);
     before = now;
-    let moving = false;
+    // Un livre vole vers une page ou en revient : la pile est redessinée tant qu'il vole (sa place en creux).
+    const flying = flightAmount();
+    let moving = flying !== null || wasFlying;
+    wasFlying = flying !== null;
+    // Vol fini : le livre revenu reprend sa place.
+    if (flying === null) applyAway();
     /** Où en est une animation lancée à `at`, de durée `ms` (null : finie, ou pas lancée). */
     const progress = (at: number | null, ms: number): number | null => (at === null || still.matches ? null : Math.min(1, (now - at) / ms));
     for (const slot of slots) {
@@ -304,36 +360,45 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
         drop = ARRIVE_DROP * (1 - arriving) ** 3;
         moving = true;
       }
-      let lift = 0;
-      if (slot.liftAt !== null) {
-        const t = Math.min(1, (now - slot.liftAt) / LIFT_MS);
-        lift = 1 - (1 - t) ** 3;
-        moving = true;
-        if (t >= 1) {
-          slot.liftAt = null;
-          slot.spec.onOpen();
-        }
-      }
       slot.outline.opacity = Math.max(slot.glow, flash);
       // Penché, il tourne autour du milieu de son dessous : relevé d'autant, son bout bas ne rentre pas
       // dans le livre du dessous.
       const tilt = slot.standing ? 0 : (slot.spec.tilt ?? 0);
       const rest = (slot.size.x / 2) * Math.sin(Math.abs(tilt));
-      slot.pivot.rotation.set(LIFT_TILT * lift, 0, roll + tilt);
-      slot.pivot.position.set(slot.base.x, slot.base.y + rest + drop + hop + LIFT * lift, slot.base.z);
+      slot.pivot.rotation.set(0, 0, roll + tilt);
+      slot.pivot.position.set(slot.base.x, slot.base.y + rest + drop + hop, slot.base.z);
     }
     if (resize()) {
       fit();
       dirty = true;
     }
     if (moving || dirty) {
-      renderer.render(scene, camera);
+      draw(flying);
       dirty = false;
     }
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
 
+  /** Le livre dont la page est ouverte (demandé par l'en-tête). */
+  let wanted: string | null = null;
+  /**
+   * Cache le livre ouvert, sa place gardée ; un livre qui retourne à la pile reste caché jusqu'à ce qu'il
+   * y soit (le jeu revient à l'écran pendant son vol).
+   */
+  function applyAway(): void {
+    const id = flyingHome() ? (slots.find((slot) => slot.away)?.spec.id ?? wanted) : wanted;
+    let changed = false;
+    for (const slot of slots) {
+      const away = slot.spec.id === id;
+      if (slot.away === away) continue;
+      slot.away = away;
+      slot.button.disabled = away;
+      if (hovered === slot) hover(null);
+      changed = true;
+    }
+    if (changed) layout();
+  }
   const find = (id: string): Slot | undefined => slots.find((slot) => slot.spec.id === id);
   const pile: Pile3d = {
     root,
@@ -344,6 +409,10 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
       slot.button.hidden = !shown;
       if (shown && arrive) slot.arriveAt = performance.now();
       layout();
+    },
+    away: (id) => {
+      wanted = id;
+      applyAway();
     },
     shake: (id) => {
       const slot = find(id);

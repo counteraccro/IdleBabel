@@ -15,6 +15,7 @@ import { createBookRenderer } from './renderer3d';
 import { createAutoTurn3d } from './autoTurn3d';
 import { isDebugEnabled } from '../../debug/debugPanel';
 import { BIG_BOOK_REWRITE, type Book3d } from './book3dBook';
+import { createFlight, takeFlight, type Flight } from './bookFlight';
 
 /** Durée de l'ouverture de la couverture. */
 const OPEN_MS = 1100;
@@ -29,8 +30,11 @@ const LIVE_MS = 1000;
 export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t('ui.back')): Component => {
   const root = el('main', 'book3d-page');
   const back = el('button', 'options-back', `← ${backLabel}`);
-  back.addEventListener('click', onBack);
+  back.addEventListener('click', () => leave());
+  // Le canvas dans son cadre : pendant le vol depuis la pile, il en sort pour couvrir la fenêtre.
+  const stage = el('div', 'book3d-stage');
   const canvas = el('canvas', 'book3d-canvas');
+  stage.append(canvas);
   const open = el('input');
   open.type = 'range';
   open.min = '0';
@@ -75,7 +79,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   const controls_ = el('div', 'book3d-controls');
   if (isDebugEnabled()) controls_.append(open, arrows, spread, ...viewButtons);
   else controls_.append(arrows);
-  root.append(back, canvas, controls_);
+  root.append(back, stage, controls_);
 
   /**
    * Milieu du livre fermé, autour duquel on le fait tourner : fermé sur sa couverture, il est posé à droite
@@ -105,6 +109,29 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     dirty = true;
   };
   let book: ReturnType<typeof createBookMesh> | null = null;
+  /** Ouvert depuis la pile de l'en-tête : le livre en vient, il glisse vers le lecteur en grandissant. */
+  const flightStart = takeFlight();
+  let flight: Flight | null = null;
+  /** Retour au jeu, livre venu de la pile : ouvert comme il l'était au départ, il se referme en y retournant. */
+  let homing: { open: number; shut: number } | null = null;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  /**
+   * « Retour » : le jeu revient tout de suite (en fondu, comme à l'aller), pendant que le livre venu de la
+   * pile y retourne (le vol à l'envers) ; la page reste le temps du vol, puis s'en va (classe homing :
+   * l'écran ne l'efface pas, voir app.ts).
+   */
+  const leave = (): void => {
+    if (homing) return;
+    if (!flightStart || !book || still.matches) return onBack();
+    homing = { open: Number(open.value), shut };
+    controls.enabled = false;
+    root.classList.remove('arriving');
+    root.classList.add('leaving', 'homing');
+    canvas.classList.add('flying');
+    flight = createFlight(flightStart, book.root, camera, stage.getBoundingClientRect(), true);
+    onBack();
+  };
+  if (flightStart) root.classList.add('arriving');
   let turner: Turner | null = null;
   /** Les pages ont changé (partie, sceau survolé, note au crayon) : redessinées, puis montrées. */
   const refresh = (): void => {
@@ -114,6 +141,12 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   void spec.look().then((look) => {
     book = createBookMesh(shape, look);
     scene.add(book.root);
+    if (flightStart && root.isConnected) {
+      controls.update();
+      const frame = stage.getBoundingClientRect();
+      canvas.classList.add('flying');
+      flight = createFlight(flightStart, book.root, camera, frame);
+    }
     turner = createTurner(book, createPageCache(source), spreads);
     // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée.
     spec.navigate = (index) => turner?.go(Math.floor(index / 2));
@@ -169,7 +202,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   };
   /** Tourne une page de plus (ou de moins) ; des clics rapides s'enchaînent en feuilletage. */
   const turn = (forward: boolean): void => {
-    if (!turner || swinging) return;
+    if (!turner || swinging || flight) return;
     // Livre refermé sur son dos : en avant, il se retourne sur sa couverture (fermé) ; en arrière, il se
     // rouvre à la fin.
     if (shut > 0) return forward ? swing('flip', 0) : swing('back', 0);
@@ -300,11 +333,30 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     // Page prise à la main et lâchée : le curseur suit la double page où le livre s'arrête.
     if (turner && document.activeElement !== spread) spread.value = String(turner.target);
     before = now;
-    const resized = resize();
+    let resized = resize();
+    if (flight) {
+      const flying = flight.step(now);
+      // En retournant à la pile, le livre se referme.
+      if (homing) {
+        open.value = String(homing.open * flight.amount);
+        book?.setOpen(homing.open * flight.amount);
+        book?.setShut(homing.shut * flight.amount);
+        if (!flying) {
+          flight = null;
+          root.remove();
+        }
+      } else if (!flying) {
+        // Posé : le canvas reprend son cadre, la caméra sa vue ordinaire.
+        flight = null;
+        canvas.classList.remove('flying');
+        resized = resize();
+      }
+    }
     // Caméra qu'on fait tourner, ou qui finit sur son élan.
-    const orbiting = controls.update();
+    // Pendant le vol, la caméra ne bouge pas (sur son élan, elle décalerait le point d'arrivée).
+    const orbiting = !flight && !homing && controls.update();
     notifyBackSeen();
-    if (moving || turning || resized || orbiting || dirty) {
+    if (moving || turning || resized || orbiting || dirty || flight) {
       // Livre fermé (d'un côté ou de l'autre), on le fait tourner : la lumière suit la face qu'on regarde.
       // Fermé : les deux plats l'un sur l'autre (couverture fermée, ou plat arrière refermé sur elle).
       lighting.follow(camera, controls.target, 1 - (Number(open.value) - shut));

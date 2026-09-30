@@ -135,3 +135,8 @@ footer {
 .fps.slow { color: #e08a6a; opacity: 1; }
 .debug-fps { color: #9fd49a; }
 .debug-fps.slow { color: #e08a6a; }
+
+/* Changement d'écran (app.ts) : l'ancien s'efface, le nouveau apparaît, en même temps. */
+#app > .screen-out { opacity: 0; transition: opacity 0.8s; pointer-events: none; }
+#app > .screen-in { animation: screen-in 0.8s ease-out both; }
+@keyframes screen-in { from { opacity: 0; } }
