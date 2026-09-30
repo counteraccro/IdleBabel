@@ -29,6 +29,8 @@ const SCREEN_FADE_MS = 800;
 /** Réglages qui s'appliquent à toute la page par une classe sur <html>. */
 const applySettings = (state: GameState): void => {
   setNotation(state.settings.notation);
+  // Nombres en symboles de Babel : dorés (classe number, styles.css).
+  document.documentElement.classList.toggle('notation-babel', state.settings.notation === 'babel');
   document.documentElement.classList.toggle('reduce-blur', state.settings.reduceBlur);
   document.documentElement.classList.toggle('page-arrows', state.settings.pageArrows);
 };

@@ -11,12 +11,26 @@ export const createCounter = (state: GameState): Component => {
   // Connaissance : la ligne n'apparaît qu'avec la première trouvaille.
   const knowledge = el('div', 'label knowledge');
   root.append(value, rate, knowledge);
+  // Les nombres dans leur propre élément : en symboles de Babel, ils sont dorés (classe number).
+  const [pages, speed, carried] = [el('span', 'number'), el('span', 'number'), el('span', 'number')];
+  const pagesLabel = document.createTextNode('');
+  const perSecond = document.createTextNode('');
+  const knowledgeLabel = document.createTextNode('');
+  value.append(pages);
+  rate.append(pagesLabel, speed, perSecond);
+  knowledge.append(knowledgeLabel, carried);
+  const set = (node: Node, text: string): void => {
+    if (node.textContent !== text) node.textContent = text;
+  };
 
   const update = (): void => {
-    value.textContent = formatNumber(Math.floor(state.pages), getLocale());
-    rate.textContent = `${t('ui.pages')} · ${formatNumber(pagesPerSecond(state), getLocale())}${t('ui.perSecond')}`;
+    set(pages, formatNumber(Math.floor(state.pages), getLocale()));
+    set(pagesLabel, `${t('ui.pages')} · `);
+    set(speed, formatNumber(pagesPerSecond(state), getLocale()));
+    set(perSecond, t('ui.perSecond'));
     knowledge.hidden = state.lifetimeKnowledge === 0;
-    knowledge.textContent = `${t('ui.knowledge')} ${formatNumber(state.knowledge, getLocale())}`;
+    set(knowledgeLabel, `${t('ui.knowledge')} `);
+    set(carried, formatNumber(state.knowledge, getLocale()));
   };
   update();
   return { root, update };

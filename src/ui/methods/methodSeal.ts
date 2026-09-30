@@ -29,7 +29,7 @@ export interface MethodSeal {
 
 export const createMethodSeal = (id: ToolId): MethodSeal => {
   const root = el('button', 'method-seal');
-  const count = el('span', 'method-count');
+  const count = el('span', 'method-count number');
   root.append(el('span', 'method-rim'), el('span', 'method-core'));
   root.insertAdjacentHTML('beforeend', sigilSvg(id));
   root.append(count);

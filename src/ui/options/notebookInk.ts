@@ -100,6 +100,50 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
     return lines.length * PENCIL_LINE;
   };
 
+  /** Case d'un réglage à la ligne du haut, cochée d'une croix appuyée si `checked`. */
+  const box = (checked: boolean): void => {
+    item++;
+    // Case d'un carreau, un peu plus grande, posée sur la ligne.
+    const [x, y, size] = [TEXT_LEFT, top + GRID - 2, GRID + 2];
+    stroke(
+      [
+        [x, y],
+        [x + size, y + 0.5],
+        [x + size - 0.5, y + size],
+        [x + 0.5, y + size + 0.5],
+        [x, y - 1],
+      ],
+      PEN,
+      1.6,
+      0.8,
+    );
+    if (checked) {
+      item++;
+      // Croix appuyée, qui déborde de la case : tracée vite.
+      stroke(
+        [
+          [x - 3, y - 4],
+          [x + size / 2, y + size / 2 + 1],
+          [x + size + 4, y + size + 3],
+        ],
+        PEN,
+        2.4,
+        1.5,
+      );
+      item++;
+      stroke(
+        [
+          [x + size + 3, y - 5],
+          [x + size / 2 + 1, y + size / 2],
+          [x - 2, y + size + 4],
+        ],
+        PEN,
+        2.4,
+        1.5,
+      );
+    }
+  };
+
   return {
     zones,
     /** Titre du cahier, souligné de deux traits. */
@@ -147,52 +191,32 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
     },
     /** Case dessinée à la main, cochée d'une croix ; l'explication au crayon dessous. Un clic la coche ou la décoche. */
     toggle: (label: string, hint: string, checked: boolean, act: () => void): void => {
-      item++;
       const start = top;
-      // Case d'un carreau, un peu plus grande, posée sur la ligne.
-      const [x, y, size] = [TEXT_LEFT, top + GRID - 2, GRID + 2];
-      stroke(
-        [
-          [x, y],
-          [x + size, y + 0.5],
-          [x + size - 0.5, y + size],
-          [x + 0.5, y + size + 0.5],
-          [x, y - 1],
-        ],
-        PEN,
-        1.6,
-        0.8,
-      );
-      if (checked) {
-        item++;
-        // Croix appuyée, qui déborde de la case : tracée vite.
-        stroke(
-          [
-            [x - 3, y - 4],
-            [x + size / 2, y + size / 2 + 1],
-            [x + size + 4, y + size + 3],
-          ],
-          PEN,
-          2.4,
-          1.5,
-        );
-        item++;
-        stroke(
-          [
-            [x + size + 3, y - 5],
-            [x + size / 2 + 1, y + size / 2],
-            [x - 2, y + size + 4],
-          ],
-          PEN,
-          2.4,
-          1.5,
-        );
-      }
+      box(checked);
       item++;
       write(label, TEXT_LEFT + 2 * GRID, top, pen(24), PEN, PEN_LINE);
       top += PEN_LINE;
       top += paragraph(hint, TEXT_LEFT + 2 * GRID, top) + GRID;
       zones.push({ x: TEXT_LEFT - GRID / 2, y: start, width: TEXT_RIGHT - TEXT_LEFT + GRID / 2, height: top - start - GRID, act });
+    },
+    /**
+     * Une ligne d'un choix parmi plusieurs : la case, le nom au stylo, et à droite, au crayon, un exemple
+     * (colonne `exampleAt`, la même pour toutes les lignes du choix). La case du choix en cours est cochée.
+     */
+    option: (label: string, example: string, checked: boolean, act: () => void, exampleAt: number): void => {
+      const start = top;
+      box(checked);
+      item++;
+      write(label, TEXT_LEFT + 2 * GRID, top, pen(24), PEN, PEN_LINE);
+      item++;
+      write(example, TEXT_LEFT + 2 * GRID + exampleAt, top, pencil(23), PENCIL, PEN_LINE);
+      top += PEN_LINE + GRID / 2;
+      zones.push({ x: TEXT_LEFT - GRID / 2, y: start, width: TEXT_RIGHT - TEXT_LEFT + GRID / 2, height: PEN_LINE, act });
+    },
+    /** Largeur d'un nom écrit au stylo, pour caler la colonne des exemples d'un choix. */
+    labelWidth: (label: string): number => {
+      context.font = pen(24);
+      return context.measureText(label).width;
     },
     /** Choix à la suite (langues, notations), sur plusieurs lignes s'il le faut : le choisi est entouré. */
     choices: (options: { label: string; active: boolean; act: () => void }[]): void => {

@@ -30,6 +30,7 @@ import {
 import { markSealsSeen } from '../../systems/seals';
 import { decipher, decipherPrice } from '../../systems/decipher';
 import { t } from '../../i18n';
+import { currentNotation } from '../../core/format';
 import type { PartId } from '../../data/decipher';
 import type { Paper } from '../book/pageRender';
 import type { GameState } from '../../core/state';
@@ -144,6 +145,9 @@ const decipherItems = (state: GameState, part: PartId, asking: boolean, noteY: n
 const CAPTION_WIDTH = 560;
 
 /** Une légende trop longue pour la page se resserre, puis rapetisse, jusqu'à tenir sur une ligne. */
+/** Chiffre écrit en symboles de Babel (notation choisie dans les options) : doré, comme les titres. */
+const babelGold = (item: TextItem): TextItem => (currentNotation() === 'babel' && !/\d/.test(item.text) ? { ...item, gold: true } : item);
+
 const fitCaption = (item: TextItem): TextItem => {
   let fitted = item;
   if (textWidth(fitted) > CAPTION_WIDTH) fitted = { ...fitted, spacing: 1 };
@@ -169,7 +173,15 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number, asking
   return [
     ...heading(chapterTitle(state, chapter), CHAPTERS.indexOf(chapter) + 1),
     ...figures.flatMap((figure, index): Item[] => [
-      { kind: 'text', text: figure.value(state), x: 320, y: FIGURE_TOP + index * FIGURE_STEP, size: 52, align: 'center', spacing: 2 },
+      babelGold({
+        kind: 'text',
+        text: figure.value(state),
+        x: 320,
+        y: FIGURE_TOP + index * FIGURE_STEP,
+        size: 52,
+        align: 'center',
+        spacing: 2,
+      }),
       captions[index],
     ]),
     ...decipherItems(state, chapter.id, asking, 676, captions),

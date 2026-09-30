@@ -33,6 +33,9 @@ export const createMethodHive = (state: GameState): Component => {
   root.setAttribute('aria-label', t('ui.methods'));
   const tip = el('div', 'method-tip');
   const tipName = el('strong');
+  const tipTitle = document.createTextNode('');
+  const tipCount = el('span', 'number');
+  tipName.append(tipTitle, tipCount);
   const tipText = el('em');
   const tipPrice = el('span', 'method-tip-price');
   tip.append(tipName, tipText, tipPrice);
@@ -109,7 +112,8 @@ export const createMethodHive = (state: GameState): Component => {
       seal.show(count, state.pages >= cost);
       seal.root.setAttribute('aria-label', `${name}, ${count}. ${t(`tools.${id}.description`)} ${price}`);
       if (pointed === id) {
-        tipName.textContent = `${name} · ${count}`;
+        tipTitle.textContent = `${name} · `;
+        tipCount.textContent = count;
         tipText.textContent = t(`tools.${id}.description`);
         tipPrice.textContent = price;
         tipPrice.classList.toggle('short', state.pages < cost);

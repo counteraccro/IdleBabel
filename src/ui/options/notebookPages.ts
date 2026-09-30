@@ -1,5 +1,6 @@
 import { AVAILABLE_LOCALES, getLocale, localeName, messages, t, type Locale } from '../../i18n';
 import { NOTATIONS, formatNumber } from '../../core/format';
+import { GRID } from './notebookPaper';
 import type { DoodleKind } from './doodles';
 import type { Writer } from './notebookInk';
 import type { GameState } from '../../core/state';
@@ -95,17 +96,21 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
       toggle(w, 'showFps');
       toggle(w, 'reduceBlur');
       w.skip(1);
-      // Le même nombre, écrit de chaque façon : on choisit celle qu'on lit le mieux.
+      // Une case par façon d'écrire, avec le même nombre en exemple au crayon : on choisit celle qu'on lit le mieux.
       w.heading(t('ui.numbers'));
-      w.choices(
-        NOTATIONS.map((notation) => ({
-          label: formatNumber(NOTATION_SAMPLE, getLocale(), notation),
-          active: notation === state.settings.notation,
-          act: () => {
+      const names = NOTATIONS.map((notation) => t(`numbers.notations.${notation}`));
+      const exampleAt = Math.max(...names.map(w.labelWidth)) + 2 * GRID;
+      NOTATIONS.forEach((notation, i) =>
+        w.option(
+          names[i],
+          formatNumber(NOTATION_SAMPLE, getLocale(), notation),
+          notation === state.settings.notation,
+          () => {
             state.settings.notation = notation;
             actions.onSettings();
           },
-        })),
+          exampleAt,
+        ),
       );
     },
     6: (w, sketches) => w.sketch(sketches.spiral, 360, 420, 280),

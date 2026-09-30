@@ -129,6 +129,15 @@ button:disabled {
   color: var(--muted);
   font-size: 0.9rem;
 }
+/* Nombres écrits en symboles de Babel (option « Nombres ») : dorés, comme le titre du jeu. */
+.notation-babel .number {
+  background: linear-gradient(180deg, #f7e2a6 0%, #d9a94e 45%, #9a6c26 55%, #e8c776 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9));
+}
 .label.knowledge {
   font-size: 0.8rem;
   letter-spacing: 0.04em;

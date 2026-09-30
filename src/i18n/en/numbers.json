@@ -1,0 +1,22 @@
+{
+  "notations": {
+    "full": "In full",
+    "words": "In words",
+    "short": "Abbreviated",
+    "scientific": "Scientific",
+    "engineering": "Engineering",
+    "babel": "In Babel symbols"
+  },
+  "names": [
+    ["million", "million"],
+    ["billion", "billion"],
+    ["trillion", "trillion"],
+    ["quadrillion", "quadrillion"],
+    ["quintillion", "quintillion"],
+    ["sextillion", "sextillion"],
+    ["septillion", "septillion"],
+    ["octillion", "octillion"],
+    ["nonillion", "nonillion"],
+    ["decillion", "decillion"]
+  ]
+}

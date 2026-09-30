@@ -1,0 +1,22 @@
+{
+  "notations": {
+    "full": "En entier",
+    "words": "En toutes lettres",
+    "short": "Abrégés",
+    "scientific": "Scientifique",
+    "engineering": "Ingénieur",
+    "babel": "En symboles de Babel"
+  },
+  "names": [
+    ["million", "millions"],
+    ["milliard", "milliards"],
+    ["billion", "billions"],
+    ["billiard", "billiards"],
+    ["trillion", "trillions"],
+    ["trilliard", "trilliards"],
+    ["quadrillion", "quadrillions"],
+    ["quadrilliard", "quadrilliards"],
+    ["quintillion", "quintillions"],
+    ["quintilliard", "quintilliards"]
+  ]
+}
