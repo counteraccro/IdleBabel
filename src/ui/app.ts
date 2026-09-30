@@ -43,6 +43,12 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   // Page ouverte depuis le jeu : « retour » revient en arrière dans l'historique du navigateur.
   let openedFromGame = false;
   const open = (hash: string) => (): void => {
+    // D'un livre à un autre (pile de l'en-tête) : la page remplace celle d'avant dans l'historique, et
+    // « retour » ramène au jeu, pas au livre qu'on vient de quitter.
+    if (openBook() !== null) {
+      window.location.replace(hash);
+      return;
+    }
     openedFromGame = true;
     window.location.hash = hash;
   };
