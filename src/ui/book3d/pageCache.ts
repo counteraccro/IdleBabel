@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { PAGE_TEXTURE } from '../book/pageLayout';
+import { pageGlow } from '../book/pageRender';
 import type { PageSource } from './pageSource';
 
 /** Pages gardées dessinées de part et d'autre de la page ouverte : de quoi tourner sans attendre. */
@@ -34,11 +35,20 @@ export const createPageCache = (source: PageSource): PageCache => {
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.anisotropy = 8;
+    // Page qui porte une trouvaille : sa lueur l'accompagne (bookMesh.ts la fait briller).
+    const glow = pageGlow.get(canvas);
+    if (glow) {
+      const light = new THREE.CanvasTexture(glow);
+      light.colorSpace = THREE.SRGBColorSpace;
+      texture.userData.glow = light;
+    }
     textures.set(index, texture);
     return texture;
   };
   const drop = (index: number): void => {
-    textures.get(index)?.dispose();
+    const texture = textures.get(index);
+    (texture?.userData.glow as THREE.Texture | undefined)?.dispose();
+    texture?.dispose();
     textures.delete(index);
   };
   return {

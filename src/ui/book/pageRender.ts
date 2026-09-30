@@ -83,7 +83,23 @@ export const preparePageTexture = (
 };
 
 /**
- * Page dessinée (feuille WebGL) : parchemin, ombre du pli côté dos, texte et fragment surligné.
+ * Encre de la trouvaille : brun sombre, un peu plus grasse que le texte (lisible), sur un halo doré vif
+ * sur le papier : la lumière est derrière les lettres, pas sur elles.
+ */
+const FIND_INK = '#351800';
+const FIND_HALO = 'rgba(240, 150, 20, 0.95)';
+/** Lueur de la trouvaille (masque de lueur) : le halo autour des lettres, en or ; les lettres restent sombres. */
+const GLOW_GOLD = 'rgb(255, 150, 20)';
+
+/**
+ * Lueur des pages dessinées : le masque (noir, un halo d'or autour de la trouvaille) qui la fait briller dans le livre 3D,
+ * rangé à côté du canvas de la page. Pas d'entrée : la page ne brille pas.
+ */
+export const pageGlow = new WeakMap<HTMLCanvasElement, HTMLCanvasElement>();
+
+/**
+ * Page dessinée (feuille WebGL) : parchemin, ombre du pli côté dos, texte, et le fragment trouvé écrit à
+ * l'encre dorée qui luit (son masque de lueur va dans pageGlow).
  * spineOnLeft : le dos du livre est à gauche de la page (recto de la feuille) ou à droite (verso).
  */
 export const drawPageTexture = (
@@ -105,22 +121,64 @@ export const drawPageTexture = (
   context.font = PAGE_FONT;
   context.textBaseline = 'alphabetic';
   const lineHeight = PAGE_FONT_SIZE * PAGE_LINE_HEIGHT;
-  const { ascent, descent } = fontBox(context);
+  /** Morceaux de la trouvaille : où ils sont écrits. */
+  const found: { text: string; x: number; y: number }[] = [];
   lines.forEach((line, index) => {
     let x = PAGE_PADDING.x;
     const baseline = cssBaseline(context, PAGE_PADDING.y + index * lineHeight, lineHeight);
     for (const piece of line) {
       const pieceWidth = context.measureText(piece.text).width;
-      if (piece.fragment) {
-        // Fond d'un <mark> : la hauteur de la police, autour du texte.
-        context.fillStyle = 'rgba(242, 198, 121, 0.6)';
-        context.fillRect(x, baseline - ascent, pieceWidth, ascent + descent);
-        context.fillStyle = '#2a1608';
-      } else {
+      if (piece.fragment) found.push({ text: piece.text, x, y: baseline });
+      else {
         context.fillStyle = 'rgba(52, 36, 22, 0.82)';
+        context.fillText(piece.text, x, baseline);
       }
-      context.fillText(piece.text, x, baseline);
       x += pieceWidth;
     }
   });
+  pageGlow.delete(canvas);
+  if (found.length === 0) return;
+  // Sur le papier : un halo doré vif derrière les lettres, puis les lettres nettes, un peu grasses.
+  context.save();
+  context.shadowColor = FIND_HALO;
+  context.fillStyle = FIND_INK;
+  for (const blur of [16, 6]) {
+    context.shadowBlur = blur;
+    for (const { text, x, y } of found) context.fillText(text, x, y);
+  }
+  context.restore();
+  context.strokeStyle = FIND_INK;
+  context.lineWidth = 0.9;
+  context.lineJoin = 'round';
+  context.fillStyle = FIND_INK;
+  for (const { text, x, y } of found) {
+    context.strokeText(text, x, y);
+    context.fillText(text, x, y);
+  }
+  // Masque de lueur, à la taille de la mise en page (une lueur n'a pas besoin d'être fine).
+  const glow = document.createElement('canvas');
+  glow.width = PAGE_TEXTURE.width;
+  glow.height = PAGE_TEXTURE.height;
+  const light = glow.getContext('2d')!;
+  light.fillStyle = '#000';
+  light.fillRect(0, 0, glow.width, glow.height);
+  light.font = PAGE_FONT;
+  light.textBaseline = 'alphabetic';
+  light.fillStyle = GLOW_GOLD;
+  light.shadowColor = GLOW_GOLD;
+  for (const blur of [28, 12, 5]) {
+    light.shadowBlur = blur;
+    for (const { text, x, y } of found) light.fillText(text, x, y);
+  }
+  // Les lettres elles-mêmes restent sombres (sinon la lueur les délave) : découpées, un peu épaissies.
+  light.shadowBlur = 0;
+  light.strokeStyle = '#000';
+  light.lineWidth = 2;
+  light.lineJoin = 'round';
+  light.fillStyle = '#000';
+  for (const { text, x, y } of found) {
+    light.strokeText(text, x, y);
+    light.fillText(text, x, y);
+  }
+  pageGlow.set(canvas, glow);
 };

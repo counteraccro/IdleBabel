@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createPageGlow, type PageGlow } from './pageGlow';
 import { createHeadbandGeometry, HEADBAND_LENGTH, HEADBAND_RADIUS } from './headband';
 import { createRibbon, RIBBON_INSIDE, RIBBON_TAIL, RIBBON_WIDTH, type RibbonPoint } from './ribbon';
 import { boardGeometry } from './boardGeometry';
@@ -85,6 +86,8 @@ export interface BookMesh {
    * `corner` : prise par un coin (1 : en haut, -1 : en bas), elle part de lui, dans le sens `forward`.
    */
   setLeaf: (turn: number | null, front?: THREE.Texture | null, back?: THREE.Texture | null, corner?: number, forward?: boolean) => void;
+  /** Lueur des trouvailles (pageGlow.ts) : une page visible brille-t-elle, et son horloge. */
+  glow: PageGlow;
 }
 
 /** Épaisseur du cuir du dos (part de l'épaisseur du livre). */
@@ -261,6 +264,9 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   const paperMaterial = (): THREE.MeshStandardMaterial => new THREE.MeshStandardMaterial({ color: look.paper, roughness: 0.95 });
   const rightPage = paperMaterial();
   const leftPage = paperMaterial();
+  const glow = createPageGlow();
+  glow.add(rightPage);
+  glow.add(leftPage);
   const foldPaper = paperMaterial();
   const rightStack = new THREE.Mesh(new THREE.BufferGeometry(), [edgeMaterial, rightPage, paperMaterial(), foldPaper]);
   const leftStack = new THREE.Mesh(new THREE.BufferGeometry(), [edgeMaterial, paperMaterial(), leftPage, foldPaper]);
@@ -477,6 +483,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   leafBackGeometry.setAttribute('normal', leafGeometry.attributes.normal);
   const leafFront = new THREE.MeshStandardMaterial({ color: look.paper, roughness: 0.95, side: THREE.FrontSide });
   const leafBack = new THREE.MeshStandardMaterial({ color: look.paper, roughness: 0.95, side: THREE.BackSide });
+  glow.add(leafFront);
+  glow.add(leafBack);
   const leaf = new THREE.Group();
   const leafMeshes = [new THREE.Mesh(leafGeometry, leafFront), new THREE.Mesh(leafBackGeometry, leafBack)];
   leaf.add(...leafMeshes);
@@ -581,14 +589,16 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     setLeaf: (turn, front = null, back = null, corner = 0, forward = true) => {
       leaf.visible = turn !== null;
       leafTurn = turn;
-      if (turn === null) return void layRibbon();
       for (const [material, map] of [[leafFront, front], [leafBack, back]] as const) {
+        glow.show(material, turn === null ? null : map);
+        if (turn === null) continue;
         if (material.map !== map) {
           material.map = map;
           material.color.set(map ? 0xffffff : look.paper);
           material.needsUpdate = true;
         }
       }
+      if (turn === null) return void layRibbon();
       for (const mesh of leafMeshes) mesh.castShadow = turn < LEAF_SHADOW_END;
       poseLeaf(turn, corner, forward);
       // Le signet peut être porté par la feuille : il la suit.
@@ -612,6 +622,9 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
       rightPage.color.set(right ? 0xffffff : look.paper);
       leftPage.needsUpdate = true;
       rightPage.needsUpdate = true;
+      glow.show(leftPage, left);
+      glow.show(rightPage, right);
     },
+    glow,
   };
 };

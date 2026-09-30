@@ -231,7 +231,10 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     // Les mains ne sont jamais parfaitement immobiles (sauf page tenue, option coupée, mouvements réduits).
     const swaying = options.sway() && !still.matches;
     pose.update(swaying && !grabbing ? dt : 0);
-    if (swaying || moving || turning || animating || dirty) {
+    // Une trouvaille sur une page visible : elle luit, l'image est refaite (figée si mouvements réduits).
+    const shining = book?.glow.shining ?? false;
+    if (shining && book) book.glow.time = still.matches ? 0 : now / 1000;
+    if (swaying || moving || turning || animating || dirty || (shining && !still.matches)) {
       lighting.follow(camera, new THREE.Vector3(), 0);
       renderer.render(scene, camera);
       dirty = false;
