@@ -115,7 +115,157 @@
   },
   "alexH": {
     "name": "AlexH, mon code, ma PR",
-    "cover": ["AlexH", "mon code, ma PR"]
+    "cover": ["AlexH", "mon code, ma PR"],
+    "removed": "ton code",
+    "added": ["mon code,", "ma PR"],
+    "kind": "La biographie",
+    "stat": "1 file changed, 410 insertions(+)",
+    "quotes": [
+      ["« Quarante-deux commentaires. Sur un README. »", "Code Review Mensuel"],
+      ["« Il a demandé des modifications sur ma préface. »", "Le préfacier"],
+      ["« Enfin un livre sans faute : il s’est relu. »", "Le correcteur"]
+    ],
+    "blurb": "Du premier « Hello, world » à sa dix millième demande de modifications, la vie d’un lead dev qui ne laisse rien passer : ni un nom de variable, ni une virgule, ni une ligne trop longue. Les bugs, eux, sont passés quand même.",
+    "copyright": [
+      "© AlexH. Tous droits réservés.",
+      "Publié sous licence MIT.",
+      "",
+      "Aucun test n’a été maltraité pendant l’écriture de ce livre.",
+      "Les bugs décrits sont réels ; toute ressemblance avec",
+      "du code existant serait purement intentionnelle.",
+      "",
+      "Dépôt légal : premier commit.",
+      "Imprimé sur un serveur de préproduction."
+    ],
+    "dedication": ["À mon linter,", "le seul plus strict que moi."],
+    "epigraph": "« Ça marche sur ma machine. »",
+    "epigraphSource": "« Renomme ta machine. » (AlexH)",
+    "contents": "Sommaire",
+    "chapters": [
+      {
+        "label": "",
+        "title": "Prologue"
+      },
+      {
+        "label": "Chapitre 1",
+        "title": "Hello, world"
+      },
+      {
+        "label": "Chapitre 2",
+        "title": "Premier commit"
+      },
+      {
+        "label": "Chapitre 3",
+        "title": "Le conflit"
+      },
+      {
+        "label": "Chapitre 4",
+        "title": "La review"
+      },
+      {
+        "label": "Chapitre 5",
+        "title": "Vendredi, 17 h 59"
+      },
+      {
+        "label": "Chapitre 6",
+        "title": "Rollback"
+      },
+      {
+        "label": "Chapitre 7",
+        "title": "Refactor"
+      },
+      {
+        "label": "",
+        "title": "Épilogue : LGTM"
+      }
+    ],
+    "refs": [
+      "(voir PR #{n})",
+      "(PR #{n}, changements demandés : nommage)",
+      "(commit {hash}, message refusé)",
+      "(PR #{n}, 42 commentaires, 0 sur le bug)",
+      "(PR #{n}, refusée : une virgule)",
+      "(revert de la PR #{n}, pourtant bien indentée)"
+    ],
+    "pullQuotes": [
+      "« Renomme. »",
+      "« Ligne trop longue. »",
+      "« Il manque une virgule. »",
+      "« Indentation. »",
+      "« Je bloque. »",
+      "« Le reste est bon. »"
+    ],
+    "captions": [
+      "Sa première review : quarante-deux commentaires de nommage. Le bug est passé.",
+      "Le conflit de merge. Il l’a résolu, puis a renommé la branche.",
+      "Un vendredi, 17 h 59. Le code était impeccable. La prod est tombée quand même.",
+      "Le rollback. Le message de commit, lui, respectait la convention.",
+      "« Juste un petit refactor. » Trois cents lignes renommées, zéro corrigée.",
+      "La correction qui a tout réparé. Refusée : mauvais nom de branche.",
+      "Un console.log parfaitement indenté, en production depuis deux ans.",
+      "Le seul « LGTM » de sa carrière. Il y avait un bug dedans."
+    ],
+    "thanksTitle": "Remerciements",
+    "thanks": "Merci à mes relecteurs, à qui j’ai fait renommer tout ce qui pouvait l’être, y compris ces remerciements. Merci au linter, qui a tenu bon. Merci aux bugs, qui sont passés quand même. Et merci à toi, lecteur : si tu trouves une faute dans ce livre, ouvre un ticket. Si c’est un bug, ça ira.",
+    "indexTitle": "Index",
+    "index": [
+      ["approbation", "335 (une seule)"],
+      ["bug", "passim (approuvés)"],
+      ["café", "passim"],
+      ["commentaires", "143–208"],
+      ["commit", "19–58"],
+      ["conflit", "59–100"],
+      ["console.log", "183 (bien indenté)"],
+      ["deadline", "dépassée (code propre)"],
+      ["documentation", "exigée"],
+      ["git push --force", "interdit"],
+      ["Hello, world", "19 (renommé)"],
+      ["indentation", "toutes les pages"],
+      ["LGTM", "voir approbation"],
+      ["machine (ma)", "à renommer"],
+      ["merge", "101–142"],
+      ["nommage", "passim"],
+      ["prod", "en panne, 209–292"],
+      ["refactor", "293–334"],
+      ["review", "toutes les pages"],
+      ["rollback", "251 (bien nommé)"],
+      ["tests", "voir plus tard"],
+      ["ticket", "fermé (mauvais titre)"],
+      ["vendredi", "non"],
+      ["virgule", "12, 47, 410"]
+    ],
+    "alsoTitle": "Du même auteur",
+    "also": ["Changements demandés", "Renomme", "Le vendredi, on ne déploie pas", "Mon code, ma PR, tome 2 (en review)"],
+    "colophon": ["Achevé d’imprimer", "le jour du merge,", "sur les presses de la Bibliothèque de Babel.", "", "Build n° 410"],
+    "pr": {
+      "title": "Juste un petit refactor",
+      "number": "#4127",
+      "status": "Ouverte",
+      "meta": "AlexH veut fusionner 1 commit dans main",
+      "files": "1 fichier modifié",
+      "comments": [
+        {
+          "author": "dependabot[bot]",
+          "when": "il y a 3 heures",
+          "text": "Fait passer café de 2.3.1 à 3.0.0. Changement majeur : le café est désormais servi froid."
+        },
+        {
+          "author": "AlexH",
+          "when": "il y a 2 heures",
+          "where": "src/vie.ts, ligne 87",
+          "text": "jeSaisPasEncore ne dit pas ce que fait cette variable. À renommer."
+        },
+        {
+          "author": "AlexH",
+          "when": "il y a 1 heure",
+          "where": "src/vie.ts, ligne 88",
+          "text": "Il manque un point-virgule. Pour la boucle infinie ligne 89, ça ira."
+        }
+      ],
+      "verdict": "AlexH a demandé des modifications",
+      "verdictAt": "il y a 1 minute",
+      "verdictText": "Le point-virgule. Le reste est bon."
+    }
   },
   "blankPage": {
     "name": "Page blanche, l'explication",

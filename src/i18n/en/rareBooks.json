@@ -115,7 +115,150 @@
   },
   "alexH": {
     "name": "AlexH, My Code, My PR",
-    "cover": ["AlexH", "My Code, My PR"]
+    "cover": ["AlexH", "My Code, My PR"],
+    "removed": "your code",
+    "added": ["my code,", "my PR"],
+    "kind": "The Biography",
+    "stat": "1 file changed, 410 insertions(+)",
+    "quotes": [
+      ["“Forty-two comments. On a README.”", "Code Review Monthly"],
+      ["“He requested changes on my foreword.”", "The foreword writer"],
+      ["“Finally, a flawless book: he reviewed himself.”", "The proofreader"]
+    ],
+    "blurb": "From the first “Hello, world” to his ten-thousandth change request, the life of a lead dev who lets nothing slide: not a variable name, not a comma, not a line too long. The bugs got through anyway.",
+    "copyright": [
+      "© AlexH. All rights reserved.",
+      "Released under the MIT license.",
+      "",
+      "No tests were harmed in the writing of this book.",
+      "The bugs described are real; any resemblance to",
+      "existing code is entirely intentional.",
+      "",
+      "Legal deposit: first commit.",
+      "Printed on a staging server."
+    ],
+    "dedication": ["To my linter,", "the only one stricter than me."],
+    "epigraph": "“Works on my machine.”",
+    "epigraphSource": "“Rename your machine.” (AlexH)",
+    "contents": "Contents",
+    "chapters": [
+      {
+        "label": "",
+        "title": "Prologue"
+      },
+      {
+        "label": "Chapter 1",
+        "title": "Hello, World"
+      },
+      {
+        "label": "Chapter 2",
+        "title": "First Commit"
+      },
+      {
+        "label": "Chapter 3",
+        "title": "The Conflict"
+      },
+      {
+        "label": "Chapter 4",
+        "title": "The Review"
+      },
+      {
+        "label": "Chapter 5",
+        "title": "Friday, 5:59 pm"
+      },
+      {
+        "label": "Chapter 6",
+        "title": "Rollback"
+      },
+      {
+        "label": "Chapter 7",
+        "title": "Refactor"
+      },
+      {
+        "label": "",
+        "title": "Epilogue: LGTM"
+      }
+    ],
+    "refs": [
+      "(see PR #{n})",
+      "(PR #{n}, changes requested: naming)",
+      "(commit {hash}, message rejected)",
+      "(PR #{n}, 42 comments, 0 about the bug)",
+      "(PR #{n}, rejected: a comma)",
+      "(revert of PR #{n}, nicely indented though)"
+    ],
+    "pullQuotes": ["“Rename it.”", "“Line too long.”", "“Missing comma.”", "“Indentation.”", "“Blocking.”", "“The rest is fine.”"],
+    "captions": [
+      "His first review: forty-two comments about naming. The bug got through.",
+      "The merge conflict. He resolved it, then renamed the branch.",
+      "A Friday, 5:59 pm. The code was spotless. Prod went down anyway.",
+      "The rollback. The commit message, at least, followed the convention.",
+      "“Just a small refactor.” Three hundred lines renamed, none fixed.",
+      "The fix that repaired everything. Rejected: wrong branch name.",
+      "A perfectly indented console.log, in production for two years.",
+      "The only “LGTM” of his career. There was a bug in it."
+    ],
+    "thanksTitle": "Acknowledgements",
+    "thanks": "Thanks to my reviewers, whom I made rename everything that could be renamed, including these acknowledgements. Thanks to the linter, which held firm. Thanks to the bugs, which got through anyway. And thank you, reader: if you find a mistake in this book, open a ticket. If it’s a bug, it’s fine.",
+    "indexTitle": "Index",
+    "index": [
+      ["approval", "335 (just once)"],
+      ["bug", "passim (approved)"],
+      ["coffee", "passim"],
+      ["comments", "143–208"],
+      ["commit", "19–58"],
+      ["conflict", "59–100"],
+      ["console.log", "183 (well indented)"],
+      ["deadline", "missed (clean code)"],
+      ["documentation", "required"],
+      ["git push --force", "forbidden"],
+      ["Hello, World", "19 (renamed)"],
+      ["indentation", "every page"],
+      ["LGTM", "see approval"],
+      ["machine (my)", "to be renamed"],
+      ["merge", "101–142"],
+      ["naming", "passim"],
+      ["prod", "down, 209–292"],
+      ["refactor", "293–334"],
+      ["review", "every page"],
+      ["rollback", "251 (well named)"],
+      ["tests", "see later"],
+      ["ticket", "closed (bad title)"],
+      ["Friday", "no"],
+      ["comma", "12, 47, 410"]
+    ],
+    "alsoTitle": "Also by the author",
+    "also": ["Changes Requested", "Rename It", "Don’t Deploy on Fridays", "My Code, My PR, Volume 2 (in review)"],
+    "colophon": ["Printed", "on the day of the merge,", "by the presses of the Library of Babel.", "", "Build no. 410"],
+    "pr": {
+      "title": "Just a small refactor",
+      "number": "#4127",
+      "status": "Open",
+      "meta": "AlexH wants to merge 1 commit into main",
+      "files": "1 file changed",
+      "comments": [
+        {
+          "author": "dependabot[bot]",
+          "when": "3 hours ago",
+          "text": "Bumps coffee from 2.3.1 to 3.0.0. Breaking change: coffee is now served cold."
+        },
+        {
+          "author": "AlexH",
+          "when": "2 hours ago",
+          "where": "src/life.ts, line 87",
+          "text": "notSureYet doesn’t say what this variable does. Rename it."
+        },
+        {
+          "author": "AlexH",
+          "when": "1 hour ago",
+          "where": "src/life.ts, line 88",
+          "text": "Missing semicolon. The infinite loop on line 89 is fine."
+        }
+      ],
+      "verdict": "AlexH requested changes",
+      "verdictAt": "1 minute ago",
+      "verdictText": "The semicolon. The rest is fine."
+    }
   },
   "blankPage": {
     "name": "Blank Page, the Explanation",
