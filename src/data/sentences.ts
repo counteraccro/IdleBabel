@@ -31,3 +31,6 @@ export const SENTENCES: readonly SentenceDef[] = [
   { id: 'cup', kind: 'memory' },
   ...ANOMALIES,
 ];
+
+/** Le livre blanc ne garde que le lore (méthodes, souvenirs) : les anomalies se rangent dans le livre étrange. */
+export const WHITE_BOOK_SENTENCES: readonly SentenceDef[] = SENTENCES.filter((sentence) => sentence.kind !== 'anomaly');

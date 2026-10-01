@@ -1,5 +1,5 @@
 import { messages } from '../i18n';
-import { SENTENCES } from '../data/sentences';
+import { SENTENCES, WHITE_BOOK_SENTENCES } from '../data/sentences';
 import { GUESS_PRICE, type FindKind } from '../data/knowledge';
 import { withReaderName } from './readerName';
 import type { ToolId } from '../data/tools';
@@ -50,10 +50,10 @@ export const toolUnlocked = (state: GameState, tool: ToolId): boolean => {
   return !sentence || isComplete(state, sentence.id);
 };
 
-/** Part du livre blanc déjà écrite : morceaux écrits sur l'ensemble des morceaux de toutes les phrases. */
+/** Part du livre blanc déjà écrite : morceaux écrits sur l'ensemble des morceaux de ses phrases (anomalies à part). */
 export const completion = (state: GameState): number => {
-  const total = SENTENCES.reduce((sum, sentence) => sum + segments(sentence.id).length, 0);
-  const done = SENTENCES.reduce((sum, sentence) => sum + written(state, sentence.id).length, 0);
+  const total = WHITE_BOOK_SENTENCES.reduce((sum, sentence) => sum + segments(sentence.id).length, 0);
+  const done = WHITE_BOOK_SENTENCES.reduce((sum, sentence) => sum + written(state, sentence.id).length, 0);
   return total === 0 ? 0 : done / total;
 };
 

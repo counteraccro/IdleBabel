@@ -1,6 +1,6 @@
 import { writeDigits } from '../../core/format';
 import { t } from '../../i18n';
-import { SENTENCES, type SentenceDef } from '../../data/sentences';
+import { WHITE_BOOK_SENTENCES, type SentenceDef } from '../../data/sentences';
 import { completion, guess, guessPrice, isComplete, written } from '../../systems/sentences';
 import { babelize, seedOf } from './babelMask';
 import { sentenceBody } from './sentencePage';
@@ -84,14 +84,14 @@ const titleItems = (state: GameState): Item[] => [
 
 /**
  * Le livre blanc, toutes ses pages dès le début : la page de titre seule à droite (à gauche, rien :
- * l'intérieur de la couverture), une page par phrase dans l'ordre des phrases, et de nouveau
+ * l'intérieur de la couverture), une page par phrase de lore (méthodes, souvenirs ; pas les anomalies) dans l'ordre des phrases, et de nouveau
  * l'intérieur de la couverture si la dernière page tombe à gauche.
  */
 export const createWhiteBookPages = (state: GameState, goTo: (page: number) => void): (LeafPage | null)[] => {
   const pages: (LeafPage | null)[] = [
     null,
     createLeafPage(() => titleItems(state), goTo),
-    ...SENTENCES.map((sentence, index) => {
+    ...WHITE_BOOK_SENTENCES.map((sentence, index) => {
       const fresh = freshTracker(state, sentence);
       return createLeafPage(({ asking }) => sentenceLayout(state, sentence, index + 2, asking, fresh), goTo, {
         onPay: () => guess(state, sentence.id),
