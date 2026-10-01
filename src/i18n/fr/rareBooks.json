@@ -144,39 +144,84 @@
     "chapters": [
       {
         "label": "",
-        "title": "Prologue"
+        "title": "Prologue",
+        "opening": [
+          "Tout commence par une virgule. Celle qui manquait, un matin, sur un post-it collé au frigo de l’open space : « Lait, café sucre ». Il l’a rajoutée au stylo, entre « café » et « sucre », sans rien dire à personne. Personne ne la lui avait demandée. Personne ne l’a remercié.",
+          "C’était sa première review. Il y en aurait dix mille autres, toutes aussi précises, toutes aussi peu sollicitées. Des noms de variables, des lignes trop longues, des espaces en fin de ligne que personne d’autre ne voyait. Lui les voyait. Il les voit encore.",
+          "Ce livre raconte cette vie-là, PR après PR. Il a été relu, bien sûr. Plusieurs fois. Par lui. On n’y trouvera pas une faute de frappe. Pour les bugs, en revanche, nous ne garantissons rien."
+        ]
       },
       {
         "label": "Chapitre 1",
-        "title": "Hello, world"
+        "title": "Hello, world",
+        "opening": [
+          "Son premier programme tenait en une ligne. Il affichait « Hello, world » et il a fonctionné du premier coup, ce qui aurait dû suffire. Il l’a pourtant réécrit quatre fois dans la soirée. Les guillemets n’étaient pas les bons. L’indentation flottait d’un espace. Et « world » méritait, selon lui, une explication.",
+          "La cinquième version faisait onze lignes. Elle était commentée, typée, rangée dans un dossier à son nom. Elle affichait « Hello, world » exactement comme la première, mais avec la conscience tranquille.",
+          "C’est ce soir-là qu’il a compris une chose essentielle : un programme qui marche n’est qu’un brouillon. Un programme propre, en revanche, est une œuvre. Qu’il marche ou non est un détail que l’on règle ensuite, en général dans un autre ticket."
+        ]
       },
       {
         "label": "Chapitre 2",
-        "title": "Premier commit"
+        "title": "Premier commit",
+        "opening": [
+          "Le message de son premier commit faisait trois paragraphes. Le premier expliquait pourquoi. Le deuxième expliquait comment. Le troisième annonçait ce qu’il comptait faire ensuite, avec une date. Il respectait déjà, sans la connaître, une convention qui n’existait pas encore.",
+          "Le code, lui, tenait en deux lignes. L’une corrigeait une faute d’orthographe dans un commentaire. L’autre, personne n’a jamais su à quoi elle servait. Il l’a découvert six ans plus tard, en relisant son historique un dimanche, par plaisir. Il a ouvert un ticket contre lui-même. Il l’a refusé : le titre était mal formulé.",
+          "Depuis, il commit souvent, et toujours bien. Chaque message commence par un verbe à l’infinitif. Aucun ne dit « wip ». Aucun ne dit « fix ». Il en existe un, un seul, qui dit « oups ». Il affirme que ce n’est pas lui. Le git blame affirme le contraire."
+        ]
       },
       {
         "label": "Chapitre 3",
-        "title": "Le conflit"
+        "title": "Le conflit",
+        "opening": [
+          "Le conflit est arrivé un jeudi, vers 15 h. Deux branches, un même fichier, deux visions du monde : l’une indentée avec des tabulations, l’autre avec des espaces. Toute l’équipe s’est réunie autour de son écran. Certains parlaient déjà de guerre de religion.",
+          "Il a tranché en dix secondes. Des espaces, deux par niveau, comme il se doit. Il a ensuite relu les quatre cents lignes du fichier, renommé trois fonctions au passage et remis les imports dans l’ordre. Le merge était superbe.",
+          "Le reste du conflit, une histoire de table supprimée en base de données, a attendu le lundi. Personne ne s’en était aperçu. Il faut dire que le code qui la supprimait était remarquablement bien écrit."
+        ]
       },
       {
         "label": "Chapitre 4",
-        "title": "La review"
+        "title": "La review",
+        "opening": [
+          "Pour lui, une review n’est pas une formalité. C’est une conversation, longue, précise et généralement à sens unique. Il lit chaque ligne. Il commente chaque nom. Il demande pourquoi. Puis il redemande pourquoi, au cas où la première réponse n’aurait été qu’une excuse.",
+          "On raconte qu’une PR de trois lignes a reçu de lui quarante-deux commentaires. C’est faux : il y en avait quarante-trois, mais le dernier disait simplement « merci ». Ceux qui ont survécu à ses reviews en parlent avec respect, et une légère fatigue. Tous écrivent aujourd’hui un code impeccable.",
+          "Et quand enfin la PR passe, propre comme un sou neuf, il arrive que le bug soit encore dedans. Mais il est bien nommé, correctement typé, et documenté. Il suffit de lire le commentaire au-dessus : « TODO : vérifier ce cas ». C’est écrit sans faute."
+        ]
       },
       {
         "label": "Chapitre 5",
-        "title": "Vendredi, 17 h 59"
+        "title": "Vendredi, 17 h 59",
+        "opening": [
+          "Il l’avait dit, et même écrit dans le README : on ne déploie pas le vendredi. La règle figurait en gras, avec un exemple et un contre-exemple. Personne ne pouvait prétendre ne pas la connaître.",
+          "Ce vendredi-là, la PR était parfaite. Relue, formatée, chaque variable nommée avec soin, pas une virgule de travers. Il l’avait approuvée à 17 h 40, en précisant : « pour lundi ». À 17 h 59, quelqu’un a cliqué sur le bouton. À 18 h 02, la production est tombée.",
+          "Il a passé la soirée à remettre les choses en ordre, calmement, sans un mot de reproche. Le message d’erreur, au moins, était parfaitement indenté. Il l’a fait remarquer le lundi matin, en réunion. C’est la seule chose positive qu’il ait dite ce jour-là."
+        ]
       },
       {
         "label": "Chapitre 6",
-        "title": "Rollback"
+        "title": "Rollback",
+        "opening": [
+          "Revenir en arrière n’est pas un échec, répète-t-il. C’est un commit comme un autre, à condition qu’il soit bien écrit. Ce soir-là, il a annulé trois jours de travail en une seule commande, sans trembler.",
+          "Puis il a passé une heure sur le message du rollback. Il y expliquait ce qui avait été fait, pourquoi il fallait le défaire, et comment éviter que cela se reproduise. Le texte était si clair, si bien structuré, qu’il est aujourd’hui affiché dans la salle de pause.",
+          "Le bug, lui, n’est jamais parti. Il était dans un autre fichier, que le rollback n’avait pas touché. Il y est toujours. Mais à côté de lui, désormais, tout est très propre."
+        ]
       },
       {
         "label": "Chapitre 7",
-        "title": "Refactor"
+        "title": "Refactor",
+        "opening": [
+          "Personne ne lui avait demandé de refactor. Il en a fait un quand même, un dimanche, « juste pour renommer deux ou trois choses ». Le lundi, la PR touchait trois cents fichiers. Plus rien ne s’appelait comme avant.",
+          "Tout était plus clair. Les fonctions disaient enfin ce qu’elles faisaient. Les dossiers étaient rangés par ordre logique, puis alphabétique. Les tests, il y en avait trois, avaient changé de nom eux aussi. Ils échouaient tous, mais sous des noms parfaitement explicites.",
+          "Il a jugé que c’était un bon début. L’équipe a mis deux semaines à retrouver ses fichiers. Aucun n’avait été modifié, sinon de nom. Aujourd’hui encore, c’est le refactor le mieux nommé de l’histoire du projet."
+        ]
       },
       {
         "label": "",
-        "title": "Épilogue : LGTM"
+        "title": "Épilogue : LGTM",
+        "opening": [
+          "Aujourd’hui, il relit toujours. Les PR, les README, les messages des collègues, les cartes des restaurants et les panneaux de signalisation. Il a écrit à une mairie pour une virgule. Il a eu gain de cause.",
+          "Une seule fois dans sa carrière, il a tapé « LGTM » sans rien ajouter. On en parle encore à voix basse, près de la machine à café. Certains disent qu’il était fatigué. D’autres qu’il n’avait pas lu. Lui affirme que le code était simplement parfait.",
+          "Ce livre s’arrête ici, mais pas ses reviews. Si vous y trouvez une faute, ouvrez un ticket : il le lira. S’il y a un bug, en revanche, ne vous inquiétez pas. Il est sûrement très bien nommé."
+        ]
       }
     ],
     "refs": [
@@ -265,6 +310,13 @@
       "verdict": "AlexH a demandé des modifications",
       "verdictAt": "il y a 1 minute",
       "verdictText": "Le point-virgule. Le reste est bon."
+    },
+    "review": {
+      "title": "Votre PR",
+      "intro": "Ces pages sont à vous. Relisez ce livre, ouvrez votre propre PR et laissez vos commentaires. Il les lira tous, jusqu’à la dernière virgule.",
+      "fields": ["Titre :", "Description :", "Fichiers modifiés :", "Tests :"],
+      "verdict": "Verdict attendu :",
+      "choices": ["Changements demandés", "Changements demandés"]
     }
   },
   "blankPage": {

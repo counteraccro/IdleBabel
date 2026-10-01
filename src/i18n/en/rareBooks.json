@@ -144,39 +144,84 @@
     "chapters": [
       {
         "label": "",
-        "title": "Prologue"
+        "title": "Prologue",
+        "opening": [
+          "It all starts with a comma. The one missing, one morning, from a sticky note on the office fridge: “Milk, coffee sugar”. He added it in pen, between “coffee” and “sugar”, without a word to anyone. Nobody had asked him to. Nobody thanked him.",
+          "That was his first review. Ten thousand more would follow, all just as precise, all just as unsolicited. Variable names, lines too long, trailing spaces nobody else could see. He could see them. He still does.",
+          "This book tells that life, PR by PR. It has been proofread, of course. Several times. By him. You will not find a single typo in it. As for bugs, we guarantee nothing."
+        ]
       },
       {
         "label": "Chapter 1",
-        "title": "Hello, World"
+        "title": "Hello, World",
+        "opening": [
+          "His first program was one line long. It printed “Hello, world” and worked on the first try, which should have been enough. He rewrote it four times that evening anyway. The quotes were the wrong kind. The indentation was off by one space. And “world”, in his view, deserved an explanation.",
+          "The fifth version was eleven lines long. It was commented, typed, filed in a folder with his name on it. It printed “Hello, world” exactly like the first one, but with a clear conscience.",
+          "That evening he understood something essential: a program that works is only a draft. A clean program, on the other hand, is a work of art. Whether it works is a detail to be sorted out later, usually in another ticket."
+        ]
       },
       {
         "label": "Chapter 2",
-        "title": "First Commit"
+        "title": "First Commit",
+        "opening": [
+          "The message of his first commit was three paragraphs long. The first explained why. The second explained how. The third announced what he planned to do next, with a date. He was already following, without knowing it, a convention that did not exist yet.",
+          "The code itself was two lines. One fixed a typo in a comment. Nobody ever found out what the other one did. He discovered it six years later, rereading his history one Sunday, for fun. He opened a ticket against himself. He rejected it: the title was badly worded.",
+          "Since then he commits often, and always well. Every message starts with an imperative verb. None says “wip”. None says “fix”. There is one, just one, that says “oops”. He claims it wasn’t him. Git blame claims otherwise."
+        ]
       },
       {
         "label": "Chapter 3",
-        "title": "The Conflict"
+        "title": "The Conflict",
+        "opening": [
+          "The conflict came on a Thursday, around 3 pm. Two branches, one file, two worldviews: one indented with tabs, the other with spaces. The whole team gathered around his screen. Some were already talking about a holy war.",
+          "He settled it in ten seconds. Spaces, two per level, as it should be. He then reread the file’s four hundred lines, renamed three functions along the way and put the imports back in order. The merge was gorgeous.",
+          "The rest of the conflict, something about a dropped database table, waited until Monday. Nobody had noticed. To be fair, the code that dropped it was remarkably well written."
+        ]
       },
       {
         "label": "Chapter 4",
-        "title": "The Review"
+        "title": "The Review",
+        "opening": [
+          "To him, a review is not a formality. It is a conversation, long, precise and usually one-way. He reads every line. He comments on every name. He asks why. Then he asks why again, in case the first answer was just an excuse.",
+          "Legend has it that a three-line PR once got forty-two comments from him. Not true: there were forty-three, but the last one simply said “thanks”. Those who survived his reviews speak of them with respect, and a slight weariness. All of them write flawless code today.",
+          "And when the PR finally goes through, clean as a whistle, sometimes the bug is still in it. But it is well named, properly typed, and documented. Just read the comment above it: “TODO: check this case”. Spelled perfectly."
+        ]
       },
       {
         "label": "Chapter 5",
-        "title": "Friday, 5:59 pm"
+        "title": "Friday, 5:59 pm",
+        "opening": [
+          "He had said it, and even written it in the README: no deploys on Fridays. The rule was in bold, with an example and a counterexample. Nobody could claim not to know it.",
+          "That Friday, the PR was perfect. Reviewed, formatted, every variable carefully named, not a comma out of place. He had approved it at 5:40 pm, adding: “for Monday”. At 5:59 pm, someone clicked the button. At 6:02 pm, production went down.",
+          "He spent the evening putting things right, calmly, without a word of reproach. The error message, at least, was perfectly indented. He pointed it out on Monday morning, in the meeting. It was the only positive thing he said that day."
+        ]
       },
       {
         "label": "Chapter 6",
-        "title": "Rollback"
+        "title": "Rollback",
+        "opening": [
+          "Going back is not a failure, he likes to say. It is a commit like any other, as long as it is well written. That evening he undid three days of work in a single command, without flinching.",
+          "Then he spent an hour on the rollback’s message. It explained what had been done, why it had to be undone, and how to keep it from happening again. The text was so clear, so well structured, that it now hangs in the break room.",
+          "The bug, however, never left. It was in another file, one the rollback hadn’t touched. It is still there. But next to it, these days, everything is very clean."
+        ]
       },
       {
         "label": "Chapter 7",
-        "title": "Refactor"
+        "title": "Refactor",
+        "opening": [
+          "Nobody had asked him for a refactor. He did one anyway, on a Sunday, “just to rename two or three things”. On Monday the PR touched three hundred files. Nothing was called what it used to be.",
+          "Everything was clearer. Functions finally said what they did. Folders were sorted logically, then alphabetically. The tests, all three of them, had been renamed too. They all failed, but under perfectly explicit names.",
+          "He judged it a good start. The team took two weeks to find their files again. None had been changed, except for their names. To this day, it is the best-named refactor in the project’s history."
+        ]
       },
       {
         "label": "",
-        "title": "Epilogue: LGTM"
+        "title": "Epilogue: LGTM",
+        "opening": [
+          "Today he still reviews. PRs, READMEs, his colleagues’ messages, restaurant menus and road signs. He once wrote to a town hall about a comma. He won.",
+          "Only once in his career did he type “LGTM” and nothing else. People still talk about it in hushed voices, by the coffee machine. Some say he was tired. Others that he hadn’t read it. He maintains the code was simply perfect.",
+          "This book ends here, but his reviews don’t. If you find a mistake in it, open a ticket: he will read it. If there is a bug, on the other hand, don’t worry. It is surely very well named."
+        ]
       }
     ],
     "refs": [
@@ -258,6 +303,13 @@
       "verdict": "AlexH requested changes",
       "verdictAt": "1 minute ago",
       "verdictText": "The semicolon. The rest is fine."
+    },
+    "review": {
+      "title": "Your PR",
+      "intro": "These pages are yours. Review this book, open your own PR and leave your comments. He will read them all, down to the last comma.",
+      "fields": ["Title:", "Description:", "Files changed:", "Tests:"],
+      "verdict": "Expected verdict:",
+      "choices": ["Changes requested", "Changes requested"]
     }
   },
   "blankPage": {

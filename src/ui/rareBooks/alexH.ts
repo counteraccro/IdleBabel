@@ -3,7 +3,7 @@ import { headbandTexture } from '../book3d/headband';
 import { edgeTexture } from '../book3d/textures';
 import { board } from './draw';
 import { CREAM, CREAM_EDGE, alexHBack, alexHFront, alexHSpine, loadAlexHFonts } from './alexHCover';
-import { alexHLinks, isPhotoPage, paintAlexHPage } from './alexHPages';
+import { CONTENTS_PAGE, alexHLinks, isPhotoPage, paintAlexHPage } from './alexHPages';
 import type { RareBookArt } from './rareBookArt';
 
 /** Une biographie à succès : plus épaisse qu'un livre ordinaire. */
@@ -38,5 +38,6 @@ export const alexHArt: RareBookArt = {
     paintAlexHPage(preparePageTexture(canvas, spineOnLeft, isPhotoPage(page) ? GLOSSY : MODERN_PAPER), page);
     return true;
   },
+  bookmark: CONTENTS_PAGE,
   links: alexHLinks,
 };

@@ -30,6 +30,9 @@ const reference = (random: () => number): string =>
         .padStart(7, '0'),
     );
 
+/** Espaces insécables de la typographie française : « » et : ; ? ! ne restent jamais seuls en bout de ligne. */
+const unbreakable = (text: string): string => text.replace(/« /g, '«\u00a0').replace(/ ([»:;?!])/g, '\u00a0$1');
+
 /** Un paragraphe de lorem ipsum, parfois avec un renvoi à une PR glissé avant un point. */
 const paragraph = (random: () => number): string => {
   const text = loremText(180 + random() * 260, random);
@@ -44,7 +47,7 @@ const paragraph = (random: () => number): string => {
 const writeParagraph = (context: CanvasRenderingContext2D, text: string, top: number): number => {
   context.font = BODY;
   // Alinéa : la première ligne est rentrée.
-  const lines = wrap(context, `  ${text}`, RIGHT - LEFT);
+  const lines = wrap(context, `\u2003\u2003${unbreakable(text)}`, RIGHT - LEFT);
   let y = top;
   for (const line of lines) {
     if (y + LINE > BOTTOM) return BOTTOM;
@@ -52,6 +55,42 @@ const writeParagraph = (context: CanvasRenderingContext2D, text: string, top: nu
     y += LINE;
   }
   return y + 8;
+};
+
+/** Une ligne d'un vrai texte ; `end` : la dernière de son paragraphe (un peu d'air après). */
+export interface StoryLine {
+  text: string;
+  end: boolean;
+}
+
+/** Les lignes d'un vrai texte (le début d'un chapitre), paragraphe par paragraphe, chacun avec son alinéa. */
+export const storyLines = (context: CanvasRenderingContext2D, paragraphs: readonly string[]): StoryLine[] => {
+  context.font = BODY;
+  return paragraphs.flatMap((text) => {
+    const lines = wrap(context, `\u2003\u2003${unbreakable(text)}`, RIGHT - LEFT);
+    return lines.map((line, index) => ({ text: line, end: index === lines.length - 1 }));
+  });
+};
+
+/**
+ * Écrit les lignes d'un vrai texte à partir de `top`, tant qu'elles tiennent (sans rien dessiner si `draw` est
+ * faux : pour savoir où la page suivante reprend) ; renvoie le bas atteint et le nombre de lignes écrites.
+ */
+export const writeStory = (
+  context: CanvasRenderingContext2D,
+  lines: readonly StoryLine[],
+  top: number,
+  draw = true,
+): { y: number; count: number } => {
+  let y = top;
+  let count = 0;
+  for (const { text, end } of lines) {
+    if (y + LINE > BOTTOM) return { y: BOTTOM, count };
+    if (draw) write(context, text, LEFT, y, { font: BODY, color: INK, align: 'left' });
+    y += LINE + (end ? 8 : 0);
+    count++;
+  }
+  return { y, count };
 };
 
 /** Un extrait de code sur fond gris, une barre verte à gauche ; rien s'il ne tient pas. */
