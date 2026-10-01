@@ -132,7 +132,19 @@
     "name": "L'Annuaire",
     "cover": ["Annuaire"],
     "subtitle": "Bibliothèque de Babel",
-    "edition": "Édition infinie"
+    "edition": "Édition infinie",
+    "article": "L'",
+    "title": "ANNUAIRE",
+    "label": "édition  •  1941",
+    "zone": "BABEL A-Z",
+    "tagline": "vie bibliothécaire et pratique",
+    "bullets": [
+      ["tous les abonnés,", "de A à Z"],
+      ["comment joindre", "un lecteur"],
+      ["les numéros utiles", "(il n'y en a pas)"],
+      ["et un nom", "que vous connaissez"]
+    ],
+    "mark": "Bibliothèque de Babel"
   },
   "deadBook": {
     "name": "Le Livre des morts",

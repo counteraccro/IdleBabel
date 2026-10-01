@@ -4,15 +4,15 @@ import { LETTERS } from '../../systems/babelText';
 import { preparePageTexture, type Paper } from '../book/pageRender';
 import { headbandTexture } from '../book3d/headband';
 import { edgeTexture } from '../book3d/textures';
-import { CQW, HEIGHT, PAGE_CENTER, SANS, WIDTH, board, write } from './draw';
+import { PAGE_CENTER, SANS, board, write } from './draw';
+import { INK, YELLOW, YELLOW_EDGE, directoryFront, directorySpine, hexagon, loadDirectoryFonts } from './directoryCover';
 import type { RareBookArt } from './rareBookArt';
 import type { GameState } from '../../core/state';
 
+const THICKNESS = 0.17;
+
 /** Papier jaune d'annuaire, fin. */
 const PAPER: Paper = ['#f1df8f', '#e8d27c', '#dcc46a'];
-const YELLOW = '#f2c531';
-const YELLOW_EDGE = '#d9a91c';
-const INK = '#1b1a17';
 
 /** Trois colonnes serrées de noms et de numéros, sous le bandeau des mots repères. */
 const COLUMNS = [52, 236, 420];
@@ -67,49 +67,22 @@ const titlePage = (context: CanvasRenderingContext2D): void => {
   write(context, t('rareBooks.directory.edition'), PAGE_CENTER, 600, { font: `italic 18px ${SANS}`, color: INK });
 };
 
-/** Le petit hexagone de la Bibliothèque, au trait. */
-const hexagon = (context: CanvasRenderingContext2D, x: number, y: number, radius: number, width: number): void => {
-  context.save();
-  context.strokeStyle = INK;
-  context.lineWidth = width;
-  context.beginPath();
-  for (let side = 0; side < 6; side++) {
-    const angle = (Math.PI / 3) * side - Math.PI / 2;
-    context[side === 0 ? 'moveTo' : 'lineTo'](x + radius * Math.cos(angle), y + radius * Math.sin(angle));
-  }
-  context.closePath();
-  context.stroke();
-  context.restore();
-};
-
 /**
  * L'Annuaire : couverture jaune, papier jaune, trois colonnes serrées de noms en lettres de Babel et de
  * numéros. Les habitants d'une Bibliothèque où l'on est seul… et, une seule fois, le nom du joueur, sur
  * une lueur dorée comme une trouvaille.
  */
 export const directoryArt: RareBookArt = {
-  thickness: 0.17,
+  thickness: THICKNESS,
   paper: PAPER,
   look: async () => {
+    await loadDirectoryFonts();
     const plain = board(YELLOW, YELLOW_EDGE);
     return {
-      cover: board(YELLOW, YELLOW_EDGE, (context) => {
-        write(context, t('rareBooks.directory.cover.0').toUpperCase(), WIDTH / 2, HEIGHT * 0.14, {
-          font: `900 ${13 * CQW}px ${SANS}`,
-          color: INK,
-          spacing: 0.3 * CQW,
-        });
-        write(context, t('rareBooks.directory.subtitle'), WIDTH / 2, HEIGHT * 0.3, {
-          font: `${4.5 * CQW}px ${SANS}`,
-          color: INK,
-          spacing: 0.4 * CQW,
-        });
-        hexagon(context, WIDTH / 2, HEIGHT * 0.56, 14 * CQW, 1.2 * CQW);
-        write(context, t('rareBooks.directory.edition'), WIDTH / 2, HEIGHT * 0.84, { font: `italic ${3.6 * CQW}px ${SANS}`, color: INK });
-      }),
+      cover: directoryFront(),
       back: plain,
       inside: plain,
-      spine: plain,
+      spine: directorySpine(THICKNESS),
       leather: 0xf0c22e,
       edge: edgeTexture(PAPER[1], '#c9ad4f'),
       paper: PAPER[0],

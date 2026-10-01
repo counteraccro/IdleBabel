@@ -132,7 +132,19 @@
     "name": "The Directory",
     "cover": ["Directory"],
     "subtitle": "Library of Babel",
-    "edition": "Infinite edition"
+    "edition": "Infinite edition",
+    "article": "THE ",
+    "title": "DIRECTORY",
+    "label": "edition  •  1941",
+    "zone": "BABEL A-Z",
+    "tagline": "library life and practical matters",
+    "bullets": [
+      ["every subscriber,", "from A to Z"],
+      ["how to reach", "a reader"],
+      ["useful numbers", "(there are none)"],
+      ["and a name", "you know"]
+    ],
+    "mark": "Library of Babel"
   },
   "deadBook": {
     "name": "The Book of the Dead",
