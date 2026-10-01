@@ -9,41 +9,45 @@ import { createBookRenderer } from '../book3d/renderer3d';
 import { createLighting } from '../book3d/lighting';
 import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { rareBook3d } from '../rareBooks/rareBook3d';
-import { createCabinet, type CabinetSlot } from './cabinet3d';
+import { rareBookArt } from '../rareBooks/arts';
+import { FILL_ORDER, FRONT, createBookcase } from './bookcase3d';
+import { layoutBookcase, type ShelfPlace } from './shelfLayout';
 import type { GameState } from '../../core/state';
 
 /** Le livre qui vole de la vitrine à sa page (et retour) : son nom dans bookFlight. */
 export const libraryFlightId = (id: string): string => `library:${id}`;
 
 /**
- * Un livre survolé sort du rang de tant (vers le lecteur) et bascule par le haut, comme tiré du doigt,
- * à cette vitesse (par seconde).
+ * Un livre survolé sort de sa case de tant (vers le lecteur), un livre debout bascule en plus par le
+ * haut, comme tiré du doigt ; à cette vitesse (par seconde).
  */
 const PULL = 0.22;
 const TIP = THREE.MathUtils.degToRad(9);
 const PULL_RATE = 10;
-/** Air laissé entre le dos des livres et le bord du rayon. */
+/** Air laissé entre le dos des livres et le bord de la case. */
 const SET_BACK = 0.03;
+/** Épaisseur d'un livre rare qui ne dit pas la sienne (rareBook3d.ts). */
+const THICKNESS = 0.12;
 
 interface Place {
-  /** Le livre rare de cette place (dans l'ordre de data/rareBooks.ts). */
-  id: string;
-  slot: CabinetSlot;
-  found: boolean;
-  /** Le livre debout, le dos vers le lecteur (null : place vide, ou pas encore chargé). */
+  spot: ShelfPlace;
+  /** Où il pivote : debout, son coin bas-droit-avant (pour pencher) ; couché, le milieu de son dessous à l'avant. */
+  pivot: THREE.Vector3;
+  /** Le livre posé (null : place vide, ou pas encore chargé). */
   holder: THREE.Group | null;
-  /** Ce que touche la souris : la place entière, vide ou non. */
-  hit: THREE.Mesh;
-  /** Sorti du rang (0 à 1) : où il en est, où il va. */
+  /** Le livre lui-même (ce qui s'envole). */
+  book: THREE.Object3D | null;
+  /** Sorti de sa case (0 à 1) : où il en est, où il va. */
   pull: number;
   aim: number;
 }
 
 /**
- * La bibliothèque personnelle (#bibliotheque) : la vitrine du chercheur, ses 21 places, les livres rares
- * trouvés debout à la leur, le dos vers le lecteur ; une place vide n'a que son étiquette. Au survol, un
- * livre sort un peu du rang et son nom s'écrit dessous ; au clic, il s'envole vers sa page
- * (`onOpen`), comme les livres de la pile, et y revient au retour. Pièce à part : elle ne se vide jamais.
+ * La bibliothèque personnelle (#bibliotheque) : la vitrine du chercheur, un meuble aux cases de toutes
+ * tailles où les livres rares trouvés sont rangés en bazar organisé, debout ou couchés, le dos vers le lecteur
+ * (shelfLayout.ts), chacun à la première place libre une fois trouvé. Au survol, un livre sort un
+ * peu de sa case et son nom s'écrit dessous ; au clic, il s'envole vers sa page (`onOpen`), comme les
+ * livres de la pile, et y revient au retour. Pièce à part : elle ne se vide jamais.
  */
 export const createLibraryPage = (state: GameState, onOpen: (id: string) => void, onBack: () => void): Component => {
   const root = el('main', 'library-page');
@@ -58,45 +62,73 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 60);
   const { renderer, resize, destroy } = createBookRenderer(canvas, camera);
-  const cabinet = createCabinet();
-  scene.add(cabinet.root);
-  const center = new THREE.Vector3(0, cabinet.size.y / 2, 0);
+  const bookcase = createBookcase();
+  scene.add(bookcase.root);
+  const { center } = bookcase;
   const lighting = createLighting(scene, new THREE.Vector3(1.7, -0.7, 1.9), new THREE.Vector3(0.4, 0, 0));
+  // Les ombres de la lampe sont réglées pour un livre : élargies à toute la vitrine (sinon, un cadre plus
+  // clair découpe la vitrine).
+  scene.traverse((object) => {
+    if (!(object instanceof THREE.DirectionalLight) || !object.castShadow) return;
+    const reach = Math.max(bookcase.size.x, bookcase.size.y) * 0.75;
+    Object.assign(object.shadow.camera, { left: -reach, right: reach, top: reach, bottom: -reach, far: 40 });
+    object.shadow.camera.updateProjectionMatrix();
+  });
   // Une lampe au-dessus de la vitrine, un peu devant : les dos des livres et les étiquettes accrochent la lumière.
-  const lamp = new THREE.SpotLight(0xffd9a0, 18, 12, THREE.MathUtils.degToRad(40), 0.6, 1.4);
-  lamp.position.set(0, cabinet.size.y + 1.4, 2.6);
+  const lamp = new THREE.SpotLight(0xffd9a0, 18, 14, THREE.MathUtils.degToRad(40), 0.6, 1.4);
+  lamp.position.set(0, bookcase.size.y + 1.4, 3);
   lamp.target.position.copy(center);
   scene.add(lamp, lamp.target);
 
   let dirty = true;
-  const hitMaterial = new THREE.MeshBasicMaterial({ visible: false });
-  const places: Place[] = RARE_BOOKS.map(({ id }, index) => {
-    const slot = cabinet.slots[index];
-    const hit = new THREE.Mesh(new THREE.BoxGeometry(0.26, 1.1, 0.9), hitMaterial);
-    hit.position.set(slot.base.x, slot.base.y + 0.55, 0);
-    scene.add(hit);
-    return { id, slot, found: isRareBookFound(state, id), holder: null, hit, pull: 0, aim: 0 };
+  const thickness = (id: string): number => rareBookArt(id).thickness ?? THICKNESS;
+  // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre.
+  const found = RARE_BOOKS.map(({ id }) => id)
+    .filter((id) => isRareBookFound(state, id))
+    .sort((a, b) => state.rareBooks[a] - state.rareBooks[b]);
+  const places: Place[] = layoutBookcase(
+    found.map((id) => ({ id, thickness: thickness(id) })),
+    bookcase.cells,
+    FILL_ORDER,
+  ).map((spot) => {
+    const cell = bookcase.cells[spot.cell];
+    const floor = new THREE.Vector2(cell.left + cell.width / 2, cell.floor);
+    const z = FRONT - SET_BACK - spot.depth;
+    const pivot =
+      spot.pose === 'stand'
+        ? new THREE.Vector3(floor.x + spot.x + spot.width, floor.y + spot.y, z)
+        : new THREE.Vector3(floor.x + spot.x, floor.y + spot.y, z);
+    return { spot, pivot, holder: null, book: null, pull: 0, aim: 0 };
   });
   // Les livres trouvés : leur vrai modèle, chargé à part (couvertures, polices).
-  for (const place of places.filter((candidate) => candidate.found)) {
-    const book = rareBook3d(state, place.id);
+  for (const place of places) {
+    const book = rareBook3d(state, place.spot.id);
     void book.look().then((look) => {
       if (!root.isConnected && mounted) return;
       const mesh = createBookMesh(book.shape, look);
       mesh.setOpen(0);
-      const holder = new THREE.Group();
-      // Debout, le dos vers le lecteur (comme les livres debout de la pile).
+      const standing = place.spot.pose === 'stand';
+      // Le dos vers le lecteur : debout, ou couché sur le plat (tourné d'un quart de tour dans son plan).
+      const turn = new THREE.Group();
       mesh.root.rotation.y = Math.PI / 2;
-      holder.add(mesh.root);
-      holder.updateMatrixWorld(true);
+      turn.add(mesh.root);
+      if (!standing) turn.rotation.z = Math.PI / 2;
+      const tilt = new THREE.Group();
+      tilt.add(turn);
+      tilt.updateMatrixWorld(true);
       const box = new THREE.Box3().setFromObject(mesh.root);
-      mesh.root.position.set(-(box.min.x + box.max.x) / 2, -box.min.y, -box.max.z);
-      holder.position.set(place.slot.base.x, place.slot.base.y, place.slot.base.z - SET_BACK);
+      // Debout : son coin bas-droit-avant au pivot ; couché : le milieu de son dessous, à l'avant.
+      turn.position.set(standing ? -box.max.x : -(box.min.x + box.max.x) / 2, -box.min.y, -box.max.z);
+      tilt.rotation.set(0, place.spot.yaw, -place.spot.lean);
       mesh.root.traverse((object) => {
         if (object instanceof THREE.Mesh) object.castShadow = object.receiveShadow = true;
       });
+      const holder = new THREE.Group();
+      holder.add(tilt);
+      holder.position.copy(place.pivot);
       scene.add(holder);
       place.holder = holder;
+      place.book = mesh.root;
       dirty = true;
     });
   }
@@ -104,15 +136,15 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   /** La caméra en face de la vitrine, à hauteur de son milieu : toute la vitrine tient dans le canvas. */
   const fit = (): void => {
     const half = THREE.MathUtils.degToRad(camera.fov / 2);
-    const tall = (cabinet.size.y / 2) * 1.08;
-    const wide = (cabinet.size.x / 2) * 1.15;
-    const distance = Math.max(tall / Math.tan(half), wide / (Math.tan(half) * camera.aspect)) + cabinet.size.z / 2;
+    const tall = (bookcase.size.y / 2) * 1.08;
+    const wide = (bookcase.size.x / 2) * 1.12;
+    const distance = Math.max(tall / Math.tan(half), wide / (Math.tan(half) * camera.aspect)) + bookcase.size.z / 2;
     camera.position.set(0, center.y, distance);
     camera.lookAt(center);
     lighting.follow(camera, center, 1);
   };
 
-  // Survol : le livre sort du rang, son nom (ou « une place vide ») s'écrit sous la vitrine.
+  // Survol : le livre sort de sa case, son nom s'écrit sous la vitrine.
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   let hovered: Place | null = null;
@@ -120,10 +152,20 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
     const rect = canvas.getBoundingClientRect();
     pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    const [hit] = raycaster.intersectObjects(places.map((place) => place.hit));
-    return places.find((place) => place.hit === hit?.object) ?? null;
+    // Seul compte ce qu'on voit (pas la feuille cachée d'un livre fermé, qui dépasse de lui).
+    const shown = places.filter((place) => place.holder?.visible);
+    const hit = raycaster
+      .intersectObjects(
+        shown.map((place) => place.holder!),
+        true,
+      )
+      .find((candidate) => {
+        for (let object: THREE.Object3D | null = candidate.object; object; object = object.parent) if (!object.visible) return false;
+        return true;
+      });
+    return shown.find((place) => hit && place.holder!.getObjectById(hit.object.id)) ?? null;
   };
-  const label = (place: Place): string => (place.found ? t(`rareBooks.${place.id}.name`) : t('ui.emptyPlace'));
+  const label = (place: Place): string => t(`rareBooks.${place.spot.id}.name`);
   const hover = (place: Place | null): void => {
     if (hovered === place) return;
     if (hovered) hovered.aim = 0;
@@ -138,11 +180,11 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
   canvas.addEventListener('click', (event) => {
     const place = placeAt(event);
-    if (!place?.holder) return;
-    // Il part de sa place dans le rang, tel qu'on le voit (sorti à moitié) : la page reprend ce départ.
-    if (!still.matches) launchFlight(libraryFlightId(place.id), place.holder.children[0], camera, canvas);
+    if (!place?.holder || !place.book) return;
+    // Il part de sa place dans sa case, tel qu'on le voit (sorti à moitié) : la page reprend ce départ.
+    if (!still.matches) launchFlight(libraryFlightId(place.spot.id), place.book, camera, canvas);
     place.holder.visible = false;
-    onOpen(place.id);
+    onOpen(place.spot.id);
   });
 
   let before = performance.now();
@@ -161,7 +203,7 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
     wasFlying = flight;
     for (const place of places) {
       if (!place.holder) continue;
-      const away = home.has(libraryFlightId(place.id));
+      const away = home.has(libraryFlightId(place.spot.id));
       if (place.holder.visible === away) {
         place.holder.visible = !away;
         moving = true;
@@ -169,8 +211,8 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
       const pull = still.matches ? place.aim : place.pull + (place.aim - place.pull) * Math.min(1, dt * PULL_RATE);
       place.pull = Math.abs(place.aim - pull) < 0.002 ? place.aim : pull;
       if (place.pull !== place.aim) moving = true;
-      place.holder.position.z = place.slot.base.z - SET_BACK + PULL * place.pull;
-      place.holder.rotation.x = TIP * place.pull;
+      place.holder.position.z = place.pivot.z + PULL * place.pull;
+      if (place.spot.pose === 'stand') place.holder.rotation.x = TIP * place.pull;
     }
     if (resize()) {
       fit();

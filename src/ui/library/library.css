@@ -8,6 +8,14 @@
   gap: 6px;
   min-height: 0;
 }
+/* La pièce disparaît : la vitrine sur fond noir (sous l'en-tête, qui reste au-dessus). */
+.library-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #000;
+}
 .library-stage {
   flex: 1;
   /* Sous le compteur, au milieu de l'en-tête. */
