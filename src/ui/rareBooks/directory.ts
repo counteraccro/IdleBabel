@@ -5,7 +5,7 @@ import { preparePageTexture, type Paper } from '../book/pageRender';
 import { headbandTexture } from '../book3d/headband';
 import { edgeTexture } from '../book3d/textures';
 import { PAGE_CENTER, SANS, board, write } from './draw';
-import { INK, YELLOW, YELLOW_EDGE, directoryFront, directorySpine, hexagon, loadDirectoryFonts } from './directoryCover';
+import { INK, YELLOW, YELLOW_EDGE, directoryBack, directoryFront, directorySpine, hexagon, loadDirectoryFonts } from './directoryCover';
 import type { RareBookArt } from './rareBookArt';
 import type { GameState } from '../../core/state';
 
@@ -80,7 +80,7 @@ export const directoryArt: RareBookArt = {
     const plain = board(YELLOW, YELLOW_EDGE);
     return {
       cover: directoryFront(),
-      back: plain,
+      back: directoryBack(),
       inside: plain,
       spine: directorySpine(THICKNESS),
       leather: 0xf0c22e,

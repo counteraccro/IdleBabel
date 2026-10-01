@@ -144,7 +144,17 @@
       ["les numéros utiles", "(il n'y en a pas)"],
       ["et un nom", "que vous connaissez"]
     ],
-    "mark": "Bibliothèque de Babel"
+    "mark": "Bibliothèque de Babel",
+    "ad": ["SERRURERIE DE L'HEXAGONE", "Portes ouvertes 24 h / 24", "(sauf la vôtre)"],
+    "usefulTitle": "NUMÉROS UTILES",
+    "useful": [
+      ["Sortie", "—"],
+      ["Renseignements", "—"],
+      ["Objets perdus", "—"],
+      ["Bibliothécaire de garde", "—"],
+      ["Urgences", "—"],
+      ["Votre poste", "410"]
+    ]
   },
   "deadBook": {
     "name": "Le Livre des morts",

@@ -144,7 +144,17 @@
       ["useful numbers", "(there are none)"],
       ["and a name", "you know"]
     ],
-    "mark": "Library of Babel"
+    "mark": "Library of Babel",
+    "ad": ["HEXAGON LOCKSMITHS", "Doors opened 24/7", "(except yours)"],
+    "usefulTitle": "USEFUL NUMBERS",
+    "useful": [
+      ["Exit", "—"],
+      ["Directory enquiries", "—"],
+      ["Lost property", "—"],
+      ["Librarian on duty", "—"],
+      ["Emergencies", "—"],
+      ["Your extension", "410"]
+    ]
   },
   "deadBook": {
     "name": "The Book of the Dead",
