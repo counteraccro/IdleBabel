@@ -93,7 +93,7 @@ const ROMAN: readonly [number, string][] = [
   [4, 'IV'],
   [1, 'I'],
 ];
-const roman = (value: number): string => {
+export const roman = (value: number): string => {
   let rest = value;
   let text = '';
   for (const [amount, letters] of ROMAN)

@@ -7,6 +7,11 @@
     "memory": "Souvenirs",
     "anomaly": "Anomalies"
   },
+  "partDescriptions": {
+    "method": "Des façons de lire que j'ai retrouvées. Chacune me fait aller un peu plus vite.",
+    "memory": "Des choses d'avant. Je ne sais plus si elles sont vraies.",
+    "anomaly": "Des phrases qui n'auraient pas dû être là. Je les garde toutes."
+  },
   "anomaliesCompletion": "phrases retrouvées · {percent}",
   "anomalyFamilies": {
     "structure": "La structure",

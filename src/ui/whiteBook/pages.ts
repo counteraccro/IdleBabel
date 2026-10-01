@@ -4,6 +4,7 @@ import { SENTENCES, type SentenceDef, type SentenceKind } from '../../data/sente
 import { ANOMALY_FAMILIES } from '../../data/anomalies';
 import { anomalies, anomalyPages, familyTitle, ofFamily } from './anomalyPages';
 import { contentsItems, type ContentsEntry } from './contents';
+import { partTitleItems } from './partTitle';
 import { completion, guess, guessPrice, isComplete, written } from '../../systems/sentences';
 import { babelize, seedOf } from './babelMask';
 import { sentenceBody } from './sentencePage';
@@ -90,8 +91,9 @@ const ofKind = (kind: SentenceKind): SentenceDef[] => SENTENCES.filter((sentence
 /**
  * Le livre blanc, toutes ses pages dès le début. Le numéro imprimé d'une page est sa place dans la
  * liste (0 : l'intérieur de la couverture, à gauche). Dans l'ordre : la page de titre seule à droite,
- * le sommaire à gauche, une page par méthode puis par souvenir (le lore), puis les anomalies (leur
- * introduction sur une page de gauche, face à la première famille), et de nouveau l'intérieur de la
+ * le sommaire à gauche, puis trois parties : méthodes et souvenirs (le lore, une page par phrase), puis
+ * les anomalies (leur introduction, puis les familles). Chaque partie s'ouvre sur sa page de titre, à
+ * droite, son contenu commençant en face ; et de nouveau l'intérieur de la
  * couverture si la dernière page tombe à gauche.
  */
 export const createWhiteBookPages = (state: GameState, goTo: (page: number) => void): (LeafPage | null)[] => {
@@ -101,35 +103,43 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
     return trackers.get(sentence.id)!;
   };
   const CONTENTS = 2;
-  const lore = [...ofKind('method'), ...ofKind('memory')];
-  const afterLore = CONTENTS + 1 + lore.length;
-  const anomaliesPage = afterLore % 2 === 1 ? afterLore + 1 : afterLore;
-  const anomalyPart = anomalyPages(state, anomaliesPage, freshOf);
-  const entries: ContentsEntry[] = [
-    ...(['method', 'memory'] as const).map((kind) => ({
-      title: () => t(`whiteBook.parts.${kind}`),
-      sentences: ofKind(kind),
-      page: CONTENTS + 1 + lore.findIndex((sentence) => sentence.kind === kind),
-    })),
-    { title: () => t('whiteBook.parts.anomaly'), sentences: anomalies(), page: anomaliesPage },
+  const entries: ContentsEntry[] = [];
+  const pages: (LeafPage | null)[] = [
+    null,
+    createLeafPage(() => titleItems(state), goTo),
+    createLeafPage(() => contentsItems(state, entries, CONTENTS), goTo),
+  ];
+  // Page de titre d'une partie, sur une page de droite (une page blanche avant si besoin) : son contenu
+  // commence en face, à gauche.
+  const partTitle = (kind: SentenceKind, number: number, sentences: readonly SentenceDef[]): void => {
+    if (pages.length % 2 === 0) {
+      const blank = pages.length;
+      pages.push(createLeafPage(() => [folio(blank)], goTo));
+    }
+    entries.push({ title: () => t(`whiteBook.parts.${kind}`), sentences, page: pages.length });
+    pages.push(createLeafPage(() => partTitleItems(kind, number), goTo));
+  };
+  (['method', 'memory'] as const).forEach((kind, index) => {
+    partTitle(kind, index + 1, ofKind(kind));
+    for (const sentence of ofKind(kind)) {
+      const number = pages.length;
+      pages.push(
+        createLeafPage(({ asking }) => sentenceLayout(state, sentence, number, asking, freshOf(sentence)), goTo, {
+          onPay: () => guess(state, sentence.id),
+        }),
+      );
+    }
+  });
+  partTitle('anomaly', 3, anomalies());
+  const anomalyPart = anomalyPages(state, pages.length, freshOf);
+  entries.push(
     ...ANOMALY_FAMILIES.filter((family) => ofFamily(family).length > 0).map((family) => ({
       title: (current: GameState) => familyTitle(current, family),
       sentences: ofFamily(family),
       page: anomalyPart.familyPage[family],
       sub: true,
     })),
-  ];
-  const pages: (LeafPage | null)[] = [
-    null,
-    createLeafPage(() => titleItems(state), goTo),
-    createLeafPage(() => contentsItems(state, entries, CONTENTS), goTo),
-    ...lore.map((sentence, index) =>
-      createLeafPage(({ asking }) => sentenceLayout(state, sentence, CONTENTS + 1 + index, asking, freshOf(sentence)), goTo, {
-        onPay: () => guess(state, sentence.id),
-      }),
-    ),
-    ...(anomaliesPage > afterLore ? [createLeafPage(() => [folio(afterLore)], goTo)] : []),
-    ...anomalyPart.pages.map((layout) => createLeafPage(layout, goTo)),
-  ];
+  );
+  pages.push(...anomalyPart.pages.map((layout) => createLeafPage(layout, goTo)));
   return pages.length % 2 === 1 ? [...pages, null] : pages;
 };

@@ -7,6 +7,11 @@
     "memory": "Memories",
     "anomaly": "Anomalies"
   },
+  "partDescriptions": {
+    "method": "Ways of reading I found again. Each one takes me a little faster.",
+    "memory": "Things from before. I no longer know if they are true.",
+    "anomaly": "Sentences that should not have been there. I keep them all."
+  },
   "anomaliesCompletion": "sentences found · {percent}",
   "anomalyFamilies": {
     "structure": "The Structure",
