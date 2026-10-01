@@ -1,5 +1,5 @@
 import { BIG_BOOK_REWRITE } from '../ui/book3d/book3dBook';
-import { DEBUG_BOOK_EVENT } from './events';
+import { DEBUG_BOOK_EVENT, DEBUG_LIBRARY_EVENT } from './events';
 
 /** Ce que les réglages de débogage doivent redessiner après avoir changé la partie. */
 
@@ -14,6 +14,11 @@ export const rewriteBigBook = (): void => {
 /** Le livre en main a changé (page, numéro, titres) : il se redessine. */
 export const refreshBook = (): void => {
   window.dispatchEvent(new Event(DEBUG_BOOK_EVENT));
+};
+
+/** Les livres de la bibliothèque ont changé : la vitrine à l'écran se refait. */
+export const refreshLibrary = (): void => {
+  window.dispatchEvent(new Event(DEBUG_LIBRARY_EVENT));
 };
 
 /** L'écran est reconstruit (un livre devient accessible, ou ne l'est plus). */

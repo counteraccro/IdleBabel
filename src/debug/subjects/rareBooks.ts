@@ -2,7 +2,7 @@ import { el } from '../../ui/dom';
 import { t } from '../../i18n';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { forceRareBook, isRareBookFound, rareBookAt } from '../../systems/rareBooks';
-import { refreshBook } from '../refresh';
+import { refreshBook, refreshLibrary } from '../refresh';
 import { RARE_BOOK_HASH } from '../enabled';
 import { remember } from '../remember';
 import type { DebugSubject } from './subject';
@@ -55,6 +55,7 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
           state.bookPage = 0;
           forceRareBook(state.booksFinished, menu.value);
           refreshBook();
+          refreshLibrary();
         },
         { title: 'Passe au livre suivant, qui sera celui-ci.' },
       ],
@@ -65,6 +66,7 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
           // Chacun « trouvé » dans un livre à lui, loin devant : la vitrine se remplit, rien d'autre ne change.
           RARE_BOOKS.forEach((book, index) => (state.rareBooks[book.id] ??= -1 - index));
           refreshBook();
+          refreshLibrary();
         },
         { title: 'Remplit la vitrine de la bibliothèque (sans les sceaux).' },
       ],
@@ -75,6 +77,7 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
           for (const book of RARE_BOOKS) delete state.seals[`rare-${book.id}`];
           state.newSeals = state.newSeals.filter((id) => !id.startsWith('rare-'));
           refreshBook();
+          refreshLibrary();
         },
         { danger: true, title: 'Livres trouvés et leurs sceaux' },
       ],

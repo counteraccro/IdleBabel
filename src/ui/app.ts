@@ -17,6 +17,7 @@ import { showWelcome } from './welcome';
 import { loreTold, tellLore } from '../systems/lore';
 import { mountLore } from './lore';
 import { isDebugEnabled, DEBUG_BOOK_HASH, RARE_BOOK_HASH } from '../debug/enabled';
+import { DEBUG_LIBRARY_EVENT } from '../debug/events';
 import { rareBook3d } from './rareBooks/rareBook3d';
 import { debugBook3d } from '../debug/book/debugBook3d';
 import { LIBRARY_DEBUG_BOOK, LIBRARY_FIRST_BOOK, createLibraryPage, shelfBook3d, type LibraryPage } from './library/libraryPage';
@@ -251,6 +252,12 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   };
 
   window.addEventListener('hashchange', render);
+  // Débogage : livres trouvés ou oubliés, la vitrine à l'écran est refaite (elle place ses livres à sa création).
+  window.addEventListener(DEBUG_LIBRARY_EVENT, () => {
+    if (!shelves || !components.includes(shelves)) return;
+    shelves = null;
+    render();
+  });
   render();
   // Moments de lore en attente (partie rechargée, trouvaille hors-ligne) : racontés une fois le joueur présenté.
   // Partie qui a refermé son premier livre avant que ce moment existe : il est raconté une fois.

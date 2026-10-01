@@ -1,6 +1,7 @@
 import { t } from '../../i18n';
 import { LORE, type LoreId } from '../../data/lore';
 import { replayLore } from '../../systems/lore';
+import { refreshLibrary } from '../refresh';
 import type { DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
@@ -35,6 +36,8 @@ export const LORE_SUBJECTS: DebugSubject[] = LORE.map((id) => ({
         () => {
           state.loreSeen = state.loreSeen.filter((seen) => seen !== id);
           state.lorePending = state.lorePending.filter((pending) => pending !== id);
+          // Le premier livre gardé quitte la vitrine.
+          refreshLibrary();
         },
         { danger: true, title: 'Il se racontera de nouveau à son déclencheur' },
       ],
