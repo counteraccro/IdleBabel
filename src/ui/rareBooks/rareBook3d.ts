@@ -11,7 +11,7 @@ import type { GameState } from '../../core/state';
 const READING_SHAPE: BookShape = { width: 0.8, height: 1, thickness: 0.12, board: 0.014, overhang: 0.025, corner: 0.035 };
 
 /**
- * Un livre rare en 3D, en entier : 410 feuilles comme tous les livres de Babel (page 0 : l'intérieur de
+ * Un livre rare en 3D, en entier : 410 pages comme tous les livres de Babel (page 0 : l'intérieur de
  * la couverture ; 1 : sa première page ; après la dernière, l'intérieur du plat arrière). `index` : le
  * numéro du livre où il a été trouvé (son cuir, son usure). Lu dans la bibliothèque, ou repris en main
  * avec la forme du livre tenu (`shape`).
@@ -27,7 +27,7 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
   const book: Book3d = {
     shape: { ...shape, thickness: art.thickness ?? shape.thickness },
     source: {
-      count: 2 * PAGES_PER_BOOK + 1,
+      count: PAGES_PER_BOOK + 1,
       paint: (page, canvas, spineOnLeft) => page > 0 && art.paint(page, canvas, spineOnLeft, state, design),
     },
     look: () => art.look(state, design),

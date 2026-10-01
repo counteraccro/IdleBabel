@@ -4,7 +4,7 @@ import { takeBook } from '../../systems/rareBooks';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { pageNumberLabel } from '../../systems/pageNumber';
 import { producedWholePages } from '../../systems/production';
-import { PAGES_PER_BOOK } from '../../systems/books';
+import { PAGES_PER_BOOK, PAGES_PER_LEAF } from '../../systems/books';
 import { maxTurnsPerSecond } from '../../systems/knowledge';
 import { hashText, seeded } from '../../core/random';
 import { STRANGE_BINDING, bindingFor, modernBindingFor } from '../book/bindings';
@@ -31,15 +31,18 @@ const PAGE_LENGTH = 700;
 
 /**
  * Le livre tenu en main, en 3D : le n° `index` (sa couverture tirée de son numéro, son papier), ses 410
- * pages de charabia de Babel après la page de titre ; ses pages tournent seules au rythme de la production.
+ * pages (205 feuilles) de charabia de Babel après la page de titre ; ses pages tournent seules au rythme de la production.
  * Ses trouvailles surlignées viennent de `finds` (handFinds.ts) ; la partie est tenue par
  * handReading3d.ts. Le livre étrange a les siennes : les pages du grand livre, puis des chiffres.
  */
 export const handBook3d = (state: GameState, index = state.booksFinished, finds?: HandFinds): Book3d => {
   finds?.open(index);
   const next = (): Book3d => handBook3d(state, index + 1, finds);
-  // Une page tourne à chaque page entière produite : en même temps que le compteur (plafonné).
-  const autoTurn = { produced: producedWholePages, max: () => (state.settings.autoTurn ? maxTurnsPerSecond() : 0) };
+  // Une feuille tourne toutes les deux pages entières produites : au rythme du compteur (plafonné).
+  const autoTurn = {
+    produced: () => Math.floor(producedWholePages() / PAGES_PER_LEAF),
+    max: () => (state.settings.autoTurn ? maxTurnsPerSecond() : 0),
+  };
   // Un livre rare arrive en main : il est trouvé, pour toujours. C'est le livre de la bibliothèque, tenu
   // en main (sans trouvailles : on ne lit pas de charabia).
   const rare = isStrangeBook(index) ? undefined : takeBook(state, index);
@@ -51,10 +54,9 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
   return {
     shape: HAND_SHAPE,
     source: {
-      // Page 0 : l'intérieur de la couverture ; 1 : la page de titre ; puis le texte. Le livre en main
-      // compte ses feuilles, page de titre comprise (410 tournées par livre) : deux pages chacune, et
-      // après la dernière, l'intérieur du plat arrière.
-      count: 2 * PAGES_PER_BOOK + 1,
+      // Page 0 : l'intérieur de la couverture ; 1 : la page de titre ; puis le texte, jusqu'à la page 410 ;
+      // après la dernière feuille, l'intérieur du plat arrière.
+      count: PAGES_PER_BOOK + 1,
       paint: (page, canvas, spineOnLeft) => {
         if (page === 0) return false;
         if (page === 1) {

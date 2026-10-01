@@ -110,10 +110,10 @@ describe('Connaissance', () => {
 
   it('trouve aussi pendant une absence, au rythme plafonné des pages qui tournent seules', () => {
     const state = started();
-    state.tools.diagonal = 1_000; // 100 pages/s : plafonné à 8
-    // 8 h au plus, même après une semaine : 8 × 28 800 × 0,5 % = 1 152 trouvailles.
-    expect(findWhileAway(state, 7 * 24 * 3600, () => 0)).toBe(Math.floor(8 * MAX_AWAY_SECONDS * BASE_FIND_CHANCE));
-    expect(state.knowledge).toBe(1152);
+    state.tools.diagonal = 1_000; // 100 pages/s : plafonné à 8 feuilles, 16 pages par seconde
+    // 8 h au plus, même après une semaine : 16 × 28 800 × 0,5 % = 2 304 trouvailles.
+    expect(findWhileAway(state, 7 * 24 * 3600, () => 0)).toBe(Math.floor(16 * MAX_AWAY_SECONDS * BASE_FIND_CHANCE));
+    expect(state.knowledge).toBe(2304);
     state.settings.autoTurn = false;
     expect(findWhileAway(state, 3600, () => 0)).toBe(0);
   });

@@ -5,7 +5,8 @@ import { headbandTexture } from '../book3d/headband';
 import { edgeTexture } from '../book3d/textures';
 import { PAGE_CENTER, SANS, board, write } from './draw';
 import { INK, YELLOW, YELLOW_EDGE, directoryBack, directoryFront, directorySpine, hexagon, loadDirectoryFonts } from './directoryCover';
-import type { RareBookArt } from './rareBookArt';
+import type { PageLink, RareBookArt } from './rareBookArt';
+import { PAGES_PER_BOOK } from '../../systems/books';
 import { FIRST_PAGE, letterPages, playerSlot, subscribersOn, type Subscriber } from './directoryEntries';
 
 const THICKNESS = 0.17;
@@ -37,16 +38,45 @@ const line = (context: CanvasRenderingContext2D, x: number, y: number, { name, n
   for (let dot = x + nameWidth + 4; dot < x + COLUMN_WIDTH - numberWidth - 4; dot += 4) context.fillRect(dot, y - 2, 1, 1);
 };
 
+/** Le sommaire, page 3 ; ses lignes (ligne d'écriture de la première, écart). */
+const CONTENTS_PAGE = 3;
+const CONTENTS_TOP = 170;
+const CONTENTS_STEP = 24;
+
+/**
+ * Les lignes du sommaire : la première page de chaque lettre, puis les numéros utiles, au dos (une ligne
+ * de plus avant eux) ; `target` : la page où mène un clic (le dos : la fin du livre).
+ */
+const contentsRows = (): { label: string; page: string; y: number; target: number }[] => {
+  const texts = messages().rareBooks.directory;
+  const letters = letterPages();
+  return [
+    ...letters.map(({ letter, page }, index) => ({
+      label: letter,
+      page: String(page),
+      y: CONTENTS_TOP + index * CONTENTS_STEP,
+      target: page,
+    })),
+    {
+      label: texts.usefulNumbers,
+      page: texts.backCover,
+      y: CONTENTS_TOP + letters.length * CONTENTS_STEP + 16,
+      target: PAGES_PER_BOOK,
+    },
+  ];
+};
+
+/** Un clic sur une ligne du sommaire mène à sa page. */
+const directoryLinks = (page: number): PageLink[] =>
+  page === CONTENTS_PAGE ? contentsRows().map(({ y, target }) => ({ y: y - 18, height: CONTENTS_STEP, target })) : [];
+
 /** Le sommaire : la première page de chaque lettre, puis les numéros utiles, au dos. */
 const contentsPage = (context: CanvasRenderingContext2D): void => {
   const texts = messages().rareBooks.directory;
   write(context, texts.contents.toUpperCase(), PAGE_CENTER, 70, { font: `900 30px ${SANS}`, color: INK, spacing: 3 });
   write(context, texts.subscribers, PAGE_CENTER, 116, { font: `italic 16px ${SANS}`, color: INK });
-  const rows = [...letterPages().map(({ letter, page }) => [letter, String(page)]), [texts.usefulNumbers, texts.backCover]];
   const [left, right] = [PAGE_CENTER - 150, PAGE_CENTER + 150];
-  rows.forEach(([label, page], index) => {
-    // Une ligne de plus avant les numéros utiles.
-    const y = 170 + index * 24 + (index === rows.length - 1 ? 16 : 0);
+  contentsRows().forEach(({ label, page, y }) => {
     context.font = `bold 15px ${SANS}`;
     context.fillStyle = INK;
     context.textAlign = 'left';
@@ -95,7 +125,7 @@ export const directoryArt: RareBookArt = {
     const context = preparePageTexture(canvas, spineOnLeft, PAPER);
     context.textBaseline = 'alphabetic';
     if (page === 1) titlePage(context);
-    if (page === 3) contentsPage(context);
+    if (page === CONTENTS_PAGE) contentsPage(context);
     if (page < FIRST_PAGE) return true;
     const entries = subscribersOn(page, state.playerName);
     // Mots repères en haut de page : le premier et le dernier nom.
@@ -120,6 +150,7 @@ export const directoryArt: RareBookArt = {
     highlightFinds(canvas, context, found, NAME_FONT);
     return true;
   },
+  links: directoryLinks,
   // Secret : son nom et son numéro, à sa place.
   passed: (page, state) => {
     if (page === playerSlot(state.playerName || '…').page) sealEvent(state, 'directory');

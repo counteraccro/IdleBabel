@@ -9,21 +9,16 @@ const INK = '#3a3833';
 const DOTS = 'rgba(58, 56, 51, 0.5)';
 const { width: WIDTH, height: HEIGHT } = PAGE_TEXTURE;
 
-/**
- * Le numéro imprimé de chaque chapitre, dans l'ordre de rareBooks.json. Le livre a 410 pages comme tous
- * ceux de Babel : on triche, une feuille compte pour une page, et le chapitre n commence au recto de la
- * feuille n (la page de droite `2n - 1`).
- */
+/** La page où commence chaque chapitre (une page de droite), dans l'ordre de rareBooks.json. */
 const CHAPTERS = [7, 23, 89, 157, 211, 299, 401, 405];
-const pageOf = (printed: number): number => 2 * printed - 1;
 /** Le chapitre dont une note de bas de page n'est appelée par rien, et ne dit rien. */
 const FOOTNOTE_CHAPTER = 3;
 /** La toute dernière page, au dos de la dernière feuille : l'errata et l'achevé d'imprimer. */
-export const LAST_PAGE = 2 * PAGES_PER_BOOK;
+export const LAST_PAGE = PAGES_PER_BOOK;
 
 /** Le folio, en bas de la page. */
-const folio = (context: CanvasRenderingContext2D, printed: number): void =>
-  write(context, String(printed), PAGE_CENTER, HEIGHT - 66, { font: `18px ${GARAMOND}`, color: INK });
+const folio = (context: CanvasRenderingContext2D, page: number): void =>
+  write(context, String(page), PAGE_CENTER, HEIGHT - 66, { font: `18px ${GARAMOND}`, color: INK });
 
 /** Le sommaire, page 3 ; ses lignes. */
 const CONTENTS_PAGE = 3;
@@ -91,7 +86,7 @@ export const paintBlankPage = (context: CanvasRenderingContext2D, page: number):
   else if (page === CONTENTS_PAGE) contentsPage(context);
   else if (page === LAST_PAGE) lastPage(context);
   else {
-    const chapter = CHAPTERS.map(pageOf).indexOf(page);
+    const chapter = CHAPTERS.indexOf(page);
     if (chapter >= 0) chapterPage(context, chapter);
   }
 };
@@ -99,9 +94,9 @@ export const paintBlankPage = (context: CanvasRenderingContext2D, page: number):
 /** Les lignes du sommaire : un clic mène au chapitre. */
 export const blankPageLinks = (page: number): PageLink[] =>
   page === CONTENTS_PAGE
-    ? CHAPTERS.map((printed, index) => ({
+    ? CHAPTERS.map((target, index) => ({
         y: CONTENTS_TOP + index * CONTENTS_STEP - 12,
         height: CONTENTS_STEP - 4,
-        target: pageOf(printed),
+        target,
       }))
     : [];

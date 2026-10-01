@@ -45,10 +45,11 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
         'Page',
         () => state.bookPage,
         (v) => {
-          state.bookPage = Math.min(v, 409);
+          // Deux pages par feuille : toujours au début d'une double page.
+          state.bookPage = Math.min(v - (v % 2), 408);
           refreshBook();
         },
-        { hint: '0 à 409 ; 405 : le livre se referme bientôt.', max: 409 },
+        { hint: '0 à 408, de deux en deux ; 400 : le livre se referme bientôt.', max: 408 },
       );
       kit.number(
         'Livres terminés',

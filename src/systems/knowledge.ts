@@ -10,7 +10,7 @@ import {
   type Find,
   type FindKind,
 } from '../data/knowledge';
-import { PAGES_PER_BOOK } from './books';
+import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { pagesPerSecond } from './production';
 import { currentTarget, isComplete, missing, segmentKind, segments, write, written } from './sentences';
 import { tellLore } from './lore';
@@ -116,12 +116,13 @@ export const gainFind = (state: GameState, find: Find): void => {
 };
 
 /**
- * Absence (onglet fermé ou caché) : les pages qui auraient tourné seules au rythme de la production,
- * plafonné comme à l'écran, cachent leurs trouvailles comme les autres. Renvoie le nombre trouvé.
+ * Absence (onglet fermé ou caché) : les pages lues des feuilles qui auraient tourné seules au rythme de la
+ * production, plafonné comme à l'écran (en feuilles), cachent leurs trouvailles comme les autres. Renvoie
+ * le nombre trouvé.
  */
 export const findWhileAway = (state: GameState, seconds: number, random: () => number = Math.random): number => {
   if (!state.settings.autoTurn || seconds <= 0) return 0;
-  const turned = Math.min(pagesPerSecond(state), maxTurnsPerSecond()) * Math.min(seconds, MAX_AWAY_SECONDS);
+  const turned = Math.min(pagesPerSecond(state), maxTurnsPerSecond() * PAGES_PER_LEAF) * Math.min(seconds, MAX_AWAY_SECONDS);
   // Nombre attendu, arrondi au hasard : la moyenne est juste, et une courte absence peut rapporter.
   const count = Math.floor(turned * findChance(state) + random());
   for (let i = 0; i < count; i++) gainFind(state, drawFind(state, random));

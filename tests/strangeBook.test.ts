@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { coverDesign } from '../src/systems/coverDesign';
-import { PAGES_PER_BOOK, turnBookPage } from '../src/systems/books';
+import { LEAVES_PER_BOOK, turnBookPage } from '../src/systems/books';
 import { STRANGE_BOOK_INDEX, randomDigitText, strangeBookFound } from '../src/systems/strangeBook';
 import { meaningfulCovers, trackPlay } from '../src/systems/stats';
 
@@ -22,11 +22,11 @@ describe('livre étrange', () => {
 
   it('est trouvé en le prenant en main, et inscrit une seule fois dans l’historique', () => {
     const state = createInitialState('fr');
-    for (let i = 0; i < PAGES_PER_BOOK * STRANGE_BOOK_INDEX - 1; i++) turnBookPage(state);
+    for (let i = 0; i < LEAVES_PER_BOOK * STRANGE_BOOK_INDEX - 1; i++) turnBookPage(state);
     expect(strangeBookFound(state)).toBe(false);
     turnBookPage(state);
     expect(strangeBookFound(state)).toBe(true);
-    for (let i = 0; i < PAGES_PER_BOOK; i++) turnBookPage(state);
+    for (let i = 0; i < LEAVES_PER_BOOK; i++) turnBookPage(state);
     expect(state.history.filter((e) => e.type === 'strangeBook')).toHaveLength(1);
   });
 });

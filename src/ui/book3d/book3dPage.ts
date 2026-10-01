@@ -77,7 +77,9 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   arrows.append(previous, next);
   // Les flèches, en option ; les réglages du modèle (ouverture, double page, vues) seulement en débogage.
   const controls_ = el('div', 'book3d-controls');
-  if (isDebugEnabled()) controls_.append(open, arrows, spread, ...viewButtons);
+  // Débogage : le livre remis comme à l'arrivée (fermé, première page, vu de biais).
+  const reset = el('button', undefined, 'Remise à zéro');
+  if (isDebugEnabled()) controls_.append(open, arrows, spread, ...viewButtons, reset);
   else controls_.append(arrows);
   root.append(back, stage, controls_);
 
@@ -279,6 +281,24 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     invalidate();
   });
   spread.addEventListener('input', () => turner?.go(Number(spread.value)));
+  reset.addEventListener('click', () => {
+    if (!book || !turner || swinging || flight) return;
+    turner.jump(0);
+    spread.value = '0';
+    open.value = '0';
+    book.setOpen(0);
+    shut = 0;
+    book.setShut(0);
+    // La caméra libérée, revenue à sa place de départ.
+    view.begin(false, closedOn('front'));
+    view.step(1);
+    camera.up.set(0, 1, 0);
+    camera.position.set(1.7, -0.7, 1.9);
+    controls.target.copy(closedOn('front'));
+    controls.update();
+    shownSpread = null;
+    invalidate();
+  });
 
   // Pages qui suivent la partie : redessinées de temps en temps, jamais pendant qu'une page tourne.
   if (spec.live) {

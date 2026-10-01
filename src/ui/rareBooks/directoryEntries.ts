@@ -1,5 +1,6 @@
 import { hashText, seeded } from '../../core/random';
 import { LETTERS } from '../../systems/babelText';
+import { PAGES_PER_BOOK } from '../../systems/books';
 
 /**
  * Les abonnés de l'Annuaire, dans l'ordre alphabétique d'un bout à l'autre du livre : chaque page tient
@@ -8,9 +9,9 @@ import { LETTERS } from '../../systems/babelText';
 
 /** Trois colonnes de 38 lignes par page. */
 export const PER_PAGE = 3 * 38;
-/** Page 1 : le titre ; page 3 : le sommaire ; les abonnés de la page 4 à la dernière (410 feuilles). */
+/** Page 1 : le titre ; page 3 : le sommaire ; les abonnés de la page 4 à la dernière (410). */
 export const FIRST_PAGE = 4;
-const LAST_PAGE = 820;
+const LAST_PAGE = PAGES_PER_BOOK;
 const PAGE_COUNT = LAST_PAGE - FIRST_PAGE + 1;
 const TOTAL = PAGE_COUNT * PER_PAGE;
 /** Lettres tirées de la place dans l'alphabet : assez pour que deux abonnés voisins ne se suivent jamais à l'envers. */

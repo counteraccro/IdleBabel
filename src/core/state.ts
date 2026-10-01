@@ -53,7 +53,7 @@ export interface GameState {
   /** Pages lues depuis le début de la partie : ne baisse jamais, ni en dépensant ni à l'Exil. */
   totalPagesRead: number;
   tools: Record<ToolId, number>;
-  /** Pages tournées à l'écran dans le livre en main (0 à 409). */
+  /** Pages lues à l'écran dans le livre en main (0 à 408, deux par feuille tournée). */
   bookPage: number;
   /** Livres lus jusqu'au bout. */
   booksFinished: number;

@@ -1,5 +1,5 @@
 import { readPage } from '../../systems/click';
-import { turnBookPage } from '../../systems/books';
+import { bookSpread, turnBookPage } from '../../systems/books';
 import { DEBUG_BOOK_EVENT } from '../../debug/events';
 import { createHeldBook3d } from './heldBook3d';
 import { handBook3d } from './handBook3d';
@@ -9,8 +9,8 @@ import type { GameState } from '../../core/state';
 
 /**
  * Le livre que le chercheur tient en main, en 3D, branché sur la partie :
- * chaque feuille tournée par le lecteur est une page lue, chaque feuille posée fait avancer le livre et
- * donne sa trouvaille ; au bout de 410, il se referme et le chercheur en prend un autre.
+ * chaque feuille tournée par le lecteur, ce sont deux pages lues ; chaque feuille posée fait avancer le livre
+ * et donne ses trouvailles ; au bout de 205 feuilles (410 pages), il se referme et le chercheur en prend un autre.
  */
 export const createHandReading3d = (state: GameState): Component => {
   const finds = createHandFinds(state);
@@ -19,7 +19,7 @@ export const createHandReading3d = (state: GameState): Component => {
   let waitingForLore = state.bookPage === 0 && !state.loreSeen.includes('firstBook');
   const held = createHeldBook3d(handBook3d(state, state.booksFinished, finds), {
     sway: () => state.settings.bookSway,
-    startSpread: state.bookPage,
+    startSpread: bookSpread(state),
     startClosed: waitingForLore,
     stayClosed: () => {
       if (waitingForLore) {
@@ -38,7 +38,7 @@ export const createHandReading3d = (state: GameState): Component => {
   // Débogage : page ou numéro du livre changés à la main, le livre en main suit.
   const onDebugBook = (): void => {
     const closed = state.bookPage === 0 && !state.settings.autoTurn;
-    held.reset(handBook3d(state, state.booksFinished, finds), state.bookPage, closed);
+    held.reset(handBook3d(state, state.booksFinished, finds), bookSpread(state), closed);
   };
   window.addEventListener(DEBUG_BOOK_EVENT, onDebugBook, { signal: held.signal });
   return held;

@@ -4,13 +4,20 @@ import { STRANGE_BOOK_INDEX } from './strangeBook';
 
 /** Tous les livres de la Bibliothèque ont 410 pages (Borges), comme le Livre Total. */
 export const PAGES_PER_BOOK = 410;
+/** Une feuille tournée découvre deux pages (son verso, et le recto de la suivante) : on les lit toutes deux. */
+export const PAGES_PER_LEAF = 2;
+/** Feuilles d'un livre, page de titre comprise : 205. */
+export const LEAVES_PER_BOOK = PAGES_PER_BOOK / PAGES_PER_LEAF;
+
+/** La double page où en est le livre en main (feuilles déjà tournées). */
+export const bookSpread = (state: GameState): number => Math.floor(state.bookPage / PAGES_PER_LEAF);
 
 /**
- * Une page du livre en main vient d'être tournée à l'écran (clic ou production).
+ * Une feuille du livre en main vient d'être tournée à l'écran (clic ou production) : deux pages de plus.
  * Renvoie true si le livre est terminé : le chercheur le referme et en prend un autre.
  */
 export const turnBookPage = (state: GameState): boolean => {
-  state.bookPage += 1;
+  state.bookPage += PAGES_PER_LEAF;
   if (state.bookPage < PAGES_PER_BOOK) return false;
   state.bookPage = 0;
   state.booksFinished += 1;
