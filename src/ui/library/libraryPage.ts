@@ -95,7 +95,7 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   scene.traverse((object) => {
     if (object instanceof THREE.Light) object.intensity *= ROOM_DIM;
   });
-  addCellLights(bookcase.root, bookcase.cells);
+  const cellLights = addCellLights(bookcase.root, bookcase.cells);
 
   const thickness = (id: string): number => rareBookArt(id).thickness ?? THICKNESS;
   // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre.
@@ -142,6 +142,7 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
       const holder = new THREE.Group();
       holder.add(tilt);
       holder.position.copy(place.pivot);
+      cellLights.light(holder);
       scene.add(holder);
       place.holder = holder;
       place.book = mesh.root;
