@@ -14,6 +14,8 @@ const FIRST_LINE = 120;
 const LINE_STEP = 34;
 const LINES = 19;
 const MARGIN = 60;
+/** Bord droit de l'écriture. */
+const RIGHT = 600;
 const RULE = 'rgba(110, 130, 160, 0.28)';
 const INK = '20, 20, 20';
 
@@ -21,6 +23,7 @@ const INK = '20, 20, 20';
 const WRITTEN = 41;
 export const SCENARIO_PAGE = 15;
 const GIANT_PAGES = [6, 11, 22, 29, 37];
+const READING_THIS_PAGE = 33;
 
 const lineY = (line: number): number => FIRST_LINE + line * LINE_STEP;
 
@@ -32,21 +35,29 @@ const scribble = (context: CanvasRenderingContext2D, text: string, x: number, li
   context.font = `${size}px ${HAND}`;
   context.fillStyle = `rgba(${INK}, ${0.82 + random() * 0.15})`;
   context.textBaseline = 'alphabetic';
-  context.fillText(text, 0, 0);
+  // Une ligne trop longue se serre un peu plutôt que de sortir de la page.
+  context.fillText(text, 0, 0, RIGHT - x);
   context.restore();
 };
 
-/** Une page de noms, un par ligne ; parfois les circonstances, à la ligne, un peu en retrait. */
+/**
+ * Une page de noms, un par ligne ; parfois les circonstances, à la ligne, un peu en retrait (jamais deux
+ * fois les mêmes sur une page). Page 33, le dernier nom est mort « en lisant ce cahier » : une seule fois.
+ */
 const names = (context: CanvasRenderingContext2D, page: number, random: () => number): void => {
-  const circumstances = messages().rareBooks.deathBook.circumstances;
+  const { circumstances, readingThis } = messages().rareBooks.deathBook;
+  const pool = [...circumstances];
+  const draw = (): string => pool.splice(Math.floor(random() * pool.length), 1)[0] ?? circumstances[0];
   // La dernière page écrite s'arrête en chemin.
   const last = page === WRITTEN ? 5 + Math.floor(random() * 5) : LINES;
-  for (let line = 0; line < last; line++) {
+  const end = page === READING_THIS_PAGE ? last - 2 : last;
+  for (let line = 0; line < end; line++) {
     scribble(context, deathName(random), MARGIN + random() * 8, line, 30, random);
-    if (line + 1 < last && random() < 0.3) {
-      line++;
-      scribble(context, circumstances[Math.floor(random() * circumstances.length)], MARGIN + 50, line, 25, random);
-    }
+    if (line + 1 < end && random() < 0.3) scribble(context, draw(), MARGIN + 50, ++line, 25, random);
+  }
+  if (end < last) {
+    scribble(context, deathName(random), MARGIN + random() * 8, end, 30, random);
+    scribble(context, readingThis, MARGIN + 50, end + 1, 25, random);
   }
 };
 

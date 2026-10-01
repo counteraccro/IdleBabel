@@ -78,7 +78,26 @@
       "counting the books on the fifth shelf",
       "on the last page",
       "leaning over the railing, without falling",
-      "copying out a page that made no sense"
+      "copying out a page that made no sense",
+      "closing a book too soon",
+      "on the landing, not knowing whether going up or down",
+      "in the air shaft, between two floors",
+      "looking for a book about oneself",
+      "after reading the same page a thousand times",
+      "by the light of the last lamp",
+      "waiting for someone who never came",
+      "deciphering a line that made sense",
+      "in the closet, standing, to sleep",
+      "in the middle of a sentence",
+      "putting a book back in its place",
+      "without finding what was sought",
+      "believing what was sought had been found",
+      "the day the counting of hexagons stopped",
+      "between two books identical but for a comma",
+      "writing one's own name",
+      "listening to footsteps, overhead",
+      "following a gallery that turned back on itself",
+      "after the thousandth crossing"
     ],
     "scenario": [
       "{name} takes a book from the Library.",
@@ -87,7 +106,8 @@
       "Takes another. Then another. Then another still.",
       "The end of a book is only the threshold of the next.",
       "And every beginning promises an end it does not always keep."
-    ]
+    ],
+    "readingThis": "reading this notebook"
   },
   "oriana": {
     "name": "The Biography of Oriana",
