@@ -42,8 +42,6 @@ const glitch = (text: string, page: number, random: () => number): string => {
   return out.join(' ');
 };
 
-let tick: ((now: number) => boolean) | null = null;
-
 /**
  * Le livre de débogage, trouvé comme un livre rare (10× plus rare) : sa couverture d'obsidienne, et
  * du charabia qui bugue. Hors du mode ?debug, il ne s'ouvre pas dans la bibliothèque ; avec, on y lit
@@ -53,7 +51,6 @@ export const debugBookArt: RareBookArt = {
   paper: PAPER,
   look: async () => {
     const cover = await debugCover();
-    tick = cover.tick;
     return {
       cover: cover.front,
       back: cover.back,
@@ -63,6 +60,7 @@ export const debugBookArt: RareBookArt = {
       edge: edgeTexture(PAPER[1], '#9d9a90'),
       paper: PAPER[0],
       headband: headbandTexture('#d9b56a', '#1c1a2a'),
+      tick: cover.tick,
     };
   },
   paint: (page, canvas, spineOnLeft, _state, design) => {
@@ -78,5 +76,4 @@ export const debugBookArt: RareBookArt = {
     }
     return true;
   },
-  tick: (now) => tick?.(now) ?? false,
 };

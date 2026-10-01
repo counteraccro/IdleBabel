@@ -13,7 +13,7 @@ export interface RareBookArt {
   thickness?: number;
   paper: Paper;
   /** Plats, dos, tranche et tranchefiles ; `design` : la couverture tirée du numéro du livre (cuir, usure). */
-  look: (state: GameState, design: CoverDesign) => Promise<BookLook>;
+  look: (state: GameState, design: CoverDesign) => Promise<RareBookLook>;
   /**
    * Dessine la page `page` (1 : la première page de droite, la page de titre ; puis le texte, deux pages
    * par feuille) ; false : la page reste vierge.
@@ -23,7 +23,11 @@ export interface RareBookArt {
   links?: (page: number) => PageLink[];
   /** La page `page` a été découverte en tournant les pages, même vite (un secret à apposer…). */
   passed?: (page: number, state: GameState) => void;
-  /** Couverture qui vit (le livre de débogage) : appelé à chaque image ; true si elle a changé. */
+}
+
+/** L'habillage d'un livre rare ; `tick` : couverture qui vit (le livre de débogage), propre à cet habillage. */
+export interface RareBookLook extends BookLook {
+  /** Appelé à chaque image ; true si la couverture a changé. */
   tick?: (now: number) => boolean;
 }
 

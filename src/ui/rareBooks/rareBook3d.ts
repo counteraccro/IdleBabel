@@ -24,15 +24,21 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
     x >= PAGE_TEXTURE.width * 0.1 && x <= PAGE_TEXTURE.width * 0.9
       ? art.links?.(page).find((link) => y >= link.y && y <= link.y + link.height)
       : undefined;
+  // La couverture qui vit est celle de ce livre-ci : chaque exemplaire (vitrine, livre ouvert) a la sienne.
+  let tick: ((now: number) => boolean) | null = null;
   const book: Book3d = {
     shape: { ...shape, thickness: art.thickness ?? shape.thickness },
     source: {
       count: PAGES_PER_BOOK + 1,
       paint: (page, canvas, spineOnLeft) => page > 0 && art.paint(page, canvas, spineOnLeft, state, design),
     },
-    look: () => art.look(state, design),
+    look: async () => {
+      const { tick: coverTick, ...look } = await art.look(state, design);
+      tick = coverTick ?? null;
+      return look;
+    },
     passed: art.passed && ((page) => art.passed?.(page, state)),
-    tick: art.tick,
+    tick: (now) => tick?.(now) ?? false,
     press: (page, x, y) => {
       const link = linkAt(page, x, y);
       if (link) book.navigate?.(link.target);
