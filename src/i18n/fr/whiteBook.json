@@ -20,7 +20,8 @@
     "others": "Les autres",
     "unwritten": "Ce qui n'est pas écrit",
     "numbers": "Les calculs",
-    "ordinary": "Les phrases banales"
+    "ordinary": "Les phrases banales",
+    "hints": "Les indices"
   },
   "sources": {
     "yourFather": "Dark Vador, L'Empire contre-attaque",
@@ -153,7 +154,13 @@
     "behindYou": "Je suis / derrière toi.",
     "fortyTwo": "La réponse / à la grande question / sur la vie, l'univers / et le reste : / 42.",
     "knowsName": "Je sais / comment tu t'appelles. / C'est / {name}.",
-    "trueName": "Ton vrai nom / n'est pas / {name}, / mais / {babel}."
+    "trueName": "Ton vrai nom / n'est pas / {name}, / mais / {babel}.",
+    "hintDeathBook": "Certains noms / sont écrits / à la main.",
+    "hintDirectory": "Quelqu'un, quelque part, / a ton numéro.",
+    "hintNotebookBack": "Retourne / le cahier.",
+    "hintInsomnia": "À trois heures, / la Bibliothèque / ne dort pas.",
+    "hintStill": "Un livre qui ne tremble pas / en dit davantage.",
+    "hintBabelDigits": "Compte comme / la Bibliothèque compte."
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",

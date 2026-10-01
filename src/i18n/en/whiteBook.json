@@ -20,7 +20,8 @@
     "others": "The Others",
     "unwritten": "The Unwritten",
     "numbers": "The Reckoning",
-    "ordinary": "Ordinary Words"
+    "ordinary": "Ordinary Words",
+    "hints": "The Clues"
   },
   "sources": {
     "yourFather": "Darth Vader, The Empire Strikes Back",
@@ -153,7 +154,13 @@
     "behindYou": "I am / behind you.",
     "fortyTwo": "The answer / to the ultimate question / of life, the universe / and everything: / 42.",
     "knowsName": "I know / your name. / It is / {name}.",
-    "trueName": "Your true name / is not / {name}, / but / {babel}."
+    "trueName": "Your true name / is not / {name}, / but / {babel}.",
+    "hintDeathBook": "Some names / are written / by hand.",
+    "hintDirectory": "Someone, somewhere, / has your number.",
+    "hintNotebookBack": "Turn / the notebook over.",
+    "hintInsomnia": "At three o'clock, / the Library / does not sleep.",
+    "hintStill": "A book that does not tremble / tells more.",
+    "hintBabelDigits": "Count the way / the Library counts."
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",

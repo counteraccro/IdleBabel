@@ -6,7 +6,7 @@ import type { SentenceDef } from './sentences';
  * livre blanc, et un sceau quand elle est complète (livre étrange). Pour en ajouter : un identifiant dans sa
  * famille, et son texte dans i18n (whiteBook.sentences.<id>).
  */
-export const ANOMALY_FAMILIES = ['structure', 'speaks', 'said', 'others', 'unwritten', 'numbers', 'ordinary'] as const;
+export const ANOMALY_FAMILIES = ['structure', 'speaks', 'said', 'others', 'unwritten', 'numbers', 'ordinary', 'hints'] as const;
 export type AnomalyFamily = (typeof ANOMALY_FAMILIES)[number];
 
 const IDS: Record<AnomalyFamily, readonly string[]> = {
@@ -101,6 +101,8 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
   ],
   // Des phrases trop ordinaires pour être là.
   ordinary: ['bread', 'rain', 'fountain', 'cat', 'thanks', 'window', 'birthday', 'late', 'sugar', 'keys', 'oven', 'goodNight'],
+  // Des indices : chacun met sur la piste d'un sceau secret (idée de l'auteur, 01/10).
+  hints: ['hintDeathBook', 'hintDirectory', 'hintNotebookBack', 'hintInsomnia', 'hintStill', 'hintBabelDigits'],
 };
 
 export const ANOMALIES: readonly SentenceDef[] = ANOMALY_FAMILIES.flatMap((family) =>
