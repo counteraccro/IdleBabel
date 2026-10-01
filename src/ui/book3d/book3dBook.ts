@@ -30,6 +30,8 @@ export interface Book3d {
   pointable?: (index: number, x: number, y: number) => boolean;
   /** La page `index` arrive sous les yeux, livre posé (sceaux vus, légende survolée effacée). */
   shown?: (index: number) => void;
+  /** La page `index` a été découverte en tournant les pages, même en feuilletant vite (un secret qu'on y trouve). */
+  passed?: (index: number) => void;
   /** Le contenu a changé (débogage…) : les pages se refont, le livre reste ouvert là où il est. */
   rewrite?: () => void;
   /**

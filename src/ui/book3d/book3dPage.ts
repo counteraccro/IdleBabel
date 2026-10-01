@@ -149,7 +149,10 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
       canvas.classList.add('flying');
       flight = createFlight(flightStart, book.root, camera, frame);
     }
-    turner = createTurner(book, createPageCache(source), spreads);
+    turner = createTurner(book, createPageCache(source), spreads, (landed) => {
+      spec.passed?.(2 * landed);
+      spec.passed?.(2 * landed + 1);
+    });
     // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée.
     spec.navigate = (index) => turner?.go(Math.floor(index / 2));
     if (spec.bookmark !== undefined)

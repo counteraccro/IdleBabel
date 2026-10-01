@@ -25,6 +25,6 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
       paint: (page, canvas, spineOnLeft) => page > 0 && art.paint(page, canvas, spineOnLeft, state, design),
     },
     look: () => art.look(state, design),
-    shown: art.shown && ((page) => art.shown?.(page, state)),
+    passed: art.passed && ((page) => art.passed?.(page, state)),
   };
 };

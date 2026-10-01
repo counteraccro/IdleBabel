@@ -33,7 +33,7 @@ export const deathBookArt: RareBookArt = {
     paintDeathPage(page, canvas, spineOnLeft);
     return true;
   },
-  shown: (page, state) => {
+  passed: (page, state) => {
     if (page === SCENARIO_PAGE) sealEvent(state, 'deathBook');
   },
 };

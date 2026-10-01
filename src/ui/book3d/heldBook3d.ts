@@ -124,8 +124,8 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
   /** Une feuille s'est posée : comptée si le lecteur l'a tournée ; fin du livre si la partie le dit. */
   function land(spread: number): void {
     const counted = !auto.delete(spread);
-    current.shown?.(2 * spread);
-    current.shown?.(2 * spread + 1);
+    current.passed?.(2 * spread);
+    current.passed?.(2 * spread + 1);
     if (options.onLeaf?.(spread, counted)) void finish();
   }
   let current = first;
