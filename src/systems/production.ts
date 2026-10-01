@@ -4,10 +4,24 @@ import type { GameState } from '../core/state';
 export const pagesPerSecond = (state: GameState): number =>
   TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
 
+/**
+ * Ce qu'un ajout n'a pas pu compter : au-delà de ~10¹⁵ pages, un nombre à virgule ne distingue plus les
+ * petites quantités (0,1 page ajoutée à 10¹⁵ ne change rien). On garde ce reste de côté et on le rajoute
+ * aux ajouts suivants, jusqu'à ce qu'il compte : le compteur avance, même lentement, à toute échelle.
+ */
+const carry = { pages: 0, totalPagesRead: 0 };
+
+const addKeepingRest = (state: GameState, key: keyof typeof carry, amount: number): void => {
+  const wanted = carry[key] + amount;
+  const next = state[key] + wanted;
+  carry[key] = wanted - (next - state[key]);
+  state[key] = next;
+};
+
 /** Toute page lue passe par ici : elle s'ajoute au stock et au total à vie. */
 export const gainPages = (state: GameState, amount: number): void => {
-  state.pages += amount;
-  state.totalPagesRead += amount;
+  addKeepingRest(state, 'pages', amount);
+  addKeepingRest(state, 'totalPagesRead', amount);
 };
 
 /**
