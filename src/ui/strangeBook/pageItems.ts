@@ -149,8 +149,12 @@ const color = (item: TextItem): string => {
   return item.gold ? GOLD : item.faded ? FADED : INK;
 };
 let measurer: CanvasRenderingContext2D | null = null;
-/** Largeur d'un texte de la page, dans le repère de la texture. */
-export const textWidth = (item: TextItem): number => {
+/**
+ * Largeur d'un texte de la page, dans le repère de la texture. L'espacement des lettres s'ajoute aussi
+ * après la dernière : on le retire, sinon un texte espacé centré glisse vers la gauche.
+ */
+export const textWidth = (item: TextItem): number => Math.max(0, measuredWidth(item) - (item.text ? (item.spacing ?? 0) : 0));
+const measuredWidth = (item: TextItem): number => {
   measurer ??= document.createElement('canvas').getContext('2d')!;
   measurer.letterSpacing = `${item.spacing ?? 0}px`;
   if (!item.initial) {

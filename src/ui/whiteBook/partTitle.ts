@@ -40,6 +40,17 @@ export const partTitleItems = (state: GameState, kind: SentenceKind, number: num
     { kind: 'rule', y: 385, width: 240 },
     ...description.items,
     { kind: 'text', text: '·   ·   ·', x: 320, y: description.bottom + 24, size: 18, align: 'center', faded: true },
-    { kind: 'text', text: writeDigits(`${percent} %`), x: 320, y: description.bottom + 64, size: 30, align: 'center', spacing: 2 },
+    // Police des titres : ses chiffres ont la hauteur des capitales, comme le « % » (ceux du texte, plus
+    // bas, le laissent flotter au-dessus).
+    {
+      kind: 'text',
+      text: writeDigits(`${percent} %`),
+      x: 320,
+      y: description.bottom + 62,
+      size: 28,
+      align: 'center',
+      spacing: 2,
+      face: 'title',
+    },
   ];
 };
