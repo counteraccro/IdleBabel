@@ -11,6 +11,7 @@ import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
 import { FILL_ORDER, FRONT, createBookcase } from './bookcase3d';
+import { addCellLights } from './cellLights';
 import { layoutBookcase, type ShelfPlace } from './shelfLayout';
 import type { GameState } from '../../core/state';
 
@@ -26,6 +27,8 @@ const TIP = THREE.MathUtils.degToRad(9);
 const PULL_RATE = 10;
 /** Air laissé entre le dos des livres et le bord de la case. */
 const SET_BACK = 0.03;
+/** La lumière de la pièce, baissée d'autant devant les spots des cases. */
+const ROOM_DIM = 0.6;
 /** Épaisseur d'un livre rare qui ne dit pas la sienne (rareBook3d.ts). */
 const THICKNESS = 0.12;
 
@@ -80,6 +83,11 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   lamp.position.set(0, bookcase.size.y + 1.4, 3);
   lamp.target.position.copy(center);
   scene.add(lamp, lamp.target);
+  // La pièce s'assombrit : ce sont les spots des cases qui font briller la vitrine.
+  scene.traverse((object) => {
+    if (object instanceof THREE.Light) object.intensity *= ROOM_DIM;
+  });
+  addCellLights(bookcase.root, bookcase.cells);
 
   const thickness = (id: string): number => rareBookArt(id).thickness ?? THICKNESS;
   // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre.
