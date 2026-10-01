@@ -171,8 +171,9 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   const binding = createBinding(shape);
   const spineLeather = new THREE.MeshStandardMaterial({ map: look.spine, roughness: 0.7 });
   // Dessous du mors : la même peau que l'intérieur de la couverture (la garde, continue jusqu'au pli).
+  // Face intérieure du dos : la garde, unie, sans le titre (on la voit quand le plat arrière se referme).
   body.add(
-    new THREE.Mesh(binding.spine, [spineLeather, spineLeather, leather]),
+    new THREE.Mesh(binding.spine, [spineLeather, insideMaterial, leather]),
     new THREE.Mesh(binding.joint, [coverMaterial, insideMaterial, leather]),
   );
   let cut = thickness / 2 - board;
