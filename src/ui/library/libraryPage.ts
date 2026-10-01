@@ -49,7 +49,7 @@ interface Place {
  * La bibliothèque personnelle (#bibliotheque) : la vitrine du chercheur, un meuble aux cases de toutes
  * tailles où les livres rares trouvés sont rangés en bazar organisé, debout ou couchés, le dos vers le lecteur
  * (shelfLayout.ts), chacun à la première place libre une fois trouvé. Au survol, un livre sort un
- * peu de sa case et son nom s'écrit dessous ; au clic, il s'envole vers sa page (`onOpen`), comme les
+ * peu de sa case et son nom s'écrit sous lui, sur le bord de l'étagère ; au clic, il s'envole vers sa page (`onOpen`), comme les
  * livres de la pile, et y revient au retour. Pièce à part : elle ne se vide jamais.
  */
 export const createLibraryPage = (state: GameState, onOpen: (id: string) => void, onBack: () => void): Component => {
@@ -59,8 +59,8 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   const stage = el('div', 'library-stage');
   const canvas = el('canvas', 'library-canvas');
   const caption = el('div', 'library-caption');
-  stage.append(canvas);
-  root.append(back, stage, caption);
+  stage.append(canvas, caption);
+  root.append(back, stage);
 
   let dirty = true;
   const scene = new THREE.Scene();
@@ -152,7 +152,16 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
     lighting.follow(camera, center, 1);
   };
 
-  // Survol : le livre sort de sa case, son nom s'écrit sous la vitrine.
+  /** Le nom du livre survolé, posé sur le bord avant de son étagère, au milieu du livre. */
+  const placeCaption = (): void => {
+    if (!hovered?.holder) return;
+    const box = new THREE.Box3().setFromObject(hovered.holder);
+    const at = new THREE.Vector3((box.min.x + box.max.x) / 2, bookcase.cells[hovered.spot.cell].floor, FRONT).project(camera);
+    caption.style.left = `${((at.x + 1) / 2) * 100}%`;
+    caption.style.top = `${((1 - at.y) / 2) * 100}%`;
+  };
+
+  // Survol : le livre sort de sa case, son nom s'écrit sous lui.
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   let hovered: Place | null = null;
@@ -180,7 +189,8 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
     hovered = place;
     if (place?.holder) place.aim = 1;
     canvas.style.cursor = place?.holder ? 'pointer' : '';
-    caption.textContent = place ? label(place) : '';
+    if (place) caption.textContent = label(place);
+    placeCaption();
     caption.classList.toggle('shown', place !== null);
   };
   canvas.addEventListener('pointermove', (event) => hover(placeAt(event)));
@@ -224,6 +234,7 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
     }
     if (resize()) {
       fit();
+      placeCaption();
       dirty = true;
     }
     if (moving || dirty) {

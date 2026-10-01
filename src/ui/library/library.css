@@ -30,18 +30,20 @@
   width: 100%;
   height: 100%;
 }
-/* Hauteur fixe, vide ou non : sinon la scène rétrécit au survol d'un livre et la vitrine se recadre. */
+/* Le nom du livre survolé, sur le bord de son étagère (placé par libraryPage.ts). */
 .library-caption {
-  height: 1.6em;
-  line-height: 1.6;
-  box-sizing: content-box;
+  position: absolute;
+  transform: translate(-50%, -2px);
+  pointer-events: none;
   white-space: nowrap;
-  padding-bottom: 12px;
   font-size: 1rem;
   font-variant: small-caps;
   letter-spacing: 0.1em;
   color: var(--accent);
-  text-shadow: var(--shadow);
+  text-shadow:
+    0 1px 3px #000,
+    0 0 8px #000,
+    0 0 14px #000;
   opacity: 0;
   transition: opacity 0.2s;
 }
