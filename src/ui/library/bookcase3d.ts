@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { woodTexture } from './woodTexture';
+import { oldWood } from './oldWood';
 import type { Slot } from './shelfLayout';
 
 /** Épaisseur des planches (étagères, séparations), des montants ; profondeur des cases. */
@@ -92,16 +92,9 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
  */
 export const FILL_ORDER = [8, 1, 18, 4, 13, 23, 0, 11, 9, 3, 16];
 
-/** Un bois : la texture de noyer, le fil dans la longueur de la pièce. */
-const wood = (seed: string, width: number, height: number, base?: string): THREE.MeshStandardMaterial => {
-  const map = woodTexture(seed, base);
-  if (width > height) {
-    map.center.set(0.5, 0.5);
-    map.rotation = Math.PI / 2;
-  }
-  map.repeat.set(Math.min(width, height) * 0.6, Math.max(width, height) * 0.6);
-  return new THREE.MeshStandardMaterial({ map, roughness: 0.55, metalness: 0.05 });
-};
+/** Le bois des étagères et des montants : chaud ; celui du fond : plus sombre, en retrait. */
+const PIECE = 0xc8a080;
+const BACK = 0x6a5446;
 
 export interface Bookcase {
   root: THREE.Group;
@@ -115,12 +108,19 @@ export interface Bookcase {
  * La vitrine de la bibliothèque personnelle : un grand meuble de noyer, ouvert, découpé en cases de
  * toutes tailles (des colonnes de largeurs différentes, des étagères décalées), fermé au fond de
  * planches plus sombres. Le socle est posé en y = 0, centré en x et en z ; les livres sont à leur vraie
- * taille (1 de haut).
+ * taille (1 de haut). `onLoad` : la photo du bois est arrivée, redessiner.
  */
-export const createBookcase = (): Bookcase => {
+export const createBookcase = (onLoad: () => void): Bookcase => {
   const root = new THREE.Group();
-  const box = (width: number, height: number, depth: number, x: number, y: number, z: number, material: THREE.Material): void => {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
+  /** Une pièce de bois ; le fil suit sa longueur (UV tournées pour une pièce couchée). */
+  const box = (seed: string, width: number, height: number, depth: number, x: number, y: number, z: number): void => {
+    const geometry = new THREE.BoxGeometry(width, height, depth);
+    if (width > height) {
+      const uv = geometry.getAttribute('uv');
+      for (let index = 0; index < uv.count; index++) uv.setXY(index, uv.getY(index), uv.getX(index));
+    }
+    const material = oldWood(seed, { length: Math.max(width, height), color: PIECE }, onLoad);
+    const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
     mesh.castShadow = mesh.receiveShadow = true;
     root.add(mesh);
@@ -133,23 +133,27 @@ export const createBookcase = (): Bookcase => {
   const left = -innerWidth / 2;
 
   // Le cadre : les montants, le socle, la corniche qui déborde un peu, le fond.
-  box(SIDE, height, DEPTH + 0.04, left - SIDE / 2, height / 2, 0.02, wood('side-left', SIDE, height));
-  box(SIDE, height, DEPTH + 0.04, -left + SIDE / 2, height / 2, 0.02, wood('side-right', SIDE, height));
-  box(width, PLINTH, DEPTH + 0.06, 0, PLINTH / 2, 0.03, wood('plinth', width, PLINTH));
-  box(width + 0.1, CORNICE, DEPTH + 0.12, 0, height - CORNICE / 2, 0.04, wood('cornice', width, CORNICE));
-  box(width, height, 0.04, 0, height / 2, -DEPTH / 2 - 0.02, wood('back', width, height, '#2a1a0f'));
+  box('side-left', SIDE, height, DEPTH + 0.04, left - SIDE / 2, height / 2, 0.02);
+  box('side-right', SIDE, height, DEPTH + 0.04, -left + SIDE / 2, height / 2, 0.02);
+  box('plinth', width, PLINTH, DEPTH + 0.06, 0, PLINTH / 2, 0.03);
+  box('cornice', width + 0.1, CORNICE, DEPTH + 0.12, 0, height - CORNICE / 2, 0.04);
+  // Le fond : la photo entière, ses planches debout.
+  const back = new THREE.Mesh(new THREE.BoxGeometry(width, height, 0.04), oldWood('back', { whole: true, color: BACK }, onLoad));
+  back.position.set(0, height / 2, -DEPTH / 2 - 0.02);
+  back.receiveShadow = true;
+  root.add(back);
 
   const cells: BookcaseCell[] = [];
   let x = left;
   COLUMNS.forEach((column, index) => {
     // La séparation à droite de la colonne (sauf la dernière, contre le montant).
-    if (index > 0) box(BOARD, inner, DEPTH, x - BOARD / 2, PLINTH + inner / 2, 0, wood(`divider${index}`, BOARD, inner));
+    if (index > 0) box(`divider${index}`, BOARD, inner, DEPTH, x - BOARD / 2, PLINTH + inner / 2, 0);
     let floor = PLINTH;
     column.cells.forEach(([cellHeight, slots], row) => {
       cells.push({ left: x, floor, width: column.width, height: cellHeight, slots });
       floor += cellHeight;
       if (row < column.cells.length - 1) {
-        box(column.width, BOARD, DEPTH, x + column.width / 2, floor + BOARD / 2, 0, wood(`shelf${index}-${row}`, column.width, BOARD));
+        box(`shelf${index}-${row}`, column.width, BOARD, DEPTH, x + column.width / 2, floor + BOARD / 2, 0);
         floor += BOARD;
       }
     });

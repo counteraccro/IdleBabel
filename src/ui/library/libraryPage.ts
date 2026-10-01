@@ -59,10 +59,11 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   stage.append(canvas);
   root.append(back, stage, caption);
 
+  let dirty = true;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 60);
   const { renderer, resize, destroy } = createBookRenderer(canvas, camera);
-  const bookcase = createBookcase();
+  const bookcase = createBookcase(() => (dirty = true));
   scene.add(bookcase.root);
   const { center } = bookcase;
   const lighting = createLighting(scene, new THREE.Vector3(1.7, -0.7, 1.9), new THREE.Vector3(0.4, 0, 0));
@@ -80,7 +81,6 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   lamp.target.position.copy(center);
   scene.add(lamp, lamp.target);
 
-  let dirty = true;
   const thickness = (id: string): number => rareBookArt(id).thickness ?? THICKNESS;
   // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre.
   const found = RARE_BOOKS.map(({ id }) => id)
