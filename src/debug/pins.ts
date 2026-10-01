@@ -1,6 +1,6 @@
 /**
- * Sujets choisis dans le livre de débogage : ils s'affichent dans la barre de débogage, dans l'ordre où
- * on les a choisis. Gardés dans ce navigateur d'une session à l'autre (outil de développement : pas
+ * Sujets choisis dans le livre de débogage : ils s'affichent dans la barre de débogage, dans l'ordre du
+ * livre. Gardés dans ce navigateur d'une session à l'autre (outil de développement : pas
  * dans la sauvegarde de la partie).
  */
 const PINS_KEY = 'idle-babel-debug-pins';

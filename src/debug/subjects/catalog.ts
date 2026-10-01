@@ -6,7 +6,7 @@ import { BOOK_SUBJECTS } from './books';
 import { LORE_SUBJECTS } from './lore';
 import { SEAL_SUBJECTS } from './seals';
 import { DISPLAY_SUBJECTS } from './display';
-import type { ChapterId, DebugSubject } from './subject';
+import { CHAPTERS, type ChapterId, type DebugSubject } from './subject';
 
 /** Tout ce que recense le livre de débogage, chapitre après chapitre. */
 export const SUBJECTS: readonly DebugSubject[] = [
@@ -23,3 +23,6 @@ export const SUBJECTS: readonly DebugSubject[] = [
 export const subjectById = (id: string): DebugSubject | undefined => SUBJECTS.find((subject) => subject.id === id);
 
 export const chapterSubjects = (chapter: ChapterId): DebugSubject[] => SUBJECTS.filter((subject) => subject.chapter === chapter);
+
+/** Les sujets dans l'ordre du livre : chapitre après chapitre, puis dans l'ordre de chaque chapitre. */
+export const BOOK_ORDER: readonly string[] = CHAPTERS.flatMap((chapter) => chapterSubjects(chapter.id).map((subject) => subject.id));

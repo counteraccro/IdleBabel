@@ -1,7 +1,7 @@
 import { el } from '../ui/dom';
 import { createFpsMeter } from '../ui/fpsMeter';
 import { rememberOpen, wasOpen } from './debugControls';
-import { subjectById } from './subjects/catalog';
+import { BOOK_ORDER, subjectById } from './subjects/catalog';
 import { createKit, subjectName } from './subjects/subject';
 import { onPinsChange, pinnedSubjects, unpin } from './pins';
 import { DEBUG_BOOK_HASH } from './enabled';
@@ -80,7 +80,8 @@ export const mountDebugPanel = (state: GameState): void => {
   // Les fiches déjà construites sont gardées : les champs en cours de saisie ne sont pas perdus.
   let cards: Card[] = [];
   const layout = (): void => {
-    const ids = pinnedSubjects();
+    // Dans l'ordre du livre, pas dans celui où on les a choisis.
+    const ids = BOOK_ORDER.filter((id) => pinnedSubjects().includes(id));
     cards = ids.map((id) => cards.find((card) => card.id === id) ?? createCard(id, state)).filter((card): card is Card => card !== null);
     panel.replaceChildren(header, ...(cards.length > 0 ? cards.map((card) => card.root) : [empty]));
   };
