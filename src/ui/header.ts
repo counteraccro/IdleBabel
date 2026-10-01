@@ -25,6 +25,8 @@ export interface HeaderHandlers {
   onLibrary: () => void;
   /** La clé est posée près de la pile : un livre rare a été trouvé (ou débogage). */
   libraryKey: () => boolean;
+  /** Un livre nouveau attend dans la bibliothèque : la clé brille. */
+  libraryNews: () => boolean;
   /** Morceaux écrits dans le livre blanc : quand il y en a un de plus, le livre sursaute. */
   writtenCount: () => number;
 }
@@ -89,6 +91,7 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     pile.away(handlers.openBook());
     pile.relabel();
     pile.show('library', handlers.libraryKey());
+    pile.news('library', handlers.libraryNews());
   };
   root.append(createGameTitle(), pile.root);
   return { root, update };

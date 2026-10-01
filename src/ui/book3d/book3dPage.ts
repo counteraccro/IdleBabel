@@ -16,6 +16,7 @@ import { createAutoTurn3d } from './autoTurn3d';
 import { isDebugEnabled } from '../../debug/enabled';
 import { BIG_BOOK_REWRITE, type Book3d } from './book3dBook';
 import { createFlight, takeFlight, type Flight } from './bookFlight';
+import { modalOpen } from '../modal/modal';
 
 /** Durée de l'ouverture de la couverture. */
 const OPEN_MS = 1100;
@@ -270,7 +271,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   next.addEventListener('click', () => turn(true));
   const onKey = (event: KeyboardEvent): void => {
     // Un récit s'affiche par-dessus : le livre derrière ne tourne pas ses pages.
-    if (document.querySelector('.modal-backdrop')) return;
+    if (modalOpen()) return;
     if (event.key === 'ArrowRight') turn(true);
     if (event.key === 'ArrowLeft') turn(false);
     if (event.key === 'Home') backToBookmark();
@@ -366,7 +367,8 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
       return;
     }
     const dt = Math.min(0.05, (now - before) / 1000);
-    if (autoTurn && turner) autoTurn(dt, turner, spreads - 1, !swinging && !grabbing && shut === 0 && Number(open.value) === 1);
+    if (autoTurn && turner)
+      autoTurn(dt, turner, spreads - 1, !swinging && !grabbing && !modalOpen() && shut === 0 && Number(open.value) === 1);
     const moving = turner?.update(dt) ?? false;
     notifyShown();
     // Page prise à la main et lâchée : le curseur suit la double page où le livre s'arrête.

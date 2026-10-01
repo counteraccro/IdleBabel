@@ -13,6 +13,7 @@ import { createBookRenderer, disposeObject } from './renderer3d';
 import { isDebugEnabled } from '../../debug/enabled';
 import { createHeldPose } from './heldPose';
 import { createTweens } from './tweens';
+import { modalOpen } from '../modal/modal';
 import type { Book3d } from './book3dBook';
 
 /** Inclinaison du livre vers le lecteur : la caméra le regarde d'un peu plus bas que d'aplomb. */
@@ -52,6 +53,11 @@ export interface HeldBookOptions {
    * Les pages ne se tournent alors qu'en avant.
    */
   onLeaf?: (spread: number, counted: boolean) => boolean;
+  /**
+   * Le livre terminé vient de se refermer, encore en main (un récit peut s'ouvrir) : le suivant n'arrive
+   * qu'une fois les modales fermées.
+   */
+  onClosed?: () => void;
 }
 
 /** Le livre en main, avec de quoi le remplacer (débogage : page ou livre changés à la main). */
@@ -156,6 +162,11 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
       book?.setShut(e);
       pose.set({ shut: e });
     });
+    options.onClosed?.();
+    await new Promise<void>((resolve) => {
+      const wait = (): void => void (modalOpen() ? requestAnimationFrame(wait) : resolve());
+      wait();
+    });
     await tweens.run(LOWER_MS, (e) => pose.set({ drop: e }), 'in');
     current = current.next?.() ?? current;
     await take(current, 0, true);
@@ -197,7 +208,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     (event) => {
       // Écran qui s'en va (fondu), fenêtre de lore ouverte, ou touche destinée à un champ ou à un bouton
       // (Entrée, Espace) : le livre n'y répond pas.
-      if (root.closest('.screen-out') || document.querySelector('.modal-backdrop')) return;
+      if (root.closest('.screen-out') || modalOpen()) return;
       const target = event.target as HTMLElement;
       if (target.closest('input, textarea, select, [contenteditable]')) return;
       if ((event.key === 'Enter' || event.key === ' ') && target.closest('button, a')) return;
@@ -228,14 +239,14 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     before = now;
     if (autoTurn && turner) {
       const aimed = turner.target;
-      autoTurn(dt, turner, spreads - 1, phase === 'reading' && !grabbing);
+      autoTurn(dt, turner, spreads - 1, phase === 'reading' && !grabbing && !modalOpen());
       if (turner.target > aimed) auto.add(turner.target);
     }
     const moving = turner?.update(dt) ?? false;
     // Sans la partie : posé sur l'intérieur du plat arrière, le livre est lu.
     if (!options.onLeaf && phase === 'reading' && !grabbing && turner?.idle && turner.target === spreads - 1) void finish();
     // Pages qui tournent seules : le livre neuf s'ouvre de lui-même, une fois sa couverture vue.
-    if (phase === 'closed' && !options.stayClosed() && now - closedAt > SHOW_COVER_MS) void openBook();
+    if (phase === 'closed' && !options.stayClosed() && !modalOpen() && now - closedAt > SHOW_COVER_MS) void openBook();
     const animating = tweens.update(now, still.matches);
     if (resize()) {
       place();

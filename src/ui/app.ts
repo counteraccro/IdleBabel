@@ -19,7 +19,9 @@ import { mountLore } from './lore';
 import { isDebugEnabled, DEBUG_BOOK_HASH, RARE_BOOK_HASH } from '../debug/enabled';
 import { rareBook3d } from './rareBooks/rareBook3d';
 import { debugBook3d } from '../debug/book/debugBook3d';
-import { LIBRARY_DEBUG_BOOK, createLibraryPage, type LibraryPage } from './library/libraryPage';
+import { LIBRARY_DEBUG_BOOK, LIBRARY_FIRST_BOOK, createLibraryPage, shelfBook3d, type LibraryPage } from './library/libraryPage';
+import { firstBookKept } from '../systems/books';
+import { libraryHasNews, visitLibrary } from '../systems/library';
 import { showDebugBookError } from './library/debugBookError';
 import { isRareBookFound } from '../systems/rareBooks';
 import type { Component } from './dom';
@@ -69,7 +71,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     const hash = window.location.hash;
     if (!hash.startsWith(LIBRARY_BOOK_HASH)) return null;
     const id = decodeURIComponent(hash.slice(LIBRARY_BOOK_HASH.length));
-    return isRareBookFound(state, id) || id === LIBRARY_DEBUG_BOOK ? id : null;
+    return isRareBookFound(state, id) || id === LIBRARY_DEBUG_BOOK || (id === LIBRARY_FIRST_BOOK && firstBookKept(state)) ? id : null;
   };
   /** La bibliothèque est ouverte : sa vitrine, ou l'un de ses livres. */
   const inLibrary = (): boolean => window.location.hash === LIBRARY_HASH || window.location.hash.startsWith(LIBRARY_BOOK_HASH);
@@ -102,7 +104,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     writtenCount: () => Object.values(state.written).reduce((sum, done) => sum + done.length, 0),
     openBook,
     onLibrary: open(LIBRARY_HASH),
-    libraryKey: () => debugging || Object.keys(state.rareBooks).length > 0,
+    libraryKey: () => debugging || firstBookKept(state) || Object.keys(state.rareBooks).length > 0,
+    libraryNews: () => libraryHasNews(state),
   });
 
   // Le compteur aussi : au-dessus du jeu comme des livres ouverts, il ne clignote pas d'un écran à l'autre.
@@ -144,6 +147,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   /** La vitrine à l'écran : gardée telle quelle quand un de ses livres s'ouvre par-dessus, et au retour. */
   let shelves: LibraryPage | null = null;
   const libraryPage = (): LibraryPage => {
+    // Le joueur entre dans la bibliothèque (vitrine, ou un de ses livres) : il a vu tous ses livres.
+    visitLibrary(state);
     if (shelves && components.includes(shelves)) return shelves;
     shelves = createLibraryPage(
       state,
@@ -173,7 +178,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     // La vitrine reste en fond, floue, sous le livre ouvert.
     const page = libraryPage();
     page.setBackdrop(id);
-    const spec = id === LIBRARY_DEBUG_BOOK ? debugBook3d() : rareBook3d(state, id);
+    const spec = shelfBook3d(state, id, debugBook3d);
     // Le livre de débogage, hors du mode ?debug : on le prend en main, mais il refuse de s'ouvrir.
     if (id === LIBRARY_DEBUG_BOOK && !debugging) spec.sealed = showDebugBookError;
     return [header, counter, page, createBook3dPage(spec, leave, t('ui.shelveBook'))];
@@ -246,6 +251,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   window.addEventListener('hashchange', render);
   render();
   // Moments de lore en attente (partie rechargée, trouvaille hors-ligne) : racontés une fois le joueur présenté.
+  // Partie qui a refermé son premier livre avant que ce moment existe : il est raconté une fois.
+  if (state.booksFinished > 0) tellLore(state, 'firstBookKept');
   const tellPendingLore = mountLore(state);
   // Nouvelle partie (ou partie d'avant le nom) : le joueur se présente et choisit sa langue.
   if (!state.playerName)

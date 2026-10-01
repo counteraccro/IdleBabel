@@ -1,6 +1,7 @@
 import type { GameState } from '../core/state';
 import { recordOnce } from '../core/history';
 import { STRANGE_BOOK_INDEX } from './strangeBook';
+import { loreTold } from './lore';
 
 /** Tous les livres de la Bibliothèque ont 410 pages (Borges), comme le Livre Total. */
 export const PAGES_PER_BOOK = 410;
@@ -25,6 +26,12 @@ export const turnBookPage = (state: GameState): boolean => {
   if (state.booksFinished === STRANGE_BOOK_INDEX) recordOnce(state, 'strangeBook');
   return true;
 };
+
+/**
+ * Le chercheur a gardé son premier livre (récit firstBookKept, quand il l'a refermé : handReading3d.ts) :
+ * il est dans la bibliothèque, dont il a la clé.
+ */
+export const firstBookKept = (state: GameState): boolean => loreTold(state, 'firstBookKept');
 
 /** Avancement dans le livre en main, de 0 (ouvert au début) à 1 (dernière page). */
 export const bookProgress = (state: GameState): number => state.bookPage / PAGES_PER_BOOK;

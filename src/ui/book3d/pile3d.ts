@@ -47,6 +47,8 @@ interface Placed {
   away: boolean;
   glow: number;
   aim: number;
+  /** Quelque chose l'attend (un livre nouveau dans la bibliothèque) : il luit doucement. */
+  news: boolean;
   button: HTMLButtonElement;
 }
 
@@ -61,7 +63,10 @@ export interface Pile3d {
   away: (id: string | null) => void;
   /** Le livre sursaute et tremble, son contour s'allume un instant (un mot s'est écrit dans le livre blanc). */
   shake: (id: string) => void;
-  /** Le contour du livre luit doucement tant que quelque chose l'attend (des sceaux nouveaux). */
+  /**
+   * Le contour du livre luit doucement tant que quelque chose l'attend (des sceaux nouveaux) ; un objet
+   * posé (la clé), lui-même.
+   */
   news: (id: string, on: boolean) => void;
   /** Noms des livres réécrits dans la langue courante (boutons, légende au survol). */
   relabel: () => void;
@@ -237,7 +242,7 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
     const button = el('button', 'pile3d-button', spec.label());
     button.addEventListener('click', () => spec.onOpen());
     root.append(button);
-    const item: Placed = { spec, pivot, shown: true, away: false, glow: 0, aim: 0, button };
+    const item: Placed = { spec, pivot, shown: true, away: false, glow: 0, aim: 0, news: false, button };
     button.addEventListener('focus', () => (item.aim = 1));
     button.addEventListener('blur', () => (item.aim = 0));
     return item;
@@ -505,14 +510,12 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
     applyAway();
     /** Où en est une animation lancée à `at`, de durée `ms` (null : finie, ou pas lancée). */
     const progress = (at: number | null, ms: number): number | null => (at === null || still.matches ? null : Math.min(1, (now - at) / ms));
+    /** La lueur de ce qui attend le joueur : elle monte et descend lentement (fixe si l'animation est coupée). */
+    const newsGlow = (on: boolean): number =>
+      on ? (still.matches ? NEWS_GLOW : NEWS_GLOW * (0.5 - 0.5 * Math.cos((now / 1000 / NEWS_S) * 2 * Math.PI))) : 0;
     for (const slot of slots) {
       if (!slot.pivot.visible) continue;
-      const newsGlow = slot.news
-        ? still.matches
-          ? NEWS_GLOW
-          : NEWS_GLOW * (0.5 - 0.5 * Math.cos((now / 1000 / NEWS_S) * 2 * Math.PI))
-        : 0;
-      const aim = Math.max(slot.aim, newsGlow);
+      const aim = Math.max(slot.aim, newsGlow(slot.news));
       slot.glow = still.matches ? aim : slot.glow + (aim - slot.glow) * Math.min(1, dt * GLOW_RATE);
       if (Math.abs(aim - slot.glow) > 0.002 || (slot.news && !still.matches)) moving = true;
       else slot.glow = aim;
@@ -545,9 +548,10 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
     }
     for (const item of placed) {
       if (!item.pivot.visible) continue;
-      item.glow = still.matches ? item.aim : item.glow + (item.aim - item.glow) * Math.min(1, dt * GLOW_RATE);
-      if (Math.abs(item.aim - item.glow) > 0.002) moving = true;
-      else item.glow = item.aim;
+      const aim = Math.max(item.aim, newsGlow(item.news));
+      item.glow = still.matches ? aim : item.glow + (aim - item.glow) * Math.min(1, dt * GLOW_RATE);
+      if (Math.abs(aim - item.glow) > 0.002 || (item.news && !still.matches)) moving = true;
+      else item.glow = aim;
       item.spec.glow(item.glow);
     }
     for (const slot of slots) if (slot.shown && slot.tick?.(now)) dirty = true;
@@ -620,6 +624,8 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
     news: (id, on) => {
       const slot = find(id);
       if (slot) slot.news = on;
+      const item = placed.find((candidate) => candidate.spec.id === id);
+      if (item) item.news = on;
     },
     relabel: () => {
       for (const slot of slots) {

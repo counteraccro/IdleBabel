@@ -47,5 +47,15 @@
       "Quelque chose s'éclaire en vous : votre première Connaissance.",
       "Contre votre flanc, le livre blanc a changé. Une de ses pages s'est écrite. Ces mots sont les vôtres."
     ]
+  },
+  "firstBookKept": {
+    "title": "Le premier",
+    "text": [
+      "Vous refermez le livre. Quatre cent dix pages. Pas un mot que vous ayez compris.",
+      "Votre main s'arrête au-dessus de l'étagère. Étrangement, vous n'avez pas envie de le reposer.",
+      "C'est le premier. Il n'y en aura jamais d'autre comme lui.",
+      "Dans votre poche, quelque chose pèse. Une petite clé de laiton. Vous ne l'aviez pas tout à l'heure."
+    ],
+    "button": "Garder le livre"
   }
 }

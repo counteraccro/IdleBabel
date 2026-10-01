@@ -41,6 +41,9 @@ export interface Modal {
   close: () => void;
 }
 
+/** Une modale est-elle ouverte (récit, question…) ? Le jeu derrière attend : pas de page qui tourne seule. */
+export const modalOpen = (): boolean => document.querySelector('.modal-backdrop') !== null;
+
 /** Filigrane doré d'un coin de l'écrin (coin haut gauche ; les trois autres en sont des reflets). */
 const CORNER = `<svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
   <path d="M4 40 V14 Q4 4 14 4 H40"/><path d="M10 34 V18 Q10 10 18 10 H34" opacity=".6"/><path d="M14 4 Q22 16 10 22"/>

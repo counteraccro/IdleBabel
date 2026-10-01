@@ -10,6 +10,7 @@ const TRIGGERS: Record<LoreId, string> = {
   whiteBook: 'à la première ouverture du livre blanc',
   firstBook: 'en sortant du livre blanc la première fois',
   firstKnowledge: 'à la toute première trouvaille lue',
+  firstBookKept: 'au premier livre refermé (gardé, rangé dans la bibliothèque)',
 };
 
 const status = (state: GameState, id: LoreId): string => {

@@ -38,6 +38,7 @@
   "library": "The library",
   "shelveBook": "Put the book back",
   "debugBook": "Debug",
+  "firstBook": "My first book",
   "debugBookError": "Fatal error",
   "debugBookErrorClose": "Close"
 }

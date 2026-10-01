@@ -42,5 +42,15 @@
       "Something lights up inside you: your first Knowledge.",
       "Against your side, the white book has changed. One of its pages has written itself. These words are yours."
     ]
+  },
+  "firstBookKept": {
+    "title": "The first",
+    "text": [
+      "You close the book. Four hundred and ten pages. Not a single word you understood.",
+      "Your hand stops above the shelf. Strangely, you don't feel like putting it back.",
+      "It is the first. There will never be another like it.",
+      "Something weighs in your pocket. A small brass key. You didn't have it a moment ago."
+    ],
+    "button": "Keep the book"
   }
 }

@@ -26,6 +26,15 @@ import type { GameState } from '../../core/state';
 /** Un livre ordinaire tenu en main : plus mince que les grands livres, plats plus fins. */
 const HAND_SHAPE: BookShape = { width: 0.8, height: 1, thickness: 0.12, board: 0.012, overhang: 0.035, corner: 0.03, arch: 2.5, sag: 0.12 };
 
+/**
+ * Un livre lu, gardé (le premier : rangé dans la bibliothèque) : le même livre, ses mêmes pages, mais qui ne
+ * tourne plus seul et ne mène à aucun autre. Ses trouvailles surlignées ne sont pas redessinées.
+ */
+export const keptBook3d = (state: GameState, index: number): Book3d => {
+  const { next: _next, autoTurn: _autoTurn, ...book } = handBook3d(state, index);
+  return book;
+};
+
 /** Longueur d'une page de charabia. */
 const PAGE_LENGTH = 700;
 

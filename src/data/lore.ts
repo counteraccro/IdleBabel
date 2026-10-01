@@ -12,6 +12,11 @@ export const LORE = [
   'firstBook',
   /** La toute première trouvaille lue : une phrase qu'on comprend (systems/knowledge.ts). */
   'firstKnowledge',
+  /**
+   * Le premier livre refermé (systems/books.ts) : le chercheur le garde, sa première trouvaille, et une clé
+   * de laiton apparaît dans sa poche (celle de la bibliothèque, où ce livre est rangé).
+   */
+  'firstBookKept',
 ] as const;
 
 export type LoreId = (typeof LORE)[number];

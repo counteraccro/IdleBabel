@@ -83,6 +83,8 @@ export interface GameState {
   rareBooks: Record<string, number>;
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
+  /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
+  libraryBooksSeen: number;
   history: HistoryEntry[];
   /** Moments de lore (data/lore.ts) déclenchés mais pas encore lus : montrés dès que possible, même après un rechargement. */
   lorePending: string[];
@@ -111,6 +113,7 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   seals: {},
   rareBooks: {},
   newSeals: [],
+  libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],
   lorePending: [],
   loreSeen: [],

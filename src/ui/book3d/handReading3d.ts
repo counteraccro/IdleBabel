@@ -1,5 +1,6 @@
 import { readPage } from '../../systems/click';
 import { bookSpread, turnBookPage } from '../../systems/books';
+import { tellLore } from '../../systems/lore';
 import { DEBUG_BOOK_EVENT } from '../../debug/events';
 import { createHeldBook3d } from './heldBook3d';
 import { handBook3d } from './handBook3d';
@@ -34,6 +35,8 @@ export const createHandReading3d = (state: GameState): Component => {
       finds.gain(spread);
       return turnBookPage(state);
     },
+    // Le premier livre refermé, encore en main : le chercheur le garde (rangé dans la bibliothèque).
+    onClosed: () => tellLore(state, 'firstBookKept'),
   });
   // Débogage : page ou numéro du livre changés à la main, le livre en main suit.
   const onDebugBook = (): void => {
