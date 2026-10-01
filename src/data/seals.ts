@@ -77,4 +77,6 @@ export const SEALS: readonly SealDef[] = [
   seal('babelDigits', 'secrets', (s) => s.settings.notation === 'babel'),
   // Le cahier d'options refermé sur son dos, où toutes les multiplications donnent 410.
   secret('notebookBack'),
+  // Son nom, page 15 du DeathBook (ui/rareBooks/deathBook.ts).
+  secret('deathBook'),
 ];

@@ -57,7 +57,37 @@
   },
   "deathBook": {
     "name": "Le DeathBook",
-    "cover": ["DeathBook"]
+    "cover": ["Death Book"],
+    "howTo": "Mode d'emploi",
+    "rules": [
+      "Le lecteur dont le nom est écrit dans ce cahier ne quittera jamais la Bibliothèque.",
+      "Le cahier n'agit que si celui qui écrit a vu le visage du lecteur. Le miroir d'un vestibule suffit.",
+      "Un nom écrit ne s'efface pas. Une copie existe déjà, à une lettre près, dans un autre hexagone.",
+      "Inutile de chercher la sortie dans les livres : tous la décrivent, aucun ne la contient.",
+      "Chaque nom écrit ici est celui d'un lecteur que la Bibliothèque a gardé.",
+      "Le cahier ne manque jamais de pages. Il en reste toujours une pour le prochain nom.",
+      "Si l'on écrit les circonstances après le nom, elles s'accompliront."
+    ],
+    "circumstances": [
+      "hexagone 4021, en lisant",
+      "dans l'escalier, entre deux galeries",
+      "au pied d'une étagère, un livre ouvert sur le visage",
+      "en cherchant le catalogue des catalogues",
+      "devant le miroir du vestibule",
+      "au fond d'une galerie sans lampe",
+      "en comptant les livres de la cinquième étagère",
+      "à la dernière page",
+      "au bord de la balustrade, sans tomber",
+      "en recopiant une page incompréhensible"
+    ],
+    "scenario": [
+      "{name} prend un livre dans la Bibliothèque.",
+      "Le lit jusqu'à la dernière page.",
+      "La dernière page ne ferme rien : elle ouvre une porte.",
+      "{name} prend un autre livre. Puis un autre. Puis un autre encore.",
+      "La fin d'un livre n'est que le seuil du suivant.",
+      "Et chaque début promet une fin qu'il ne tient pas toujours."
+    ]
   },
   "oriana": {
     "name": "La biographie d'Oriana",

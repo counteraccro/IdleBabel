@@ -57,7 +57,37 @@
   },
   "deathBook": {
     "name": "The DeathBook",
-    "cover": ["DeathBook"]
+    "cover": ["Death Book"],
+    "howTo": "How to use it",
+    "rules": [
+      "The reader whose name is written in this notebook shall never leave the Library.",
+      "The notebook takes effect only if the writer has seen the reader's face. The mirror of a vestibule will do.",
+      "A written name cannot be erased. A copy already exists, one letter apart, in another hexagon.",
+      "There is no use looking for the way out in the books: all of them describe it, none of them contains it.",
+      "Every name written here is that of a reader the Library has kept.",
+      "The notebook never runs out of pages. There is always one left for the next name.",
+      "If the circumstances are written after the name, they shall come to pass."
+    ],
+    "circumstances": [
+      "hexagon 4021, while reading",
+      "on the stairs, between two galleries",
+      "at the foot of a shelf, a book open over the face",
+      "searching for the catalogue of catalogues",
+      "before the mirror of the vestibule",
+      "at the end of an unlit gallery",
+      "counting the books on the fifth shelf",
+      "on the last page",
+      "leaning over the railing, without falling",
+      "copying out a page that made no sense"
+    ],
+    "scenario": [
+      "{name} takes a book from the Library.",
+      "Reads it to the last page.",
+      "The last page closes nothing: it opens a door.",
+      "{name} takes another book. Then another. Then another still.",
+      "The end of a book is only the threshold of the next.",
+      "And every beginning promises an end it does not always keep."
+    ]
   },
   "oriana": {
     "name": "The Biography of Oriana",

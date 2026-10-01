@@ -47,5 +47,19 @@ export const write = (context: CanvasRenderingContext2D, text: string, x: number
   context.restore();
 };
 
+/** Lignes de `text` d'au plus `width` de large, à la police du contexte. */
+export const wrap = (context: CanvasRenderingContext2D, text: string, width: number): string[] => {
+  const lines: string[] = [];
+  let line = '';
+  for (const word of text.split(' ')) {
+    const tried = line ? `${line} ${word}` : word;
+    if (line && context.measureText(tried).width > width) {
+      lines.push(line);
+      line = word;
+    } else line = tried;
+  }
+  return line ? [...lines, line] : lines;
+};
+
 /** Milieu d'une page (repère de la texture). */
 export const PAGE_CENTER = PAGE_TEXTURE.width / 2;

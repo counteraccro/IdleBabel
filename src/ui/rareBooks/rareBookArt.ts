@@ -19,4 +19,6 @@ export interface RareBookArt {
    * par feuille) ; false : la page reste vierge.
    */
   paint: (page: number, canvas: HTMLCanvasElement, spineOnLeft: boolean, state: GameState, design: CoverDesign) => boolean;
+  /** La page `page` arrive sous les yeux (un secret à apposer…). */
+  shown?: (page: number, state: GameState) => void;
 }
