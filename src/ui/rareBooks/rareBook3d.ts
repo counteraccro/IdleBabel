@@ -32,6 +32,7 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
     },
     look: () => art.look(state, design),
     passed: art.passed && ((page) => art.passed?.(page, state)),
+    tick: art.tick,
     press: (page, x, y) => {
       const link = linkAt(page, x, y);
       if (link) book.navigate?.(link.target);

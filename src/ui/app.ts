@@ -71,7 +71,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     const hash = window.location.hash;
     if (!hash.startsWith(LIBRARY_BOOK_HASH)) return null;
     const id = decodeURIComponent(hash.slice(LIBRARY_BOOK_HASH.length));
-    return isRareBookFound(state, id) || id === LIBRARY_DEBUG_BOOK || (id === LIBRARY_FIRST_BOOK && firstBookKept(state)) ? id : null;
+    return isRareBookFound(state, id) || (id === LIBRARY_DEBUG_BOOK && debugging) || (id === LIBRARY_FIRST_BOOK && firstBookKept(state))
+      ? id
+      : null;
   };
   /** La bibliothèque est ouverte : sa vitrine, ou l'un de ses livres. */
   const inLibrary = (): boolean => window.location.hash === LIBRARY_HASH || window.location.hash.startsWith(LIBRARY_BOOK_HASH);
@@ -160,7 +162,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         if (openedFromGame) window.history.back();
         else window.location.hash = '';
       },
-      debugBook3d,
+      debugging,
     );
     return shelves;
   };
@@ -178,7 +180,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     // La vitrine reste en fond, floue, sous le livre ouvert.
     const page = libraryPage();
     page.setBackdrop(id);
-    const spec = shelfBook3d(state, id, debugBook3d);
+    const spec = shelfBook3d(state, id, debugging);
     // Le livre de débogage, hors du mode ?debug : on le prend en main, mais il refuse de s'ouvrir.
     if (id === LIBRARY_DEBUG_BOOK && !debugging) spec.sealed = showDebugBookError;
     return [header, counter, page, createBook3dPage(spec, leave, t('ui.shelveBook'))];

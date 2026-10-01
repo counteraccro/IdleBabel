@@ -39,4 +39,7 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   // Des noms et des numéros, et une seule fois celui du joueur.
   { id: 'directory' },
   { id: 'deadBook' },
+  // Le livre de débogage (décidé le 01/10) : dix fois plus rare ; du charabia qui bugue, et il ne s'ouvre
+  // dans la bibliothèque qu'en mode ?debug (sa case à lui dans la vitrine).
+  { id: 'debug', weight: 0.1 },
 ];

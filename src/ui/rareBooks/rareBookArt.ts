@@ -23,6 +23,8 @@ export interface RareBookArt {
   links?: (page: number) => PageLink[];
   /** La page `page` a été découverte en tournant les pages, même vite (un secret à apposer…). */
   passed?: (page: number, state: GameState) => void;
+  /** Couverture qui vit (le livre de débogage) : appelé à chaque image ; true si elle a changé. */
+  tick?: (now: number) => boolean;
 }
 
 /** Une entrée cliquable : la bande de la page de `y` à `y + height` (repère de la texture) mène à la page `target`. */

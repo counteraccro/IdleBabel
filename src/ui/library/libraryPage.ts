@@ -13,19 +13,26 @@ import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
 import { DEBUG_CELL, FILL_ORDER, FRONT, createBookcase } from './bookcase3d';
+import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
 import { addCellLights } from './cellLights';
 import { layoutBookcase, type ShelfPlace } from './shelfLayout';
 import type { GameState } from '../../core/state';
 
-/** Le livre de débogage, rangé dans la vitrine (c'est aussi un livre très rare) : il ne s'ouvre qu'en mode ?debug. */
+/**
+ * Le livre de débogage : un livre rare (10× plus rare), rangé dans sa case à lui ; il ne s'ouvre qu'en mode
+ * ?debug, où il est toujours dans la vitrine.
+ */
 export const LIBRARY_DEBUG_BOOK = 'debug';
 /** Le premier livre lu, gardé par le chercheur : sa première trouvaille, la première place de la vitrine. */
 export const LIBRARY_FIRST_BOOK = 'first';
 
-/** Le livre de la vitrine `id` : le premier livre lu, le livre de débogage, ou un livre rare. */
-export const shelfBook3d = (state: GameState, id: string, debugBook: () => Book3d): Book3d =>
-  id === LIBRARY_FIRST_BOOK ? keptBook3d(state, 0) : id === LIBRARY_DEBUG_BOOK ? debugBook() : rareBook3d(state, id);
+/**
+ * Le livre de la vitrine `id` : le premier livre lu, ou un livre rare. Le livre de débogage, en mode ?debug :
+ * le vrai (son catalogue) ; sinon, son charabia qui bugue.
+ */
+export const shelfBook3d = (state: GameState, id: string, debugging: boolean): Book3d =>
+  id === LIBRARY_FIRST_BOOK ? keptBook3d(state, 0) : id === LIBRARY_DEBUG_BOOK && debugging ? debugBook3d() : rareBook3d(state, id);
 
 /** Le livre qui vole de la vitrine à sa page (et retour) : son nom dans bookFlight. */
 export const libraryFlightId = (id: string): string => `library:${id}`;
@@ -78,8 +85,8 @@ export const createLibraryPage = (
   state: GameState,
   onOpen: (id: string) => void,
   onBack: () => void,
-  /** Le livre de débogage, rangé dans sa case à lui. */
-  debugBook: () => Book3d,
+  /** Mode ?debug : le livre de débogage est toujours dans la vitrine, et s'ouvre. */
+  debugging: boolean,
 ): LibraryPage => {
   const root = el('main', 'library-page');
   const back = el('button', 'options-back', `← ${t('ui.back')}`);
@@ -123,10 +130,13 @@ export const createLibraryPage = (
   const found = [
     ...(firstBookKept(state) ? [LIBRARY_FIRST_BOOK] : []),
     ...RARE_BOOKS.map(({ id }) => id)
-      .filter((id) => isRareBookFound(state, id))
+      .filter((id) => id !== LIBRARY_DEBUG_BOOK && isRareBookFound(state, id))
       .sort((a, b) => state.rareBooks[a] - state.rareBooks[b]),
   ];
-  const debugShelf = layoutBookcase([{ id: LIBRARY_DEBUG_BOOK, thickness: THICKNESS }], bookcase.cells, [DEBUG_CELL]);
+  const debugShelf =
+    debugging || isRareBookFound(state, LIBRARY_DEBUG_BOOK)
+      ? layoutBookcase([{ id: LIBRARY_DEBUG_BOOK, thickness: THICKNESS }], bookcase.cells, [DEBUG_CELL])
+      : [];
   const places: Place[] = [
     ...layoutBookcase(
       found.map((id) => ({ id, thickness: thickness(id) })),
@@ -146,7 +156,7 @@ export const createLibraryPage = (
   });
   // Les livres trouvés : leur vrai modèle, chargé à part (couvertures, polices).
   for (const place of places) {
-    const book = shelfBook3d(state, place.spot.id, debugBook);
+    const book = shelfBook3d(state, place.spot.id, debugging);
     place.tick = book.tick;
     void book.look().then((look) => {
       if (!root.isConnected && mounted) return;
@@ -222,8 +232,7 @@ export const createLibraryPage = (
       });
     return shown.find((place) => hit && place.holder!.getObjectById(hit.object.id)) ?? null;
   };
-  const label = ({ spot: { id } }: Place): string =>
-    id === LIBRARY_DEBUG_BOOK ? t('ui.debugBook') : id === LIBRARY_FIRST_BOOK ? t('ui.firstBook') : t(`rareBooks.${id}.name`);
+  const label = ({ spot: { id } }: Place): string => (id === LIBRARY_FIRST_BOOK ? t('ui.firstBook') : t(`rareBooks.${id}.name`));
   const hover = (place: Place | null): void => {
     if (hovered === place) return;
     if (hovered) hovered.aim = 0;
