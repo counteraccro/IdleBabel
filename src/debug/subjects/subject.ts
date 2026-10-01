@@ -46,6 +46,8 @@ export interface NumberOptions {
   steps?: boolean;
   /** Ce que font ces boutons, quand ce n'est pas simplement écrire la nouvelle valeur. */
   step?: (delta: number) => void;
+  /** Accepte les décimales (0,5) au lieu de les arrondir à l'entier. */
+  decimal?: boolean;
 }
 
 /**
@@ -108,12 +110,12 @@ export const createKit = (): { rows: HTMLElement; kit: CardKit; update: () => vo
         else value.replaceChildren(...Array.from({ length: total }, (_, index) => el('i', index < done ? 'done' : undefined)));
       });
     },
-    number: (label, read, write, { hint, max, steps, step } = {}) => {
-      const input = numberInput(write, max);
+    number: (label, read, write, { hint, max, steps, step, decimal } = {}) => {
+      const input = numberInput(write, max, decimal);
       const control = steps ? stepper(input, step ?? ((delta) => write(clampCount(read() + delta, max)))) : input;
       add(row(label, control, hint), true);
       updaters.push(() => {
-        if (document.activeElement !== input) input.value = showCount(read());
+        if (document.activeElement !== input) input.value = showCount(read(), decimal);
       });
     },
     presets: (label, values, apply, hint) => {

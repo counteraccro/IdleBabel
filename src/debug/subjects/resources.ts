@@ -1,4 +1,4 @@
-import { pagesPerSecond } from '../../systems/production';
+import { forcePagesPerSecond, isForcingPagesPerSecond, pagesPerSecond } from '../../systems/production';
 import { addKnowledge, findChance, forceFinds, isForcingFinds } from '../../systems/knowledge';
 import { rewriteBigBook } from '../refresh';
 import { compact, format, type DebugSubject } from './subject';
@@ -35,7 +35,12 @@ export const RESOURCE_SUBJECTS: DebugSubject[] = [
         },
         'Règle les pages en mémoire et les pages traversées d’un coup.',
       );
-      kit.info('Par seconde', () => `${format(pagesPerSecond(state))} pages/s`, '« Pages qui passent sous tes yeux à chaque seconde. »');
+      kit.number('Par seconde', () => pagesPerSecond(state), forcePagesPerSecond, {
+        hint: '« Pages qui passent sous tes yeux à chaque seconde. » Une valeur saisie remplace la production des méthodes (jusqu’au rechargement, ou « Production des méthodes »).',
+        decimal: true,
+      });
+      kit.info('Imposée', () => (isForcingPagesPerSecond() ? 'oui, à la main' : 'non : les méthodes'));
+      kit.actions(['Production des méthodes', () => forcePagesPerSecond(undefined), { title: 'Oublie la valeur saisie à la main.' }]);
     },
   },
   {

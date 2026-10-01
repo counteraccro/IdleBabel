@@ -1,8 +1,15 @@
 import { TOOLS } from '../data/tools';
 import type { GameState } from '../core/state';
 
+/** Débogage : production imposée à la main, à la place de celle des méthodes (pas dans la sauvegarde). */
+let forcedPagesPerSecond: number | undefined;
+export const forcePagesPerSecond = (value: number | undefined): void => {
+  forcedPagesPerSecond = value;
+};
+export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== undefined;
+
 export const pagesPerSecond = (state: GameState): number =>
-  TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
+  forcedPagesPerSecond ?? TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
 
 /**
  * Ce qu'un ajout n'a pas pu compter : au-delà de ~10¹⁵ pages, un nombre à virgule ne distingue plus les

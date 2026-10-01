@@ -49,12 +49,20 @@ export const toggle = (onChange: (checked: boolean) => void): { root: HTMLElemen
 /** Nombre entier, affiché avec ses espaces (1 000 000), jamais sous 0 ni au-dessus de `max`. */
 export const clampCount = (value: number, max?: number): number => Math.min(Math.max(0, Math.floor(value)), max ?? Infinity);
 
-export const showCount = (value: number): string => Math.floor(value).toLocaleString('fr-FR');
+export const showCount = (value: number, decimal = false): string =>
+  decimal ? value.toLocaleString('fr-FR', { maximumFractionDigits: 2 }) : Math.floor(value).toLocaleString('fr-FR');
 
-export const numberInput = (onChange: (value: number) => void, max?: number): HTMLInputElement => {
+/** Valeur saisie : chiffres seulement, ou avec une virgule (ou un point) si `decimal`. */
+const parseCount = (text: string, decimal: boolean): number =>
+  decimal ? Math.max(0, Number(text.replace(/[^\d,.]/g, '').replace(',', '.')) || 0) : Number(text.replace(/\D/g, '')) || 0;
+
+export const numberInput = (onChange: (value: number) => void, max?: number, decimal = false): HTMLInputElement => {
   const input = el('input', 'debug-field');
-  input.inputMode = 'numeric';
-  input.addEventListener('change', () => onChange(clampCount(Number(input.value.replace(/\D/g, '')) || 0, max)));
+  input.inputMode = decimal ? 'decimal' : 'numeric';
+  input.addEventListener('change', () => {
+    const value = parseCount(input.value, decimal);
+    onChange(decimal ? Math.min(value, max ?? Infinity) : clampCount(value, max));
+  });
   return input;
 };
 
