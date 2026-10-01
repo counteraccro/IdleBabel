@@ -37,6 +37,8 @@ export interface Turner {
   update: (dt: number) => boolean;
   /** Le contenu a changé : redessine les pages visibles. */
   refresh: () => void;
+  /** Le livre s'en va : les pages dessinées d'avance sont libérées (elles ne sont pas toutes sur le livre). */
+  dispose: () => void;
 }
 
 /**
@@ -163,6 +165,7 @@ export const createTurner = (
       pages.clear();
       apply(true);
     },
+    dispose: () => pages.clear(),
   };
   apply(true);
   return turner;

@@ -357,6 +357,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
       flight?.stop();
       lifetime.abort();
       controls.dispose();
+      turner?.dispose();
       destroy(scene);
       return;
     }

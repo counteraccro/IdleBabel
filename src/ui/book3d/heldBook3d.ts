@@ -110,6 +110,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
       hands.remove(book.root);
       disposeObject(book.root);
     }
+    turner?.dispose();
     book = createBookMesh(shape, look);
     book.setOpen(closed ? 0 : 1);
     hands.add(book.root);
@@ -219,6 +220,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     // Livre retiré (changement de langue, autre page) : son contexte WebGL est rendu tout de suite.
     if (!root.isConnected) {
       lifetime.abort();
+      turner?.dispose();
       destroy(scene);
       return;
     }

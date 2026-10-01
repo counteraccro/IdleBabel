@@ -207,6 +207,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     const next = screen();
     // Ce qui reste d'un écran à l'autre (en-tête, compteur, vitrine sous un livre ouvert) ne bouge pas.
     const leaving = components.filter((c) => !lasting.includes(c) && !next.includes(c));
+    // La vitrine quittée n'est plus retenue (sa scène, ses images) : la prochaine visite en refait une.
+    if (shelves && leaving.includes(shelves)) shelves = null;
     components = next;
     for (const old of leaving) {
       // Livre qui retourne à la pile : sa page reste jusqu'à ce qu'il y soit, puis s'en va d'elle-même.
