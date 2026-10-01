@@ -19,6 +19,8 @@ export interface RareBookArt {
    * par feuille) ; false : la page reste vierge.
    */
   paint: (page: number, canvas: HTMLCanvasElement, spineOnLeft: boolean, state: GameState, design: CoverDesign) => boolean;
+  /** La page du signet (son sommaire) : un clic sur le ruban y ramène ; sans : la page de titre. */
+  bookmark?: number;
   /** Les entrées cliquables de la page `page` (un sommaire) : chacune mène à sa page. */
   links?: (page: number) => PageLink[];
   /** La page `page` a été découverte en tournant les pages, même vite (un secret à apposer…). */

@@ -2,7 +2,7 @@ import { MODERN_PAPER, preparePageTexture } from '../book/pageRender';
 import { headbandTexture } from '../book3d/headband';
 import { edgeTexture } from '../book3d/textures';
 import { SLATE, SLATE_EDGE, blankPageBack, blankPageFront, blankPageSpine, loadBlankPageFonts } from './blankPageCover';
-import { blankPageLinks, paintBlankPage } from './blankPagePages';
+import { CONTENTS_PAGE, blankPageLinks, paintBlankPage } from './blankPagePages';
 import { board } from './draw';
 import type { RareBookArt } from './rareBookArt';
 
@@ -33,5 +33,6 @@ export const blankPageArt: RareBookArt = {
     paintBlankPage(preparePageTexture(canvas, spineOnLeft, MODERN_PAPER), page);
     return true;
   },
+  bookmark: CONTENTS_PAGE,
   links: blankPageLinks,
 };

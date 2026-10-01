@@ -150,6 +150,7 @@ export const directoryArt: RareBookArt = {
     highlightFinds(canvas, context, found, NAME_FONT);
     return true;
   },
+  bookmark: CONTENTS_PAGE,
   links: directoryLinks,
   // Secret : son nom et son numéro, à sa place.
   passed: (page, state) => {

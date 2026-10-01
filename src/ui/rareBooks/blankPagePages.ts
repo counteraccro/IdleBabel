@@ -21,7 +21,7 @@ const folio = (context: CanvasRenderingContext2D, page: number): void =>
   write(context, String(page), PAGE_CENTER, HEIGHT - 66, { font: `18px ${GARAMOND}`, color: INK });
 
 /** Le sommaire, page 3 ; ses lignes. */
-const CONTENTS_PAGE = 3;
+export const CONTENTS_PAGE = 3;
 const CONTENTS_TOP = 200;
 const CONTENTS_STEP = 50;
 

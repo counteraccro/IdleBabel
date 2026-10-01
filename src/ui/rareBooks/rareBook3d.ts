@@ -39,6 +39,8 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
     },
     passed: art.passed && ((page) => art.passed?.(page, state)),
     tick: (now) => tick?.(now) ?? false,
+    // Le signet : de n'importe où dans le livre, on revient au sommaire (ou au titre), puis on le referme.
+    bookmark: art.bookmark ?? 1,
     press: (page, x, y) => {
       const link = linkAt(page, x, y);
       if (link) book.navigate?.(link.target);
