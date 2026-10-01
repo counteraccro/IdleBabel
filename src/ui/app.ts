@@ -19,7 +19,7 @@ import { mountLore } from './lore';
 import { isDebugEnabled, DEBUG_BOOK_HASH, RARE_BOOK_HASH } from '../debug/enabled';
 import { rareBook3d } from './rareBooks/rareBook3d';
 import { debugBook3d } from '../debug/book/debugBook3d';
-import { createLibraryPage } from './library/libraryPage';
+import { createLibraryPage, type LibraryPage } from './library/libraryPage';
 import { isRareBookFound } from '../systems/rareBooks';
 import type { Component } from './dom';
 
@@ -140,10 +140,11 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   // Un livre de la vitrine : il s'ouvre par-dessus elle, et « retour » y ramène.
   let openedFromLibrary = false;
-  const library = (): Component[] => [
-    header,
-    counter,
-    createLibraryPage(
+  /** La vitrine à l'écran : gardée telle quelle quand un de ses livres s'ouvre par-dessus, et au retour. */
+  let shelves: LibraryPage | null = null;
+  const libraryPage = (): LibraryPage => {
+    if (shelves && components.includes(shelves)) return shelves;
+    shelves = createLibraryPage(
       state,
       (id) => {
         openedFromLibrary = true;
@@ -153,15 +154,24 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         if (openedFromGame) window.history.back();
         else window.location.hash = '';
       },
-    ),
-  ];
+    );
+    return shelves;
+  };
+  const library = (): Component[] => {
+    const page = libraryPage();
+    page.setBackdrop(null);
+    return [header, counter, page];
+  };
   const libraryBookPage = (id: string): Component[] => {
     const leave = (): void => {
       if (openedFromLibrary) window.history.back();
       else window.location.hash = LIBRARY_HASH;
       openedFromLibrary = false;
     };
-    return [header, counter, createBook3dPage(rareBook3d(state, id), leave, t('ui.backToLibrary'))];
+    // La vitrine reste en fond, floue, sous le livre ouvert.
+    const page = libraryPage();
+    page.setBackdrop(id);
+    return [header, counter, page, createBook3dPage(rareBook3d(state, id), leave, t('ui.shelveBook'))];
   };
 
   const screen = (): Component[] => {
@@ -194,8 +204,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     document.documentElement.lang = state.locale;
     // L'en-tête et le compteur restent ; le reste de l'écran d'avant s'efface puis s'en va, le nouveau
     // apparaît en fondu (la page d'un livre venu de la pile gère elle-même son arrivée).
-    const leaving = components.filter((c) => !lasting.includes(c));
-    components = screen();
+    const next = screen();
+    // Ce qui reste d'un écran à l'autre (en-tête, compteur, vitrine sous un livre ouvert) ne bouge pas.
+    const leaving = components.filter((c) => !lasting.includes(c) && !next.includes(c));
+    components = next;
     for (const old of leaving) {
       // Livre qui retourne à la pile : sa page reste jusqu'à ce qu'il y soit, puis s'en va d'elle-même.
       if (old.root.classList.contains('homing')) continue;
@@ -206,7 +218,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     if (!header.root.isConnected) root.prepend(header.root);
     if (!counter.root.isConnected) header.root.after(counter.root);
     for (const c of components) {
-      if (lasting.includes(c)) continue;
+      if (lasting.includes(c) || c.root.isConnected) continue;
       if (openBook() === null && leaving.length > 0) {
         c.root.classList.add('screen-in');
         // Fondu fini, l'animation est retirée : elle tiendrait l'opacité à 1 et empêcherait le fondu de sortie.

@@ -52,7 +52,15 @@ interface Place {
  * peu de sa case et son nom s'écrit sous lui, sur le bord de l'étagère ; au clic, il s'envole vers sa page (`onOpen`), comme les
  * livres de la pile, et y revient au retour. Pièce à part : elle ne se vide jamais.
  */
-export const createLibraryPage = (state: GameState, onOpen: (id: string) => void, onBack: () => void): Component => {
+export interface LibraryPage extends Component {
+  /**
+   * Un de ses livres (`id`) est ouvert par-dessus : la vitrine reste en fond, floue, sa place vide, et ne
+   * répond plus ; null : elle revient au premier plan.
+   */
+  setBackdrop: (id: string | null) => void;
+}
+
+export const createLibraryPage = (state: GameState, onOpen: (id: string) => void, onBack: () => void): LibraryPage => {
   const root = el('main', 'library-page');
   const back = el('button', 'options-back', `← ${t('ui.back')}`);
   back.addEventListener('click', onBack);
@@ -165,6 +173,8 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   let hovered: Place | null = null;
+  /** Le livre ouvert par-dessus la vitrine : sa place reste vide jusqu'à ce qu'il y soit revenu. */
+  let opened: string | null = null;
   const placeAt = (event: MouseEvent): Place | null => {
     const rect = canvas.getBoundingClientRect();
     pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
@@ -202,6 +212,7 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
     // Il part de sa place dans sa case, tel qu'on le voit (sorti à moitié) : la page reprend ce départ.
     if (!still.matches) launchFlight(libraryFlightId(place.spot.id), place.book, camera, canvas);
     place.holder.visible = false;
+    opened = place.spot.id;
     onOpen(place.spot.id);
   });
 
@@ -221,7 +232,7 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
     wasFlying = flight;
     for (const place of places) {
       if (!place.holder) continue;
-      const away = home.has(libraryFlightId(place.spot.id));
+      const away = home.has(libraryFlightId(place.spot.id)) || opened === place.spot.id;
       if (place.holder.visible === away) {
         place.holder.visible = !away;
         moving = true;
@@ -247,6 +258,13 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
 
   return {
     root,
+    setBackdrop: (id) => {
+      if (id) hover(null);
+      // Au retour, le livre est déjà en vol vers sa place (flyingHome) : elle reste vide jusqu'à son arrivée.
+      opened = id;
+      root.classList.toggle('backdrop', id !== null);
+      dirty = true;
+    },
     update: () => {
       back.textContent = `← ${t('ui.back')}`;
       if (hovered) caption.textContent = label(hovered);

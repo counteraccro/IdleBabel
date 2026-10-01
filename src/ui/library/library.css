@@ -17,6 +17,7 @@
   background: #000;
 }
 .library-stage {
+  transition: filter 0.6s;
   flex: 1;
   /* Sous le compteur, au milieu de l'en-tête. */
   margin-top: 36px;
@@ -49,4 +50,20 @@
 }
 .library-caption.shown {
   opacity: 1;
+}
+/*
+ * Un livre ouvert par-dessus : la vitrine reste en fond, floue et assombrie (le flou sur la scène seule :
+ * sur la page, il décrocherait le fond noir fixe), et ne retient plus la souris.
+ */
+.library-page.backdrop {
+  pointer-events: none;
+}
+.library-page.backdrop .library-stage {
+  filter: blur(7px) brightness(0.5);
+}
+.library-page > .options-back {
+  transition: opacity 0.4s;
+}
+.library-page.backdrop > .options-back {
+  opacity: 0;
 }
