@@ -29,6 +29,8 @@ export const coverTitle = (design: CoverDesign): string[] => {
   const { words, titles } = messages().covers;
   // Déchiffré (ou débogage « statistiques visibles ») : le livre étrange porte son titre en clair.
   if (design.strange && (statsRevealed() || strangeTitleReadable())) return [messages().strangeBook.title];
+  // Un livre rare : son vrai titre, ligne par ligne.
+  if (design.rare) return [...((messages().rareBooks as Record<string, { cover: string[] }>)[design.rare]?.cover ?? [])];
   switch (forced ?? design.sense.kind) {
     case 'title':
       return [...pickFrom(titles, pick)];

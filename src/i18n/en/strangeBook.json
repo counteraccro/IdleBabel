@@ -35,6 +35,7 @@
     "fragments": "Fragments",
     "time": "Time",
     "methods": "Methods",
+    "rare": "Rare books",
     "secrets": "Secrets"
   },
   "seals": {
@@ -58,6 +59,7 @@
     "anomalies-others": "Follow the trail of all who came before",
     "anomalies-unwritten": "Read what should not be written",
     "anomalies-numbers": "Endure the vertigo of numbers",
-    "anomalies-ordinary": "Find the ordinary amid the infinite"
+    "anomalies-ordinary": "Find the ordinary amid the infinite",
+    "rareBook": "Found: {title}"
   }
 }

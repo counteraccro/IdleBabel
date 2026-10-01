@@ -35,6 +35,7 @@
     "fragments": "Fragments",
     "time": "Temps",
     "methods": "Méthodes",
+    "rare": "Livres rares",
     "secrets": "Secrets"
   },
   "seals": {
@@ -58,6 +59,7 @@
     "anomalies-others": "Suis la trace de tous ceux d'avant",
     "anomalies-unwritten": "Lis ce qui ne devrait pas être écrit",
     "anomalies-numbers": "Soutiens le vertige des nombres",
-    "anomalies-ordinary": "Trouve le banal au milieu de l'infini"
+    "anomalies-ordinary": "Trouve le banal au milieu de l'infini",
+    "rareBook": "Trouver : {title}"
   }
 }

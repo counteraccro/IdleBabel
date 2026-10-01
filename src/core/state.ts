@@ -76,6 +76,11 @@ export interface GameState {
   deciphered: PartId[];
   /** Sceaux obtenus (voir data/seals.ts), avec leur date. */
   seals: Record<string, number>;
+  /**
+   * Livres rares trouvés (data/rareBooks.ts) et le numéro du livre où chacun l'a été. Uniques : jamais
+   * retrouvés, et gardés à l'Exil (la bibliothèque personnelle n'est jamais remise à zéro).
+   */
+  rareBooks: Record<string, number>;
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   history: HistoryEntry[];
@@ -104,6 +109,7 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   written: {},
   deciphered: [],
   seals: {},
+  rareBooks: {},
   newSeals: [],
   history: [{ type: 'gameStarted', at: now }],
   lorePending: [],

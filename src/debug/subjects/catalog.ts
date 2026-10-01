@@ -3,6 +3,7 @@ import { METHOD_SUBJECTS } from './methods';
 import { SENTENCE_SUBJECTS } from './sentences';
 import { ALL_SENTENCES_SUBJECT } from './allSentences';
 import { BOOK_SUBJECTS } from './books';
+import { RARE_BOOK_SUBJECT } from './rareBooks';
 import { LORE_SUBJECTS } from './lore';
 import { SEAL_SUBJECTS } from './seals';
 import { DISPLAY_SUBJECTS } from './display';
@@ -15,6 +16,7 @@ export const SUBJECTS: readonly DebugSubject[] = [
   ALL_SENTENCES_SUBJECT,
   ...SENTENCE_SUBJECTS,
   ...BOOK_SUBJECTS,
+  RARE_BOOK_SUBJECT,
   ...LORE_SUBJECTS,
   ...SEAL_SUBJECTS,
   ...DISPLAY_SUBJECTS,

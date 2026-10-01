@@ -1,0 +1,86 @@
+{
+  "necronomicon": {
+    "name": "The Necronomicon",
+    "cover": ["Necronomicon"]
+  },
+  "bible": {
+    "name": "The Bible",
+    "cover": ["The Bible"]
+  },
+  "odyssey": {
+    "name": "The Odyssey",
+    "cover": ["The Odyssey"]
+  },
+  "arabianNights": {
+    "name": "One Thousand and One Nights",
+    "cover": ["One Thousand", "and One Nights"]
+  },
+  "quixote": {
+    "name": "Don Quixote",
+    "cover": ["Don Quixote"]
+  },
+  "divineComedy": {
+    "name": "The Divine Comedy",
+    "cover": ["The Divine", "Comedy"]
+  },
+  "voynich": {
+    "name": "The Voynich Manuscript",
+    "cover": ["The Voynich", "Manuscript"]
+  },
+  "saragossa": {
+    "name": "The Manuscript Found in Saragossa",
+    "cover": ["Manuscript Found", "in Saragossa"]
+  },
+  "alice": {
+    "name": "Alice's Adventures in Wonderland",
+    "cover": ["Alice's", "Adventures", "in Wonderland"]
+  },
+  "mobyDick": {
+    "name": "Moby-Dick",
+    "cover": ["Moby-Dick"]
+  },
+  "encyclopedia": {
+    "name": "The Encyclopédie",
+    "cover": ["Encyclopédie"]
+  },
+  "catalogue": {
+    "name": "The Catalogue of Catalogues",
+    "cover": ["Catalogue", "of Catalogues"]
+  },
+  "sand": {
+    "name": "The Book of Sand",
+    "cover": ["The Book", "of Sand"]
+  },
+  "vindication": {
+    "name": "Your Vindication",
+    "cover": ["Your", "Vindication"]
+  },
+  "deathBook": {
+    "name": "The DeathBook",
+    "cover": ["DeathBook"]
+  },
+  "oriana": {
+    "name": "The Biography of Oriana",
+    "cover": ["The Biography", "of Oriana"]
+  },
+  "alexH": {
+    "name": "AlexH, My Code, My PR",
+    "cover": ["AlexH", "My Code, My PR"]
+  },
+  "blankPage": {
+    "name": "Blank Page, the Explanation",
+    "cover": ["Blank Page", "the Explanation"]
+  },
+  "almanac": {
+    "name": "The Sports Almanac 1950-2000",
+    "cover": ["Sports", "Almanac", "1950-2000"]
+  },
+  "directory": {
+    "name": "The Directory",
+    "cover": ["Directory"]
+  },
+  "deadBook": {
+    "name": "The Book of the Dead",
+    "cover": ["The Book", "of the Dead"]
+  }
+}

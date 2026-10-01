@@ -3,13 +3,14 @@ import { STRANGE_BOOK_INDEX } from '../systems/strangeBook';
 import { meaningfulCovers } from '../systems/stats';
 import { isComplete } from '../systems/sentences';
 import { ANOMALIES, ANOMALY_FAMILIES } from './anomalies';
+import { RARE_BOOKS } from './rareBooks';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
  * une ligne ici, et son texte dans i18n (strangeBook.seals.<texte>) — le sigle, la place sur la
  * planche et la légende sont générés.
  */
-export const PLATES = ['pages', 'books', 'fragments', 'time', 'methods', 'secrets'] as const;
+export const PLATES = ['pages', 'books', 'fragments', 'time', 'methods', 'rare', 'secrets'] as const;
 export type PlateId = (typeof PLATES)[number];
 
 export interface SealDef {
@@ -19,6 +20,8 @@ export interface SealDef {
   text: string;
   /** Palier d'une série (le sigle de la série se complexifie d'un palier à l'autre). */
   tier?: { n: number; index: number };
+  /** Sceau d'un livre rare (data/rareBooks.ts) : son titre remplace `{title}` dans le texte. */
+  rareBook?: string;
   reached: (state: GameState) => boolean;
 }
 
@@ -57,6 +60,15 @@ export const SEALS: readonly SealDef[] = [
   ...series('playTime', 'time', (s) => s.stats.playSeconds / HOUR, [1, 10, 100]),
 
   ...series('diagonal', 'methods', (s) => s.tools.diagonal, [1, 10, 100, K]),
+
+  // Un sceau par livre rare, apposé quand il arrive en main.
+  ...RARE_BOOKS.map((book): SealDef => ({
+    id: `rare-${book.id}`,
+    plate: 'rare',
+    text: 'rareBook',
+    rareBook: book.id,
+    reached: (s) => book.id in s.rareBooks,
+  })),
 
   seal('strangeBook', 'secrets', (s) => s.booksFinished >= STRANGE_BOOK_INDEX),
   seal('insomnia', 'secrets', () => new Date().getHours() === 3),

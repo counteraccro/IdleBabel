@@ -1,5 +1,6 @@
 import { createPage } from '../../systems/babelText';
-import { coverDesign } from '../../systems/coverDesign';
+import { coverDesign, rareCover } from '../../systems/coverDesign';
+import { takeBook } from '../../systems/rareBooks';
 import { pageNumberLabel } from '../../systems/pageNumber';
 import { producedWholePages } from '../../systems/production';
 import { PAGES_PER_BOOK } from '../../systems/books';
@@ -31,7 +32,9 @@ const PAGE_LENGTH = 700;
  */
 export const handBook3d = (state: GameState, index = state.booksFinished, finds?: HandFinds): Book3d => {
   finds?.open(index);
-  const design = coverDesign(index);
+  // Un livre rare arrive en main : il est trouvé, pour toujours.
+  const rare = isStrangeBook(index) ? undefined : takeBook(state, index);
+  const design = rare ? rareCover(coverDesign(index), rare) : coverDesign(index);
   const strange = isStrangeBook(index) ? strangeHandPages(state) : null;
   const paper = strange ? STRANGE_PAPER : design.modern ? MODERN_PAPER : OLD_PAPER;
   const binding = strange ? STRANGE_BINDING : design.modern ? modernBindingFor(index) : bindingFor(index);

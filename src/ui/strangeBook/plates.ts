@@ -48,7 +48,7 @@ export const plateTitle = (state: GameState, plate: PlateId): string =>
   isDeciphered(state, 'contents') ? t(`strangeBook.plates.${plate}`) : babelName(`plate:${plate}`, 1);
 
 const sealText = (seal: SealDef): string => {
-  const text = t(`strangeBook.seals.${seal.text}`);
+  const text = t(`strangeBook.seals.${seal.text}`).replace('{title}', seal.rareBook ? t(`rareBooks.${seal.rareBook}.name`) : '');
   return seal.tier ? text.replace('{n}', formatNumber(seal.tier.n, getLocale())) : text;
 };
 
@@ -67,10 +67,13 @@ export const sealLegend = (state: GameState, id: string | null): { name: string;
   return { name: babelName(seal.id), text: obtained ? `${babelName(`${seal.id}:text`, 4)} — ${when}` : when };
 };
 
-/** Obtenus sur total ; les secrets ne disent pas combien il en reste. */
+/** Planches qui ne disent pas combien il reste à trouver. */
+const HIDDEN_PLATES: readonly PlateId[] = ['rare', 'secrets'];
+
+/** Obtenus sur total ; les secrets et les livres rares ne disent pas combien il en reste. */
 const tally = (state: GameState, plate: PlateId): string => {
   const seals = plateSeals(plate);
-  return writeDigits(`${countObtained(state, seals)} / ${plate === 'secrets' && !statsRevealed() ? '?' : seals.length}`);
+  return writeDigits(`${countObtained(state, seals)} / ${HIDDEN_PLATES.includes(plate) && !statsRevealed() ? '?' : seals.length}`);
 };
 
 const LINE_TOP = 400;
@@ -134,7 +137,7 @@ export const plateItems = (
     const first = Math.floor((count - inRow.length) / 2);
     return inRow.map((seal, i): Item => {
       const obtained = sealObtained(state, seal);
-      const look = obtained ? 'gold' : seal.plate === 'secrets' && !statsRevealed() ? 'hidden' : 'embossed';
+      const look = obtained ? 'gold' : HIDDEN_PLATES.includes(seal.plate) && !statsRevealed() ? 'hidden' : 'embossed';
       return {
         kind: 'seal',
         id: seal.id,

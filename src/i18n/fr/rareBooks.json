@@ -1,0 +1,86 @@
+{
+  "necronomicon": {
+    "name": "Le Necronomicon",
+    "cover": ["Necronomicon"]
+  },
+  "bible": {
+    "name": "La Bible",
+    "cover": ["La Bible"]
+  },
+  "odyssey": {
+    "name": "L'Odyssée",
+    "cover": ["L'Odyssée"]
+  },
+  "arabianNights": {
+    "name": "Les Mille et Une Nuits",
+    "cover": ["Les Mille", "et Une Nuits"]
+  },
+  "quixote": {
+    "name": "Don Quichotte",
+    "cover": ["Don Quichotte"]
+  },
+  "divineComedy": {
+    "name": "La Divine Comédie",
+    "cover": ["La Divine", "Comédie"]
+  },
+  "voynich": {
+    "name": "Le Manuscrit de Voynich",
+    "cover": ["Manuscrit", "de Voynich"]
+  },
+  "saragossa": {
+    "name": "Le Manuscrit trouvé à Saragosse",
+    "cover": ["Manuscrit trouvé", "à Saragosse"]
+  },
+  "alice": {
+    "name": "Alice au pays des merveilles",
+    "cover": ["Alice", "au pays", "des merveilles"]
+  },
+  "mobyDick": {
+    "name": "Moby Dick",
+    "cover": ["Moby Dick"]
+  },
+  "encyclopedia": {
+    "name": "L'Encyclopédie",
+    "cover": ["Encyclopédie"]
+  },
+  "catalogue": {
+    "name": "Le Catalogue des catalogues",
+    "cover": ["Catalogue", "des catalogues"]
+  },
+  "sand": {
+    "name": "Le Livre de sable",
+    "cover": ["Le Livre", "de sable"]
+  },
+  "vindication": {
+    "name": "Ta Justification",
+    "cover": ["Ta", "Justification"]
+  },
+  "deathBook": {
+    "name": "Le DeathBook",
+    "cover": ["DeathBook"]
+  },
+  "oriana": {
+    "name": "La biographie d'Oriana",
+    "cover": ["Biographie", "d'Oriana"]
+  },
+  "alexH": {
+    "name": "AlexH, mon code, ma PR",
+    "cover": ["AlexH", "mon code, ma PR"]
+  },
+  "blankPage": {
+    "name": "Page blanche, l'explication",
+    "cover": ["Page blanche", "l'explication"]
+  },
+  "almanac": {
+    "name": "L'Almanach des sports 1950-2000",
+    "cover": ["Almanach", "des sports", "1950-2000"]
+  },
+  "directory": {
+    "name": "L'Annuaire",
+    "cover": ["Annuaire"]
+  },
+  "deadBook": {
+    "name": "Le Livre des morts",
+    "cover": ["Le Livre", "des morts"]
+  }
+}

@@ -30,6 +30,8 @@ export interface CoverDesign {
   sense: { kind: 'none' | 'word' | 'title'; slot: number; pick: number };
   /** Le livre étrange (voir strangeBook.ts). */
   strange?: boolean;
+  /** Un livre rare (data/rareBooks.ts) : son vrai titre sur la couverture. */
+  rare?: string;
 }
 
 export const FRAME_COUNT = 4;
@@ -81,6 +83,14 @@ const strangeCover = (design: CoverDesign, random: () => number): CoverDesign =>
   modern: false,
   strange: true,
   blurb: randomDigitText(40, random),
+  sense: { kind: 'none', slot: 0, pick: 0 },
+});
+
+/** Couverture d'un livre rare : le cuir tiré de son numéro, son vrai titre, pas de livre moderne. */
+export const rareCover = (design: CoverDesign, id: string): CoverDesign => ({
+  ...design,
+  rare: id,
+  modern: false,
   sense: { kind: 'none', slot: 0, pick: 0 },
 });
 
