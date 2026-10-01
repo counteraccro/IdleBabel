@@ -2,7 +2,7 @@ import { writeDigits } from '../../core/format';
 import { t } from '../../i18n';
 import { SENTENCES, type SentenceDef, type SentenceKind } from '../../data/sentences';
 import { ANOMALY_FAMILIES } from '../../data/anomalies';
-import { anomalies, anomalyPages, familyTitle, ofFamily } from './anomalyPages';
+import { anomalyPages, familyTitle, ofFamily } from './anomalyPages';
 import { contentsItems, type ContentsEntry } from './contents';
 import { partTitleItems } from './partTitle';
 import { completion, guess, guessPrice, isComplete, written } from '../../systems/sentences';
@@ -111,16 +111,16 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
   ];
   // Page de titre d'une partie, sur une page de droite (une page blanche avant si besoin) : son contenu
   // commence en face, à gauche.
-  const partTitle = (kind: SentenceKind, number: number, sentences: readonly SentenceDef[]): void => {
+  const partTitle = (kind: SentenceKind, number: number): void => {
     if (pages.length % 2 === 0) {
       const blank = pages.length;
       pages.push(createLeafPage(() => [folio(blank)], goTo));
     }
-    entries.push({ title: () => t(`whiteBook.parts.${kind}`), sentences, page: pages.length });
-    pages.push(createLeafPage(() => partTitleItems(kind, number), goTo));
+    entries.push({ title: () => t(`whiteBook.parts.${kind}`), page: pages.length });
+    pages.push(createLeafPage(() => partTitleItems(state, kind, number), goTo));
   };
   (['method', 'memory'] as const).forEach((kind, index) => {
-    partTitle(kind, index + 1, ofKind(kind));
+    partTitle(kind, index + 1);
     for (const sentence of ofKind(kind)) {
       const number = pages.length;
       pages.push(
@@ -130,12 +130,11 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
       );
     }
   });
-  partTitle('anomaly', 3, anomalies());
+  partTitle('anomaly', 3);
   const anomalyPart = anomalyPages(state, pages.length, freshOf);
   entries.push(
     ...ANOMALY_FAMILIES.filter((family) => ofFamily(family).length > 0).map((family) => ({
       title: (current: GameState) => familyTitle(current, family),
-      sentences: ofFamily(family),
       page: anomalyPart.familyPage[family],
       sub: true,
     })),

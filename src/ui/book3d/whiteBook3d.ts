@@ -31,10 +31,14 @@ export const whiteBook3d = (state: GameState): Book3d => {
         edge: edgeTexture('#d6ae5a', '#a47d2e'),
         paper: 0xf3eee2,
         headband: headbandTexture('#c8993f', '#efe4c6'),
+        // Signet de soie dorée, comme la tranchefile.
+        ribbon: 0xb08a3e,
       };
     },
     // Phrases qui se complètent, notes au crayon : les pages suivent la partie.
     live: true,
+    // Le signet ramène au sommaire : la page de gauche de la deuxième double page.
+    bookmark: 2,
   };
   return book;
 };
