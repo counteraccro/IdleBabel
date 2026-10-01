@@ -7,6 +7,7 @@ import { isDeciphered } from '../../systems/decipher';
 import { PARTS, type PartId } from '../../data/decipher';
 import { bigBookOpen, rebuildScreen, refreshBook, rewriteBigBook } from '../refresh';
 import { completeSentence } from './methods';
+import { remember } from '../remember';
 import { format, type DebugSubject } from './subject';
 
 /** Menu des titres de couverture : tels que tirés, ou tous d'une sorte. */
@@ -26,6 +27,9 @@ const titlesMenu = (): HTMLElement => {
     forceTitles((titles.value || undefined) as TitleOverride);
     refreshBook();
   });
+  // Le choix gardé vaut dès l'ouverture de la barre.
+  remember('titles', titles);
+  if (titles.value) forceTitles(titles.value as TitleOverride);
   return titles;
 };
 

@@ -4,6 +4,7 @@ import { RARE_BOOKS } from '../../data/rareBooks';
 import { forceRareBook, isRareBookFound, rareBookAt } from '../../systems/rareBooks';
 import { refreshBook } from '../refresh';
 import { RARE_BOOK_HASH } from '../enabled';
+import { remember } from '../remember';
 import type { DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
@@ -12,7 +13,9 @@ const rareName = (id: string): string => t(`rareBooks.${id}.name`);
 /** Menu des livres rares, trouvés cochés. */
 const rareMenu = (state: GameState): HTMLSelectElement => {
   const menu = el('select', 'debug-field');
-  const fill = (): void =>
+  // Rempli de nouveau à l'ouverture (les coches suivent la partie), sans perdre le livre choisi.
+  const fill = (): void => {
+    const chosen = menu.value;
     menu.replaceChildren(
       ...RARE_BOOKS.map((book) => {
         const option = el('option', undefined, `${isRareBookFound(state, book.id) ? '✓ ' : ''}${rareName(book.id)}`);
@@ -20,7 +23,10 @@ const rareMenu = (state: GameState): HTMLSelectElement => {
         return option;
       }),
     );
+    if (chosen) menu.value = chosen;
+  };
   fill();
+  remember('rareBook', menu);
   menu.addEventListener('focus', fill);
   return menu;
 };
