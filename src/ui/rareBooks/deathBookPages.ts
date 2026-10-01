@@ -3,7 +3,7 @@ import { messages } from '../../i18n';
 import { hashText, seeded } from '../../core/random';
 import { withReaderName } from '../../systems/readerName';
 import { PEN_FONT } from '../options/notebookInk';
-import { preparePageTexture, type Paper } from '../book/pageRender';
+import { highlightFinds, preparePageTexture, type PageFind, type Paper } from '../book/pageRender';
 import { HAND, PAGE_CENTER, wrap } from './draw';
 import { deathName } from './deathNames';
 
@@ -78,15 +78,34 @@ const giant = (context: CanvasRenderingContext2D, random: () => number): void =>
   context.restore();
 };
 
-/** La page du joueur : son nom, et ce qui lui arrive, phrase après phrase. */
-const scenario = (context: CanvasRenderingContext2D, random: () => number): void => {
-  const size = 31;
-  context.font = `${size}px ${HAND}`;
+/**
+ * La page du joueur : ce qui lui arrive, phrase après phrase, son nom surligné comme une trouvaille.
+ * Lignes droites (pas de travers) : le surlignage se pose exactement sur le nom.
+ */
+const scenario = (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, random: () => number): void => {
+  const font = `31px ${HAND}`;
+  const name = withReaderName('{name}');
+  const found: PageFind[] = [];
+  context.font = font;
+  context.textBaseline = 'alphabetic';
   let line = 1;
   for (const sentence of messages().rareBooks.deathBook.scenario) {
-    for (const part of wrap(context, withReaderName(sentence), 640 - 2 * MARGIN)) scribble(context, part, MARGIN, line++, size, random);
+    for (const part of wrap(context, withReaderName(sentence), 640 - 2 * MARGIN)) {
+      const y = lineY(line++) - 5;
+      let x = MARGIN;
+      part.split(name).forEach((piece, index) => {
+        if (index > 0) {
+          found.push({ text: name, x, y });
+          x += context.measureText(name).width;
+        }
+        context.fillStyle = `rgba(${INK}, ${0.82 + random() * 0.15})`;
+        context.fillText(piece, x, y);
+        x += context.measureText(piece).width;
+      });
+    }
     line++;
   }
+  highlightFinds(canvas, context, found, font);
 };
 
 /**
@@ -99,7 +118,7 @@ export const paintDeathPage = (page: number, canvas: HTMLCanvasElement, spineOnL
   for (let line = 0; line < LINES; line++) context.fillRect(40, lineY(line), 560, 1);
   if (page > WRITTEN) return;
   const random = seeded(hashText(`deathBook:${page}`));
-  if (page === SCENARIO_PAGE) scenario(context, random);
+  if (page === SCENARIO_PAGE) scenario(canvas, context, random);
   else if (GIANT_PAGES.includes(page)) giant(context, random);
   else names(context, page, random);
 };

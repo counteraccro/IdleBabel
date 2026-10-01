@@ -84,7 +84,7 @@
       "{name} takes a book from the Library.",
       "Reads it to the last page.",
       "The last page closes nothing: it opens a door.",
-      "{name} takes another book. Then another. Then another still.",
+      "Takes another. Then another. Then another still.",
       "The end of a book is only the threshold of the next.",
       "And every beginning promises an end it does not always keep."
     ]

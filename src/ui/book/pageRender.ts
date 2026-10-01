@@ -121,7 +121,7 @@ export const drawPageTexture = (
   context.textBaseline = 'alphabetic';
   const lineHeight = PAGE_FONT_SIZE * PAGE_LINE_HEIGHT;
   /** Morceaux de la trouvaille : où ils sont écrits. */
-  const found: { text: string; x: number; y: number }[] = [];
+  const found: PageFind[] = [];
   lines.forEach((line, index) => {
     let x = PAGE_PADDING.x;
     const baseline = cssBaseline(context, PAGE_PADDING.y + index * lineHeight, lineHeight);
@@ -136,7 +136,29 @@ export const drawPageTexture = (
     }
   });
   pageGlow.delete(canvas);
+  highlightFinds(canvas, context, found, PAGE_FONT);
+};
+
+/** Un mot surligné sur une page : son texte, et où il est écrit (début de la ligne de base). */
+export interface PageFind {
+  text: string;
+  x: number;
+  y: number;
+}
+
+/**
+ * Surligne des mots déjà placés sur une page (police `font`) : encre sombre sur un halo doré, et le
+ * masque de lueur qui les fait briller dans le livre 3D (pageGlow). Rien à surligner : rien ne change.
+ */
+export const highlightFinds = (
+  canvas: HTMLCanvasElement,
+  context: CanvasRenderingContext2D,
+  found: readonly PageFind[],
+  font: string,
+): void => {
   if (found.length === 0) return;
+  context.font = font;
+  context.textBaseline = 'alphabetic';
   // Sur le papier : un halo doré vif derrière les lettres, puis les lettres nettes, un peu grasses.
   context.save();
   context.shadowColor = FIND_HALO;
@@ -161,7 +183,7 @@ export const drawPageTexture = (
   const light = glow.getContext('2d')!;
   light.fillStyle = '#000';
   light.fillRect(0, 0, glow.width, glow.height);
-  light.font = PAGE_FONT;
+  light.font = font;
   light.textBaseline = 'alphabetic';
   light.fillStyle = GLOW_GOLD;
   light.shadowColor = GLOW_GOLD;
