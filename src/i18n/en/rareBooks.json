@@ -120,9 +120,72 @@
   "blankPage": {
     "name": "Blank Page, the Explanation",
     "cover": ["Blank Page", "the Explanation"],
+    "author": "Ivor Nothing",
     "title": "Blank Page",
     "subtitle": "the explanation",
-    "contents": "Contents"
+    "contents": "Contents",
+    "struck": "Once upon",
+    "chapters": [
+      {
+        "entry": "Foreword",
+        "label": "",
+        "title": "Foreword"
+      },
+      {
+        "entry": "I. White",
+        "label": "Chapter I",
+        "title": "White"
+      },
+      {
+        "entry": "II. Very White",
+        "label": "Chapter II",
+        "title": "Very White"
+      },
+      {
+        "entry": "III. What Is Not There",
+        "label": "Chapter III",
+        "title": "What Is Not There"
+      },
+      {
+        "entry": "IV. Why",
+        "label": "Chapter IV",
+        "title": "Why"
+      },
+      {
+        "entry": "V. The Rest",
+        "label": "Chapter V",
+        "title": "The Rest"
+      },
+      {
+        "entry": "Conclusion",
+        "label": "",
+        "title": "Conclusion"
+      },
+      {
+        "entry": "Index",
+        "label": "",
+        "title": "Index"
+      }
+    ],
+    "errataTitle": "Errata",
+    "errata": "Page 214, line 12: for “ ” read “ ”.",
+    "colophon": [
+      "Printed and bound",
+      "on the presses of the Library",
+      "for no publisher at all.",
+      "",
+      "Legal deposit: never.",
+      "Printed in Babel."
+    ],
+    "back": {
+      "blurb": "The blank page: that moment when the writer, pen raised, can no longer find the first word. Dread, vertigo, silence. After years of research, the author at last delivers, in 410 pages, the complete explanation of this mysterious affliction.",
+      "reviews": [
+        ["“Nothing to add.”", "THE HEXAGON REVIEW"],
+        ["“You close it just as you opened it.”", "THE BABEL READER"]
+      ],
+      "isbn": "ISBN 410-0-00000-000-0",
+      "price": "Price:"
+    }
   },
   "almanac": {
     "name": "The Sports Almanac 1950-2000",

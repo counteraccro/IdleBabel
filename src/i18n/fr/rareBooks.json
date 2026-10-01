@@ -120,9 +120,72 @@
   "blankPage": {
     "name": "Page blanche, l'explication",
     "cover": ["Page blanche", "l'explication"],
+    "author": "Jean Peuplus",
     "title": "Page blanche",
     "subtitle": "l'explication",
-    "contents": "Sommaire"
+    "contents": "Sommaire",
+    "struck": "Il était",
+    "chapters": [
+      {
+        "entry": "Avant-propos",
+        "label": "",
+        "title": "Avant-propos"
+      },
+      {
+        "entry": "I. Le blanc",
+        "label": "Chapitre I",
+        "title": "Le blanc"
+      },
+      {
+        "entry": "II. Le très blanc",
+        "label": "Chapitre II",
+        "title": "Le très blanc"
+      },
+      {
+        "entry": "III. Ce qu'il n'y a pas",
+        "label": "Chapitre III",
+        "title": "Ce qu'il n'y a pas"
+      },
+      {
+        "entry": "IV. Pourquoi",
+        "label": "Chapitre IV",
+        "title": "Pourquoi"
+      },
+      {
+        "entry": "V. Le reste",
+        "label": "Chapitre V",
+        "title": "Le reste"
+      },
+      {
+        "entry": "Conclusion",
+        "label": "",
+        "title": "Conclusion"
+      },
+      {
+        "entry": "Index",
+        "label": "",
+        "title": "Index"
+      }
+    ],
+    "errataTitle": "Errata",
+    "errata": "Page 214, ligne 12 : lire «  » au lieu de «  ».",
+    "colophon": [
+      "Achevé d'imprimer",
+      "sur les presses de la Bibliothèque",
+      "pour le compte d'aucun éditeur.",
+      "",
+      "Dépôt légal : jamais.",
+      "Imprimé à Babel."
+    ],
+    "back": {
+      "blurb": "La page blanche : ce moment où l'écrivain, la plume levée, ne trouve plus le premier mot. Angoisse, vertige, silence. Après des années d'enquête, l'auteur livre enfin, en 410 pages, l'explication complète de ce mal mystérieux.",
+      "reviews": [
+        ["« Rien à redire. »", "LA REVUE DE L'HEXAGONE"],
+        ["« On le referme comme on l'a ouvert. »", "LE LECTEUR DE BABEL"]
+      ],
+      "isbn": "ISBN 410-0-00000-000-0",
+      "price": "Prix :"
+    }
   },
   "almanac": {
     "name": "L'Almanach des sports 1950-2000",

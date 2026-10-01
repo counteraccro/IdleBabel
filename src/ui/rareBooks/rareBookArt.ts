@@ -19,6 +19,15 @@ export interface RareBookArt {
    * par feuille) ; false : la page reste vierge.
    */
   paint: (page: number, canvas: HTMLCanvasElement, spineOnLeft: boolean, state: GameState, design: CoverDesign) => boolean;
+  /** Les entrées cliquables de la page `page` (un sommaire) : chacune mène à sa page. */
+  links?: (page: number) => PageLink[];
   /** La page `page` a été découverte en tournant les pages, même vite (un secret à apposer…). */
   passed?: (page: number, state: GameState) => void;
+}
+
+/** Une entrée cliquable : la bande de la page de `y` à `y + height` (repère de la texture) mène à la page `target`. */
+export interface PageLink {
+  y: number;
+  height: number;
+  target: number;
 }

@@ -34,8 +34,10 @@ const BABEL_DIGITS = [...'◇◆◈⬖⬗⬘⬙❖◊⟡'];
  * Chiffres d'un texte déjà écrit (heure, date, pourcentage) dans la notation choisie : en Babel, chaque
  * chiffre devient son sceau et le reste ne bouge pas ; sinon le texte reste tel quel.
  */
-export const writeDigits = (text: string): string =>
-  current === 'babel' ? text.replace(/\d/g, (digit) => BABEL_DIGITS[Number(digit)]) : text;
+export const writeDigits = (text: string): string => (current === 'babel' ? babelDigits(text) : text);
+
+/** Chiffres d'un texte en chiffres de Babel, quelle que soit la notation choisie (un prix imprimé…). */
+export const babelDigits = (text: string): string => text.replace(/\d/g, (digit) => BABEL_DIGITS[Number(digit)]);
 
 /** Chiffre (0 à 9) que tient ce caractère, ou -1. */
 export const babelDigit = (char: string): number => BABEL_DIGITS.indexOf(char);
