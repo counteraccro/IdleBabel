@@ -3,6 +3,7 @@ import { el } from './dom';
 import { t } from '../i18n';
 import { createPile3d } from './book3d/pile3d';
 import { createGameTitle } from './gameTitle';
+import { createLibraryKey } from './library/libraryKey';
 import type { Book3d } from './book3d/book3dBook';
 import type { Component } from './dom';
 
@@ -19,7 +20,11 @@ export interface HeaderHandlers {
   /** Des sceaux obtenus attendent d'être vus : le contour du livre étrange luit. */
   hasNewSeals: () => boolean;
   /** Le livre ouvert en ce moment (sa page à l'écran), absent de la pile ; null : le jeu. */
-  openBook: () => 'white' | 'strange' | 'options' | 'debug' | null;
+  openBook: () => 'white' | 'strange' | 'options' | 'debug' | 'library' | null;
+  /** Entrer dans la bibliothèque personnelle (la clé). */
+  onLibrary: () => void;
+  /** La clé est posée près de la pile : un livre rare a été trouvé (ou débogage). */
+  libraryKey: () => boolean;
   /** Morceaux écrits dans le livre blanc : quand il y en a un de plus, le livre sursaute. */
   writtenCount: () => number;
 }
@@ -58,6 +63,10 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
   let found = handlers.strangeBookFound();
   pile.show('strange', found);
   let written = handlers.writtenCount();
+  // La clé de la bibliothèque, à côté de la pile ; cachée tant qu'on y est.
+  const key = createLibraryKey(handlers.onLibrary);
+  const showKey = (): void => key.show(handlers.libraryKey() && handlers.openBook() !== 'library');
+  showKey();
   const update = (): void => {
     const now = handlers.strangeBookFound();
     if (now !== found) pile.show('strange', now, true);
@@ -68,7 +77,9 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     written = count;
     pile.away(handlers.openBook());
     pile.relabel();
+    showKey();
+    key.relabel();
   };
-  root.append(createGameTitle(), pile.root);
+  root.append(createGameTitle(), pile.root, key.root);
   return { root, update };
 };

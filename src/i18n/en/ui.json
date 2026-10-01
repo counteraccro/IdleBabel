@@ -34,5 +34,8 @@
   "strangeBook": "The strange book",
   "previousPage": "Previous page",
   "nextPage": "Next page",
-  "knowledge": "Knowledge"
+  "knowledge": "Knowledge",
+  "library": "The library",
+  "backToLibrary": "Back to the library",
+  "emptyPlace": "An empty place"
 }

@@ -19,11 +19,16 @@ import { mountLore } from './lore';
 import { isDebugEnabled, DEBUG_BOOK_HASH, RARE_BOOK_HASH } from '../debug/enabled';
 import { rareBook3d } from './rareBooks/rareBook3d';
 import { debugBook3d } from '../debug/book/debugBook3d';
+import { createLibraryPage } from './library/libraryPage';
+import { isRareBookFound } from '../systems/rareBooks';
 import type { Component } from './dom';
 
 const OPTIONS_HASH = '#options';
 const STRANGE_BOOK_HASH = '#livre';
 const WHITE_BOOK_HASH = '#blanc';
+/** La bibliothèque personnelle, et un de ses livres ouvert en grand (#bibliotheque:<id>). */
+const LIBRARY_HASH = '#bibliotheque';
+const LIBRARY_BOOK_HASH = '#bibliotheque:';
 /** Changement d'écran : l'ancien s'efface en fondu pendant que le nouveau apparaît (voir .screen-out). */
 const SCREEN_FADE_MS = 800;
 
@@ -58,10 +63,21 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     else window.location.hash = '';
   };
 
+  /** Le livre rare de la bibliothèque ouvert en grand (#bibliotheque:<id>), s'il a bien été trouvé. */
+  const libraryBook = (): string | null => {
+    const hash = window.location.hash;
+    if (!hash.startsWith(LIBRARY_BOOK_HASH)) return null;
+    const id = decodeURIComponent(hash.slice(LIBRARY_BOOK_HASH.length));
+    return isRareBookFound(state, id) ? id : null;
+  };
+  /** La bibliothèque est ouverte : sa vitrine, ou l'un de ses livres. */
+  const inLibrary = (): boolean => window.location.hash === LIBRARY_HASH || window.location.hash.startsWith(LIBRARY_BOOK_HASH);
+
   /** Le livre dont la page est ouverte (null : le jeu). */
-  const openBook = (): 'white' | 'strange' | 'options' | 'debug' | null => {
+  const openBook = (): 'white' | 'strange' | 'options' | 'debug' | 'library' | null => {
     const hash = window.location.hash;
     if (hash === OPTIONS_HASH) return 'options';
+    if (inLibrary()) return 'library';
     if ((hash === DEBUG_BOOK_HASH || hash.startsWith(RARE_BOOK_HASH)) && debugging) return 'debug';
     if (hash === WHITE_BOOK_HASH) return 'white';
     return hash === STRANGE_BOOK_HASH && strangeBookFound(state) ? 'strange' : null;
@@ -84,6 +100,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     hasNewSeals: () => state.newSeals.length > 0,
     writtenCount: () => Object.values(state.written).reduce((sum, done) => sum + done.length, 0),
     openBook,
+    onLibrary: open(LIBRARY_HASH),
+    libraryKey: () => debugging || Object.keys(state.rareBooks).length > 0,
   });
 
   // Le compteur aussi : au-dessus du jeu comme des livres ouverts, il ne clignote pas d'un écran à l'autre.
@@ -120,8 +138,38 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     }),
   ];
 
+  // Un livre de la vitrine : il s'ouvre par-dessus elle, et « retour » y ramène.
+  let openedFromLibrary = false;
+  const library = (): Component[] => [
+    header,
+    counter,
+    createLibraryPage(
+      state,
+      (id) => {
+        openedFromLibrary = true;
+        window.location.hash = `${LIBRARY_BOOK_HASH}${encodeURIComponent(id)}`;
+      },
+      () => {
+        if (openedFromGame) window.history.back();
+        else window.location.hash = '';
+      },
+    ),
+  ];
+  const libraryBookPage = (id: string): Component[] => {
+    const leave = (): void => {
+      if (openedFromLibrary) window.history.back();
+      else window.location.hash = LIBRARY_HASH;
+      openedFromLibrary = false;
+    };
+    return [header, counter, createBook3dPage(rareBook3d(state, id), leave, t('ui.backToLibrary'))];
+  };
+
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
+    if (window.location.hash === LIBRARY_HASH) return library();
+    const shelved = libraryBook();
+    if (shelved) return libraryBookPage(shelved);
+    if (inLibrary()) return library();
     if (window.location.hash === DEBUG_BOOK_HASH && debugging) return [header, counter, createBook3dPage(debugBook3d(), back)];
     // Débogage : un livre rare ouvert en grand, comme il sera lu dans la bibliothèque.
     if (window.location.hash.startsWith(RARE_BOOK_HASH) && debugging)

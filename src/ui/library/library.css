@@ -1,0 +1,90 @@
+/* La bibliothèque personnelle (library/libraryPage.ts) : la vitrine en grand, le nom du livre survolé dessous. */
+.library-page {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: 0;
+}
+.library-stage {
+  flex: 1;
+  /* Sous le compteur, au milieu de l'en-tête. */
+  margin-top: 36px;
+  width: 100%;
+  min-height: 0;
+  position: relative;
+}
+.library-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.library-caption {
+  min-height: 1.6em;
+  padding-bottom: 12px;
+  font-size: 1rem;
+  font-variant: small-caps;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-shadow: var(--shadow);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.library-caption.shown {
+  opacity: 1;
+}
+
+/* La clé de la bibliothèque, posée à côté de la pile de livres (library/libraryKey.ts). */
+.library-key {
+  position: fixed;
+  top: 44px;
+  right: 196px;
+  z-index: 4;
+}
+.library-key-canvas {
+  display: block;
+  width: 64px;
+  height: 64px;
+}
+.library-key-button {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+.library-key-caption {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: -8px;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  font-variant: small-caps;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-shadow: var(--shadow);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.library-key:hover .library-key-caption,
+.library-key:focus-within .library-key-caption {
+  opacity: 1;
+}
+.library-key[hidden] {
+  display: none;
+}
+@media (max-width: 760px) {
+  .library-key {
+    position: static;
+  }
+}
