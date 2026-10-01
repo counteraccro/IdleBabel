@@ -1,6 +1,22 @@
 {
   "title": "Knowledge",
   "completion": "of this book has written itself",
+  "contents": "Contents",
+  "parts": {
+    "method": "Methods",
+    "memory": "Memories",
+    "anomaly": "Anomalies"
+  },
+  "anomaliesCompletion": "sentences found · {percent}",
+  "anomalyFamilies": {
+    "structure": "The Structure",
+    "speaks": "The Book Speaks",
+    "said": "What Was Already Said",
+    "others": "The Others",
+    "unwritten": "The Unwritten",
+    "numbers": "The Reckoning",
+    "ordinary": "Ordinary Words"
+  },
   "sources": {
     "yourFather": "Darth Vader, The Empire Strikes Back",
     "illBeBack": "The Terminator",

@@ -2,8 +2,8 @@ import type { SentenceDef } from './sentences';
 
 /**
  * Anomalies : des phrases qui ne débloquent rien, à collectionner sur toute la partie (le fil rouge,
- * voulu très long par l'auteur). Rangées en familles : chacune a sa page et sa complétion dans le
- * livre étrange, et un sceau quand elle est complète. Pour en ajouter : un identifiant dans sa
+ * voulu très long par l'auteur). Rangées en familles : chacune a ses pages et sa complétion dans le
+ * livre blanc, et un sceau quand elle est complète (livre étrange). Pour en ajouter : un identifiant dans sa
  * famille, et son texte dans i18n (whiteBook.sentences.<id>).
  */
 export const ANOMALY_FAMILIES = ['structure', 'speaks', 'said', 'others', 'unwritten', 'numbers', 'ordinary'] as const;

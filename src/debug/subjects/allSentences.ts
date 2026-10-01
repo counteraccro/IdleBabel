@@ -38,7 +38,7 @@ export const ALL_SENTENCES_SUBJECT: DebugSubject = {
     kit.progress('Anomalies', () => count(state, anomalies));
     for (const family of ANOMALY_FAMILIES) {
       const sentences = anomalies.filter((sentence) => sentence.family === family);
-      kit.progress(`· ${t(`strangeBook.anomalyFamilies.${family}`)}`, () => count(state, sentences));
+      kit.progress(`· ${t(`whiteBook.anomalyFamilies.${family}`)}`, () => count(state, sentences));
     }
     kit.actions(
       ['Tout écrire', () => writeAll(state, SENTENCES), { title: 'Méthodes comprises : elles se débloquent toutes.' }],

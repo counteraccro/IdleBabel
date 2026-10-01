@@ -8,7 +8,6 @@
     "methods": "Manières",
     "knowledge": "Révélations"
   },
-  "sentencesCompletion": "phrases qui te sont revenues · {percent}",
   "figures": {
     "totalPages": "pages que tes yeux ont traversées",
     "stock": "pages dont tu te souviens encore",
@@ -60,14 +59,5 @@
     "anomalies-unwritten": "Lis ce qui ne devrait pas être écrit",
     "anomalies-numbers": "Soutiens le vertige des nombres",
     "anomalies-ordinary": "Trouve le banal au milieu de l'infini"
-  },
-  "anomalyFamilies": {
-    "structure": "La structure",
-    "speaks": "Le livre te parle",
-    "said": "Ce qui a déjà été dit",
-    "others": "Les autres",
-    "unwritten": "Ce qui n'est pas écrit",
-    "numbers": "Les calculs",
-    "ordinary": "Les phrases banales"
   }
 }

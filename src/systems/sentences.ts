@@ -57,8 +57,9 @@ export const completion = (state: GameState): number => {
   return total === 0 ? 0 : done / total;
 };
 
-/** Il ne manque qu'un morceau : la Connaissance peut le deviner. */
-export const guessPrice = (state: GameState, id: string): number | undefined => (missing(state, id).length === 1 ? GUESS_PRICE : undefined);
+/** Il ne manque qu'un morceau : la Connaissance peut le deviner (pas pour une anomalie : elles se collectionnent en lisant). */
+export const guessPrice = (state: GameState, id: string): number | undefined =>
+  missing(state, id).length === 1 && SENTENCES.find((sentence) => sentence.id === id)?.kind !== 'anomaly' ? GUESS_PRICE : undefined;
 
 export const guess = (state: GameState, id: string): boolean => {
   const price = guessPrice(state, id);

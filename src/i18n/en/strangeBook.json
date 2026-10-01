@@ -8,7 +8,6 @@
     "methods": "Ways",
     "knowledge": "Revelations"
   },
-  "sentencesCompletion": "sentences that have come back to you · {percent}",
   "figures": {
     "totalPages": "pages your eyes have crossed",
     "stock": "pages you still remember",
@@ -60,14 +59,5 @@
     "anomalies-unwritten": "Read what should not be written",
     "anomalies-numbers": "Endure the vertigo of numbers",
     "anomalies-ordinary": "Find the ordinary amid the infinite"
-  },
-  "anomalyFamilies": {
-    "structure": "The Structure",
-    "speaks": "The Book Speaks",
-    "said": "What Was Already Said",
-    "others": "The Others",
-    "unwritten": "The Unwritten",
-    "numbers": "The Reckoning",
-    "ordinary": "Ordinary Words"
   }
 }

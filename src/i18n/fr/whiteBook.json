@@ -1,6 +1,22 @@
 {
   "title": "Les Connaissances",
   "completion": "de ce livre s'est écrit",
+  "contents": "Sommaire",
+  "parts": {
+    "method": "Méthodes",
+    "memory": "Souvenirs",
+    "anomaly": "Anomalies"
+  },
+  "anomaliesCompletion": "phrases retrouvées · {percent}",
+  "anomalyFamilies": {
+    "structure": "La structure",
+    "speaks": "Le livre te parle",
+    "said": "Ce qui a déjà été dit",
+    "others": "Les autres",
+    "unwritten": "Ce qui n'est pas écrit",
+    "numbers": "Les calculs",
+    "ordinary": "Les phrases banales"
+  },
   "sources": {
     "yourFather": "Dark Vador, L'Empire contre-attaque",
     "illBeBack": "Terminator",

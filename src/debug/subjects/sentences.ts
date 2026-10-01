@@ -76,7 +76,7 @@ const familySubject = (family: AnomalyFamily): DebugSubject => {
   return {
     id: `anomalies:${family}`,
     chapter: 'sentences',
-    name: () => `Anomalies : ${t(`strangeBook.anomalyFamilies.${family}`)}`,
+    name: () => `Anomalies : ${t(`whiteBook.anomalyFamilies.${family}`)}`,
     description: 'Ses phrases, morceau par morceau ; toute la famille d’un coup (son sceau suit).',
     peek: (state) => `${complete(state, sentences)}/${sentences.length}`,
     build: (kit, state) => {
