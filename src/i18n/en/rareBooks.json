@@ -69,7 +69,10 @@
   },
   "blankPage": {
     "name": "Blank Page, the Explanation",
-    "cover": ["Blank Page", "the Explanation"]
+    "cover": ["Blank Page", "the Explanation"],
+    "title": "Blank Page",
+    "subtitle": "the explanation",
+    "contents": "Contents"
   },
   "almanac": {
     "name": "The Sports Almanac 1950-2000",
@@ -77,7 +80,9 @@
   },
   "directory": {
     "name": "The Directory",
-    "cover": ["Directory"]
+    "cover": ["Directory"],
+    "subtitle": "Library of Babel",
+    "edition": "Infinite edition"
   },
   "deadBook": {
     "name": "The Book of the Dead",

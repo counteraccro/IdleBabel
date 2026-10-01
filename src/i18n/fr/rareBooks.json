@@ -69,7 +69,10 @@
   },
   "blankPage": {
     "name": "Page blanche, l'explication",
-    "cover": ["Page blanche", "l'explication"]
+    "cover": ["Page blanche", "l'explication"],
+    "title": "Page blanche",
+    "subtitle": "l'explication",
+    "contents": "Sommaire"
   },
   "almanac": {
     "name": "L'Almanach des sports 1950-2000",
@@ -77,7 +80,9 @@
   },
   "directory": {
     "name": "L'Annuaire",
-    "cover": ["Annuaire"]
+    "cover": ["Annuaire"],
+    "subtitle": "Bibliothèque de Babel",
+    "edition": "Édition infinie"
   },
   "deadBook": {
     "name": "Le Livre des morts",

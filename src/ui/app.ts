@@ -16,7 +16,8 @@ import { createInitialState, type GameState } from '../core/state';
 import { showWelcome } from './welcome';
 import { loreTold, tellLore } from '../systems/lore';
 import { mountLore } from './lore';
-import { isDebugEnabled, DEBUG_BOOK_HASH } from '../debug/enabled';
+import { isDebugEnabled, DEBUG_BOOK_HASH, RARE_BOOK_HASH } from '../debug/enabled';
+import { rareBook3d } from './rareBooks/rareBook3d';
 import { debugBook3d } from '../debug/book/debugBook3d';
 import type { Component } from './dom';
 
@@ -61,7 +62,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const openBook = (): 'white' | 'strange' | 'options' | 'debug' | null => {
     const hash = window.location.hash;
     if (hash === OPTIONS_HASH) return 'options';
-    if (hash === DEBUG_BOOK_HASH && debugging) return 'debug';
+    if ((hash === DEBUG_BOOK_HASH || hash.startsWith(RARE_BOOK_HASH)) && debugging) return 'debug';
     if (hash === WHITE_BOOK_HASH) return 'white';
     return hash === STRANGE_BOOK_HASH && strangeBookFound(state) ? 'strange' : null;
   };
@@ -122,6 +123,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
     if (window.location.hash === DEBUG_BOOK_HASH && debugging) return [header, counter, createBook3dPage(debugBook3d(), back)];
+    // Débogage : un livre rare ouvert en grand, comme il sera lu dans la bibliothèque.
+    if (window.location.hash.startsWith(RARE_BOOK_HASH) && debugging)
+      return [header, counter, createBook3dPage(rareBook3d(state, window.location.hash.slice(RARE_BOOK_HASH.length)), back)];
     if (window.location.hash === WHITE_BOOK_HASH) {
       tellLore(state, 'whiteBook');
       // Tant qu'il n'en est jamais sorti, le joueur ne connaît pas encore le jeu : il lève les yeux du

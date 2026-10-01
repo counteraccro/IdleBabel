@@ -1,6 +1,7 @@
 import { createPage } from '../../systems/babelText';
-import { coverDesign, rareCover } from '../../systems/coverDesign';
+import { coverDesign } from '../../systems/coverDesign';
 import { takeBook } from '../../systems/rareBooks';
+import { rareBook3d } from '../rareBooks/rareBook3d';
 import { pageNumberLabel } from '../../systems/pageNumber';
 import { producedWholePages } from '../../systems/production';
 import { PAGES_PER_BOOK } from '../../systems/books';
@@ -18,8 +19,12 @@ import { modernCover } from './modernCover';
 import { headbandTexture } from './headband';
 import { edgeTexture } from './textures';
 import type { Book3d } from './book3dBook';
+import type { BookShape } from './bookMesh';
 import type { HandFinds } from './handFinds';
 import type { GameState } from '../../core/state';
+
+/** Un livre ordinaire tenu en main : plus mince que les grands livres, plats plus fins. */
+const HAND_SHAPE: BookShape = { width: 0.8, height: 1, thickness: 0.12, board: 0.012, overhang: 0.035, corner: 0.03, arch: 2.5, sag: 0.12 };
 
 /** Longueur d'une page de charabia. */
 const PAGE_LENGTH = 700;
@@ -32,15 +37,19 @@ const PAGE_LENGTH = 700;
  */
 export const handBook3d = (state: GameState, index = state.booksFinished, finds?: HandFinds): Book3d => {
   finds?.open(index);
-  // Un livre rare arrive en main : il est trouvé, pour toujours.
+  const next = (): Book3d => handBook3d(state, index + 1, finds);
+  // Une page tourne à chaque page entière produite : en même temps que le compteur (plafonné).
+  const autoTurn = { produced: producedWholePages, max: () => (state.settings.autoTurn ? maxTurnsPerSecond() : 0) };
+  // Un livre rare arrive en main : il est trouvé, pour toujours. C'est le livre de la bibliothèque, tenu
+  // en main (sans trouvailles : on ne lit pas de charabia).
   const rare = isStrangeBook(index) ? undefined : takeBook(state, index);
-  const design = rare ? rareCover(coverDesign(index), rare) : coverDesign(index);
+  if (rare) return { ...rareBook3d(state, rare, index, HAND_SHAPE), next, autoTurn };
+  const design = coverDesign(index);
   const strange = isStrangeBook(index) ? strangeHandPages(state) : null;
   const paper = strange ? STRANGE_PAPER : design.modern ? MODERN_PAPER : OLD_PAPER;
   const binding = strange ? STRANGE_BINDING : design.modern ? modernBindingFor(index) : bindingFor(index);
   return {
-    // Un livre ordinaire : plus mince que les grands livres, plats plus fins.
-    shape: { width: 0.8, height: 1, thickness: 0.12, board: 0.012, overhang: 0.035, corner: 0.03, arch: 2.5, sag: 0.12 },
+    shape: HAND_SHAPE,
     source: {
       // Page 0 : l'intérieur de la couverture ; 1 : la page de titre ; puis le texte. Le livre en main
       // compte ses feuilles, page de titre comprise (410 tournées par livre) : deux pages chacune, et
@@ -83,8 +92,7 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
         headband: strange ? headbandTexture('#6e1a20', '#b89a5a') : headbandTexture(binding.leather, '#d9c48f'),
       };
     },
-    next: () => handBook3d(state, index + 1, finds),
-    // Une page tourne à chaque page entière produite : en même temps que le compteur (plafonné).
-    autoTurn: { produced: producedWholePages, max: () => (state.settings.autoTurn ? maxTurnsPerSecond() : 0) },
+    next,
+    autoTurn,
   };
 };

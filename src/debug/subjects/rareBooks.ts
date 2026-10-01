@@ -3,6 +3,7 @@ import { t } from '../../i18n';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { forceRareBook, isRareBookFound, rareBookAt } from '../../systems/rareBooks';
 import { refreshBook } from '../refresh';
+import { RARE_BOOK_HASH } from '../enabled';
 import type { DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
@@ -51,6 +52,7 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
         },
         { title: 'Passe au livre suivant, qui sera celui-ci.' },
       ],
+      ['L’ouvrir en grand', () => (window.location.hash = `${RARE_BOOK_HASH}${menu.value}`), { title: 'Comme dans la bibliothèque.' }],
       [
         'Tout oublier',
         () => {
