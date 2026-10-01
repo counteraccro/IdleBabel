@@ -60,13 +60,13 @@ export const deathBookFront = (): THREE.CanvasTexture =>
 /** Le plat arrière : le mode d'emploi, ses règles en chiffres romains, à l'encre blanche. */
 export const deathBookBack = (): THREE.CanvasTexture =>
   matte('back', (context) => {
-    write(context, t('rareBooks.deathBook.howTo'), WIDTH / 2, 9 * CQW, { font: `${8 * CQW}px ${GOTHIC}`, color: WHITE });
+    write(context, t('rareBooks.deathBook.howTo'), WIDTH / 2, 7 * CQW, { font: `${8 * CQW}px ${GOTHIC}`, color: WHITE });
     const size = 3.4 * CQW;
     const [numberRight, left, right] = [16 * CQW, 19 * CQW, 88 * CQW];
     context.font = `${size}px ${SERIF}`;
     context.fillStyle = WHITE;
     context.textBaseline = 'top';
-    let y = 30 * CQW;
+    let y = 24 * CQW;
     messages().rareBooks.deathBook.rules.forEach((rule, index) => {
       context.textAlign = 'right';
       context.fillText(`${toRoman(index + 1)}.`, numberRight, y);
@@ -90,7 +90,7 @@ export const deathBookSpine = (thickness: number): THREE.CanvasTexture =>
     context.translate(WIDTH / 2, HEIGHT / 2);
     context.scale(stretch, 1);
     context.rotate(Math.PI / 2);
-    context.font = `${3.5 * CQW}px ${GOTHIC}`;
+    context.font = `${7 * CQW}px ${GOTHIC}`;
     context.fillStyle = WHITE;
     context.textAlign = 'center';
     context.textBaseline = 'middle';
