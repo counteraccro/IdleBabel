@@ -154,7 +154,11 @@
       ["Bibliothécaire de garde", "—"],
       ["Urgences", "—"],
       ["Votre poste", "410"]
-    ]
+    ],
+    "contents": "Sommaire",
+    "subscribers": "Abonnés, de A à Z",
+    "usefulNumbers": "Numéros utiles",
+    "backCover": "au dos"
   },
   "deadBook": {
     "name": "Le Livre des morts",

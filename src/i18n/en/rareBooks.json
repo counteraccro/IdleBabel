@@ -154,7 +154,11 @@
       ["Librarian on duty", "—"],
       ["Emergencies", "—"],
       ["Your extension", "410"]
-    ]
+    ],
+    "contents": "Contents",
+    "subscribers": "Subscribers, A to Z",
+    "usefulNumbers": "Useful numbers",
+    "backCover": "back cover"
   },
   "deadBook": {
     "name": "The Book of the Dead",

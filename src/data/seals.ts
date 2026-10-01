@@ -79,4 +79,6 @@ export const SEALS: readonly SealDef[] = [
   secret('notebookBack'),
   // Son nom, page 15 du DeathBook (ui/rareBooks/deathBook.ts).
   secret('deathBook'),
+  // Son nom et son numéro, à sa place dans l'Annuaire (ui/rareBooks/directory.ts).
+  secret('directory'),
 ];
