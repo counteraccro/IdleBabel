@@ -27,7 +27,7 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   { id: 'sand' },
   // Le livre qui justifie ta vie, que cherchent les bibliothécaires de Borges : dix fois plus rare.
   { id: 'vindication', weight: 0.1 },
-  // Le nom du joueur, écrit à la main sur une seule page.
+  // Façon Death Note : des listes de noms, et page 15 le joueur (un sceau secret).
   { id: 'deathBook' },
   // Rempli de blocs d'une chaîne de blocs.
   { id: 'oriana' },
