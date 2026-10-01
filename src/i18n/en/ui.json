@@ -36,5 +36,8 @@
   "nextPage": "Next page",
   "knowledge": "Knowledge",
   "library": "The library",
-  "shelveBook": "Put the book back"
+  "shelveBook": "Put the book back",
+  "debugBook": "Debug",
+  "debugBookError": "Fatal error",
+  "debugBookErrorClose": "Close"
 }

@@ -39,6 +39,11 @@ export interface Book3d {
    * page (le cahier d'options : un secret). Une fois par ouverture de la page.
    */
   backSeen?: () => void;
+  /**
+   * Le livre ne s'ouvre pas (le livre de débogage hors du mode ?debug) : on le prend, on le tourne, mais
+   * ouvrir sa couverture appelle ceci à la place.
+   */
+  sealed?: () => void;
   /** Couverture qui vit (le livre de débogage) : appelé à chaque image ; true si elle a changé (à redessiner). */
   tick?: (now: number) => boolean;
   /** Le livre demande d'aller à une page (entrée du sommaire) : branché par la page 3D. */

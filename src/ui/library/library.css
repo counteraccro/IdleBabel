@@ -67,3 +67,19 @@
 .library-page.backdrop > .options-back {
   opacity: 0;
 }
+/* L'erreur obscure du livre de débogage (debugBookError.ts) : une trace de code, rien de lisible pour le joueur. */
+.library-error {
+  margin: 0;
+  padding: 10px 12px;
+  max-width: min(560px, 80vw);
+  text-align: left;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  /* Les lignes trop longues passent à la ligne, comme dans une console étroite. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #e08a7a;
+  background: rgba(0, 0, 0, 0.45);
+  border-left: 2px solid #a8402e;
+}

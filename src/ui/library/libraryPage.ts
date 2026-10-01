@@ -10,10 +10,14 @@ import { createLighting } from '../book3d/lighting';
 import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
-import { FILL_ORDER, FRONT, createBookcase } from './bookcase3d';
+import { DEBUG_CELL, FILL_ORDER, FRONT, createBookcase } from './bookcase3d';
+import type { Book3d } from '../book3d/book3dBook';
 import { addCellLights } from './cellLights';
 import { layoutBookcase, type ShelfPlace } from './shelfLayout';
 import type { GameState } from '../../core/state';
+
+/** Le livre de débogage, rangé dans la vitrine (c'est aussi un livre très rare) : il ne s'ouvre qu'en mode ?debug. */
+export const LIBRARY_DEBUG_BOOK = 'debug';
 
 /** Le livre qui vole de la vitrine à sa page (et retour) : son nom dans bookFlight. */
 export const libraryFlightId = (id: string): string => `library:${id}`;
@@ -43,6 +47,8 @@ interface Place {
   /** Sorti de sa case (0 à 1) : où il en est, où il va. */
   pull: number;
   aim: number;
+  /** Sa couverture bouge-t-elle (true : l'image est à refaire) ? */
+  tick?: (now: number) => boolean;
 }
 
 /**
@@ -60,7 +66,13 @@ export interface LibraryPage extends Component {
   setBackdrop: (id: string | null) => void;
 }
 
-export const createLibraryPage = (state: GameState, onOpen: (id: string) => void, onBack: () => void): LibraryPage => {
+export const createLibraryPage = (
+  state: GameState,
+  onOpen: (id: string) => void,
+  onBack: () => void,
+  /** Le livre de débogage, rangé dans sa case à lui. */
+  debugBook?: () => Book3d,
+): LibraryPage => {
   const root = el('main', 'library-page');
   const back = el('button', 'options-back', `← ${t('ui.back')}`);
   back.addEventListener('click', onBack);
@@ -102,11 +114,15 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   const found = RARE_BOOKS.map(({ id }) => id)
     .filter((id) => isRareBookFound(state, id))
     .sort((a, b) => state.rareBooks[a] - state.rareBooks[b]);
-  const places: Place[] = layoutBookcase(
-    found.map((id) => ({ id, thickness: thickness(id) })),
-    bookcase.cells,
-    FILL_ORDER,
-  ).map((spot) => {
+  const debugShelf = debugBook ? layoutBookcase([{ id: LIBRARY_DEBUG_BOOK, thickness: THICKNESS }], bookcase.cells, [DEBUG_CELL]) : [];
+  const places: Place[] = [
+    ...layoutBookcase(
+      found.map((id) => ({ id, thickness: thickness(id) })),
+      bookcase.cells,
+      FILL_ORDER,
+    ),
+    ...debugShelf,
+  ].map((spot) => {
     const cell = bookcase.cells[spot.cell];
     const floor = new THREE.Vector2(cell.left + cell.width / 2, cell.floor);
     const z = FRONT - SET_BACK - spot.depth;
@@ -118,7 +134,8 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
   });
   // Les livres trouvés : leur vrai modèle, chargé à part (couvertures, polices).
   for (const place of places) {
-    const book = rareBook3d(state, place.spot.id);
+    const book = place.spot.id === LIBRARY_DEBUG_BOOK && debugBook ? debugBook() : rareBook3d(state, place.spot.id);
+    place.tick = book.tick;
     void book.look().then((look) => {
       if (!root.isConnected && mounted) return;
       const mesh = createBookMesh(book.shape, look);
@@ -193,7 +210,7 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
       });
     return shown.find((place) => hit && place.holder!.getObjectById(hit.object.id)) ?? null;
   };
-  const label = (place: Place): string => t(`rareBooks.${place.spot.id}.name`);
+  const label = (place: Place): string => (place.spot.id === LIBRARY_DEBUG_BOOK ? t('ui.debugBook') : t(`rareBooks.${place.spot.id}.name`));
   const hover = (place: Place | null): void => {
     if (hovered === place) return;
     if (hovered) hovered.aim = 0;
@@ -233,6 +250,7 @@ export const createLibraryPage = (state: GameState, onOpen: (id: string) => void
     wasFlying = flight;
     for (const place of places) {
       if (!place.holder) continue;
+      if (place.holder.visible && place.tick?.(now)) moving = true;
       const away = home.has(libraryFlightId(place.spot.id)) || opened === place.spot.id;
       if (place.holder.visible === away) {
         place.holder.visible = !away;

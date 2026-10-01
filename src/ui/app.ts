@@ -19,7 +19,8 @@ import { mountLore } from './lore';
 import { isDebugEnabled, DEBUG_BOOK_HASH, RARE_BOOK_HASH } from '../debug/enabled';
 import { rareBook3d } from './rareBooks/rareBook3d';
 import { debugBook3d } from '../debug/book/debugBook3d';
-import { createLibraryPage, type LibraryPage } from './library/libraryPage';
+import { LIBRARY_DEBUG_BOOK, createLibraryPage, type LibraryPage } from './library/libraryPage';
+import { showDebugBookError } from './library/debugBookError';
 import { isRareBookFound } from '../systems/rareBooks';
 import type { Component } from './dom';
 
@@ -68,7 +69,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     const hash = window.location.hash;
     if (!hash.startsWith(LIBRARY_BOOK_HASH)) return null;
     const id = decodeURIComponent(hash.slice(LIBRARY_BOOK_HASH.length));
-    return isRareBookFound(state, id) ? id : null;
+    return isRareBookFound(state, id) || id === LIBRARY_DEBUG_BOOK ? id : null;
   };
   /** La bibliothèque est ouverte : sa vitrine, ou l'un de ses livres. */
   const inLibrary = (): boolean => window.location.hash === LIBRARY_HASH || window.location.hash.startsWith(LIBRARY_BOOK_HASH);
@@ -154,6 +155,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         if (openedFromGame) window.history.back();
         else window.location.hash = '';
       },
+      debugBook3d,
     );
     return shelves;
   };
@@ -171,7 +173,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     // La vitrine reste en fond, floue, sous le livre ouvert.
     const page = libraryPage();
     page.setBackdrop(id);
-    return [header, counter, page, createBook3dPage(rareBook3d(state, id), leave, t('ui.shelveBook'))];
+    const spec = id === LIBRARY_DEBUG_BOOK ? debugBook3d() : rareBook3d(state, id);
+    // Le livre de débogage, hors du mode ?debug : on le prend en main, mais il refuse de s'ouvrir.
+    if (id === LIBRARY_DEBUG_BOOK && !debugging) spec.sealed = showDebugBookError;
+    return [header, counter, page, createBook3dPage(spec, leave, t('ui.shelveBook'))];
   };
 
   const screen = (): Component[] => {

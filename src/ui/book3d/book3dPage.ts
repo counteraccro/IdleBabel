@@ -217,7 +217,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     // Livre fermé (ou entrouvert) : la flèche ouvre d'abord la couverture ; revenue à la première double
     // page, revenir en arrière la referme. À la dernière, avancer referme le plat arrière.
     const opening = Number(open.value);
-    if (forward && opening < 1) return swing('front', 1);
+    if (forward && opening < 1) return spec.sealed ? spec.sealed() : swing('front', 1);
     if (!forward && turner.target === 0 && opening > 0) return swing('front', 0);
     if (forward && turner.target === spreads - 1) return turner.idle ? swing('back', 1) : undefined;
     turner.go(turner.target + (forward ? 1 : -1));
@@ -277,6 +277,10 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   };
   window.addEventListener('keydown', onKey, { signal });
   open.addEventListener('input', () => {
+    if (spec.sealed) {
+      open.value = '0';
+      return spec.sealed();
+    }
     book?.setOpen(Number(open.value));
     invalidate();
   });

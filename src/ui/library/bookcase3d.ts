@@ -71,7 +71,8 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
     width: 1.12,
     cells: [
       [LOW, ['lie']],
-      [LOW, []],
+      // Réservée au livre de débogage (DEBUG_CELL), hors de FILL_ORDER : les livres rares n'y vont jamais.
+      [LOW, ['lie']],
       [HIGH, ['stand', 'lean']],
       [HIGH, []],
     ],
@@ -91,6 +92,8 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
  * de bas en haut) : la vitrine se garnit un peu partout à la fois, pas case après case.
  */
 export const FILL_ORDER = [8, 1, 18, 4, 13, 23, 0, 11, 9, 3, 16];
+/** La case du livre de débogage, couché comme une plaque : à part, il ne décale pas les autres. */
+export const DEBUG_CELL = 17;
 
 /** Le bois des étagères et des montants : chaud ; celui du fond : plus sombre, en retrait. */
 const PIECE = 0xc8a080;
