@@ -82,7 +82,17 @@ const titleItems = (state: GameState): Item[] => [
   { kind: 'seal', id: 'whiteBook', series: 'whiteBook', tier: 0, look: 'gold', x: 320, y: 280, size: 170 },
   { kind: 'text', text: t('whiteBook.title'), x: 320, y: 410, size: 34, align: 'center', caps: true, spacing: 6 },
   { kind: 'text', text: '·   ·   ·', x: 320, y: 470, size: 18, align: 'center', faded: true },
-  { kind: 'text', text: writeDigits(`${Math.floor(completion(state) * 100)} %`), x: 320, y: 540, size: 44, align: 'center', spacing: 2 },
+  // Police des titres : ses chiffres ont la hauteur du « % » (partTitle.ts).
+  {
+    kind: 'text',
+    text: writeDigits(`${Math.floor(completion(state) * 100)} %`),
+    x: 320,
+    y: 542,
+    size: 40,
+    align: 'center',
+    spacing: 2,
+    face: 'title',
+  },
   { kind: 'text', text: t('whiteBook.completion'), x: 320, y: 600, size: 18, align: 'center', italic: true, faded: true, spacing: 2 },
 ];
 
