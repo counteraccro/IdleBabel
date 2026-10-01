@@ -6,13 +6,7 @@
     "books": "Volumes",
     "time": "Heures",
     "methods": "Manières",
-    "knowledge": "Révélations",
-    "sentences": "Connaissances"
-  },
-  "sentenceKinds": {
-    "method": "Méthodes",
-    "memory": "Souvenirs",
-    "anomaly": "Anomalies"
+    "knowledge": "Révélations"
   },
   "sentencesCompletion": "phrases qui te sont revenues · {percent}",
   "figures": {
