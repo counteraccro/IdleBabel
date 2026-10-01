@@ -22,6 +22,34 @@ export interface PileBook {
   tilt?: number;
 }
 
+/**
+ * Un objet debout contre le flanc gauche de la pile (la clé de la bibliothèque) : pas un livre, il ne
+ * s'envole pas ; au clic, il ouvre sa page.
+ */
+export interface PileOrnament {
+  id: string;
+  label: () => string;
+  /** Son modèle, debout, face au lecteur : le pied en y = 0, centré en x et en z. */
+  model: () => THREE.Object3D;
+  /** Il brille d'autant au survol (0 à 1). */
+  glow: (amount: number) => void;
+  onOpen: () => void;
+  /** Penché de tant (radians) contre la pile ; avancé de tant vers le lecteur (unités de scène). */
+  lean: number;
+  dz: number;
+}
+
+/** Un objet posé sur la pile, et où il en est. */
+interface Placed {
+  spec: PileOrnament;
+  pivot: THREE.Group;
+  shown: boolean;
+  away: boolean;
+  glow: number;
+  aim: number;
+  button: HTMLButtonElement;
+}
+
 export interface Pile3d {
   root: HTMLElement;
   /** Montre ou cache un livre (le livre étrange, trouvé plus tard) ; `arrive` : il tombe sur la pile. */
@@ -101,7 +129,7 @@ interface Slot {
  * Les livres sont empilés dans l'ordre de la liste, le premier en dessous ; au-delà de STACK_MAX, debout
  * à côté de la pile.
  */
-export const createPile3d = (books: PileBook[]): Pile3d => {
+export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []): Pile3d => {
   const root = el('nav', 'pile3d');
   const canvas = el('canvas', 'pile3d-canvas');
   const caption = el('div', 'pile3d-caption');
@@ -200,6 +228,80 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     return slot;
   });
 
+  // Les objets appuyés contre la pile (la clé) : replacés à chaque rangement.
+  const placed: Placed[] = ornaments.map((spec) => {
+    const pivot = new THREE.Group();
+    pivot.add(spec.model());
+    pivot.visible = false;
+    scene.add(pivot);
+    const button = el('button', 'pile3d-button', spec.label());
+    button.addEventListener('click', () => spec.onOpen());
+    root.append(button);
+    const item: Placed = { spec, pivot, shown: true, away: false, glow: 0, aim: 0, button };
+    button.addEventListener('focus', () => (item.aim = 1));
+    button.addEventListener('blur', () => (item.aim = 0));
+    return item;
+  });
+  /** Où le flanc gauche de la pile est touché à la hauteur `y`, à la profondeur `z` (null : pas de livre là). */
+  const touch = new THREE.Raycaster();
+  const flankAt = (stacked: Slot[], y: number, z: number): number | null => {
+    touch.set(new THREE.Vector3(-10, y, z), new THREE.Vector3(1, 0, 0));
+    // Comme pour la souris : seul compte ce qu'on voit (pas la feuille cachée qui dépasse du livre fermé).
+    const hit = touch
+      .intersectObjects(
+        stacked.map((slot) => slot.pivot),
+        true,
+      )
+      .find((candidate) => {
+        for (let object: THREE.Object3D | null = candidate.object; object; object = object.parent) if (!object.visible) return false;
+        return true;
+      });
+    return hit ? hit.point.x : null;
+  };
+  /**
+   * Met les objets debout au pied de la pile, à gauche, penchés contre le flanc des livres, aussi près
+   * que possible sans qu'aucune de leurs parties n'y rentre.
+   */
+  const placeOrnaments = (): void => {
+    const stacked = slots.filter((slot) => slot.shown && slot.body !== null && !slot.standing);
+    for (const slot of stacked) {
+      slot.pivot.position.copy(slot.base);
+      slot.pivot.rotation.set(0, 0, slot.spec.tilt ?? 0);
+    }
+    scene.updateMatrixWorld(true);
+    for (const item of placed) {
+      item.pivot.visible = item.shown && !item.away && stacked.length > 0;
+      if (stacked.length === 0) continue;
+      const { lean, dz } = item.spec;
+      item.pivot.rotation.set(0, 0, 0);
+      item.pivot.position.set(0, 0, 0);
+      item.pivot.updateMatrixWorld(true);
+      const height = new THREE.Box3().setFromObject(item.pivot.children[0]).max.y;
+      // Jusqu'où l'objet debout s'étend vers la pile, à la hauteur `y` (null : rien à cette hauteur).
+      const reach = (y: number): number | null => {
+        touch.set(new THREE.Vector3(10, y, 0), new THREE.Vector3(-1, 0, 0));
+        const hit = touch
+          .intersectObject(item.pivot, true)
+          .find((candidate) => candidate.object instanceof THREE.Mesh && (candidate.object.material as THREE.Material).visible);
+        return hit ? hit.point.x : null;
+      };
+      // Penché, chacun de ses points (r, y) passe en (r cos + y sin, y cos − r sin) : le pied est reculé
+      // jusqu'à ce qu'aucun ne rentre dans un livre (l'anneau, plus large que la tige, compris).
+      const [cos, sin] = [Math.cos(lean), Math.sin(lean)];
+      let foot = Infinity;
+      for (let y = 0.01; y < height; y += 0.01) {
+        const right = reach(y);
+        if (right === null) continue;
+        const flank = flankAt(stacked, y * cos - right * sin, dz);
+        if (flank !== null) foot = Math.min(foot, flank - right * cos - y * sin);
+      }
+      // Rien touché (pile trop basse, ou décalée) : au pied du livre le plus à gauche.
+      if (!Number.isFinite(foot)) foot = Math.min(...stacked.map((slot) => slot.base.x - slot.size.x / 2)) - height * sin;
+      item.pivot.position.set(foot, 0, dz);
+      item.pivot.rotation.set(0, 0, -lean);
+    }
+  };
+
   /**
    * Couche le livre (la couverture vers le haut) ou le met debout, le dos vers le lecteur, un peu de
    * travers ; le milieu de son dessous sur le pivot.
@@ -241,6 +343,7 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
       right += STAND_GAP + slot.size.x;
     }
     for (const slot of slots) slot.pivot.position.copy(slot.base);
+    placeOrnaments();
     fit();
     dirty = true;
   }
@@ -249,6 +352,7 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     const box = new THREE.Box3();
     // Un livre ouvert ailleurs compte quand même : la pile ne se recadre pas sans lui.
     for (const slot of slots) if (slot.shown && slot.body) box.expandByObject(slot.body);
+    for (const item of placed) if (item.pivot.visible) box.expandByObject(item.pivot);
     if (box.isEmpty()) return;
     const sphere = box.getBoundingSphere(new THREE.Sphere());
     const half = THREE.MathUtils.degToRad(camera.fov / 2);
@@ -293,9 +397,45 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
     caption.textContent = slot?.spec.label() ?? '';
     caption.classList.toggle('shown', slot !== null);
   };
-  canvas.addEventListener('pointermove', (event) => hover(slotAt(event)));
-  canvas.addEventListener('pointerleave', () => hover(null));
+  /** L'objet posé sous la souris (il est sur les livres : il passe avant eux). */
+  const ornamentAt = (event: MouseEvent): Placed | null => {
+    const rect = canvas.getBoundingClientRect();
+    pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
+    raycaster.setFromCamera(pointer, camera);
+    const shown = placed.filter((item) => item.pivot.visible);
+    const [hit] = raycaster.intersectObjects(
+      shown.map((item) => item.pivot),
+      true,
+    );
+    return shown.find((item) => hit && item.pivot.getObjectById(hit.object.id)) ?? null;
+  };
+  let hoveredOrnament: Placed | null = null;
+  const hoverOrnament = (item: Placed | null): void => {
+    if (hoveredOrnament === item) return;
+    if (hoveredOrnament) hoveredOrnament.aim = 0;
+    hoveredOrnament = item;
+    if (item) item.aim = 1;
+    canvas.style.cursor = item ? 'pointer' : '';
+    caption.textContent = item?.spec.label() ?? '';
+    caption.classList.toggle('shown', item !== null);
+  };
+  canvas.addEventListener('pointermove', (event) => {
+    const item = ornamentAt(event);
+    if (item) {
+      hover(null);
+      hoverOrnament(item);
+    } else {
+      hoverOrnament(null);
+      hover(slotAt(event));
+    }
+  });
+  canvas.addEventListener('pointerleave', () => {
+    hoverOrnament(null);
+    hover(null);
+  });
   canvas.addEventListener('click', (event) => {
+    const item = ornamentAt(event);
+    if (item) return item.spec.onOpen();
     const slot = slotAt(event);
     if (slot) open(slot);
   });
@@ -403,6 +543,13 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
       slot.pivot.rotation.set(0, 0, roll + tilt);
       slot.pivot.position.set(slot.base.x, slot.base.y + rest + drop + hop, slot.base.z);
     }
+    for (const item of placed) {
+      if (!item.pivot.visible) continue;
+      item.glow = still.matches ? item.aim : item.glow + (item.aim - item.glow) * Math.min(1, dt * GLOW_RATE);
+      if (Math.abs(item.aim - item.glow) > 0.002) moving = true;
+      else item.glow = item.aim;
+      item.spec.glow(item.glow);
+    }
     for (const slot of slots) if (slot.shown && slot.tick?.(now)) dirty = true;
     if (resize()) {
       fit();
@@ -434,12 +581,27 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
       if (hovered === slot) hover(null);
       changed = true;
     }
+    for (const item of placed) {
+      const away = hidden.has(item.spec.id);
+      if (item.away === away) continue;
+      item.away = away;
+      item.button.disabled = away;
+      if (hoveredOrnament === item) hoverOrnament(null);
+      changed = true;
+    }
     if (changed) layout();
   }
   const find = (id: string): Slot | undefined => slots.find((slot) => slot.spec.id === id);
   const pile: Pile3d = {
     root,
     show: (id, shown, arrive = false) => {
+      const item = placed.find((candidate) => candidate.spec.id === id);
+      if (item) {
+        if (item.shown === shown) return;
+        item.shown = shown;
+        item.button.hidden = !shown;
+        return layout();
+      }
       const slot = find(id);
       if (!slot || slot.shown === shown) return;
       slot.shown = shown;
@@ -464,7 +626,12 @@ export const createPile3d = (books: PileBook[]): Pile3d => {
         const label = slot.spec.label();
         if (slot.button.textContent !== label) slot.button.textContent = label;
       }
+      for (const item of placed) {
+        const label = item.spec.label();
+        if (item.button.textContent !== label) item.button.textContent = label;
+      }
       if (hovered) caption.textContent = hovered.spec.label();
+      if (hoveredOrnament) caption.textContent = hoveredOrnament.spec.label();
     },
   };
   // Débogage : la pile depuis la console (window.pile3d.shake('white')…), ?debug seulement.

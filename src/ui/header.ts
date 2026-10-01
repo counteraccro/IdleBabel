@@ -3,7 +3,7 @@ import { el } from './dom';
 import { t } from '../i18n';
 import { createPile3d } from './book3d/pile3d';
 import { createGameTitle } from './gameTitle';
-import { createLibraryKey } from './library/libraryKey';
+import { libraryKey } from './library/libraryKey';
 import type { Book3d } from './book3d/book3dBook';
 import type { Component } from './dom';
 
@@ -33,40 +33,51 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
   const root = el('header');
   // Les livres du joueur, posés en vrac : le livre blanc, qu'il a sur lui dès son réveil, le livre
   // étrange trouvé plus tard, et le cahier tout en haut, bien de travers (on voit sa couverture).
-  const pile = createPile3d([
-    { id: 'white', label: () => t('ui.whiteBook'), book: handlers.books.white, onOpen: handlers.onWhiteBook, yaw: 0.02, dx: 0, dz: 0 },
-    {
-      id: 'strange',
-      label: () => t('ui.strangeBook'),
-      book: handlers.books.strange,
-      onOpen: handlers.onStrangeBook,
-      yaw: 0.06,
-      dx: -0.05,
-      dz: -0.02,
-    },
-    {
-      id: 'options',
-      label: () => t('ui.options'),
-      book: handlers.books.options,
-      onOpen: handlers.onOptions,
-      yaw: -0.4,
-      dx: 0.2,
-      dz: -0.1,
-      tilt: 0.05,
-    },
-    // Débogage : la plaque d'obsidienne posée sur tout le reste, sa couverture vers le ciel.
-    ...(handlers.books.debug && handlers.onDebugBook
-      ? [{ id: 'debug', label: () => 'Débogage', book: handlers.books.debug, onOpen: handlers.onDebugBook, yaw: 0.25, dx: -0.12, dz: 0.06 }]
-      : []),
-  ]);
+  const pile = createPile3d(
+    [
+      { id: 'white', label: () => t('ui.whiteBook'), book: handlers.books.white, onOpen: handlers.onWhiteBook, yaw: 0.02, dx: 0, dz: 0 },
+      {
+        id: 'strange',
+        label: () => t('ui.strangeBook'),
+        book: handlers.books.strange,
+        onOpen: handlers.onStrangeBook,
+        yaw: 0.06,
+        dx: -0.05,
+        dz: -0.02,
+      },
+      {
+        id: 'options',
+        label: () => t('ui.options'),
+        book: handlers.books.options,
+        onOpen: handlers.onOptions,
+        yaw: -0.4,
+        dx: 0.2,
+        dz: -0.1,
+        tilt: 0.05,
+      },
+      // Débogage : la plaque d'obsidienne posée sur tout le reste, sa couverture vers le ciel.
+      ...(handlers.books.debug && handlers.onDebugBook
+        ? [
+            {
+              id: 'debug',
+              label: () => 'Débogage',
+              book: handlers.books.debug,
+              onOpen: handlers.onDebugBook,
+              yaw: 0.25,
+              dx: -0.12,
+              dz: 0.06,
+            },
+          ]
+        : []),
+    ],
+    // La clé de la bibliothèque, posée sur la pile dès le premier livre rare trouvé.
+    [libraryKey(handlers.onLibrary)],
+  );
   // Déjà trouvé à l'affichage : le livre est là. Trouvé pendant la partie : il tombe sur la pile.
   let found = handlers.strangeBookFound();
   pile.show('strange', found);
   let written = handlers.writtenCount();
-  // La clé de la bibliothèque, à côté de la pile ; cachée tant qu'on y est.
-  const key = createLibraryKey(handlers.onLibrary);
-  const showKey = (): void => key.show(handlers.libraryKey() && handlers.openBook() !== 'library');
-  showKey();
+  pile.show('library', handlers.libraryKey());
   const update = (): void => {
     const now = handlers.strangeBookFound();
     if (now !== found) pile.show('strange', now, true);
@@ -77,9 +88,8 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     written = count;
     pile.away(handlers.openBook());
     pile.relabel();
-    showKey();
-    key.relabel();
+    pile.show('library', handlers.libraryKey());
   };
-  root.append(createGameTitle(), pile.root, key.root);
+  root.append(createGameTitle(), pile.root);
   return { root, update };
 };
