@@ -111,7 +111,230 @@
   },
   "oriana": {
     "name": "La biographie d'Oriana",
-    "cover": ["Biographie", "d'Oriana"]
+    "cover": ["Biographie", "d'Oriana"],
+    "subtitle": "Un bloc après l’autre",
+    "kind": "Biographie",
+    "quotes": [
+      ["« Je n’ai pas pu en placer une. »", "Un collègue"],
+      ["« Elle m’a expliqué la blockchain entre Lisbonne et Madrid. »", "Un voisin de train"],
+      ["« Elle a fermé le bar, puis m’a expliqué la blockchain. »", "Un barman de Lisbonne"],
+      ["« Ligne trop longue. »", "AlexH"]
+    ],
+    "blurb": "Développeuse, voyageuse, reine des fins de soirée et apôtre de la blockchain : Oriana a une histoire à raconter. Plusieurs, en fait. Toutes en même temps. Du premier mot à la valise pour l’Amérique, la vie d’une femme qui n’a jamais fait court, racontée par un biographe qui a essayé.",
+    "copyright": [
+      "© Oriana. Tous droits réservés, tous blocs validés.",
+      "",
+      "Aucune conversation n’a été écourtée",
+      "pendant l’écriture de ce livre.",
+      "",
+      "L’abus d’anecdotes est dangereux pour la santé",
+      "de l’entourage. À lire avec modération.",
+      "",
+      "Dépôt légal : bloc n° 410."
+    ],
+    "dedication": ["À mes chats,", "qui m’ont écoutée parler de la blockchain", "sans jamais m’interrompre."],
+    "epigraph": "« Je fais court. »",
+    "epigraphSource": "Oriana, avant une réunion d’une heure",
+    "contents": "Sommaire",
+    "chapters": [
+      {
+        "label": "Chapitre 1",
+        "title": "Le premier mot",
+        "opening": [
+          "Le premier mot d’Oriana n’a pas été « maman ». Ni « papa ». Selon sa mère, ce fut une phrase entière, avec une subordonnée, prononcée à onze mois devant une boulangère qui n’avait rien demandé.¹ Depuis, elle n’a pas vraiment repris son souffle.",
+          "À l’école, ses bulletins disaient tous la même chose, dans des écritures différentes : « Élève brillante. Bavarde. » Un professeur de mathématiques a un jour ajouté : « Très bavarde. Mais elle a raison. » Elle l’a encadré.",
+          "Ce livre raconte sa vie. Il aurait pu être plus court. Elle a demandé à le relire."
+        ],
+        "note": "C’était une question. Et la boulangère a répondu."
+      },
+      {
+        "label": "Chapitre 2",
+        "title": "Développeuse",
+        "opening": [
+          "Oriana est devenue développeuse par accident, un soir où elle expliquait à un ami pourquoi son site ne marchait pas. À minuit, le site marchait. À une heure, l’ami dormait. Elle parlait encore.¹",
+          "Au travail, elle est de celles qui posent des questions en réunion, puis qui y répondent. « Il y a des questions ? — Non. — Je réponds quand même. » Ses collègues la trouvent brillante, drôle et parfois un peu fatigante, mais toujours dans cet ordre.",
+          "Elle code vite et bien, avec de la musique et un thé qui refroidit. Ses messages de commit sont courts. C’est, de l’avis général, la seule chose courte chez elle."
+        ],
+        "note": "Il ne dormait pas, il réfléchissait. Je l’ai vérifié en lui reposant la question le lendemain."
+      },
+      {
+        "label": "Chapitre 3",
+        "title": "La révélation",
+        "opening": [
+          "Elle a découvert la blockchain un mardi, dans un article que personne ne lui avait conseillé. À la fin de la première page, elle avait compris. À la fin de la deuxième, elle était convaincue. À la fin de la troisième, elle l’expliquait déjà à son voisin de bureau, qui était au téléphone.¹",
+          "Un registre que personne ne peut effacer, où chaque bloc se souvient du précédent : pour quelqu’un qui n’oublie jamais rien de ce qu’on lui a dit, c’était presque une évidence. Elle a dit ce soir-là, à qui voulait l’entendre : « C’est moi, en technologie. »",
+          "Personne n’a contredit. Personne ne contredit Oriana très longtemps."
+        ],
+        "note": "Il a raccroché. Donc ça l’intéressait."
+      },
+      {
+        "label": "Chapitre 4",
+        "title": "L’évangile",
+        "opening": [
+          "Depuis, elle explique la blockchain. À ses collègues, à sa famille, à la boulangère, au chauffeur de bus, à des inconnus dans un train de nuit qui n’avaient rien demandé et qui, au matin, savaient ce qu’est une preuve d’enjeu.¹",
+          "Elle a une version courte, de vingt minutes, et une version longue, que personne n’a jamais entendue en entier. Elle commence toujours par : « Imagine un grand cahier. » On ne sait jamais quand elle s’arrête. Elle non plus.",
+          "Il paraît qu’à force, la boulangère a acheté un jeton. Elle refuse d’en parler. Oriana, elle, en parle beaucoup."
+        ],
+        "note": "« Qui n’avaient rien demandé » : c’est le biographe qui le dit. Moi, j’ai vu leurs yeux. Ils demandaient."
+      },
+      {
+        "label": "Chapitre 5",
+        "title": "Le tour du monde",
+        "opening": [
+          "Oriana a pris son premier avion à dix-neuf ans. À l’atterrissage, elle connaissait le prénom, le métier et les projets de vacances de ses deux voisins de rangée, ainsi que ceux de l’hôtesse.¹ Depuis, elle n’a jamais vraiment voyagé seule : il y a toujours quelqu’un à côté d’elle, et il finit toujours par l’écouter.",
+          "Lisbonne, Tokyo, Reykjavik, Marrakech : elle collectionne les tampons sur son passeport et les conversations dans les taxis. On raconte qu’à Lisbonne, un chauffeur a fait deux fois le tour de la ville pour connaître la fin de son explication sur la preuve de travail.",
+          "Elle rentre de chaque voyage avec trop de photos, trop d’histoires et pas assez de temps pour toutes les raconter. Elle essaie quand même. Le carnet qui suit en donne une idée, en plus court."
+        ],
+        "note": "Et du pilote. Il est venu dire bonjour à la fin ; on a parlé une demi-heure sur la passerelle."
+      },
+      {
+        "label": "Chapitre 6",
+        "title": "La dernière tournée",
+        "opening": [
+          "Oriana aime les soirées. Les longues, celles qui commencent par « juste un verre » et finissent quand le bar ferme, ou un peu après. Elle est toujours la dernière à partir, parce qu’il reste toujours quelqu’un à qui elle n’a pas encore parlé.¹",
+          "À trois heures du matin, on la trouve en général près des platines, en train d’expliquer la blockchain au DJ. Il hoche la tête en rythme. Elle le prend pour un oui. Les lendemains sont difficiles, mais ses souvenirs sont intacts : elle peut réciter qui a dit quoi, et à quelle heure.",
+          "Personne ne se souvient de la fin de ces soirées. La blockchain, si. Oriana aussi."
+        ],
+        "note": "Je n’étais pas ivre, j’étais enthousiaste."
+      },
+      {
+        "label": "Chapitre 7",
+        "title": "La réunion de cinq minutes",
+        "opening": [
+          "La réunion devait durer cinq minutes. C’était écrit dans l’invitation, en gras : « point rapide ». Oriana avait une seule remarque. Elle a levé la main à 10 h 01.¹",
+          "À 10 h 20, elle en était à la remarque, enfin à son contexte. À 10 h 40, elle avait répondu à trois questions que personne n’avait posées. À 11 h, quelqu’un a ouvert la fenêtre. À 11 h 02, elle a conclu : « Bref, c’est tout. » Ce n’était pas tout.",
+          "Depuis, l’équipe prévoit toujours une heure pour les points rapides. Ils finissent souvent en avance. Sauf quand Oriana a une remarque."
+        ],
+        "note": "La remarque était importante, et le reste aussi. D’ailleurs, personne n’est parti. Bon, un collègue, mais il avait un train. Je lui ai envoyé la fin par écrit. Quatre pages. Il m’a remerciée. Enfin, il a mis un pouce."
+      },
+      {
+        "label": "Chapitre 8",
+        "title": "Le chat sur le clavier",
+        "opening": [
+          "Oriana a des chats. Ils l’écoutent parler de la blockchain sans jamais l’interrompre, ce qui en fait, selon elle, les meilleurs collègues qu’elle ait jamais eus.¹",
+          "L’un d’eux aime dormir sur son clavier. Un jour, il a poussé un commit : « ggggggggggggggg ». AlexH, son collègue, l’a relu avec le plus grand sérieux. Il a laissé un seul commentaire : « Renomme. » Oriana a défendu le chat pendant vingt minutes. Le commit est toujours là.",
+          "C’est le chapitre le plus court de ce livre. Elle l’a trouvé trop court. Le chat, lui, n’a rien dit."
+        ],
+        "note": "C’est aussi pour ça que je leur parle beaucoup. Il faut bien que quelqu’un parle, dans cette maison. Ils ont des avis, d’ailleurs, mais ils les gardent pour eux, ce que je respecte, même si je ne comprends pas."
+      },
+      {
+        "label": "Chapitre 9",
+        "title": "L’Amérique",
+        "opening": [
+          "Oriana rêve de vivre aux États-Unis. Elle en parle souvent, de New York surtout, parfois d’Austin, une fois de Seattle « pour la pluie ». Elle a même commencé le dossier de visa. Il est presque prêt.¹",
+          "Elle a déjà tout prévu : l’appartement avec vue, le café du coin où elle connaîtra tout le monde au bout d’une semaine, et le premier Américain à qui elle expliquera la blockchain. Il ne le sait pas encore. Il lui reste quelques mois de calme.",
+          "La valise est à moitié faite, dans un coin de la chambre. Le chat dort dedans."
+        ],
+        "note": "« Presque », c’est-à-dire qu’il manque deux papiers, enfin trois, et une photo d’identité où je ne parle pas, ce qui est plus difficile qu’on ne croit : le photographe a essayé quatre fois, la cinquième était la bonne mais j’avais les yeux fermés, il m’a dit que ça irait, moi je pense que non, et l’ambassade aussi, alors j’y retourne mardi."
+      },
+      {
+        "label": "",
+        "title": "Épilogue : bref",
+        "opening": [
+          "Ce livre s’arrête ici. Oriana, non. Au moment où vous lisez ces lignes, elle est sûrement en train de raconter quelque chose à quelqu’un, avec beaucoup de détails et une parenthèse qui ne se refermera pas.¹",
+          "Un jour, elle partira vivre de l’autre côté de l’océan. Elle regardera la ville depuis sa fenêtre, un café à la main, et elle appellera ses amis restés ici pour tout leur raconter. L’appel sera long. Ils décrocheront quand même.",
+          "Elle a dit qu’elle ferait court. Elle a dit « bref ». Nous la croyons."
+        ],
+        "note": "Elle se referme. Plus tard."
+      }
+    ],
+    "noteSign": "— O.",
+    "notes": [
+      "Ce n’est pas tout à fait ça.",
+      "Trois fois, pas deux.",
+      "Je précise, parce que le biographe ne le fera pas.",
+      "C’était un mardi, pas un mercredi. Je m’en souviens : le mardi, il y a des croissants.",
+      "Le biographe n’était pas là. Moi, si.",
+      "J’ai une photo, si besoin.",
+      "Il oublie de dire que j’avais raison.",
+      "D’ailleurs, ça me fait penser à une histoire, à Tokyo, avec un monsieur qui chantait au karaoké.",
+      "Je reviendrai là-dessus, c’est important.",
+      "Il faut dire aussi que la blockchain règle ce problème, mais je l’expliquerai plus loin. Ou maintenant, tant qu’on y est.",
+      "Imagine un grand cahier.",
+      "Pour être honnête, il était plutôt quatre heures du matin.",
+      "Ce paragraphe, je l’aurais écrit autrement. Plus long, mais plus clair.",
+      "Mon chat n’est pas d’accord, mais il n’a pas voix au chapitre. Enfin, si : le huitième.",
+      "À ce propos, le dossier de visa avance. Doucement, mais il avance.",
+      "On m’a demandé de faire court. Je fais court.",
+      "Ceci est une parenthèse (qui en contient une autre (et une troisième, que je refermerai plus tard)).",
+      "Et ce n’était pas la preuve de travail, c’était la preuve d’enjeu.",
+      "Le chauffeur de taxi de Lisbonne s’appelle Rui, au passage. Il m’envoie encore des messages. Enfin, je lui en envoie, et il les lit.",
+      "AlexH dit que cette note est trop longue. AlexH dit ça de tout."
+    ],
+    "longLine": "Elle rêve depuis longtemps de vivre aux États-Unis.¹",
+    "longNote": "« Depuis longtemps » est une façon de parler, il faudrait être précis : depuis 2009 exactement, depuis un reportage sur San Francisco que j’ai regardé chez ma tante, celle qui avait le chat roux, pas l’autre. D’ailleurs, ce n’est pas un rêve, c’est un projet, et un projet n’est pas un rêve puisqu’il a des étapes. Étape un : le dossier. Le dossier est presque prêt, il manque seulement deux papiers, enfin trois, et une photo où je ne parle pas. Étape deux : choisir la ville. New York pour l’énergie, Austin pour la tech, Seattle pour la pluie qui me rappellera la maison, mais pas trop. Étape trois : expliquer la blockchain aux Américains, qui la connaissent déjà, mais mal, et c’est là que j’interviens. Étape quatre : trouver un bar où l’on connaîtra mon prénom avant la fin de la première soirée, ce qui, entre nous, ne devrait pas prendre longtemps. Je disais donc que le biographe aurait dû écrire « depuis 2009 », mais il ne m’a pas laissée finir, ce qui, entre nous, est une première, et je compte bien en parler à l’épilogue, à moins qu’il ne le coupe aussi, auquel cas",
+    "longNoteMore": "(suite p. 312)",
+    "longNoteRest": "(suite de la p. 311) … auquel cas je l’écrirai dans les marges, ou dans un deuxième livre, ou les deux. Voilà. C’est tout. Pour l’instant.",
+    "pullQuotes": [
+      "« Imagine un grand cahier. »",
+      "« Je fais court. »",
+      "« Juste un verre. »",
+      "« Attends, j’ai pas fini. »",
+      "« Bref. »",
+      "« L’année prochaine, New York. »"
+    ],
+    "travelTitle": "Carnet de voyage",
+    "captions": [
+      "Lisbonne : Rui, chauffeur de taxi, trois tours de la ville. Il a compris la preuve d’enjeu au troisième.",
+      "Tokyo : le monsieur du karaoké voulait chanter. Je lui ai expliqué les contrats intelligents, il a chanté après.",
+      "Reykjavik : aurore boréale à 2 h du matin. J’ai parlé pendant toute l’aurore. Les autres disent que c’était beau.",
+      "Marrakech : trois heures à négocier un tapis. Je ne voulais pas de tapis, je voulais discuter.",
+      "Montréal : soirée jusqu’à 5 h. Le barman connaît maintenant la blockchain et mon prénom. Surtout mon prénom.",
+      "La prochaine page. Je garde la place."
+    ],
+    "soon": "BIENTÔT",
+    "notYet": "← pas encore !",
+    "journalTitle": "Annexe : journal de bord",
+    "journalIntro": "Oriana note tout. Depuis qu’elle a découvert la blockchain, elle le note en blocs : chaque bloc garde l’empreinte du précédent, et rien ne s’efface. Voici les derniers. Il y en a d’autres.",
+    "block": "BLOC n° {n}",
+    "previous": "préc.\u00a0:",
+    "hash": "empr.\u00a0:",
+    "cities": [
+      "Paris",
+      "Lisbonne",
+      "Madrid",
+      "Tokyo",
+      "Kyoto",
+      "Reykjavik",
+      "Dublin",
+      "Marrakech",
+      "Istanbul",
+      "Montréal",
+      "Berlin",
+      "Porto"
+    ],
+    "transactions": [
+      "Vol {city} → {city2}",
+      "Train {city} → {city2}",
+      "Conversation : voisin {seat}, {h} h {m}",
+      "Blockchain expliquée : {n}",
+      "Verres : {n} (déclarés) / {n2} (vérifiés)",
+      "Retour à l’hôtel : {h} h {m}",
+      "Nouveaux amis : {n}",
+      "Films regardés : 0 (trop à dire)",
+      "Voisin endormi : 1",
+      "Chats croisés : {n2}, caressés : {n2}",
+      "Cartes postales : {n} (écrites en tout petit)",
+      "Dossier de visa : presque prêt",
+      "Dernière tournée : {h} h {m}",
+      "Réunion « rapide » : {n2} min"
+    ],
+    "thanksTitle": "Remerciements",
+    "thanks": "Merci à tous ceux qui m’ont écoutée : mes collègues, mes amis, mes chats, Rui, le DJ de Montréal, le monsieur du karaoké et l’ambassade des États-Unis, qui m’écoutera bientôt. Merci à AlexH, qui a relu ce livre et demandé des modifications sur chaque note de bas de page. Merci au biographe, qui a fait de son mieux pour me couper la parole et n’y est presque jamais arrivé. Et merci à toi, lecteur : si tu veux en savoir plus, viens me voir. J’ai le temps.",
+    "alsoTitle": "De la même autrice",
+    "also": [
+      "Pourquoi tu devrais t’intéresser à la blockchain (tomes 1 à 7)",
+      "Le consensus à 3 h du matin",
+      "Bref (édition intégrale, 900 pages)",
+      "Ma vie à New York (à paraître)"
+    ],
+    "colophon": [
+      "Achevé d’imprimer",
+      "après la dernière tournée,",
+      "sur les presses de la Bibliothèque de Babel.",
+      "",
+      "Bloc n° 410 : validé"
+    ]
   },
   "alexH": {
     "name": "AlexH, mon code, ma PR",

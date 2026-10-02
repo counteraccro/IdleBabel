@@ -111,7 +111,224 @@
   },
   "oriana": {
     "name": "The Biography of Oriana",
-    "cover": ["The Biography", "of Oriana"]
+    "cover": ["The Biography", "of Oriana"],
+    "subtitle": "One Block at a Time",
+    "kind": "A Biography",
+    "quotes": [
+      ["“I couldn’t get a word in.”", "A colleague"],
+      ["“She explained blockchain to me between Lisbon and Madrid.”", "A fellow train passenger"],
+      ["“She closed the bar, then explained blockchain to me.”", "A bartender in Lisbon"],
+      ["“Line too long.”", "AlexH"]
+    ],
+    "blurb": "Developer, traveller, queen of late nights and apostle of the blockchain: Oriana has a story to tell. Several, actually. All at once. From her first word to the suitcase packed for America, the life of a woman who never kept it short, told by a biographer who tried.",
+    "copyright": [
+      "© Oriana. All rights reserved, all blocks validated.",
+      "",
+      "No conversation was cut short",
+      "in the writing of this book.",
+      "",
+      "Excessive anecdotes may harm the health",
+      "of those around you. Read responsibly.",
+      "",
+      "Legal deposit: block no. 410."
+    ],
+    "dedication": ["To my cats,", "who listened to me talk about blockchain", "without ever interrupting."],
+    "epigraph": "“I’ll keep it short.”",
+    "epigraphSource": "Oriana, before a one-hour meeting",
+    "contents": "Contents",
+    "chapters": [
+      {
+        "label": "Chapter 1",
+        "title": "The First Word",
+        "opening": [
+          "Oriana’s first word was not “mummy”. Nor “daddy”. According to her mother, it was a full sentence, with a subordinate clause, spoken at eleven months to a baker who hadn’t asked for anything.¹ She hasn’t really stopped for breath since.",
+          "At school, her reports all said the same thing, in different handwriting: “Brilliant pupil. Talkative.” One maths teacher once added: “Very talkative. But she’s right.” She had it framed.",
+          "This book tells her life. It could have been shorter. She asked to proofread it."
+        ],
+        "note": "It was a question. And the baker answered."
+      },
+      {
+        "label": "Chapter 2",
+        "title": "Developer",
+        "opening": [
+          "Oriana became a developer by accident, one evening when she was explaining to a friend why his website didn’t work. By midnight, the website worked. By one, the friend was asleep. She was still talking.¹",
+          "At work, she is one of those people who ask questions in meetings, then answer them. “Any questions? — No. — I’ll answer anyway.” Her colleagues find her brilliant, funny and sometimes a little tiring, but always in that order.",
+          "She codes fast and well, with music on and a cup of tea going cold. Her commit messages are short. It is, by general agreement, the only short thing about her."
+        ],
+        "note": "He wasn’t asleep, he was thinking. I checked by asking him the question again the next day."
+      },
+      {
+        "label": "Chapter 3",
+        "title": "The Revelation",
+        "opening": [
+          "She discovered blockchain on a Tuesday, in an article nobody had recommended. By the end of the first page, she understood. By the end of the second, she was convinced. By the end of the third, she was already explaining it to the colleague at the next desk, who was on the phone.¹",
+          "A ledger nobody can erase, where every block remembers the one before: for someone who never forgets anything anyone has told her, it was almost obvious. That evening she told anyone who would listen: “It’s me, as a technology.”",
+          "Nobody argued. Nobody argues with Oriana for very long."
+        ],
+        "note": "He hung up. So he was interested."
+      },
+      {
+        "label": "Chapter 4",
+        "title": "The Gospel",
+        "opening": [
+          "Ever since, she has been explaining blockchain. To her colleagues, her family, the baker, the bus driver, strangers on a night train who hadn’t asked for anything and who, by morning, knew what proof of stake is.¹",
+          "She has a short version, twenty minutes long, and a long version nobody has ever heard in full. She always starts with: “Picture a big notebook.” You never know when she’ll stop. Neither does she.",
+          "Rumour has it that the baker eventually bought a token. She refuses to talk about it. Oriana talks about it a lot."
+        ],
+        "note": "“Who hadn’t asked for anything”: that’s the biographer talking. I saw their eyes. They were asking."
+      },
+      {
+        "label": "Chapter 5",
+        "title": "Around the World",
+        "opening": [
+          "Oriana took her first plane at nineteen. By landing, she knew the first names, jobs and holiday plans of both her neighbours in the row, and the flight attendant’s too.¹ Since then, she has never really travelled alone: there is always someone next to her, and they always end up listening.",
+          "Lisbon, Tokyo, Reykjavik, Marrakech: she collects stamps in her passport and conversations in taxis. They say a driver in Lisbon went round the city twice just to hear the end of her explanation of proof of work.",
+          "She comes back from every trip with too many photos, too many stories and not enough time to tell them all. She tries anyway. The notebook that follows gives an idea, in shorter form."
+        ],
+        "note": "And the pilot’s. He came to say hello at the end; we talked for half an hour on the jet bridge."
+      },
+      {
+        "label": "Chapter 6",
+        "title": "Last Orders",
+        "opening": [
+          "Oriana loves parties. The long ones, the ones that start with “just one drink” and end when the bar closes, or a little after. She is always the last to leave, because there is always someone she hasn’t talked to yet.¹",
+          "At three in the morning, you’ll usually find her by the decks, explaining blockchain to the DJ. He nods along to the beat. She takes it as a yes. The mornings after are hard, but her memories are intact: she can tell you who said what, and at what time.",
+          "Nobody remembers how those nights end. The blockchain does. So does Oriana."
+        ],
+        "note": "I wasn’t drunk, I was enthusiastic."
+      },
+      {
+        "label": "Chapter 7",
+        "title": "The Five-Minute Meeting",
+        "opening": [
+          "The meeting was meant to last five minutes. It said so in the invitation, in bold: “quick sync”. Oriana had just one remark. She raised her hand at 10:01.¹",
+          "By 10:20, she had reached the remark, or at least its background. By 10:40, she had answered three questions nobody had asked. At 11:00, someone opened the window. At 11:02, she concluded: “Anyway, that’s all.” It was not all.",
+          "Since then, the team always books an hour for quick syncs. They often finish early. Except when Oriana has a remark."
+        ],
+        "note": "The remark was important, and so was the rest. Besides, nobody left. Well, one colleague, but he had a train to catch. I sent him the end in writing. Four pages. He thanked me. Well, he gave it a thumbs-up."
+      },
+      {
+        "label": "Chapter 8",
+        "title": "The Cat on the Keyboard",
+        "opening": [
+          "Oriana has cats. They listen to her talk about blockchain without ever interrupting, which makes them, in her opinion, the best colleagues she has ever had.¹",
+          "One of them likes to sleep on her keyboard. One day, it pushed a commit: “ggggggggggggggg”. AlexH, her colleague, reviewed it with the utmost seriousness. He left a single comment: “Rename.” Oriana defended the cat for twenty minutes. The commit is still there.",
+          "This is the shortest chapter in the book. She found it too short. The cat said nothing."
+        ],
+        "note": "That’s also why I talk to them so much. Somebody has to talk in this house. They have opinions, mind you, but they keep them to themselves, which I respect, even if I don’t understand it."
+      },
+      {
+        "label": "Chapter 9",
+        "title": "America",
+        "opening": [
+          "Oriana dreams of living in the United States. She talks about it often, mostly New York, sometimes Austin, once Seattle “for the rain”. She has even started her visa application. It is almost ready.¹",
+          "She has it all planned: the apartment with a view, the corner café where she’ll know everyone within a week, and the first American she’ll explain blockchain to. He doesn’t know it yet. He has a few months of peace left.",
+          "The suitcase is half packed, in a corner of the bedroom. The cat sleeps in it."
+        ],
+        "note": "“Almost” meaning two documents are missing, well, three, and an ID photo where I’m not talking, which is harder than you’d think: the photographer tried four times, the fifth was the one but my eyes were closed, he said it would do, I don’t think so, nor does the embassy, so I’m going back on Tuesday."
+      },
+      {
+        "label": "",
+        "title": "Epilogue: Anyway",
+        "opening": [
+          "This book ends here. Oriana doesn’t. As you read these lines, she is surely telling someone something, in great detail, with a parenthesis that will never close.¹",
+          "One day, she will move to the other side of the ocean. She will look at the city from her window, coffee in hand, and call the friends she left behind to tell them everything. The call will be long. They will pick up anyway.",
+          "She said she’d keep it short. She said “anyway”. We believe her."
+        ],
+        "note": "It closes. Later."
+      }
+    ],
+    "noteSign": "— O.",
+    "notes": [
+      "That’s not quite it.",
+      "Three times, not two.",
+      "I’m adding this because the biographer won’t.",
+      "It was a Tuesday, not a Wednesday. I remember: on Tuesdays there are croissants.",
+      "The biographer wasn’t there. I was.",
+      "I have a photo, if needed.",
+      "He forgets to mention I was right.",
+      "Which reminds me of a story, in Tokyo, with a man singing karaoke.",
+      "I’ll come back to this, it’s important.",
+      "It should also be said that blockchain solves this problem, but I’ll explain later. Or now, while we’re at it.",
+      "Picture a big notebook.",
+      "To be honest, it was more like four in the morning.",
+      "I would have written this paragraph differently. Longer, but clearer.",
+      "My cat disagrees, but he doesn’t get a chapter. Well, he does: chapter eight.",
+      "Speaking of which, the visa application is moving. Slowly, but it’s moving.",
+      "I was asked to keep it short. I’m keeping it short.",
+      "This is a parenthesis (containing another (and a third, which I’ll close later)).",
+      "And it wasn’t proof of work, it was proof of stake.",
+      "The Lisbon taxi driver is called Rui, by the way. He still sends me messages. Well, I send him messages, and he reads them.",
+      "AlexH says this note is too long. AlexH says that about everything."
+    ],
+    "longLine": "She has long dreamt of living in the United States.¹",
+    "longNote": "“Long” is a figure of speech, we should be precise: since 2009 exactly, since a documentary about San Francisco I watched at my aunt’s, the one with the ginger cat, not the other one. Besides, it isn’t a dream, it’s a plan, and a plan isn’t a dream because it has steps. Step one: the application. The application is almost ready, only two documents missing, well, three, and a photo where I’m not talking. Step two: choose the city. New York for the energy, Austin for tech, Seattle for the rain that will remind me of home, but not too much. Step three: explain blockchain to the Americans, who already know it, but badly, and that’s where I come in. Step four: find a bar where they know my name before the end of the first night, which, between us, shouldn’t take long. So I was saying the biographer should have written “since 2009”, but he didn’t let me finish, which, between us, is a first, and I fully intend to bring it up in the epilogue, unless he cuts that too, in which case",
+    "longNoteMore": "(continued on p. 312)",
+    "longNoteRest": "(continued from p. 311) … in which case I’ll write it in the margins, or in a second book, or both. There. That’s all. For now.",
+    "pullQuotes": [
+      "“Picture a big notebook.”",
+      "“I’ll keep it short.”",
+      "“Just one drink.”",
+      "“Wait, I’m not done.”",
+      "“Anyway.”",
+      "“Next year, New York.”"
+    ],
+    "travelTitle": "Travel Notebook",
+    "captions": [
+      "Lisbon: Rui, taxi driver, three laps of the city. He got proof of stake on the third.",
+      "Tokyo: the karaoke man wanted to sing. I explained smart contracts to him, he sang afterwards.",
+      "Reykjavik: northern lights at 2 a.m. I talked through the whole aurora. The others say it was beautiful.",
+      "Marrakech: three hours haggling over a rug. I didn’t want a rug, I wanted to chat.",
+      "Montreal: party until 5 a.m. The bartender now knows blockchain and my name. Mostly my name.",
+      "The next page. I’m saving the spot."
+    ],
+    "soon": "SOON",
+    "notYet": "← not yet!",
+    "journalTitle": "Appendix: Logbook",
+    "journalIntro": "Oriana writes everything down. Since she discovered blockchain, she writes it in blocks: each block keeps the fingerprint of the one before, and nothing is ever erased. Here are the latest. There are more.",
+    "block": "BLOCK no. {n}",
+    "previous": "prev.:",
+    "hash": "hash:",
+    "cities": [
+      "Paris",
+      "Lisbon",
+      "Madrid",
+      "Tokyo",
+      "Kyoto",
+      "Reykjavik",
+      "Dublin",
+      "Marrakech",
+      "Istanbul",
+      "Montreal",
+      "Berlin",
+      "Porto"
+    ],
+    "transactions": [
+      "Flight {city} → {city2}",
+      "Train {city} → {city2}",
+      "Conversation: seat {seat}, {h}h{m}",
+      "Blockchain explained: {n}",
+      "Drinks: {n} (declared) / {n2} (verified)",
+      "Back at the hotel: {h}:{m}",
+      "New friends: {n}",
+      "Films watched: 0 (too much to say)",
+      "Neighbour asleep: 1",
+      "Cats met: {n2}, petted: {n2}",
+      "Postcards: {n} (very small handwriting)",
+      "Visa application: almost ready",
+      "Last orders: {h}:{m}",
+      "“Quick” sync: {n2} min"
+    ],
+    "thanksTitle": "Acknowledgements",
+    "thanks": "Thank you to everyone who listened to me: my colleagues, my friends, my cats, Rui, the DJ in Montreal, the karaoke man and the United States embassy, which will listen to me soon. Thank you to AlexH, who proofread this book and requested changes on every footnote. Thank you to the biographer, who did his best to cut me off and almost never managed. And thank you, reader: if you want to know more, come and see me. I have time.",
+    "alsoTitle": "By the Same Author",
+    "also": [
+      "Why You Should Care About Blockchain (volumes 1 to 7)",
+      "Consensus at 3 a.m.",
+      "Anyway (unabridged, 900 pages)",
+      "My Life in New York (forthcoming)"
+    ],
+    "colophon": ["Printed", "after last orders,", "on the presses of the Library of Babel.", "", "Block no. 410: validated"]
   },
   "alexH": {
     "name": "AlexH, My Code, My PR",
