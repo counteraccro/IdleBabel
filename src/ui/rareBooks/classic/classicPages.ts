@@ -37,6 +37,15 @@ const roman = (value: number): string =>
     return out;
   }, '');
 
+/** Un vrai chapitre (numéroté), pas une partie hors série comme une préface ou un épilogue. */
+const isNumbered = (label: string): boolean => /^CHAP/i.test(label);
+
+/** Le nom d'une partie hors série, tel qu'en table : « EPILOGUE » → « Epilogue ». */
+const partName = (label: string): string => label.charAt(0) + label.slice(1).toLowerCase();
+
+/** Le titre d'un chapitre suivi d'un point, sauf s'il finit déjà par une ponctuation. */
+const titled = (title: string): string => (/[.!?]$/.test(title) ? title : `${title}.`);
+
 /** La table des matières : le numéro du chapitre, son titre, des points de conduite, sa page. */
 const contentsPage = (
   context: CanvasRenderingContext2D,
@@ -54,10 +63,14 @@ const contentsPage = (
   }
   const from = sheet * CONTENTS_ROWS;
   layout.starts.slice(from, from + CONTENTS_ROWS).forEach((start, row) => {
-    const { title } = text.chapters[from + row];
+    const { label, title: name } = text.chapters[from + row];
     const y = CONTENTS_TOP + row * CONTENTS_STEP;
     const font = `15px ${style.body}`;
-    write(context, `${roman(from + row + 1)}.`, LEFT + 46, y, { font, color: style.ink, align: 'right' });
+    // Les chapitres sont numérotés ; les parties hors série (étymologie, épilogue…) portent leur nom.
+    const numbered = isNumbered(label);
+    const number = text.chapters.slice(0, from + row + 1).filter((chapter) => isNumbered(chapter.label)).length;
+    const title = numbered ? name : partName(label);
+    if (numbered) write(context, `${roman(number)}.`, LEFT + 46, y, { font, color: style.ink, align: 'right' });
     context.font = font;
     const width = context.measureText(title).width;
     write(context, title, LEFT + 58, y, { font, color: style.ink, align: 'left' });
@@ -71,7 +84,12 @@ const contentsPage = (
 /** Le haut de l'ouverture d'un chapitre : son numéro, son titre, un filet. */
 const chapterHead = (context: CanvasRenderingContext2D, { label, title }: { label: string; title: string }, style: ClassicStyle): void => {
   write(context, `${label.toUpperCase()}.`, PAGE_CENTER, 150, { font: `15px ${style.body}`, color: style.ink, spacing: 3 });
-  write(context, `${title}.`, PAGE_CENTER, 185, { font: `bold 22px ${style.heading}`, color: style.ink, spacing: 1 });
+  if (title) {
+    // Un titre trop long pour la page est imprimé plus petit.
+    context.font = `bold 22px ${style.heading}`;
+    const size = Math.min(22, (22 * (RIGHT - LEFT)) / (context.measureText(titled(title)).width + titled(title).length));
+    write(context, titled(title), PAGE_CENTER, 185, { font: `bold ${size}px ${style.heading}`, color: style.ink, spacing: 1 });
+  }
   context.fillStyle = style.ink;
   context.fillRect(PAGE_CENTER - 40, OPENING_TOP - 70, 80, 1);
 };
@@ -95,8 +113,13 @@ export const paintClassicPage = (
   const chapter = text.chapters[content.chapter];
   if (content.opening) chapterHead(context, chapter, style);
   // Le titre courant : celui du chapitre, en petit, en haut de page.
-  else write(context, `${chapter.title}.`.toUpperCase(), PAGE_CENTER, 44, { font: `italic 12px ${style.body}`, color: GREY, spacing: 2 });
-  if (content.dropCap) {
+  else
+    write(context, titled(chapter.title || partName(chapter.label)).toUpperCase(), PAGE_CENTER, 44, {
+      font: `italic 12px ${style.body}`,
+      color: GREY,
+      spacing: 2,
+    });
+  if (content.dropCap && style.dropCap) {
     const { letter, x, y, size } = content.dropCap;
     write(context, letter, x, y - style.line * 1.3, { font: `${size}px ${style.dropCap}`, color: style.accent, align: 'left' });
   }

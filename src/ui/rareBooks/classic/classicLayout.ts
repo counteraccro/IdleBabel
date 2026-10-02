@@ -15,9 +15,9 @@ export interface ClassicStyle {
   size: number;
   line: number;
   ink: string;
-  /** Couleur et police de la lettrine. */
+  /** Couleur et police de la lettrine (sans police : pas de lettrine). */
   accent: string;
-  dropCap: string;
+  dropCap?: string;
   /** Police des titres de chapitre. */
   heading: string;
   /** Chaque chapitre commence sur une page de droite (une page blanche avant si besoin). */
@@ -123,7 +123,7 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
       return place(chapter, para, WIDTH / 2, true);
     }
     // Le premier paragraphe du chapitre : une lettrine sur deux lignes, si le texte commence par une lettre.
-    const letter = index === 0 && /^\p{L}/u.test(para) ? para[0] : '';
+    const letter = style.dropCap && index === 0 && /^\p{L}/u.test(para) ? para[0] : '';
     if (letter) {
       const size = style.line * 2.3;
       context.font = `${size}px ${style.dropCap}`;

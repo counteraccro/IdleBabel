@@ -55,7 +55,26 @@
   },
   "mobyDick": {
     "name": "Moby-Dick",
-    "cover": ["Moby-Dick"]
+    "cover": ["Moby-Dick"],
+    "contents": "Contents",
+    "spine": "MOBY-DICK",
+    "author": "MELVILLE",
+    "publisher": ["HARPER", "& BROTHERS"],
+    "titlePage": [
+      [150, "big", "MOBY-DICK;"],
+      [196, "or", "OR,"],
+      [242, "whale", "THE WHALE."],
+      [280, "rule", "50"],
+      [320, "by", "BY"],
+      [358, "name", "HERMAN MELVILLE,"],
+      [392, "tiny", "AUTHOR OF"],
+      [418, "works", "“TYPEE,” “OMOO,” “REDBURN,” “MARDI,” “WHITE-JACKET.”"],
+      [510, "rule", "30"],
+      [580, "city", "NEW YORK:"],
+      [612, "publisher", "HARPER & BROTHERS, PUBLISHERS."],
+      [642, "london", "LONDON: RICHARD BENTLEY."],
+      [682, "year", "1851."]
+    ]
   },
   "encyclopedia": {
     "name": "The Encyclopédie",

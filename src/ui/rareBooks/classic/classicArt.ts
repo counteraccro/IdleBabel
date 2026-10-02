@@ -10,6 +10,8 @@ import type { GameState } from '../../../core/state';
 /** Ce qui est propre à chaque classique : son texte (public/texts/<id>.*.json), sa couverture, sa page de titre, son style. */
 export interface ClassicBook {
   id: string;
+  /** Les langues dont on a le texte (sans : toutes) ; dans une autre langue, on lit la première. */
+  locales?: string[];
   style: ClassicStyle;
   paper: Paper;
   thickness?: number;
@@ -30,15 +32,20 @@ export const classicArt = (book: ClassicBook): RareBookArt => {
   let laid: { locale: string; text: ClassicText; layout: ClassicLayout } | null = null;
   /** La préparation en cours ou faite (polices, texte, mise en page), pour la langue `locale`. */
   let preparing: { locale: string; done: Promise<void> } | null = null;
-  const prepare = (): Promise<void> => {
+  /** La langue du texte : celle du jeu si on l'a. */
+  const textLocale = (): string => {
     const locale = getLocale();
+    return !book.locales || book.locales.includes(locale) ? locale : book.locales[0];
+  };
+  const prepare = (): Promise<void> => {
+    const locale = textLocale();
     if (preparing?.locale !== locale) {
       const done = (async () => {
         await book.fonts();
         const text = await loadClassicText(book.id, locale);
         const context = document.createElement('canvas').getContext('2d')!;
         const layout = await layoutClassic(context, text, book.style);
-        if (getLocale() === locale) laid = { locale, text, layout };
+        if (textLocale() === locale) laid = { locale, text, layout };
       })();
       // Un échec (hors ligne…) ne reste pas : on réessaiera à la prochaine ouverture.
       done.catch(() => {
