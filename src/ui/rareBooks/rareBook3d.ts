@@ -12,14 +12,14 @@ import type { GameState } from '../../core/state';
 const READING_SHAPE: BookShape = { width: 0.8, height: 1, thickness: 0.12, board: 0.014, overhang: 0.025, corner: 0.035 };
 
 /**
- * Les couvertures se dessinent l'une après l'autre, chacune dans un moment libre : la bibliothèque, qui les
- * demande toutes à la fois, s'ouvre sans à-coup (ensemble, elles figeaient une image ~100 ms).
+ * Les couvertures se dessinent l'une après l'autre, chacune dans son moment libre : la bibliothèque, qui les
+ * demande toutes à la fois, s'ouvre sans à-coup (ensemble, elles figeaient une image ~100 ms). Un livre ne
+ * fait pas attendre les suivants (un texte lent à charger ne bloque que le sien).
  */
-let covers: Promise<unknown> = Promise.resolve();
+let turn: Promise<void> = Promise.resolve();
 const inTurn = <T>(draw: () => Promise<T>): Promise<T> => {
-  const drawn = covers.then(idle).then(draw);
-  covers = drawn.catch(() => undefined);
-  return drawn;
+  turn = turn.then(idle);
+  return turn.then(draw);
 };
 
 /**

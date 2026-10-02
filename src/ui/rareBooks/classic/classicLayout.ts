@@ -189,11 +189,19 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
   return done();
 }
 
-/** Rend la main au navigateur (sans les ralentissements de setTimeout dans un onglet caché). */
+/**
+ * Rend la main au navigateur (sans les ralentissements de setTimeout dans un onglet caché). Un seul canal,
+ * réutilisé : un canal neuf par pause, jamais fermé, resterait en mémoire.
+ */
+let channel: MessageChannel | null = null;
+const waiting: (() => void)[] = [];
 const pause = (): Promise<void> =>
   new Promise((resolve) => {
-    const channel = new MessageChannel();
-    channel.port1.onmessage = () => resolve();
+    if (!channel) {
+      channel = new MessageChannel();
+      channel.port1.onmessage = () => waiting.shift()?.();
+    }
+    waiting.push(resolve);
     channel.port2.postMessage(null);
   });
 

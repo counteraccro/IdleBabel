@@ -16,20 +16,23 @@ export interface ClassicText {
   chapters: ClassicChapter[];
 }
 
-const loaded = new Map<string, Promise<ClassicText>>();
+/** Les textes en cours de chargement (une fois là, c'est classicArt.ts qui les garde, avec leur mise en page). */
+const loading = new Map<string, Promise<ClassicText>>();
 
-/** Le texte du livre `id` dans la langue du jeu (une seule fois par langue). */
+/** Le texte du livre `id` dans la langue du jeu (un seul chargement à la fois par livre et par langue). */
 export const loadClassicText = (id: string, locale: string = getLocale()): Promise<ClassicText> => {
   const key = `${id}.${locale}`;
-  let text = loaded.get(key);
+  let text = loading.get(key);
   if (!text) {
     text = fetch(`${import.meta.env.BASE_URL}texts/${key}.json`).then((response) => {
       if (!response.ok) throw new Error(`texte introuvable : ${key}`);
       return response.json() as Promise<ClassicText>;
     });
-    // Un échec (hors ligne…) ne reste pas en cache : on réessaiera à la prochaine ouverture.
-    text.catch(() => loaded.delete(key));
-    loaded.set(key, text);
+    // Gardé seulement le temps du chargement : sinon chaque texte lu resterait deux fois en mémoire, et
+    // celui de l'autre langue pour toujours. Un échec (hors ligne…) sera retenté à la prochaine ouverture.
+    const forget = (): void => void loading.delete(key);
+    text.then(forget, forget);
+    loading.set(key, text);
   }
   return text;
 };
