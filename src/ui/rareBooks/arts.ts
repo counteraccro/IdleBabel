@@ -1,5 +1,6 @@
 import { alexHArt } from './alexH/alexH';
 import { aliceArt } from './alice/alice';
+import { bibleArt } from './bible/bible';
 import { blankPageArt } from './blankPage/blankPage';
 import { deathBookArt } from './deathBook/deathBook';
 import { directoryArt } from './directory/directory';
@@ -13,6 +14,7 @@ import type { RareBookArt } from './rareBookArt';
 const ARTS: Record<string, RareBookArt> = {
   alexH: alexHArt,
   alice: aliceArt,
+  bible: bibleArt,
   blankPage: blankPageArt,
   deathBook: deathBookArt,
   directory: directoryArt,
