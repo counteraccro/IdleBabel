@@ -1,4 +1,5 @@
 import { alexHArt } from './alexH/alexH';
+import { aliceArt } from './alice/alice';
 import { blankPageArt } from './blankPage/blankPage';
 import { deathBookArt } from './deathBook/deathBook';
 import { directoryArt } from './directory/directory';
@@ -10,6 +11,7 @@ import type { RareBookArt } from './rareBookArt';
 /** Les livres rares déjà dessinés ; les autres : cuir, vrai titre et lorem ipsum (defaultArt.ts). */
 const ARTS: Record<string, RareBookArt> = {
   alexH: alexHArt,
+  alice: aliceArt,
   blankPage: blankPageArt,
   deathBook: deathBookArt,
   directory: directoryArt,

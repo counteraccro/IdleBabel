@@ -33,7 +33,25 @@
   },
   "alice": {
     "name": "Alice au pays des merveilles",
-    "cover": ["Alice", "au pays", "des merveilles"]
+    "cover": ["Alice", "au pays", "des merveilles"],
+    "contents": "Table des matières",
+    "spine": "AVENTURES D’ALICE AU PAYS DES MERVEILLES",
+    "publisher": "MACMILLAN",
+    "titlePage": [
+      [170, "big", "AVENTURES"],
+      [228, "big", "D’ALICE"],
+      [280, "mid", "AU PAYS DES MERVEILLES"],
+      [312, "rule", ""],
+      [350, "small", "PAR"],
+      [382, "name", "LEWIS CARROLL"],
+      [440, "small", "TRADUIT DE L’ANGLAIS PAR HENRI BUÉ"],
+      [492, "italic", "Ouvrage illustré de 42 vignettes"],
+      [520, "italic", "par John Tenniel"],
+      [575, "rule", ""],
+      [630, "name", "LONDRES"],
+      [662, "small", "MACMILLAN AND CO."],
+      [690, "small", "1869"]
+    ]
   },
   "mobyDick": {
     "name": "Moby Dick",

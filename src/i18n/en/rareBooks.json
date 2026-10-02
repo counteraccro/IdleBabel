@@ -33,7 +33,25 @@
   },
   "alice": {
     "name": "Alice's Adventures in Wonderland",
-    "cover": ["Alice's", "Adventures", "in Wonderland"]
+    "cover": ["Alice's", "Adventures", "in Wonderland"],
+    "contents": "Contents",
+    "spine": "ALICE’S ADVENTURES IN WONDERLAND",
+    "publisher": "MACMILLAN",
+    "titlePage": [
+      [170, "big", "ALICE’S"],
+      [228, "big", "ADVENTURES"],
+      [280, "mid", "IN WONDERLAND."],
+      [312, "rule", ""],
+      [350, "small", "BY"],
+      [382, "name", "LEWIS CARROLL."],
+      [450, "italic", "With Forty-two Illustrations"],
+      [478, "italic", "by John Tenniel."],
+      [560, "rule", ""],
+      [630, "name", "LONDON:"],
+      [662, "small", "MACMILLAN AND CO."],
+      [690, "small", "1865."],
+      [735, "small", "[The right of translation is reserved.]"]
+    ]
   },
   "mobyDick": {
     "name": "Moby-Dick",
