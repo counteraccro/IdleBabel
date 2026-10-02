@@ -22,6 +22,26 @@ export const disposeObject = (root: THREE.Object3D): void =>
     }
   });
 
+/**
+ * Les textures que three.js partage entre tous ses rendus (la table DFG des matières « standard ») : chaque
+ * rendu qui s'en sert s'y accroche (un écouteur « dispose ») et ne s'en décroche que si elle est libérée,
+ * ce qui n'arrive jamais. Un rendu quitté y restait accroché pour toujours, et avec lui son canvas et toute
+ * sa page (~1 Mo par livre ouvert). Libérée ici, elle décroche tous les rendus ; ceux encore à l'écran la
+ * renvoient simplement à la carte graphique à leur prochaine image (16 × 16 pixels).
+ */
+export const releaseSharedTextures = (renderer: THREE.WebGLRenderer, scene: THREE.Object3D): void => {
+  const shared = new Set<THREE.Texture>();
+  scene.traverse((object) => {
+    if (!(object instanceof THREE.Mesh)) return;
+    for (const material of [object.material].flat()) {
+      const uniforms = (renderer.properties.get(material) as { uniforms?: Record<string, { value: unknown }> }).uniforms;
+      const lut = uniforms?.dfgLUT?.value;
+      if (lut instanceof THREE.Texture) shared.add(lut);
+    }
+  });
+  for (const texture of shared) texture.dispose();
+};
+
 /** Rendu d'un livre 3D sur fond transparent, ombres portées adoucies (la couverture sur les feuilles). */
 export const createBookRenderer = (canvas: HTMLCanvasElement, camera: THREE.PerspectiveCamera): BookRenderer => {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -42,6 +62,7 @@ export const createBookRenderer = (canvas: HTMLCanvasElement, camera: THREE.Pers
     return true;
   };
   const destroy = (scene: THREE.Object3D): void => {
+    releaseSharedTextures(renderer, scene);
     disposeObject(scene);
     renderer.dispose();
     renderer.forceContextLoss();
