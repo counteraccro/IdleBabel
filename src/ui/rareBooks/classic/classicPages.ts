@@ -40,8 +40,22 @@ const roman = (value: number): string =>
 /** Un vrai chapitre (numéroté), pas une partie hors série comme une préface ou un épilogue. */
 const isNumbered = (label: string): boolean => /^CHAP/i.test(label);
 
-/** Le nom d'une partie hors série, tel qu'en table : « EPILOGUE » → « Epilogue ». */
-const partName = (label: string): string => label.charAt(0) + label.slice(1).toLowerCase();
+/** Le nom d'une partie hors série, tel qu'en table : « EPILOGUE » → « Epilogue » ; sans nom, son titre (un conte). */
+const partName = (label: string, title = ''): string => (label ? label.charAt(0) + label.slice(1).toLowerCase() : title);
+
+/** La taille de `font` (en px, au plus `size`) à laquelle `text` tient dans `width`. */
+const fitting = (
+  context: CanvasRenderingContext2D,
+  text: string,
+  font: (size: number) => string,
+  size: number,
+  width: number,
+  spacing = 0,
+): number => {
+  context.font = font(size);
+  const natural = context.measureText(text).width + spacing * text.length;
+  return natural <= width ? size : (size * width) / natural;
+};
 
 /** Le titre d'un chapitre suivi d'un point, sauf s'il finit déjà par une ponctuation. */
 const titled = (title: string): string => (/[.!?]$/.test(title) ? title : `${title}.`);
@@ -69,20 +83,24 @@ const contentsPage = (
     // Les chapitres sont numérotés ; les parties hors série (étymologie, épilogue…) portent leur nom.
     const numbered = isNumbered(label);
     const number = text.chapters.slice(0, from + row + 1).filter((chapter) => isNumbered(chapter.label)).length;
-    const title = numbered ? name : partName(label);
+    const title = numbered ? name : partName(label, name);
     if (numbered) write(context, `${roman(number)}.`, LEFT + 46, y, { font, color: style.ink, align: 'right' });
-    context.font = font;
+    // Sans nom de partie (des contes) : le titre part de la marge ; trop long, il est imprimé plus petit.
+    const x = label ? LEFT + 58 : LEFT;
+    const size = fitting(context, title, (px) => `${px}px ${style.body}`, 15, RIGHT - 60 - x);
+    context.font = `${size}px ${style.body}`;
     const width = context.measureText(title).width;
-    write(context, title, LEFT + 58, y, { font, color: style.ink, align: 'left' });
+    write(context, title, x, y, { font: context.font, color: style.ink, align: 'left' });
     write(context, String(start), RIGHT, y, { font, color: style.ink, align: 'right' });
     // Points de conduite entre le titre et la page.
     context.fillStyle = '#a89878';
-    for (let x = LEFT + 58 + width + 10; x < RIGHT - 36; x += 8) context.fillRect(x, y + 12, 1.5, 1.5);
+    for (let dot = x + width + 10; dot < RIGHT - 36; dot += 8) context.fillRect(dot, y + 12, 1.5, 1.5);
   });
 };
 
 /** Le haut de l'ouverture d'un chapitre : son numéro, son titre, un filet. */
 const chapterHead = (context: CanvasRenderingContext2D, { label, title }: { label: string; title: string }, style: ClassicStyle): void => {
+  if (style.head) return style.head(context, title);
   write(context, `${label.toUpperCase()}.`, PAGE_CENTER, 150, { font: `15px ${style.body}`, color: style.ink, spacing: 3 });
   if (title) {
     // Un titre trop long pour la page est imprimé plus petit.
@@ -113,12 +131,11 @@ export const paintClassicPage = (
   const chapter = text.chapters[content.chapter];
   if (content.opening) chapterHead(context, chapter, style);
   // Le titre courant : celui du chapitre, en petit, en haut de page.
-  else
-    write(context, titled(chapter.title || partName(chapter.label)).toUpperCase(), PAGE_CENTER, 44, {
-      font: `italic 12px ${style.body}`,
-      color: GREY,
-      spacing: 2,
-    });
+  else {
+    const running = titled(chapter.title || partName(chapter.label)).toUpperCase();
+    const size = fitting(context, running, (px) => `italic ${px}px ${style.body}`, 12, RIGHT - LEFT, 2);
+    write(context, running, PAGE_CENTER, 44, { font: `italic ${size}px ${style.body}`, color: GREY, spacing: 2 });
+  }
   if (content.dropCap && style.dropCap) {
     const { letter, x, y, size } = content.dropCap;
     write(context, letter, x, y - style.line * 1.3, { font: `${size}px ${style.dropCap}`, color: style.accent, align: 'left' });

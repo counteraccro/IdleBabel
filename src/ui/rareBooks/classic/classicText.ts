@@ -2,7 +2,8 @@ import { getLocale } from '../../../i18n';
 
 /**
  * Le texte d'un classique du domaine public : ses chapitres, tels que dans l'édition d'origine (titre,
- * numéro, paragraphes ; un paragraphe avec des retours à la ligne est une strophe). Rangé dans
+ * numéro, paragraphes ; un paragraphe avec des retours à la ligne est une strophe). Sans `label`, une partie
+ * n'a que son titre (les contes d'un recueil). Rangé dans
  * public/texts/<id>.<langue>.json, chargé seulement quand on ouvre le livre (ce sont de gros fichiers).
  */
 export interface ClassicChapter {

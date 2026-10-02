@@ -1,4 +1,5 @@
 import { alexHArt } from './alexH/alexH';
+import { arabianNightsArt } from './arabianNights/arabianNights';
 import { aliceArt } from './alice/alice';
 import { bibleArt } from './bible/bible';
 import { blankPageArt } from './blankPage/blankPage';
@@ -13,6 +14,7 @@ import type { RareBookArt } from './rareBookArt';
 /** Les livres rares déjà dessinés ; les autres : cuir, vrai titre et lorem ipsum (defaultArt.ts). */
 const ARTS: Record<string, RareBookArt> = {
   alexH: alexHArt,
+  arabianNights: arabianNightsArt,
   alice: aliceArt,
   bible: bibleArt,
   blankPage: blankPageArt,

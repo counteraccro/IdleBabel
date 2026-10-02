@@ -24,6 +24,8 @@ export interface ClassicStyle {
   chaptersOnRight: boolean;
   /** Au plus ce nombre de pages par chapitre : on s'arrête au dernier paragraphe entier qui y tient. */
   chapterPages?: number;
+  /** Le haut de l'ouverture d'un chapitre, propre au livre (sans : son numéro, son titre, un filet). */
+  head?: (context: CanvasRenderingContext2D, title: string) => void;
 }
 
 const { width: WIDTH, height: HEIGHT } = PAGE_TEXTURE;
