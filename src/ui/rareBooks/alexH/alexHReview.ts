@@ -1,6 +1,6 @@
-import { messages } from '../../i18n';
-import { PAGE_TEXTURE } from '../book/pageLayout';
-import { PAGE_CENTER, wrap, write } from './draw';
+import { messages } from '../../../i18n';
+import { PAGE_TEXTURE } from '../../book/pageLayout';
+import { PAGE_CENTER, wrap, write } from '../draw';
 import { INK, MODERN, MONO } from './alexHCover';
 
 /**

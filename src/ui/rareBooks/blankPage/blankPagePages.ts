@@ -1,9 +1,9 @@
-import { messages } from '../../i18n';
-import { PAGES_PER_BOOK } from '../../systems/books';
-import { PAGE_TEXTURE } from '../book/pageLayout';
+import { messages } from '../../../i18n';
+import { PAGES_PER_BOOK } from '../../../systems/books';
+import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { GARAMOND } from './blankPageCover';
-import { PAGE_CENTER, write } from './draw';
-import type { PageLink } from './rareBookArt';
+import { PAGE_CENTER, write } from '../draw';
+import type { PageLink } from '../rareBookArt';
 
 const INK = '#3a3833';
 const DOTS = 'rgba(58, 56, 51, 0.5)';

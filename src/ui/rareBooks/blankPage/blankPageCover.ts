@@ -1,10 +1,10 @@
 import '@fontsource/cormorant-garamond/600.css';
 import '@fontsource/cormorant-garamond/400-italic.css';
 import '@fontsource/caveat/400.css';
-import { messages } from '../../i18n';
-import { babelDigits } from '../../core/format';
-import { babelTextWidth, drawBabelText } from '../babelDigits';
-import { CQW, HAND, HEIGHT, SANS, WIDTH, board, wrap, write } from './draw';
+import { messages } from '../../../i18n';
+import { babelDigits } from '../../../core/format';
+import { babelTextWidth, drawBabelText } from '../../babelDigits';
+import { CQW, HAND, HEIGHT, SANS, WIDTH, board, wrap, write } from '../draw';
 import type * as THREE from 'three';
 
 /** Bleu ardoise de la toile, le titre crème, la feuille, l'encre de la plume. */

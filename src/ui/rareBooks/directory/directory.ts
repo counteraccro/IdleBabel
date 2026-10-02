@@ -1,12 +1,12 @@
-import { messages, t } from '../../i18n';
-import { sealEvent } from '../../systems/seals';
-import { highlightFinds, preparePageTexture, type PageFind, type Paper } from '../book/pageRender';
-import { headbandTexture } from '../book3d/headband';
-import { edgeTexture } from '../book3d/textures';
-import { PAGE_CENTER, SANS, board, write } from './draw';
+import { messages, t } from '../../../i18n';
+import { sealEvent } from '../../../systems/seals';
+import { highlightFinds, preparePageTexture, type PageFind, type Paper } from '../../book/pageRender';
+import { headbandTexture } from '../../book3d/headband';
+import { edgeTexture } from '../../book3d/textures';
+import { PAGE_CENTER, SANS, board, write } from '../draw';
 import { INK, YELLOW, YELLOW_EDGE, directoryBack, directoryFront, directorySpine, hexagon, loadDirectoryFonts } from './directoryCover';
-import type { PageLink, RareBookArt } from './rareBookArt';
-import { PAGES_PER_BOOK } from '../../systems/books';
+import type { PageLink, RareBookArt } from '../rareBookArt';
+import { PAGES_PER_BOOK } from '../../../systems/books';
 import { FIRST_PAGE, letterPages, playerSlot, subscribersOn, type Subscriber } from './directoryEntries';
 
 const THICKNESS = 0.17;

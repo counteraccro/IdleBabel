@@ -1,7 +1,7 @@
-import { messages } from '../../i18n';
-import { hashText, seeded } from '../../core/random';
-import { PAGE_TEXTURE } from '../book/pageLayout';
-import { PAGE_CENTER, wrap, write } from './draw';
+import { messages } from '../../../i18n';
+import { hashText, seeded } from '../../../core/random';
+import { PAGE_TEXTURE } from '../../book/pageLayout';
+import { PAGE_CENTER, wrap, write } from '../draw';
 import { INK, ITALIC, MODERN, MONO } from './alexHCover';
 import { diffLines } from './alexHCode';
 

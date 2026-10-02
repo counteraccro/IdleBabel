@@ -1,9 +1,9 @@
-import { sealEvent } from '../../systems/seals';
-import { edgeTexture } from '../book3d/textures';
+import { sealEvent } from '../../../systems/seals';
+import { edgeTexture } from '../../book3d/textures';
 import { GOTHIC, deathBookBack, deathBookFront, deathBookSpine } from './deathBookCover';
 import { DEATH_PAPER, SCENARIO_PAGE, loadDeathFonts, paintDeathPage } from './deathBookPages';
-import { board } from './draw';
-import type { RareBookArt } from './rareBookArt';
+import { board } from '../draw';
+import type { RareBookArt } from '../rareBookArt';
 
 /** 410 pages, comme tous les livres de Babel : l'épaisseur d'un livre ordinaire. */
 const THICKNESS = 0.12;

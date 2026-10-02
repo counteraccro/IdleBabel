@@ -1,10 +1,10 @@
-import { MODERN_PAPER, preparePageTexture } from '../book/pageRender';
-import { headbandTexture } from '../book3d/headband';
-import { edgeTexture } from '../book3d/textures';
+import { MODERN_PAPER, preparePageTexture } from '../../book/pageRender';
+import { headbandTexture } from '../../book3d/headband';
+import { edgeTexture } from '../../book3d/textures';
 import { SLATE, SLATE_EDGE, blankPageBack, blankPageFront, blankPageSpine, loadBlankPageFonts } from './blankPageCover';
 import { CONTENTS_PAGE, blankPageLinks, paintBlankPage } from './blankPagePages';
-import { board } from './draw';
-import type { RareBookArt } from './rareBookArt';
+import { board } from '../draw';
+import type { RareBookArt } from '../rareBookArt';
 
 const THICKNESS = 0.12;
 

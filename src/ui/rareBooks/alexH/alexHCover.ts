@@ -4,8 +4,8 @@ import '@fontsource/inter/900.css';
 import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/700.css';
 import '@fontsource/playfair-display/500-italic.css';
-import { messages } from '../../i18n';
-import { CQW, HEIGHT, WIDTH, board, wrap, write } from './draw';
+import { messages } from '../../../i18n';
+import { CQW, HEIGHT, WIDTH, board, wrap, write } from '../draw';
 import type * as THREE from 'three';
 
 /** Papier crème mat d'un essai à succès, et ses encres : le noir du titre, le rouge et le vert d'un diff. */

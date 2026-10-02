@@ -1,6 +1,6 @@
-import { messages } from '../../i18n';
-import { PAGE_TEXTURE } from '../book/pageLayout';
-import { wrap, write } from './draw';
+import { messages } from '../../../i18n';
+import { PAGE_TEXTURE } from '../../book/pageLayout';
+import { wrap, write } from '../draw';
 import { INK, MODERN, MONO } from './alexHCover';
 
 /** La page de la PR, dans le chapitre « La review » : une capture de forge, ses commentaires, le verdict. */

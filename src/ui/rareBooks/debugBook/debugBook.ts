@@ -1,13 +1,13 @@
-import { hashText, seeded } from '../../core/random';
-import { randomBabelText } from '../../systems/babelText';
-import { PAGES_PER_BOOK } from '../../systems/books';
-import { layoutPage } from '../book/pageLayout';
-import { drawPageTexture, type Paper } from '../book/pageRender';
-import { drawTitlePageTexture } from '../book/titlePage';
-import { headbandTexture } from '../book3d/headband';
-import { edgeTexture } from '../book3d/textures';
-import { debugCover } from '../../debug/book/debugCover';
-import type { RareBookArt } from './rareBookArt';
+import { hashText, seeded } from '../../../core/random';
+import { randomBabelText } from '../../../systems/babelText';
+import { PAGES_PER_BOOK } from '../../../systems/books';
+import { layoutPage } from '../../book/pageLayout';
+import { drawPageTexture, type Paper } from '../../book/pageRender';
+import { drawTitlePageTexture } from '../../book/titlePage';
+import { headbandTexture } from '../../book3d/headband';
+import { edgeTexture } from '../../book3d/textures';
+import { debugCover } from '../../../debug/book/debugCover';
+import type { RareBookArt } from '../rareBookArt';
 
 /** Le papier du livre de débogage (debugBook3d.ts) : gris froid, un reflet de la pierre de la couverture. */
 const PAPER: Paper = ['#e3e2dc', '#d6d4cc', '#c6c3b9'];

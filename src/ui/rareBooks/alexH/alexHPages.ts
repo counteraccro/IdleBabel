@@ -1,14 +1,14 @@
-import { messages } from '../../i18n';
-import { hashText, seeded } from '../../core/random';
-import { PAGES_PER_BOOK } from '../../systems/books';
-import { PAGE_TEXTURE } from '../book/pageLayout';
-import { PAGE_CENTER, write } from './draw';
+import { messages } from '../../../i18n';
+import { hashText, seeded } from '../../../core/random';
+import { PAGES_PER_BOOK } from '../../../systems/books';
+import { PAGE_TEXTURE } from '../../book/pageLayout';
+import { PAGE_CENTER, write } from '../draw';
 import { INK, ITALIC, MODERN, MONO } from './alexHCover';
 import { alsoPage, colophonPage, indexPage, photoPage, thanksPage } from './alexHExtras';
 import { pageFrame, storyLines, writeProse, writeStory, type StoryLine } from './alexHProse';
 import { pullRequestPage } from './alexHPullRequest';
 import { REVIEW_LINES, reviewFormPage, reviewLinesPage } from './alexHReview';
-import type { PageLink } from './rareBookArt';
+import type { PageLink } from '../rareBookArt';
 
 const { width: WIDTH } = PAGE_TEXTURE;
 const GREY = '#6b6b6b';

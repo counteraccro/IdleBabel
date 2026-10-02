@@ -1,10 +1,10 @@
-import { MODERN_PAPER, preparePageTexture, type Paper } from '../book/pageRender';
-import { headbandTexture } from '../book3d/headband';
-import { edgeTexture } from '../book3d/textures';
-import { board } from './draw';
+import { MODERN_PAPER, preparePageTexture, type Paper } from '../../book/pageRender';
+import { headbandTexture } from '../../book3d/headband';
+import { edgeTexture } from '../../book3d/textures';
+import { board } from '../draw';
 import { CREAM, CREAM_EDGE, alexHBack, alexHFront, alexHSpine, loadAlexHFonts } from './alexHCover';
 import { CONTENTS_PAGE, alexHLinks, isPhotoPage, paintAlexHPage } from './alexHPages';
-import type { RareBookArt } from './rareBookArt';
+import type { RareBookArt } from '../rareBookArt';
 
 /** Une biographie à succès : plus épaisse qu'un livre ordinaire. */
 const THICKNESS = 0.15;

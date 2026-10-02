@@ -1,10 +1,10 @@
 import '@fontsource/caveat/400.css';
-import { messages } from '../../i18n';
-import { hashText, seeded } from '../../core/random';
-import { withReaderName } from '../../systems/readerName';
-import { PEN_FONT } from '../options/notebookInk';
-import { highlightFinds, preparePageTexture, type PageFind, type Paper } from '../book/pageRender';
-import { HAND, PAGE_CENTER, wrap } from './draw';
+import { messages } from '../../../i18n';
+import { hashText, seeded } from '../../../core/random';
+import { withReaderName } from '../../../systems/readerName';
+import { PEN_FONT } from '../../options/notebookInk';
+import { highlightFinds, preparePageTexture, type PageFind, type Paper } from '../../book/pageRender';
+import { HAND, PAGE_CENTER, wrap } from '../draw';
 import { deathName } from './deathNames';
 
 /** Papier d'un cahier : blanc cassé, un peu gris. */

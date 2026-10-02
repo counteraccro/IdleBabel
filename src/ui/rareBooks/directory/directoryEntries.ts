@@ -1,6 +1,6 @@
-import { hashText, seeded } from '../../core/random';
-import { LETTERS } from '../../systems/babelText';
-import { PAGES_PER_BOOK } from '../../systems/books';
+import { hashText, seeded } from '../../../core/random';
+import { LETTERS } from '../../../systems/babelText';
+import { PAGES_PER_BOOK } from '../../../systems/books';
 
 /**
  * Les abonnés de l'Annuaire, dans l'ordre alphabétique d'un bout à l'autre du livre : chaque page tient

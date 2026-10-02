@@ -1,8 +1,8 @@
 import '@fontsource/oswald/200.css';
 import '@fontsource/oswald/600.css';
 import '@fontsource/oswald/700.css';
-import { messages } from '../../i18n';
-import { CQW, HEIGHT, SANS, WIDTH, board, write } from './draw';
+import { messages } from '../../../i18n';
+import { CQW, HEIGHT, SANS, WIDTH, board, write } from '../draw';
 import type * as THREE from 'three';
 
 /** Jaune de l'annuaire, et ses encres : le bleu du titre, l'étiquette bleue et rouge, les puces vertes. */

@@ -1,10 +1,10 @@
 import '@fontsource/unifrakturmaguntia/400.css';
-import { messages, t } from '../../i18n';
-import { hashText, seeded } from '../../core/random';
-import { toRoman } from '../../systems/coverDesign';
-import { canvas } from '../book3d/leatherCover';
-import { canvasTexture } from '../book3d/textures';
-import { CQW, HEIGHT, SERIF, WIDTH, wrap, write } from './draw';
+import { messages, t } from '../../../i18n';
+import { hashText, seeded } from '../../../core/random';
+import { toRoman } from '../../../systems/coverDesign';
+import { canvas } from '../../book3d/leatherCover';
+import { canvasTexture } from '../../book3d/textures';
+import { CQW, HEIGHT, SERIF, WIDTH, wrap, write } from '../draw';
 import type * as THREE from 'three';
 
 /** Lettres gothiques du titre et du mode d'emploi. */
