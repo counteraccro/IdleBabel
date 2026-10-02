@@ -81,19 +81,19 @@
     ],
     "titlePage": [
       [150, "the", "THE"],
-      [200, "big", "HOLY BIBLE"],
-      [262, "small", "CONTAINING THE"],
-      [294, "mid", "OLD AND NEW TESTAMENTS"],
-      [334, "tiny", "TRANSLATED OUT OF THE ORIGINAL TONGUES"],
-      [358, "tiny", "AND WITH THE FORMER TRANSLATIONS"],
-      [382, "tiny", "DILIGENTLY COMPARED AND REVISED"],
-      [418, "italic", "By His Majesty’s special command"],
+      [190, "big", "HOLY BIBLE"],
+      [270, "small", "CONTAINING THE"],
+      [300, "mid", "OLD AND NEW TESTAMENTS"],
+      [340, "tiny", "TRANSLATED OUT OF THE ORIGINAL TONGUES"],
+      [362, "tiny", "AND WITH THE FORMER TRANSLATIONS"],
+      [384, "tiny", "DILIGENTLY COMPARED AND REVISED"],
+      [414, "italic", "By His Majesty’s special command"],
       [492, "rule", "50"],
-      [526, "small", "APPOINTED TO BE READ IN CHURCHES"],
+      [520, "edition", "APPOINTED TO BE READ IN CHURCHES"],
       [576, "rule", "25"],
-      [616, "city", "OXFORD"],
-      [644, "tiny", "PRINTED AT THE UNIVERSITY PRESS"],
-      [676, "year", "1910"]
+      [610, "city", "OXFORD"],
+      [640, "street", "PRINTED AT THE UNIVERSITY PRESS"],
+      [672, "year", "1910"]
     ]
   },
   "odyssey": {

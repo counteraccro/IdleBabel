@@ -87,70 +87,86 @@ const testamentPage = (context: CanvasRenderingContext2D, testament: number): vo
 
 // ---------- Le texte ----------
 
+/** La grille de la maquette validée (.ai/maquette-bible.html, page courante). */
 const COLUMNS = [56, WIDTH / 2 + 14];
-const COLUMN_WIDTH = WIDTH / 2 - 70;
+const COLUMN_WIDTH = 246;
 const FONT = `13px ${CASLON}`;
-const VERSE_FONT = `bold 8px ${CASLON}`;
+const VERSE_FONT = `bold 9px ${CASLON}`;
 const LINE = 17.2;
-const BOTTOM = HEIGHT - 76;
+const TOP = 92;
+const BOTTOM = HEIGHT - 70;
+/** Le début d'un chapitre : son grand numéro, à côté de ses trois premières lignes (en retrait). */
+const CHAPTER_FONT = `bold 42px ${CASLON}`;
+const CHAPTER_INDENT = 40;
+const CHAPTER_LINES = 6;
 
-/** Une page de texte : titre courant, tête du livre s'il y commence, deux colonnes de versets numérotés. */
+/**
+ * Une page de texte : titre courant, deux colonnes séparées d'un filet ; le nom du livre en tête de colonne
+ * s'il commence ici ; chaque chapitre s'ouvre sur son grand numéro, puis des versets numérotés.
+ */
 const textPage = (context: CanvasRenderingContext2D, page: number): void => {
   const content = BIBLE_PLAN.pages.get(page)!;
   const name = messages().rareBooks.bible.books[content.book].toUpperCase();
   const range = content.from === content.to ? `${content.from}` : `${content.from}. ${content.to}`;
-  write(context, `${name}, ${range}.`, PAGE_CENTER, 40, { font: `13px ${CASLON}`, color: GREY, spacing: 2 });
+  write(context, `${name}, ${range}.`, PAGE_CENTER, 52, { font: `13px ${CASLON}`, color: GREY, spacing: 2 });
   context.fillStyle = INK;
   context.fillRect(COLUMNS[0], 62, WIDTH - 2 * COLUMNS[0], 1);
-  let top = 80;
-  if (content.opening) {
-    // Le livre commence : son nom en capitales, entre deux filets, sur toute la largeur.
-    context.fillRect(PAGE_CENTER - 90, 82, 180, 1);
-    write(context, name, PAGE_CENTER, 92, { font: `bold 22px ${CASLON}`, color: INK, spacing: 3 });
-    context.fillRect(PAGE_CENTER - 90, 128, 180, 1);
-    top = 150;
-  }
-  context.fillRect(WIDTH / 2, top, 1, BOTTOM - top);
-  write(context, String(page), PAGE_CENTER, HEIGHT - 52, { font: `13px ${CASLON}`, color: GREY });
+  context.fillRect(WIDTH / 2, 72, 1, HEIGHT - 140);
+  write(context, String(page), PAGE_CENTER, HEIGHT - 40, { font: `13px ${CASLON}`, color: GREY });
 
-  // Le fil du texte : les lignes des deux colonnes à la suite ; chaque chapitre s'ouvre à sa part du fil.
-  const perColumn = Math.floor((BOTTOM - top) / LINE);
-  const rows = 2 * perColumn;
-  const chapters = content.to - content.from + 1;
-  const openings = new Map(Array.from({ length: chapters }, (_, index) => [Math.floor((index * rows) / chapters), content.from + index]));
   const random = seeded(hashText(`bible:${page}`));
-  let words: string[] = [];
+  const chapters = content.to - content.from + 1;
+  // Les deux colonnes à la suite ; chaque chapitre s'ouvre à sa part de la hauteur totale.
+  const total = 2 * (BOTTOM - TOP);
+  let chapter = content.from;
   let verse = 0;
-  let indent = 0;
-  let indentRows = 0;
-  for (let row = 0; row < rows; row++) {
-    const x = COLUMNS[Math.floor(row / perColumn)];
-    const y = top + (row % perColumn) * LINE;
-    const chapter = openings.get(row);
-    if (chapter !== undefined) {
-      // Le grand numéro du chapitre, sur deux lignes ; son premier verset vient à côté, sans numéro.
-      write(context, String(chapter), x, y - 4, { font: `bold 34px ${CASLON}`, color: INK, align: 'left' });
-      context.font = `bold 34px ${CASLON}`;
-      indent = context.measureText(String(chapter)).width + 8;
-      indentRows = 2;
-      verse = 1;
-      words = loremText(80 + random() * 200, random).split(' ');
+  for (const [column, left] of COLUMNS.entries()) {
+    let y = TOP;
+    if (column === 0 && content.opening) {
+      // Le livre commence : son nom en capitales entre deux filets courts, en tête de colonne.
+      context.fillStyle = INK;
+      context.fillRect(left + 60, y + 4, COLUMN_WIDTH - 120, 1);
+      write(context, name, left + COLUMN_WIDTH / 2, y + 16, { font: `bold 20px ${CASLON}`, color: INK, spacing: 3 });
+      context.fillRect(left + 60, y + 46, COLUMN_WIDTH - 120, 1);
+      y += 62;
     }
-    let left = x + (indentRows > 0 ? indent : 0);
-    indentRows--;
-    if (!words.length) {
-      // Un nouveau verset : son petit numéro, puis son texte.
-      verse++;
-      write(context, String(verse), left, y - 2, { font: VERSE_FONT, color: INK, align: 'left' });
+    while (y < BOTTOM) {
+      const done = column * (BOTTOM - TOP) + (y - TOP);
+      const due = chapter - content.from < chapters && done >= ((chapter - content.from) * total) / chapters;
+      if (due && y < BOTTOM - CHAPTER_LINES * LINE) {
+        // Un chapitre commence : le grand numéro, à côté de ses trois premières lignes.
+        y += 6;
+        write(context, String(chapter), left + 2, y, { font: CHAPTER_FONT, color: INK, align: 'left' });
+        context.font = FONT;
+        const words = loremText(400, random).split(' ');
+        for (let row = 0; row < CHAPTER_LINES; row++) {
+          const x = left + (row < 3 ? CHAPTER_INDENT : 0);
+          let line = words.shift()!;
+          while (words.length && context.measureText(`${line} ${words[0]}`).width <= left + COLUMN_WIDTH - x) line += ` ${words.shift()}`;
+          write(context, line, x, y + row * LINE, { font: FONT, color: INK, align: 'left' });
+        }
+        y += CHAPTER_LINES * LINE + 4;
+        chapter++;
+        verse = 3;
+        continue;
+      }
+      // Un verset : son petit numéro gras, puis son texte.
+      const number = String(++verse);
+      write(context, number, left, y - 3, { font: VERSE_FONT, color: INK, align: 'left' });
       context.font = VERSE_FONT;
-      left += context.measureText(String(verse)).width + 3;
-      words = loremText(60 + random() * 180, random).split(' ');
+      const gap = context.measureText(number).width + 4;
+      context.font = FONT;
+      const words = loremText(70 + random() * 170, random).split(' ');
+      let first = true;
+      while (words.length && y < BOTTOM) {
+        const x = left + (first ? gap : 0);
+        let line = words.shift()!;
+        while (words.length && context.measureText(`${line} ${words[0]}`).width <= left + COLUMN_WIDTH - x) line += ` ${words.shift()}`;
+        write(context, line, x, y, { font: FONT, color: INK, align: 'left' });
+        y += LINE;
+        first = false;
+      }
     }
-    // Autant de mots que la ligne en contient.
-    context.font = FONT;
-    let line = words.shift()!;
-    while (words.length && context.measureText(`${line} ${words[0]}`).width <= x + COLUMN_WIDTH - left) line += ` ${words.shift()}`;
-    write(context, line, left, y, { font: FONT, color: INK, align: 'left' });
   }
 };
 

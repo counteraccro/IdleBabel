@@ -81,19 +81,19 @@
     ],
     "titlePage": [
       [150, "the", "LA"],
-      [200, "big", "SAINTE BIBLE"],
-      [262, "small", "QUI COMPREND"],
-      [294, "mid", "L’ANCIEN ET LE NOUVEAU TESTAMENT"],
-      [334, "tiny", "TRADUITS SUR LES TEXTES ORIGINAUX HÉBREU ET GREC"],
-      [374, "tiny", "PAR"],
-      [404, "name", "LOUIS SEGOND"],
-      [436, "italic", "Docteur en théologie"],
+      [190, "big", "SAINTE BIBLE"],
+      [270, "small", "QUI COMPREND"],
+      [300, "mid", "L’ANCIEN ET LE NOUVEAU TESTAMENT"],
+      [340, "tiny", "TRADUITS SUR LES TEXTES ORIGINAUX HÉBREU ET GREC"],
+      [380, "by", "PAR"],
+      [406, "name", "LOUIS SEGOND"],
+      [440, "italic", "Docteur en théologie"],
       [492, "rule", "50"],
-      [526, "small", "NOUVELLE ÉDITION REVUE"],
+      [520, "edition", "NOUVELLE ÉDITION REVUE"],
       [576, "rule", "25"],
-      [616, "city", "PARIS"],
-      [644, "tiny", "58, RUE DE CLICHY"],
-      [676, "year", "1910"]
+      [610, "city", "PARIS"],
+      [640, "street", "58, RUE DE CLICHY"],
+      [672, "year", "1910"]
     ]
   },
   "odyssey": {
