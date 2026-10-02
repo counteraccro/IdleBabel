@@ -17,6 +17,8 @@ export interface ClassicBook {
   thickness?: number;
   /** Les polices du livre, chargées avant la mise en page. */
   fonts: () => Promise<unknown>;
+  /** Dessine à l'avance ce que `cover` est long à dessiner (appelé avec la préparation du texte). */
+  warm?: () => Promise<unknown>;
   cover: (state: GameState, design: CoverDesign) => RareBookLook | Promise<RareBookLook>;
   titlePage: (context: CanvasRenderingContext2D) => void;
   /** Ce qui marque le papier de chaque page (piqûres, rousseurs), dessiné avant le texte. */
@@ -40,6 +42,7 @@ export const classicArt = (book: ClassicBook): RareBookArt => {
     return !book.locales || book.locales.includes(locale) ? locale : book.locales[0];
   };
   const prepare = (): Promise<void> => {
+    void book.warm?.().catch(() => undefined);
     const locale = textLocale();
     if (preparing?.locale !== locale) {
       const done = (async () => {
