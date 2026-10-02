@@ -205,8 +205,15 @@ export const mobyDickSpine = (thickness: number): THREE.CanvasTexture =>
     const title = vertical(spine, center, `bold ${5.9 * CQW}px ${CASLON}`, 0.4 * CQW);
     context.lineWidth = 0.3 * CQW;
     context.strokeRect(-half * 0.7, center - title / 2 - 3.5 * CQW, 1.4 * half, title + 7 * CQW);
-    rosette(context, 0, center + title / 2 + 9.8 * CQW, 2.5 * CQW);
-    vertical(author, center + title / 2 + 27 * CQW, `${3.7 * CQW}px ${CASLON}`, 0.6 * CQW);
+    const flower = center + title / 2 + 7.5 * CQW;
+    rosette(context, 0, flower, 2.5 * CQW);
+    // L'auteur commence juste sous la rosace (sa longueur mesurée d'abord).
+    const authorFont = `${3.7 * CQW}px ${CASLON}`;
+    context.font = authorFont;
+    context.letterSpacing = `${0.6 * CQW}px`;
+    const length = context.measureText(author).width;
+    context.letterSpacing = '0px';
+    vertical(author, flower + 5.5 * CQW + length / 2, authorFont, 0.6 * CQW);
     publisher.forEach((line, row) =>
       write(context, line, 0, (108 + row * 3.6) * CQW, {
         font: row ? `${2.2 * CQW}px ${CASLON}` : `bold ${2.7 * CQW}px ${CASLON}`,
