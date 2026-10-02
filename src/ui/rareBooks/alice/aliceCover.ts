@@ -160,12 +160,20 @@ export const aliceSpine = (thickness: number): THREE.CanvasTexture =>
     context.translate(0, 10 * CQW);
     context.rotate(Math.PI / 2);
     context.textBaseline = 'middle';
-    context.font = `bold ${4.6 * CQW}px ${OLD}`;
-    context.letterSpacing = `${0.4 * CQW}px`;
-    context.fillText(spine, 0, 0);
+    // L'éditeur au pied, le titre au-dessus : réduit s'il le faut pour tenir entre le haut et l'éditeur.
     context.font = `${3.2 * CQW}px ${OLD}`;
     context.textAlign = 'right';
     context.fillText(publisher, 104 * CQW, 0);
+    const room = 104 * CQW - context.measureText(publisher).width - 6 * CQW;
+    context.textAlign = 'left';
+    // La largeur mesurée ne compte pas l'espacement des lettres : il est ajouté à part.
+    const spacing = 0.4 * CQW;
+    context.font = `bold ${4.6 * CQW}px ${OLD}`;
+    const perPixel = context.measureText(spine).width / (4.6 * CQW);
+    const size = Math.min(4.6 * CQW, (room - spine.length * spacing) / perPixel);
+    context.font = `bold ${size}px ${OLD}`;
+    context.letterSpacing = `${spacing}px`;
+    context.fillText(spine, 0, 0);
     context.restore();
   });
 
