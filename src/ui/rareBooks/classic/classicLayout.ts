@@ -18,6 +18,8 @@ export interface ClassicStyle {
   /** Couleur et police de la lettrine (sans police : pas de lettrine). */
   accent: string;
   dropCap?: string;
+  /** Une lettrine dessinée (une lettre ornée dans son cadre), à la place de la police `dropCap`. */
+  dropCapBox?: DropCapBox;
   /** Police des titres de chapitre. */
   heading: string;
   /** Chaque chapitre commence sur une page de droite (une page blanche avant si besoin). */
@@ -30,13 +32,24 @@ export interface ClassicStyle {
   marks?: ClassicMarks;
 }
 
+/** Une lettrine dessinée : un carré de `size` sur `lines` lignes, le texte à `gap` de lui. */
+export interface DropCapBox {
+  lines: number;
+  size: number;
+  gap: number;
+  /** Dessine la lettre `letter` ; `baseline` : la ligne de base de la première ligne du paragraphe. */
+  draw: (context: CanvasRenderingContext2D, letter: string, x: number, baseline: number) => void;
+}
+
 /** Les placements d'un livre (y : lignes de base, comme sur les maquettes). */
 export interface ClassicMarks {
   /** La première ligne d'une page, et celle de l'ouverture d'un chapitre. */
   first: number;
   opening: number;
-  runningHead: { font: string; color: string; spacing: number; y: number };
-  folio: { font: string; color: string; y: number };
+  /** Le titre courant ; `left` : celui des pages de gauche (le titre du livre), sinon celui du chapitre partout. */
+  runningHead: { font: string; color: string; spacing: number; y: number; left?: () => string };
+  /** Le numéro de page, en bas au milieu ; `top` : sauf aux ouvertures, en haut dans le coin extérieur. */
+  folio: { font: string; color: string; y: number; top?: number };
   /** Les lignes centrées (les nuits) : leur police, un filet dessous (`rule` sous la ligne de base, demi-largeur `half`), la place en plus après. */
   centered: { font: string; spacing: number; rule: number; half: number; after: number };
   /** La lettrine a sa ligne de base sur celle de la 2e ligne. */
@@ -146,16 +159,19 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
       y += style.marks?.centered.after ?? 0;
       return true;
     }
-    // Le premier paragraphe du chapitre : une lettrine sur deux lignes, si le texte commence par une lettre.
-    const letter = style.dropCap && index === 0 && /^\p{L}/u.test(para) ? para[0] : '';
+    // Le premier paragraphe du chapitre : une lettrine (sur deux lignes, ou celles de la lettrine dessinée),
+    // si le texte commence par une lettre.
+    const box = style.dropCapBox;
+    const letter = (style.dropCap || box) && index === 0 && /^\p{L}/u.test(para) ? para[0] : '';
     if (letter) {
-      const size = style.line * 2.3;
+      const size = box ? box.size : style.line * 2.3;
+      const rows = box ? box.lines : 2;
       context.font = `${size}px ${style.dropCap}`;
-      const drop = context.measureText(letter).width + 8;
+      const drop = box ? box.size + box.gap : context.measureText(letter).width + 8;
       context.font = font;
       current!.dropCap = { letter, x: LEFT, y, size };
-      const lines = wrapVarying(context, para.slice(1), (n) => RIGHT - LEFT - (n < 2 ? drop : 0));
-      return lines.every((line, row) => place(chapter, line, LEFT + (row < 2 ? drop : 0)));
+      const lines = wrapVarying(context, para.slice(1), (n) => RIGHT - LEFT - (n < rows ? drop : 0));
+      return lines.every((line, row) => place(chapter, line, LEFT + (row < rows ? drop : 0)));
     }
     return wrapVarying(context, para, (n) => RIGHT - LEFT - (n ? 0 : INDENT)).every((line, row) =>
       place(chapter, line, LEFT + (row ? 0 : INDENT)),

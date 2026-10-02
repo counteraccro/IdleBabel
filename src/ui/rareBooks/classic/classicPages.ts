@@ -152,15 +152,20 @@ export const paintClassicPage = (
   if (content.opening) chapterHead(context, chapter, style);
   // Le titre courant : celui du chapitre, en petit, en haut de page.
   else if (style.marks) {
-    const { font, color, spacing, y } = style.marks.runningHead;
-    baseline(context, titled(chapter.title || partName(chapter.label)).toUpperCase(), PAGE_CENTER, y, font, color, spacing);
+    const { font, color, spacing, y, left } = style.marks.runningHead;
+    const running = left && page % 2 === 0 ? left() : titled(chapter.title || partName(chapter.label)).toUpperCase();
+    baseline(context, running, PAGE_CENTER, y, font, color, spacing);
   } else {
     const running = titled(chapter.title || partName(chapter.label)).toUpperCase();
     const size = fitting(context, running, (px) => `italic ${px}px ${style.body}`, 12, RIGHT - LEFT, 2);
     write(context, running, PAGE_CENTER, 44, { font: `italic ${size}px ${style.body}`, color: GREY, spacing: 2 });
   }
   const font = `${style.size}px ${style.body}`;
-  if (content.dropCap && style.dropCap && style.marks?.dropCapOnSecondLine) {
+  if (content.dropCap && style.dropCapBox) {
+    const { letter, x, y } = content.dropCap;
+    context.font = font;
+    style.dropCapBox.draw(context, letter, x, y + context.measureText('M').fontBoundingBoxAscent);
+  } else if (content.dropCap && style.dropCap && style.marks?.dropCapOnSecondLine) {
     // Sur la ligne de base de la 2e ligne du paragraphe.
     const { letter, x, y, size } = content.dropCap;
     context.font = font;
@@ -181,8 +186,12 @@ export const paintClassicPage = (
     } else write(context, line, x, y, { font, color: style.ink, align: center ? 'center' : 'left' });
   }
   if (style.marks) {
-    const { font: folio, color, y } = style.marks.folio;
-    baseline(context, String(page), PAGE_CENTER, y, folio, color);
+    const { font: folio, color, y, top } = style.marks.folio;
+    // En haut, dans le coin extérieur (à gauche sur une page de gauche) ; aux ouvertures, en bas au milieu.
+    if (top !== undefined && !content.opening) {
+      const outer = page % 2 === 0;
+      baseline(context, String(page), outer ? LEFT : RIGHT, top, folio, color, 0, outer ? 'left' : 'right');
+    } else baseline(context, String(page), PAGE_CENTER, y, folio, color);
   } else write(context, String(page), PAGE_CENTER, HEIGHT - 52, { font: `13px ${style.body}`, color: GREY });
   return true;
 };

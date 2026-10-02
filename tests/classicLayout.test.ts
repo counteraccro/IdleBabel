@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PAGES_PER_BOOK } from '../src/systems/books';
-import { CONTENTS_PAGE, CONTENTS_ROWS, layoutClassic, type ClassicStyle } from '../src/ui/rareBooks/classic/classicLayout';
+import { CONTENTS_PAGE, CONTENTS_ROWS, LEFT, layoutClassic, type ClassicStyle } from '../src/ui/rareBooks/classic/classicLayout';
 import type { ClassicText } from '../src/ui/rareBooks/classic/classicText';
 
 /** Un faux contexte de dessin : chaque lettre fait 10 de large, l'ascendante 15. */
@@ -62,6 +62,15 @@ describe('mise en page des classiques', () => {
   it('une lettrine au premier paragraphe, si le style en a une', async () => {
     const layout = await layoutClassic(context, book([[para(3), para(3)]]), { ...STYLE, dropCap: 'serif' });
     expect(layout.pages.get(layout.starts[0])?.dropCap?.letter).toBe('a');
+  });
+
+  it('une lettrine dessinée : le texte s’écarte d’elle sur ses lignes, puis reprend toute la largeur', async () => {
+    const dropCapBox = { lines: 4, size: 94, gap: 10, draw: () => {} };
+    const layout = await layoutClassic(context, book([[para(8)]]), { ...STYLE, dropCapBox });
+    const page = layout.pages.get(layout.starts[0])!;
+    expect(page.dropCap?.letter).toBe('a');
+    expect(page.lines.slice(0, 4).every((line) => line.x === LEFT + 104)).toBe(true);
+    expect(page.lines[4].x).toBe(LEFT);
   });
 
   it('les strophes : un vers par ligne, en retrait', async () => {

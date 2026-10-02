@@ -98,7 +98,21 @@
   },
   "odyssey": {
     "name": "The Odyssey",
-    "cover": ["The Odyssey"]
+    "cover": ["The Odyssey"],
+    "contents": "Table",
+    "running": "ODYSSÉE.",
+    "spine": ["ODYSSÉE", "TRAD.", "LECONTE DE LISLE", "1868"],
+    "titlePage": [
+      [170, "author", "HOMÈRE"],
+      [254, "title", "ODYSSÉE"],
+      [300, "translation", "Traduction nouvelle"],
+      [328, "by", "PAR"],
+      [360, "translator", "LECONTE DE LISLE"],
+      [590, "city", "PARIS"],
+      [620, "publisher", "ALPHONSE LEMERRE, ÉDITEUR"],
+      [644, "address", "23-31, PASSAGE CHOISEUL, 23-31"],
+      [670, "year", "M DCCC XCIII"]
+    ]
   },
   "arabianNights": {
     "name": "One Thousand and One Nights",
