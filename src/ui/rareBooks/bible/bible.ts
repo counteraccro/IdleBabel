@@ -1,3 +1,5 @@
+import { hashText, seeded } from '../../../core/random';
+import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { preparePageTexture, type Paper } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { board } from '../draw';
@@ -6,8 +8,17 @@ import { CONTENTS_PAGE } from './bibleBooks';
 import { bibleLinks, paintBiblePage } from './biblePages';
 import type { RareBookArt } from '../rareBookArt';
 
-/** Le papier bible : fin, presque blanc. */
-const PAPER: Paper = ['#f7f1e2', '#efe6cf', '#e2d5b6'];
+/** Le papier de la maquette : de #f7f1e2 en haut à #ece2c8 en bas (le milieu : sa teinte aux 7/10). */
+const PAPER: Paper = ['#f7f1e2', '#efe7d0', '#ece2c8'];
+
+/** Les fines piqûres brunes du papier, comme sur la maquette (toujours les mêmes pour une page). */
+const speckles = (context: CanvasRenderingContext2D, page: number): void => {
+  const random = seeded(hashText(`bible:paper:${page}`));
+  for (let speck = 0; speck < 2600; speck++) {
+    context.fillStyle = `rgba(120, 90, 40, ${random() * 0.06})`;
+    context.fillRect(random() * PAGE_TEXTURE.width, random() * PAGE_TEXTURE.height, 1.5, 1.5);
+  }
+};
 /** Un gros livre. */
 const THICKNESS = 0.15;
 
@@ -36,6 +47,7 @@ export const bibleArt: RareBookArt = {
   },
   paint: (page, canvas, spineOnLeft) => {
     const context = preparePageTexture(canvas, spineOnLeft, PAPER);
+    speckles(context, page);
     context.textBaseline = 'alphabetic';
     if (page === 1) {
       bibleTitlePage(context);
