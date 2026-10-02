@@ -532,7 +532,19 @@
       ],
       "verdict": "AlexH a demandé des modifications",
       "verdictAt": "il y a 1 minute",
-      "verdictText": "Le point-virgule. Le reste est bon."
+      "verdictText": "Le point-virgule. Le reste est bon.",
+      "replies": "Suite de la discussion",
+      "followUp": [
+        {
+          "author": "Oriana",
+          "when": "il y a 40 minutes",
+          "where": "src/vie.ts, ligne 89",
+          "text": "Pour la boucle infinie, je ne suis pas d’accord. Enfin si, mais pas pour les mêmes raisons. Une boucle infinie, c’est un peu comme une blockchain : ça ne s’arrête jamais et tout le monde en garde une trace. D’ailleurs, imagine un grand cahier. Chaque page se souvient de la précédente, et…"
+        },
+        { "author": "Oriana", "when": "il y a 38 minutes", "text": "Je n’avais pas fini." }
+      ],
+      "hidden": "··· 37 commentaires masqués ···",
+      "lastWord": { "author": "AlexH", "when": "il y a 2 minutes", "text": "Commentaire trop long. Le reste est bon." }
     },
     "review": {
       "title": "Votre PR",

@@ -160,7 +160,8 @@
     "hintNotebookBack": "Retourne / le cahier.",
     "hintInsomnia": "À trois heures, / la Bibliothèque / ne dort pas.",
     "hintStill": "Un livre qui ne tremble pas / en dit davantage.",
-    "hintBabelDigits": "Compte comme / la Bibliothèque compte."
+    "hintBabelDigits": "Compte comme / la Bibliothèque compte.",
+    "hintColleagues": "Deux livres / travaillent / ensemble."
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",

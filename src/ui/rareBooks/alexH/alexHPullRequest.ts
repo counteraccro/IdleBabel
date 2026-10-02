@@ -106,3 +106,30 @@ export const pullRequestPage = (context: CanvasRenderingContext2D): void => {
   for (const item of comments) y = comment(context, item, y);
   verdict(context, y);
 };
+
+/**
+ * La page d'après : la discussion continue. Une collègue répond, longuement, puis encore ; des commentaires
+ * masqués ; le mot de la fin d'AlexH. (Elle a son livre à elle : la biographie d'Oriana.)
+ */
+export const pullRequestRepliesPage = (context: CanvasRenderingContext2D): void => {
+  const { replies, followUp, hidden, lastWord } = messages().rareBooks.alexH.pr;
+  write(context, replies, LEFT, 62, { font: `500 20px ${MODERN}`, color: MUTED, align: 'left' });
+  context.fillStyle = BORDER;
+  context.fillRect(LEFT, 100, RIGHT - LEFT, 1);
+  let y = 130;
+  for (const item of followUp) y = comment(context, item, y);
+  // Les commentaires masqués : une ligne grise entre deux filets pointillés.
+  context.font = `13px ${MODERN}`;
+  const width = context.measureText(hidden).width + 24;
+  context.strokeStyle = BORDER;
+  context.setLineDash([4, 4]);
+  context.beginPath();
+  context.moveTo(BOX, y + 8);
+  context.lineTo((BOX + RIGHT - width) / 2, y + 8);
+  context.moveTo((BOX + RIGHT + width) / 2, y + 8);
+  context.lineTo(RIGHT, y + 8);
+  context.stroke();
+  context.setLineDash([]);
+  write(context, hidden, (BOX + RIGHT) / 2, y, { font: context.font, color: MUTED });
+  comment(context, lastWord, y + 40);
+};

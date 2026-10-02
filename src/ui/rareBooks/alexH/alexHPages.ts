@@ -6,7 +6,7 @@ import { PAGE_CENTER, write } from '../draw';
 import { INK, ITALIC, MODERN, MONO } from './alexHCover';
 import { alsoPage, colophonPage, indexPage, photoPage, thanksPage } from './alexHExtras';
 import { pageFrame, storyLines, writeProse, writeStory, type StoryLine } from './alexHProse';
-import { pullRequestPage } from './alexHPullRequest';
+import { pullRequestPage, pullRequestRepliesPage } from './alexHPullRequest';
 import { REVIEW_LINES, reviewFormPage, reviewLinesPage } from './alexHReview';
 import type { PageLink } from '../rareBookArt';
 
@@ -140,6 +140,7 @@ export const paintAlexHPage = (context: CanvasRenderingContext2D, page: number):
   else if (page === CONTENTS_PAGE) contentsPage(context);
   else if (isPhotoPage(page)) photoPage(context, page - PHOTOS_FROM);
   else if (page === PULL_REQUEST_PAGE) pullRequestPage(context);
+  else if (page === PULL_REQUEST_PAGE + 1) pullRequestRepliesPage(context);
   else if (page === REVIEW_PAGE) reviewFormPage(context);
   else if (page > REVIEW_PAGE && page < THANKS_PAGE) reviewLinesPage(context, 1 + (page - REVIEW_PAGE - 1) * REVIEW_LINES);
   else if (page === THANKS_PAGE) thanksPage(context);

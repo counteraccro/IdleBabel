@@ -102,7 +102,7 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
   // Des phrases trop ordinaires pour être là.
   ordinary: ['bread', 'rain', 'fountain', 'cat', 'thanks', 'window', 'birthday', 'late', 'sugar', 'keys', 'oven', 'goodNight'],
   // Des indices : chacun met sur la piste d'un sceau secret (idée de l'auteur, 01/10).
-  hints: ['hintDeathBook', 'hintDirectory', 'hintNotebookBack', 'hintInsomnia', 'hintStill', 'hintBabelDigits'],
+  hints: ['hintDeathBook', 'hintDirectory', 'hintNotebookBack', 'hintInsomnia', 'hintStill', 'hintBabelDigits', 'hintColleagues'],
 };
 
 export const ANOMALIES: readonly SentenceDef[] = ANOMALY_FAMILIES.flatMap((family) =>

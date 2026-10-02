@@ -519,7 +519,19 @@
       ],
       "verdict": "AlexH requested changes",
       "verdictAt": "1 minute ago",
-      "verdictText": "The semicolon. The rest is fine."
+      "verdictText": "The semicolon. The rest is fine.",
+      "replies": "Discussion continued",
+      "followUp": [
+        {
+          "author": "Oriana",
+          "when": "40 minutes ago",
+          "where": "src/life.ts, line 89",
+          "text": "About the infinite loop, I disagree. Well, I agree, but not for the same reasons. An infinite loop is a bit like a blockchain: it never stops and everyone keeps a record. Actually, picture a big notebook. Every page remembers the one before, and…"
+        },
+        { "author": "Oriana", "when": "38 minutes ago", "text": "I wasn’t done." }
+      ],
+      "hidden": "··· 37 hidden comments ···",
+      "lastWord": { "author": "AlexH", "when": "2 minutes ago", "text": "Comment too long. The rest is fine." }
     },
     "review": {
       "title": "Your PR",

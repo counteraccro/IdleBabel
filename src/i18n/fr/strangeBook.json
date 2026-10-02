@@ -63,6 +63,7 @@
     "anomalies-hints": "Suis chaque indice jusqu'au bout",
     "rareBook": "Trouver : {title}",
     "deathBook": "Mon nom est inscrit dans le Death Book ? Est-ce alors la destinée ?",
-    "directory": "Est-ce mon numéro de téléphone ?"
+    "directory": "Est-ce mon numéro de téléphone ?",
+    "colleagues": "Collègues"
   }
 }
