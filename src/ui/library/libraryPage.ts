@@ -5,6 +5,7 @@ import { t } from '../../i18n';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { isRareBookFound } from '../../systems/rareBooks';
 import { firstBookKept } from '../../systems/books';
+import { sealEvent } from '../../systems/seals';
 import { keptBook3d } from '../book3d/handBook3d';
 import { createBookMesh } from '../book3d/bookMesh';
 import { createBookRenderer } from '../book3d/renderer3d';
@@ -29,10 +30,14 @@ export const LIBRARY_FIRST_BOOK = 'first';
 
 /**
  * Le livre de la vitrine `id` : le premier livre lu, ou un livre rare. Le livre de débogage, en mode ?debug :
- * le vrai (son catalogue) ; sinon, son charabia qui bugue.
+ * le vrai (son catalogue) ; sinon, son charabia qui bugue. Le premier livre, relu jusqu'au bout et refermé : un secret.
  */
 export const shelfBook3d = (state: GameState, id: string, debugging: boolean): Book3d =>
-  id === LIBRARY_FIRST_BOOK ? keptBook3d(state, 0) : id === LIBRARY_DEBUG_BOOK && debugging ? debugBook3d() : rareBook3d(state, id);
+  id === LIBRARY_FIRST_BOOK
+    ? { ...keptBook3d(state, 0), finished: () => sealEvent(state, 'reread') }
+    : id === LIBRARY_DEBUG_BOOK && debugging
+      ? debugBook3d()
+      : rareBook3d(state, id);
 
 /** Le livre qui vole de la vitrine à sa page (et retour) : son nom dans bookFlight. */
 export const libraryFlightId = (id: string): string => `library:${id}`;

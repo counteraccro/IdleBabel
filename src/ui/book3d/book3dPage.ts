@@ -201,6 +201,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
       if (t < 1) return void requestAnimationFrame(step);
       if (board === 'flip') turner?.jump(0);
       swinging = false;
+      if (board === 'back' && target === 1) spec.finished?.();
     };
     requestAnimationFrame(step);
   };

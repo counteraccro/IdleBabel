@@ -82,6 +82,8 @@ export const SEALS: readonly SealDef[] = [
   secret('deathBook'),
   // Son nom et son numéro, à sa place dans l'Annuaire (ui/rareBooks/directory.ts).
   secret('directory'),
+  // Le premier livre, relu dans la bibliothèque jusqu'à la dernière page, et refermé (ui/library/libraryPage.ts).
+  secret('reread'),
   // Les deux collègues, AlexH et Oriana, trouvés tous les deux (ils travaillent ensemble, jusque dans leurs livres).
   seal('colleagues', 'secrets', (s) => 'alexH' in s.rareBooks && 'oriana' in s.rareBooks),
 ];

@@ -161,7 +161,8 @@
     "hintInsomnia": "À trois heures, / la Bibliothèque / ne dort pas.",
     "hintStill": "Un livre qui ne tremble pas / en dit davantage.",
     "hintBabelDigits": "Compte comme / la Bibliothèque compte.",
-    "hintColleagues": "Deux livres / travaillent / ensemble."
+    "hintColleagues": "Deux livres / travaillent / ensemble.",
+    "hintReread": "Certains livres / se lisent / deux fois."
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",

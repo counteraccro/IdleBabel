@@ -161,7 +161,8 @@
     "hintInsomnia": "At three o'clock, / the Library / does not sleep.",
     "hintStill": "A book that does not tremble / tells more.",
     "hintBabelDigits": "Count the way / the Library counts.",
-    "hintColleagues": "Two books / work / together."
+    "hintColleagues": "Two books / work / together.",
+    "hintReread": "Some books / are read / twice."
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",

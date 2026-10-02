@@ -39,6 +39,8 @@ export interface Book3d {
    * page (le cahier d'options : un secret). Une fois par ouverture de la page.
    */
   backSeen?: () => void;
+  /** Le plat arrière vient de se refermer après la dernière page : le livre a été lu jusqu'au bout (un secret). */
+  finished?: () => void;
   /**
    * Le livre ne s'ouvre pas (le livre de débogage hors du mode ?debug) : on le prend, on le tourne, mais
    * ouvrir sa couverture appelle ceci à la place.
