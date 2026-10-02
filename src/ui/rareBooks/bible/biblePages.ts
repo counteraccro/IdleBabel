@@ -3,7 +3,7 @@ import { hashText, seeded } from '../../../core/random';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { PAGE_CENTER, write } from '../draw';
 import { loremText } from '../lorem';
-import { CASLON, INK } from './bibleCover';
+import { CASLON, INK, writeTop } from './bibleCover';
 import { BIBLE_PLAN, CONTENTS_PAGE, CONTENTS_PAGES, OLD_TESTAMENT_BOOKS, OLD_TESTAMENT_PAGE } from './bibleBooks';
 import type { PageLink } from '../rareBookArt';
 
@@ -108,11 +108,11 @@ const textPage = (context: CanvasRenderingContext2D, page: number): void => {
   const content = BIBLE_PLAN.pages.get(page)!;
   const name = messages().rareBooks.bible.books[content.book].toUpperCase();
   const range = content.from === content.to ? `${content.from}` : `${content.from}. ${content.to}`;
-  write(context, `${name}, ${range}.`, PAGE_CENTER, 52, { font: `13px ${CASLON}`, color: GREY, spacing: 2 });
+  writeTop(context, `${name}, ${range}.`, PAGE_CENTER, 52, { font: `13px ${CASLON}`, color: GREY, spacing: 2 });
   context.fillStyle = INK;
   context.fillRect(COLUMNS[0], 62, WIDTH - 2 * COLUMNS[0], 1);
   context.fillRect(WIDTH / 2, 72, 1, HEIGHT - 140);
-  write(context, String(page), PAGE_CENTER, HEIGHT - 40, { font: `13px ${CASLON}`, color: GREY });
+  writeTop(context, String(page), PAGE_CENTER, HEIGHT - 40, { font: `13px ${CASLON}`, color: GREY });
 
   const random = seeded(hashText(`bible:${page}`));
   const chapters = content.to - content.from + 1;
@@ -126,7 +126,7 @@ const textPage = (context: CanvasRenderingContext2D, page: number): void => {
       // Le livre commence : son nom en capitales entre deux filets courts, en tête de colonne.
       context.fillStyle = INK;
       context.fillRect(left + 60, y + 4, COLUMN_WIDTH - 120, 1);
-      write(context, name, left + COLUMN_WIDTH / 2, y + 16, { font: `bold 20px ${CASLON}`, color: INK, spacing: 3 });
+      writeTop(context, name, left + COLUMN_WIDTH / 2, y + 16, { font: `bold 20px ${CASLON}`, color: INK, spacing: 3 });
       context.fillRect(left + 60, y + 46, COLUMN_WIDTH - 120, 1);
       y += 62;
     }
@@ -136,14 +136,14 @@ const textPage = (context: CanvasRenderingContext2D, page: number): void => {
       if (due && y < BOTTOM - CHAPTER_LINES * LINE) {
         // Un chapitre commence : le grand numéro, à côté de ses trois premières lignes.
         y += 6;
-        write(context, String(chapter), left + 2, y, { font: CHAPTER_FONT, color: INK, align: 'left' });
+        writeTop(context, String(chapter), left + 2, y, { font: CHAPTER_FONT, color: INK, align: 'left' });
         context.font = FONT;
         const words = loremText(400, random).split(' ');
         for (let row = 0; row < CHAPTER_LINES; row++) {
           const x = left + (row < 3 ? CHAPTER_INDENT : 0);
           let line = words.shift()!;
           while (words.length && context.measureText(`${line} ${words[0]}`).width <= left + COLUMN_WIDTH - x) line += ` ${words.shift()}`;
-          write(context, line, x, y + row * LINE, { font: FONT, color: INK, align: 'left' });
+          writeTop(context, line, x, y + row * LINE, { font: FONT, color: INK, align: 'left' });
         }
         y += CHAPTER_LINES * LINE + 4;
         chapter++;
@@ -152,7 +152,7 @@ const textPage = (context: CanvasRenderingContext2D, page: number): void => {
       }
       // Un verset : son petit numéro gras, puis son texte.
       const number = String(++verse);
-      write(context, number, left, y - 3, { font: VERSE_FONT, color: INK, align: 'left' });
+      writeTop(context, number, left, y - 3, { font: VERSE_FONT, color: INK, align: 'left' });
       context.font = VERSE_FONT;
       const gap = context.measureText(number).width + 4;
       context.font = FONT;
@@ -162,7 +162,7 @@ const textPage = (context: CanvasRenderingContext2D, page: number): void => {
         const x = left + (first ? gap : 0);
         let line = words.shift()!;
         while (words.length && context.measureText(`${line} ${words[0]}`).width <= left + COLUMN_WIDTH - x) line += ` ${words.shift()}`;
-        write(context, line, x, y, { font: FONT, color: INK, align: 'left' });
+        writeTop(context, line, x, y, { font: FONT, color: INK, align: 'left' });
         y += LINE;
         first = false;
       }

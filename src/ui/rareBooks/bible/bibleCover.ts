@@ -4,7 +4,7 @@ import '@fontsource/libre-caslon-text/700.css';
 import { messages } from '../../../i18n';
 import { hashText, seeded } from '../../../core/random';
 import { canvasTexture } from '../../book3d/textures';
-import { HEIGHT, PAGE_CENTER, TITLE, WIDTH, board, write } from '../draw';
+import { HEIGHT, PAGE_CENTER, TITLE, WIDTH, board, type TextStyle } from '../draw';
 import type * as THREE from 'three';
 
 /** Le chagrin noir des Bibles de famille du début du XXe siècle, et son or. */
@@ -206,6 +206,22 @@ export const giltEdge = (): THREE.CanvasTexture => {
 };
 
 /**
+ * Du texte posé comme sur la maquette : `y` est le haut des lettres (textBaseline 'top'), pas le haut de la
+ * boîte de la police comme avec `write` (la Caslon a une grande marge au-dessus : tout descendait de
+ * quelques pixels, « GENÈSE » touchait son filet).
+ */
+export const writeTop = (context: CanvasRenderingContext2D, text: string, x: number, y: number, style: TextStyle): void => {
+  context.save();
+  context.font = style.font;
+  context.letterSpacing = `${style.spacing ?? 0}px`;
+  context.fillStyle = style.color;
+  context.textAlign = style.align ?? 'center';
+  context.textBaseline = 'top';
+  context.fillText(text, x, y);
+  context.restore();
+};
+
+/**
  * La vraie page de titre de l'édition (Segond, Paris 1910 ; King James, Oxford 1910), ligne par ligne, aux
  * places de la maquette (y : haut de la ligne).
  */
@@ -235,6 +251,6 @@ export const bibleTitlePage = (context: CanvasRenderingContext2D): void => {
       continue;
     }
     const [font, spacing] = fonts[kind];
-    write(context, text, PAGE_CENTER, y, { font, color: INK, spacing });
+    writeTop(context, text, PAGE_CENTER, y, { font, color: INK, spacing });
   }
 };
