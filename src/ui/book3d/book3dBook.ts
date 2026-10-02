@@ -11,6 +11,11 @@ export interface Book3d {
   source: PageSource;
   /** Textures des plats et de la tranche : dessinées une fois, à l'ouverture de la page. */
   look: () => Promise<BookLook>;
+  /**
+   * Ce qu'attendent ses pages (le texte d'un classique, à charger puis mettre en page) : demandé seulement
+   * par les vues où on le lit ; quand c'est là, elles redessinent leurs pages. La couverture ne l'attend pas.
+   */
+  ready?: () => Promise<void>;
   /** Page où est glissé le signet (le sommaire) : un clic sur lui, ou la touche Début, y ramène. */
   bookmark?: number;
   /** Le livre qu'on prend quand celui-ci est terminé (le livre en main : le suivant sur l'étagère). */

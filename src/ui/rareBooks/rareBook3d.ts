@@ -13,8 +13,8 @@ const READING_SHAPE: BookShape = { width: 0.8, height: 1, thickness: 0.12, board
 
 /**
  * Les couvertures se dessinent l'une après l'autre, chacune dans son moment libre : la bibliothèque, qui les
- * demande toutes à la fois, s'ouvre sans à-coup (ensemble, elles figeaient une image ~100 ms). Un livre ne
- * fait pas attendre les suivants (un texte lent à charger ne bloque que le sien).
+ * demande toutes à la fois, s'ouvre sans à-coup (ensemble, elles figeaient une image ~100 ms). Elles
+ * n'attendent pas le texte : la vitrine n'en charge aucun.
  */
 let turn: Promise<void> = Promise.resolve();
 const inTurn = <T>(draw: () => Promise<T>): Promise<T> => {
@@ -45,12 +45,11 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
       paint: (page, canvas, spineOnLeft) => page > 0 && art.paint(page, canvas, spineOnLeft, state, design),
     },
     look: async () => {
-      // Ce qui est long sans figer (texte à charger, mise en page) commence tout de suite, sans attendre son tour.
-      art.prepare?.();
       const { tick: coverTick, ...look } = await inTurn(() => art.look(state, design));
       tick = coverTick ?? null;
       return look;
     },
+    ready: art.prepare,
     passed: art.passed && ((page) => art.passed?.(page, state)),
     tick: (now) => tick?.(now) ?? false,
     // Le signet : de n'importe où dans le livre, on revient au sommaire (ou au titre), puis on le referme.

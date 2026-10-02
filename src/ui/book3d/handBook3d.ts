@@ -58,7 +58,7 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
   const rare = isStrangeBook(index) ? undefined : takeBook(state, index);
   // Le livre d'après sera rare : on le prépare pendant qu'on lit celui-ci.
   const upcoming = isStrangeBook(index + 1) ? undefined : rareBookAt(state, index + 1);
-  if (upcoming) rareBookArt(upcoming).prepare?.();
+  if (upcoming) void rareBookArt(upcoming).prepare?.();
   if (rare) return { ...rareBook3d(state, rare, index, HAND_SHAPE), next, autoTurn };
   const design = coverDesign(index);
   const strange = isStrangeBook(index) ? strangeHandPages(state) : null;

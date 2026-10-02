@@ -17,7 +17,7 @@ export interface ClassicBook {
   thickness?: number;
   /** Les polices du livre, chargées avant la mise en page. */
   fonts: () => Promise<unknown>;
-  /** Dessine à l'avance ce que `cover` est long à dessiner (appelé avec la préparation du texte). */
+  /** Dessine à l'avance ce que `cover` est long à dessiner (appelé par look, avant cover). */
   warm?: () => Promise<unknown>;
   cover: (state: GameState, design: CoverDesign) => RareBookLook | Promise<RareBookLook>;
   titlePage: (context: CanvasRenderingContext2D) => void;
@@ -30,7 +30,8 @@ export interface ClassicBook {
 /**
  * Un classique du domaine public en livre rare : la page de titre de l'édition d'origine, la table des
  * matières (cliquable, où mène le signet), puis tout le vrai texte jusqu'à la 410e page au plus ; après
- * la fin, des pages blanches. Le texte est chargé et mis en page à l'ouverture (look).
+ * la fin, des pages blanches. Le texte n'est chargé et mis en page que pour être lu (prepare), pas pour la
+ * couverture : la vitrine de la bibliothèque n'en charge aucun.
  */
 export const classicArt = (book: ClassicBook): RareBookArt => {
   let laid: { locale: string; text: ClassicText; layout: ClassicLayout } | null = null;
@@ -42,7 +43,6 @@ export const classicArt = (book: ClassicBook): RareBookArt => {
     return !book.locales || book.locales.includes(locale) ? locale : book.locales[0];
   };
   const prepare = (): Promise<void> => {
-    void book.warm?.().catch(() => undefined);
     const locale = textLocale();
     if (preparing?.locale !== locale) {
       const done = (async () => {
@@ -63,12 +63,11 @@ export const classicArt = (book: ClassicBook): RareBookArt => {
   return {
     thickness: book.thickness,
     paper: book.paper,
-    prepare: () => void prepare().catch(() => undefined),
+    // Sans texte (hors ligne…), des pages blanches ; le livre reste beau dehors.
+    prepare: () => prepare().catch(() => undefined),
     look: async (state, design) => {
-      await book.fonts();
-      // Sans texte (hors ligne…), le livre reste beau dehors ; dedans, des pages blanches. La reliure longue
-      // à dessiner l'est par morceaux pendant ce temps (bibliothèque, livre ouvert en grand) : cover la reprend.
-      await Promise.all([prepare().catch(() => undefined), book.warm?.().catch(() => undefined)]);
+      // La reliure longue à dessiner l'est par morceaux pendant que les polices arrivent : cover la reprend.
+      await Promise.all([book.fonts(), book.warm?.().catch(() => undefined)]);
       return book.cover(state, design);
     },
     paint: (page, canvas, spineOnLeft) => {

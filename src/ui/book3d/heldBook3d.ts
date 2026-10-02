@@ -126,6 +126,13 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     turner.jump(spread);
     pose.set({ closed: closed ? 1 : 0 });
     dirty = true;
+    // Le texte du livre (un classique) arrive : ses pages se redessinent, s'il est encore en main.
+    const pages = turner;
+    void spec.ready?.().then(() => {
+      if (turner !== pages || lifetime.signal.aborted) return;
+      pages.refresh();
+      dirty = true;
+    });
   };
   /** Doubles pages où mènent des feuilles tournées seules (non comptées). */
   const auto = new Set<number>();

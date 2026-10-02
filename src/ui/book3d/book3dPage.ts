@@ -144,6 +144,10 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     turner?.refresh();
     invalidate();
   };
+  // Le texte du livre (un classique) arrive : ses pages se redessinent.
+  void spec.ready?.().then(() => {
+    if (!signal.aborted) refresh();
+  });
   void spec.look().then((look) => {
     book = createBookMesh(shape, look);
     scene.add(book.root);

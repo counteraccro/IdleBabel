@@ -13,10 +13,11 @@ export interface RareBookArt {
   thickness?: number;
   paper: Paper;
   /**
-   * Prépare à l'avance ce qui est long (texte à charger, mise en page) : appelé quand ce livre sera le
+   * Prépare ce qui est long (texte à charger, mise en page) ; résolu quand c'est fait (jamais en échec :
+   * sans texte, des pages blanches). Appelé par les vues où on lit le livre, et quand ce livre sera le
    * prochain en main, pour qu'il arrive sans à-coup.
    */
-  prepare?: () => void;
+  prepare?: () => Promise<void>;
   /** Plats, dos, tranche et tranchefiles ; `design` : la couverture tirée du numéro du livre (cuir, usure). */
   look: (state: GameState, design: CoverDesign) => Promise<RareBookLook>;
   /**
