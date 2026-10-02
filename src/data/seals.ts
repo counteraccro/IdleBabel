@@ -48,6 +48,8 @@ export const SEALS: readonly SealDef[] = [
 
   ...series('booksFinished', 'books', (s) => s.booksFinished, [1, 10, 100, K, 10 * K]),
   ...series('meaningfulCovers', 'books', meaningfulCovers, [1, 10, 100]),
+  // La découverte du livre étrange (pas un secret : il arrive à son numéro de livre).
+  seal('strangeBook', 'books', (s) => s.booksFinished >= STRANGE_BOOK_INDEX),
 
   ...series('fragments', 'fragments', (s) => s.stats.fragments, [1, 10, 100, K]),
   // Une famille d'anomalies complète (data/anomalies.ts).
@@ -70,7 +72,6 @@ export const SEALS: readonly SealDef[] = [
     reached: (s) => book.id in s.rareBooks,
   })),
 
-  seal('strangeBook', 'secrets', (s) => s.booksFinished >= STRANGE_BOOK_INDEX),
   seal('insomnia', 'secrets', () => new Date().getHours() === 3),
   seal('still', 'secrets', (s) => !s.settings.bookSway),
   // Les nombres écrits en chiffres de Babel (option « Nombres » du cahier).
