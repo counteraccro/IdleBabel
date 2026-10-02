@@ -1,0 +1,66 @@
+{
+  "title": "Tout ce que tu as fait",
+  "before": "Tu as déjà ouvert les yeux ici. Plus de fois que ce livre ne peut en contenir.",
+  "ages": {
+    "manual": "L'Âge Manuel"
+  },
+  "when": {
+    "now": "Aussitôt",
+    "minutes": "Quelques minutes plus tard",
+    "tenMinutes": "Dix minutes plus tard",
+    "twentyMinutes": "Vingt minutes plus tard",
+    "halfHour": "Une demi-heure plus tard",
+    "hour": "Une heure plus tard",
+    "hours": "Quelques heures plus tard",
+    "manyHours": "Des heures plus tard",
+    "day": "Un jour plus tard",
+    "days": "Quelques jours plus tard",
+    "week": "Une semaine plus tard",
+    "weeks": "Des semaines plus tard",
+    "month": "Un mois plus tard",
+    "months": "Des mois plus tard",
+    "years": "Bien plus tard"
+  },
+  "moments": {
+    "gameStarted": "Cette fois encore, tu as ouvert les yeux dans une salle sombre. Le sol était froid. Tu ne savais plus rien, sauf ton nom : {name}. Dans ta main, deux livres. Un cahier à ton nom. Un livre blanc que tu ne savais plus lire.",
+    "firstClick": "{when}, tu as tourné ta première page. Elle ne voulait rien dire.",
+    "firstKnowledge": "{when}, au milieu du charabia, une phrase. Une vraie. « Le cerveau saute un mot sur deux. » Tu l'as crue.",
+    "firstBook": "{when}, tu as refermé ton premier livre. Quatre cent dix pages. Pas un mot compris. Tu l'as gardé. Dans ta poche, une clé de laiton. Tu as ouvert la bibliothèque sans réfléchir. Ta main connaissait le chemin.",
+    "strangeBook": "Au troisième livre, ta main s'est posée sur un livre noir, sans titre. Il te parlait. Il savait tout de toi.",
+    "memory": "{when}, un souvenir est revenu.",
+    "firstAnomaly": "{when}, une phrase t'a parlé. Elle n'aurait pas dû.",
+    "rareBook": "{when}, entre deux livres sans nom : {title}. Tu l'as rangé avec les autres.",
+    "firstSeal": "{when}, le livre noir a posé sur toi son premier sceau.",
+    "firstAbsence": "Tu as dormi. À ton réveil, les pages avaient tourné sans toi.",
+    "end": "C'est tout. C'est tout ce que tu as fait."
+  },
+  "methods": {
+    "diagonal": "{when}, tu as appris à sauter un mot sur deux.",
+    "finger": "{when}, ton doigt a commencé à guider tes yeux. Ils ne revenaient plus en arrière.",
+    "thumb": "{when}, ton pouce s'est corné. Les pages tournaient sans hésiter.",
+    "voice": "{when}, la voix dans ta tête s'est tue. Sans elle, tu allais plus vite.",
+    "wide": "{when}, tu as appris à lire les mots par poignées.",
+    "double": "{when}, tu as pris un livre dans chaque main.",
+    "mirror": "{when}, tu as poli un morceau de cuivre jusqu'à y voir la lumière.",
+    "lectern": "{when}, tu as arraché une pierre à la rambarde. Elle est devenue ton lutrin.",
+    "ladder": "{when}, tu as trouvé une échelle. Les étagères du haut sont devenues les tiennes."
+  },
+  "memories": {
+    "cup": "{when}, un souvenir est revenu. Une tasse ébréchée. Tu buvais toujours du côté de l'ébréchure."
+  },
+  "books": {
+    "10": "Dix livres refermés derrière toi.",
+    "100": "Cent livres refermés derrière toi.",
+    "1000": "Mille livres. Tu ne les comptais plus."
+  },
+  "pages": {
+    "1000": "Mille pages.",
+    "1000000": "Un million de pages. Aucune ne te ressemblait."
+  },
+  "secrets": {
+    "insomnia": "Une nuit, à trois heures, tu lisais encore.",
+    "still": "Un jour, tu as tenu ton livre parfaitement immobile.",
+    "babelDigits": "Tu as appris à compter comme la Bibliothèque.",
+    "colleagues": "Deux livres parlaient de quelqu'un. Tu n'as jamais croisé personne."
+  }
+}

@@ -13,7 +13,8 @@ import { createLighting } from '../book3d/lighting';
 import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
-import { DEBUG_CELL, FILL_ORDER, FRONT, createBookcase } from './bookcase3d';
+import { DEBUG_CELL, FILL_ORDER, FINAL_CELL, FRONT, createBookcase } from './bookcase3d';
+import { finalBook3d } from '../finalBook/finalBook3d';
 import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
 import { addCellLights } from './cellLights';
@@ -27,6 +28,8 @@ import type { GameState } from '../../core/state';
 export const LIBRARY_DEBUG_BOOK = 'debug';
 /** Le premier livre lu, gardé par le chercheur : sa première trouvaille, la première place de la vitrine. */
 export const LIBRARY_FIRST_BOOK = 'first';
+/** Le livre de la fin (la partie racontée) : pendant le développement, seulement en mode ?debug, seul dans sa case. */
+export const LIBRARY_FINAL_BOOK = 'final';
 
 /**
  * Le livre de la vitrine `id` : le premier livre lu, ou un livre rare. Le livre de débogage, en mode ?debug :
@@ -37,7 +40,9 @@ export const shelfBook3d = (state: GameState, id: string, debugging: boolean): B
     ? { ...keptBook3d(state, 0), finished: () => sealEvent(state, 'reread') }
     : id === LIBRARY_DEBUG_BOOK && debugging
       ? debugBook3d()
-      : rareBook3d(state, id);
+      : id === LIBRARY_FINAL_BOOK
+        ? finalBook3d(state)
+        : rareBook3d(state, id);
 
 /** Le livre qui vole de la vitrine à sa page (et retour) : son nom dans bookFlight. */
 export const libraryFlightId = (id: string): string => `library:${id}`;
@@ -142,6 +147,7 @@ export const createLibraryPage = (
     debugging || isRareBookFound(state, LIBRARY_DEBUG_BOOK)
       ? layoutBookcase([{ id: LIBRARY_DEBUG_BOOK, thickness: THICKNESS }], bookcase.cells, [DEBUG_CELL])
       : [];
+  const finalShelf = debugging ? layoutBookcase([{ id: LIBRARY_FINAL_BOOK, thickness: THICKNESS }], bookcase.cells, [FINAL_CELL]) : [];
   const places: Place[] = [
     ...layoutBookcase(
       found.map((id) => ({ id, thickness: thickness(id) })),
@@ -149,6 +155,7 @@ export const createLibraryPage = (
       FILL_ORDER,
     ),
     ...debugShelf,
+    ...finalShelf,
   ].map((spot) => {
     const cell = bookcase.cells[spot.cell];
     const floor = new THREE.Vector2(cell.left + cell.width / 2, cell.floor);
@@ -237,7 +244,8 @@ export const createLibraryPage = (
       });
     return shown.find((place) => hit && place.holder!.getObjectById(hit.object.id)) ?? null;
   };
-  const label = ({ spot: { id } }: Place): string => (id === LIBRARY_FIRST_BOOK ? t('ui.firstBook') : t(`rareBooks.${id}.name`));
+  const label = ({ spot: { id } }: Place): string =>
+    id === LIBRARY_FIRST_BOOK ? t('ui.firstBook') : id === LIBRARY_FINAL_BOOK ? t('finalBook.title') : t(`rareBooks.${id}.name`);
   const hover = (place: Place | null): void => {
     if (hovered === place) return;
     if (hovered) hovered.aim = 0;

@@ -20,7 +20,14 @@ import { isDebugEnabled, DEBUG_BOOK_HASH, RARE_BOOK_HASH } from '../debug/enable
 import { DEBUG_LIBRARY_EVENT } from '../debug/events';
 import { rareBook3d } from './rareBooks/rareBook3d';
 import { debugBook3d } from '../debug/book/debugBook3d';
-import { LIBRARY_DEBUG_BOOK, LIBRARY_FIRST_BOOK, createLibraryPage, shelfBook3d, type LibraryPage } from './library/libraryPage';
+import {
+  LIBRARY_DEBUG_BOOK,
+  LIBRARY_FINAL_BOOK,
+  LIBRARY_FIRST_BOOK,
+  createLibraryPage,
+  shelfBook3d,
+  type LibraryPage,
+} from './library/libraryPage';
 import { firstBookKept } from '../systems/books';
 import { libraryHasNews, visitLibrary } from '../systems/library';
 import { showDebugBookError } from './library/debugBookError';
@@ -72,7 +79,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     const hash = window.location.hash;
     if (!hash.startsWith(LIBRARY_BOOK_HASH)) return null;
     const id = decodeURIComponent(hash.slice(LIBRARY_BOOK_HASH.length));
-    return isRareBookFound(state, id) || (id === LIBRARY_DEBUG_BOOK && debugging) || (id === LIBRARY_FIRST_BOOK && firstBookKept(state))
+    return isRareBookFound(state, id) ||
+      ((id === LIBRARY_DEBUG_BOOK || id === LIBRARY_FINAL_BOOK) && debugging) ||
+      (id === LIBRARY_FIRST_BOOK && firstBookKept(state))
       ? id
       : null;
   };

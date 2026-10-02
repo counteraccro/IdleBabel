@@ -5,6 +5,7 @@ import { BOOK_ORDER, subjectById } from './subjects/catalog';
 import { createKit, subjectName } from './subjects/subject';
 import { onPinsChange, pinnedSubjects, unpin } from './pins';
 import { DEBUG_BOOK_HASH } from './enabled';
+import { markDebugActions } from './debugMark';
 import type { GameState } from '../core/state';
 
 const icon = (path: string): string =>
@@ -76,6 +77,7 @@ export const mountDebugPanel = (state: GameState): void => {
   const empty = el('p', 'debug-empty', 'Rien de choisi : ouvre le livre de débogage (dans la pile) et coche ce que tu veux suivre.');
   panel.append(header);
   document.body.append(panel);
+  markDebugActions(panel, state);
 
   // Les fiches déjà construites sont gardées : les champs en cours de saisie ne sont pas perdus.
   let cards: Card[] = [];

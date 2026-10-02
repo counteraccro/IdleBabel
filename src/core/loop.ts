@@ -2,6 +2,7 @@ import type { GameState } from './state';
 import { produce } from '../systems/production';
 import { trackPlay } from '../systems/stats';
 import { checkSeals } from '../systems/seals';
+import { chronicle } from '../systems/chronicle';
 
 const TICK_MS = 100;
 
@@ -13,6 +14,7 @@ export const startLoop = (state: GameState, onTick: () => void): void => {
     produce(state, seconds);
     trackPlay(state, seconds);
     checkSeals(state, now);
+    chronicle(state, now);
     state.lastTick = now;
     onTick();
   }, TICK_MS);

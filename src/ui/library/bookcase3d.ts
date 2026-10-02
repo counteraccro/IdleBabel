@@ -63,7 +63,8 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
     cells: [
       [LOW, []],
       [HIGH, ['stand', 'stand']],
-      [HIGH, []],
+      // Réservée au livre de la fin (FINAL_CELL), hors de FILL_ORDER : seul, au milieu du meuble.
+      [HIGH, ['stand']],
       [LOW, []],
     ],
   },
@@ -94,6 +95,8 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
 export const FILL_ORDER = [8, 1, 18, 4, 13, 23, 0, 11, 9, 3, 16];
 /** La case du livre de débogage, couché comme une plaque : à part, il ne décale pas les autres. */
 export const DEBUG_CELL = 17;
+/** La case du livre de la fin : à part, seul, debout. */
+export const FINAL_CELL = 14;
 
 /** Le bois des étagères et des montants : chaud ; celui du fond : plus sombre, en retrait. */
 const PIECE = 0xc8a080;

@@ -7,6 +7,7 @@ import frNotebook from './fr/notebook.json';
 import frLore from './fr/lore.json';
 import frNumbers from './fr/numbers.json';
 import frRareBooks from './fr/rareBooks.json';
+import frFinalBook from './fr/finalBook.json';
 import enUi from './en/ui.json';
 import enTools from './en/tools.json';
 import enWhiteBook from './en/whiteBook.json';
@@ -16,6 +17,7 @@ import enNotebook from './en/notebook.json';
 import enLore from './en/lore.json';
 import enNumbers from './en/numbers.json';
 import enRareBooks from './en/rareBooks.json';
+import enFinalBook from './en/finalBook.json';
 
 /**
  * Langues disponibles. Pour en ajouter une :
@@ -32,6 +34,7 @@ const fr = {
   lore: frLore,
   numbers: frNumbers,
   rareBooks: frRareBooks,
+  finalBook: frFinalBook,
 };
 export type Messages = typeof fr;
 
@@ -45,6 +48,7 @@ const en: Messages = {
   lore: enLore,
   numbers: enNumbers,
   rareBooks: enRareBooks,
+  finalBook: enFinalBook,
 };
 
 export const LOCALES = { fr, en } satisfies Record<string, Messages>;

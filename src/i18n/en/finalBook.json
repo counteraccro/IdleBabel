@@ -1,0 +1,66 @@
+{
+  "title": "All You Have Done",
+  "before": "You have opened your eyes here before. More times than this book can hold.",
+  "ages": {
+    "manual": "The Manual Age"
+  },
+  "when": {
+    "now": "At once",
+    "minutes": "A few minutes later",
+    "tenMinutes": "Ten minutes later",
+    "twentyMinutes": "Twenty minutes later",
+    "halfHour": "Half an hour later",
+    "hour": "An hour later",
+    "hours": "A few hours later",
+    "manyHours": "Hours later",
+    "day": "A day later",
+    "days": "A few days later",
+    "week": "A week later",
+    "weeks": "Weeks later",
+    "month": "A month later",
+    "months": "Months later",
+    "years": "Much later"
+  },
+  "moments": {
+    "gameStarted": "Once again, you opened your eyes in a dark room. The floor was cold. You remembered nothing but your name: {name}. In your hand, two books. A notebook bearing your name. A white book you could no longer read.",
+    "firstClick": "{when}, you turned your first page. It meant nothing.",
+    "firstKnowledge": "{when}, in the middle of the gibberish, a sentence. A real one. “The brain skips every other word.” You believed it.",
+    "firstBook": "{when}, you closed your first book. Four hundred and ten pages. Not one word understood. You kept it. In your pocket, a brass key. You opened the bookcase without thinking. Your hand knew the way.",
+    "strangeBook": "On the third book, your hand fell on a black book with no title. It spoke to you. It knew everything about you.",
+    "memory": "{when}, a memory came back.",
+    "firstAnomaly": "{when}, a sentence spoke to you. It should not have.",
+    "rareBook": "{when}, between two nameless books: {title}. You put it with the others.",
+    "firstSeal": "{when}, the black book set its first seal upon you.",
+    "firstAbsence": "You slept. When you woke, the pages had turned without you.",
+    "end": "That is all. That is all you have done."
+  },
+  "methods": {
+    "diagonal": "{when}, you learned to skip every other word.",
+    "finger": "{when}, your finger began to guide your eyes. They no longer went back.",
+    "thumb": "{when}, your thumb grew calloused. The pages turned without hesitation.",
+    "voice": "{when}, the voice in your head fell silent. Without it, you went faster.",
+    "wide": "{when}, you learned to read words by the handful.",
+    "double": "{when}, you took a book in each hand.",
+    "mirror": "{when}, you polished a piece of copper until you could see the light in it.",
+    "lectern": "{when}, you tore a stone from the railing. It became your lectern.",
+    "ladder": "{when}, you found a ladder. The top shelves became yours."
+  },
+  "memories": {
+    "cup": "{when}, a memory came back. A chipped cup. You always drank from the chipped side."
+  },
+  "books": {
+    "10": "Ten books closed behind you.",
+    "100": "A hundred books closed behind you.",
+    "1000": "A thousand books. You had stopped counting."
+  },
+  "pages": {
+    "1000": "A thousand pages.",
+    "1000000": "A million pages. Not one of them looked like you."
+  },
+  "secrets": {
+    "insomnia": "One night, at three o'clock, you were still reading.",
+    "still": "One day, you held your book perfectly still.",
+    "babelDigits": "You learned to count the way the Library does.",
+    "colleagues": "Two books spoke of someone. You never met anyone."
+  }
+}
