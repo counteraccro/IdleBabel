@@ -37,6 +37,22 @@ describe('bout du signet', () => {
     expect(Math.abs(tail.nodes[8].y)).toBeLessThan(0.01);
   });
 
+  it('ne claque pas comme un fouet : un quart de tour, il dépasse à peine et se pose vite', () => {
+    const tail = createRibbonTail(SEGMENT);
+    const root = new THREE.Vector3();
+    tail.reset(hanging(root, down));
+    const left = new THREE.Vector3(-1, 0, 0);
+    let overshoot = 0;
+    let moving = true;
+    // Deux secondes.
+    for (let frame = 0; frame < 120; frame++) {
+      moving = tail.step(root, left, 1 / 60, free);
+      overshoot = Math.max(overshoot, tail.nodes[8].y);
+    }
+    expect(overshoot).toBeLessThan(0.25 * 8 * SEGMENT);
+    expect(moving).toBe(false);
+  });
+
   it("suit son point d'attache", () => {
     const tail = createRibbonTail(SEGMENT);
     const root = new THREE.Vector3();

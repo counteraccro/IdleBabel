@@ -7,12 +7,17 @@ import * as THREE from 'three';
  */
 
 /** La pesanteur du ruban (unités de scène par s² ; le livre fait 1 de haut). */
-const GRAVITY = 30;
-/** Part de la vitesse gardée à chaque pas : le ruban de soie se calme en une seconde ou deux. */
-const DAMPING = 0.975;
+const GRAVITY = 22;
+/**
+ * Part de la vitesse gardée à chaque pas : la soie, légère, est freinée par l'air. Un quart de tour du livre : le
+ * ruban dépasse à peine sa place (15 % de sa longueur), se balance deux fois et se pose en une seconde.
+ */
+const DAMPING = 0.89;
 /** Pas de calcul (s), et passes pour remettre chaque longueur à sa place. */
 const STEP = 1 / 120;
 const PASSES = 6;
+/** Raideur du ruban (0 : chaîne molle qui claque comme un fouet ; 1 : baguette) : à chaque passe, la part du pli effacée. */
+const STIFFNESS = 0.3;
 /** En dessous de ce déplacement par pas, le ruban est posé (plus besoin de redessiner). */
 const AT_REST = 2e-6;
 
@@ -67,6 +72,14 @@ export const createRibbonTail = (segment: number): RibbonTail => {
             between.subVectors(nodes[i], nodes[i - 1]);
             const length = between.length() || 1e-9;
             nodes[i].addScaledVector(between, (segment - length) / length);
+          }
+          // Le ruban résiste au pli : chaque nœud tend à s'aligner sur ses deux voisins.
+          for (let i = 1; i < nodes.length - 1; i++) {
+            between
+              .addVectors(nodes[i - 1], nodes[i + 1])
+              .multiplyScalar(0.5)
+              .sub(nodes[i]);
+            nodes[i].addScaledVector(between, STIFFNESS);
           }
           for (let i = 1; i < nodes.length; i++) keep(nodes[i]);
         }
