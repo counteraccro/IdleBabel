@@ -26,6 +26,21 @@ export interface ClassicStyle {
   chapterPages?: number;
   /** Le haut de l'ouverture d'un chapitre, propre au livre (sans : son numéro, son titre, un filet). */
   head?: (context: CanvasRenderingContext2D, title: string) => void;
+  /** Des placements propres au livre, repris de sa maquette (sans : ceux du moteur). */
+  marks?: ClassicMarks;
+}
+
+/** Les placements d'un livre (y : lignes de base, comme sur les maquettes). */
+export interface ClassicMarks {
+  /** La première ligne d'une page, et celle de l'ouverture d'un chapitre. */
+  first: number;
+  opening: number;
+  runningHead: { font: string; color: string; spacing: number; y: number };
+  folio: { font: string; color: string; y: number };
+  /** Les lignes centrées (les nuits) : leur police, un filet dessous (`rule` sous la ligne de base, demi-largeur `half`), la place en plus après. */
+  centered: { font: string; spacing: number; rule: number; half: number; after: number };
+  /** La lettrine a sa ligne de base sur celle de la 2e ligne. */
+  dropCapOnSecondLine: boolean;
 }
 
 const { width: WIDTH, height: HEIGHT } = PAGE_TEXTURE;
@@ -89,7 +104,12 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
   const contentsPages = Math.ceil(text.chapters.length / CONTENTS_ROWS);
   const done = (): ClassicLayout => ({ pages, starts, contentsPages });
   let page = CONTENTS_PAGE + contentsPages;
-  let y = TOP;
+  // Le haut des lignes, d'après les lignes de base voulues (la police est posée par son ascendante).
+  context.font = font;
+  const ascent = context.measureText('M').fontBoundingBoxAscent;
+  const top = style.marks ? style.marks.first - ascent : TOP;
+  const openingTop = style.marks ? style.marks.opening - ascent : OPENING_TOP;
+  let y = top;
   let current: ClassicPage | null = null;
   /** La dernière page permise au chapitre en cours. */
   let chapterEnd = PAGES_PER_BOOK;
@@ -99,7 +119,7 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
     if (page > chapterEnd) return false;
     current = { chapter, opening, lines: [] };
     pages.set(page, current);
-    y = opening ? OPENING_TOP : TOP;
+    y = opening ? openingTop : top;
     return true;
   };
   const place = (chapter: number, line: string, x: number, center = false): boolean => {
@@ -122,7 +142,9 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
     }
     if (isCentered(para)) {
       y += style.line;
-      return place(chapter, para, WIDTH / 2, true);
+      if (!place(chapter, para, WIDTH / 2, true)) return false;
+      y += style.marks?.centered.after ?? 0;
+      return true;
     }
     // Le premier paragraphe du chapitre : une lettrine sur deux lignes, si le texte commence par une lettre.
     const letter = style.dropCap && index === 0 && /^\p{L}/u.test(para) ? para[0] : '';

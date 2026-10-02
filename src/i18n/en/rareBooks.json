@@ -104,13 +104,14 @@
     "name": "One Thousand and One Nights",
     "cover": ["One Thousand", "and One Nights"],
     "contents": "Contents",
-    "spine": [
-      ["MILLE", 16],
-      ["ET UNE", 13],
-      ["NUIT", 16]
-    ],
-    "volume": "TOM. I.",
-    "titlePage": "120 the THE\n170 nights ARABIAN NIGHTS\n212 entertainments ENTERTAINMENTS,\n254 small CAREFULLY REVISED, AND OCCASIONALLY\n276 small CORRECTED FROM THE ARABIC.\n300 rule 40\n330 added TO WHICH IS ADDED,\n356 tales2 A SELECTION OF NEW TALES,\n378 first NOW FIRST TRANSLATED FROM THE ARABIC ORIGINALS.\n402 rule 40\n442 scott BY JONATHAN SCOTT, LL.D. OXON.\n490 six IN SIX VOLUMES.\n518 six VOL. I.\n568 flower 20\n632 london LONDON:\n662 printer PRINTED FOR LONGMAN, HURST, REES, ORME, AND BROWN,\n682 printer PATERNOSTER-ROW; AND WILLIAM MILLER, ALBEMARLE-STREET.\n718 year2 1811."
+    "spine": "ONE THOUSAND AND ONE NIGHTS",
+    "volume": "VOL. I",
+    "titlePage": "120 the THE\n170 nights ARABIAN NIGHTS\n212 entertainments ENTERTAINMENTS,\n254 small CAREFULLY REVISED, AND OCCASIONALLY\n276 small CORRECTED FROM THE ARABIC.\n300 rule 40\n330 added TO WHICH IS ADDED,\n356 tales2 A SELECTION OF NEW TALES,\n378 first NOW FIRST TRANSLATED FROM THE ARABIC ORIGINALS.\n402 rule 40\n442 scott BY JONATHAN SCOTT, LL.D. OXON.\n490 six IN SIX VOLUMES.\n518 six VOL. I.\n568 flower 20\n632 london LONDON:\n662 printer PRINTED FOR LONGMAN, HURST, REES, ORME, AND BROWN,\n682 printer PATERNOSTER-ROW; AND WILLIAM MILLER, ALBEMARLE-STREET.\n718 year2 1811.",
+    "plate": [
+      ["ONE THOUSAND", 32, -22, 2],
+      ["AND ONE", 22, 12, 4],
+      ["NIGHTS", 46, 58, 4]
+    ]
   },
   "quixote": {
     "name": "Don Quixote",

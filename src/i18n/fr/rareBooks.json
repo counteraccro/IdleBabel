@@ -104,13 +104,14 @@
     "name": "Les Mille et Une Nuits",
     "cover": ["Les Mille", "et Une Nuits"],
     "contents": "Table des contes",
-    "spine": [
-      ["MILLE", 16],
-      ["ET UNE", 13],
-      ["NUIT", 16]
-    ],
-    "volume": "TOM. I.",
-    "titlePage": "140 les LES\n198 title MILLE ET UNE NUIT,\n254 tales CONTES ARABES,\n304 translated TRADUITS EN FRANÇOIS\n344 galland Par M. GALLAND.\n398 volume TOME PREMIER.\n472 flower 26\n554 paris A PARIS,\n592 barbin Chez la Veuve de CLAUDE BARBIN,\n620 palais au Palais, sur le second Perron\n646 palais de la Sainte Chapelle.\n672 rule 60\n708 year M. DCC. IV.\n740 privilege AVEC PRIVILEGE DU ROY."
+    "spine": "LES MILLE ET UNE NUITS",
+    "volume": "TOME I",
+    "titlePage": "140 les LES\n198 title MILLE ET UNE NUIT,\n254 tales CONTES ARABES,\n304 translated TRADUITS EN FRANÇOIS\n344 galland Par M. GALLAND.\n398 volume TOME PREMIER.\n472 flower 26\n554 paris A PARIS,\n592 barbin Chez la Veuve de CLAUDE BARBIN,\n620 palais au Palais, sur le second Perron\n646 palais de la Sainte Chapelle.\n672 rule 60\n708 year M. DCC. IV.\n740 privilege AVEC PRIVILEGE DU ROY.",
+    "plate": [
+      ["LES MILLE", 40, -22, 3],
+      ["ET UNE", 22, 12, 4],
+      ["NUITS", 46, 58, 4]
+    ]
   },
   "quixote": {
     "name": "Don Quichotte",

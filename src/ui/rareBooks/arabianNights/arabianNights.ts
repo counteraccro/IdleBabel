@@ -1,9 +1,12 @@
+import { hashText, seeded } from '../../../core/random';
+import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { headbandTexture } from '../../book3d/headband';
+import { edgeTexture } from '../../book3d/textures';
 import { messages } from '../../../i18n';
 import { board } from '../draw';
 import { classicArt } from '../classic/classicArt';
 import {
-  CALF,
+  MOROCCO,
   FELL,
   GARAMOND,
   INK,
@@ -12,18 +15,33 @@ import {
   arabianNightsSpine,
   arabianNightsTitlePage,
   loadArabianNightsFonts,
-  sprinkledEdge,
 } from './arabianNightsCover';
 import { arabianNightsHead } from './arabianNightsHead';
 import type { Paper } from '../../book/pageRender';
 
-/** Un papier de 1704, chiffon un peu jauni. */
-const PAPER: Paper = ['#f3ead2', '#eadfc0', '#e4d4ae'];
-/** Un petit livre de cabinet, épais. */
-const THICKNESS = 0.12;
+/** Le papier de la maquette : de #f3ead2 en haut à #e4d4ae en bas (le milieu : sa teinte aux 7/10). */
+const PAPER: Paper = ['#f3ead2', '#e9dbb9', '#e4d4ae'];
+/** Le dos de la maquette : 110 de large pour 800 de haut (le livre fait 1 de haut, le dos s'enroule sur 1,4 fois l'épaisseur). */
+const THICKNESS = 110 / 800 / 1.4;
+
+/** Les piqûres et les rousseurs du papier, comme sur la maquette (toujours les mêmes pour une page). */
+const foxing = (context: CanvasRenderingContext2D, page: number): void => {
+  const random = seeded(hashText(`nights:paper:${page}`));
+  const { width, height } = PAGE_TEXTURE;
+  for (let speck = 0; speck < 2600; speck++) {
+    context.fillStyle = `rgba(120, 90, 40, ${random() * 0.06})`;
+    context.fillRect(random() * width, random() * height, 1.5, 1.5);
+  }
+  for (let spot = 0; spot < 16; spot++) {
+    context.fillStyle = `rgba(150, 100, 40, ${0.04 + random() * 0.06})`;
+    context.beginPath();
+    context.arc(random() * width, random() * height, 1 + random() * 3, 0, Math.PI * 2);
+    context.fill();
+  }
+};
 
 /**
- * « Les Mille et Une Nuits » : la reliure de l'édition d'origine (Galland, Paris, 1704) et dedans tout le
+ * « Les Mille et Une Nuits » : notre reliure orientale (maroquin bordeaux et or) et dedans tout le
  * recueil, conte après conte, avec ses nuits au fil du texte : en français la traduction de Galland
  * (Le Normant, 1806), en anglais celle de Jonathan Scott faite sur Galland (1811). Chaque conte est coupé à
  * 4 pages pour que tout tienne dans les 410 pages.
@@ -43,17 +61,27 @@ export const arabianNightsArt = classicArt({
     chaptersOnRight: false,
     chapterPages: 4,
     head: arabianNightsHead,
+    // Les placements de la maquette (y : lignes de base).
+    marks: {
+      first: 110,
+      opening: 330,
+      runningHead: { font: `italic 14px ${GARAMOND}`, color: '#7a6f60', spacing: 2, y: 58 },
+      folio: { font: `15px ${GARAMOND}`, color: INK, y: PAGE_TEXTURE.height - 46 },
+      centered: { font: `21px ${GARAMOND}`, spacing: 3, rule: 14, half: 24, after: 13.5 },
+      dropCapOnSecondLine: true,
+    },
   },
+  decorate: foxing,
   fonts: loadArabianNightsFonts,
   cover: () => ({
     cover: arabianNightsFront(),
     back: arabianNightsBack(),
     inside: board('#eadfc0', '#e4d4ae'),
     spine: arabianNightsSpine(THICKNESS),
-    leather: Number.parseInt(CALF.slice(1), 16),
-    edge: sprinkledEdge(),
+    leather: Number.parseInt(MOROCCO.slice(1), 16),
+    edge: edgeTexture(PAPER[1], '#c4b088'),
     paper: PAPER[0],
-    headband: headbandTexture('#8e2a1e', '#e8d9b0'),
+    headband: headbandTexture('#6a1f22', '#d9b25a'),
   }),
   titlePage: arabianNightsTitlePage,
   contentsHeading: () => messages().rareBooks.arabianNights.contents,

@@ -112,6 +112,26 @@ const chapterHead = (context: CanvasRenderingContext2D, { label, title }: { labe
   context.fillRect(PAGE_CENTER - 40, OPENING_TOP - 70, 80, 1);
 };
 
+/** Du texte posé par sa ligne de base `y` (les placements des maquettes). */
+const baseline = (
+  context: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  font: string,
+  color: string,
+  spacing = 0,
+  align: CanvasTextAlign = 'center',
+): void => {
+  context.font = font;
+  context.letterSpacing = `${spacing}px`;
+  context.fillStyle = color;
+  context.textAlign = align;
+  context.textBaseline = 'alphabetic';
+  context.fillText(text, x, y);
+  context.letterSpacing = '0px';
+};
+
 /** Une page du texte (ou la table des matières) ; false : rien n'y est imprimé. */
 export const paintClassicPage = (
   context: CanvasRenderingContext2D,
@@ -131,19 +151,39 @@ export const paintClassicPage = (
   const chapter = text.chapters[content.chapter];
   if (content.opening) chapterHead(context, chapter, style);
   // Le titre courant : celui du chapitre, en petit, en haut de page.
-  else {
+  else if (style.marks) {
+    const { font, color, spacing, y } = style.marks.runningHead;
+    baseline(context, titled(chapter.title || partName(chapter.label)).toUpperCase(), PAGE_CENTER, y, font, color, spacing);
+  } else {
     const running = titled(chapter.title || partName(chapter.label)).toUpperCase();
     const size = fitting(context, running, (px) => `italic ${px}px ${style.body}`, 12, RIGHT - LEFT, 2);
     write(context, running, PAGE_CENTER, 44, { font: `italic ${size}px ${style.body}`, color: GREY, spacing: 2 });
   }
-  if (content.dropCap && style.dropCap) {
+  const font = `${style.size}px ${style.body}`;
+  if (content.dropCap && style.dropCap && style.marks?.dropCapOnSecondLine) {
+    // Sur la ligne de base de la 2e ligne du paragraphe.
+    const { letter, x, y, size } = content.dropCap;
+    context.font = font;
+    const second = y + context.measureText('M').fontBoundingBoxAscent + style.line;
+    baseline(context, letter, x, second, `${size}px ${style.dropCap}`, style.accent, 0, 'left');
+  } else if (content.dropCap && style.dropCap) {
     const { letter, x, y, size } = content.dropCap;
     write(context, letter, x, y - style.line * 1.3, { font: `${size}px ${style.dropCap}`, color: style.accent, align: 'left' });
   }
-  const font = `${style.size}px ${style.body}`;
-  for (const { text: line, x, y, center } of content.lines)
-    write(context, line, x, y, { font, color: style.ink, align: center ? 'center' : 'left' });
-  write(context, String(page), PAGE_CENTER, HEIGHT - 52, { font: `13px ${style.body}`, color: GREY });
+  const centered = style.marks?.centered;
+  for (const { text: line, x, y, center } of content.lines) {
+    if (center && centered) {
+      // Une nuit : sa police, et un court filet dessous.
+      context.font = centered.font;
+      const base = y + context.measureText('M').fontBoundingBoxAscent;
+      baseline(context, line, x, base, centered.font, style.ink, centered.spacing);
+      context.fillRect(x - centered.half, base + centered.rule, 2 * centered.half, 1);
+    } else write(context, line, x, y, { font, color: style.ink, align: center ? 'center' : 'left' });
+  }
+  if (style.marks) {
+    const { font: folio, color, y } = style.marks.folio;
+    baseline(context, String(page), PAGE_CENTER, y, folio, color);
+  } else write(context, String(page), PAGE_CENTER, HEIGHT - 52, { font: `13px ${style.body}`, color: GREY });
   return true;
 };
 
