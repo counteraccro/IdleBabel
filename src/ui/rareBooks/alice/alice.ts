@@ -23,7 +23,8 @@ export const aliceArt = classicArt({
   cover: () => ({
     cover: aliceFront(),
     back: aliceBack(),
-    inside: board('#efe5cf', '#e4d6b8'),
+    // L'intérieur des plats : le rouge de la toile, plus sombre (crème, il se confondait avec les pages).
+    inside: board('#6e161c', '#430c10'),
     spine: aliceSpine(THICKNESS),
     leather: Number.parseInt(CLOTH.slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c9b790'),

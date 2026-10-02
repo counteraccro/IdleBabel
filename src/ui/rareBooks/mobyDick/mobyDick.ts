@@ -27,7 +27,8 @@ export const mobyDickArt = classicArt({
   cover: () => ({
     cover: mobyDickFront(),
     back: mobyDickBack(),
-    inside: board('#ece0c4', '#e0cfa8'),
+    // L'intérieur des plats : l'ardoise de la toile, plus sombre (crème, il se confondait avec les pages).
+    inside: board('#3a4148', '#22272c'),
     spine: mobyDickSpine(THICKNESS),
     leather: Number.parseInt(CLOTH.slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c4b088'),

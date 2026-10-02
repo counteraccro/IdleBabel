@@ -2,7 +2,7 @@ import { MODERN_PAPER, preparePageTexture, type Paper } from '../../book/pageRen
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
 import { board } from '../draw';
-import { CREAM, CREAM_EDGE, alexHBack, alexHFront, alexHSpine, loadAlexHFonts } from './alexHCover';
+import { alexHBack, alexHFront, alexHSpine, loadAlexHFonts } from './alexHCover';
 import { CONTENTS_PAGE, alexHLinks, isPhotoPage, paintAlexHPage } from './alexHPages';
 import type { RareBookArt } from '../rareBookArt';
 
@@ -26,7 +26,8 @@ export const alexHArt: RareBookArt = {
     return {
       cover: alexHFront(),
       back: alexHBack(),
-      inside: board(CREAM, CREAM_EDGE),
+      // L'intérieur des plats : un gris anthracite (crème, il se confondait avec les pages).
+      inside: board('#2a2a2a', '#161616'),
       spine: alexHSpine(THICKNESS),
       leather: 0xefe9de,
       edge: edgeTexture(MODERN_PAPER[1], '#c9c1b0'),

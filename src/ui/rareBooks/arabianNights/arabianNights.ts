@@ -97,7 +97,8 @@ export const arabianNightsArt = classicArt({
   cover: () => ({
     cover: canvasTexture(pieces.now('front')),
     back: canvasTexture(pieces.now('back')),
-    inside: board('#eadfc0', '#e4d4ae'),
+    // L'intérieur des plats : le bordeaux du maroquin, plus sombre (crème, il se confondait avec les pages).
+    inside: board('#4a1518', '#2a0b0d'),
     spine: canvasTexture(pieces.now('spine')),
     leather: Number.parseInt(MOROCCO.slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c4b088'),
