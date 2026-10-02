@@ -11,7 +11,7 @@ import { DROP_CAP, INK, PAPER, foxing, odysseyDropCap, odysseyHead, odysseyTitle
 /** Le dos de la maquette : 110 de large pour 800 de haut (le livre fait 1 de haut, le dos s'enroule sur 1,4 fois l'épaisseur). */
 const THICKNESS = 110 / 800 / 1.4;
 
-/** Les pièces de la reliure, longues à dessiner (le marbré, pixel par pixel) : gardées par langue (le dos en dépend). */
+/** Les pièces de la reliure, longues à dessiner (le papier caillouté, goutte à goutte) : gardées par langue (le dos en dépend). */
 const pieces = slowPieces(
   {
     front: odysseyFront,
@@ -29,7 +29,7 @@ const warm = async (): Promise<void> => {
 
 /**
  * « Odyssée », traduction de Leconte de Lisle : l'originale de Lemerre (1868) dans sa reliure d'amateur
- * (demi-maroquin rouge, plats marbrés à vagues), et dedans les vingt-quatre rhapsodies telles que Lemerre les
+ * (demi-maroquin rouge, plats de papier caillouté), et dedans les vingt-quatre rhapsodies telles que Lemerre les
  * imprimait en 1893 (Wikisource), en français dans les deux langues du jeu.
  */
 export const odysseyArt = classicArt({
@@ -63,7 +63,7 @@ export const odysseyArt = classicArt({
   cover: () => ({
     cover: canvasTexture(pieces.now('front')),
     back: canvasTexture(pieces.now('back')),
-    // L'intérieur des plats : le bordeaux du marbré, plus sombre (crème, il se confondrait avec les pages).
+    // L'intérieur des plats : un bordeaux sombre (crème, il se confondrait avec les pages).
     inside: board('#4a1520', '#2a0a10'),
     spine: canvasTexture(pieces.now('spine')),
     leather: Number.parseInt(MOROCCO[0].slice(1), 16),

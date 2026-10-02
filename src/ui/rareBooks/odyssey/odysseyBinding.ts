@@ -9,9 +9,9 @@ import type { Drawing } from '../slowDrawing';
 
 /**
  * La reliure de l'originale (Lemerre, 1868), piste B de .ai/maquette-odyssee.html (validée) : demi-maroquin
- * rouge, plats de papier marbré à vagues, dos à cinq nerfs aux caissons dorés, pièce de titre, l'année en
+ * rouge, plats de papier caillouté, dos à cinq nerfs aux caissons dorés, pièce de titre, l'année en
  * pied. Dessinée dans les unités de la maquette (plat 640 × 800, dos 110 × 800) mises à l'échelle, avec le
- * même hasard : mêmes grains, mêmes vagues.
+ * même hasard : mêmes grains, mêmes taches.
  */
 export const MOROCCO = ['#8e2430', '#4e0f17'] as const;
 export const GARAMOND = "'EB Garamond', Georgia, serif";
@@ -64,62 +64,65 @@ function* morocco(context: CanvasRenderingContext2D, x: number, y: number, width
 }
 
 /**
- * Le papier marbré à vagues : des masses de couleur (crème surtout, orangé, bleu, vert) entre des plages de
- * bordeaux courent à l'horizontale ; chaque dent du peigne les soulève en arche ronde, qui penche tantôt à
- * gauche, tantôt à droite ; les crêtes s'empilent en colonnes ondulées ; le peigne effrange leurs bords.
- * Calculé pixel par pixel à la taille du plat (dans les unités de la maquette), quelques rangées à la fois.
+ * Le papier caillouté (d'après une demi-reliure de l'époque) : un fond framboise sous de grosses taches presque
+ * noires, en nuages irréguliers aux bords flous (des gouttes qui se chevauchent), quelques « yeux » clairs
+ * restés dedans, des gouttes isolées autour. Dessiné dans les unités de la maquette, quelques nuages à la fois.
  */
-function* marbled(context: CanvasRenderingContext2D, seed: number): Generator<void> {
+function* speckled(context: CanvasRenderingContext2D, seed: number): Generator<void> {
   const random = rng(seed);
-  const stripes: [string, number][] = [];
-  const veins = ['#e9d8c4', '#e9d8c4', '#e9d8c4', '#dcc3ad', '#d08a58', '#6a86b2', '#527e6c', '#c79a8a'];
-  for (let band = 0; band < 40; band++) {
-    stripes.push([random() < 0.5 ? '#7a1d31' : '#86283b', 6 + random() * 14]);
-    stripes.push([veins[Math.floor(random() * veins.length)], 4 + random() * 9]);
-    if (random() < 0.4) stripes.push([veins[Math.floor(random() * veins.length)], 3 + random() * 5]);
-    if (random() < 0.5) stripes.push(['#6a1a2b', 1.5 + random() * 2]);
+  const ground = context.createLinearGradient(0, 0, W, H);
+  ground.addColorStop(0, '#a03644');
+  ground.addColorStop(0.5, '#952f3e');
+  ground.addColorStop(1, '#8a2836');
+  context.fillStyle = ground;
+  context.fillRect(0, 0, W, H);
+  for (let speck = 0; speck < (W * H) / 25; speck++) {
+    context.fillStyle = random() < 0.5 ? 'rgba(255,170,180,0.07)' : 'rgba(60,0,10,0.08)';
+    context.fillRect(random() * W, random() * H, 1.5, 1.5);
   }
-  const total = stripes.reduce((sum, [, size]) => sum + size, 0);
-  const rgb = (color: string): number[] => [1, 3, 5].map((at) => Number.parseInt(color.slice(at, at + 2), 16));
-  const table: (number[] | undefined)[] = new Array(Math.ceil(total)).fill(undefined);
-  let at = 0;
-  for (const [color, size] of stripes) {
-    const value = rgb(color);
-    for (let k = Math.floor(at); k < Math.floor(at + size); k++) table[k % table.length] = value;
-    at += size;
-  }
-  const colors = table.map((value) => value ?? rgb('#7a1d31'));
-  const [comb, depth] = [104, 46];
-  const image = context.createImageData(WIDTH, HEIGHT);
-  for (let row = 0; row < HEIGHT; row++) {
-    const py = row / K;
-    for (let column = 0; column < WIDTH; column++) {
-      const px = column / K;
-      // Le décalage des arches suit une vague lisse, qui dépend aussi de la largeur (colonnes pas alignées).
-      const shift = 36 * Math.sin(py * 0.008 + px * 0.003) + 10 * Math.sin(py * 0.017 - px * 0.006 + 1.3);
-      const cx = ((((px + shift) % comb) + comb) % comb) / comb - 0.5;
-      // L'arche ronde, déhanchée à gauche ou à droite.
-      const lean = 0.42 * Math.sin(py * 0.021 + px * 0.013) + 0.16 * Math.sin(px * 0.047 - py * 0.009);
-      const angle = cx * Math.PI * 2;
-      let v = py + depth * (0.5 + 0.5 * Math.cos(angle + lean * Math.sin(angle)));
-      v += 12 * Math.sin(px * 0.007 + py * 0.004);
-      // Les barbes du peigne, au bord des masses.
-      v += 1.8 * Math.sin(px * 0.9 + v * 0.12);
-      const [r, g, b] = colors[Math.floor((((v + 4000) % total) + total) % total) % colors.length];
-      // La couleur n'est pas plate : un peu plus ou moins chargée d'un endroit à l'autre.
-      const tone = 1 + 0.07 * Math.sin(px * 0.031 + py * 0.017) + 0.05 * Math.sin(px * 0.11 - py * 0.07);
-      const i = (row * WIDTH + column) * 4;
-      image.data[i] = r * tone;
-      image.data[i + 1] = g * tone;
-      image.data[i + 2] = b * tone;
-      image.data[i + 3] = 255;
+  yield;
+  /** Une goutte d'encre sombre : pleine au centre, plus légère au bord. */
+  const drop = (x: number, y: number, radius: number, alpha: number): void => {
+    const tint = `${28 + random() * 22},${10 + random() * 10},${20 + random() * 16}`;
+    const ink = context.createRadialGradient(x, y, 0, x, y, radius);
+    ink.addColorStop(0, `rgba(${tint},${alpha})`);
+    ink.addColorStop(0.7, `rgba(${tint},${alpha * 0.85})`);
+    ink.addColorStop(1, `rgba(${tint},0)`);
+    context.fillStyle = ink;
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2);
+    context.fill();
+  };
+  // Les nuages : des grappes serrées de gouttes, étirées au hasard.
+  for (let cloud = 0; cloud < 150; cloud++) {
+    const [cx, cy, spread, stretch, turn] = [random() * W, random() * H, 16 + random() * 46, 0.6 + random() * 0.9, random() * Math.PI];
+    const drops = 14 + Math.floor(random() * 34);
+    for (let i = 0; i < drops; i++) {
+      const [angle, distance] = [random() * Math.PI * 2, spread * Math.sqrt(random())];
+      const [dx, dy] = [Math.cos(angle) * distance * stretch, Math.sin(angle) * distance];
+      const radius = 3 + random() * 12;
+      drop(cx + dx * Math.cos(turn) - dy * Math.sin(turn), cy + dx * Math.sin(turn) + dy * Math.cos(turn), radius, 0.45 + random() * 0.4);
     }
-    if (row % 40 === 39) yield;
+    if (cloud % 10 === 9) yield;
   }
-  context.putImageData(image, 0, 0);
-  // Le papier, un peu passé.
-  context.fillStyle = 'rgba(110,50,55,0.16)';
-  context.fillRect(0, 0, WIDTH, HEIGHT);
+  // Les gouttes isolées.
+  for (let i = 0; i < 1100; i++) {
+    const [x, y, radius] = [random() * W, random() * H, 1 + random() * 3.5];
+    drop(x, y, radius, 0.5 + random() * 0.4);
+  }
+  // Les « yeux » : de petites taches du fond restées dans le noir, et des marbrures violacées.
+  for (let i = 0; i < 380; i++) {
+    context.fillStyle =
+      random() < 0.6
+        ? `rgba(${150 + random() * 30},${45 + random() * 15},${60 + random() * 15},0.6)`
+        : `rgba(${90 + random() * 30},${40 + random() * 15},${70 + random() * 20},0.35)`;
+    context.beginPath();
+    context.arc(random() * W, random() * H, 0.8 + random() * 2.4, 0, Math.PI * 2);
+    context.fill();
+  }
+  // Le papier, un peu passé et frotté.
+  context.fillStyle = 'rgba(120,60,60,0.06)';
+  context.fillRect(0, 0, W, H);
 }
 
 /** Une pièce de la reliure : `draw` y dessine par morceaux (yield : une pause possible). */
@@ -130,14 +133,14 @@ function* piece(draw: (context: CanvasRenderingContext2D) => Generator<void>): D
 }
 
 /**
- * Un plat : le papier marbré, et le cuir du dos qui déborde dessus, du côté du dos (à gauche sur le plat de
+ * Un plat : le papier caillouté, et le cuir du dos qui déborde dessus, du côté du dos (à gauche sur le plat de
  * devant ; le plat arrière est vu retourné, son dos est à droite).
  */
 const plate = (seed: number, spineOnLeft: boolean): Drawing =>
   piece(function* (context) {
-    yield* marbled(context, seed);
     context.save();
     context.scale(K, K);
+    yield* speckled(context, seed);
     const x = spineOnLeft ? 0 : W - STRIP;
     const edge = spineOnLeft ? STRIP : W - STRIP;
     yield* morocco(context, x, 0, STRIP, H, spineOnLeft ? 4 : 5);
@@ -155,8 +158,8 @@ const plate = (seed: number, spineOnLeft: boolean): Drawing =>
     context.restore();
   });
 
-export const odysseyFront = (): Drawing => plate(7, true);
-export const odysseyBack = (): Drawing => plate(8, false);
+export const odysseyFront = (): Drawing => plate(31, true);
+export const odysseyBack = (): Drawing => plate(32, false);
 
 /** Un fleuron doré (le motif des caissons) : tige, volutes, petites feuilles. */
 const fleuron = (context: CanvasRenderingContext2D, cx: number, cy: number, scale: number, gilt: CanvasGradient): void => {
