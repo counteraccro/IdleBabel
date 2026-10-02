@@ -3,12 +3,24 @@ import { PAGES_PER_BOOK } from '../../systems/books';
 import { hashText } from '../../core/random';
 import { PAGE_TEXTURE } from '../book/pageLayout';
 import { rareBookArt } from './arts';
+import { idle } from './slowDrawing';
 import type { Book3d } from '../book3d/book3dBook';
 import type { BookShape } from '../book3d/bookMesh';
 import type { GameState } from '../../core/state';
 
 /** Un grand livre posé devant soi (comme le livre blanc), à l'épaisseur du livre rare. */
 const READING_SHAPE: BookShape = { width: 0.8, height: 1, thickness: 0.12, board: 0.014, overhang: 0.025, corner: 0.035 };
+
+/**
+ * Les couvertures se dessinent l'une après l'autre, chacune dans un moment libre : la bibliothèque, qui les
+ * demande toutes à la fois, s'ouvre sans à-coup (ensemble, elles figeaient une image ~100 ms).
+ */
+let covers: Promise<unknown> = Promise.resolve();
+const inTurn = <T>(draw: () => Promise<T>): Promise<T> => {
+  const drawn = covers.then(idle).then(draw);
+  covers = drawn.catch(() => undefined);
+  return drawn;
+};
 
 /**
  * Un livre rare en 3D, en entier : 410 pages comme tous les livres de Babel (page 0 : l'intérieur de
@@ -33,7 +45,9 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
       paint: (page, canvas, spineOnLeft) => page > 0 && art.paint(page, canvas, spineOnLeft, state, design),
     },
     look: async () => {
-      const { tick: coverTick, ...look } = await art.look(state, design);
+      // Ce qui est long sans figer (texte à charger, mise en page) commence tout de suite, sans attendre son tour.
+      art.prepare?.();
+      const { tick: coverTick, ...look } = await inTurn(() => art.look(state, design));
       tick = coverTick ?? null;
       return look;
     },

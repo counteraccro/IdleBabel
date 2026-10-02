@@ -20,8 +20,14 @@ const gold = (context: CanvasRenderingContext2D, width: number, height: number):
   return gradient;
 };
 
-/** Le maroquin : dégradé, grain fin en petits cailloux (ombre et reflet), bords frottés. */
-export const morocco = (context: CanvasRenderingContext2D, width: number, height: number, seed: number): void => {
+/** Grains du maroquin dessinés d'un morceau (moins d'une milliseconde). */
+const GRAINS_PER_STEP = 400;
+
+/**
+ * Le maroquin : dégradé, grain fin en petits cailloux (ombre et reflet), bords frottés. Long (32 000 grains
+ * sur un plat) : il s'arrête tous les GRAINS_PER_STEP grains (slowDrawing.ts).
+ */
+export function* morocco(context: CanvasRenderingContext2D, width: number, height: number, seed: number): Generator<void> {
   const shade = context.createRadialGradient(
     width / 2,
     height * 0.45,
@@ -46,6 +52,7 @@ export const morocco = (context: CanvasRenderingContext2D, width: number, height
     context.beginPath();
     context.ellipse(x - 0.4, y - 0.4, rx * 0.7, ry * 0.7, angle, 0, Math.PI * 2);
     context.fill();
+    if (grain % GRAINS_PER_STEP === GRAINS_PER_STEP - 1) yield;
   }
   const rubbed = (x0: number, y0: number, x1: number, y1: number): CanvasGradient => {
     const gradient = context.createLinearGradient(x0, y0, x1, y1);
@@ -59,7 +66,7 @@ export const morocco = (context: CanvasRenderingContext2D, width: number, height
   context.fillRect(0, height - 16, width, 16);
   context.fillStyle = rubbed(width, 0, width - 12, 0);
   context.fillRect(width - 12, 0, 12, height);
-};
+}
 
 /** L'or poussé au fer : l'empreinte s'enfonce (ombre), l'or la remplit, un reflet sur les traits. */
 export const tooled = (

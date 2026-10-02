@@ -66,8 +66,9 @@ export const classicArt = (book: ClassicBook): RareBookArt => {
     prepare: () => void prepare().catch(() => undefined),
     look: async (state, design) => {
       await book.fonts();
-      // Sans texte (hors ligne…), le livre reste beau dehors ; dedans, des pages blanches.
-      await prepare().catch(() => undefined);
+      // Sans texte (hors ligne…), le livre reste beau dehors ; dedans, des pages blanches. La reliure longue
+      // à dessiner l'est par morceaux pendant ce temps (bibliothèque, livre ouvert en grand) : cover la reprend.
+      await Promise.all([prepare().catch(() => undefined), book.warm?.().catch(() => undefined)]);
       return book.cover(state, design);
     },
     paint: (page, canvas, spineOnLeft) => {

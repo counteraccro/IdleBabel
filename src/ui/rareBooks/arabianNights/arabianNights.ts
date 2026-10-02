@@ -1,10 +1,10 @@
 import { hashText, seeded } from '../../../core/random';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { headbandTexture } from '../../book3d/headband';
-import { edgeTexture } from '../../book3d/textures';
 import { getLocale, messages } from '../../../i18n';
-import { canvasTexture } from '../../book3d/textures';
+import { canvasTexture, edgeTexture } from '../../book3d/textures';
 import { board } from '../draw';
+import { slowPieces } from '../slowDrawing';
 import { classicArt } from '../classic/classicArt';
 import {
   MOROCCO,
@@ -19,7 +19,6 @@ import {
 } from './arabianNightsCover';
 import { arabianNightsHead } from './arabianNightsHead';
 import type { Paper } from '../../book/pageRender';
-import type * as THREE from 'three';
 
 /** Le papier de la maquette : de #f3ead2 en haut à #e4d4ae en bas (le milieu : sa teinte aux 7/10). */
 const PAPER: Paper = ['#f3ead2', '#e9dbb9', '#e4d4ae'];
@@ -42,46 +41,31 @@ const foxing = (context: CanvasRenderingContext2D, page: number): void => {
   }
 };
 
+/** Les pièces de la reliure, longues à dessiner (le grain du maroquin) : gardées par langue (le titre en dépend). */
+const pieces = slowPieces(
+  {
+    front: arabianNightsFront,
+    back: arabianNightsBack,
+    spine: () => arabianNightsSpine(THICKNESS),
+  },
+  getLocale,
+);
+
+/**
+ * Dessine la reliure à l'avance, par petits morceaux quand le navigateur est libre : en main, le livre arrive
+ * sans à-coup (dessinée d'un bloc à son arrivée, elle figeait l'image ~150 ms ; pièce par pièce, encore ~50 ms).
+ */
+const warm = async (): Promise<void> => {
+  await loadArabianNightsFonts();
+  await pieces.ahead();
+};
+
 /**
  * « Les Mille et Une Nuits » : notre reliure orientale (maroquin bordeaux et or) et dedans tout le
  * recueil, conte après conte, avec ses nuits au fil du texte : en français la traduction de Galland
  * (Le Normant, 1806), en anglais celle de Jonathan Scott faite sur Galland (1811). Chaque conte est coupé à
  * 4 pages pour que tout tienne dans les 410 pages.
  */
-/** Les pièces de la reliure : chacune prend de 20 à 70 ms à dessiner (le grain du maroquin). */
-const PIECES = {
-  front: arabianNightsFront,
-  back: arabianNightsBack,
-  spine: () => arabianNightsSpine(THICKNESS),
-};
-type Piece = keyof typeof PIECES;
-/** Les pièces déjà dessinées, par langue (le titre du plat et du dos en dépend) : on ne les redessine pas. */
-const drawn = new Map<string, HTMLCanvasElement>();
-const piece = (name: Piece): THREE.CanvasTexture => {
-  const key = `${name}:${getLocale()}`;
-  let canvas = drawn.get(key);
-  if (!canvas) {
-    canvas = PIECES[name]().image as HTMLCanvasElement;
-    drawn.set(key, canvas);
-  }
-  return canvasTexture(canvas);
-};
-/** Attend un moment où le navigateur est libre (entre deux images, sans page qui tourne). */
-const idle = (): Promise<void> =>
-  new Promise((resolve) => ('requestIdleCallback' in window ? requestIdleCallback(() => resolve()) : setTimeout(resolve, 50)));
-/**
- * Dessine la reliure à l'avance, une pièce à la fois quand le navigateur est libre : en main, le livre arrive
- * sans à-coup (dessinée d'un bloc à son arrivée, elle figeait l'image ~150 ms).
- */
-const warm = async (): Promise<void> => {
-  await loadArabianNightsFonts();
-  for (const name of Object.keys(PIECES) as Piece[]) {
-    if (drawn.has(`${name}:${getLocale()}`)) continue;
-    await idle();
-    piece(name);
-  }
-};
-
 export const arabianNightsArt = classicArt({
   id: 'arabianNights',
   paper: PAPER,
@@ -111,10 +95,10 @@ export const arabianNightsArt = classicArt({
   fonts: loadArabianNightsFonts,
   warm,
   cover: () => ({
-    cover: piece('front'),
-    back: piece('back'),
+    cover: canvasTexture(pieces.now('front')),
+    back: canvasTexture(pieces.now('back')),
     inside: board('#eadfc0', '#e4d4ae'),
-    spine: piece('spine'),
+    spine: canvasTexture(pieces.now('spine')),
     leather: Number.parseInt(MOROCCO.slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c4b088'),
     paper: PAPER[0],

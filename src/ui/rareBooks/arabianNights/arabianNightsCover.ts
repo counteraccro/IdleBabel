@@ -3,9 +3,9 @@ import '@fontsource/cormorant-garamond/400-italic.css';
 import '@fontsource/im-fell-english/400.css';
 import '@fontsource/im-fell-english/400-italic.css';
 import '@fontsource/im-fell-english-sc/400.css';
-import type * as THREE from 'three';
 import { messages } from '../../../i18n';
 import { HEIGHT, PAGE_CENTER, WIDTH, board } from '../draw';
+import type { Drawing } from '../slowDrawing';
 import { cell, cornerCell, lobed, morocco, rose, rubGold, scroll, star8, tooled } from './arabianNightsOrnaments';
 
 /**
@@ -160,12 +160,19 @@ const medallion = (context: CanvasRenderingContext2D, title: [string, number, nu
   }
 };
 
+/** Une pièce de maroquin (plat ou dos) : `draw` y dessine par morceaux (yield : une pause possible). */
+function* leather(draw: (context: CanvasRenderingContext2D) => Generator<void>): Drawing {
+  const canvas = board(MOROCCO, MOROCCO_EDGE).image as HTMLCanvasElement;
+  yield* draw(canvas.getContext('2d')!);
+  return canvas;
+}
+
 /** Un plat : le maroquin, l'or poussé au fer, puis frotté. */
-const plate = (seed: number, title: [string, number, number, number][] | null): THREE.CanvasTexture =>
-  board(MOROCCO, MOROCCO_EDGE, (context) => {
+const plate = (seed: number, title: [string, number, number, number][] | null): Drawing =>
+  leather(function* (context) {
     context.save();
     context.scale(K, K);
-    morocco(context, W, H, seed);
+    yield* morocco(context, W, H, seed);
     tooled(
       context,
       (gilt) => {
@@ -175,20 +182,20 @@ const plate = (seed: number, title: [string, number, number, number][] | null): 
       W,
       H,
     );
+    yield;
     rubGold(context, W, H, seed);
     context.restore();
   });
 
-export const arabianNightsFront = (): THREE.CanvasTexture =>
-  plate(21, messages().rareBooks.arabianNights.plate as [string, number, number, number][]);
-export const arabianNightsBack = (): THREE.CanvasTexture => plate(22, null);
+export const arabianNightsFront = (): Drawing => plate(21, messages().rareBooks.arabianNights.plate as [string, number, number, number][]);
+export const arabianNightsBack = (): Drawing => plate(22, null);
 
 /**
  * Le dos lisse : filets en tête et en pied, deux frises de trois cartouches, le titre couché (de bas en haut)
  * entre deux étoiles, la tomaison au-dessus de la frise du pied.
  */
-export const arabianNightsSpine = (thickness: number): THREE.CanvasTexture =>
-  board(MOROCCO, MOROCCO_EDGE, (context) => {
+export const arabianNightsSpine = (thickness: number): Drawing =>
+  leather(function* (context) {
     // Dessiné sans déformation, à l'échelle de la maquette : `width` est la largeur visible du dos.
     const stretch = WIDTH / (thickness * 1.4) / HEIGHT;
     const scale = HEIGHT / H;
@@ -197,7 +204,7 @@ export const arabianNightsSpine = (thickness: number): THREE.CanvasTexture =>
     context.translate(WIDTH / 2, 0);
     context.scale(stretch * scale, scale);
     context.translate(-width / 2, 0);
-    morocco(context, width, H, 13);
+    yield* morocco(context, width, H, 13);
     const { spine, volume } = messages().rareBooks.arabianNights;
     tooled(
       context,
@@ -239,6 +246,7 @@ export const arabianNightsSpine = (thickness: number): THREE.CanvasTexture =>
       width,
       H,
     );
+    yield;
     rubGold(context, width, H, 13);
     context.restore();
   });
