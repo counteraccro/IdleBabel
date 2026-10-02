@@ -95,9 +95,13 @@ const VERSE_FONT = `bold 9px ${CASLON}`;
 const LINE = 17.2;
 const TOP = 92;
 const BOTTOM = HEIGHT - 70;
-/** Le début d'un chapitre : son grand numéro, à côté de ses trois premières lignes (en retrait). */
+/**
+ * Le début d'un chapitre : son grand numéro, à côté de ses trois premières lignes, en retrait d'au moins
+ * 40 (la maquette) et assez pour le numéro (« 38 », « 119 » y débordaient).
+ */
 const CHAPTER_FONT = `bold 42px ${CASLON}`;
 const CHAPTER_INDENT = 40;
+const CHAPTER_GAP = 8;
 const CHAPTER_LINES = 6;
 
 /**
@@ -108,7 +112,8 @@ const textPage = (context: CanvasRenderingContext2D, page: number): void => {
   const content = BIBLE_PLAN.pages.get(page)!;
   const name = messages().rareBooks.bible.books[content.book].toUpperCase();
   const range = content.from === content.to ? `${content.from}` : `${content.from}. ${content.to}`;
-  writeTop(context, `${name}, ${range}.`, PAGE_CENTER, 52, { font: `13px ${CASLON}`, color: GREY, spacing: 2 });
+  // Remonté de la maquette (52) : ses lettres touchaient le filet en dessous.
+  writeTop(context, `${name}, ${range}.`, PAGE_CENTER, 47, { font: `13px ${CASLON}`, color: GREY, spacing: 2 });
   context.fillStyle = INK;
   context.fillRect(COLUMNS[0], 62, WIDTH - 2 * COLUMNS[0], 1);
   context.fillRect(WIDTH / 2, 72, 1, HEIGHT - 140);
@@ -137,10 +142,12 @@ const textPage = (context: CanvasRenderingContext2D, page: number): void => {
         // Un chapitre commence : le grand numéro, à côté de ses trois premières lignes.
         y += 6;
         writeTop(context, String(chapter), left + 2, y, { font: CHAPTER_FONT, color: INK, align: 'left' });
+        context.font = CHAPTER_FONT;
+        const indent = Math.max(CHAPTER_INDENT, context.measureText(String(chapter)).width + CHAPTER_GAP);
         context.font = FONT;
         const words = loremText(400, random).split(' ');
         for (let row = 0; row < CHAPTER_LINES; row++) {
-          const x = left + (row < 3 ? CHAPTER_INDENT : 0);
+          const x = left + (row < 3 ? indent : 0);
           let line = words.shift()!;
           while (words.length && context.measureText(`${line} ${words[0]}`).width <= left + COLUMN_WIDTH - x) line += ` ${words.shift()}`;
           writeTop(context, line, x, y + row * LINE, { font: FONT, color: INK, align: 'left' });
