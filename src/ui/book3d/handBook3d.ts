@@ -1,6 +1,7 @@
 import { createPage } from '../../systems/babelText';
 import { coverDesign } from '../../systems/coverDesign';
-import { takeBook } from '../../systems/rareBooks';
+import { rareBookAt, takeBook } from '../../systems/rareBooks';
+import { rareBookArt } from '../rareBooks/arts';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { pageNumberLabel } from '../../systems/pageNumber';
 import { producedWholePages } from '../../systems/production';
@@ -55,6 +56,9 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
   // Un livre rare arrive en main : il est trouvé, pour toujours. C'est le livre de la bibliothèque, tenu
   // en main (sans trouvailles : on ne lit pas de charabia).
   const rare = isStrangeBook(index) ? undefined : takeBook(state, index);
+  // Le livre d'après sera rare : on le prépare pendant qu'on lit celui-ci.
+  const upcoming = isStrangeBook(index + 1) ? undefined : rareBookAt(state, index + 1);
+  if (upcoming) rareBookArt(upcoming).prepare?.();
   if (rare) return { ...rareBook3d(state, rare, index, HAND_SHAPE), next, autoTurn };
   const design = coverDesign(index);
   const strange = isStrangeBook(index) ? strangeHandPages(state) : null;

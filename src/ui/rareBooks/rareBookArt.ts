@@ -12,6 +12,11 @@ export interface RareBookArt {
   /** Épaisseur du livre fermé, plats compris (0.12 : un livre ordinaire). */
   thickness?: number;
   paper: Paper;
+  /**
+   * Prépare à l'avance ce qui est long (texte à charger, mise en page) : appelé quand ce livre sera le
+   * prochain en main, pour qu'il arrive sans à-coup.
+   */
+  prepare?: () => void;
   /** Plats, dos, tranche et tranchefiles ; `design` : la couverture tirée du numéro du livre (cuir, usure). */
   look: (state: GameState, design: CoverDesign) => Promise<RareBookLook>;
   /**

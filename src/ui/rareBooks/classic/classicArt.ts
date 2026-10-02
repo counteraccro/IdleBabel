@@ -28,20 +28,34 @@ export interface ClassicBook {
  */
 export const classicArt = (book: ClassicBook): RareBookArt => {
   let laid: { locale: string; text: ClassicText; layout: ClassicLayout } | null = null;
-  const layOut = async (): Promise<void> => {
+  /** La préparation en cours ou faite (polices, texte, mise en page), pour la langue `locale`. */
+  let preparing: { locale: string; done: Promise<void> } | null = null;
+  const prepare = (): Promise<void> => {
     const locale = getLocale();
-    if (laid?.locale === locale) return;
-    const text = await loadClassicText(book.id, locale);
-    const context = document.createElement('canvas').getContext('2d')!;
-    laid = { locale, text, layout: layoutClassic(context, text, book.style) };
+    if (preparing?.locale !== locale) {
+      const done = (async () => {
+        await book.fonts();
+        const text = await loadClassicText(book.id, locale);
+        const context = document.createElement('canvas').getContext('2d')!;
+        const layout = await layoutClassic(context, text, book.style);
+        if (getLocale() === locale) laid = { locale, text, layout };
+      })();
+      // Un échec (hors ligne…) ne reste pas : on réessaiera à la prochaine ouverture.
+      done.catch(() => {
+        if (preparing?.done === done) preparing = null;
+      });
+      preparing = { locale, done };
+    }
+    return preparing.done;
   };
   return {
     thickness: book.thickness,
     paper: book.paper,
+    prepare: () => void prepare().catch(() => undefined),
     look: async (state, design) => {
       await book.fonts();
       // Sans texte (hors ligne…), le livre reste beau dehors ; dedans, des pages blanches.
-      await layOut().catch(() => undefined);
+      await prepare().catch(() => undefined);
       return book.cover(state, design);
     },
     paint: (page, canvas, spineOnLeft) => {

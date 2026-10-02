@@ -5,7 +5,8 @@ import type { ClassicText } from './classicText';
 /**
  * La mise en page d'un classique : tout son texte, réparti sur les 410 pages comme dans un vrai livre
  * (chaque chapitre s'ouvre sur une page de droite si le style le veut, lettrine, strophes en retrait). Ce
- * qui dépasse la 410e page est coupé ; ce qui reste après la fin du texte est blanc.
+ * qui dépasse la 410e page est coupé ; ce qui reste après la fin du texte est blanc. Un livre trop long
+ * pour ses 410 pages peut n'en garder que le début de chaque chapitre (`chapterPages`).
  */
 
 export interface ClassicStyle {
@@ -21,6 +22,8 @@ export interface ClassicStyle {
   heading: string;
   /** Chaque chapitre commence sur une page de droite (une page blanche avant si besoin). */
   chaptersOnRight: boolean;
+  /** Au plus ce nombre de pages par chapitre : on s'arrête au dernier paragraphe entier qui y tient. */
+  chapterPages?: number;
 }
 
 const { width: WIDTH, height: HEIGHT } = PAGE_TEXTURE;
@@ -76,18 +79,22 @@ const wrapVarying = (context: CanvasRenderingContext2D, text: string, width: (li
 /** Une ligne seule et courte, en capitales (« FIN. », « THE END ») : centrée. */
 const isCentered = (para: string): boolean => para.length < 30 && !para.includes('\n') && para === para.toUpperCase();
 
-export const layoutClassic = (context: CanvasRenderingContext2D, text: ClassicText, style: ClassicStyle): ClassicLayout => {
+/** La mise en page, un paragraphe à la fois : elle s'arrête (yield) après chacun. */
+function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, style: ClassicStyle): Generator<void, ClassicLayout> {
   const font = `${style.size}px ${style.body}`;
   const pages = new Map<number, ClassicPage>();
   const starts: number[] = [];
   const contentsPages = Math.ceil(text.chapters.length / CONTENTS_ROWS);
+  const done = (): ClassicLayout => ({ pages, starts, contentsPages });
   let page = CONTENTS_PAGE + contentsPages;
   let y = TOP;
   let current: ClassicPage | null = null;
-  /** Va à la page suivante ; false : le livre est plein. */
+  /** La dernière page permise au chapitre en cours. */
+  let chapterEnd = PAGES_PER_BOOK;
+  /** Va à la page suivante ; false : le livre (ou le chapitre) est plein. */
   const turn = (chapter: number, opening = false): boolean => {
     if (current) page++;
-    if (page > PAGES_PER_BOOK) return false;
+    if (page > chapterEnd) return false;
     current = { chapter, opening, lines: [] };
     pages.set(page, current);
     y = opening ? OPENING_TOP : TOP;
@@ -99,45 +106,89 @@ export const layoutClassic = (context: CanvasRenderingContext2D, text: ClassicTe
     y += style.line;
     return true;
   };
+  /** Pose le paragraphe `para` ; false : il ne tient plus. */
+  const placePara = (chapter: number, index: number, para: string): boolean => {
+    context.font = font;
+    if (para.includes('\n')) {
+      // Une strophe : un vers par ligne, en retrait (un vers trop long continue un peu plus loin).
+      y += style.line / 2;
+      for (const verse of para.split('\n'))
+        for (const [row, line] of wrapVarying(context, verse, (n) => RIGHT - LEFT - VERSE_INDENT - (n ? 24 : 0)).entries())
+          if (!place(chapter, line, LEFT + VERSE_INDENT + (row ? 24 : 0))) return false;
+      y += style.line / 2;
+      return true;
+    }
+    if (isCentered(para)) {
+      y += style.line;
+      return place(chapter, para, WIDTH / 2, true);
+    }
+    // Le premier paragraphe du chapitre : une lettrine sur deux lignes, si le texte commence par une lettre.
+    const letter = index === 0 && /^\p{L}/u.test(para) ? para[0] : '';
+    if (letter) {
+      const size = style.line * 2.3;
+      context.font = `${size}px ${style.dropCap}`;
+      const drop = context.measureText(letter).width + 8;
+      context.font = font;
+      current!.dropCap = { letter, x: LEFT, y, size };
+      const lines = wrapVarying(context, para.slice(1), (n) => RIGHT - LEFT - (n < 2 ? drop : 0));
+      return lines.every((line, row) => place(chapter, line, LEFT + (row < 2 ? drop : 0)));
+    }
+    return wrapVarying(context, para, (n) => RIGHT - LEFT - (n ? 0 : INDENT)).every((line, row) =>
+      place(chapter, line, LEFT + (row ? 0 : INDENT)),
+    );
+  };
   for (const [chapter, { paras }] of text.chapters.entries()) {
     if (current) page++;
     if (style.chaptersOnRight && page % 2 === 0) page++;
     current = null;
     if (page > PAGES_PER_BOOK) break;
+    chapterEnd = Math.min(PAGES_PER_BOOK, page + (style.chapterPages ?? Infinity) - 1);
     turn(chapter, true);
     starts.push(page);
     for (const [index, para] of paras.entries()) {
-      context.font = font;
-      if (para.includes('\n')) {
-        // Une strophe : un vers par ligne, en retrait (un vers trop long continue un peu plus loin).
-        y += style.line / 2;
-        for (const verse of para.split('\n'))
-          for (const [row, line] of wrapVarying(context, verse, (n) => RIGHT - LEFT - VERSE_INDENT - (n ? 24 : 0)).entries())
-            if (!place(chapter, line, LEFT + VERSE_INDENT + (row ? 24 : 0))) return { pages, starts, contentsPages };
-        y += style.line / 2;
-        continue;
+      yield;
+      const before = { page, y, current: current!, lines: current!.lines.length };
+      if (placePara(chapter, index, para)) continue;
+      // Le livre est plein : le texte s'arrête où il en est. Le chapitre est plein : il s'arrête à la fin du
+      // paragraphe d'avant (sauf s'il n'en a pas d'entier).
+      if (chapterEnd === PAGES_PER_BOOK || index === 0) {
+        if (chapterEnd === PAGES_PER_BOOK) return done();
+        page = chapterEnd;
+        break;
       }
-      if (isCentered(para)) {
-        y += style.line;
-        if (!place(chapter, para, WIDTH / 2, true)) return { pages, starts, contentsPages };
-        continue;
-      }
-      // Le premier paragraphe du chapitre : une lettrine sur deux lignes, si le texte commence par une lettre.
-      const letter = index === 0 && /^\p{L}/u.test(para) ? para[0] : '';
-      if (letter) {
-        const size = style.line * 2.3;
-        context.font = `${size}px ${style.dropCap}`;
-        const drop = context.measureText(letter).width + 8;
-        context.font = font;
-        current!.dropCap = { letter, x: LEFT, y, size };
-        const lines = wrapVarying(context, para.slice(1), (n) => RIGHT - LEFT - (n < 2 ? drop : 0));
-        for (const [row, line] of lines.entries())
-          if (!place(chapter, line, LEFT + (row < 2 ? drop : 0))) return { pages, starts, contentsPages };
-        continue;
-      }
-      for (const [row, line] of wrapVarying(context, para, (n) => RIGHT - LEFT - (n ? 0 : INDENT)).entries())
-        if (!place(chapter, line, LEFT + (row ? 0 : INDENT))) return { pages, starts, contentsPages };
+      for (let extra = before.page + 1; extra <= page; extra++) pages.delete(extra);
+      ({ page, y, current } = before);
+      current.lines.length = before.lines;
+      break;
     }
   }
-  return { pages, starts, contentsPages };
+  return done();
+}
+
+/** Rend la main au navigateur (sans les ralentissements de setTimeout dans un onglet caché). */
+const pause = (): Promise<void> =>
+  new Promise((resolve) => {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = () => resolve();
+    channel.port2.postMessage(null);
+  });
+
+/** Temps de calcul d'affilée, en ms, avant de rendre la main : pas d'à-coup, même en lisant vite. */
+const SLICE = 6;
+
+/**
+ * Met en page tout le livre, par petits morceaux entre deux images (un gros classique prend ~200 ms
+ * de calcul en tout).
+ */
+export const layoutClassic = async (context: CanvasRenderingContext2D, text: ClassicText, style: ClassicStyle): Promise<ClassicLayout> => {
+  const steps = layoutSteps(context, text, style);
+  let since = performance.now();
+  for (;;) {
+    const step = steps.next();
+    if (step.done) return step.value;
+    if (performance.now() - since > SLICE) {
+      await pause();
+      since = performance.now();
+    }
+  }
 };
