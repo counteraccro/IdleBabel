@@ -15,6 +15,7 @@ import { createHeldPose } from './heldPose';
 import { createTweens } from './tweens';
 import { modalOpen } from '../modal/modal';
 import type { Book3d } from './book3dBook';
+import { screenDown } from './ribbonTail';
 
 /** Inclinaison du livre vers le lecteur : la caméra le regarde d'un peu plus bas que d'aplomb. */
 const TILT = THREE.MathUtils.degToRad(20);
@@ -258,7 +259,9 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     // Une trouvaille sur une page visible : elle luit, l'image est refaite (figée si mouvements réduits).
     const shining = book?.glow.shining ?? false;
     if (shining && book) book.glow.time = still.matches ? 0 : now / 1000;
-    if (swaying || moving || turning || animating || dirty || (shining && !still.matches)) {
+    // Le bout du signet pend vers le bas de l'écran : il suit le livre qui bouge, avec son élan.
+    const fluttering = !still.matches && (book?.swing(dt, screenDown(camera)) ?? false);
+    if (swaying || moving || turning || animating || fluttering || dirty || (shining && !still.matches)) {
       lighting.follow(camera, new THREE.Vector3(), 0);
       renderer.render(scene, camera);
       dirty = false;

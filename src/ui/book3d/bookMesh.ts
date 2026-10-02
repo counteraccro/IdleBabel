@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { createPageGlow, type PageGlow } from './pageGlow';
 import { createHeadbandGeometry, HEADBAND_LENGTH, HEADBAND_RADIUS } from './headband';
 import { createRibbon, RIBBON_INSIDE, RIBBON_TAIL, RIBBON_WIDTH, type RibbonPoint } from './ribbon';
+import { createRibbonTail } from './ribbonTail';
 import { boardGeometry } from './boardGeometry';
 import { JOINT, createBinding, type Point } from './binding';
 import { ARCH, pageProfile, stackGeometry } from './pageStack';
@@ -81,6 +82,12 @@ export interface BookMesh {
   /** L'objet touché (clic) est-il le signet ? */
   isRibbon: (object: THREE.Object3D) => boolean;
   /**
+   * Fait vivre le bout du signet pendant `dt` secondes : il pend vers `down` (dans la scène, unitaire : le
+   * bas de l'écran) et garde son élan quand le livre tourne. Rend vrai tant qu'il bouge (à redessiner).
+   * Jamais appelé, il pend tout droit sous le livre.
+   */
+  swing: (dt: number, down: THREE.Vector3) => boolean;
+  /**
    * Feuille qui tourne autour du pli : `turn` de 0 (posée à droite) à 1 (posée à gauche), `front` son
    * recto (la page de droite), `back` son verso (la page de gauche d'après). null : pas de feuille.
    * `corner` : prise par un coin (1 : en haut, -1 : en bas), elle part de lui, dans le sens `forward`.
@@ -90,6 +97,8 @@ export interface BookMesh {
   glow: PageGlow;
 }
 
+/** Longueur du bout du signet qui pend sous le livre. */
+const RIBBON_LENGTH = 0.13;
 /** Épaisseur du cuir du dos (part de l'épaisseur du livre). */
 const SPINE_LEATHER = 0.08;
 /** Livre ouvert : inclinaison de chaque moitié, tranches relevées, dos au plus bas (radians, BookShape.sag). */
@@ -300,6 +309,27 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   let step = 1;
   /** Feuille qui tourne (où elle en est), null : aucune. */
   let leafTurn: number | null = null;
+  /** Le bout qui pend, une fois animé (swing) ; les points du ruban dans le livre et ses deux bords à sa sortie. */
+  const tail = createRibbonTail(RIBBON_LENGTH / RIBBON_TAIL);
+  let tailLive = false;
+  let inside: RibbonPoint[] = [];
+  /** Le bout qui pend tout droit (au repos, sans animation), du point de sortie à son bout : les milieux. */
+  const restingTail = (): THREE.Vector3[] => {
+    const [start, end] = inside[RIBBON_INSIDE];
+    return Array.from({ length: RIBBON_TAIL + 1 }, (_, i) => {
+      const drift = 0.012 * (i / RIBBON_TAIL) ** 2;
+      return new THREE.Vector3((start[0] + end[0]) / 2 + drift, start[1] - (RIBBON_LENGTH * i) / RIBBON_TAIL, (start[2] + end[2]) / 2);
+    });
+  };
+  /** Pose tout le ruban : dans le livre, puis le bout (animé, ramené dans le repère du livre, ou au repos). */
+  const layTail = (): void => {
+    const [start, end] = inside[RIBBON_INSIDE];
+    const half = new THREE.Vector3((end[0] - start[0]) / 2, (end[1] - start[1]) / 2, (end[2] - start[2]) / 2);
+    const middles = tailLive ? tail.nodes.map((node) => body.worldToLocal(node.clone())) : restingTail();
+    const points = [...inside];
+    for (const middle of middles.slice(1)) points.push([middle.clone().sub(half).toArray(), middle.clone().add(half).toArray()]);
+    ribbon.lay(points);
+  };
   const layRibbon = (): void => {
     ribbon.mesh.visible = ribbonAt !== null;
     if (ribbonAt === null) return;
@@ -376,18 +406,9 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
         point[2] = Math.max(point[2], bottomBand.position.z + clear);
       }
     }
-    // Le bout qui dépasse : il pend sous le livre, un peu de biais.
-    const [root] = points[RIBBON_INSIDE];
-    for (let i = 1; i <= RIBBON_TAIL; i++) {
-      const drop = (0.13 * i) / RIBBON_TAIL;
-      const [start, end] = points[RIBBON_INSIDE];
-      const drift = 0.012 * (i / RIBBON_TAIL) ** 2;
-      points.push([
-        [start[0] + drift, root[1] - drop, start[2]],
-        [end[0] + drift, root[1] - drop, end[2]],
-      ]);
-    }
-    ribbon.lay(points);
+    // Le bout qui dépasse : il pend sous le livre (un peu de biais au repos).
+    inside = points;
+    layTail();
   };
   /** Les piles ont déjà été construites une fois. */
   let built = false;
@@ -623,6 +644,30 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
       layRibbon();
     },
     isRibbon: (object) => object === ribbon.mesh,
+    swing: (dt, down) => {
+      if (!ribbon.mesh.visible) {
+        tailLive = false;
+        return false;
+      }
+      body.updateWorldMatrix(true, false);
+      const [start, end] = inside[RIBBON_INSIDE];
+      const exit = new THREE.Vector3((start[0] + end[0]) / 2, (start[1] + end[1]) / 2, (start[2] + end[2]) / 2);
+      // La première fois, il part de sa pose au repos (sans élan).
+      if (!tailLive) {
+        tail.reset(restingTail().map((node) => body.localToWorld(node)));
+        tailLive = true;
+      }
+      const local = new THREE.Vector3();
+      const moving = tail.step(body.localToWorld(exit.clone()), down, dt, (node) => {
+        // Il ne remonte jamais dans le livre : il reste sous sa tranche du bas.
+        body.worldToLocal(local.copy(node));
+        if (local.y <= exit.y - 0.002) return;
+        local.y = exit.y - 0.002;
+        node.copy(body.localToWorld(local));
+      });
+      layTail();
+      return moving;
+    },
     setPages: (left, right) => {
       leftPage.map = left;
       rightPage.map = right;

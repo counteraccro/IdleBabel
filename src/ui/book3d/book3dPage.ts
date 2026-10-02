@@ -17,6 +17,7 @@ import { isDebugEnabled } from '../../debug/enabled';
 import { BIG_BOOK_REWRITE, type Book3d } from './book3dBook';
 import { createFlight, takeFlight, type Flight } from './bookFlight';
 import { modalOpen } from '../modal/modal';
+import { screenDown } from './ribbonTail';
 
 /** Durée de l'ouverture de la couverture. */
 const OPEN_MS = 1100;
@@ -397,9 +398,11 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     // Caméra qu'on fait tourner, ou qui finit sur son élan.
     // Pendant le vol, la caméra ne bouge pas (sur son élan, elle décalerait le point d'arrivée).
     const orbiting = !flight && !homing && controls.update();
+    // Le bout du signet pend vers le bas de l'écran : il se balance quand on fait tourner le livre.
+    const fluttering = !still.matches && (book?.swing(dt, screenDown(camera)) ?? false);
     notifyBackSeen();
     if (spec.tick?.(now)) dirty = true;
-    if (moving || turning || resized || orbiting || dirty || flight) {
+    if (moving || turning || resized || orbiting || fluttering || dirty || flight) {
       // Livre fermé (d'un côté ou de l'autre), on le fait tourner : la lumière suit la face qu'on regarde.
       // Fermé : les deux plats l'un sur l'autre (couverture fermée, ou plat arrière refermé sur elle).
       lighting.follow(camera, controls.target, 1 - (Number(open.value) - shut));
