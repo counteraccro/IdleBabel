@@ -24,7 +24,7 @@ export const storyLines = (count: number): { root: HTMLElement; lines: HTMLEleme
 };
 
 /** Où mène un moment une fois lu (adresse de l'écran à ouvrir, voir ui/app.ts). */
-const LEADS_TO: Partial<Record<LoreId, string>> = { lookAround: '#blanc' };
+const LEADS_TO: Partial<Record<LoreId, string>> = { lookAround: '#blanc', strangeBook: '#livre' };
 
 /** Le temps que l'écran suivant se construise (livre 3D) sous le voile noir, avant qu'il se lève. */
 const VEIL_HOLD_MS = 250;

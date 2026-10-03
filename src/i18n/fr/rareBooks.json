@@ -1335,6 +1335,12 @@
             "Chaque partie a reçu sa graine : un nombre caché, d’où sont tirés les couvertures, les pages, les livres rares et les trouvailles. Même graine, même Bibliothèque. Seul le cahier d’options l’écrit, pour la donner si quelque chose cloche."
           ]
         },
+        "ledger": {
+          "head": "Le Grand Livre",
+          "text": [
+            "Le livre étrange a reçu un nom : le Grand Livre, celui où l’on tient les comptes. On ne paie plus pour le lire : chaque partie s’éclaire seule, quand la Connaissance a assez grandi, et une étoile dorée le signale. Quand il arrive en main, un court récit l’annonce, puis il s’ouvre en grand."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [

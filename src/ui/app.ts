@@ -10,6 +10,7 @@ import { strangeBook3d } from './book3d/strangeBook3d';
 import { createHandReading3d } from './book3d/handReading3d';
 import { notebook3d } from './options/notebook3d';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
+import { anyPartNews, meetStrangeBook } from '../systems/decipher';
 import { setLocale, t } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
 import { createInitialState, type GameState } from '../core/state';
@@ -114,7 +115,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       debug: debugging ? debugBook3d : undefined,
     },
     strangeBookFound: () => strangeBookFound(state),
-    hasNewSeals: () => state.newSeals.length > 0,
+    strangeBookNews: () => state.newSeals.length > 0 || anyPartNews(state),
     writtenCount: () => Object.values(state.written).reduce((sum, done) => sum + done.length, 0),
     openBook,
     onLibrary: open(LIBRARY_HASH),
@@ -273,6 +274,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   // Moments de lore en attente (partie rechargée, trouvaille hors-ligne) : racontés une fois le joueur présenté.
   // Partie qui a refermé son premier livre avant que ce moment existe : il est raconté une fois.
   if (state.booksFinished > 0) tellLore(state, 'firstBookKept');
+  // Partie qui avait déjà le Grand Livre avant que son récit existe : il est raconté une fois.
+  meetStrangeBook(state);
   const tellPendingLore = mountLore(state);
   // Nouvelle partie (ou partie d'avant le nom) : le joueur se présente et choisit sa langue.
   if (!state.playerName)

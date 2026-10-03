@@ -52,5 +52,15 @@
       "Something weighs in your pocket. A small brass key. You didn't have it a moment ago."
     ],
     "button": "Keep the book"
+  },
+  "strangeBook": {
+    "title": "The Ledger",
+    "text": [
+      "This one is not like the others. Black leather, and on the spine, signs you cannot read.",
+      "Inside, columns of figures. As if someone were keeping accounts.",
+      "Whose accounts?",
+      "A few signs seem almost familiar, like a word on the tip of your tongue. The more you understand the Library, the more it will speak to you."
+    ],
+    "button": "Open the Ledger"
   }
 }

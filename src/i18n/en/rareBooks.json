@@ -1322,6 +1322,12 @@
             "Every game got its seed: a hidden number that the covers, the pages, the rare books and the finds are drawn from. Same seed, same Library. Only the options notebook writes it down, so it can be handed over if something goes wrong."
           ]
         },
+        "ledger": {
+          "head": "The Ledger",
+          "text": [
+            "The strange book was given a name: the Ledger, where the accounts are kept. Nobody pays to read it any more: each part clears up on its own once Knowledge has grown enough, and a golden star says so. When it comes to hand, a short story announces it, then it opens wide."
+          ]
+        },
         "thisBook": {
           "head": "This book",
           "text": [

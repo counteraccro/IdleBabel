@@ -80,7 +80,7 @@ const LINE_TOP = 400;
 const LINE_STEP = 46;
 
 /** Légende du pourcentage des sceaux (illisible tant que les sceaux ne sont pas déchiffrés). */
-export const completionCaption = (state: GameState): TextItem => ({
+const completionCaption = (state: GameState): TextItem => ({
   kind: 'text',
   text: isDeciphered(state, 'seals') ? t('strangeBook.sealsCompletion') : babelName('completion'),
   x: 320,

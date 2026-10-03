@@ -3,8 +3,8 @@ import { createInitialState } from '../src/core/state';
 import { BASE_FIND_CHANCE, GUESS_PRICE, LUCK_PAGES, MAX_AWAY_SECONDS } from '../src/data/knowledge';
 import { drawFind, findText, findWhileAway, gainFind, rollFind } from '../src/systems/knowledge';
 import { completion, currentTarget, guess, isComplete, segments, toolUnlocked, write } from '../src/systems/sentences';
-import { decipher, decipherPrice, isDeciphered } from '../src/systems/decipher';
-import { PARTS } from '../src/data/decipher';
+import { anyPartNews, isDeciphered, markAllPartsRead, markPartRead, partHasNews } from '../src/systems/decipher';
+import { READABLE_AT } from '../src/data/decipher';
 import { SENTENCES } from '../src/data/sentences';
 import { LOCALES } from '../src/i18n/locales';
 
@@ -119,24 +119,33 @@ describe('Connaissance', () => {
   });
 });
 
-describe('déchiffrer le livre étrange', () => {
+describe('déchiffrer le Grand Livre', () => {
   it('lit le sommaire dès la première trouvaille', () => {
     const state = createInitialState('fr');
     expect(isDeciphered(state, 'contents')).toBe(false);
-    expect(decipherPrice(state, 'contents')).toBeUndefined();
     gainFind(state, { kind: 'word', sentence: 'finger', segment: 0 });
     expect(isDeciphered(state, 'contents')).toBe(true);
   });
 
-  it('se paie, ou vient seul au palier, et le reste après une dépense', () => {
+  it('lit chaque partie à son palier, sans rien dépenser', () => {
     const state = createInitialState('fr');
-    state.knowledge = 1;
-    expect(decipher(state, 'books')).toBe(false);
-    expect(decipher(state, 'pages')).toBe(true);
-    expect(state.knowledge).toBe(0);
-    expect(isDeciphered(state, 'pages')).toBe(true);
-    expect(decipherPrice(state, 'pages')).toBeUndefined();
-    state.lifetimeKnowledge = PARTS.seals.freeAt;
+    state.knowledge = 100;
+    state.lifetimeKnowledge = READABLE_AT.seals - 1;
+    expect(isDeciphered(state, 'seals')).toBe(false);
+    state.lifetimeKnowledge = READABLE_AT.seals;
     expect(isDeciphered(state, 'seals')).toBe(true);
+    expect(state.knowledge).toBe(100);
+  });
+
+  it('signale une partie devenue lisible jusqu’à ce qu’elle soit vue', () => {
+    const state = createInitialState('fr');
+    state.lifetimeKnowledge = READABLE_AT.pages;
+    markAllPartsRead(state);
+    expect(anyPartNews(state)).toBe(false);
+    state.lifetimeKnowledge = READABLE_AT.books;
+    expect(partHasNews(state, 'books')).toBe(true);
+    expect(partHasNews(state, 'methods')).toBe(false);
+    markPartRead(state, 'books');
+    expect(partHasNews(state, 'books')).toBe(false);
   });
 });

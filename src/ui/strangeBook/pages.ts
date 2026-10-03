@@ -22,17 +22,15 @@ import {
   plateTitle,
   sealLegend,
   sealsTitle,
-  completionCaption,
   completionItems,
   plateItems,
   platePages,
   type PlatePage,
 } from './plates';
 import { markSealsSeen } from '../../systems/seals';
-import { decipher, decipherPrice } from '../../systems/decipher';
+import { markPartRead, partHasNews } from '../../systems/decipher';
 import { getLocale, t } from '../../i18n';
 import { currentNotation, formatNumber, writeDigits } from '../../core/format';
-import type { PartId } from '../../data/decipher';
 import type { Paper } from '../book/pageRender';
 import type { GameState } from '../../core/state';
 
@@ -80,7 +78,7 @@ const ENTRY_BOTTOM = 700;
 /** Une entrée du sommaire ; `sub` : sous-entrée, en retrait et plus petite. */
 interface Entry {
   title: (state: GameState) => string;
-  /** Du nouveau à voir (sceaux) : une étoile dorée dans la marge. */
+  /** Du nouveau à voir (sceaux, partie devenue lisible) : une étoile dorée dans la marge. */
   news?: () => boolean;
   page: number;
   sub?: boolean;
@@ -116,8 +114,7 @@ const FIGURE_STEP = 125;
 /**
  * Offre au crayon : ce que le chercheur n'a pas su lire (`marked` : légendes, nom) est souligné d'un
  * pointillé ; un clic sur un texte souligné fait écrire la note en `noteY` (ce que ça coûte), un clic
- * sur la note paie. Le reste de la page tourne comme les autres. Sert à déchiffrer le livre étrange, et
- * à deviner un morceau dans le livre blanc.
+ * sur la note paie. Le reste de la page tourne comme les autres. Sert à deviner un morceau dans le livre blanc.
  */
 export const pencilOffer = (note: string, asking: boolean, noteY: number, marked: TextItem[]): Item[] => [
   ...marked.flatMap((text): Item[] => {
@@ -139,17 +136,11 @@ export const pencilOffer = (note: string, asking: boolean, noteY: number, marked
 export const priceNote = (state: GameState, price: number, offer: string, short: string): string =>
   t(state.knowledge >= price ? offer : short).replace('{n}', formatNumber(price, getLocale()));
 
-/** Partie encore illisible qui s'achète : ses légendes soulignées, la note au crayon propose de la déchiffrer. */
-const decipherItems = (state: GameState, part: PartId, asking: boolean, noteY: number, marked: TextItem[]): Item[] => {
-  const price = decipherPrice(state, part);
-  if (price === undefined) return [];
-  return pencilOffer(priceNote(state, price, 'strangeBook.decipher', 'strangeBook.decipherShort'), asking, noteY, marked);
-};
 
 /** Chiffre écrit en symboles de Babel (notation choisie dans les options) : doré, comme les titres. */
 const babelGold = (item: TextItem): TextItem => (currentNotation() === 'babel' && !/\d/.test(item.text) ? { ...item, gold: true } : item);
 
-const chapterItems = (state: GameState, chapter: Chapter, number: number, asking: boolean): Item[] => {
+const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[] => {
   const figures = chapter.figures.filter((figure) => figureShown(state, figure));
   const captions = figures.map((figure, index): TextItem =>
     fitCaption({
@@ -178,7 +169,6 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number, asking
       }),
       captions[index],
     ]),
-    ...decipherItems(state, chapter.id, asking, 676, captions),
     folio(number),
   ];
 };
@@ -268,8 +258,12 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
   const blankPage = (page: number): LeafPage => createLeafPage(() => [folio(page + 1)], goTo);
   const plates: PlatePage[] = platePages(sealsPage + 1);
   const entries: Entry[] = [
-    ...chapters.map((chapter, index) => ({ title: () => chapterTitle(state, chapter), page: first + index })),
-    { title: sealsTitle, page: sealsPage, news: () => state.newSeals.length > 0 },
+    ...chapters.map((chapter, index) => ({
+      title: () => chapterTitle(state, chapter),
+      page: first + index,
+      news: () => partHasNews(state, chapter.id),
+    })),
+    { title: sealsTitle, page: sealsPage, news: () => state.newSeals.length > 0 || partHasNews(state, 'seals') },
     ...plates
       .filter((plate) => plate.part === 0)
       .map((plate) => ({
@@ -287,19 +281,12 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
     createLeafPage(titleItems, goTo),
     createLeafPage(() => contentsItems(state, entries), goTo),
     ...chapters.map((chapter, index) =>
-      createLeafPage(({ asking }) => chapterItems(state, chapter, first + index + 1, asking), goTo, {
-        onPay: () => decipher(state, chapter.id),
+      createLeafPage(() => chapterItems(state, chapter, first + index + 1), goTo, {
+        onShown: () => markPartRead(state, chapter.id),
       }),
     ),
     ...(sealsPage > afterChapters ? [blankPage(afterChapters)] : []),
-    createLeafPage(
-      ({ asking }) => [
-        ...completionItems(state, plates, sealsPage + 1),
-        ...decipherItems(state, 'seals', asking, 352, [completionCaption(state)]),
-      ],
-      goTo,
-      { onPay: () => decipher(state, 'seals') },
-    ),
+    createLeafPage(() => completionItems(state, plates, sealsPage + 1), goTo, { onShown: () => markPartRead(state, 'seals') }),
     ...plates.map((plate) =>
       createLeafPage(({ hovered }) => plateItems(state, plate, sealLegend(state, hovered), isFresh), goTo, {
         onShown: () =>

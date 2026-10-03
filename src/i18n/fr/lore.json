@@ -57,5 +57,15 @@
       "Dans votre poche, quelque chose pèse. Une petite clé de laiton. Vous ne l'aviez pas tout à l'heure."
     ],
     "button": "Garder le livre"
+  },
+  "strangeBook": {
+    "title": "Le Grand Livre",
+    "text": [
+      "Ce livre-là ne ressemble pas aux autres. Cuir noir, et sur le dos, des signes que vous ne savez pas lire.",
+      "À l'intérieur, des colonnes de chiffres. Comme si quelqu'un tenait des comptes.",
+      "Les comptes de qui ?",
+      "Quelques signes vous semblent presque familiers, comme un mot sur le bout de la langue. Plus vous comprendrez la Bibliothèque, plus il vous parlera."
+    ],
+    "button": "Ouvrir le Grand Livre"
   }
 }

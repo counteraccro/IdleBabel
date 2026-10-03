@@ -73,8 +73,13 @@ export interface GameState {
   finds: Find[];
   /** Livre blanc : morceaux écrits de chaque phrase (data/sentences.ts), gardés pour toujours. */
   written: Record<string, number[]>;
-  /** Parties du livre étrange déchiffrées en payant de la Connaissance : pour toujours. */
+  /**
+   * Parties du Grand Livre lisibles d'office : payées du temps où elles s'achetaient (gardées pour toujours),
+   * ou toutes, au débogage.
+   */
   deciphered: PartId[];
+  /** Parties du Grand Livre déjà vues en clair : une partie lisible qui n'y est pas porte une étoile. */
+  partsRead: PartId[];
   /** Sceaux obtenus (voir data/seals.ts), avec leur date. */
   seals: Record<string, number>;
   /**
@@ -117,6 +122,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   finds: [],
   written: {},
   deciphered: [],
+  partsRead: [],
   seals: {},
   rareBooks: {},
   newSeals: [],

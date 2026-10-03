@@ -17,6 +17,11 @@ export const LORE = [
    * de laiton apparaît dans sa poche (celle de la bibliothèque, où ce livre est rangé).
    */
   'firstBookKept',
+  /**
+   * Le Grand Livre arrive en main, le troisième (systems/books.ts) : des comptes illisibles, qui parleront
+   * à mesure de la Connaissance. Il s'ouvre ensuite en grand (ui/lore.ts).
+   */
+  'strangeBook',
 ] as const;
 
 export type LoreId = (typeof LORE)[number];

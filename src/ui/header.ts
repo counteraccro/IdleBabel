@@ -17,8 +17,8 @@ export interface HeaderHandlers {
   books: { options: () => Book3d; white: () => Book3d; strange: () => Book3d; debug?: () => Book3d };
   /** Le livre étrange a-t-il été trouvé ? Il n'est avec les autres qu'ensuite. */
   strangeBookFound: () => boolean;
-  /** Des sceaux obtenus attendent d'être vus : le contour du livre étrange luit. */
-  hasNewSeals: () => boolean;
+  /** Des sceaux obtenus ou une partie devenue lisible attendent d'être vus : le contour du Grand Livre luit. */
+  strangeBookNews: () => boolean;
   /** Le livre ouvert en ce moment (sa page à l'écran), absent de la pile ; null : le jeu. */
   openBook: () => 'white' | 'strange' | 'options' | 'debug' | 'library' | null;
   /** Entrer dans la bibliothèque personnelle (la clé). */
@@ -84,7 +84,7 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     const now = handlers.strangeBookFound();
     if (now !== found) pile.show('strange', now, true);
     found = now;
-    pile.news('strange', handlers.hasNewSeals());
+    pile.news('strange', handlers.strangeBookNews());
     const count = handlers.writtenCount();
     if (count > written) pile.shake('white');
     written = count;

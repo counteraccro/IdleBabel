@@ -4,7 +4,7 @@ import { forceTitles, type TitleOverride } from '../../systems/coverTitle';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed, strangeBookFound } from '../../systems/strangeBook';
 import { completion, currentTarget } from '../../systems/sentences';
 import { isDeciphered } from '../../systems/decipher';
-import { PARTS, type PartId } from '../../data/decipher';
+import { PARTS } from '../../data/decipher';
 import { bigBookOpen, rebuildScreen, refreshBook, rewriteBigBook } from '../refresh';
 import { completeSentence } from './methods';
 import { remember } from '../remember';
@@ -111,8 +111,7 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
       });
       kit.info('Trouvé', () => (strangeBookFound(state) ? 'oui' : `au livre n° ${STRANGE_BOOK_INDEX + 1}`));
       kit.progress('Déchiffré', () => {
-        const parts = Object.keys(PARTS) as PartId[];
-        return [parts.filter((part) => isDeciphered(state, part)).length, parts.length];
+        return [PARTS.filter((part) => isDeciphered(state, part)).length, PARTS.length];
       });
       kit.actions(
         [
@@ -128,7 +127,7 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
         [
           'Tout déchiffrer',
           () => {
-            state.deciphered = Object.keys(PARTS) as PartId[];
+            state.deciphered = [...PARTS];
             rewriteBigBook();
           },
         ],
