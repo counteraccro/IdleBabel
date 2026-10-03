@@ -821,7 +821,11 @@
       ["THE ODYSSEY", "LECONTE DE LISLE"],
       ["THE ARABIAN NIGHTS", "WALTER SCOTT"],
       ["ALICE", "LEWIS CARROLL"],
-      ["MOBY DICK", "HERMAN MELVILLE"]
+      ["MOBY DICK", "HERMAN MELVILLE"],
+      ["DON QUIXOTE", "LOUIS VIARDOT"],
+      ["THE DIVINE COMEDY", "LAMENNAIS"],
+      ["SARAGOSSA", "JAN POTOCKI"],
+      ["THE ENCYCLOPÉDIE", "DIDEROT · D’ALEMBERT"]
     ],
     "back": {
       "reviews": [
@@ -861,7 +865,11 @@
           ["The Odyssey", "Homer, French translation by Leconte de Lisle", "Lemerre, 1893 · Wikisource"],
           ["The Arabian Nights Entertainments", "edited by Walter Scott", "1811 · Project Gutenberg"],
           ["Alice’s Adventures in Wonderland", "Lewis Carroll", "1865 · Project Gutenberg"],
-          ["Moby-Dick", "Herman Melville", "Harper, 1851 · Project Gutenberg"]
+          ["Moby-Dick", "Herman Melville", "Harper, 1851 · Project Gutenberg"],
+          ["Don Quixote", "Cervantes, French translation by Louis Viardot", "Hachette, 1863 · Wikisource"],
+          ["The Divine Comedy", "Dante, French translation by Lamennais", "Didier, 1863 · Wikisource"],
+          ["The Manuscript Found in Saragossa", "Jan Potocki, written in French", "Gide fils, 1814 · Wikisource"],
+          ["The Encyclopédie", "Diderot and d’Alembert, volume I", "Paris, 1751 · Wikisource"]
         ],
         "fontsIntro": "Under a free licence (SIL Open Font License).",
         "notesEmpty": "Nothing yet. The Library is being built.",

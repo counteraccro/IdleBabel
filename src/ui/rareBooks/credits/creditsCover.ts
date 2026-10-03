@@ -127,6 +127,8 @@ export const creditsFront = (): CreditsFront => {
     rows.forEach(([role, name], i) => {
       const placed = 380 + i * ROW;
       if (offset === null) {
+        // Immobile, le générique s'arrête au bas du plat.
+        if (placed > BOTTOM - FADE_BOTTOM) return;
         rollRow(context, role, name, placed, Math.min(1, 0.15 + (i / (rows.length - 1)) * 0.9));
         return;
       }

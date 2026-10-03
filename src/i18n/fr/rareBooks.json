@@ -834,7 +834,11 @@
       ["L’ODYSSÉE", "LECONTE DE LISLE"],
       ["LES MILLE ET UNE NUITS", "ANTOINE GALLAND"],
       ["ALICE", "HENRI BUÉ"],
-      ["MOBY DICK", "HERMAN MELVILLE"]
+      ["MOBY DICK", "HERMAN MELVILLE"],
+      ["DON QUICHOTTE", "LOUIS VIARDOT"],
+      ["LA DIVINE COMÉDIE", "LAMENNAIS"],
+      ["SARAGOSSE", "JAN POTOCKI"],
+      ["L’ENCYCLOPÉDIE", "DIDEROT · D’ALEMBERT"]
     ],
     "back": {
       "reviews": [
@@ -874,7 +878,11 @@
           ["L’Odyssée", "Homère, traduction de Leconte de Lisle", "Lemerre, 1893 · Wikisource"],
           ["Les Mille et Une Nuits", "traduction d’Antoine Galland", "Le Normant, 1806 · Wikisource"],
           ["Alice au pays des merveilles", "Lewis Carroll, traduction d’Henri Bué", "1869 · Wikisource"],
-          ["Moby Dick", "Herman Melville", "Harper, 1851 · Projet Gutenberg"]
+          ["Moby Dick", "Herman Melville", "Harper, 1851 · Projet Gutenberg"],
+          ["Don Quichotte", "Cervantès, traduction de Louis Viardot", "Hachette, 1863 · Wikisource"],
+          ["La Divine Comédie", "Dante, traduction de Lamennais", "Didier, 1863 · Wikisource"],
+          ["Manuscrit trouvé à Saragosse", "Jan Potocki", "Gide fils, 1814 · Wikisource"],
+          ["L’Encyclopédie", "Diderot et d’Alembert, tome I", "Paris, 1751 · Wikisource"]
         ],
         "fontsIntro": "Sous licence libre (SIL Open Font License).",
         "notesEmpty": "Rien encore. La Bibliothèque se construit.",

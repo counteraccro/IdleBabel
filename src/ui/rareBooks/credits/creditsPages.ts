@@ -37,11 +37,12 @@ const FONTS: [string, string][] = [
   ['Cinzel', 'Natanael Gama'],
   ['EB Garamond', 'Georg Duffner'],
   ['Libre Caslon Text', 'Impallari Type'],
-  ['IM Fell English', 'Igino Marini'],
+  ['IM Fell', 'Igino Marini'],
   ['Cormorant Garamond', 'Christian Thalmann'],
   ['Libre Baskerville', 'Impallari Type'],
   ['Playfair Display', 'Claus Eggers Sørensen'],
   ['Old Standard TT', 'Alexey Kryukov'],
+  ['Bodoni Moda', 'Owen Earl'],
   ['UnifrakturMaguntia', 'J. « Mach » Wust'],
   ['Oswald', 'Vernon Adams'],
   ['Inter', 'Rasmus Andersson'],
@@ -144,24 +145,32 @@ const rollPage = (context: CanvasRenderingContext2D): void => {
   folio(context, ROLL_PAGE);
 };
 
-const textsPage = (context: CanvasRenderingContext2D): void => {
+/** Les textes de la première page (sous le titre de la partie) ; les autres suivent sur son verso. */
+const TEXTS_FIRST = 4;
+
+/** Les textes, d'abord sous le titre de la partie, puis sur la page suivante, plus haut. */
+const textsPage = (context: CanvasRenderingContext2D, page: number): void => {
   const { parts, textsIntro, texts } = text();
-  heading(context, parts[2]);
-  write(context, textsIntro, CENTER, 205, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-  texts.forEach(([title, who, where], i) => {
-    const y = 280 + i * 110;
+  const first = page === TEXTS_PAGE;
+  if (first) {
+    heading(context, parts[2]);
+    write(context, textsIntro, CENTER, 205, { font: `italic 18px ${GARAMOND}`, color: SOFT });
+  }
+  const shown = first ? texts.slice(0, TEXTS_FIRST) : texts.slice(TEXTS_FIRST);
+  shown.forEach(([title, who, where], i) => {
+    const y = (first ? 280 : 130) + i * 110;
     write(context, title, CENTER, y, { font: `500 24px ${GARAMOND}`, color: INK });
     write(context, who, CENTER, y + 28, { font: `italic 18px ${GARAMOND}`, color: INK });
     write(context, where.toLocaleUpperCase(), CENTER, y + 54, { font: `500 12px ${TITLE}`, color: SOFT, spacing: 2 });
   });
-  folio(context, TEXTS_PAGE);
+  folio(context, page);
 };
 
 const fontsPage = (context: CanvasRenderingContext2D): void => {
   const { parts, fontsIntro } = text();
   heading(context, parts[3]);
   write(context, fontsIntro, CENTER, 205, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 29));
+  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 28));
   folio(context, FONTS_PAGE);
 };
 
@@ -187,19 +196,20 @@ const colophonPage = (context: CanvasRenderingContext2D): void => {
   context.fill();
 };
 
-const PAGES: Record<number, (context: CanvasRenderingContext2D) => void> = {
+const PAGES: Record<number, (context: CanvasRenderingContext2D, page: number) => void> = {
   1: titlePage,
   [FOREWORD_PAGE]: forewordPage,
   [CONTENTS_PAGE]: contentsPage,
   [ROLL_PAGE]: rollPage,
   [TEXTS_PAGE]: textsPage,
+  [TEXTS_PAGE + 1]: textsPage,
   [FONTS_PAGE]: fontsPage,
   [NOTES_PAGE]: notesPage,
   [COLOPHON_PAGE]: colophonPage,
 };
 
 /** Dessine la page `page` sur son papier ; les autres restent blanches (les notes de mise à jour à venir). */
-export const paintCreditsPage = (context: CanvasRenderingContext2D, page: number): void => PAGES[page]?.(context);
+export const paintCreditsPage = (context: CanvasRenderingContext2D, page: number): void => PAGES[page]?.(context, page);
 
 /** Les lignes du sommaire mènent à leur partie ; les liens de l'avant-propos ouvrent GitHub (l'auteur, le dépôt). */
 export const creditsLinks = (page: number): PageLink[] => {
