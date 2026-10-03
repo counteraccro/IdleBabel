@@ -14,6 +14,8 @@ export type DraftGroup = keyof typeof DRAFT_GROUPS;
 
 export interface StorySection {
   key: SectionKey;
+  /** Une sous-partie de la partie qui la précède (titre plus petit, plus en retrait au sommaire). */
+  sub?: boolean;
   /** Les livres rares dont la couverture retenue suit la partie (ids de arts.ts). */
   plates?: string[];
   /** Les pistes écartées hors livres qui la suivent. */
@@ -38,6 +40,7 @@ export const BOOK_DRAFTS: Record<string, string[]> = {
   bible: ['bible-a'],
   arabianNights: ['arabianNights-a', 'arabianNights-b'],
   odyssey: ['odyssey-a'],
+  quixote: ['quixote-b', 'quixote-c'],
   credits: ['credits-a', 'credits-b'],
   idleBabel: ['idleBabel-a', 'idleBabel-b', 'idleBabel-c'],
 };
@@ -66,11 +69,13 @@ export const STORY: StoryChapter[] = [
       { key: 'voice', drafts: ['modals', 'modalForms'] },
       { key: 'numerals', drafts: ['numerals'] },
       { key: 'anomalies' },
-      { key: 'rareBooks', plates: ['deathBook', 'directory', 'blankPage', 'debug', 'alexH', 'oriana'] },
+      // Toutes les couvertures au même endroit : une partie « Les livres », et dedans les rares puis les classiques.
+      { key: 'books' },
+      { key: 'rareBooks', sub: true, plates: ['deathBook', 'directory', 'blankPage', 'debug', 'alexH', 'oriana', 'credits', 'idleBabel'] },
+      { key: 'classics', sub: true, plates: ['alice', 'mobyDick', 'bible', 'arabianNights', 'odyssey', 'quixote'] },
       { key: 'library', drafts: ['showcase'] },
-      { key: 'classics', plates: ['alice', 'mobyDick', 'bible', 'arabianNights', 'odyssey'] },
       { key: 'credits' },
-      { key: 'thisBook', plates: ['credits', 'idleBabel'] },
+      { key: 'thisBook' },
     ],
   },
   { key: 'alpha' },

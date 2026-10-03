@@ -46,9 +46,11 @@ export const FOREWORD_PAGE = 3;
 export const CONTENTS_PAGE = 5;
 const FIRST_CHAPTER_PAGE = 7;
 /** Le sommaire : ligne de base de la première entrée, pas d'un chapitre, pas d'une partie. */
-const CONTENTS_TOP = 190;
+const CONTENTS_TOP = 176;
 const CONTENTS_STEP = 42;
 const CONTENTS_SUB_STEP = 26;
+/** Le pas d'une sous-partie, plus serré. */
+const CONTENTS_SUB_SUB_STEP = 22;
 
 export type Painter = (context: CanvasRenderingContext2D) => void;
 
@@ -67,6 +69,8 @@ export interface ContentsEntry {
   page: number;
   /** Une partie (plus petite, en retrait) plutôt qu'un chapitre. */
   part?: boolean;
+  /** Une sous-partie : encore plus en retrait. */
+  sub?: boolean;
 }
 
 export interface BookLayout {
@@ -98,7 +102,7 @@ const heading = (context: CanvasRenderingContext2D, title: string, y: number): v
 };
 
 /** Ce que contient un chapitre, dans l'ordre : paragraphes, intertitres, et ce qui illustre une partie. */
-type Block = { paragraph: string } | { head: string } | { plates: string[]; drafts: DraftGroup[] };
+type Block = { paragraph: string } | { head: string; sub?: boolean } | { plates: string[]; drafts: DraftGroup[]; now?: boolean };
 
 interface Line {
   words: string[];
@@ -242,8 +246,8 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
     const blocks: Block[] = intro.map((paragraph) => ({ paragraph }));
     for (const section of chapter.sections ?? []) {
       const part = text.sections[section.key];
-      blocks.push({ head: part.head }, ...part.text.map((paragraph) => ({ paragraph })));
-      if (section.plates || section.drafts) blocks.push({ plates: section.plates ?? [], drafts: section.drafts ?? [] });
+      blocks.push({ head: part.head, sub: section.sub }, ...part.text.map((paragraph) => ({ paragraph })));
+      if (section.plates || section.drafts) blocks.push({ plates: section.plates ?? [], drafts: section.drafts ?? [], now: section.sub });
     }
     if (!blocks.length) {
       draws.push((target) => write(target, text.soon, CENTER, 330 + extra, { font: `italic 22px ${GARAMOND}`, color: SOFT }));
@@ -266,15 +270,21 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
         }
         for (const group of block.drafts)
           queue.push(withFolio((target) => art.drafts(target, DRAFT_GROUPS[group], text.draftGroups[group])));
+        // Les couvertures d'une sous-partie de « Les livres » la suivent tout de suite (la page reste courte) :
+        // la sous-partie suivante commence après elles.
+        if (block.now) close();
         continue;
       }
       if ('head' in block) {
         // Un intertitre garde au moins une ligne avec lui.
         if (y + HEAD_BEFORE + HEAD_AFTER + LEADING > BOTTOM) close();
         const at = y === TOP ? y : y + HEAD_BEFORE;
-        contents.push({ name: block.head, page, part: true });
+        contents.push({ name: block.head, page, part: true, sub: block.sub });
+        // Une sous-partie : son titre en italique, sous celui de sa partie.
         draws.push((target) =>
-          write(target, block.head.toLocaleUpperCase(), CENTER, at, { font: `500 15px ${TITLE}`, color: MOROCCO, spacing: 4 }),
+          block.sub
+            ? write(target, block.head, CENTER, at, { font: `italic 20px ${GARAMOND}`, color: MOROCCO })
+            : write(target, block.head.toLocaleUpperCase(), CENTER, at, { font: `500 15px ${TITLE}`, color: MOROCCO, spacing: 4 }),
         );
         y = at + HEAD_AFTER;
         afterHead = true;
@@ -308,10 +318,10 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
   pages.set(CONTENTS_PAGE, (target) => {
     heading(target, text.contents, 110);
     const baselines = contentsBaselines(contents);
-    contents.forEach(({ name, page: at, part }, i) => {
+    contents.forEach(({ name, page: at, part, sub }, i) => {
       const y = baselines[i];
-      const left = part ? 118 : 90;
-      const font = part ? `italic 17px ${GARAMOND}` : `400 21px ${GARAMOND}`;
+      const left = sub ? 146 : part ? 118 : 90;
+      const font = sub ? `italic 15px ${GARAMOND}` : part ? `italic 17px ${GARAMOND}` : `400 21px ${GARAMOND}`;
       write(target, name, left, y, { font, color: part ? SOFT : INK, align: 'left' });
       write(target, String(at), WIDTH - 90, y, { font: `500 ${part ? 13 : 15}px ${TITLE}`, color: SOFT, align: 'right', spacing: 1 });
       target.font = font;
@@ -327,5 +337,5 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
 /** Les lignes du sommaire (ligne de base de chacune), pour les rendre cliquables. */
 export const contentsBaselines = (contents: ContentsEntry[]): number[] => {
   let y = CONTENTS_TOP;
-  return contents.map(({ part }, i) => (y += part ? CONTENTS_SUB_STEP : i ? CONTENTS_STEP : 0));
+  return contents.map(({ part, sub }, i) => (y += sub ? CONTENTS_SUB_SUB_STEP : part ? CONTENTS_SUB_STEP : i ? CONTENTS_STEP : 0));
 };

@@ -10,6 +10,8 @@ export interface ClassicChapter {
   label: string;
   title: string;
   paras: string[];
+  /** Une grande partie du livre (« SECONDE PARTIE ») : la numérotation des chapitres repart de un après elle. */
+  part?: boolean;
 }
 
 export interface ClassicText {

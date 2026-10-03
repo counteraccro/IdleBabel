@@ -79,4 +79,21 @@ describe('mise en page des classiques', () => {
     expect(lines.map((line) => line.text)).toEqual(['Premier vers', 'Second vers']);
     expect(lines[0].x).toBe(lines[1].x);
   });
+
+  it('la table des matières plus loin, si le livre a une page avant sa page de titre', async () => {
+    const layout = await layoutClassic(context, book([[para(3)], [para(3)]]), { ...STYLE, contentsPage: 5 });
+    expect(layout.contentsPage).toBe(5);
+    expect(layout.starts[0]).toBe(6);
+  });
+
+  it('justifié : chaque ligne s’étale sur sa largeur, sauf la dernière du paragraphe', async () => {
+    const layout = await layoutClassic(context, book([[para(4), para(4)]]), { ...STYLE, justify: true });
+    const lines = layout.pages.get(layout.starts[0])!.lines;
+    const ends = lines.filter((line) => line.justify === undefined);
+    expect(ends).toHaveLength(2);
+    expect(lines.filter((line) => line.justify).every((line) => line.x + line.justify! <= 640 - 64)).toBe(true);
+    // Sans le style, rien n'est justifié.
+    const plain = await layoutClassic(context, book([[para(4)]]), STYLE);
+    expect(plain.pages.get(plain.starts[0])!.lines.every((line) => line.justify === undefined)).toBe(true);
+  });
 });

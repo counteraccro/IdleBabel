@@ -21,6 +21,11 @@ export interface ClassicBook {
   warm?: () => Promise<unknown>;
   cover: (state: GameState, design: CoverDesign) => RareBookLook | Promise<RareBookLook>;
   titlePage: (context: CanvasRenderingContext2D) => void;
+  /**
+   * Une page avant la page de titre (le fac-similé d'une autre édition) : elle prend la page 1, la page de
+   * titre la 3 ; le style place alors la table des matières plus loin (`contentsPage`).
+   */
+  flyleaf?: (context: CanvasRenderingContext2D) => void;
   /** Ce qui marque le papier de chaque page (piqûres, rousseurs), dessiné avant le texte. */
   decorate?: (context: CanvasRenderingContext2D, page: number) => void;
   /** « Table des matières », dans la langue du jeu. */
@@ -73,11 +78,12 @@ export const classicArt = (book: ClassicBook): RareBookArt => {
     paint: (page, canvas, spineOnLeft) => {
       const context = preparePageTexture(canvas, spineOnLeft, book.paper);
       book.decorate?.(context, page);
-      if (page === 1) book.titlePage(context);
+      if (page === 1) (book.flyleaf ?? book.titlePage)(context);
+      else if (page === 3 && book.flyleaf) book.titlePage(context);
       else if (laid) paintClassicPage(context, page, laid.text, laid.layout, book.style, book.contentsHeading());
       return true;
     },
-    bookmark: CONTENTS_PAGE,
+    bookmark: book.style.contentsPage ?? CONTENTS_PAGE,
     links: (page) => classicLinks(page, laid?.layout ?? null),
   };
 };

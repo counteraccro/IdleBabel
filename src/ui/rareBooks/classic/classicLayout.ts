@@ -27,7 +27,13 @@ export interface ClassicStyle {
   /** Au plus ce nombre de pages par chapitre : on s'arrête au dernier paragraphe entier qui y tient. */
   chapterPages?: number;
   /** Le haut de l'ouverture d'un chapitre, propre au livre (sans : son numéro, son titre, un filet). */
-  head?: (context: CanvasRenderingContext2D, title: string) => void;
+  head?: (context: CanvasRenderingContext2D, title: string, label: string) => void;
+  /** La page de la table des matières (sans : la 3e, après la page de titre). */
+  contentsPage?: number;
+  /** Un titre trop long pour une ligne de la table y tient sur deux, plus petit (sans : sur une seule, rapetissé). */
+  contentsWrap?: boolean;
+  /** Le texte justifié (sauf la dernière ligne de chaque paragraphe) ; sans : aligné à gauche. */
+  justify?: boolean;
   /** Des placements propres au livre, repris de sa maquette (sans : ceux du moteur). */
   marks?: ClassicMarks;
 }
@@ -47,7 +53,15 @@ export interface ClassicMarks {
   first: number;
   opening: number;
   /** Le titre courant ; `left` : celui des pages de gauche (le titre du livre), sinon celui du chapitre partout. */
-  runningHead: { font: string; color: string; spacing: number; y: number; left?: () => string };
+  runningHead: {
+    font: string;
+    color: string;
+    spacing: number;
+    y: number;
+    left?: () => string;
+    /** Celui des pages de droite, d'après le chapitre (sans : son titre). */
+    right?: (label: string, title: string) => string;
+  };
   /** Le numéro de page, en bas au milieu ; `top` : sauf aux ouvertures, en haut dans le coin extérieur. */
   folio: { font: string; color: string; y: number; top?: number };
   /** Les lignes centrées (les nuits) : leur police, un filet dessous (`rule` sous la ligne de base, demi-largeur `half`), la place en plus après. */
@@ -75,6 +89,8 @@ export interface PlacedLine {
   x: number;
   y: number;
   center?: boolean;
+  /** Justifiée : la largeur sur laquelle étaler ses mots. */
+  justify?: number;
 }
 
 export interface ClassicPage {
@@ -89,6 +105,8 @@ export interface ClassicLayout {
   pages: Map<number, ClassicPage>;
   /** La page où s'ouvre chaque chapitre (les chapitres coupés par la fin du livre n'en ont pas). */
   starts: number[];
+  /** La première page de la table des matières, et leur nombre. */
+  contentsPage: number;
   contentsPages: number;
 }
 
@@ -115,8 +133,9 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
   const pages = new Map<number, ClassicPage>();
   const starts: number[] = [];
   const contentsPages = Math.ceil(text.chapters.length / CONTENTS_ROWS);
-  const done = (): ClassicLayout => ({ pages, starts, contentsPages });
-  let page = CONTENTS_PAGE + contentsPages;
+  const contentsPage = style.contentsPage ?? CONTENTS_PAGE;
+  const done = (): ClassicLayout => ({ pages, starts, contentsPage, contentsPages });
+  let page = contentsPage + contentsPages;
   // Le haut des lignes, d'après les lignes de base voulues (la police est posée par son ascendante).
   context.font = font;
   const ascent = context.measureText('M').fontBoundingBoxAscent;
@@ -135,12 +154,15 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
     y = opening ? openingTop : top;
     return true;
   };
-  const place = (chapter: number, line: string, x: number, center = false): boolean => {
+  const place = (chapter: number, line: string, x: number, center = false, justify?: number): boolean => {
     if (y + style.line > BOTTOM && !turn(chapter)) return false;
-    current!.lines.push({ text: line, x, y, center });
+    current!.lines.push({ text: line, x, y, center, ...(justify ? { justify } : {}) });
     y += style.line;
     return true;
   };
+  /** La largeur où étaler la ligne `row` d'un paragraphe, si le livre est justifié (jamais sa dernière ligne). */
+  const justified = (lines: string[], row: number, width: (n: number) => number): number | undefined =>
+    style.justify && row < lines.length - 1 ? width(row) : undefined;
   /** Pose le paragraphe `para` ; false : il ne tient plus. */
   const placePara = (chapter: number, index: number, para: string): boolean => {
     context.font = font;
@@ -170,12 +192,13 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
       const drop = box ? box.size + box.gap : context.measureText(letter).width + 8;
       context.font = font;
       current!.dropCap = { letter, x: LEFT, y, size };
-      const lines = wrapVarying(context, para.slice(1), (n) => RIGHT - LEFT - (n < rows ? drop : 0));
-      return lines.every((line, row) => place(chapter, line, LEFT + (row < rows ? drop : 0)));
+      const width = (n: number): number => RIGHT - LEFT - (n < rows ? drop : 0);
+      const lines = wrapVarying(context, para.slice(1), width);
+      return lines.every((line, row) => place(chapter, line, LEFT + (row < rows ? drop : 0), false, justified(lines, row, width)));
     }
-    return wrapVarying(context, para, (n) => RIGHT - LEFT - (n ? 0 : INDENT)).every((line, row) =>
-      place(chapter, line, LEFT + (row ? 0 : INDENT)),
-    );
+    const width = (n: number): number => RIGHT - LEFT - (n ? 0 : INDENT);
+    const lines = wrapVarying(context, para, width);
+    return lines.every((line, row) => place(chapter, line, LEFT + (row ? 0 : INDENT), false, justified(lines, row, width)));
   };
   for (const [chapter, { paras }] of text.chapters.entries()) {
     if (current) page++;

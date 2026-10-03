@@ -10,6 +10,7 @@ import { idleBabelArt } from './idleBabel/idleBabel';
 import { mobyDickArt } from './mobyDick/mobyDick';
 import { odysseyArt } from './odyssey/odyssey';
 import { orianaArt } from './oriana/oriana';
+import { quixoteArt } from './quixote/quixote';
 import { defaultArt } from './defaultArt';
 import { debugBookArt } from './debugBook/debugBook';
 import type { RareBookArt } from './rareBookArt';
@@ -28,6 +29,7 @@ const ARTS: Record<string, RareBookArt> = {
   mobyDick: mobyDickArt,
   odyssey: odysseyArt,
   oriana: orianaArt,
+  quixote: quixoteArt,
   debug: debugBookArt,
 };
 

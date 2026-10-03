@@ -1,6 +1,6 @@
 import { PAGE_TEXTURE } from '../../book/pageLayout';
-import { PAGE_CENTER, write } from '../draw';
-import { CONTENTS_PAGE, CONTENTS_ROWS, LEFT, OPENING_TOP, RIGHT, type ClassicLayout, type ClassicStyle } from './classicLayout';
+import { PAGE_CENTER, wrap, write } from '../draw';
+import { CONTENTS_ROWS, LEFT, OPENING_TOP, RIGHT, type ClassicLayout, type ClassicStyle } from './classicLayout';
 import type { ClassicText } from './classicText';
 import type { PageLink } from '../rareBookArt';
 
@@ -69,7 +69,7 @@ const contentsPage = (
   style: ClassicStyle,
   heading: string,
 ): void => {
-  const sheet = page - CONTENTS_PAGE;
+  const sheet = page - layout.contentsPage;
   if (sheet === 0) {
     write(context, heading.toUpperCase(), PAGE_CENTER, 100, { font: `bold 19px ${style.body}`, color: style.ink, spacing: 4 });
     context.fillStyle = style.ink;
@@ -80,27 +80,45 @@ const contentsPage = (
     const { label, title: name } = text.chapters[from + row];
     const y = CONTENTS_TOP + row * CONTENTS_STEP;
     const font = `15px ${style.body}`;
-    // Les chapitres sont numérotés ; les parties hors série (étymologie, épilogue…) portent leur nom.
+    // Les chapitres sont numérotés (depuis le début du livre, ou de la grande partie où ils sont) ; les
+    // parties hors série (étymologie, épilogue…) portent leur nom.
     const numbered = isNumbered(label);
-    const number = text.chapters.slice(0, from + row + 1).filter((chapter) => isNumbered(chapter.label)).length;
+    let number = 0;
+    for (const chapter of text.chapters.slice(0, from + row + 1)) number = chapter.part ? 0 : number + (isNumbered(chapter.label) ? 1 : 0);
     const title = numbered ? name : partName(label, name);
     if (numbered) write(context, `${roman(number)}.`, LEFT + 46, y, { font, color: style.ink, align: 'right' });
-    // Sans nom de partie (des contes) : le titre part de la marge ; trop long, il est imprimé plus petit.
+    // Sans nom de partie (des contes) : le titre part de la marge ; trop long, il est imprimé plus petit, ou
+    // sur deux lignes si le livre le veut (coupé d'un « … » s'il en faut plus).
     const x = label ? LEFT + 58 : LEFT;
-    const size = fitting(context, title, (px) => `${px}px ${style.body}`, 15, RIGHT - 60 - x);
-    context.font = `${size}px ${style.body}`;
-    const width = context.measureText(title).width;
-    write(context, title, x, y, { font: context.font, color: style.ink, align: 'left' });
-    write(context, String(start), RIGHT, y, { font, color: style.ink, align: 'right' });
+    const room = RIGHT - 60 - x;
+    const size = fitting(context, title, (px) => `${px}px ${style.body}`, 15, room);
+    let lines = [title];
+    if (style.contentsWrap && size < 15) {
+      context.font = `13px ${style.body}`;
+      lines = wrap(context, title, room);
+      if (lines.length > 2) {
+        let second = lines[1];
+        while (context.measureText(`${second} …`).width > room) second = second.slice(0, second.lastIndexOf(' '));
+        lines = [lines[0], `${second.replace(/[ ,;:.]+$/, '')}…`];
+      }
+    } else context.font = `${size}px ${style.body}`;
+    const lineFont = context.font;
+    // Sur deux lignes : la première un peu au-dessus de la place de la ligne, la seconde un peu en dessous.
+    const rows = lines.map((line, index) => [line, lines.length === 1 ? y : y - 8 + index * 16] as const);
+    for (const [line, top] of rows) write(context, line, x, top, { font: lineFont, color: style.ink, align: 'left' });
+    const [last, lastTop] = rows[rows.length - 1];
+    context.font = lineFont;
+    const width = context.measureText(last).width;
+    write(context, String(start), RIGHT, lastTop, { font, color: style.ink, align: 'right' });
     // Points de conduite entre le titre et la page.
     context.fillStyle = '#a89878';
-    for (let dot = x + width + 10; dot < RIGHT - 36; dot += 8) context.fillRect(dot, y + 12, 1.5, 1.5);
+    for (let dot = x + width + 10; dot < RIGHT - 36; dot += 8) context.fillRect(dot, lastTop + 12, 1.5, 1.5);
   });
 };
 
 /** Le haut de l'ouverture d'un chapitre : son numéro, son titre, un filet. */
 const chapterHead = (context: CanvasRenderingContext2D, { label, title }: { label: string; title: string }, style: ClassicStyle): void => {
-  if (style.head) return style.head(context, title);
+  if (style.head) return style.head(context, title, label);
   write(context, `${label.toUpperCase()}.`, PAGE_CENTER, 150, { font: `15px ${style.body}`, color: style.ink, spacing: 3 });
   if (title) {
     // Un titre trop long pour la page est imprimé plus petit.
@@ -132,6 +150,26 @@ const baseline = (
   context.letterSpacing = '0px';
 };
 
+/** Une ligne justifiée : ses mots étalés sur `width`, l'espace partagé entre eux. */
+const justifyLine = (
+  context: CanvasRenderingContext2D,
+  line: string,
+  x: number,
+  y: number,
+  width: number,
+  font: string,
+  color: string,
+): void => {
+  const words = line.split(' ');
+  context.font = font;
+  const gap = words.length > 1 ? (width - words.reduce((sum, word) => sum + context.measureText(word).width, 0)) / (words.length - 1) : 0;
+  let at = x;
+  for (const word of words) {
+    write(context, word, at, y, { font, color, align: 'left' });
+    at += context.measureText(word).width + gap;
+  }
+};
+
 /** Une page du texte (ou la table des matières) ; false : rien n'y est imprimé. */
 export const paintClassicPage = (
   context: CanvasRenderingContext2D,
@@ -142,7 +180,7 @@ export const paintClassicPage = (
   contentsHeading: string,
 ): boolean => {
   context.textBaseline = 'alphabetic';
-  if (page >= CONTENTS_PAGE && page < CONTENTS_PAGE + layout.contentsPages) {
+  if (page >= layout.contentsPage && page < layout.contentsPage + layout.contentsPages) {
     contentsPage(context, page, text, layout, style, contentsHeading);
     return true;
   }
@@ -152,8 +190,13 @@ export const paintClassicPage = (
   if (content.opening) chapterHead(context, chapter, style);
   // Le titre courant : celui du chapitre, en petit, en haut de page.
   else if (style.marks) {
-    const { font, color, spacing, y, left } = style.marks.runningHead;
-    const running = left && page % 2 === 0 ? left() : titled(chapter.title || partName(chapter.label)).toUpperCase();
+    const { font, color, spacing, y, left, right } = style.marks.runningHead;
+    const running =
+      left && page % 2 === 0
+        ? left()
+        : right
+          ? right(chapter.label, chapter.title)
+          : titled(chapter.title || partName(chapter.label)).toUpperCase();
     baseline(context, running, PAGE_CENTER, y, font, color, spacing);
   } else {
     const running = titled(chapter.title || partName(chapter.label)).toUpperCase();
@@ -176,14 +219,15 @@ export const paintClassicPage = (
     write(context, letter, x, y - style.line * 1.3, { font: `${size}px ${style.dropCap}`, color: style.accent, align: 'left' });
   }
   const centered = style.marks?.centered;
-  for (const { text: line, x, y, center } of content.lines) {
+  for (const { text: line, x, y, center, justify } of content.lines) {
     if (center && centered) {
       // Une nuit : sa police, et un court filet dessous.
       context.font = centered.font;
       const base = y + context.measureText('M').fontBoundingBoxAscent;
       baseline(context, line, x, base, centered.font, style.ink, centered.spacing);
       context.fillRect(x - centered.half, base + centered.rule, 2 * centered.half, 1);
-    } else write(context, line, x, y, { font, color: style.ink, align: center ? 'center' : 'left' });
+    } else if (justify) justifyLine(context, line, x, y, justify, font, style.ink);
+    else write(context, line, x, y, { font, color: style.ink, align: center ? 'center' : 'left' });
   }
   if (style.marks) {
     const { font: folio, color, y, top } = style.marks.folio;
@@ -198,8 +242,8 @@ export const paintClassicPage = (
 
 /** Les lignes de la table des matières : un clic mène au chapitre. */
 export const classicLinks = (page: number, layout: ClassicLayout | null): PageLink[] => {
-  if (!layout || page < CONTENTS_PAGE || page >= CONTENTS_PAGE + layout.contentsPages) return [];
-  const from = (page - CONTENTS_PAGE) * CONTENTS_ROWS;
+  if (!layout || page < layout.contentsPage || page >= layout.contentsPage + layout.contentsPages) return [];
+  const from = (page - layout.contentsPage) * CONTENTS_ROWS;
   return layout.starts.slice(from, from + CONTENTS_ROWS).map((target, row) => ({
     y: CONTENTS_TOP + row * CONTENTS_STEP - 12,
     height: CONTENTS_STEP,

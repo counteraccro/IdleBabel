@@ -129,7 +129,46 @@
   },
   "quixote": {
     "name": "Don Quichotte",
-    "cover": ["Don Quichotte"]
+    "cover": ["Don Quichotte"],
+    "contents": "Table des chapitres",
+    "running": "DON QUICHOTTE.",
+    "front": ["L’INGÉNIEUX HIDALGO", "DON QUICHOTTE", "DE LA MANCHE", "CERVANTÈS", "DESSINS DE GUSTAVE DORÉ"],
+    "spine": ["DON", "QUICHOTTE", "CERVANTÈS", "G. DORÉ", "HACHETTE"],
+    "titlePage": [
+      [140, "over", "L’INGÉNIEUX HIDALGO"],
+      [210, "title", "DON QUICHOTTE"],
+      [256, "under", "DE LA MANCHE"],
+      [306, "by", "PAR"],
+      [334, "author", "MIGUEL DE CERVANTES SAAVEDRA"],
+      [360, "rule", ""],
+      [394, "translation", "TRADUCTION DE LOUIS VIARDOT"],
+      [440, "drawings", "AVEC LES DESSINS DE GUSTAVE DORÉ"],
+      [466, "engraver", "GRAVÉS PAR H. PISAN"],
+      [524, "volume", "TOME PREMIER"],
+      [634, "city", "PARIS"],
+      [662, "publisher", "LIBRAIRIE DE L. HACHETTE ET Cie"],
+      [684, "address", "BOULEVARD SAINT-GERMAIN, Nº 77"],
+      [710, "year", "M DCCC LXIII"]
+    ],
+    "flyleaf": {
+      "lines": [
+        [104, "title", "EL INGENIOSO"],
+        [148, "title", "HIDALGO DON QVI-"],
+        [192, "title", "XOTE DE LA MANCHA,"],
+        [236, "author", "Compuesto por Miguel de Ceruantes"],
+        [262, "author", "Saauedra."],
+        [302, "dedication", "DIRIGIDO AL DVQVE DE BEIAR,"],
+        [326, "titles", "Marques de Gibraleon, Conde de Benalcaçar, y Ba-"],
+        [346, "titles", "ñares, Vizconde de la Puebla de Alcozer, Señor de"],
+        [366, "titles", "las villas de Capilla, Curiel, y"],
+        [386, "titles", "Burguillos."],
+        [652, "privilege", "CON PRIVILEGIO,"],
+        [682, "printer", "EN MADRID, Por Iuan de la Cuesta."],
+        [708, "seller", "Vendese en casa de Francisco de Robles, librero del Rey nro señor."]
+      ],
+      "motto": "POST · TENEBRAS · SPERO · LVCEM · ",
+      "year": ["Año,", "1605."]
+    }
   },
   "divineComedy": {
     "name": "La Divine Comédie",
@@ -994,6 +1033,10 @@
             "Alors les livres ont commencé à répondre. Des citations célèbres glissées dans le hasard, des phrases sur l’escalier et le miroir, d’autres qui s’adressent au lecteur. Ce livre ne dira pas lesquelles."
           ]
         },
+        "books": {
+          "head": "Les livres",
+          "text": []
+        },
         "rareBooks": {
           "head": "Les livres rares",
           "text": [
@@ -1009,7 +1052,7 @@
         "classics": {
           "head": "Les classiques",
           "text": [
-            "Puis sont venus les classiques. Alice dans sa toile rouge, Moby-Dick dans son ardoise gaufrée, une Bible de famille, les Mille et Une Nuits dans un maroquin bordeaux, l’Odyssée sous un papier caillouté. Des textes du domaine public, mis en page ligne à ligne, par petits morceaux, pour que le jeu ne s’essouffle pas.",
+            "Puis sont venus les classiques. Alice dans sa toile rouge, Moby-Dick dans son ardoise gaufrée, une Bible de famille, les Mille et Une Nuits dans un maroquin bordeaux, l’Odyssée sous un papier caillouté, Don Quichotte dans la percaline rouge du grand Doré, avec en page de garde la page de titre de Madrid, 1605. Des textes du domaine public, mis en page ligne à ligne, par petits morceaux, pour que le jeu ne s’essouffle pas.",
             "Chaque livre a reçu un signet de soie qui pend et se balance. Le premier claquait comme un fouet. Le second était plus calme."
           ]
         },
@@ -1043,6 +1086,8 @@
         "arabianNights-a": "Galland, Paris, 1704",
         "arabianNights-b": "Le Normant, Paris, 1806",
         "odyssey-a": "La couverture imprimée de Lemerre",
+        "quixote-b": "L’originale de Madrid, 1605",
+        "quixote-c": "Le cartonnage d’étrennes de Garnier",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",
