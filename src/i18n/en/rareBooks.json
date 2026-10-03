@@ -271,7 +271,42 @@
   },
   "encyclopedia": {
     "name": "The Encyclopédie",
-    "cover": ["Encyclopédie"]
+    "cover": ["Encyclopédie"],
+    "contents": "TABLE DES ARTICLES.",
+    "front": {
+      "title": "ENCYCLOPÉDIE",
+      "volume": "TOME I"
+    },
+    "spine": {
+      "title": ["ENCY-", "CLOPÉDIE"],
+      "volume": ["TOM.", "I."]
+    },
+    "titlePage": [
+      [108, "title", "ENCYCLOPÉDIE,"],
+      [138, "or", "OU"],
+      [172, "dictionary", "DICTIONNAIRE RAISONNÉ"],
+      [204, "sciences", "DES SCIENCES,"],
+      [232, "arts", "DES ARTS ET DES MÉTIERS,"],
+      [266, "society", "PAR UNE SOCIÉTÉ DE GENS DE LETTRES."],
+      [300, "editors", "Mis en ordre & publié par M. DIDEROT, de l’Académie Royale des"],
+      [317, "editors", "Sciences & des Belles-Lettres de Prusse ; & quant à la Partie"],
+      [334, "editors", "Mathématique, par M. D’ALEMBERT, de l’Académie Royale des"],
+      [351, "editors", "Sciences de Paris, de celle de Prusse, & de la Société Royale de Londres."],
+      [383, "motto", "Tantùm series juncturaque pollet,"],
+      [400, "motto", "Tantùm de medio sumptis accedit honoris !  Horat."],
+      [436, "volume", "TOME PREMIER."],
+      [568, "vignette", ""],
+      [652, "city", "A PARIS,"],
+      [678, "booksellers", "Chez BRIASSON, DAVID l’aîné, LE BRETON, DURAND."],
+      [692, "rule", "70"],
+      [718, "year", "M. DCC. LI."],
+      [744, "privilege", "AVEC APPROBATION ET PRIVILEGE DU ROY."]
+    ],
+    "discours": {
+      "title": ["DISCOURS PRÉLIMINAIRE", "DES EDITEURS."],
+      "running": "DISCOURS PRÉLIMINAIRE."
+    },
+    "dictionary": ["ENCYCLOPÉDIE,", "OU DICTIONNAIRE RAISONNÉ", "DES SCIENCES, DES ARTS ET DES MÉTIERS."]
   },
   "catalogue": {
     "name": "The Catalogue of Catalogues",
@@ -1081,7 +1116,7 @@
         "classics": {
           "head": "The classics",
           "text": [
-            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper, Don Quixote in the red cloth of the great Doré edition, with the title page of Madrid, 1605, as a flyleaf, the Divine Comedy in midnight-blue morocco with the whole universe of the poem tooled in gold, Hell, Purgatory and the nine heavens, the Manuscript Found in Saragossa in the tree calf of its 1814 edition, which ends on the promise of a sequel that never came, and blank pages. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
+            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper, Don Quixote in the red cloth of the great Doré edition, with the title page of Madrid, 1605, as a flyleaf, the Divine Comedy in midnight-blue morocco with the whole universe of the poem tooled in gold, Hell, Purgatory and the nine heavens, the Manuscript Found in Saragossa in the tree calf of its 1814 edition, which ends on the promise of a sequel that never came, and blank pages, the Encyclopédie of Diderot and d’Alembert in the mottled calf of its subscribers, the Preliminary Discourse, then, in two columns, the articles that speak of the Library: Babel, Library, Book. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
             "Every book was given a silk ribbon that hangs and sways. The first one cracked like a whip. The second was calmer."
           ]
         },
@@ -1121,6 +1156,8 @@
         "divineComedy-b": "Dante’s profile",
         "saragossa-b": "The notebooks from the little house",
         "saragossa-c": "The gallows of Los Hermanos",
+        "encyclopedia-b": "The tree of knowledge",
+        "encyclopedia-c": "The typesetter’s case",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

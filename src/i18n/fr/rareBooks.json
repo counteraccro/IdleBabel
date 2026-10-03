@@ -271,7 +271,42 @@
   },
   "encyclopedia": {
     "name": "L'Encyclopédie",
-    "cover": ["Encyclopédie"]
+    "cover": ["Encyclopédie"],
+    "contents": "TABLE DES ARTICLES.",
+    "front": {
+      "title": "ENCYCLOPÉDIE",
+      "volume": "TOME I"
+    },
+    "spine": {
+      "title": ["ENCY-", "CLOPÉDIE"],
+      "volume": ["TOM.", "I."]
+    },
+    "titlePage": [
+      [108, "title", "ENCYCLOPÉDIE,"],
+      [138, "or", "OU"],
+      [172, "dictionary", "DICTIONNAIRE RAISONNÉ"],
+      [204, "sciences", "DES SCIENCES,"],
+      [232, "arts", "DES ARTS ET DES MÉTIERS,"],
+      [266, "society", "PAR UNE SOCIÉTÉ DE GENS DE LETTRES."],
+      [300, "editors", "Mis en ordre & publié par M. DIDEROT, de l’Académie Royale des"],
+      [317, "editors", "Sciences & des Belles-Lettres de Prusse ; & quant à la Partie"],
+      [334, "editors", "Mathématique, par M. D’ALEMBERT, de l’Académie Royale des"],
+      [351, "editors", "Sciences de Paris, de celle de Prusse, & de la Société Royale de Londres."],
+      [383, "motto", "Tantùm series juncturaque pollet,"],
+      [400, "motto", "Tantùm de medio sumptis accedit honoris !  Horat."],
+      [436, "volume", "TOME PREMIER."],
+      [568, "vignette", ""],
+      [652, "city", "A PARIS,"],
+      [678, "booksellers", "Chez BRIASSON, DAVID l’aîné, LE BRETON, DURAND."],
+      [692, "rule", "70"],
+      [718, "year", "M. DCC. LI."],
+      [744, "privilege", "AVEC APPROBATION ET PRIVILEGE DU ROY."]
+    ],
+    "discours": {
+      "title": ["DISCOURS PRÉLIMINAIRE", "DES EDITEURS."],
+      "running": "DISCOURS PRÉLIMINAIRE."
+    },
+    "dictionary": ["ENCYCLOPÉDIE,", "OU DICTIONNAIRE RAISONNÉ", "DES SCIENCES, DES ARTS ET DES MÉTIERS."]
   },
   "catalogue": {
     "name": "Le Catalogue des catalogues",
@@ -1094,7 +1129,7 @@
         "classics": {
           "head": "Les classiques",
           "text": [
-            "Puis sont venus les classiques. Alice dans sa toile rouge, Moby-Dick dans son ardoise gaufrée, une Bible de famille, les Mille et Une Nuits dans un maroquin bordeaux, l’Odyssée sous un papier caillouté, Don Quichotte dans la percaline rouge du grand Doré, avec en page de garde la page de titre de Madrid, 1605, la Divine Comédie dans un maroquin bleu nuit où tout l’univers du poème est poussé à l’or, l’Enfer, le Purgatoire et les neuf ciels, le Manuscrit trouvé à Saragosse dans le veau raciné de son édition de 1814, qui finit sur la promesse d’une suite jamais venue, et des pages blanches. Des textes du domaine public, mis en page ligne à ligne, par petits morceaux, pour que le jeu ne s’essouffle pas.",
+            "Puis sont venus les classiques. Alice dans sa toile rouge, Moby-Dick dans son ardoise gaufrée, une Bible de famille, les Mille et Une Nuits dans un maroquin bordeaux, l’Odyssée sous un papier caillouté, Don Quichotte dans la percaline rouge du grand Doré, avec en page de garde la page de titre de Madrid, 1605, la Divine Comédie dans un maroquin bleu nuit où tout l’univers du poème est poussé à l’or, l’Enfer, le Purgatoire et les neuf ciels, le Manuscrit trouvé à Saragosse dans le veau raciné de son édition de 1814, qui finit sur la promesse d’une suite jamais venue, et des pages blanches, l’Encyclopédie de Diderot et d’Alembert dans le veau marbré de ses souscripteurs, le Discours préliminaire puis, sur deux colonnes, les articles qui parlent de la Bibliothèque : Babel, Bibliothèque, Livre. Des textes du domaine public, mis en page ligne à ligne, par petits morceaux, pour que le jeu ne s’essouffle pas.",
             "Chaque livre a reçu un signet de soie qui pend et se balance. Le premier claquait comme un fouet. Le second était plus calme."
           ]
         },
@@ -1134,6 +1169,8 @@
         "divineComedy-b": "Le profil de Dante",
         "saragossa-b": "Les cahiers de la maisonnette",
         "saragossa-c": "Le gibet de Los Hermanos",
+        "encyclopedia-b": "L’arbre des connaissances",
+        "encyclopedia-c": "La casse du typographe",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

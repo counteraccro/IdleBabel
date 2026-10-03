@@ -43,6 +43,7 @@ export const BOOK_DRAFTS: Record<string, string[]> = {
   quixote: ['quixote-b', 'quixote-c'],
   divineComedy: ['divineComedy-a', 'divineComedy-b'],
   saragossa: ['saragossa-b', 'saragossa-c'],
+  encyclopedia: ['encyclopedia-b', 'encyclopedia-c'],
   credits: ['credits-a', 'credits-b'],
   idleBabel: ['idleBabel-a', 'idleBabel-b', 'idleBabel-c'],
 };
@@ -74,7 +75,11 @@ export const STORY: StoryChapter[] = [
       // Toutes les couvertures au même endroit : une partie « Les livres », et dedans les rares puis les classiques.
       { key: 'books' },
       { key: 'rareBooks', sub: true, plates: ['deathBook', 'directory', 'blankPage', 'debug', 'alexH', 'oriana', 'credits', 'idleBabel'] },
-      { key: 'classics', sub: true, plates: ['alice', 'mobyDick', 'bible', 'arabianNights', 'odyssey', 'quixote', 'divineComedy', 'saragossa'] },
+      {
+        key: 'classics',
+        sub: true,
+        plates: ['alice', 'mobyDick', 'bible', 'arabianNights', 'odyssey', 'quixote', 'divineComedy', 'saragossa', 'encyclopedia'],
+      },
       { key: 'library', drafts: ['showcase'] },
       { key: 'credits' },
       { key: 'thisBook' },

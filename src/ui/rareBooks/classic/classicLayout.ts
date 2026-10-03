@@ -314,11 +314,10 @@ const pause = (): Promise<void> =>
 const SLICE = 6;
 
 /**
- * Met en page tout le livre, par petits morceaux entre deux images (un gros classique prend ~200 ms
- * de calcul en tout).
+ * Fait tourner une mise en page (`steps`, qui s'arrête souvent) par petits morceaux entre deux images, et rend
+ * ce qu'elle produit.
  */
-export const layoutClassic = async (context: CanvasRenderingContext2D, text: ClassicText, style: ClassicStyle): Promise<ClassicLayout> => {
-  const steps = layoutSteps(context, text, style);
+export const sliced = async <Result>(steps: Generator<void, Result>): Promise<Result> => {
   let since = performance.now();
   for (;;) {
     const step = steps.next();
@@ -329,3 +328,10 @@ export const layoutClassic = async (context: CanvasRenderingContext2D, text: Cla
     }
   }
 };
+
+/**
+ * Met en page tout le livre, par petits morceaux entre deux images (un gros classique prend ~200 ms
+ * de calcul en tout).
+ */
+export const layoutClassic = (context: CanvasRenderingContext2D, text: ClassicText, style: ClassicStyle): Promise<ClassicLayout> =>
+  sliced(layoutSteps(context, text, style));
