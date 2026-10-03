@@ -38,7 +38,7 @@ const FIRST_SEASON_PAGE = 5;
 export const seasonPage = (year: number): number => FIRST_SEASON_PAGE + (year - FIRST_YEAR) * YEAR_PAGES;
 export const CONTENTS_PAGE = 3;
 /** La page de notes où quelqu'un a écrit, à la main : la trouver est un secret (almanac.ts). */
-export const NOTE_PAGE = 385;
+export const NOTE_PAGE = 365;
 
 export const loadAlmanacPageFonts = (): Promise<unknown> =>
   Promise.all([
