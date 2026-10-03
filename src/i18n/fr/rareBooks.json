@@ -961,7 +961,22 @@
   },
   "almanac": {
     "name": "L'Almanach des sports 1950-2000",
-    "cover": ["Almanach", "des sports", "1950-2000"]
+    "cover": ["Almanach", "des sports", "1950-2000"],
+    "edition": "ÉDITION COMPLÈTE",
+    "title": ["ALMANACH", "DES SPORTS"],
+    "years": "1950 · 2000",
+    "tagline": "Tous les résultats, avant tout le monde.",
+    "sports": "Football · Boxe · Courses · Base-ball",
+    "mark": "Bibliothèque de Babel",
+    "spine": "ALMANACH DES SPORTS",
+    "spineYears": ["1950", "2000"],
+    "backTitle": "50 ANS DE SPORT",
+    "blurb": [
+      "Football, boxe, courses, base-ball : un demi-siècle de résultats, du premier coup de sifflet de 1950 à la dernière finale de 2000.",
+      "Les scores, les vainqueurs, les records. Match après match, saison après saison. Tout y est."
+    ],
+    "warning": "Ne le laissez pas traîner.",
+    "price": "12 F"
   },
   "directory": {
     "name": "L'Annuaire",
@@ -1125,7 +1140,8 @@
         "rareBooks": {
           "head": "Les livres rares",
           "text": [
-            "Un livre sur deux cents n’est pas comme les autres : un livre rare, avec un vrai titre et un sceau à lui. Un cahier noir où des noms s’écrivent, un annuaire où quelqu’un a déjà ta place, un essai sur la page blanche signé d’un auteur qui n’existe pas."
+            "Un livre sur deux cents n’est pas comme les autres : un livre rare, avec un vrai titre et un sceau à lui. Un cahier noir où des noms s’écrivent, un annuaire où quelqu’un a déjà ta place, un essai sur la page blanche signé d’un auteur qui n’existe pas.",
+            "Plus tard, un almanach des sports, tout droit sorti d’un kiosque des années 80 : cinquante ans de résultats, déjà écrits."
           ]
         },
         "library": {
@@ -1185,6 +1201,8 @@
         "saragossa-c": "Le gibet de Los Hermanos",
         "encyclopedia-b": "L’arbre des connaissances",
         "encyclopedia-c": "La casse du typographe",
+        "almanac-b": "Le poche du kiosque",
+        "almanac-c": "Revenu de l’avenir",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

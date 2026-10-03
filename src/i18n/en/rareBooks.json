@@ -948,7 +948,22 @@
   },
   "almanac": {
     "name": "The Sports Almanac 1950-2000",
-    "cover": ["Sports", "Almanac", "1950-2000"]
+    "cover": ["Sports", "Almanac", "1950-2000"],
+    "edition": "COMPLETE EDITION",
+    "title": ["SPORTS", "ALMANAC"],
+    "years": "1950 · 2000",
+    "tagline": "Every result, before anyone else.",
+    "sports": "Football · Boxing · Racing · Baseball",
+    "mark": "Library of Babel",
+    "spine": "SPORTS ALMANAC",
+    "spineYears": ["1950", "2000"],
+    "backTitle": "50 YEARS OF SPORT",
+    "blurb": [
+      "Football, boxing, racing, baseball: half a century of results, from the first whistle of 1950 to the last final of 2000.",
+      "The scores, the winners, the records. Game after game, season after season. It's all in here."
+    ],
+    "warning": "Don't leave it lying around.",
+    "price": "$1.95"
   },
   "directory": {
     "name": "The Directory",
@@ -1112,7 +1127,8 @@
         "rareBooks": {
           "head": "Rare books",
           "text": [
-            "One book in two hundred is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist."
+            "One book in two hundred is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist.",
+            "Later, a sports almanac, straight off an eighties newsstand: fifty years of results, already written."
           ]
         },
         "library": {
@@ -1172,6 +1188,8 @@
         "saragossa-c": "The gallows of Los Hermanos",
         "encyclopedia-b": "The tree of knowledge",
         "encyclopedia-c": "The typesetter’s case",
+        "almanac-b": "The newsstand paperback",
+        "almanac-c": "Back from the future",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",
