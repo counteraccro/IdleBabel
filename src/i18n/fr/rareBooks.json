@@ -172,7 +172,32 @@
   },
   "divineComedy": {
     "name": "La Divine Comédie",
-    "cover": ["La Divine", "Comédie"]
+    "cover": ["La Divine", "Comédie"],
+    "contents": "Table des chants",
+    "running": "LA DIVINE COMÉDIE.",
+    "firstCanto": "CHANT PREMIER",
+    "front": { "title": "LA DIVINE COMÉDIE", "author": "DANTE" },
+    "titlePage": [
+      [110, "names", "DANTE — LAMENNAIS"],
+      [132, "rule", "20"],
+      [190, "article", "LA"],
+      [242, "title", "DIVINE COMÉDIE"],
+      [280, "translated", "TRADUITE"],
+      [306, "preface", "ET PRÉCÉDÉE D’UNE INTRODUCTION"],
+      [326, "preface", "SUR LA VIE, LA DOCTRINE, ET LES ŒUVRES DE DANTE"],
+      [356, "rule", "30"],
+      [392, "posthumous", "ŒUVRES POSTHUMES DE F. LAMENNAIS"],
+      [416, "wish", "PUBLIÉES SELON LE VŒU DE L’AUTEUR"],
+      [438, "editor", "PAR E. D. FORGUES"],
+      [468, "rule", "30"],
+      [500, "edition", "NOUVELLE ÉDITION."],
+      [566, "rings", ""],
+      [640, "city", "PARIS"],
+      [668, "bookshop", "A LA LIBRAIRIE ACADÉMIQUE"],
+      [692, "publisher", "DIDIER ET Cᵉ, LIBRAIRES-ÉDITEURS"],
+      [712, "address", "35, QUAI DES AUGUSTINS."],
+      [740, "year", "1863"]
+    ]
   },
   "voynich": {
     "name": "Le Manuscrit de Voynich",
@@ -1052,7 +1077,7 @@
         "classics": {
           "head": "Les classiques",
           "text": [
-            "Puis sont venus les classiques. Alice dans sa toile rouge, Moby-Dick dans son ardoise gaufrée, une Bible de famille, les Mille et Une Nuits dans un maroquin bordeaux, l’Odyssée sous un papier caillouté, Don Quichotte dans la percaline rouge du grand Doré, avec en page de garde la page de titre de Madrid, 1605. Des textes du domaine public, mis en page ligne à ligne, par petits morceaux, pour que le jeu ne s’essouffle pas.",
+            "Puis sont venus les classiques. Alice dans sa toile rouge, Moby-Dick dans son ardoise gaufrée, une Bible de famille, les Mille et Une Nuits dans un maroquin bordeaux, l’Odyssée sous un papier caillouté, Don Quichotte dans la percaline rouge du grand Doré, avec en page de garde la page de titre de Madrid, 1605, la Divine Comédie dans un maroquin bleu nuit où tout l’univers du poème est poussé à l’or, l’Enfer, le Purgatoire et les neuf ciels. Des textes du domaine public, mis en page ligne à ligne, par petits morceaux, pour que le jeu ne s’essouffle pas.",
             "Chaque livre a reçu un signet de soie qui pend et se balance. Le premier claquait comme un fouet. Le second était plus calme."
           ]
         },
@@ -1088,6 +1113,8 @@
         "odyssey-a": "La couverture imprimée de Lemerre",
         "quixote-b": "L’originale de Madrid, 1605",
         "quixote-c": "Le cartonnage d’étrennes de Garnier",
+        "divineComedy-a": "L’Aldine de Venise, 1502",
+        "divineComedy-b": "Le profil de Dante",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

@@ -30,10 +30,18 @@ export interface ClassicStyle {
   head?: (context: CanvasRenderingContext2D, title: string, label: string) => void;
   /** La page de la table des matières (sans : la 3e, après la page de titre). */
   contentsPage?: number;
+  /** Le nom d'une partie hors série dans la table (sans : son nom de partie, « Epilogue »). */
+  contentsName?: (label: string, title: string) => string;
   /** Un titre trop long pour une ligne de la table y tient sur deux, plus petit (sans : sur une seule, rapetissé). */
   contentsWrap?: boolean;
   /** Le texte justifié (sauf la dernière ligne de chaque paragraphe) ; sans : aligné à gauche. */
   justify?: boolean;
+  /**
+   * Des paragraphes numérotés (« 12. Puis… », les tercets de Dante) : le numéro sort du texte et pend dans la
+   * marge, à `gap` à gauche du texte, dans sa police ; les paragraphes ne sont plus en retrait. Celui de la
+   * lettrine perd le sien.
+   */
+  numbers?: { font: string; gap: number };
   /** Des placements propres au livre, repris de sa maquette (sans : ceux du moteur). */
   marks?: ClassicMarks;
 }
@@ -91,6 +99,8 @@ export interface PlacedLine {
   center?: boolean;
   /** Justifiée : la largeur sur laquelle étaler ses mots. */
   justify?: number;
+  /** Le numéro du paragraphe, dans la marge (style.numbers). */
+  number?: string;
 }
 
 export interface ClassicPage {
@@ -154,9 +164,9 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
     y = opening ? openingTop : top;
     return true;
   };
-  const place = (chapter: number, line: string, x: number, center = false, justify?: number): boolean => {
+  const place = (chapter: number, line: string, x: number, center = false, justify?: number, number?: string): boolean => {
     if (y + style.line > BOTTOM && !turn(chapter)) return false;
-    current!.lines.push({ text: line, x, y, center, ...(justify ? { justify } : {}) });
+    current!.lines.push({ text: line, x, y, center, ...(justify ? { justify } : {}), ...(number ? { number } : {}) });
     y += style.line;
     return true;
   };
@@ -181,6 +191,9 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
       y += style.marks?.centered.after ?? 0;
       return true;
     }
+    // Un paragraphe numéroté : son numéro ira dans la marge.
+    const numbered = style.numbers ? /^(\d+)\. /.exec(para) : null;
+    if (numbered) para = para.slice(numbered[0].length);
     // Le premier paragraphe du chapitre : une lettrine (sur deux lignes, ou celles de la lettrine dessinée),
     // si le texte commence par une lettre.
     const box = style.dropCapBox;
@@ -194,11 +207,18 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
       current!.dropCap = { letter, x: LEFT, y, size };
       const width = (n: number): number => RIGHT - LEFT - (n < rows ? drop : 0);
       const lines = wrapVarying(context, para.slice(1), width);
-      return lines.every((line, row) => place(chapter, line, LEFT + (row < rows ? drop : 0), false, justified(lines, row, width)));
+      const placed = lines.every((line, row) => place(chapter, line, LEFT + (row < rows ? drop : 0), false, justified(lines, row, width)));
+      // Un paragraphe plus court que la lettrine : le suivant commence sous elle.
+      if (placed && lines.length < rows) y += (rows - lines.length) * style.line;
+      return placed;
     }
-    const width = (n: number): number => RIGHT - LEFT - (n ? 0 : INDENT);
+    const indent = style.numbers ? 0 : INDENT;
+    const width = (n: number): number => RIGHT - LEFT - (n ? 0 : indent);
     const lines = wrapVarying(context, para, width);
-    return lines.every((line, row) => place(chapter, line, LEFT + (row ? 0 : INDENT), false, justified(lines, row, width)));
+    const number = numbered ? `${numbered[1]}.` : undefined;
+    return lines.every((line, row) =>
+      place(chapter, line, LEFT + (row ? 0 : indent), false, justified(lines, row, width), row ? undefined : number),
+    );
   };
   for (const [chapter, { paras }] of text.chapters.entries()) {
     if (current) page++;

@@ -96,4 +96,35 @@ describe('mise en page des classiques', () => {
     const plain = await layoutClassic(context, book([[para(4)]]), STYLE);
     expect(plain.pages.get(plain.starts[0])!.lines.every((line) => line.justify === undefined)).toBe(true);
   });
+
+  it('les paragraphes numérotés : le numéro sort du texte pour la marge, sans retrait ; la lettrine perd le sien', async () => {
+    const numbers = { font: 'serif', gap: 8 };
+    const dropCapBox = { lines: 2, size: 40, gap: 10, draw: () => {} };
+    const layout = await layoutClassic(context, book([[`1. ${para(1)}`, `2. ${para(2)}`, 'Dernier vers.']]), {
+      ...STYLE,
+      numbers,
+      dropCapBox,
+    });
+    const page = layout.pages.get(layout.starts[0])!;
+    expect(page.dropCap?.letter).toBe('a');
+    const numbered = page.lines.filter((line) => line.number);
+    expect(numbered).toHaveLength(1);
+    expect(numbered[0]).toMatchObject({ number: '2.', x: LEFT });
+    expect(numbered[0].text.startsWith('abcdefghi')).toBe(true);
+    const last = page.lines[page.lines.length - 1];
+    expect(last).toMatchObject({ text: 'Dernier vers.', x: LEFT });
+    expect(last.number).toBeUndefined();
+    // Le premier paragraphe (2 lignes) est plus court que la lettrine (3) : le suivant commence sous elle.
+    const tall = await layoutClassic(context, book([[`1. ${para(1)}`, `2. ${para(1)}`]]), {
+      ...STYLE,
+      numbers,
+      dropCapBox: { ...dropCapBox, lines: 3 },
+    });
+    const opening = tall.pages.get(tall.starts[0])!;
+    const next = opening.lines.find((line) => line.number === '2.')!;
+    expect(next.y).toBe(opening.lines[0].y + 3 * STYLE.line);
+    // Sans le style, le numéro reste dans le texte.
+    const plain = await layoutClassic(context, book([[para(1), `2. ${para(1)}`]]), STYLE);
+    expect(plain.pages.get(plain.starts[0])!.lines.some((line) => line.text.startsWith('2. '))).toBe(true);
+  });
 });

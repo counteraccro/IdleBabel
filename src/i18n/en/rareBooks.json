@@ -172,7 +172,32 @@
   },
   "divineComedy": {
     "name": "The Divine Comedy",
-    "cover": ["The Divine", "Comedy"]
+    "cover": ["The Divine", "Comedy"],
+    "contents": "Table des chants",
+    "running": "LA DIVINE COMÉDIE.",
+    "firstCanto": "CHANT PREMIER",
+    "front": { "title": "THE DIVINE COMEDY", "author": "DANTE" },
+    "titlePage": [
+      [110, "names", "DANTE — LAMENNAIS"],
+      [132, "rule", "20"],
+      [190, "article", "LA"],
+      [242, "title", "DIVINE COMÉDIE"],
+      [280, "translated", "TRADUITE"],
+      [306, "preface", "ET PRÉCÉDÉE D’UNE INTRODUCTION"],
+      [326, "preface", "SUR LA VIE, LA DOCTRINE, ET LES ŒUVRES DE DANTE"],
+      [356, "rule", "30"],
+      [392, "posthumous", "ŒUVRES POSTHUMES DE F. LAMENNAIS"],
+      [416, "wish", "PUBLIÉES SELON LE VŒU DE L’AUTEUR"],
+      [438, "editor", "PAR E. D. FORGUES"],
+      [468, "rule", "30"],
+      [500, "edition", "NOUVELLE ÉDITION."],
+      [566, "rings", ""],
+      [640, "city", "PARIS"],
+      [668, "bookshop", "A LA LIBRAIRIE ACADÉMIQUE"],
+      [692, "publisher", "DIDIER ET Cᵉ, LIBRAIRES-ÉDITEURS"],
+      [712, "address", "35, QUAI DES AUGUSTINS."],
+      [740, "year", "1863"]
+    ]
   },
   "voynich": {
     "name": "The Voynich Manuscript",
@@ -1039,7 +1064,7 @@
         "classics": {
           "head": "The classics",
           "text": [
-            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper, Don Quixote in the red cloth of the great Doré edition, with the title page of Madrid, 1605, as a flyleaf. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
+            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper, Don Quixote in the red cloth of the great Doré edition, with the title page of Madrid, 1605, as a flyleaf, the Divine Comedy in midnight-blue morocco with the whole universe of the poem tooled in gold, Hell, Purgatory and the nine heavens. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
             "Every book was given a silk ribbon that hangs and sways. The first one cracked like a whip. The second was calmer."
           ]
         },
@@ -1075,6 +1100,8 @@
         "odyssey-a": "Lemerre’s printed wrapper",
         "quixote-b": "The first edition, Madrid, 1605",
         "quixote-c": "Garnier’s gift binding",
+        "divineComedy-a": "The Aldine, Venice, 1502",
+        "divineComedy-b": "Dante’s profile",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

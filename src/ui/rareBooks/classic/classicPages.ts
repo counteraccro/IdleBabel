@@ -85,7 +85,7 @@ const contentsPage = (
     const numbered = isNumbered(label);
     let number = 0;
     for (const chapter of text.chapters.slice(0, from + row + 1)) number = chapter.part ? 0 : number + (isNumbered(chapter.label) ? 1 : 0);
-    const title = numbered ? name : partName(label, name);
+    const title = numbered ? name : (style.contentsName?.(label, name) ?? partName(label, name));
     if (numbered) write(context, `${roman(number)}.`, LEFT + 46, y, { font, color: style.ink, align: 'right' });
     // Sans nom de partie (des contes) : le titre part de la marge ; trop long, il est imprimé plus petit, ou
     // sur deux lignes si le livre le veut (coupé d'un « … » s'il en faut plus).
@@ -219,7 +219,13 @@ export const paintClassicPage = (
     write(context, letter, x, y - style.line * 1.3, { font: `${size}px ${style.dropCap}`, color: style.accent, align: 'left' });
   }
   const centered = style.marks?.centered;
-  for (const { text: line, x, y, center, justify } of content.lines) {
+  const numbers = style.numbers;
+  for (const { text: line, x, y, center, justify, number } of content.lines) {
+    if (number && numbers) {
+      // Le numéro dans la marge, sur la ligne de base de la ligne.
+      context.font = font;
+      baseline(context, number, x - numbers.gap, y + context.measureText('M').fontBoundingBoxAscent, numbers.font, style.ink, 0, 'right');
+    }
     if (center && centered) {
       // Une nuit : sa police, et un court filet dessous.
       context.font = centered.font;
