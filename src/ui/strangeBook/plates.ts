@@ -9,9 +9,9 @@ import type { GameState } from '../../core/state';
 
 /**
  * Les sceaux dans le livre étrange : une page d'avancement, puis une planche par thème, en alvéoles
- * (quatre rangées de 4 et 5 sceaux par page ; une planche trop remplie continue sur la page suivante).
+ * (cinq rangées de 4 et 5 sceaux par page ; une planche trop remplie continue sur la page suivante).
  */
-const ROWS = [4, 5, 4, 5];
+const ROWS = [4, 5, 4, 5, 4];
 const PER_PAGE = ROWS.reduce((sum, count) => sum + count, 0);
 const SEAL_SIZE = 100;
 /** Un hexagone fait 0,81 × 0,94 de son carré : un peu d'écart entre les alvéoles, rangées en quinconce. */
@@ -165,8 +165,8 @@ export const plateItems = (
       spacing: 3,
     },
     ...seals,
-    { kind: 'text', text: legend.name, x: 320, y: 590, size: 24, align: 'center', spacing: 4, steady: true },
-    { kind: 'text', text: legend.text, x: 320, y: 630, size: 18, align: 'center', italic: true, faded: true, steady: true },
+    { kind: 'text', text: legend.name, x: 320, y: 628, size: 24, align: 'center', spacing: 4, steady: true },
+    { kind: 'text', text: legend.text, x: 320, y: 666, size: 18, align: 'center', italic: true, faded: true, steady: true },
     folio(page.page + 1),
   ];
 };
