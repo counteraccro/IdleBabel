@@ -1,9 +1,11 @@
+import '@fontsource/caveat/400.css';
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/400-italic.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/oswald/400.css';
 import { messages } from '../../../i18n';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
+import { HAND } from '../draw';
 import { PAGES_PER_BOOK } from '../../../systems/books';
 import { CONDENSED, HEAVY, hexagon, loadAlmanacFonts, text } from './almanacDraw';
 import { FIRST_YEAR, LAST_YEAR, season, type CupGame, type Day, type Fact, type Season } from './almanacSeasons';
@@ -35,11 +37,13 @@ const FIRST_SEASON_PAGE = 5;
 /** La page d'ouverture de la saison `year` (après 2000 : la première page de notes). */
 export const seasonPage = (year: number): number => FIRST_SEASON_PAGE + (year - FIRST_YEAR) * YEAR_PAGES;
 export const CONTENTS_PAGE = 3;
+/** La page de notes où quelqu'un a écrit, à la main : la trouver est un secret (almanac.ts). */
+export const NOTE_PAGE = 385;
 
 export const loadAlmanacPageFonts = (): Promise<unknown> =>
   Promise.all([
     loadAlmanacFonts(),
-    ...['400 20px Inter', '600 20px Inter', 'italic 400 20px Inter', '400 40px Oswald'].map((font) => document.fonts.load(font)),
+    ...['400 20px Inter', '600 20px Inter', 'italic 400 20px Inter', '400 40px Oswald', '400 40px Caveat'].map((font) => document.fonts.load(font)),
   ]);
 
 const texts = () => messages().rareBooks.almanac.pages;
@@ -396,13 +400,39 @@ const miscPage = (context: Context, s: Season): void => {
   }
 };
 
+const NOTES_TOP = 160;
+const NOTES_STEP = 32;
 const notesPage = (context: Context): void => {
   text(context, texts().notes, LEFT, 90, `700 22px ${CONDENSED}`, INK, 'left', 5);
   stripes(context, 104);
   context.fillStyle = SOFT;
   context.globalAlpha = 0.45;
-  for (let y = 160; y < H - 90; y += 32) context.fillRect(LEFT, y, RIGHT - LEFT, 1);
+  for (let y = NOTES_TOP; y < H - 90; y += NOTES_STEP) context.fillRect(LEFT, y, RIGHT - LEFT, 1);
   context.globalAlpha = 1;
+};
+
+/** Le juron d'un lecteur d'avant, au stylo bille, un peu de travers sur la septième ligne, souligné deux fois. */
+const BALLPOINT = 'rgba(32, 52, 140, 0.88)';
+const handNote = (context: Context): void => {
+  const note = texts().note;
+  context.save();
+  context.translate(LEFT + 40, NOTES_TOP + 6 * NOTES_STEP - 6);
+  context.rotate(-0.06);
+  context.font = `44px ${HAND}`;
+  context.fillStyle = BALLPOINT;
+  context.textBaseline = 'alphabetic';
+  context.fillText(note, 0, 0);
+  const width = context.measureText(note).width;
+  context.strokeStyle = BALLPOINT;
+  context.lineWidth = 2.5;
+  context.lineCap = 'round';
+  for (const [y, bend, from] of [[10, 4, 2], [17, -3, 14]]) {
+    context.beginPath();
+    context.moveTo(from, y);
+    context.quadraticCurveTo(width / 2, y + bend, width + 6, y - 2);
+    context.stroke();
+  }
+  context.restore();
 };
 
 const SEASON_PAGES = [openingPage, leaguePage, cupPage, boxingPage, racingPage, baseballPage, miscPage];
@@ -414,7 +444,10 @@ export const paintAlmanacPage = (context: Context, page: number): void => {
   if (page === 2) return legalPage(context);
   if (page === CONTENTS_PAGE) contentsPage(context);
   else if (page === 4) howToPage(context);
-  else if (page >= seasonPage(LAST_YEAR + 1)) notesPage(context);
+  else if (page >= seasonPage(LAST_YEAR + 1)) {
+    notesPage(context);
+    if (page === NOTE_PAGE) handNote(context);
+  }
   else {
     const offset = page - FIRST_SEASON_PAGE;
     SEASON_PAGES[offset % YEAR_PAGES](context, season(FIRST_YEAR + Math.floor(offset / YEAR_PAGES)));

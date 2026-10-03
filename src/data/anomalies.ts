@@ -112,6 +112,7 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintColleagues',
     'hintReread',
     'hintBabelDefinition',
+    'hintGreatScott',
   ],
 };
 

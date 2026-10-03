@@ -1,10 +1,11 @@
+import { sealEvent } from '../../../systems/seals';
 import { HEIGHT } from '../draw';
 import { MODERN_PAPER, preparePageTexture } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
 import { NIGHT, RED, SPINE_WIDTH, almanacBack, almanacFront, almanacInside, almanacSpine } from './almanacCover';
 import { loadAlmanacFonts } from './almanacDraw';
-import { CONTENTS_PAGE, almanacLinks, loadAlmanacPageFonts, paintAlmanacPage } from './almanacPages';
+import { CONTENTS_PAGE, NOTE_PAGE, almanacLinks, loadAlmanacPageFonts, paintAlmanacPage } from './almanacPages';
 import type { RareBookArt } from '../rareBookArt';
 
 /** Le dos de la maquette à ses vraies proportions (le dos d'un livre fait 1,4 fois son épaisseur). */
@@ -41,4 +42,8 @@ export const almanacArt: RareBookArt = {
   },
   bookmark: CONTENTS_PAGE,
   links: almanacLinks,
+  // Secret : dans les notes, le juron d'un lecteur venu avant (ou après).
+  passed: (page, state) => {
+    if (page === NOTE_PAGE) sealEvent(state, 'greatScott');
+  },
 };

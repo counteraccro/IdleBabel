@@ -86,6 +86,8 @@ export const SEALS: readonly SealDef[] = [
   secret('reread'),
   // L'article BABEL de l'Encyclopédie, « en Hébreu confusion » (ui/rareBooks/encyclopedia/encyclopedia.ts).
   secret('babelDefinition'),
+  // « Nom de Zeus ! », écrit à la main dans les notes de l'Almanach des sports (ui/rareBooks/almanac/almanac.ts).
+  secret('greatScott'),
   // Les deux collègues, AlexH et Oriana, trouvés tous les deux (ils travaillent ensemble, jusque dans leurs livres).
   seal('colleagues', 'secrets', (s) => 'alexH' in s.rareBooks && 'oriana' in s.rareBooks),
 ];

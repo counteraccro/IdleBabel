@@ -163,7 +163,8 @@
     "hintBabelDigits": "Compte comme / la Bibliothèque compte.",
     "hintColleagues": "Deux livres / travaillent / ensemble.",
     "hintReread": "Certains livres / se lisent / deux fois.",
-    "hintBabelDefinition": "Un vieux dictionnaire / sait ce que veut dire / Babel."
+    "hintBabelDefinition": "Un vieux dictionnaire / sait ce que veut dire / Babel.",
+    "hintGreatScott": "Dans les notes / d'un almanach, / quelqu'un a juré."
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",
