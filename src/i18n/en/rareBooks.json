@@ -727,7 +727,7 @@
         "publisher": "LIBRARY OF BABEL",
         "foreword": "Foreword",
         "author": "AYMERIC",
-        "about": ["A developer, he built this Library", "page by page, one hexagon at a time."],
+        "about": ["For eighteen years he has written for the web", "the way others write letters:", "from server to screen, one line after another,", "with the same passion as on the first day.", "From those lines, an endless library was born."],
         "codeIntro": "The game’s code, on GitHub:",
         "contents": "Contents",
         "parts": ["Foreword", "The credits", "The texts", "The typefaces", "Patch notes", "Colophon"],

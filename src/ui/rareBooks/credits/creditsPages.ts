@@ -22,7 +22,8 @@ const RULE = 'rgba(28,36,64,0.5)';
 const { width: WIDTH, height: HEIGHT } = PAGE_TEXTURE;
 const CENTER = WIDTH / 2;
 
-/** Le dépôt du jeu (page de l'avant-propos). */
+/** Le profil GitHub de l'auteur, et le dépôt du jeu (page de l'avant-propos). */
+const PROFILE = 'github.com/counteraccro';
 const REPOSITORY = 'github.com/counteraccro/IdleBabel';
 
 /** Où commence chaque partie, dans l'ordre du sommaire (pages.parts) ; la dernière est la toute dernière page. */
@@ -85,25 +86,31 @@ const titlePage = (context: CanvasRenderingContext2D): void => {
   write(context, publisher, CENTER, HEIGHT - 110, { font: `500 14px ${TITLE}`, color: SOFT, spacing: 4 });
 };
 
-/** Le lien du dépôt : sa ligne de base, et sa police (le même lien sert à le dessiner et à le cliquer). */
-const LINK_Y = 572;
+/** Les deux liens de l'avant-propos : leur ligne de base, leur police (les mêmes pour les dessiner et les cliquer). */
+const PROFILE_Y = 490;
+const REPOSITORY_Y = 622;
 const LINK_FONT = `500 22px ${GARAMOND}`;
+
+/** Un lien hors du jeu : souligné, une petite flèche qui sort de la page (il s'ouvre dans un nouvel onglet). */
+const link = (context: CanvasRenderingContext2D, address: string, y: number): void => {
+  const label = `${address} ↗`;
+  write(context, label, CENTER, y, { font: LINK_FONT, color: INK });
+  context.font = LINK_FONT;
+  const width = context.measureText(label).width;
+  context.fillStyle = INK;
+  context.fillRect(CENTER - width / 2, y + 6, width, 1.2);
+};
 
 const forewordPage = (context: CanvasRenderingContext2D): void => {
   const { foreword, author, about, codeIntro } = text();
   heading(context, foreword);
   write(context, author, CENTER, 250, { font: `600 26px ${TITLE}`, color: INK, spacing: 6 });
   about.forEach((line, i) => write(context, line, CENTER, 310 + i * 32, { font: `21px ${GARAMOND}`, color: INK }));
+  link(context, PROFILE, PROFILE_Y);
   context.fillStyle = RULE;
-  context.fillRect(CENTER - 30, 470, 60, 1);
-  write(context, codeIntro, CENTER, 530, { font: `italic 19px ${GARAMOND}`, color: SOFT });
-  // Le lien : souligné, une petite flèche qui sort de la page (il s'ouvre dans un nouvel onglet).
-  const label = `${REPOSITORY} ↗`;
-  write(context, label, CENTER, LINK_Y, { font: LINK_FONT, color: INK });
-  context.font = LINK_FONT;
-  const width = context.measureText(label).width;
-  context.fillStyle = INK;
-  context.fillRect(CENTER - width / 2, LINK_Y + 6, width, 1.2);
+  context.fillRect(CENTER - 30, 535, 60, 1);
+  write(context, codeIntro, CENTER, 580, { font: `italic 19px ${GARAMOND}`, color: SOFT });
+  link(context, REPOSITORY, REPOSITORY_Y);
   folio(context, FOREWORD_PAGE);
 };
 
@@ -194,10 +201,11 @@ const PAGES: Record<number, (context: CanvasRenderingContext2D) => void> = {
 /** Dessine la page `page` sur son papier ; les autres restent blanches (les notes de mise à jour à venir). */
 export const paintCreditsPage = (context: CanvasRenderingContext2D, page: number): void => PAGES[page]?.(context);
 
-/** Les lignes du sommaire mènent à leur partie ; le lien du dépôt, dans l'avant-propos, ouvre GitHub. */
+/** Les lignes du sommaire mènent à leur partie ; les liens de l'avant-propos ouvrent GitHub (l'auteur, le dépôt). */
 export const creditsLinks = (page: number): PageLink[] => {
   if (page === CONTENTS_PAGE)
     return PARTS.map((target, i) => ({ y: CONTENTS_TOP + i * CONTENTS_STEP - 32, height: 44, target }));
-  if (page === FOREWORD_PAGE) return [{ y: LINK_Y - 28, height: 40, target: page, href: `https://${REPOSITORY}` }];
+  if (page === FOREWORD_PAGE)
+    return [PROFILE_Y, REPOSITORY_Y].map((y, i) => ({ y: y - 28, height: 40, target: page, href: `https://${[PROFILE, REPOSITORY][i]}` }));
   return [];
 };

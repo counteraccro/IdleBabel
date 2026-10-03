@@ -740,7 +740,7 @@
         "publisher": "BIBLIOTHÈQUE DE BABEL",
         "foreword": "Avant-propos",
         "author": "AYMERIC",
-        "about": ["Développeur, il a bâti cette Bibliothèque", "page après page, un hexagone à la fois."],
+        "about": ["Depuis dix-huit ans, il écrit pour le web", "comme d’autres écrivent des lettres :", "du serveur à l’écran, une ligne après l’autre,", "avec la même passion qu’au premier jour.", "De ces lignes est née une bibliothèque sans fin."],
         "codeIntro": "Le code du jeu, sur GitHub :",
         "contents": "Sommaire",
         "parts": ["Avant-propos", "Le générique", "Les textes", "Les polices", "Notes de mise à jour", "Achevé d’imprimer"],
