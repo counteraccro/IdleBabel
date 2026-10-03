@@ -862,6 +862,22 @@
     "name": "The Book of the Dead",
     "cover": ["The Book", "of the Dead"]
   },
+  "idleBabel": {
+    "name": "Idle Babel",
+    "cover": ["Idle Babel"],
+    "idle": "IDLE",
+    "babel": "BABEL",
+    "subtitle": "From its design to its making",
+    "subtitle2": "self-portrait of an IDLE",
+    "plan": "PLAN OF A STANDARD GALLERY",
+    "shelves": "SHELVES",
+    "stair": "STAIRS",
+    "corridor": "CORRIDOR",
+    "project": "PROJECT: IDLE BABEL",
+    "sheet": "SHEET 1 / 1",
+    "scale": "SCALE: 1 / 1",
+    "drawn": "DRAWN: A."
+  },
   "debug": {
     "name": "Debug",
     "cover": ["Debug"]

@@ -875,6 +875,22 @@
     "name": "Le Livre des morts",
     "cover": ["Le Livre", "des morts"]
   },
+  "idleBabel": {
+    "name": "Idle Babel",
+    "cover": ["Idle Babel"],
+    "idle": "IDLE",
+    "babel": "BABEL",
+    "subtitle": "De la conception à sa réalisation",
+    "subtitle2": "autoportrait d’un IDLE",
+    "plan": "PLAN DE LA GALERIE TYPE",
+    "shelves": "RAYONNAGES",
+    "stair": "ESCALIER",
+    "corridor": "COULOIR",
+    "project": "PROJET : IDLE BABEL",
+    "sheet": "FEUILLE 1 / 1",
+    "scale": "ÉCHELLE : 1 / 1",
+    "drawn": "DESSINÉ : A."
+  },
   "debug": {
     "name": "Débogage",
     "cover": ["Débogage"]

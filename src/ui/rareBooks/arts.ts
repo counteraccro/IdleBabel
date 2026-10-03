@@ -6,6 +6,7 @@ import { blankPageArt } from './blankPage/blankPage';
 import { creditsArt } from './credits/credits';
 import { deathBookArt } from './deathBook/deathBook';
 import { directoryArt } from './directory/directory';
+import { idleBabelArt } from './idleBabel/idleBabel';
 import { mobyDickArt } from './mobyDick/mobyDick';
 import { odysseyArt } from './odyssey/odyssey';
 import { orianaArt } from './oriana/oriana';
@@ -23,6 +24,7 @@ const ARTS: Record<string, RareBookArt> = {
   credits: creditsArt,
   deathBook: deathBookArt,
   directory: directoryArt,
+  idleBabel: idleBabelArt,
   mobyDick: mobyDickArt,
   odyssey: odysseyArt,
   oriana: orianaArt,
