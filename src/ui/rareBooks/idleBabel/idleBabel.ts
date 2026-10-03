@@ -1,7 +1,9 @@
-import { OLD_PAPER } from '../../book/pageRender';
+import { OLD_PAPER, preparePageTexture } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
 import { idleBabelBack, idleBabelFront, idleBabelInside, idleBabelSpine, loadIdleBabelFonts } from './idleBabelCover';
+import { CONTENTS_PAGE } from './idleBabelLayout';
+import { idleBabelLinks, paintIdleBabelPage, prepareIdleBabelPages } from './idleBabelPages';
 import type { RareBookArt } from '../rareBookArt';
 
 /** Le dos de la maquette (140 × 1000) à ses vraies proportions. */
@@ -9,8 +11,8 @@ const THICKNESS = 0.1;
 
 /**
  * « Idle Babel », l'autobiographie du jeu : la Bibliothèque contient forcément le livre de sa propre
- * création. Des mémoires reliés en maroquin, le plan d'une galerie poussé en or (idleBabelCover.ts). Pages
- * encore blanches.
+ * création. Des mémoires reliés en maroquin, le plan d'une galerie poussé en or (idleBabelCover.ts) ; dedans,
+ * le récit de sa fabrication par phases, ses reliures en planches et les pistes écartées (idleBabelPages.ts).
  */
 export const idleBabelArt: RareBookArt = {
   thickness: THICKNESS,
@@ -29,5 +31,8 @@ export const idleBabelArt: RareBookArt = {
       ribbon: 0xb8863b,
     };
   },
-  paint: () => false,
+  prepare: () => prepareIdleBabelPages().catch(() => undefined),
+  paint: (page, canvas, spineOnLeft) => paintIdleBabelPage(preparePageTexture(canvas, spineOnLeft, OLD_PAPER), page),
+  bookmark: CONTENTS_PAGE,
+  links: idleBabelLinks,
 };

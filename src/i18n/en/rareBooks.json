@@ -876,7 +876,188 @@
     "project": "PROJECT: IDLE BABEL",
     "sheet": "SHEET 1 / 1",
     "scale": "SCALE: 1 / 1",
-    "drawn": "DRAWN: A."
+    "drawn": "DRAWN: A.",
+    "pages": {
+      "publisher": "LIBRARY OF BABEL",
+      "foreword": "Foreword",
+      "forewordText": [
+        "Every library ends up holding the book of its own making. This one is no exception.",
+        "This book tells how Idle Babel was made, by two hands: someone who imagined, and a machine that wrote the code. It does not tell everything. It tells what was kept.",
+        "The chapters follow the stages of its making. The plates show the bindings as they were drawn before they entered the game, and the drafts that were set aside.",
+        "This book is not finished. Neither is the game."
+      ],
+      "contents": "Contents",
+      "chapter": "CHAPTER",
+      "soon": "Yet to come",
+      "plate": "PLATE",
+      "plateNote": "front and spine, after the mock-up",
+      "drafts": "DISCARDED DRAFTS",
+      "colophon": [
+        "This book is still being written.",
+        "It will grow with the game."
+      ],
+      "chapters": {
+        "idea": {
+          "title": "The idea",
+          "text": [
+            "Before it was a game, Idle Babel was words.",
+            "First, a story by Borges: a library made of hexagons, holding every possible book of four hundred and ten pages. Nearly all of them mean nothing. Somewhere, though, this one is already written.",
+            "Then a question. What if someone were alone in there, reading without end? A game where you do almost nothing, where pages turn while you look away. An idle.",
+            "The foundations were set down in writing: a seeker, a room, pages read, a Knowledge born by chance out of the gibberish. Then numbers: what each thing costs, how long one must wait. They were put to the test before a single line of code, so that the waiting would be fair.",
+            "The first name was longer. It was shortened.",
+            "The ending was written then too, before everything else. It will not be told here."
+          ]
+        },
+        "demo": {
+          "title": "Tech demo and trials",
+          "text": [
+            "Then came the trying. Finding out whether the words would stand once they became image, light, paper. A tech demo: build, take apart, build again."
+          ]
+        },
+        "alpha": {
+          "title": "First alpha",
+          "text": []
+        }
+      },
+      "sections": {
+        "reading": {
+          "head": "Reading",
+          "text": [
+            "In the beginning there was only a page that said hello in two languages. Then a room was painted: a window, shelves, a cellar light. The light was put out. The room only brightens as you read.",
+            "A book came into the seeker’s hands. Its page lifts, curls, falls back; you can hold it at the tip of the mouse, and hesitate. Then the pages learned to turn on their own, at the pace of production."
+          ]
+        },
+        "firstBooks": {
+          "head": "The first books",
+          "text": [
+            "The books were given their true length, four hundred and ten pages. At the end they close, and the next one wears another binding: a gilt title in Babel’s symbols, a frame, a fleuron, leather more or less worn. Now and then a title means something. Do not trust it too much."
+          ]
+        },
+        "strangeBook": {
+          "head": "The strange book",
+          "text": [
+            "A great book, waiting to be found, that counts everything you do. It cannot be read at once: it must be deciphered, page after page, all the way to its title. Later, it began to speak."
+          ]
+        },
+        "exerciseBook": {
+          "head": "The exercise book",
+          "text": [
+            "The settings were first a sketchbook, then a school exercise book. On its back, every multiplication makes four hundred and ten. There is a secret there; this book will not say which."
+          ]
+        },
+        "seals": {
+          "head": "The seals",
+          "text": [
+            "A seal for each thing done, announced by a vision. Some are secret. For each one, a sentence somewhere tells how to find it."
+          ]
+        },
+        "knowledge": {
+          "head": "Knowledge and the white book",
+          "text": [
+            "In the gibberish, now and then, something looks like a word. That is Knowledge. A white book keeps everything you find: reading methods, memories, sentences."
+          ]
+        },
+        "depth": {
+          "head": "Depth",
+          "text": [
+            "Everything moved into three dimensions. The book held in your hands got a wider cover, rounded pages, a top dipping towards the fold. The right curve took a long time to find. The books read piled up nearby."
+          ]
+        },
+        "voice": {
+          "head": "The voice",
+          "text": [
+            "The game learned to ask the name of whoever comes in, and to tell memories: the waking, “Nowhere”, then the white book speaking in its own words."
+          ]
+        },
+        "numerals": {
+          "head": "Babel’s numerals",
+          "text": [
+            "The Library was given numerals of its own: a gilt hexagon and rays you count around it. Large numbers can be written as you please, even spelled out."
+          ]
+        },
+        "anomalies": {
+          "head": "The anomalies",
+          "text": [
+            "Then the books began to answer. Famous quotations slipped into chance, sentences about the staircase and the mirror, others that speak to the reader. This book will not say which."
+          ]
+        },
+        "rareBooks": {
+          "head": "Rare books",
+          "text": [
+            "One book in two hundred is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist."
+          ]
+        },
+        "library": {
+          "head": "The library",
+          "text": [
+            "To keep them, an old wooden showcase, a brass light in every box, and a small key leaning against the pile. The first book you finish goes in first."
+          ]
+        },
+        "classics": {
+          "head": "The classics",
+          "text": [
+            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
+            "Every book was given a silk ribbon that hangs and sways. The first one cracked like a whip. The second was calmer."
+          ]
+        },
+        "credits": {
+          "head": "The credits",
+          "text": [
+            "The credits were written: who made the game, with what, after what."
+          ]
+        },
+        "thisBook": {
+          "head": "This book",
+          "text": [
+            "Then this book was bound: morocco, the plan of a gallery tooled in gold. The Library must hold the book of its own making. Someone had to write it.",
+            "This is where the game stands. It is still being tried."
+          ]
+        }
+      },
+      "draftNames": {
+        "alexH-a": "The big portrait",
+        "alexH-b": "The terminal",
+        "directory-e": "On two lines",
+        "blankPage-a": "White on white",
+        "blankPage-b": "Pocket essay",
+        "blankPage-c": "Joke book",
+        "oriana-b": "The chatterbox",
+        "oriana-c": "The passport",
+        "alice-b": "Bué’s title page",
+        "alice-c": "The playing card",
+        "mobyDick-b": "Richard Bentley, London",
+        "bible-a": "Gutenberg, Mainz, 1455",
+        "arabianNights-a": "Galland, Paris, 1704",
+        "arabianNights-b": "Le Normant, Paris, 1806",
+        "odyssey-a": "Lemerre’s printed wrapper",
+        "credits-a": "The colophon",
+        "credits-b": "The ledger",
+        "idleBabel-a": "The seal",
+        "idleBabel-b": "The plan",
+        "idleBabel-c": "The mise en abyme",
+        "methods-1": "The dark panel",
+        "methods-2": "The leather case",
+        "methods-3": "The seeker’s leaf",
+        "methods-4": "Catalogue cards",
+        "methods-5": "Book spines",
+        "modal-a": "The dark panel",
+        "modal-b": "The library card",
+        "modal-c": "The torn page",
+        "modal-form-1": "The leather scroll",
+        "modal-form-3": "Babel’s hexagon",
+        "numerals-b": "Sigils drawn by lot",
+        "showcase-a": "The lozenge lattice",
+        "showcase-b": "Hexagonal cells",
+        "showcase-c": "The lozenge hexagon"
+      },
+      "draftGroups": {
+        "methods": "Reading methods",
+        "modals": "The windows",
+        "modalForms": "The shape of the windows",
+        "numerals": "Babel’s numerals",
+        "showcase": "The showcase"
+      }
+    }
   },
   "debug": {
     "name": "Debug",

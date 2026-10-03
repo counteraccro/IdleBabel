@@ -889,7 +889,188 @@
     "project": "PROJET : IDLE BABEL",
     "sheet": "FEUILLE 1 / 1",
     "scale": "ÉCHELLE : 1 / 1",
-    "drawn": "DESSINÉ : A."
+    "drawn": "DESSINÉ : A.",
+    "pages": {
+      "publisher": "BIBLIOTHÈQUE DE BABEL",
+      "foreword": "Avant-propos",
+      "forewordText": [
+        "Toute bibliothèque finit par contenir le livre de sa propre construction. Celle-ci ne fait pas exception.",
+        "Ce livre raconte comment Idle Babel a été fait, à deux : quelqu’un qui imaginait, et une machine qui écrivait le code. Il ne dit pas tout. Il dit ce qui a été gardé.",
+        "Les chapitres suivent les étapes de sa fabrication. Les planches montrent les reliures telles qu’elles ont été dessinées avant d’entrer dans le jeu, et les pistes qui n’ont pas été retenues.",
+        "Ce livre n’est pas fini. Le jeu non plus."
+      ],
+      "contents": "Sommaire",
+      "chapter": "CHAPITRE",
+      "soon": "À venir",
+      "plate": "PLANCHE",
+      "plateNote": "plat et dos, d’après la maquette",
+      "drafts": "PISTES ÉCARTÉES",
+      "colophon": [
+        "Ce livre s’écrit encore.",
+        "Il grandira avec le jeu."
+      ],
+      "chapters": {
+        "idea": {
+          "title": "L’idée",
+          "text": [
+            "Avant d’être un jeu, Idle Babel a été des mots.",
+            "D’abord une nouvelle de Borges : une bibliothèque faite d’hexagones, qui contient tous les livres possibles de quatre cent dix pages. Presque tous ne veulent rien dire. Quelque part, pourtant, celui-ci y est déjà écrit.",
+            "Puis une question. Et si quelqu’un s’y trouvait seul, à lire sans fin ? Un jeu où l’on ne fait presque rien, où les pages se tournent pendant qu’on regarde ailleurs. Un idle.",
+            "Les bases ont été posées par écrit : un chercheur, une salle, des pages lues, une Connaissance qui naît par hasard dans le charabia. Puis des chiffres : ce que coûte chaque chose, combien de temps il faut attendre. Ils ont été mis à l’épreuve avant la moindre ligne de code, pour que l’attente soit juste.",
+            "Le premier nom était plus long. Il a été raccourci.",
+            "La fin aussi a été écrite à ce moment-là, avant tout le reste. Elle ne sera pas dite ici."
+          ]
+        },
+        "demo": {
+          "title": "Démo technique et essai",
+          "text": [
+            "Ensuite, il a fallu essayer. Savoir si les mots tenaient debout une fois devenus image, lumière, papier. Une démo technique : on construit, on défait, on recommence."
+          ]
+        },
+        "alpha": {
+          "title": "Première alpha",
+          "text": []
+        }
+      },
+      "sections": {
+        "reading": {
+          "head": "La lecture",
+          "text": [
+            "Au commencement, il n’y avait qu’une page qui disait bonjour en deux langues. Puis une salle a été peinte : une fenêtre, des rayonnages, une lumière de cave. La lumière a été éteinte. La salle ne s’éclaire qu’à mesure qu’on lit.",
+            "Un livre est venu entre les mains du chercheur. Sa page se soulève, s’enroule, retombe ; on peut la retenir du bout de la souris, et hésiter. Puis les pages ont appris à tourner seules, au rythme de la production."
+          ]
+        },
+        "firstBooks": {
+          "head": "Les premiers livres",
+          "text": [
+            "Les livres ont reçu leur vraie longueur, quatre cent dix pages. Au bout, ils se referment, et le suivant porte une autre reliure : un titre doré en symboles de Babel, un cadre, un fleuron, un cuir plus ou moins usé. De temps en temps, un titre veut dire quelque chose. Il ne faut pas trop s’y fier."
+          ]
+        },
+        "strangeBook": {
+          "head": "Le livre étrange",
+          "text": [
+            "Un grand livre, à trouver, qui compte tout ce qu’on fait. Il ne se lit pas tout de suite : il faut le déchiffrer, page après page, jusqu’à son titre. Plus tard, il s’est mis à parler."
+          ]
+        },
+        "exerciseBook": {
+          "head": "Le cahier",
+          "text": [
+            "Les réglages ont d’abord été un carnet de croquis, puis un cahier d’écolier. Au dos, toutes les multiplications donnent quatre cent dix. Il y a là un secret ; ce livre ne dira pas lequel."
+          ]
+        },
+        "seals": {
+          "head": "Les sceaux",
+          "text": [
+            "Un sceau pour chaque chose accomplie, annoncé par une vision. Certains sont secrets. Pour chacun, une phrase quelque part dit comment le trouver."
+          ]
+        },
+        "knowledge": {
+          "head": "La Connaissance et le livre blanc",
+          "text": [
+            "Dans le charabia, parfois, quelque chose ressemble à un mot. C’est la Connaissance. Un livre blanc garde tout ce qu’on trouve : les méthodes de lecture, les souvenirs, les phrases."
+          ]
+        },
+        "depth": {
+          "head": "Le relief",
+          "text": [
+            "Tout est passé en trois dimensions. Le livre tenu en main a pris une couverture plus large, des pages bombées, un haut qui plonge vers le pli. Il a fallu longtemps pour trouver la bonne courbe. Les livres lus se sont empilés à côté."
+          ]
+        },
+        "voice": {
+          "head": "La voix",
+          "text": [
+            "Le jeu a appris à demander son nom à qui entre, et à raconter des souvenirs : le réveil, « Nulle part », puis le livre blanc qui parle avec ses propres mots."
+          ]
+        },
+        "numerals": {
+          "head": "Les chiffres de Babel",
+          "text": [
+            "La Bibliothèque a reçu ses propres chiffres : un hexagone doré et des rayons qu’on compte autour. Les grands nombres s’écrivent comme on veut, même en toutes lettres."
+          ]
+        },
+        "anomalies": {
+          "head": "Les anomalies",
+          "text": [
+            "Alors les livres ont commencé à répondre. Des citations célèbres glissées dans le hasard, des phrases sur l’escalier et le miroir, d’autres qui s’adressent au lecteur. Ce livre ne dira pas lesquelles."
+          ]
+        },
+        "rareBooks": {
+          "head": "Les livres rares",
+          "text": [
+            "Un livre sur deux cents n’est pas comme les autres : un livre rare, avec un vrai titre et un sceau à lui. Un cahier noir où des noms s’écrivent, un annuaire où quelqu’un a déjà ta place, un essai sur la page blanche signé d’un auteur qui n’existe pas."
+          ]
+        },
+        "library": {
+          "head": "La bibliothèque",
+          "text": [
+            "Pour les ranger, une vitrine de vieux bois, une lumière de laiton dans chaque case, et une petite clé posée contre la pile. Le premier livre qu’on termine y entre en premier."
+          ]
+        },
+        "classics": {
+          "head": "Les classiques",
+          "text": [
+            "Puis sont venus les classiques. Alice dans sa toile rouge, Moby-Dick dans son ardoise gaufrée, une Bible de famille, les Mille et Une Nuits dans un maroquin bordeaux, l’Odyssée sous un papier caillouté. Des textes du domaine public, mis en page ligne à ligne, par petits morceaux, pour que le jeu ne s’essouffle pas.",
+            "Chaque livre a reçu un signet de soie qui pend et se balance. Le premier claquait comme un fouet. Le second était plus calme."
+          ]
+        },
+        "credits": {
+          "head": "Les crédits",
+          "text": [
+            "Les crédits ont été écrits : qui a fait le jeu, avec quoi, d’après quoi."
+          ]
+        },
+        "thisBook": {
+          "head": "Ce livre",
+          "text": [
+            "Puis ce livre-ci a été relié : du maroquin, le plan d’une galerie poussé à l’or. La Bibliothèque contient forcément le livre de sa propre création. Il fallait bien que quelqu’un l’écrive.",
+            "Voilà où en est le jeu. On l’essaie encore."
+          ]
+        }
+      },
+      "draftNames": {
+        "alexH-a": "Le grand portrait",
+        "alexH-b": "Le terminal",
+        "directory-e": "Sur deux lignes",
+        "blankPage-a": "Blanc sur blanc",
+        "blankPage-b": "Essai de poche",
+        "blankPage-c": "Livre-gag",
+        "oriana-b": "La bavarde",
+        "oriana-c": "Le passeport",
+        "alice-b": "La page de titre de Bué",
+        "alice-c": "La carte à jouer",
+        "mobyDick-b": "Richard Bentley, Londres",
+        "bible-a": "Gutenberg, Mayence, 1455",
+        "arabianNights-a": "Galland, Paris, 1704",
+        "arabianNights-b": "Le Normant, Paris, 1806",
+        "odyssey-a": "La couverture imprimée de Lemerre",
+        "credits-a": "L’achevé d’imprimer",
+        "credits-b": "Le registre",
+        "idleBabel-a": "Le sceau",
+        "idleBabel-b": "Le plan",
+        "idleBabel-c": "La mise en abyme",
+        "methods-1": "Le panneau sombre",
+        "methods-2": "L’écrin de cuir",
+        "methods-3": "Le feuillet du chercheur",
+        "methods-4": "Les fiches de catalogue",
+        "methods-5": "Les dos de livres",
+        "modal-a": "Le panneau sombre",
+        "modal-b": "La fiche de bibliothèque",
+        "modal-c": "La page arrachée",
+        "modal-form-1": "Le rouleau de cuir",
+        "modal-form-3": "L’hexagone de Babel",
+        "numerals-b": "Des sigils tirés au sort",
+        "showcase-a": "Le treillis de losanges",
+        "showcase-b": "Les alvéoles hexagonales",
+        "showcase-c": "L’hexagone de losanges"
+      },
+      "draftGroups": {
+        "methods": "Les méthodes de lecture",
+        "modals": "Les fenêtres",
+        "modalForms": "La forme des fenêtres",
+        "numerals": "Les chiffres de Babel",
+        "showcase": "La vitrine"
+      }
+    }
   },
   "debug": {
     "name": "Débogage",
