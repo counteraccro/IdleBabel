@@ -710,7 +710,7 @@
     "title": "Crédits",
     "roll": [
       ["CONCEPTION", "AYMERIC"],
-      ["ÉCRIT AVEC L’AIDE DE", "CLAUDE · ANTHROPIC"],
+      ["CODE GÉNÉRÉ PAR", "CLAUDE · ANTHROPIC"],
       ["D’APRÈS", "JORGE LUIS BORGES"],
       ["MOTEUR 3D", "THREE.JS"],
       ["OUTILS", "VITE · TYPESCRIPT"],
@@ -728,12 +728,41 @@
       ],
       "laurel": ["SÉLECTION OFFICIELLE", "FESTIVAL DE L’HEXAGONE"],
       "billing": [
-        "UN JEU D’AYMERIC · ÉCRIT AVEC L’AIDE DE CLAUDE (ANTHROPIC)",
+        "UN JEU D’AYMERIC · CODE GÉNÉRÉ PAR CLAUDE (ANTHROPIC)",
         "D’APRÈS « LA BIBLIOTHÈQUE DE BABEL » DE JORGE LUIS BORGES",
         "MOTEUR 3D THREE.JS · OUTILS VITE ET TYPESCRIPT",
         "TEXTES WIKISOURCE ET PROJET GUTENBERG · 410 PAGES · 25 SYMBOLES",
         "© BIBLIOTHÈQUE DE BABEL · TOUS LES LIVRES RÉSERVÉS"
       ]
+    },
+    "pages": {
+        "title": "Crédits",
+        "publisher": "BIBLIOTHÈQUE DE BABEL",
+        "foreword": "Avant-propos",
+        "author": "AYMERIC",
+        "about": ["Développeur, il a bâti cette Bibliothèque", "page après page, un hexagone à la fois."],
+        "codeIntro": "Le code du jeu, sur GitHub :",
+        "contents": "Sommaire",
+        "parts": ["Avant-propos", "Le générique", "Les textes", "Les polices", "Notes de mise à jour", "Achevé d’imprimer"],
+        "roll": [
+          ["CONCEPTION", "Aymeric", ""],
+          ["CODE GÉNÉRÉ PAR", "Claude (Anthropic)", ""],
+          ["D’APRÈS", "« La Bibliothèque de Babel »", "Jorge Luis Borges, 1941"],
+          ["MOTEUR 3D", "three.js", ""],
+          ["OUTILS", "Vite, TypeScript", ""],
+          ["PUBLIÉ SUR", "GitHub Pages", ""],
+          ["IMAGES", "Photo de vieux bois", "domaine public"]
+        ],
+        "textsIntro": "Tous du domaine public.",
+        "texts": [
+          ["L’Odyssée", "Homère, traduction de Leconte de Lisle", "Lemerre, 1893 · Wikisource"],
+          ["Les Mille et Une Nuits", "traduction d’Antoine Galland", "Le Normant, 1806 · Wikisource"],
+          ["Alice au pays des merveilles", "Lewis Carroll, traduction d’Henri Bué", "1869 · Wikisource"],
+          ["Moby Dick", "Herman Melville", "Harper, 1851 · Projet Gutenberg"]
+        ],
+        "fontsIntro": "Sous licence libre (SIL Open Font License).",
+        "notesEmpty": "Rien encore. La Bibliothèque se construit.",
+        "colophon": ["Achevé d’imprimer", "dans la Bibliothèque de Babel,", "sur les presses de l’hexagone", "où vous vous trouvez.", "", "Tirage : un exemplaire.", "Il y en a une infinité d’autres."]
     }
   },
   "blankPage": {

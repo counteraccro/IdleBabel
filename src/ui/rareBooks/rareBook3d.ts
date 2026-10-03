@@ -56,7 +56,8 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
     bookmark: art.bookmark ?? 1,
     press: (page, x, y) => {
       const link = linkAt(page, x, y);
-      if (link) book.navigate?.(link.target);
+      if (link?.href) window.open(link.href, '_blank', 'noopener');
+      else if (link) book.navigate?.(link.target);
       return link !== undefined;
     },
     pointable: (page, x, y) => linkAt(page, x, y) !== undefined,

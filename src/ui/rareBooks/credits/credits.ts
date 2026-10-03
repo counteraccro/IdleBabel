@@ -1,8 +1,9 @@
-import { MODERN_PAPER } from '../../book/pageRender';
+import { MODERN_PAPER, preparePageTexture } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
 import { creditsFront, creditsInside, creditsSpine, loadCreditsFonts } from './creditsCover';
 import { creditsBack, loadCreditsBackFonts } from './creditsBack';
+import { CONTENTS_PAGE, creditsLinks, loadCreditsPageFonts, paintCreditsPage } from './creditsPages';
 import type { RareBookArt } from '../rareBookArt';
 
 /** Un livre moderne, mince : le dos de la maquette (140 × 1000) à ses vraies proportions. */
@@ -33,6 +34,13 @@ export const creditsArt: RareBookArt = {
       ribbon: 0x8f99ab,
     };
   },
-  // Les pages : à faire d'après leur maquette.
-  paint: () => false,
+  prepare: async () => {
+    await loadCreditsPageFonts();
+  },
+  paint: (page, canvas, spineOnLeft) => {
+    paintCreditsPage(preparePageTexture(canvas, spineOnLeft, MODERN_PAPER), page);
+    return true;
+  },
+  bookmark: CONTENTS_PAGE,
+  links: creditsLinks,
 };
