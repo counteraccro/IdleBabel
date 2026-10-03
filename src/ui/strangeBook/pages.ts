@@ -5,6 +5,7 @@ import { CHAPTERS, chapterShown, chapterTitle, contentsTitle, figureCaption, fig
 import {
   createItemsView,
   drawItems,
+  fitCaption,
   folio,
   heading,
   itemAt,
@@ -145,19 +146,8 @@ const decipherItems = (state: GameState, part: PartId, asking: boolean, noteY: n
   return pencilOffer(priceNote(state, price, 'strangeBook.decipher', 'strangeBook.decipherShort'), asking, noteY, marked);
 };
 
-/** Largeur que peut prendre une légende sur la page (repère 640), marges comprises. */
-const CAPTION_WIDTH = 560;
-
-/** Une légende trop longue pour la page se resserre, puis rapetisse, jusqu'à tenir sur une ligne. */
 /** Chiffre écrit en symboles de Babel (notation choisie dans les options) : doré, comme les titres. */
 const babelGold = (item: TextItem): TextItem => (currentNotation() === 'babel' && !/\d/.test(item.text) ? { ...item, gold: true } : item);
-
-const fitCaption = (item: TextItem): TextItem => {
-  let fitted = item;
-  if (textWidth(fitted) > CAPTION_WIDTH) fitted = { ...fitted, spacing: 1 };
-  const width = textWidth(fitted);
-  return width > CAPTION_WIDTH ? { ...fitted, size: Math.floor((fitted.size * CAPTION_WIDTH) / width) } : fitted;
-};
 
 const chapterItems = (state: GameState, chapter: Chapter, number: number, asking: boolean): Item[] => {
   const figures = chapter.figures.filter((figure) => figureShown(state, figure));

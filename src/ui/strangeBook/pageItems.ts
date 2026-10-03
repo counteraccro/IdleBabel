@@ -153,6 +153,17 @@ let measurer: CanvasRenderingContext2D | null = null;
  * Largeur d'un texte de la page, dans le repère de la texture. L'espacement des lettres s'ajoute aussi
  * après la dernière : on le retire, sinon un texte espacé centré glisse vers la gauche.
  */
+/** Largeur que peut prendre une légende sur la page (repère 640), marges comprises. */
+export const CAPTION_WIDTH = 560;
+
+/** Une légende trop longue pour la page se resserre, puis rapetisse, jusqu'à tenir sur une ligne. */
+export const fitCaption = (item: TextItem): TextItem => {
+  let fitted = item;
+  if (textWidth(fitted) > CAPTION_WIDTH) fitted = { ...fitted, spacing: 1 };
+  const width = textWidth(fitted);
+  return width > CAPTION_WIDTH ? { ...fitted, size: Math.floor((fitted.size * CAPTION_WIDTH) / width) } : fitted;
+};
+
 export const textWidth = (item: TextItem): number => Math.max(0, measuredWidth(item) - (item.text ? (item.spacing ?? 0) : 0));
 const measuredWidth = (item: TextItem): number => {
   measurer ??= document.createElement('canvas').getContext('2d')!;
@@ -332,8 +343,11 @@ export const createItemsView = (target: HTMLElement, actions: ItemActions): ((it
         return;
       }
       if (nodes[index].textContent === item.text) return;
-      if (item.steady) nodes[index].textContent = item.text;
-      else rewrite(nodes[index], item.text);
+      if (item.steady) {
+        // Un texte posé (légende de sceau) peut aussi changer de taille pour tenir sur la page.
+        nodes[index].textContent = item.text;
+        placeText(nodes[index], item);
+      } else rewrite(nodes[index], item.text);
     });
   };
 };

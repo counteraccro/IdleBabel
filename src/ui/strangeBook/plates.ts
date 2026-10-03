@@ -4,7 +4,7 @@ import { PLATES, SEALS, sealSeries, type PlateId, type SealDef } from '../../dat
 import { babelName, completion, countObtained, plateSeals, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
 import { isDeciphered } from '../../systems/decipher';
-import { folio, heading, type Item, type TextItem } from './pageItems';
+import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
 import type { GameState } from '../../core/state';
 
 /**
@@ -16,7 +16,7 @@ const PER_PAGE = ROWS.reduce((sum, count) => sum + count, 0);
 const SEAL_SIZE = 100;
 /** Un hexagone fait 0,81 × 0,94 de son carré : un peu d'écart entre les alvéoles, rangées en quinconce. */
 const STEP_X = 94;
-const FIRST_ROW = 235;
+const FIRST_ROW = 228;
 const STEP_Y = 82;
 
 export interface PlatePage {
@@ -118,6 +118,39 @@ export const plateHasNews = (state: GameState, plate: PlateId): boolean =>
 /** Étoile dorée dans la marge, devant un titre dont la planche a du nouveau. */
 export const newsMark = (x: number, y: number, size: number): Item => ({ kind: 'text', text: '✦', x, y, size, align: 'right', gold: true });
 
+/** Nom du sceau survolé, sous les alvéoles. */
+const LEGEND = { kind: 'text', text: '', x: 320, size: 24, align: 'center', spacing: 4, steady: true } as const;
+const LEGEND_TOP = 612;
+const LEGEND_STEP = 30;
+
+/**
+ * Le nom tient sur une ligne, ou se coupe en deux, plus serré (les légendes des secrets sont des phrases).
+ * Toujours deux lignes, aux mêmes places (la première vide pour un nom court) : survoler un sceau ne
+ * fait que réécrire leur texte, sans reconstruire la page.
+ */
+const legendLines = (name: string): TextItem[] => {
+  const line = (text: string, row: number, size: number, spacing: number): TextItem => ({
+    ...LEGEND,
+    text,
+    y: LEGEND_TOP + row * LEGEND_STEP,
+    size,
+    spacing,
+  });
+  if (textWidth(line(name, 1, LEGEND.size, LEGEND.spacing)) <= CAPTION_WIDTH) return [line('', 0, 22, 2), line(name, 1, LEGEND.size, LEGEND.spacing)];
+  // Coupure au mot le plus proche du milieu (en largeur).
+  const words = name.split(' ');
+  const cut = (at: number): [string, string] => [words.slice(0, at).join(' '), words.slice(at).join(' ')];
+  const width = (text: string): number => textWidth(line(text, 0, 22, 2));
+  let best = 1;
+  for (let at = 2; at < words.length; at++) {
+    const [a, b] = cut(at);
+    const [ba, bb] = cut(best);
+    if (Math.max(width(a), width(b)) < Math.max(width(ba), width(bb))) best = at;
+  }
+  const [first, second] = cut(best);
+  return [fitCaption(line(first, 0, 22, 2)), fitCaption(line(second, 1, 22, 2))];
+};
+
 /**
  * Une page de planche : titre, compte, alvéoles, et la légende du sceau survolé. `fresh` : sceaux tout
  * juste obtenus, qui luisent plus fort jusqu'à ce qu'on les survole.
@@ -165,8 +198,8 @@ export const plateItems = (
       spacing: 3,
     },
     ...seals,
-    { kind: 'text', text: legend.name, x: 320, y: 628, size: 24, align: 'center', spacing: 4, steady: true },
-    { kind: 'text', text: legend.text, x: 320, y: 666, size: 18, align: 'center', italic: true, faded: true, steady: true },
+    ...legendLines(legend.name),
+    { kind: 'text', text: legend.text, x: 320, y: 682, size: 18, align: 'center', italic: true, faded: true, steady: true },
     folio(page.page + 1),
   ];
 };
