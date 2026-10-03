@@ -1,6 +1,7 @@
 import type * as THREE from 'three';
 import { createVellum } from '../whiteBook/vellum';
-import { svgTexture } from '../book3d/textures';
+import { canvasTexture, svgTexture } from '../book3d/textures';
+import type { GlowSpan } from '../book3d/glowSweep';
 
 /**
  * La couverture du livre de la fin : le négatif du livre blanc (maquette .ai/maquette-livre-fin.html,
@@ -40,44 +41,74 @@ const glowingName = (context: CanvasRenderingContext2D, name: string, size: numb
 
 const loadTitleFont = (): Promise<unknown> => document.fonts.load(`600 72px ${TITLE}`).catch(() => undefined);
 
-/** Le plat : vélin noir frappé de l'hexagone, le nom au-dessus. */
-export const finalFront = async (name: string): Promise<THREE.CanvasTexture> => {
+/**
+ * La lumière propre du nom (bookMesh : coverGlow, spineGlow) : le nom et son halo sur du noir, aux mêmes
+ * places que sur la peau. Il brille de lui-même, et non plus seulement à la lumière de la pièce.
+ */
+const glowMask = (paint: (context: CanvasRenderingContext2D) => void, width = WIDTH): THREE.CanvasTexture => {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = HEIGHT;
+  const context = canvas.getContext('2d')!;
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, width, HEIGHT);
+  paint(context);
+  return canvasTexture(canvas);
+};
+
+/** Le plat : vélin noir frappé de l'hexagone, le nom au-dessus, et sa lumière (null : pas de nom). */
+export interface TitledTexture {
+  texture: THREE.CanvasTexture;
+  /** La lumière propre du nom, et où il court (null : pas de nom). */
+  glow: THREE.CanvasTexture | null;
+  span: GlowSpan | null;
+}
+
+export const finalFront = async (name: string): Promise<TitledTexture> => {
   const [texture] = await Promise.all([
     svgTexture(createVellum(5, true, { dark: true }).querySelector('svg')!, WIDTH, HEIGHT),
     loadTitleFont(),
   ]);
-  if (name) {
-    const context = (texture.image as HTMLCanvasElement).getContext('2d')!;
+  if (!name) return { texture, glow: null, span: null };
+  const length = Math.min(72, name.length * 9 * 0.62);
+  const paint = (context: CanvasRenderingContext2D): void => {
     context.save();
     context.translate(50 * U, 31 * U);
-    glowingName(context, name, 9, Math.min(72, name.length * 9 * 0.62));
+    glowingName(context, name, 9, length);
     context.restore();
-  }
-  return texture;
+  };
+  paint((texture.image as HTMLCanvasElement).getContext('2d')!);
+  const span: GlowSpan = { axis: 'u', from: (50 - length / 2) / 100, to: (50 + length / 2) / 100, letters: name.length };
+  return { texture, glow: glowMask(paint), span };
 };
 
 /** Vélin noir sans titre : plat arrière, contre-plats. */
 export const finalPlain = (seed: number): Promise<THREE.CanvasTexture> =>
   svgTexture(createVellum(seed, false, { dark: true }).querySelector('svg')!, WIDTH, HEIGHT);
 
-/** Le dos, à ses vraies proportions (filets sans coins), le nom couché en long. */
-export const finalSpine = async (name: string, thickness: number): Promise<THREE.CanvasTexture> => {
+/** Le dos, à ses vraies proportions (filets sans coins), le nom couché en long, et sa lumière. */
+export const finalSpine = async (
+  name: string,
+  thickness: number,
+): Promise<TitledTexture> => {
   const width = 125 * thickness * 1.4;
   const [texture] = await Promise.all([
     svgTexture(createVellum(19, false, { dark: true, ornaments: false, width }).querySelector('svg')!, WIDTH, HEIGHT),
     loadTitleFont(),
   ]);
-  if (name) {
-    // La texture du dos est étirée en largeur : le nom et son halo sont dessinés à part, en unités carrées,
-    // puis étirés avec elle (sinon le halo, rond sur le canvas, s'écraserait sur le livre).
-    const flat = document.createElement('canvas');
-    flat.width = Math.round(width * U);
-    flat.height = HEIGHT;
-    const context = flat.getContext('2d')!;
-    context.translate((width / 2 + 1.6) * U, 62.5 * U);
-    context.rotate(-Math.PI / 2);
-    glowingName(context, name, 7.5, Math.min(125 * 0.62, name.length * 7.5 * 0.62));
-    (texture.image as HTMLCanvasElement).getContext('2d')!.drawImage(flat, 0, 0, WIDTH, HEIGHT);
-  }
-  return texture;
+  if (!name) return { texture, glow: null, span: null };
+  // La texture du dos est étirée en largeur : le nom et son halo sont dessinés à part, en unités carrées,
+  // puis étirés avec elle (sinon le halo, rond sur le canvas, s'écraserait sur le livre).
+  const flat = document.createElement('canvas');
+  flat.width = Math.round(width * U);
+  flat.height = HEIGHT;
+  const context = flat.getContext('2d')!;
+  context.translate((width / 2 + 1.6) * U, 62.5 * U);
+  context.rotate(-Math.PI / 2);
+  const length = Math.min(125 * 0.62, name.length * 7.5 * 0.62);
+  glowingName(context, name, 7.5, length);
+  (texture.image as HTMLCanvasElement).getContext('2d')!.drawImage(flat, 0, 0, WIDTH, HEIGHT);
+  // Couché, le nom se lit de bas en haut : il commence en bas de la texture (v monte du bas vers le haut).
+  const span: GlowSpan = { axis: 'v', from: (62.5 - length / 2) / 125, to: (62.5 + length / 2) / 125, letters: name.length };
+  return { texture, glow: glowMask((mask) => mask.drawImage(flat, 0, 0, WIDTH, HEIGHT)), span };
 };

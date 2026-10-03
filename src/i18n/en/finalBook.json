@@ -1,6 +1,10 @@
 {
   "title": "All You Have Done",
   "before": "You have opened your eyes here before. More times than this book can hold.",
+  "back": {
+    "first": "You thought you were searching.",
+    "second": "You were only reading it again."
+  },
   "ages": {
     "manual": "The Manual Age"
   },

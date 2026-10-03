@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { GlowSpan, GlowSweep } from './glowSweep';
 import { createPageGlow, type PageGlow } from './pageGlow';
 import { createHeadbandGeometry, HEADBAND_LENGTH, HEADBAND_RADIUS } from './headband';
 import { createRibbon, RIBBON_INSIDE, RIBBON_TAIL, RIBBON_WIDTH, type RibbonPoint } from './ribbon';
@@ -48,6 +49,14 @@ export interface BookLook {
   headband?: THREE.Texture;
   /** Couleur du signet (ruban de soie). */
   ribbon?: THREE.ColorRepresentation;
+  /**
+   * Ce qui brille de soi-même sur le plat et sur le dos (noir : rien), sans l'éclairage de la pièce : un
+   * titre qui reste lumineux dans l'ombre de la vitrine.
+   */
+  coverGlow?: THREE.Texture;
+  spineGlow?: THREE.Texture;
+  /** Une lumière qui passe sur ces titres de lettre en lettre (glowSweep.ts), et où ils courent. */
+  glowSweep?: { sweep: GlowSweep; cover?: GlowSpan; spine?: GlowSpan };
 }
 
 export interface BookMesh {
@@ -143,7 +152,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   // Le cuir (dos, chants des plats) : la même peau que la couverture, un peu plus sombre. Visible des
   // deux côtés : la coque du dos reste pleine sous tous les angles.
   const leather = new THREE.MeshStandardMaterial({ map: look.cover, color: look.leather, roughness: 0.65, side: THREE.DoubleSide });
-  const coverMaterial = new THREE.MeshStandardMaterial({ map: look.cover, roughness: 0.7 });
+  const glowing = (glow: THREE.Texture | undefined) => (glow ? { emissiveMap: glow, emissive: 0xffffff } : {});
+  const coverMaterial = new THREE.MeshStandardMaterial({ map: look.cover, roughness: 0.7, ...glowing(look.coverGlow) });
   // Le plat arrière est le même plat retourné (demi-tour autour de x) : son image tournerait avec lui, tête
   // en bas et vue de dos. Tournée d'un demi-tour, elle se lit droite, la cote en bas.
   look.back.center.set(0.5, 0.5);
@@ -151,6 +161,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   const backMaterial = new THREE.MeshStandardMaterial({ map: look.back, roughness: 0.7 });
   const insideMaterial = new THREE.MeshStandardMaterial({ map: look.inside, roughness: 0.75 });
   const geometry = boardGeometry(shape);
+  if (look.glowSweep?.cover) look.glowSweep.sweep.add(coverMaterial, look.glowSweep.cover);
 
   const body = new THREE.Group();
   root.add(body);
@@ -178,7 +189,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   leftHalf.content.add(front);
   // La reliure (dos et mors) relie les deux plats, où qu'ils soient.
   const binding = createBinding(shape);
-  const spineLeather = new THREE.MeshStandardMaterial({ map: look.spine, roughness: 0.7 });
+  const spineLeather = new THREE.MeshStandardMaterial({ map: look.spine, roughness: 0.7, ...glowing(look.spineGlow) });
+  if (look.glowSweep?.spine) look.glowSweep.sweep.add(spineLeather, look.glowSweep.spine);
   // Dessous du mors : la même peau que l'intérieur de la couverture (la garde, continue jusqu'au pli).
   // Face intérieure du dos : la garde, unie, sans le titre (on la voit quand le plat arrière se referme).
   body.add(

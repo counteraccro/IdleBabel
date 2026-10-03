@@ -1,6 +1,10 @@
 {
   "title": "Tout ce que tu as fait",
   "before": "Tu as déjà ouvert les yeux ici. Plus de fois que ce livre ne peut en contenir.",
+  "back": {
+    "first": "Tu croyais chercher.",
+    "second": "Tu ne faisais que relire."
+  },
   "ages": {
     "manual": "L'Âge Manuel"
   },
