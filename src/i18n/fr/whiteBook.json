@@ -162,7 +162,8 @@
     "hintStill": "Un livre qui ne tremble pas / en dit davantage.",
     "hintBabelDigits": "Compte comme / la Bibliothèque compte.",
     "hintColleagues": "Deux livres / travaillent / ensemble.",
-    "hintReread": "Certains livres / se lisent / deux fois."
+    "hintReread": "Certains livres / se lisent / deux fois.",
+    "hintBabelDefinition": "Un vieux dictionnaire / sait ce que veut dire / Babel."
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",

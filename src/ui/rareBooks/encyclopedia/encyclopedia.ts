@@ -1,4 +1,5 @@
 import { getLocale } from '../../../i18n';
+import { sealEvent } from '../../../systems/seals';
 import { preparePageTexture } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { canvasTexture } from '../../book3d/textures';
@@ -49,6 +50,9 @@ const prepare = (): Promise<void> => {
   return preparing;
 };
 
+/** L'article qui définit Babel (« en Hébreu confusion ») : le lire est un secret. */
+const BABEL = 'BABEL';
+
 /**
  * L'« Encyclopédie, ou Dictionnaire raisonné des sciences, des arts et des métiers » de Diderot et d'Alembert,
  * tome I (Paris, 1751), dans la reliure de veau marbré des souscripteurs ; dedans, en français dans les deux
@@ -84,4 +88,7 @@ export const encyclopediaArt: RareBookArt = {
   },
   bookmark: CONTENTS_PAGE,
   links: (page) => encyclopediaLinks(page, laid),
+  passed: (page, state) => {
+    if (laid && page === laid.entries.find((entry) => entry.title === BABEL)?.page) sealEvent(state, 'babelDefinition');
+  },
 };

@@ -84,6 +84,8 @@ export const SEALS: readonly SealDef[] = [
   secret('directory'),
   // Le premier livre, relu dans la bibliothèque jusqu'à la dernière page, et refermé (ui/library/libraryPage.ts).
   secret('reread'),
+  // L'article BABEL de l'Encyclopédie, « en Hébreu confusion » (ui/rareBooks/encyclopedia/encyclopedia.ts).
+  secret('babelDefinition'),
   // Les deux collègues, AlexH et Oriana, trouvés tous les deux (ils travaillent ensemble, jusque dans leurs livres).
   seal('colleagues', 'secrets', (s) => 'alexH' in s.rareBooks && 'oriana' in s.rareBooks),
 ];

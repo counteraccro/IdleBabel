@@ -162,7 +162,8 @@
     "hintStill": "A book that does not tremble / tells more.",
     "hintBabelDigits": "Count the way / the Library counts.",
     "hintColleagues": "Two books / work / together.",
-    "hintReread": "Some books / are read / twice."
+    "hintReread": "Some books / are read / twice.",
+    "hintBabelDefinition": "An old dictionary / knows what / Babel means."
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",
