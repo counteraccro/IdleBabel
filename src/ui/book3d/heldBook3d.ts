@@ -16,6 +16,7 @@ import { createTweens } from './tweens';
 import { modalOpen } from '../modal/modal';
 import type { Book3d } from './book3dBook';
 import { screenDown } from './ribbonTail';
+import { animationNow } from '../animationClock';
 
 /** Inclinaison du livre vers le lecteur : la caméra le regarde d'un peu plus bas que d'aplomb. */
 const TILT = THREE.MathUtils.degToRad(20);
@@ -145,7 +146,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
   }
   let current = first;
   void take(first, options.startSpread ?? 0, options.startClosed ?? false).then(() => {
-    closedAt = performance.now();
+    closedAt = animationNow();
     phase = options.startClosed ? 'closed' : 'reading';
   });
 
@@ -180,7 +181,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     await take(current, 0, true);
     pose.set({ shut: 0 });
     await tweens.run(RAISE_MS, (e) => pose.set({ drop: 1 - e }), 'out');
-    closedAt = performance.now();
+    closedAt = animationNow();
     phase = 'closed';
   };
   /** Depuis quand le livre neuf attend fermé. */
@@ -233,9 +234,10 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
   const autoTurn = first.autoTurn ? createAutoTurn3d(first.autoTurn) : null;
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  let before = performance.now();
+  let before = animationNow();
   let turning = false;
-  const frame = (now: number): void => {
+  const frame = (frameTime: number): void => {
+    const now = animationNow(frameTime);
     // Livre retiré (changement de langue, autre page) : son contexte WebGL est rendu tout de suite.
     if (!root.isConnected) {
       lifetime.abort();
@@ -295,7 +297,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     current = spec;
     phase = 'busy';
     void take(spec, spread, closed).then(() => {
-      closedAt = performance.now();
+      closedAt = animationNow();
       phase = closed ? 'closed' : 'reading';
     });
   };

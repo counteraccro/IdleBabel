@@ -282,3 +282,10 @@
 .modal-veil.lifting {
   opacity: 0;
 }
+
+/* Modale ouverte : tout ce qui bouge derrière s'arrête (ui/animationClock.ts), la modale seule s'anime. */
+.animations-paused body :not(.modal-backdrop, .modal-backdrop *),
+.animations-paused body :not(.modal-backdrop, .modal-backdrop *)::before,
+.animations-paused body :not(.modal-backdrop, .modal-backdrop *)::after {
+  animation-play-state: paused !important;
+}

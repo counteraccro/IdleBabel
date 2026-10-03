@@ -13,15 +13,30 @@ const away = (state: GameState, seconds: number): void => {
   if (state.settings.autoTurn && seconds >= TOLD_ABSENCE) recordOnce(state, 'firstAbsence');
 };
 
+/** Fin de la dernière absence comptée : deux absences qui se chevauchent (onglet caché sous une modale) ne comptent qu'une fois. */
+let countedUntil = 0;
+
+/** Absence de `from` à maintenant (en ms, horloge Date). */
+const awaySince = (state: GameState, from: number): void => {
+  const now = Date.now();
+  const start = Math.max(from, countedUntil);
+  if (now <= start) return;
+  countedUntil = now;
+  away(state, (now - start) / 1000);
+};
+
 /**
  * Trouvailles pendant l'absence : jeu fermé (depuis la dernière sauvegarde) ou onglet caché, quand
  * les pages ne tournent plus à l'écran. Les pages lues hors-ligne, elles, ne sont pas encore comptées.
  */
 export const watchAbsence = (state: GameState): void => {
-  away(state, (Date.now() - state.lastTick) / 1000);
+  awaySince(state, state.lastTick);
   let hiddenAt = 0;
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) hiddenAt = Date.now();
-    else if (hiddenAt) away(state, (Date.now() - hiddenAt) / 1000);
+    else if (hiddenAt) awaySince(state, hiddenAt);
   });
 };
+
+/** Une modale vient de se fermer après `seconds` : les pages n'ont pas tourné à l'écran, le jeu a continué. */
+export const pauseEnded = (state: GameState, seconds: number): void => awaySince(state, Date.now() - seconds * 1000);

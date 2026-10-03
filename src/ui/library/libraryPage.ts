@@ -21,6 +21,7 @@ import type { Book3d } from '../book3d/book3dBook';
 import { addCellLights } from './cellLights';
 import { layoutBookcase, type ShelfPlace } from './shelfLayout';
 import type { GameState } from '../../core/state';
+import { animationNow } from '../animationClock';
 
 /**
  * Le livre de débogage : un livre rare (10× plus rare), rangé dans sa case à lui ; il ne s'ouvre qu'en mode
@@ -273,10 +274,11 @@ export const createLibraryPage = (
     onOpen(place.spot.id);
   });
 
-  let before = performance.now();
+  let before = animationNow();
   let mounted = false;
   let wasFlying = false;
-  const frame = (now: number): void => {
+  const frame = (frameTime: number): void => {
+    const now = animationNow(frameTime);
     if (!root.isConnected) {
       if (mounted) return destroy(scene);
     } else mounted = true;

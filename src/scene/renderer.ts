@@ -1,5 +1,6 @@
 import { FRAGMENT_SHADER, VERTEX_SHADER } from './shaders';
 import { createPointer } from './pointer';
+import { animationNow } from '../ui/animationClock';
 
 export interface SceneOptions {
   image: TexImageSource & { width: number; height: number };
@@ -75,7 +76,8 @@ export const startScene = (canvas: HTMLCanvasElement, options: SceneOptions): bo
   const pointer = createPointer();
   // Cherchés une fois : ils changent à chaque image.
   const [uPointer, uClarity, uBeyond, uTime] = ['uPointer', 'uClarity', 'uBeyond', 'uTime'].map(uniform);
-  const frame = (time: number): void => {
+  const frame = (frameTime: number): void => {
+    const time = animationNow(frameTime);
     pointer.step();
     gl.uniform2f(uPointer, pointer.current.x, pointer.current.y);
     gl.uniform1f(uClarity, options.clarity());

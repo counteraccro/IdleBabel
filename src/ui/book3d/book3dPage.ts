@@ -18,6 +18,7 @@ import { BIG_BOOK_REWRITE, type Book3d } from './book3dBook';
 import { createFlight, takeFlight, type Flight } from './bookFlight';
 import { modalOpen } from '../modal/modal';
 import { screenDown } from './ribbonTail';
+import { animationNow } from '../animationClock';
 
 /** Durée de l'ouverture de la couverture. */
 const OPEN_MS = 1100;
@@ -186,10 +187,11 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     // et s'y bloque ; il se referme : elle garde son angle et glisse jusqu'au milieu du livre fermé, autour
     // duquel il tourne ensuite, puis redevient libre.
     view.begin(board === 'front' ? target === 1 : board === 'back' && target === 0, closedOn(board === 'back' ? 'back' : 'front'));
-    const start = performance.now();
+    const start = animationNow();
     const duration = OPEN_MS * Math.abs(target - from);
     swinging = true;
-    const step = (now: number): void => {
+    const step = (frameTime: number): void => {
+      const now = animationNow(frameTime);
       const t = duration > 0 ? Math.min(1, (now - start) / duration) : 1;
       const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
       const value = from + (target - from) * eased;
@@ -358,10 +360,11 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     backSeen = true;
     spec.backSeen();
   };
-  let before = performance.now();
+  let before = animationNow();
   /** Des pages tournaient à l'image d'avant : la dernière, celle où elles se posent, est encore à montrer. */
   let turning = false;
-  const frame = (now: number): void => {
+  const frame = (frameTime: number): void => {
+    const now = animationNow(frameTime);
     // Page quittée : écouteurs retirés, livre et contexte WebGL libérés tout de suite.
     if (!root.isConnected) {
       // Quittée en plein vol (bouton précédent du navigateur) : la pile n'attend plus ce livre.

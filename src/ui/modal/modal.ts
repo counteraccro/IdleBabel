@@ -1,6 +1,7 @@
 import './modal.css';
 import { el } from '../dom';
 import { babelName } from '../../systems/seals';
+import { pauseAnimations, resumeAnimations } from '../animationClock';
 
 /**
  * Variante d'une modale : la même carte, un accent différent. `danger` : une action qu'on ne peut pas
@@ -41,8 +42,14 @@ export interface Modal {
   close: () => void;
 }
 
-/** Une modale est-elle ouverte (récit, question…) ? Le jeu derrière attend : pas de page qui tourne seule. */
+/**
+ * Une modale est-elle ouverte (récit, question…) ? Le décor derrière se fige (ui/animationClock.ts), le jeu
+ * continue : pas de page qui tourne à l'écran, ses trouvailles sont comptées comme pendant une absence.
+ */
 export const modalOpen = (): boolean => document.querySelector('.modal-backdrop') !== null;
+
+/** Modales ouvertes : les animations reprennent quand la dernière se ferme. */
+let opened = 0;
 
 /** Filigrane doré d'un coin de l'écrin (coin haut gauche ; les trois autres en sont des reflets). */
 const CORNER = `<svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
@@ -77,9 +84,21 @@ export const openModal = ({
     backdrop.remove();
     document.removeEventListener('keydown', onKey);
     onClose?.();
+    // Après onClose : une modale qui en ouvre une autre (récits à la suite) ne relance pas le décor entre les deux.
+    opened -= 1;
+    if (opened === 0) resumeAnimations();
   };
   const onKey = (event: KeyboardEvent): void => {
     if (event.key === 'Escape' && dismissible) close();
+    // Entrée fait comme un clic : elle affiche d'abord le récit en entier, puis lance l'action principale.
+    // Dans un champ ou sur un bouton de la modale, le navigateur s'en charge (envoi du formulaire, clic).
+    if (event.key !== 'Enter' || event.repeat) return;
+    // L'appui s'arrête à la modale : le livre derrière (qui tourne une page à Entrée) ne le voit pas.
+    event.stopPropagation();
+    if (finishStory()) return void event.preventDefault();
+    if (card.contains(document.activeElement)) return;
+    event.preventDefault();
+    card.requestSubmit();
   };
   const buttons = actions.map((action) => {
     const button = el('button', `modal-button ${action.kind ?? 'secondary'}`, action.label);
@@ -99,16 +118,20 @@ export const openModal = ({
     actions[index].onClick?.();
     if (!actions[index].keepOpen) close();
   });
-  // Un récit qui apparaît paragraphe par paragraphe (.modal-story) : un clic n'importe où l'affiche en
-  // entier, sans rien déclencher d'autre (le bouton encore invisible ne compte pas).
+  /** Récit qui apparaît paragraphe par paragraphe (.modal-story) : affiché en entier ; false s'il l'était déjà. */
+  const finishStory = (): boolean => {
+    const telling = card
+      .getAnimations({ subtree: true })
+      .filter((animation) => (animation as CSSAnimation).animationName === 'modal-story-in' && animation.playState !== 'finished');
+    telling.forEach((animation) => animation.finish());
+    return telling.length > 0;
+  };
+  // Un clic n'importe où affiche le récit en entier, sans rien déclencher d'autre (le bouton encore
+  // invisible ne compte pas).
   backdrop.addEventListener(
     'click',
     (event) => {
-      const telling = card
-        .getAnimations({ subtree: true })
-        .filter((animation) => (animation as CSSAnimation).animationName === 'modal-story-in' && animation.playState !== 'finished');
-      if (!telling.length) return;
-      telling.forEach((animation) => animation.finish());
+      if (!finishStory()) return;
       event.preventDefault();
       event.stopPropagation();
     },
@@ -116,6 +139,8 @@ export const openModal = ({
   );
   if (dismissible) backdrop.addEventListener('click', (event) => event.target === backdrop && close());
   document.addEventListener('keydown', onKey);
+  opened += 1;
+  pauseAnimations();
   footer.append(...buttons);
   card.append(el('span', 'modal-filet'), heading, ...body, ...(buttons.length ? [footer] : []));
   // Colonnes de symboles de Babel qui s'échappent des deux côtés : tirées du titre, les mêmes pour une

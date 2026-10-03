@@ -2,7 +2,8 @@ import './ui/styles.css';
 import { detectLocale, setLocale } from './i18n';
 import { loadGame, saveGame } from './core/save';
 import { startLoop } from './core/loop';
-import { watchAbsence } from './core/absence';
+import { pauseEnded, watchAbsence } from './core/absence';
+import { onResume } from './ui/animationClock';
 import { mountApp } from './ui/app';
 import { mountSealVisions } from './ui/sealVision';
 import { mountScene } from './scene';
@@ -21,6 +22,8 @@ const state = loadGame(detectLocale());
 readGameSeedWith(() => state.seed);
 setLocale(state.locale);
 watchAbsence(state);
+// Une modale fermée : ses trouvailles, comme pendant une absence (le décor était figé, pas le jeu).
+onResume((seconds) => pauseEnded(state, seconds));
 // Le livre de la fin est à jour avant qu'une vue ne le lise (sauvegarde d'avant ses moments, absence).
 chronicle(state);
 readStrangeTitleWith(() => isDeciphered(state, 'contents'));

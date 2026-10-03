@@ -6,6 +6,7 @@ import { createLighting } from './lighting';
 import { isDebugEnabled } from '../../debug/enabled';
 import type { Book3d } from './book3dBook';
 import { flying, flyingHome, launchFlight } from './bookFlight';
+import { animationNow } from '../animationClock';
 
 /** Un livre de la pile : son nom (légende au survol), son modèle 3D, ce qu'il ouvre, comment il est posé. */
 export interface PileBook {
@@ -493,9 +494,10 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
     renderer.render(scene, camera);
   };
   let wasFlying = false;
-  let before = performance.now();
+  let before = animationNow();
   let mounted = false;
-  const frame = (now: number): void => {
+  const frame = (frameTime: number): void => {
+    const now = animationNow(frameTime);
     // Pile retirée (autre écran) : son contexte WebGL est rendu tout de suite.
     if (!root.isConnected) {
       if (mounted) return destroy(scene);
@@ -610,7 +612,7 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
       if (!slot || slot.shown === shown) return;
       slot.shown = shown;
       slot.button.hidden = !shown;
-      if (shown && arrive) slot.arriveAt = performance.now();
+      if (shown && arrive) slot.arriveAt = animationNow();
       layout();
     },
     away: (id) => {
@@ -619,7 +621,7 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
     },
     shake: (id) => {
       const slot = find(id);
-      if (slot) slot.shakeAt = performance.now();
+      if (slot) slot.shakeAt = animationNow();
     },
     news: (id, on) => {
       const slot = find(id);
