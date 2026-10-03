@@ -42,6 +42,12 @@ export interface ClassicStyle {
    * lettrine perd le sien.
    */
   numbers?: { font: string; gap: number };
+  /** Le titre d'une histoire au fil du texte (ClassicChapter.inline) : centré, dans cette police. */
+  inlineHeading?: { font: string; spacing: number };
+  /** Les premiers mots d'un chapitre en capitales (« LE COMTE d’Olavidez »), quand il n'a pas de lettrine. */
+  openingCaps?: number;
+  /** Une ligne seule en capitales plus courte que ça est centrée (« FIN. ») ; sans : 30 caractères. */
+  centeredUpTo?: number;
   /** Des placements propres au livre, repris de sa maquette (sans : ceux du moteur). */
   marks?: ClassicMarks;
 }
@@ -60,8 +66,8 @@ export interface ClassicMarks {
   /** La première ligne d'une page, et celle de l'ouverture d'un chapitre. */
   first: number;
   opening: number;
-  /** Le titre courant ; `left` : celui des pages de gauche (le titre du livre), sinon celui du chapitre partout. */
-  runningHead: {
+  /** Le titre courant (sans : aucun) ; `left` : celui des pages de gauche (le titre du livre), sinon celui du chapitre partout. */
+  runningHead?: {
     font: string;
     color: string;
     spacing: number;
@@ -70,8 +76,11 @@ export interface ClassicMarks {
     /** Celui des pages de droite, d'après le chapitre (sans : son titre). */
     right?: (label: string, title: string) => string;
   };
-  /** Le numéro de page, en bas au milieu ; `top` : sauf aux ouvertures, en haut dans le coin extérieur. */
-  folio: { font: string; color: string; y: number; top?: number };
+  /**
+   * Le numéro de page, en bas au milieu ; `top` : sauf aux ouvertures, en haut dans le coin extérieur (au
+   * milieu si `center`) ; `format` : sa forme (« ( 2 ) ») ; `openings: false` : aucun aux ouvertures.
+   */
+  folio: { font: string; color: string; y: number; top?: number; center?: boolean; format?: (page: number) => string; openings?: boolean };
   /** Les lignes centrées (les nuits) : leur police, un filet dessous (`rule` sous la ligne de base, demi-largeur `half`), la place en plus après. */
   centered: { font: string; spacing: number; rule: number; half: number; after: number };
   /** La lettrine a sa ligne de base sur celle de la 2e ligne. */
@@ -101,6 +110,8 @@ export interface PlacedLine {
   justify?: number;
   /** Le numéro du paragraphe, dans la marge (style.numbers). */
   number?: string;
+  /** Le titre d'une histoire au fil du texte (style.inlineHeading). */
+  heading?: boolean;
 }
 
 export interface ClassicPage {
@@ -134,8 +145,11 @@ const wrapVarying = (context: CanvasRenderingContext2D, text: string, width: (li
   return line ? [...lines, line] : lines;
 };
 
+/** Un titre suivi d'un point, sauf s'il finit déjà par une ponctuation. */
+export const titled = (title: string): string => (/[.!?]$/.test(title) ? title : `${title}.`);
+
 /** Une ligne seule et courte, en capitales (« FIN. », « THE END ») : centrée. */
-const isCentered = (para: string): boolean => para.length < 30 && !para.includes('\n') && para === para.toUpperCase();
+const isCentered = (para: string, upTo = 30): boolean => para.length < upTo && !para.includes('\n') && para === para.toUpperCase();
 
 /** La mise en page, un paragraphe à la fois : elle s'arrête (yield) après chacun. */
 function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, style: ClassicStyle): Generator<void, ClassicLayout> {
@@ -164,9 +178,17 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
     y = opening ? openingTop : top;
     return true;
   };
-  const place = (chapter: number, line: string, x: number, center = false, justify?: number, number?: string): boolean => {
+  const place = (chapter: number, line: string, x: number, center = false, justify?: number, number?: string, heading = false): boolean => {
     if (y + style.line > BOTTOM && !turn(chapter)) return false;
-    current!.lines.push({ text: line, x, y, center, ...(justify ? { justify } : {}), ...(number ? { number } : {}) });
+    current!.lines.push({
+      text: line,
+      x,
+      y,
+      center,
+      ...(justify ? { justify } : {}),
+      ...(number ? { number } : {}),
+      ...(heading ? { heading } : {}),
+    });
     y += style.line;
     return true;
   };
@@ -185,7 +207,7 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
       y += style.line / 2;
       return true;
     }
-    if (isCentered(para)) {
+    if (isCentered(para, style.centeredUpTo)) {
       y += style.line;
       if (!place(chapter, para, WIDTH / 2, true)) return false;
       y += style.marks?.centered.after ?? 0;
@@ -197,7 +219,8 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
     // Le premier paragraphe du chapitre : une lettrine (sur deux lignes, ou celles de la lettrine dessinée),
     // si le texte commence par une lettre.
     const box = style.dropCapBox;
-    const letter = (style.dropCap || box) && index === 0 && /^\p{L}/u.test(para) ? para[0] : '';
+    const opening = index === 0 && !text.chapters[chapter].inline;
+    const letter = (style.dropCap || box) && opening && /^\p{L}/u.test(para) ? para[0] : '';
     if (letter) {
       const size = box ? box.size : style.line * 2.3;
       const rows = box ? box.lines : 2;
@@ -212,6 +235,10 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
       if (placed && lines.length < rows) y += (rows - lines.length) * style.line;
       return placed;
     }
+    if (opening && style.openingCaps) {
+      const words = para.split(' ');
+      para = [...words.slice(0, style.openingCaps).map((word) => word.toUpperCase()), ...words.slice(style.openingCaps)].join(' ');
+    }
     const indent = style.numbers ? 0 : INDENT;
     const width = (n: number): number => RIGHT - LEFT - (n ? 0 : indent);
     const lines = wrapVarying(context, para, width);
@@ -220,17 +247,36 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
       place(chapter, line, LEFT + (row ? 0 : indent), false, justified(lines, row, width), row ? undefined : number),
     );
   };
-  for (const [chapter, { paras }] of text.chapters.entries()) {
-    if (current) page++;
-    if (style.chaptersOnRight && page % 2 === 0) page++;
-    current = null;
-    if (page > PAGES_PER_BOOK) break;
-    chapterEnd = Math.min(PAGES_PER_BOOK, page + (style.chapterPages ?? Infinity) - 1);
-    turn(chapter, true);
-    starts.push(page);
+  for (const [chapter, { paras, inline, quiet, title }] of text.chapters.entries()) {
+    if (inline && current) {
+      // Une histoire au fil du texte : une ligne blanche, son titre (s'il est imprimé), et le texte continue.
+      if (!quiet && style.inlineHeading) {
+        y += style.line;
+        if (!place(chapter, titled(title), WIDTH / 2, true, undefined, undefined, true)) return done();
+        starts.push(page);
+        y += style.line / 2;
+      } else {
+        const start = y + style.line > BOTTOM ? page + 1 : page;
+        if (start > chapterEnd) return done();
+        starts.push(start);
+      }
+    } else {
+      if (current) page++;
+      if (style.chaptersOnRight && page % 2 === 0) page++;
+      current = null;
+      if (page > PAGES_PER_BOOK) break;
+      chapterEnd = Math.min(PAGES_PER_BOOK, page + (style.chapterPages ?? Infinity) - 1);
+      turn(chapter, true);
+      starts.push(page);
+    }
     for (const [index, para] of paras.entries()) {
       yield;
-      const before = { page, y, current: current!, lines: current!.lines.length };
+      const before: { page: number; y: number; current: ClassicPage; lines: number } = {
+        page,
+        y,
+        current: current!,
+        lines: current!.lines.length,
+      };
       if (placePara(chapter, index, para)) continue;
       // Le livre est plein : le texte s'arrête où il en est. Le chapitre est plein : il s'arrête à la fin du
       // paragraphe d'avant (sauf s'il n'en a pas d'entier).

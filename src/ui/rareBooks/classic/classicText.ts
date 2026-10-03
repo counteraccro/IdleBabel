@@ -12,6 +12,13 @@ export interface ClassicChapter {
   paras: string[];
   /** Une grande partie du livre (« SECONDE PARTIE ») : la numérotation des chapitres repart de un après elle. */
   part?: boolean;
+  /**
+   * Une histoire racontée dans un chapitre : elle ne s'ouvre pas sur une nouvelle page, son titre est imprimé
+   * au fil du texte (style.inlineHeading), et elle est en retrait dans la table.
+   */
+  inline?: boolean;
+  /** Une histoire sans titre imprimé (l'édition ne la nommait que dans sa table) : seulement dans la table. */
+  quiet?: boolean;
 }
 
 export interface ClassicText {

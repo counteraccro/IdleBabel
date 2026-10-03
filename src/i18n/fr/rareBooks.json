@@ -205,7 +205,24 @@
   },
   "saragossa": {
     "name": "Le Manuscrit trouvé à Saragosse",
-    "cover": ["Manuscrit trouvé", "à Saragosse"]
+    "cover": ["Manuscrit trouvé", "à Saragosse"],
+    "contents": "Table",
+    "firstDay": "PREMIÈRE JOURNÉE",
+    "book": ["DIX JOURNÉES", "DE LA VIE", "D’ALPHONSE VAN-WORDEN."],
+    "front": { "title": ["MANUSCRIT TROUVÉ", "À SARAGOSSE"], "author": "POTOCKI" },
+    "spine": ["MANUSCRIT", "TROUVÉ", "À", "SARAGOSSE"],
+    "titlePage": [
+      [200, "title", "DIX JOURNÉES"],
+      [258, "of", "DE LA VIE"],
+      [320, "hero", "D’ALPHONSE VAN-WORDEN."],
+      [450, "fleuron", ""],
+      [560, "printer", "DE L’IMPRIMERIE DE J.-P. JACOB, À VERSAILLES."],
+      [612, "city", "PARIS,"],
+      [646, "publisher", "GIDE FILS, LIBRAIRE, RUE S.ᵀ-MARC, N.° 20,"],
+      [668, "address", "PRÈS CELLE RICHELIEU."],
+      [698, "rule", "24"],
+      [732, "year", "1814."]
+    ]
   },
   "alice": {
     "name": "Alice au pays des merveilles",
@@ -1077,7 +1094,7 @@
         "classics": {
           "head": "Les classiques",
           "text": [
-            "Puis sont venus les classiques. Alice dans sa toile rouge, Moby-Dick dans son ardoise gaufrée, une Bible de famille, les Mille et Une Nuits dans un maroquin bordeaux, l’Odyssée sous un papier caillouté, Don Quichotte dans la percaline rouge du grand Doré, avec en page de garde la page de titre de Madrid, 1605, la Divine Comédie dans un maroquin bleu nuit où tout l’univers du poème est poussé à l’or, l’Enfer, le Purgatoire et les neuf ciels. Des textes du domaine public, mis en page ligne à ligne, par petits morceaux, pour que le jeu ne s’essouffle pas.",
+            "Puis sont venus les classiques. Alice dans sa toile rouge, Moby-Dick dans son ardoise gaufrée, une Bible de famille, les Mille et Une Nuits dans un maroquin bordeaux, l’Odyssée sous un papier caillouté, Don Quichotte dans la percaline rouge du grand Doré, avec en page de garde la page de titre de Madrid, 1605, la Divine Comédie dans un maroquin bleu nuit où tout l’univers du poème est poussé à l’or, l’Enfer, le Purgatoire et les neuf ciels, le Manuscrit trouvé à Saragosse dans le veau raciné de son édition de 1814, qui finit sur la promesse d’une suite jamais venue, et des pages blanches. Des textes du domaine public, mis en page ligne à ligne, par petits morceaux, pour que le jeu ne s’essouffle pas.",
             "Chaque livre a reçu un signet de soie qui pend et se balance. Le premier claquait comme un fouet. Le second était plus calme."
           ]
         },
@@ -1115,6 +1132,8 @@
         "quixote-c": "Le cartonnage d’étrennes de Garnier",
         "divineComedy-a": "L’Aldine de Venise, 1502",
         "divineComedy-b": "Le profil de Dante",
+        "saragossa-b": "Les cahiers de la maisonnette",
+        "saragossa-c": "Le gibet de Los Hermanos",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

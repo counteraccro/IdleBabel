@@ -1,6 +1,6 @@
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { PAGE_CENTER, wrap, write } from '../draw';
-import { CONTENTS_ROWS, LEFT, OPENING_TOP, RIGHT, type ClassicLayout, type ClassicStyle } from './classicLayout';
+import { CONTENTS_ROWS, LEFT, OPENING_TOP, RIGHT, titled, type ClassicLayout, type ClassicStyle } from './classicLayout';
 import type { ClassicText } from './classicText';
 import type { PageLink } from '../rareBookArt';
 
@@ -57,9 +57,6 @@ const fitting = (
   return natural <= width ? size : (size * width) / natural;
 };
 
-/** Le titre d'un chapitre suivi d'un point, sauf s'il finit déjà par une ponctuation. */
-const titled = (title: string): string => (/[.!?]$/.test(title) ? title : `${title}.`);
-
 /** La table des matières : le numéro du chapitre, son titre, des points de conduite, sa page. */
 const contentsPage = (
   context: CanvasRenderingContext2D,
@@ -77,7 +74,7 @@ const contentsPage = (
   }
   const from = sheet * CONTENTS_ROWS;
   layout.starts.slice(from, from + CONTENTS_ROWS).forEach((start, row) => {
-    const { label, title: name } = text.chapters[from + row];
+    const { label, title: name, inline } = text.chapters[from + row];
     const y = CONTENTS_TOP + row * CONTENTS_STEP;
     const font = `15px ${style.body}`;
     // Les chapitres sont numérotés (depuis le début du livre, ou de la grande partie où ils sont) ; les
@@ -87,21 +84,23 @@ const contentsPage = (
     for (const chapter of text.chapters.slice(0, from + row + 1)) number = chapter.part ? 0 : number + (isNumbered(chapter.label) ? 1 : 0);
     const title = numbered ? name : (style.contentsName?.(label, name) ?? partName(label, name));
     if (numbered) write(context, `${roman(number)}.`, LEFT + 46, y, { font, color: style.ink, align: 'right' });
-    // Sans nom de partie (des contes) : le titre part de la marge ; trop long, il est imprimé plus petit, ou
-    // sur deux lignes si le livre le veut (coupé d'un « … » s'il en faut plus).
-    const x = label ? LEFT + 58 : LEFT;
+    // Sans nom de partie (des contes) : le titre part de la marge ; une histoire racontée dans un chapitre est
+    // en retrait, en italique. Trop long, il est imprimé plus petit, ou sur deux lignes si le livre le veut
+    // (coupé d'un « … » s'il en faut plus).
+    const x = inline ? LEFT + 82 : label ? LEFT + 58 : LEFT;
+    const italic = inline ? 'italic ' : '';
     const room = RIGHT - 60 - x;
-    const size = fitting(context, title, (px) => `${px}px ${style.body}`, 15, room);
+    const size = fitting(context, title, (px) => `${italic}${px}px ${style.body}`, 15, room);
     let lines = [title];
     if (style.contentsWrap && size < 15) {
-      context.font = `13px ${style.body}`;
+      context.font = `${italic}13px ${style.body}`;
       lines = wrap(context, title, room);
       if (lines.length > 2) {
         let second = lines[1];
         while (context.measureText(`${second} …`).width > room) second = second.slice(0, second.lastIndexOf(' '));
         lines = [lines[0], `${second.replace(/[ ,;:.]+$/, '')}…`];
       }
-    } else context.font = `${size}px ${style.body}`;
+    } else context.font = `${italic}${size}px ${style.body}`;
     const lineFont = context.font;
     // Sur deux lignes : la première un peu au-dessus de la place de la ligne, la seconde un peu en dessous.
     const rows = lines.map((line, index) => [line, lines.length === 1 ? y : y - 8 + index * 16] as const);
@@ -189,7 +188,7 @@ export const paintClassicPage = (
   const chapter = text.chapters[content.chapter];
   if (content.opening) chapterHead(context, chapter, style);
   // Le titre courant : celui du chapitre, en petit, en haut de page.
-  else if (style.marks) {
+  else if (style.marks?.runningHead) {
     const { font, color, spacing, y, left, right } = style.marks.runningHead;
     const running =
       left && page % 2 === 0
@@ -198,7 +197,7 @@ export const paintClassicPage = (
           ? right(chapter.label, chapter.title)
           : titled(chapter.title || partName(chapter.label)).toUpperCase();
     baseline(context, running, PAGE_CENTER, y, font, color, spacing);
-  } else {
+  } else if (!style.marks) {
     const running = titled(chapter.title || partName(chapter.label)).toUpperCase();
     const size = fitting(context, running, (px) => `italic ${px}px ${style.body}`, 12, RIGHT - LEFT, 2);
     write(context, running, PAGE_CENTER, 44, { font: `italic ${size}px ${style.body}`, color: GREY, spacing: 2 });
@@ -220,13 +219,18 @@ export const paintClassicPage = (
   }
   const centered = style.marks?.centered;
   const numbers = style.numbers;
-  for (const { text: line, x, y, center, justify, number } of content.lines) {
+  for (const { text: line, x, y, center, justify, number, heading } of content.lines) {
     if (number && numbers) {
       // Le numéro dans la marge, sur la ligne de base de la ligne.
       context.font = font;
       baseline(context, number, x - numbers.gap, y + context.measureText('M').fontBoundingBoxAscent, numbers.font, style.ink, 0, 'right');
     }
-    if (center && centered) {
+    if (heading && style.inlineHeading) {
+      // Le titre d'une histoire, au fil du texte.
+      const { font: headingFont, spacing } = style.inlineHeading;
+      context.font = font;
+      baseline(context, line, x, y + context.measureText('M').fontBoundingBoxAscent, headingFont, style.ink, spacing);
+    } else if (center && centered) {
       // Une nuit : sa police, et un court filet dessous.
       context.font = centered.font;
       const base = y + context.measureText('M').fontBoundingBoxAscent;
@@ -236,12 +240,14 @@ export const paintClassicPage = (
     else write(context, line, x, y, { font, color: style.ink, align: center ? 'center' : 'left' });
   }
   if (style.marks) {
-    const { font: folio, color, y, top } = style.marks.folio;
-    // En haut, dans le coin extérieur (à gauche sur une page de gauche) ; aux ouvertures, en bas au milieu.
+    const { font: folio, color, y, top, center: middle, format = String, openings = true } = style.marks.folio;
+    // En haut, dans le coin extérieur (à gauche sur une page de gauche) ou au milieu ; aux ouvertures, en bas
+    // au milieu (ou rien).
     if (top !== undefined && !content.opening) {
       const outer = page % 2 === 0;
-      baseline(context, String(page), outer ? LEFT : RIGHT, top, folio, color, 0, outer ? 'left' : 'right');
-    } else baseline(context, String(page), PAGE_CENTER, y, folio, color);
+      if (middle) baseline(context, format(page), PAGE_CENTER, top, folio, color);
+      else baseline(context, format(page), outer ? LEFT : RIGHT, top, folio, color, 0, outer ? 'left' : 'right');
+    } else if (openings) baseline(context, format(page), PAGE_CENTER, y, folio, color);
   } else write(context, String(page), PAGE_CENTER, HEIGHT - 52, { font: `13px ${style.body}`, color: GREY });
   return true;
 };

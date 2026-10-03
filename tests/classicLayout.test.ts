@@ -127,4 +127,41 @@ describe('mise en page des classiques', () => {
     const plain = await layoutClassic(context, book([[para(1), `2. ${para(1)}`]]), STYLE);
     expect(plain.pages.get(plain.starts[0])!.lines.some((line) => line.text.startsWith('2. '))).toBe(true);
   });
+  it('une histoire racontée dans un chapitre : sur la même page, son titre au fil du texte, sans lettrine', async () => {
+    const text: ClassicText = {
+      chapters: [
+        { label: 'PREMIÈRE JOURNÉE', title: '', paras: [para(2)] },
+        { label: '', title: 'Histoire de Zoto', paras: [para(2)], inline: true },
+        { label: '', title: 'Histoire sans titre', paras: [para(1)], inline: true, quiet: true },
+        { label: 'SECONDE JOURNÉE', title: '', paras: [para(1)] },
+      ],
+    };
+    const style = { ...STYLE, dropCap: 'serif', inlineHeading: { font: 'italic serif', spacing: 0 } };
+    const layout = await layoutClassic(context, text, style);
+    const [day, story, quiet, next] = layout.starts;
+    expect(story).toBe(day);
+    expect(quiet).toBe(day);
+    expect(next).toBe(day + 1);
+    const page = layout.pages.get(day)!;
+    const heading = page.lines.find((line) => line.heading)!;
+    expect(heading.text).toBe('Histoire de Zoto.');
+    // Une seule ligne de titre : l'histoire sans titre imprimé n'en a pas.
+    expect(page.lines.filter((line) => line.heading)).toHaveLength(1);
+    // La lettrine : seulement à l'ouverture de la journée.
+    expect(page.dropCap).toBeDefined();
+    // (la lettre fait 10 de large, plus 8 : les deux lignes à côté d'elle sont en retrait de 18, et elles seules).
+    expect(page.lines.filter((line) => line.x === LEFT + 18)).toHaveLength(2);
+  });
+
+  it("les premiers mots d'un chapitre en capitales ; une ligne en capitales centrée jusqu'à la longueur voulue", async () => {
+    const text = book([['le comte d’Olavidez n’avoit', 'FIN DU TROISIÈME ET DERNIER TOME.']]);
+    const plain = await layoutClassic(context, text, STYLE);
+    const lines = plain.pages.get(plain.starts[0])!.lines;
+    expect(lines[0].text).toBe('le comte d’Olavidez n’avoit');
+    expect(lines[1].center).toBe(false);
+    const styled = await layoutClassic(context, text, { ...STYLE, openingCaps: 2, centeredUpTo: 36 });
+    const [first, end] = styled.pages.get(styled.starts[0])!.lines;
+    expect(first.text).toBe('LE COMTE d’Olavidez n’avoit');
+    expect(end.center).toBe(true);
+  });
 });

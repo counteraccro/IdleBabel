@@ -205,7 +205,24 @@
   },
   "saragossa": {
     "name": "The Manuscript Found in Saragossa",
-    "cover": ["Manuscript Found", "in Saragossa"]
+    "cover": ["Manuscript Found", "in Saragossa"],
+    "contents": "Table",
+    "firstDay": "PREMIÈRE JOURNÉE",
+    "book": ["DIX JOURNÉES", "DE LA VIE", "D’ALPHONSE VAN-WORDEN."],
+    "front": { "title": ["MANUSCRIPT FOUND", "IN SARAGOSSA"], "author": "POTOCKI" },
+    "spine": ["MANUSCRIPT", "FOUND", "IN", "SARAGOSSA"],
+    "titlePage": [
+      [200, "title", "DIX JOURNÉES"],
+      [258, "of", "DE LA VIE"],
+      [320, "hero", "D’ALPHONSE VAN-WORDEN."],
+      [450, "fleuron", ""],
+      [560, "printer", "DE L’IMPRIMERIE DE J.-P. JACOB, À VERSAILLES."],
+      [612, "city", "PARIS,"],
+      [646, "publisher", "GIDE FILS, LIBRAIRE, RUE S.ᵀ-MARC, N.° 20,"],
+      [668, "address", "PRÈS CELLE RICHELIEU."],
+      [698, "rule", "24"],
+      [732, "year", "1814."]
+    ]
   },
   "alice": {
     "name": "Alice's Adventures in Wonderland",
@@ -1064,7 +1081,7 @@
         "classics": {
           "head": "The classics",
           "text": [
-            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper, Don Quixote in the red cloth of the great Doré edition, with the title page of Madrid, 1605, as a flyleaf, the Divine Comedy in midnight-blue morocco with the whole universe of the poem tooled in gold, Hell, Purgatory and the nine heavens. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
+            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper, Don Quixote in the red cloth of the great Doré edition, with the title page of Madrid, 1605, as a flyleaf, the Divine Comedy in midnight-blue morocco with the whole universe of the poem tooled in gold, Hell, Purgatory and the nine heavens, the Manuscript Found in Saragossa in the tree calf of its 1814 edition, which ends on the promise of a sequel that never came, and blank pages. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
             "Every book was given a silk ribbon that hangs and sways. The first one cracked like a whip. The second was calmer."
           ]
         },
@@ -1102,6 +1119,8 @@
         "quixote-c": "Garnier’s gift binding",
         "divineComedy-a": "The Aldine, Venice, 1502",
         "divineComedy-b": "Dante’s profile",
+        "saragossa-b": "The notebooks from the little house",
+        "saragossa-c": "The gallows of Los Hermanos",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",
