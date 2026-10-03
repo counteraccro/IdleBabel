@@ -1,4 +1,5 @@
 import { findText, gainFind, rollFind } from '../../systems/knowledge';
+import { gameRandom } from '../../core/random';
 import type { Find } from '../../data/knowledge';
 import type { GameState } from '../../core/state';
 
@@ -13,7 +14,7 @@ interface Hidden {
  * Trouvailles du livre 3D en main (mots, morceaux de phrase, phrases entières) : chaque page a sa chance
  * d'en cacher une, tirée la première fois qu'on la dessine (le livre prépare ses pages un peu d'avance),
  * surlignée sur elle, et gagnée quand la feuille qui découvre sa double page se pose. Les pages se
- * redessinent à l'identique : le tirage est gardé.
+ * redessinent à l'identique : le tirage est gardé. Tiré de la graine de la partie, du livre et de la page.
  */
 export const createHandFinds = (state: GameState) => {
   /** Page → sa trouvaille (null : rien), pour le livre `book`. */
@@ -21,7 +22,7 @@ export const createHandFinds = (state: GameState) => {
   let book = -1;
   const roll = (page: number): Hidden | null => {
     if (!rolled.has(page)) {
-      const find = rollFind(state);
+      const find = rollFind(state, gameRandom(`find:${book}:${page}`));
       rolled.set(page, find ? { find } : null);
     }
     return rolled.get(page)!;

@@ -1,5 +1,5 @@
 import { RARE_BOOKS } from '../data/rareBooks';
-import { hashText, seeded } from '../core/random';
+import { gameRandom } from '../core/random';
 import { STRANGE_BOOK_INDEX } from './strangeBook';
 import type { GameState } from '../core/state';
 
@@ -27,7 +27,7 @@ export const rareBookAt = (state: GameState, index: number): string | undefined 
   const imposed = forced.get(index);
   if (imposed && !isRareBookFound(state, imposed)) return imposed;
   if (index < FIRST_RARE_INDEX) return undefined;
-  const random = seeded(hashText(`rare:${index}`));
+  const random = gameRandom(`rare:${index}`);
   if (random() >= RARE_CHANCE) return undefined;
   const left = RARE_BOOKS.filter((book) => !isRareBookFound(state, book.id));
   const total = left.reduce((sum, book) => sum + (book.weight ?? 1), 0);

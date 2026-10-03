@@ -82,4 +82,13 @@ describe('sauvegarde', () => {
     deleteSave();
     expect(loadGame('fr').pages).toBe(0);
   });
+
+  it('garde la graine ; une partie d’avant les graines a la graine 0', () => {
+    const state = createInitialState('fr');
+    saveGame(state);
+    expect(loadGame('fr').seed).toBe(state.seed);
+    const { seed: _, ...old } = state;
+    localStorage.setItem(SAVE_KEY, JSON.stringify(old));
+    expect(loadGame('fr').seed).toBe(0);
+  });
 });

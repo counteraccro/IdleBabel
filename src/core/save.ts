@@ -19,6 +19,8 @@ export const loadGame = (defaultLocale: Locale): GameState => {
           // Trouvailles d'avant le livre blanc (sans phrase) : oubliées.
           finds: (saved.finds ?? []).filter((find) => typeof find.sentence === 'string'),
           totalPagesRead: saved.totalPagesRead ?? saved.pages,
+          // Une partie d'avant les graines garde sa Bibliothèque.
+          seed: saved.seed ?? 0,
         };
       }
     }

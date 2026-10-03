@@ -1134,6 +1134,12 @@
             "The credits were written: who made the game, with what, after what."
           ]
         },
+        "seed": {
+          "head": "The seed",
+          "text": [
+            "Every game got its seed: a hidden number that the covers, the pages, the rare books and the finds are drawn from. Same seed, same Library. Only the options notebook writes it down, so it can be handed over if something goes wrong."
+          ]
+        },
         "thisBook": {
           "head": "This book",
           "text": [

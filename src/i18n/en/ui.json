@@ -17,6 +17,7 @@
   "autoTurnHint": "Production turns the pages of the book. When off, the book only moves when clicked, and a new book stays closed until you open it.",
   "save": "Save",
   "resetConfirm": "Erase everything? The game starts over from the beginning.",
+  "seed": "Game seed: {seed}",
   "yes": "Yes, erase",
   "no": "Cancel",
   "bookSway": "The book moves in your hands",

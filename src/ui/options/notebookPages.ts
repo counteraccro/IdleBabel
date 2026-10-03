@@ -1,5 +1,6 @@
 import { AVAILABLE_LOCALES, getLocale, localeName, messages, t, type Locale } from '../../i18n';
 import { NOTATIONS, formatNumber } from '../../core/format';
+import { seedLabel } from '../../core/random';
 import { GRID } from './notebookPaper';
 import type { DoodleKind } from './doodles';
 import type { Writer } from './notebookInk';
@@ -116,6 +117,9 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
     6: (w, sketches) => w.sketch(sketches.spiral, 360, 420, 280),
     7: (w) => {
       w.heading(t('ui.save'));
+      // La graine de la partie, cachée partout ailleurs : à nous donner si quelque chose cloche.
+      w.note(t('ui.seed').replace('{seed}', seedLabel(state.seed)));
+      w.skip(1);
       if (reset === 'ask') w.link(t('ui.reset'), () => (reset = 'confirm'), true);
       else if (reset === 'done') w.note(t('notebook.resetDone'));
       else {

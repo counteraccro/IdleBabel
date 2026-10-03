@@ -17,6 +17,7 @@
   "autoTurnHint": "La production fait tourner les pages du livre. Désactivé, le livre ne bouge qu'au clic, et un nouveau livre reste fermé jusqu'à ce qu'on l'ouvre.",
   "save": "Sauvegarde",
   "resetConfirm": "Tout effacer ? La partie recommence depuis le début.",
+  "seed": "Graine de la partie : {seed}",
   "yes": "Oui, effacer",
   "no": "Annuler",
   "bookSway": "Le livre bouge dans les mains",

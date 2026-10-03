@@ -1,4 +1,5 @@
 import { findWhileAway } from '../systems/knowledge';
+import { gameRandom } from './random';
 import { recordOnce } from './history';
 import type { GameState } from './state';
 
@@ -7,7 +8,8 @@ const TOLD_ABSENCE = 15 * 60;
 
 /** Pages tournées sans le chercheur : la première longue absence est un moment du livre de la fin. */
 const away = (state: GameState, seconds: number): void => {
-  findWhileAway(state, seconds);
+  // Tiré de la graine de la partie, et de là où en est la lecture.
+  findWhileAway(state, seconds, gameRandom(`away:${state.totalPagesRead}:${state.lifetimeKnowledge}`));
   if (state.settings.autoTurn && seconds >= TOLD_ABSENCE) recordOnce(state, 'firstAbsence');
 };
 

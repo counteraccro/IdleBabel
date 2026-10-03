@@ -13,10 +13,12 @@ import { readStrangeTitleWith } from './systems/coverTitle';
 import { isDeciphered } from './systems/decipher';
 import { readReaderNameWith } from './systems/readerName';
 import { chronicle } from './systems/chronicle';
+import { readGameSeedWith } from './core/random';
 
 const AUTOSAVE_MS = 10_000;
 
 const state = loadGame(detectLocale());
+readGameSeedWith(() => state.seed);
 setLocale(state.locale);
 watchAbsence(state);
 // Le livre de la fin est à jour avant qu'une vue ne le lise (sauvegarde d'avant ses moments, absence).

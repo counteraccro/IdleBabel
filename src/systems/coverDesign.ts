@@ -1,5 +1,5 @@
 import { LETTERS } from './babelText';
-import { seeded } from '../core/random';
+import { gameRandom, seeded } from '../core/random';
 import { STRANGE_BOOK_INDEX, randomDigitText } from './strangeBook';
 
 /** Couverture d'un livre de la Bibliothèque, tirée de son numéro : toujours la même pour un livre donné. */
@@ -55,8 +55,8 @@ const senseKind = (roll: number): CoverDesign['sense']['kind'] =>
   roll < TITLE_CHANCE ? 'title' : roll < TITLE_CHANCE + WORD_CHANCE ? 'word' : 'none';
 
 export const coverDesign = (bookIndex: number): CoverDesign => {
-  // Même numéro de livre, même couverture.
-  const random = seeded(bookIndex);
+  // Même numéro de livre, même couverture ; le livre étrange garde toujours la sienne.
+  const random = bookIndex === STRANGE_BOOK_INDEX ? seeded(bookIndex) : gameRandom(`cover:${bookIndex}`, bookIndex);
   const title = Array.from({ length: between(random, 1, 3) }, () => word(random));
   const design: CoverDesign = {
     title,

@@ -1,4 +1,5 @@
 import { RESOURCE_SUBJECTS } from './resources';
+import { SEED_SUBJECT } from './seed';
 import { METHOD_SUBJECTS } from './methods';
 import { SENTENCE_SUBJECTS } from './sentences';
 import { ALL_SENTENCES_SUBJECT } from './allSentences';
@@ -12,6 +13,7 @@ import { CHAPTERS, type ChapterId, type DebugSubject } from './subject';
 /** Tout ce que recense le livre de débogage, chapitre après chapitre. */
 export const SUBJECTS: readonly DebugSubject[] = [
   ...RESOURCE_SUBJECTS,
+  SEED_SUBJECT,
   ...METHOD_SUBJECTS,
   ALL_SENTENCES_SUBJECT,
   ...SENTENCE_SUBJECTS,

@@ -4,6 +4,7 @@ import type { HistoryEntry } from './history';
 import type { Locale } from '../i18n';
 import type { Find } from '../data/knowledge';
 import type { PartId } from '../data/decipher';
+import { newGameSeed } from './random';
 
 export const SAVE_VERSION = 1;
 
@@ -91,9 +92,15 @@ export interface GameState {
   /** Moments de lore déjà lus : chacun ne se raconte qu'une fois. */
   loreSeen: string[];
   lastTick: number;
+  /**
+   * La graine de la partie (core/random.ts, gameRandom) : les couvertures, le texte des pages, les livres rares
+   * et les trouvailles en sont tirés. Cachée : seul le cahier d'options l'écrit, pour la donner (débogage).
+   * 0 : une partie d'avant les graines (la Bibliothèque de toujours).
+   */
+  seed: number;
 }
 
-export const createInitialState = (locale: Locale, now = Date.now()): GameState => ({
+export const createInitialState = (locale: Locale, now = Date.now(), seed = newGameSeed()): GameState => ({
   version: SAVE_VERSION,
   pages: 0,
   totalPagesRead: 0,
@@ -118,4 +125,5 @@ export const createInitialState = (locale: Locale, now = Date.now()): GameState 
   lorePending: [],
   loreSeen: [],
   lastTick: now,
+  seed,
 });

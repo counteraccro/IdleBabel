@@ -7,7 +7,7 @@ import { pageNumberLabel } from '../../systems/pageNumber';
 import { producedWholePages } from '../../systems/production';
 import { PAGES_PER_BOOK, PAGES_PER_LEAF } from '../../systems/books';
 import { maxTurnsPerSecond } from '../../systems/knowledge';
-import { hashText, seeded } from '../../core/random';
+import { gameRandom } from '../../core/random';
 import { STRANGE_BINDING, bindingFor, modernBindingFor } from '../book/bindings';
 import { isStrangeBook } from '../../systems/strangeBook';
 import { STRANGE_PAPER } from '../strangeBook/pageItems';
@@ -81,7 +81,7 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
           return true;
         }
         // Même livre, même page : même charabia (la page se redessine à l'identique quand on y revient).
-        const random = seeded(hashText(`${index}:${page}`));
+        const random = gameRandom(`${index}:${page}`);
         drawPageTexture(
           canvas,
           layoutPage(createPage(PAGE_LENGTH, finds?.fragment(page), random)),
