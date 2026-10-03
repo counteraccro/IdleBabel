@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../src/core/state';
-import { SEALS } from '../src/data/seals';
+import { SEALS, sealSeries } from '../src/data/seals';
+import { sigil } from '../src/ui/strangeBook/sigil';
 import { babelName, checkSeals, completion, sealEvent } from '../src/systems/seals';
 import { LOCALES } from '../src/i18n/locales';
 import { ANOMALIES } from '../src/data/anomalies';
@@ -73,5 +74,10 @@ describe('sceaux', () => {
   it('donne toujours le même nom de Babel au même sceau', () => {
     expect(babelName('pagesRead-1')).toBe(babelName('pagesRead-1'));
     expect(babelName('pagesRead-1')).not.toBe(babelName('pagesRead-100'));
+  });
+
+  it('dessine un sigle différent pour chaque sceau', () => {
+    const drawn = SEALS.map((seal) => JSON.stringify(sigil(sealSeries(seal), seal.tier?.index ?? 0)));
+    expect(new Set(drawn).size).toBe(SEALS.length);
   });
 });

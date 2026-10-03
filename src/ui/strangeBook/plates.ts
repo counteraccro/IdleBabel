@@ -1,6 +1,6 @@
 import { getLocale, t } from '../../i18n';
 import { formatNumber, writeDigits } from '../../core/format';
-import { PLATES, SEALS, type PlateId, type SealDef } from '../../data/seals';
+import { PLATES, SEALS, sealSeries, type PlateId, type SealDef } from '../../data/seals';
 import { babelName, completion, countObtained, plateSeals, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
 import { isDeciphered } from '../../systems/decipher';
@@ -141,7 +141,7 @@ export const plateItems = (
       return {
         kind: 'seal',
         id: seal.id,
-        series: seal.text,
+        series: sealSeries(seal),
         tier: seal.tier?.index ?? 0,
         look,
         x: 320 + (first + i - (count - 1) / 2) * STEP_X,

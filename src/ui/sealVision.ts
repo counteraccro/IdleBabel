@@ -1,6 +1,6 @@
 import './sealVision.css';
 import { el } from './dom';
-import { SEALS } from '../data/seals';
+import { SEALS, sealSeries } from '../data/seals';
 import { onSealed } from '../systems/seals';
 import { sealSvg, sigil } from './strangeBook/sigil';
 
@@ -21,7 +21,7 @@ export const mountSealVisions = (): void => {
   onSealed((ids) => {
     const seal = SEALS.find((candidate) => candidate.id === ids[ids.length - 1]);
     if (!seal) return;
-    const shapes = sigil(seal.text, seal.tier?.index ?? 0);
+    const shapes = sigil(sealSeries(seal), seal.tier?.index ?? 0);
     const vision = el('div', 'seal-vision');
     const uid = `vision-${count++}`;
     vision.innerHTML = `<div class="seal-vision-relief">${sealSvg(shapes, 'embossed', uid)}</div><div class="seal-vision-gold">${sealSvg(shapes, 'gold', uid)}</div>`;

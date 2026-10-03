@@ -25,6 +25,9 @@ export interface SealDef {
   reached: (state: GameState) => boolean;
 }
 
+/** Graine du sigle : celui de la série (les paliers en héritent), ou le sien pour un livre rare (tous ont le même texte). */
+export const sealSeries = (seal: SealDef): string => (seal.rareBook ? seal.id : seal.text);
+
 /** Une série : un sceau par palier, atteint quand `value` dépasse le palier. */
 const series = (id: string, plate: PlateId, value: (state: GameState) => number, steps: number[]): SealDef[] =>
   steps.map((n, index) => ({ id: `${id}-${n}`, plate, text: id, tier: { n, index }, reached: (state) => value(state) >= n }));
