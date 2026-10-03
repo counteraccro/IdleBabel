@@ -11,6 +11,7 @@ import { createBookMesh } from '../book3d/bookMesh';
 import { createBookRenderer } from '../book3d/renderer3d';
 import { createLighting } from '../book3d/lighting';
 import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
+import { visibleBox } from '../book3d/visibleBox';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
 import { DEBUG_CELL, FILL_ORDER, FINAL_CELL, FRONT, createBookcase } from './bookcase3d';
@@ -186,7 +187,7 @@ export const createLibraryPage = (
       const tilt = new THREE.Group();
       tilt.add(turn);
       tilt.updateMatrixWorld(true);
-      const box = new THREE.Box3().setFromObject(mesh.root);
+      const box = visibleBox(mesh.root);
       // Debout : son coin bas-droit-avant au pivot ; couché : le milieu de son dessous, à l'avant.
       turn.position.set(standing ? -box.max.x : -(box.min.x + box.max.x) / 2, -box.min.y, -box.max.z);
       tilt.rotation.set(0, place.spot.yaw, -place.spot.lean);
@@ -218,7 +219,7 @@ export const createLibraryPage = (
   /** Le nom du livre survolé, posé sur le bord avant de son étagère, au milieu du livre. */
   const placeCaption = (): void => {
     if (!hovered?.holder) return;
-    const box = new THREE.Box3().setFromObject(hovered.holder);
+    const box = visibleBox(hovered.holder);
     const at = new THREE.Vector3((box.min.x + box.max.x) / 2, bookcase.cells[hovered.spot.cell].floor, FRONT).project(camera);
     caption.style.left = `${((at.x + 1) / 2) * 100}%`;
     caption.style.top = `${((1 - at.y) / 2) * 100}%`;
