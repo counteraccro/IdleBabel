@@ -690,6 +690,39 @@
       "choices": ["Changes requested", "Changes requested"]
     }
   },
+  "credits": {
+    "name": "Credits",
+    "cover": ["Credits"],
+    "game": "IDLE BABEL",
+    "title": "Credits",
+    "roll": [
+      ["DESIGN", "AYMERIC"],
+      ["WRITTEN WITH THE HELP OF", "CLAUDE · ANTHROPIC"],
+      ["AFTER", "JORGE LUIS BORGES"],
+      ["3D ENGINE", "THREE.JS"],
+      ["TOOLS", "VITE · TYPESCRIPT"],
+      ["TEXTS", "WIKISOURCE · GUTENBERG"],
+      ["THE ODYSSEY", "LECONTE DE LISLE"],
+      ["THE ARABIAN NIGHTS", "WALTER SCOTT"],
+      ["ALICE", "LEWIS CARROLL"],
+      ["MOBY DICK", "HERMAN MELVILLE"]
+    ],
+    "back": {
+      "reviews": [
+        ["“A credits roll you never want to end.”", "★★★★★", "THE HEXAGON TIMES"],
+        ["“At last, a book in the Library that makes sense.”", "★★★★", "THE GALLERY GAZETTE"],
+        ["“I looked for my name in it.”", "★★★★★", "A LIBRARIAN"]
+      ],
+      "laurel": ["OFFICIAL SELECTION", "HEXAGON FESTIVAL"],
+      "billing": [
+        "A GAME BY AYMERIC · WRITTEN WITH THE HELP OF CLAUDE (ANTHROPIC)",
+        "BASED ON “THE LIBRARY OF BABEL” BY JORGE LUIS BORGES",
+        "3D ENGINE THREE.JS · TOOLS VITE AND TYPESCRIPT",
+        "TEXTS WIKISOURCE AND PROJECT GUTENBERG · 410 PAGES · 25 SYMBOLS",
+        "© LIBRARY OF BABEL · ALL BOOKS RESERVED"
+      ]
+    }
+  },
   "blankPage": {
     "name": "Blank Page, the Explanation",
     "cover": ["Blank Page", "the Explanation"],

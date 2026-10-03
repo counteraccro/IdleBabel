@@ -28,6 +28,8 @@ import type { GameState } from '../../core/state';
 export const LIBRARY_DEBUG_BOOK = 'debug';
 /** Le premier livre lu, gardé par le chercheur : sa première trouvaille, la première place de la vitrine. */
 export const LIBRARY_FIRST_BOOK = 'first';
+/** Le livre des crédits : pas tiré comme les livres rares, il est dans la bibliothèque dès le début. */
+export const LIBRARY_CREDITS_BOOK = 'credits';
 /** Le livre de la fin (la partie racontée) : pendant le développement, seulement en mode ?debug, seul dans sa case. */
 export const LIBRARY_FINAL_BOOK = 'final';
 
@@ -135,9 +137,10 @@ export const createLibraryPage = (
   const cellLights = addCellLights(bookcase.root, bookcase.cells);
 
   const thickness = (id: string): number => (id === LIBRARY_FIRST_BOOK ? THICKNESS : (rareBookArt(id).thickness ?? THICKNESS));
-  // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre. Le premier livre
-  // lu passe avant tous les livres rares (aucun ne vient avant le livre étrange).
+  // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre. Le livre des
+  // crédits, là dès le début, puis le premier livre lu, passent avant tous les livres rares.
   const found = [
+    LIBRARY_CREDITS_BOOK,
     ...(firstBookKept(state) ? [LIBRARY_FIRST_BOOK] : []),
     ...RARE_BOOKS.map(({ id }) => id)
       .filter((id) => id !== LIBRARY_DEBUG_BOOK && isRareBookFound(state, id))

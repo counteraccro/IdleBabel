@@ -21,6 +21,7 @@ import { DEBUG_LIBRARY_EVENT } from '../debug/events';
 import { rareBook3d } from './rareBooks/rareBook3d';
 import { debugBook3d } from '../debug/book/debugBook3d';
 import {
+  LIBRARY_CREDITS_BOOK,
   LIBRARY_DEBUG_BOOK,
   LIBRARY_FINAL_BOOK,
   LIBRARY_FIRST_BOOK,
@@ -80,6 +81,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     if (!hash.startsWith(LIBRARY_BOOK_HASH)) return null;
     const id = decodeURIComponent(hash.slice(LIBRARY_BOOK_HASH.length));
     return isRareBookFound(state, id) ||
+      id === LIBRARY_CREDITS_BOOK ||
       ((id === LIBRARY_DEBUG_BOOK || id === LIBRARY_FINAL_BOOK) && debugging) ||
       (id === LIBRARY_FIRST_BOOK && firstBookKept(state))
       ? id

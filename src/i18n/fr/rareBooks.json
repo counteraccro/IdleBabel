@@ -703,6 +703,39 @@
       "choices": ["Changements demandés", "Changements demandés"]
     }
   },
+  "credits": {
+    "name": "Crédits",
+    "cover": ["Crédits"],
+    "game": "IDLE BABEL",
+    "title": "Crédits",
+    "roll": [
+      ["CONCEPTION", "AYMERIC"],
+      ["ÉCRIT AVEC L’AIDE DE", "CLAUDE · ANTHROPIC"],
+      ["D’APRÈS", "JORGE LUIS BORGES"],
+      ["MOTEUR 3D", "THREE.JS"],
+      ["OUTILS", "VITE · TYPESCRIPT"],
+      ["TEXTES", "WIKISOURCE · GUTENBERG"],
+      ["L’ODYSSÉE", "LECONTE DE LISLE"],
+      ["LES MILLE ET UNE NUITS", "ANTOINE GALLAND"],
+      ["ALICE", "HENRI BUÉ"],
+      ["MOBY DICK", "HERMAN MELVILLE"]
+    ],
+    "back": {
+      "reviews": [
+        ["« Un générique qu’on voudrait ne jamais voir finir. »", "★★★★★", "LE MONDE DES HEXAGONES"],
+        ["« Enfin un livre de la Bibliothèque qui a un sens. »", "★★★★", "LA GAZETTE DES GALERIES"],
+        ["« J’y ai cherché mon nom. »", "★★★★★", "UN BIBLIOTHÉCAIRE"]
+      ],
+      "laurel": ["SÉLECTION OFFICIELLE", "FESTIVAL DE L’HEXAGONE"],
+      "billing": [
+        "UN JEU D’AYMERIC · ÉCRIT AVEC L’AIDE DE CLAUDE (ANTHROPIC)",
+        "D’APRÈS « LA BIBLIOTHÈQUE DE BABEL » DE JORGE LUIS BORGES",
+        "MOTEUR 3D THREE.JS · OUTILS VITE ET TYPESCRIPT",
+        "TEXTES WIKISOURCE ET PROJET GUTENBERG · 410 PAGES · 25 SYMBOLES",
+        "© BIBLIOTHÈQUE DE BABEL · TOUS LES LIVRES RÉSERVÉS"
+      ]
+    }
+  },
   "blankPage": {
     "name": "Page blanche, l'explication",
     "cover": ["Page blanche", "l'explication"],
