@@ -963,7 +963,172 @@
       "The scores, the winners, the records. Game after game, season after season. It's all in here."
     ],
     "warning": "Don't leave it lying around.",
-    "price": "$1.95"
+    "price": "$1.95",
+    "pages": {
+      "subtitle": "Every result, season by season",
+      "allSports": "Football · Boxing · Racing · Baseball · Cycling · Tennis · Athletics",
+      "publisher": "LIBRARY OF BABEL",
+      "legal": [
+        "Complete edition",
+        "Every result from 1950 to 2000",
+        "",
+        "All rights reserved.",
+        "Printed in the Library of Babel.",
+        "",
+        "Any resemblance to actual results",
+        "is purely coincidental."
+      ],
+      "contents": "CONTENTS",
+      "notesLine": "Notes",
+      "notes": "NOTES",
+      "howTo": "HOW TO USE THIS BOOK",
+      "howToText": [
+        "Each season fits in seven pages: the opening (the facts and the champions), then football, boxing, racing, baseball and the rest.",
+        "Standings are final. Pts: points; P: played; W, D, L: won, drawn, lost; F, A: goals for, goals against.",
+        "In racing, odds are starting prices; the finish gives the numbers of the first five home.",
+        "All results guaranteed."
+      ],
+      "season": "THE SEASON",
+      "facts": "THE SEASON IN BRIEF",
+      "champions": "THE CHAMPIONS",
+      "championLabels": [
+        "Football",
+        "Cup",
+        "Boxing (heavy)",
+        "Grand Prix",
+        "Baseball",
+        "The Grand Loop"
+      ],
+      "league": "FOOTBALL · LEAGUE",
+      "cup": "FOOTBALL · CUP",
+      "boxing": "BOXING · WORLD TITLES",
+      "racing": "RACING",
+      "baseball": "BASEBALL",
+      "misc": "MISCELLANY",
+      "leagueHead": [
+        "Pos",
+        "Club",
+        "Pts",
+        "P",
+        "W",
+        "D",
+        "L",
+        "F",
+        "A"
+      ],
+      "relegated": "Relegated: {clubs}.",
+      "winPoints": "{n} points for a win.",
+      "rounds": [
+        "QUARTER-FINALS",
+        "SEMI-FINALS",
+        "FINAL"
+      ],
+      "extraTime": "a.e.t.",
+      "penalties": "{a}-{b} pens",
+      "finalAt": "{date}, Valmorne stadium",
+      "scorers": "Goals: {list}.",
+      "minute": "{name} {n}'",
+      "weights": [
+        "Flyweight",
+        "Bantamweight",
+        "Featherweight",
+        "Lightweight",
+        "Welterweight",
+        "Middleweight",
+        "Light heavy",
+        "Heavyweight"
+      ],
+      "beats": "beat",
+      "methods": [
+        "KO rd {n}",
+        "on points",
+        "retired rd {n}",
+        "stopped rd {n}"
+      ],
+      "retains": "retains the title",
+      "newChampion": "new champion",
+      "races": [
+        "Valmorne Grand Prix",
+        "Hexagon Stakes",
+        "Sarrance Steeplechase",
+        "Jockey Club Stakes",
+        "Tower Stakes",
+        "Summer Grand Prix"
+      ],
+      "winner": "Winner:",
+      "odds": "at {n}/1",
+      "finish": "Finish: {list}",
+      "payout": "Pays {x} for a 10 stake",
+      "decimal": ".",
+      "leagues": [
+        "EASTERN LEAGUE",
+        "WESTERN LEAGUE"
+      ],
+      "ballHead": [
+        "Club",
+        "W",
+        "L",
+        "Pct"
+      ],
+      "series": "THE FINALS (best of seven)",
+      "game": "Game {n}",
+      "seriesWon": "The {club} win the series {a} games to {b}.",
+      "tour": "THE GRAND LOOP",
+      "podium": [
+        "1st",
+        "2nd",
+        "3rd"
+      ],
+      "tennis": "TENNIS",
+      "tournaments": [
+        "Valmorne Internationals",
+        "Port Alder Open",
+        "Norwick Grass Championships",
+        "Winter Masters"
+      ],
+      "records": "RECORDS (at 31 December)",
+      "events": [
+        "100 m",
+        "1500 m",
+        "High jump",
+        "Marathon"
+      ],
+      "newRecord": "NEW",
+      "fact": {
+        "league": "{club} are league champions (title no. {n}).",
+        "first": "1st",
+        "nth": "{n}th",
+        "cup": "{club} win the Cup against {other}.",
+        "boxKeep": "{name} keeps the world heavyweight title.",
+        "boxNew": "{name} becomes world heavyweight champion.",
+        "race": "{horse} wins the {race} at {odds} to 1.",
+        "ball": "The {club} win the baseball finals.",
+        "record": "{event} record broken: {value}."
+      },
+      "days": [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "months": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ]
+    }
   },
   "directory": {
     "name": "The Directory",

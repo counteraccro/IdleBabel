@@ -41,11 +41,14 @@ export interface RareBookLook extends BookLook {
 
 /**
  * Une entrée cliquable : la bande de la page de `y` à `y + height` (repère de la texture) mène à la page
- * `target`, ou, avec `href`, ouvre cette adresse dans un nouvel onglet (un lien hors du jeu).
+ * `target`, ou, avec `href`, ouvre cette adresse dans un nouvel onglet (un lien hors du jeu). Avec `x` et
+ * `width`, seulement ce morceau de la bande (un sommaire en colonnes).
  */
 export interface PageLink {
   y: number;
   height: number;
+  x?: number;
+  width?: number;
   target: number;
   href?: string;
 }

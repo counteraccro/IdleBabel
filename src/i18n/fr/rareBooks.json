@@ -976,7 +976,172 @@
       "Les scores, les vainqueurs, les records. Match après match, saison après saison. Tout y est."
     ],
     "warning": "Ne le laissez pas traîner.",
-    "price": "12 F"
+    "price": "12 F",
+    "pages": {
+      "subtitle": "Tous les résultats, saison par saison",
+      "allSports": "Football · Boxe · Courses · Base-ball · Cyclisme · Tennis · Athlétisme",
+      "publisher": "BIBLIOTHÈQUE DE BABEL",
+      "legal": [
+        "Édition complète",
+        "Tous les résultats de 1950 à 2000",
+        "",
+        "Tous droits réservés.",
+        "Imprimé dans la Bibliothèque de Babel.",
+        "",
+        "Toute ressemblance avec des résultats",
+        "réels serait une coïncidence."
+      ],
+      "contents": "SOMMAIRE",
+      "notesLine": "Notes",
+      "notes": "NOTES",
+      "howTo": "MODE D’EMPLOI",
+      "howToText": [
+        "Chaque saison tient en sept pages : l’ouverture (les faits et les champions), puis le football, la boxe, les courses, le base-ball et le reste.",
+        "Les classements sont ceux de la fin de saison. Pts : points ; J : joués ; G, N, P : gagnés, nuls, perdus ; BP, BC : buts pour, buts contre.",
+        "Aux courses, la cote est celle du départ, l’arrivée donne les numéros des cinq premiers.",
+        "Les résultats sont garantis."
+      ],
+      "season": "LA SAISON",
+      "facts": "LES FAITS DE LA SAISON",
+      "champions": "LES CHAMPIONS",
+      "championLabels": [
+        "Football",
+        "Coupe",
+        "Boxe (lourds)",
+        "Grand Prix",
+        "Base-ball",
+        "Grande Boucle"
+      ],
+      "league": "FOOTBALL · CHAMPIONNAT",
+      "cup": "FOOTBALL · COUPE",
+      "boxing": "BOXE · CHAMPIONNATS DU MONDE",
+      "racing": "COURSES",
+      "baseball": "BASE-BALL",
+      "misc": "DIVERS",
+      "leagueHead": [
+        "Rg",
+        "Club",
+        "Pts",
+        "J",
+        "G",
+        "N",
+        "P",
+        "BP",
+        "BC"
+      ],
+      "relegated": "Relégués : {clubs}.",
+      "winPoints": "Victoire à {n} points.",
+      "rounds": [
+        "QUARTS DE FINALE",
+        "DEMI-FINALES",
+        "FINALE"
+      ],
+      "extraTime": "a.p.",
+      "penalties": "t.a.b. {a}-{b}",
+      "finalAt": "{date}, stade de Valmorne",
+      "scorers": "Buts : {list}.",
+      "minute": "{name} {n}e",
+      "weights": [
+        "Mouches",
+        "Coqs",
+        "Plumes",
+        "Légers",
+        "Welters",
+        "Moyens",
+        "Mi-lourds",
+        "Lourds"
+      ],
+      "beats": "bat",
+      "methods": [
+        "KO {n}e",
+        "aux points",
+        "abandon {n}e",
+        "arrêt {n}e"
+      ],
+      "retains": "conserve son titre",
+      "newChampion": "nouveau champion",
+      "races": [
+        "Grand Prix de Valmorne",
+        "Prix de l’Hexagone",
+        "Grand Steeple de Sarrance",
+        "Prix du Jockey",
+        "Prix de la Tour",
+        "Grand Prix d’Été"
+      ],
+      "winner": "Gagnant :",
+      "odds": "cote {n}/1",
+      "finish": "Arrivée : {list}",
+      "payout": "Rapport : {x} F pour 10 F",
+      "decimal": ",",
+      "leagues": [
+        "LIGUE DE L’EST",
+        "LIGUE DE L’OUEST"
+      ],
+      "ballHead": [
+        "Club",
+        "V",
+        "D",
+        "Moy."
+      ],
+      "series": "LA FINALE (au meilleur des sept)",
+      "game": "Match {n}",
+      "seriesWon": "Les {club} l’emportent {a} victoires à {b}.",
+      "tour": "LA GRANDE BOUCLE",
+      "podium": [
+        "1er",
+        "2e",
+        "3e"
+      ],
+      "tennis": "TENNIS",
+      "tournaments": [
+        "Internationaux de Valmorne",
+        "Open de Port Alder",
+        "Tournoi sur gazon de Norwick",
+        "Masters d’hiver"
+      ],
+      "records": "LES RECORDS (au 31 décembre)",
+      "events": [
+        "100 m",
+        "1 500 m",
+        "Hauteur",
+        "Marathon"
+      ],
+      "newRecord": "NOUVEAU",
+      "fact": {
+        "league": "{club} champion pour la {nth} fois.",
+        "first": "1re",
+        "nth": "{n}e",
+        "cup": "{club} remporte la Coupe face à {other}.",
+        "boxKeep": "{name} conserve son titre mondial des lourds.",
+        "boxNew": "{name} devient champion du monde des lourds.",
+        "race": "{horse} gagne le {race} à {odds} contre 1.",
+        "ball": "Les {club} remportent la finale de base-ball.",
+        "record": "Record du {event} battu : {value}."
+      },
+      "days": [
+        "dim.",
+        "lun.",
+        "mar.",
+        "mer.",
+        "jeu.",
+        "ven.",
+        "sam."
+      ],
+      "months": [
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre"
+      ]
+    }
   },
   "directory": {
     "name": "L'Annuaire",

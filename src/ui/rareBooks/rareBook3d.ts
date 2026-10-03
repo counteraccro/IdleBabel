@@ -34,7 +34,12 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
   // Une entrée du sommaire se prend sur 80 % de la largeur de la page, comme dans le livre blanc.
   const linkAt = (page: number, x: number, y: number) =>
     x >= PAGE_TEXTURE.width * 0.1 && x <= PAGE_TEXTURE.width * 0.9
-      ? art.links?.(page).find((link) => y >= link.y && y <= link.y + link.height)
+      ? art.links?.(page).find(
+          (link) =>
+            y >= link.y &&
+            y <= link.y + link.height &&
+            (link.x === undefined || (x >= link.x && x <= link.x + (link.width ?? 0))),
+        )
       : undefined;
   // La couverture qui vit est celle de ce livre-ci : chaque exemplaire (vitrine, livre ouvert) a la sienne.
   let tick: ((now: number) => boolean) | null = null;
