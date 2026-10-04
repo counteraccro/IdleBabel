@@ -28,7 +28,7 @@ export const maxTurnsPerSecond = (state: GameState): number => turnCap ?? turnsP
  * (+1 % chacun) ; les autres bonus s'ajouteront ici. Détail : dans le chapitre « Révélations » du Grand Livre.
  */
 export const findChance = (state: GameState): number =>
-  forced ? 1 : Math.min(1, BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state));
+  forced ? 1 : BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state);
 
 /** Pages tournées dans le livre en main depuis le début de la partie. */
 const pagesTurned = (state: GameState): number => state.booksFinished * PAGES_PER_BOOK + state.bookPage;
@@ -89,7 +89,17 @@ export const drawFind = (state: GameState, random: () => number, lucky = false):
 
 /** La page tournée cache-t-elle une trouvaille ? Rien n'est gagné tant qu'elle n'est pas lue (gainFind). */
 export const rollFind = (state: GameState, random: () => number = Math.random): Find | undefined =>
-  random() < chanceNow(state) ? drawFind(state, random, state.lifetimeKnowledge === 0) : undefined;
+  rollFinds(state, random)[0];
+
+/**
+ * Les trouvailles d'une page. Au-delà de 100 %, la chance en garantit : 554 %, c'est 5 trouvailles, et
+ * 54 % de chances d'une sixième (idée de l'auteur). En dessous, une au plus, comme avant (mêmes tirages).
+ */
+export const rollFinds = (state: GameState, random: () => number = Math.random): Find[] => {
+  const chance = chanceNow(state);
+  const count = Math.floor(chance) + (random() < chance % 1 ? 1 : 0);
+  return Array.from({ length: count }, (_, index) => drawFind(state, random, index === 0 && state.lifetimeKnowledge === 0));
+};
 
 /** Texte surligné dans la page : le morceau (sans sa ponctuation finale), ou la phrase entière. */
 export const findText = (find: Find): string => {

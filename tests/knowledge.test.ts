@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { BASE_FIND_CHANCE, GUESS_PRICE, LUCK_PAGES, MAX_AWAY_SECONDS } from '../src/data/knowledge';
-import { drawFind, findChance, findText, findWhileAway, gainFind, rollFind } from '../src/systems/knowledge';
+import { drawFind, findChance, findText, findWhileAway, gainFind, rollFind, rollFinds } from '../src/systems/knowledge';
 import { levelOf, nextPrice, technologiesCompletion, understand } from '../src/systems/technologies';
 import { FILTER_BONUS, TECHNOLOGIES } from '../src/data/technologies';
 import { completion, currentTarget, guess, isComplete, segments, toolUnlocked, write } from '../src/systems/sentences';
@@ -75,6 +75,15 @@ describe('Connaissance', () => {
     const state = started();
     expect(rollFind(state, sequence(BASE_FIND_CHANCE))).toBeUndefined();
     expect(rollFind(state, sequence(BASE_FIND_CHANCE / 2))).toBeDefined();
+  });
+
+  it('au-delà de 100 %, des trouvailles garanties, et la part qui reste en chance d’une de plus', () => {
+    const state = started();
+    // Filtre au niveau 20 : 0,2 % × 1,5^20 ≈ 665 % : six garanties, 65 % de chances d'une septième.
+    state.technologies.semanticFilter = 20;
+    expect(findChance(state)).toBeCloseTo(BASE_FIND_CHANCE * 1.5 ** 20);
+    expect(rollFinds(state, sequence(0.6))).toHaveLength(7);
+    expect(rollFinds(state, sequence(0.7))).toHaveLength(6);
   });
 
   it('offre un coup de chance : avant la 30e page, toute la phrase de la Lecture Diagonale', () => {

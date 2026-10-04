@@ -1,4 +1,4 @@
-import { findText, gainFind, rollFind } from '../../systems/knowledge';
+import { findText, gainFind, rollFinds } from '../../systems/knowledge';
 import { gameRandom } from '../../core/random';
 import type { Find } from '../../data/knowledge';
 import type { GameState } from '../../core/state';
@@ -12,19 +12,16 @@ interface Hidden {
 
 /**
  * Trouvailles du livre 3D en main (mots, morceaux de phrase, phrases entières) : chaque page a sa chance
- * d'en cacher une, tirée la première fois qu'on la dessine (le livre prépare ses pages un peu d'avance),
+ * d'en cacher une (plusieurs au-delà de 100 % : la première seule est surlignée, toutes sont gagnées), tirée la première fois qu'on la dessine (le livre prépare ses pages un peu d'avance),
  * surlignée sur elle, et gagnée quand la feuille qui découvre sa double page se pose. Les pages se
  * redessinent à l'identique : le tirage est gardé. Tiré de la graine de la partie, du livre et de la page.
  */
 export const createHandFinds = (state: GameState) => {
-  /** Page → sa trouvaille (null : rien), pour le livre `book`. */
-  const rolled = new Map<number, Hidden | null>();
+  /** Page → ses trouvailles (aucune : rien), pour le livre `book`. */
+  const rolled = new Map<number, Hidden[]>();
   let book = -1;
-  const roll = (page: number): Hidden | null => {
-    if (!rolled.has(page)) {
-      const find = rollFind(state, gameRandom(`find:${book}:${page}`));
-      rolled.set(page, find ? { find } : null);
-    }
+  const roll = (page: number): Hidden[] => {
+    if (!rolled.has(page)) rolled.set(page, rollFinds(state, gameRandom(`find:${book}:${page}`)).map((find) => ({ find })));
     return rolled.get(page)!;
   };
   return {
@@ -34,19 +31,22 @@ export const createHandFinds = (state: GameState) => {
       book = index;
       rolled.clear();
     },
-    /** Texte surligné sur la page `page` (pages de texte seulement : à partir de 2). */
+    /**
+     * Texte surligné sur la page `page` (pages de texte seulement : à partir de 2) : la première de ses
+     * trouvailles ; les autres ne s'écrivent pas (à terme, elles ne tiendraient plus dans la page).
+     */
     fragment: (page: number): string | undefined => {
-      if (page < 2) return undefined;
-      const hidden = roll(page);
-      return hidden ? findText(hidden.find) : undefined;
+      const first = page < 2 ? undefined : roll(page)[0];
+      return first ? findText(first.find) : undefined;
     },
     /** La feuille s'est posée sur la double page `spread` : les trouvailles de ses deux pages sont lues. */
     gain: (spread: number): void => {
       for (const page of [2 * spread, 2 * spread + 1]) {
-        const hidden = rolled.get(page);
-        if (!hidden || hidden.gained) continue;
-        hidden.gained = true;
-        gainFind(state, hidden.find);
+        for (const hidden of rolled.get(page) ?? []) {
+          if (hidden.gained) continue;
+          hidden.gained = true;
+          gainFind(state, hidden.find);
+        }
       }
     },
   };

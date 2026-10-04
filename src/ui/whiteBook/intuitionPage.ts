@@ -63,7 +63,7 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
   if (tool) return `×${plain(gestureMultiplier(state, tool, level))}`;
   switch (id) {
     case 'semanticFilter':
-      return percent(Math.min(1, BASE_FIND_CHANCE * filterMultiplier(state, level) * sealFindMultiplier(state)));
+      return percent(BASE_FIND_CHANCE * filterMultiplier(state, level) * sealFindMultiplier(state));
     case 'ariadne':
       return percent(targetShare(state, level));
     case 'sentenceMemory':
