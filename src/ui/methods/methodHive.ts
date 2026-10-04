@@ -26,6 +26,22 @@ const MAX_PER_ROW = 6;
 /** Hauteur de la ruche en `rows` rangées. */
 const hiveHeight = (rows: number): number => (rows > 0 ? (rows - 1) * (SEAL_HEIGHT * 0.75 + GAP) + SEAL_HEIGHT : 0);
 
+/** Maj enfoncée : dix d'un coup, le temps du clic. */
+let shift = false;
+/** La ruche à l'écran se redessine quand Maj change (elle est refaite à chaque retour au jeu). */
+let onShift = (): void => {};
+const watchShift = (event: KeyboardEvent): void => {
+  if (event.key !== 'Shift' || shift === (event.type === 'keydown')) return;
+  shift = event.type === 'keydown';
+  onShift();
+};
+// Écoutée une fois pour toutes : une ruche refaite n'ajoute pas d'écouteurs, l'ancienne s'en va.
+window.addEventListener('keydown', watchShift);
+window.addEventListener('keyup', watchShift);
+window.addEventListener('blur', () => {
+  shift = false;
+});
+
 /**
  * Les méthodes de lecture, sur les étagères de gauche : leurs sceaux (ceux du livre blanc) en nid
  * d'abeille, qui grandit à chaque méthode découverte. Doré et luisant : on peut en acheter une de plus ;
@@ -47,23 +63,10 @@ export const createMethodHive = (state: GameState): Component => {
   tip.append(tipName, tipText, tipPrice);
   tip.setAttribute('aria-hidden', 'true');
   let pointed: ToolId | null = null;
-  /** Maj enfoncée : dix d'un coup, le temps du clic. */
-  let shift = false;
   const lotMark = createMethodLot((chosen) => {
     state.settings.buyLot = chosen;
     update();
   });
-  const watchShift = (event: KeyboardEvent): void => {
-    if (event.key !== 'Shift' || shift === (event.type === 'keydown')) return;
-    shift = event.type === 'keydown';
-    update();
-  };
-  window.addEventListener('keydown', watchShift);
-  window.addEventListener('keyup', watchShift);
-  window.addEventListener('blur', () => {
-    shift = false;
-  });
-
   const seals = TOOLS.map((tool) => {
     const seal = createMethodSeal(tool.id);
     seal.root.addEventListener('click', (event) => {
@@ -158,5 +161,6 @@ export const createMethodHive = (state: GameState): Component => {
     tip.classList.toggle('shown', pointed !== null);
   };
   update();
+  onShift = update;
   return { root, update };
 };

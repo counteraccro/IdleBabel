@@ -95,18 +95,16 @@ const awaySince = (state: GameState, from: number, mode: 'away' | 'pause'): void
 
 /**
  * Le jeu fermé (depuis la dernière sauvegarde) ou l'onglet caché, quand rien ne tourne à l'écran : la
- * boucle ne produit plus (core/loop.ts), tout est compté ici au retour.
+ * boucle ne produit plus et laisse `lastTick` à l'heure où l'onglet a été caché (core/loop.ts), tout est
+ * compté ici au retour (même chargé dans un onglet déjà caché : depuis le chargement).
  */
 export const watchAbsence = (state: GameState): void => {
   awaySince(state, state.lastTick, 'away');
   state.lastTick = Date.now();
-  let hiddenAt = 0;
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) hiddenAt = Date.now();
-    else if (hiddenAt) {
-      awaySince(state, hiddenAt, 'away');
-      state.lastTick = Date.now();
-    }
+    if (document.hidden) return;
+    awaySince(state, state.lastTick, 'away');
+    state.lastTick = Date.now();
   });
 };
 

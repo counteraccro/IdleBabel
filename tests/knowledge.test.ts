@@ -86,6 +86,24 @@ describe('Connaissance', () => {
     expect(rollFinds(state, sequence(0.7))).toHaveLength(6);
   });
 
+  it('au-delà de 100 %, chaque trouvaille d’une page apporte du neuf, et rien n’est écrit avant la lecture', () => {
+    const state = started();
+    state.technologies.semanticFilter = 20;
+    let seed = 7;
+    const random = (): number => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let page = 0; page < 50; page++) {
+      const seen = new Set<string>();
+      for (const find of rollFinds(state, random).filter((find) => !find.duplicate)) {
+        // Un morceau : pas déjà tiré sur la page ; une phrase entière : il lui manquait encore quelque chose.
+        const indices = find.segment === undefined ? segments(find.sentence).map((_, index) => index) : [find.segment];
+        const keys = indices.map((index) => `${find.sentence}:${index}`);
+        expect(keys.some((key) => !seen.has(key))).toBe(true);
+        for (const key of keys) seen.add(key);
+      }
+    }
+    expect(state.written).toEqual({});
+  });
+
   it('offre un coup de chance : avant la 30e page, toute la phrase de la Lecture Diagonale', () => {
     const state = createInitialState('fr');
     state.bookPage = LUCK_PAGES.from - 1;

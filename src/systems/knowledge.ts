@@ -97,7 +97,15 @@ export const rollFind = (state: GameState, random: () => number = Math.random): 
 export const rollFinds = (state: GameState, random: () => number = Math.random): Find[] => {
   const chance = chanceNow(state);
   const count = Math.floor(chance) + (random() < chance % 1 ? 1 : 0);
-  return Array.from({ length: count }, (_, index) => drawFind(state, random, index === 0 && state.lifetimeKnowledge === 0));
+  // Chacune est tirée comme si les précédentes étaient déjà écrites (rien n'est gagné avant la lecture) :
+  // pas deux fois le même morceau sur une page, comme hors-ligne (findWhileAway).
+  const draft: GameState = { ...state, written: { ...state.written } };
+  return Array.from({ length: count }, (_, index) => {
+    const find = drawFind(draft, random, index === 0 && state.lifetimeKnowledge === 0);
+    if (!find.duplicate)
+      write(draft, find.sentence, find.segment === undefined ? segments(find.sentence).map((_, i) => i) : [find.segment]);
+    return find;
+  });
 };
 
 /** Texte surligné dans la page : le morceau (sans sa ponctuation finale), ou la phrase entière. */
