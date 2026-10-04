@@ -385,7 +385,61 @@
   },
   "bigX": {
     "name": "Le grand livre du X",
-    "cover": ["Le grand livre", "du X"]
+    "cover": ["Le grand livre", "du X"],
+    "preface": {
+      "title": "Préface",
+      "text": "On l'a relégué au bout de l'alphabet, dans le coin des cartes, au bas des lettres qu'on n'ose pas finir. On lui a confié ce qu'on ne savait pas nommer : l'inconnue, le trésor, la lumière qui traverse les mains, le nom de ceux qui ne savaient pas écrire le leur. Il a tout porté sans rien dire. Deux traits, rien de plus. Ce livre est pour lui. Pour lui rendre hommage, la plus grande part en est écrite dans sa langue, la langue X. Ne cherche pas à la traduire. Elle ne dit rien, et elle dit tout. Lis-la comme on écoute la pluie."
+    },
+    "chapters": [
+      {
+        "title": "Avant les lettres",
+        "text": "Bien avant les alphabets, il y avait déjà deux traits qui se croisent. Dans une grotte au bord de la mer, au sud de l'Afrique, quelqu'un en a gravé sur un morceau d'ocre, il y a plus de soixante-dix mille ans. On en trouve sur des os, sur des pierres, au fond des cavernes. Personne ne sait ce qu'ils voulaient dire. Un compte, peut-être. Un nom. Un endroit où revenir. Ceux qui les ont tracés sont partis sans laisser d'autre mot. Il ne reste que le signe, et le signe attend encore qu'on xxxxx xxxx xxxxxx."
+      },
+      {
+        "title": "Khi",
+        "text": "Les Grecs l'appelaient khi, et le prononçaient du fond de la gorge, comme un souffle qui racle. Mais tous les Grecs n'écrivaient pas pareil. À l'Est, on lisait « kh ». À l'Ouest, en Eubée, on lisait « ks ». Des marins d'Eubée prirent la mer et fondèrent Cumes, sur la côte de l'Italie. Ils emportèrent leurs lettres avec eux. Les Étrusques les leur prirent, puis les Latins aux Étrusques. C'est ainsi que le X de l'Ouest, celui qui dit « ks », traversa la mer et s'installa pour xxxxxxxx xxx xxxxxx."
+      },
+      {
+        "title": "Dix",
+        "text": "À Rome, le X se mit à compter. Dix. On dit que ce sont deux V, deux mains ouvertes, l'une sur l'autre. On dit aussi que c'est le trait qu'on barrait sur les entailles, toutes les dix. Personne n'en est sûr. Pendant longtemps, il fut la dernière lettre de l'alphabet latin. Après lui, il n'y avait rien. Puis, au premier siècle avant notre ère, on fit venir de Grèce le Y et le Z, pour écrire les mots grecs. On les mit derrière lui. Il n'était plus le dernier. Il ne l'a jamais xxxxxx xxxxxxx."
+      },
+      {
+        "title": "La signature",
+        "text": "Pendant des siècles, la plupart des gens ne savaient pas écrire. Alors, au bas des contrats, des actes de mariage, des registres de baptême, on leur tendait la plume, et ils traçaient une croix. Le clerc écrivait le nom autour : « la marque de Jean », « la marque de Marie ». Des millions de vies tiennent dans ces deux traits, tous pareils, et pourtant chacun tremblait à sa façon. Le X a signé pour tout le monde. Il n'a jamais signé pour lui. Son nom à lui, xx xx xxxxxxx xxx."
+      },
+      {
+        "title": "Le baiser",
+        "text": "On ne sait pas bien quand c'est venu. On raconte qu'autrefois, la croix au bas d'une lettre était un serment, qu'on embrassait pour le rendre sacré. Puis le serment s'en alla, et le baiser resta. Aujourd'hui, au bout des messages, il y en a un, puis deux, puis trois. Xxx. On les ajoute sans y penser, pour dire au revoir, pour dire à bientôt, pour dire ce qu'on n'écrit pas. Le X garde tous ces baisers. Il ne les rend xxxxxx. Xxx xxxxx."
+      },
+      {
+        "title": "L'inconnue",
+        "text": "En 1637, Descartes publia La Géométrie. Il y nomma a, b, c les quantités qu'on connaît, et x, y, z celles qu'on cherche. On raconte que l'imprimeur, à court de lettres, avait plus de x que d'autres dans ses casses, et qu'il les préféra. C'est sans doute faux, mais l'histoire est trop belle pour qu'on l'oublie. Depuis, le X est ce qu'on ne connaît pas. Ce qu'il faut trouver. On l'isole, on le cerne, on le pousse d'un côté de l'égalité. Et quand on le trouve enfin, il cesse d'être un X. Il xxxxxxx xx xxxxxx."
+      },
+      {
+        "title": "Fois",
+        "text": "En 1631, un pasteur de campagne anglais, William Oughtred, coucha le X sur le côté et en fit un signe : ×. Désormais, il multiplierait. Deux fois deux, trois fois rien, mille fois merci. Tout le monde ne l'aima pas. Leibniz écrivit qu'on le confondait trop avec la lettre, et qu'un simple point ferait mieux l'affaire. Le point eut ses partisans. Le × garda les siens. Il est resté, un peu penché, entre les nombres, à faire grandir tout ce qu'il touche, xxxx xxxxxx xxxxxxx."
+      },
+      {
+        "title": "Le trésor",
+        "text": "Sur la carte de L'Île au trésor, Stevenson traça trois croix rouges. Depuis, le X marque l'endroit. Il faut compter les pas depuis le grand arbre, tourner le dos à la colline, creuser sous la croix. Les cartes au trésor sont pleines de X, et les plages pleines de trous. Le plus souvent, on ne trouve rien. Mais on creuse quand même, parce que quelqu'un, un jour, a pris la peine de tracer la croix. Ceux qui l'ont tracée ne reviennent jamais. Ils xxxxxxx xxx xxxxxx."
+      },
+      {
+        "title": "Les rayons",
+        "text": "Le 8 novembre 1895, à Wurtzbourg, Wilhelm Röntgen vit briller un écran dans le noir de son laboratoire. Une lumière traversait le carton, le bois, la chair. Quelques semaines plus tard, il photographia la main de sa femme : les os, et la bague autour. On dit qu'en la voyant, elle murmura : « J'ai vu ma mort. » Röntgen ne savait pas ce qu'était cette lumière. Alors il l'appela X, comme l'inconnue. Le nom resta, même quand on sut. Le X voit à travers tout, xxxx xx xxxx xxxxxx."
+      },
+      {
+        "title": "Quichotte",
+        "text": "En vieil espagnol, le X ne disait ni « ks » ni « kh ». Il chuintait : « ch ». On écrivait Don Quixote, et c'est pour cela qu'en français il est resté Quichotte. Puis la langue changea. Le « ch » se durcit, devint ce son rauque qu'on entend dans « jota », et l'Académie décida, en 1815, de l'écrire J. Quixote devint Quijote. Mais le Mexique refusa. México garda son X, et Oaxaca, et Texas. Le chevalier, lui, perdit sa lettre en chemin. Il xxxxxxx xxxxxxx xx xxxxx."
+      },
+      {
+        "title": "La case",
+        "text": "Dans bien des pays, on vote d'une croix. Une seule, dans la bonne case, au crayon, derrière un rideau. Personne ne doit savoir qui l'a tracée. Elle est anonyme, et c'est ce qui la rend sûre. Mal placée, débordant d'un trait, elle annule tout. Bien placée, ajoutée à des millions d'autres, elle change un pays. Deux traits, toujours les mêmes, et derrière chacun, quelqu'un qui a hésité. Le X décide sans jamais xxxxxx xx xxxx."
+      },
+      {
+        "title": "Dans la Bibliothèque",
+        "text": "Ici, chaque livre contient des X. Ils sont partout, au milieu des mots qui ne veulent rien dire, au bout des lignes, en tête des pages. Il y a des livres qui en contiennent un seul, et d'autres qui n'en contiennent aucun. Celui-ci n'est fait que de lui. Page après page, ligne après ligne, rien que lui. Le X croit qu'il est seul. Il l'a toujours cru. Il ne regarde pas de près. Xx xx xxxx xxx xxx xxxxx."
+      }
+    ]
   },
   "deathBook": {
     "name": "Le DeathBook",

@@ -385,7 +385,61 @@
   },
   "bigX": {
     "name": "The Big Book of X",
-    "cover": ["The Big Book", "of X"]
+    "cover": ["The Big Book", "of X"],
+    "preface": {
+      "title": "Preface",
+      "text": "They pushed it to the end of the alphabet, into the corners of maps, to the foot of letters we dare not finish. They gave it all they could not name: the unknown, the treasure, the light that passes through hands, the names of those who could not write their own. It carried everything without a word. Two strokes, nothing more. This book is for it. To honour it, most of these pages are written in its own tongue, the X language. Do not try to translate it. It says nothing, and it says everything. Read it the way you listen to rain."
+    },
+    "chapters": [
+      {
+        "title": "Before Letters",
+        "text": "Long before alphabets, there were already two strokes that cross. In a cave by the sea, at the southern tip of Africa, someone scratched them into a piece of ochre more than seventy thousand years ago. They turn up on bones, on stones, deep in caves. No one knows what they meant. A count, perhaps. A name. A place to come back to. Those who drew them left without another word. Only the sign remains, and the sign is still waiting for xxxxxxx xx xxxx."
+      },
+      {
+        "title": "Chi",
+        "text": "The Greeks called it chi, and said it from the back of the throat, like a rasping breath. But not all Greeks wrote alike. In the East it was read “kh”. In the West, on Euboea, it was read “ks”. Sailors from Euboea put to sea and founded Cumae, on the coast of Italy. They took their letters with them. The Etruscans took the letters from them, and the Latins from the Etruscans. That is how the western X, the one that says “ks”, crossed the sea and settled xxxx xxx xxxx."
+      },
+      {
+        "title": "Ten",
+        "text": "In Rome, the X began to count. Ten. Some say it is two Vs, two open hands, one upon the other. Others say it is the stroke drawn across the tally, every tenth notch. No one is sure. For a long time it was the last letter of the Latin alphabet. After it, there was nothing. Then, in the first century before our era, Y and Z were brought from Greece to write Greek words. They were put behind it. It was no longer the last. It never xxxxx xxxxxxxx."
+      },
+      {
+        "title": "The Signature",
+        "text": "For centuries, most people could not write. So at the foot of contracts, marriage records, baptismal registers, someone handed them the pen, and they drew a cross. The clerk wrote the name around it: “the mark of John”, “the mark of Mary”. Millions of lives fit into those two strokes, all alike, and yet each one trembled in its own way. The X signed for everyone. It never signed for itself. Its own name, xx xxxxx xxxx."
+      },
+      {
+        "title": "The Kiss",
+        "text": "No one quite knows when it began. It is said that long ago, the cross at the foot of a letter was an oath, kissed to make it sacred. Then the oath went away, and the kiss stayed. Today, at the end of messages, there is one, then two, then three. Xxx. We add them without thinking, to say goodbye, to say see you soon, to say what we do not write. The X keeps all those kisses. It never xxxxx xxxx. Xxx xxxxx."
+      },
+      {
+        "title": "The Unknown",
+        "text": "In 1637, Descartes published La Géométrie. In it he named a, b, c the quantities we know, and x, y, z those we seek. They say the printer, short of type, had more x’s than other letters in his cases, and chose them. It is probably untrue, but the story is too lovely to forget. Since then, X is what we do not know. What must be found. We isolate it, surround it, push it to one side of the equals sign. And when at last we find it, it stops being an X. It xxxxxxx x xxxxxx."
+      },
+      {
+        "title": "Times",
+        "text": "In 1631, an English country parson, William Oughtred, tipped the X onto its side and made it a sign: ×. From then on, it would multiply. Two times two, ten times over, a thousand times thank you. Not everyone liked it. Leibniz wrote that it was too easily mistaken for the letter, and that a simple dot would do better. The dot found its followers. The × kept its own. It stayed, leaning a little, between the numbers, making everything it touches grow, xxxx xxxxxx xxxxxxx."
+      },
+      {
+        "title": "The Treasure",
+        "text": "On the map in Treasure Island, Stevenson drew three red crosses. Since then, X marks the spot. You count your steps from the tall tree, turn your back to the hill, dig beneath the cross. Treasure maps are full of Xs, and beaches full of holes. Most of the time, there is nothing. But we dig anyway, because someone, one day, took the trouble to draw the cross. Those who drew it never come back. They xxxxxxx xxx xxxxxx."
+      },
+      {
+        "title": "The Rays",
+        "text": "On 8 November 1895, in Würzburg, Wilhelm Röntgen saw a screen glow in the dark of his laboratory. A light was passing through cardboard, wood, flesh. A few weeks later he photographed his wife’s hand: the bones, and the ring around them. It is said that when she saw it, she whispered: “I have seen my death.” Röntgen did not know what this light was. So he called it X, like the unknown. The name stayed, even once it was known. The X sees through everything, xxxx xx xxxx xxxxxx."
+      },
+      {
+        "title": "Quixote",
+        "text": "In old Spanish, X said neither “ks” nor “kh”. It hushed: “sh”. People wrote Don Quixote, and English still writes him so. Then the language changed. The “sh” hardened into the rasping sound heard in “jota”, and in 1815 the Academy decided to write it J. Quixote became Quijote. But Mexico refused. México kept its X, and Oaxaca, and Texas. The knight, in Spain, lost his letter along the way. Xx xxxxxxx xxxx xx."
+      },
+      {
+        "title": "The Box",
+        "text": "In many countries, people vote with a cross. Just one, in the right box, in pencil, behind a curtain. No one must know who drew it. It is anonymous, and that is what keeps it safe. Misplaced, one stroke too long, and it spoils everything. Well placed, added to millions of others, it changes a country. Two strokes, always the same, and behind each one, someone who hesitated. The X decides without ever xxxxxx xx xxx."
+      },
+      {
+        "title": "In the Library",
+        "text": "Here, every book holds Xs. They are everywhere, in the middle of words that mean nothing, at the ends of lines, at the tops of pages. Some books hold only one, and others none at all. This one is made of nothing else. Page after page, line after line, nothing but it. The X believes it is alone. It always has. It does not look closely. Xx xx xxxx xxx xxx xxxxx."
+      }
+    ]
   },
   "deathBook": {
     "name": "The DeathBook",
