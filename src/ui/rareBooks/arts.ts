@@ -11,6 +11,7 @@ import { encyclopediaArt } from './encyclopedia/encyclopedia';
 import { directoryArt } from './directory/directory';
 import { idleBabelArt } from './idleBabel/idleBabel';
 import { mobyDickArt } from './mobyDick/mobyDick';
+import { necronomiconArt } from './necronomicon/necronomicon';
 import { odysseyArt } from './odyssey/odyssey';
 import { orianaArt } from './oriana/oriana';
 import { quixoteArt } from './quixote/quixote';
@@ -34,6 +35,7 @@ const ARTS: Record<string, RareBookArt> = {
   encyclopedia: encyclopediaArt,
   idleBabel: idleBabelArt,
   mobyDick: mobyDickArt,
+  necronomicon: necronomiconArt,
   odyssey: odysseyArt,
   oriana: orianaArt,
   quixote: quixoteArt,

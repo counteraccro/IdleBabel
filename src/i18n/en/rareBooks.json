@@ -1294,7 +1294,8 @@
           "head": "Rare books",
           "text": [
             "One book in two hundred is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist.",
-            "Later, a sports almanac, straight off an eighties newsstand: fifty years of results, already written."
+            "Later, a sports almanac, straight off an eighties newsstand: fifty years of results, already written.",
+            "Then the Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read."
           ]
         },
         "library": {
@@ -1362,6 +1363,8 @@
         "encyclopedia-c": "The typesetter’s case",
         "almanac-b": "The newsstand paperback",
         "almanac-c": "Back from the future",
+        "necronomicon-b": "Wormius's vellum",
+        "necronomicon-c": "The chained book",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

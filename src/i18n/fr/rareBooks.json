@@ -1307,7 +1307,8 @@
           "head": "Les livres rares",
           "text": [
             "Un livre sur deux cents n’est pas comme les autres : un livre rare, avec un vrai titre et un sceau à lui. Un cahier noir où des noms s’écrivent, un annuaire où quelqu’un a déjà ta place, un essai sur la page blanche signé d’un auteur qui n’existe pas.",
-            "Plus tard, un almanach des sports, tout droit sorti d’un kiosque des années 80 : cinquante ans de résultats, déjà écrits."
+            "Plus tard, un almanach des sports, tout droit sorti d’un kiosque des années 80 : cinquante ans de résultats, déjà écrits.",
+            "Puis le Necronomicon, le livre inventé par Lovecraft, que la Bibliothèque contient forcément : l’original arabe, Al Azif, relié de maroquin, un médaillon d’or rempli de signes qui ne se lisent pas."
           ]
         },
         "library": {
@@ -1375,6 +1376,8 @@
         "encyclopedia-c": "La casse du typographe",
         "almanac-b": "Le poche du kiosque",
         "almanac-c": "Revenu de l’avenir",
+        "necronomicon-b": "Le vélin de Wormius",
+        "necronomicon-c": "Le livre enchaîné",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",
