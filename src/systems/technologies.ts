@@ -16,7 +16,7 @@ import {
 import { AWAY_SHARE, DUPLICATE_SHARE, MAX_AWAY_SECONDS, TARGET_SHARE } from '../data/knowledge';
 import { RARE_BOOKS } from '../data/rareBooks';
 import { toolUnlocked } from './sentences';
-import type { ToolId } from '../data/tools';
+import { BUY_LOTS, type BuyLot, type ToolId } from '../data/tools';
 import type { GameState } from '../core/state';
 
 export const technology = (id: TechnologyId): TechnologyDef => TECHNOLOGIES.find((tech) => tech.id === id)!;
@@ -98,6 +98,10 @@ export const rareChance = (state: GameState, level = levelOf(state, 'flair')): n
 
 /** Économie du geste : ce qu'elle fait au prix des méthodes. */
 export const toolPriceFactor = (state: GameState, level = levelOf(state, 'bargain')): number => BARGAIN_FACTOR ** level;
+
+/** La Brassée : combien un clic peut acheter de méthodes (1 seule sans elle, puis 10, 100, toutes). */
+export const armfulLots = (state: GameState, level = levelOf(state, 'armful')): readonly BuyLot[] =>
+  BUY_LOTS.slice(0, Math.min(level, BUY_LOTS.length - 1) + 1);
 
 /** L'intuition d'une méthode. */
 export const gestureOf = (tool: ToolId): TechnologyId => TECHNOLOGIES.find((tech) => 'tool' in tech && tech.tool === tool)!.id;

@@ -30,7 +30,15 @@ export const remember = (state: GameState): number => {
   }
 };
 
-/** Ce que l'Exil fera aux intuitions : tout oublié, sauf le meilleur niveau de chacune (débogage pour l'instant). */
+/**
+ * Ce que l'Exil fera aux intuitions : tout oublié, sauf le meilleur niveau de chacune, et celles qui
+ * restent pour toujours (la Brassée) (débogage pour l'instant).
+ */
 export const forgetIntuitions = (state: GameState): void => {
-  state.technologies = {};
+  state.technologies = Object.fromEntries(
+    TECHNOLOGIES.filter((tech) => 'permanent' in tech && tech.permanent && levelOf(state, tech.id) > 0).map((tech) => [
+      tech.id,
+      levelOf(state, tech.id),
+    ]),
+  );
 };

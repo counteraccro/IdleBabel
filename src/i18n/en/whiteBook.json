@@ -6,13 +6,15 @@
     "method": "Methods",
     "memory": "Memories",
     "anomaly": "Anomalies",
-    "intuition": "Intuitions"
+    "intuition": "Intuitions",
+    "permanent": "Lasting intuitions"
   },
   "partDescriptions": {
     "method": "Ways of reading I found again. Each one takes me a little faster.",
     "memory": "Things from before. I no longer know if they are true.",
     "anomaly": "Sentences that should not have been there. I keep them all.",
-    "intuition": "Things I sense before I understand them. Each one changes the way I read."
+    "intuition": "Things I sense before I understand them. Each one changes the way I read.",
+    "permanent": "These ones I keep. Whatever happens."
   },
   "anomaliesCompletion": "sentences found · {percent}",
   "anomalyFamilies": {
@@ -261,6 +263,15 @@
       "notes": [
         "I no longer need to reread everything to learn."
       ]
+    },
+    "armful": {
+      "name": "The Armful",
+      "description": "I take methods by the armful: ten, a hundred, or all I can carry.",
+      "effect": "methods per click",
+      "notes": [
+        "Why just one, when my arms can hold ten?"
+      ],
+      "all": "all"
     },
     "gestures": {
       "description": "I know this gesture by heart. Each level doubles what it makes me read.",

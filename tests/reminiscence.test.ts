@@ -42,4 +42,15 @@ describe('Réminiscence', () => {
     expect(levelOf(state, 'ariadne')).toBe(1);
     expect(levelOf(state, 'speedReading')).toBe(0);
   });
+
+  it('la Brassée, intuition permanente, ne s’oublie pas', () => {
+    const state = createInitialState('fr');
+    state.knowledge = 1e6;
+    understand(state, 'armful');
+    understand(state, 'armful');
+    understand(state, 'semanticFilter');
+    forgetIntuitions(state);
+    expect(levelOf(state, 'armful')).toBe(2);
+    expect(levelOf(state, 'semanticFilter')).toBe(0);
+  });
 });

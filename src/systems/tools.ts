@@ -1,7 +1,7 @@
 import { BUY_LOTS, COST_GROWTH, TOOLS, type BuyLot, type ToolId } from '../data/tools';
 import type { GameState } from '../core/state';
 import { recordOnce } from '../core/history';
-import { toolPriceFactor } from './technologies';
+import { armfulLots, toolPriceFactor } from './technologies';
 
 /** Prix(n) = PrixBase × 1,15^n */
 export const toolCost = (baseCost: number, owned: number): number => baseCost * COST_GROWTH ** owned;
@@ -35,6 +35,17 @@ export const affordableTools = (state: GameState, id: ToolId): number => {
 
 /** Lot choisi, ramené à un choix connu (une sauvegarde abîmée achète une par une). */
 export const validLot = (lot: unknown): BuyLot => (BUY_LOTS.includes(lot as BuyLot) ? (lot as BuyLot) : 1);
+
+/**
+ * Le lot qu'un clic achète : le choix sous la ruche, s'il est ouvert par la Brassée ; sinon le plus grand
+ * qui l'est. Maj enfoncée : ×10, si la Brassée l'a ouvert.
+ */
+export const chosenLot = (state: GameState, shift = false): BuyLot => {
+  const lots = armfulLots(state);
+  if (shift && lots.includes(10)) return 10;
+  const lot = validLot(state.settings.buyLot);
+  return lots.includes(lot) ? lot : lots[lots.length - 1];
+};
 
 /** Combien de méthodes un clic achèterait avec ce lot (« max » : au moins une, pour en dire le prix). */
 export const lotSize = (state: GameState, id: ToolId, lot: BuyLot): number =>

@@ -62,3 +62,34 @@ export const partTitleLayout = (kind: WhiteBookPart, number: number, share: numb
     },
   ];
 };
+
+/**
+ * Page de titre d'une sous-partie (les intuitions permanentes), à gauche, en face de son contenu : son
+ * nom, un filet, quelques mots du chercheur ; ni numéro, ni part déjà là.
+ */
+export const subPartLayout = (key: string): Item[] => {
+  const description = paragraph(t(`whiteBook.partDescriptions.${key}`), 430, {
+    left: 120,
+    width: 400,
+    size: 21,
+    line: 30,
+    align: 'center',
+    italic: true,
+    faded: true,
+  });
+  return [
+    {
+      kind: 'text',
+      text: t(`whiteBook.parts.${key}`).toLocaleUpperCase(),
+      x: 320,
+      y: 320,
+      size: 26,
+      align: 'center',
+      spacing: 5,
+      face: 'title',
+      initial: true,
+    },
+    { kind: 'rule', y: 385, width: 200 },
+    ...description.items,
+  ];
+};

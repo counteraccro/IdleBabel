@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { affordableTools, buyTool, buyTools, lotCost, lotSize, toolCost, validLot } from '../src/systems/tools';
+import { affordableTools, buyTool, buyTools, chosenLot, lotCost, lotSize, toolCost, validLot } from '../src/systems/tools';
+import { armfulLots, understand } from '../src/systems/technologies';
 import { pagesPerSecond, produce } from '../src/systems/production';
 import { createInitialState } from '../src/core/state';
 
@@ -71,5 +72,32 @@ describe('outils', () => {
     expect(validLot(7)).toBe(1);
     expect(validLot('max')).toBe('max');
     expect(validLot(100)).toBe(100);
+  });
+
+  it('la Brassée ouvre les lots un à un : ×10, ×100, puis max', () => {
+    const state = createInitialState('fr');
+    state.knowledge = 1e6;
+    expect(armfulLots(state)).toEqual([1]);
+    understand(state, 'armful');
+    expect(armfulLots(state)).toEqual([1, 10]);
+    understand(state, 'armful');
+    understand(state, 'armful');
+    expect(armfulLots(state)).toEqual([1, 10, 100, 'max']);
+    expect(understand(state, 'armful')).toBe(false);
+  });
+
+  it('le lot choisi mais pas encore ouvert : le plus grand qui l’est ; Maj : ×10 seulement s’il est ouvert', () => {
+    const state = createInitialState('fr');
+    state.settings.buyLot = 'max';
+    expect(chosenLot(state)).toBe(1);
+    expect(chosenLot(state, true)).toBe(1);
+    state.knowledge = 1e6;
+    understand(state, 'armful');
+    expect(chosenLot(state)).toBe(10);
+    understand(state, 'armful');
+    expect(chosenLot(state)).toBe(100);
+    expect(chosenLot(state, true)).toBe(10);
+    understand(state, 'armful');
+    expect(chosenLot(state)).toBe('max');
   });
 });

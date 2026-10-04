@@ -2,6 +2,7 @@ import { getLocale, messages, t } from '../../i18n';
 import { formatNumber, writeDigits } from '../../core/format';
 import { BASE_FIND_CHANCE } from '../../data/knowledge';
 import {
+  armfulLots,
   awayShare,
   bestOf,
   clickShare,
@@ -78,6 +79,11 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
       return `1 / ${plain(Math.round(1 / rareChance(state, level)))}`;
     case 'bargain':
       return percent(toolPriceFactor(state, level));
+    case 'armful': {
+      const lots = armfulLots(state, level);
+      const most = lots[lots.length - 1];
+      return most === 'max' ? t('whiteBook.intuitions.armful.all') : plain(most);
+    }
     default:
       return '';
   }

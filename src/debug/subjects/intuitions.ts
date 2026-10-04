@@ -80,7 +80,11 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
         return left === 0 ? 'rien' : `${left} intuition(s)${price === undefined ? '' : ` · prochaine : ${format(price)} 🧠`}`;
       });
       kit.actions(
-        ['Oublier, comme à l’Exil', () => forgetIntuitions(state), { title: 'Niveaux à zéro, meilleurs niveaux gardés.' }],
+        [
+          'Oublier, comme à l’Exil',
+          () => forgetIntuitions(state),
+          { title: 'Niveaux à zéro (sauf les permanentes), meilleurs niveaux gardés.' },
+        ],
         ['Se souvenir', () => remember(state), { title: 'Rachète tout de suite ce qui peut l’être (sinon : au prochain tour de boucle).' }],
       );
     },

@@ -6,13 +6,15 @@
     "method": "Méthodes",
     "memory": "Souvenirs",
     "anomaly": "Anomalies",
-    "intuition": "Intuitions"
+    "intuition": "Intuitions",
+    "permanent": "Intuitions permanentes"
   },
   "partDescriptions": {
     "method": "Des façons de lire que j'ai retrouvées. Chacune me fait aller un peu plus vite.",
     "memory": "Des choses d'avant. Je ne sais plus si elles sont vraies.",
     "anomaly": "Des phrases qui n'auraient pas dû être là. Je les garde toutes.",
-    "intuition": "Des choses que je sens avant de les comprendre. Chacune change ma façon de lire."
+    "intuition": "Des choses que je sens avant de les comprendre. Chacune change ma façon de lire.",
+    "permanent": "Celles-là, je les garde. Quoi qu'il arrive."
   },
   "anomaliesCompletion": "phrases retrouvées · {percent}",
   "anomalyFamilies": {
@@ -261,6 +263,15 @@
       "notes": [
         "Je n'ai plus besoin de tout relire pour apprendre."
       ]
+    },
+    "armful": {
+      "name": "La Brassée",
+      "description": "Je prends les méthodes par brassées : dix, cent, ou tout ce que je peux porter.",
+      "effect": "méthodes par clic",
+      "notes": [
+        "Pourquoi une seule, quand les bras en tiennent dix ?"
+      ],
+      "all": "toutes"
     },
     "gestures": {
       "description": "Je connais ce geste par cœur. Chaque niveau double ce qu'il me fait lire.",

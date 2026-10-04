@@ -3,8 +3,9 @@ import './methodHive.css';
 import { el, type Component } from '../dom';
 import { getLocale, t } from '../../i18n';
 import { formatNumber } from '../../core/format';
-import { TOOLS, type BuyLot, type ToolId } from '../../data/tools';
-import { buyTools, lotCost, lotSize, validLot } from '../../systems/tools';
+import { TOOLS, type ToolId } from '../../data/tools';
+import { buyTools, chosenLot, lotCost, lotSize } from '../../systems/tools';
+import { armfulLots } from '../../systems/technologies';
 import { toolUnlocked } from '../../systems/sentences';
 import { toolRate } from '../../systems/production';
 import { createMethodSeal } from './methodSeal';
@@ -30,7 +31,7 @@ const hiveHeight = (rows: number): number => (rows > 0 ? (rows - 1) * (SEAL_HEIG
  * d'abeille, qui grandit à chaque méthode découverte. Doré et luisant : on peut en acheter une de plus ;
  * éteint : pas assez de pages. Le nombre possédé est dans le sceau ; au survol (ou au clavier), le nom,
  * la description et le prix. Un clic achète le lot choisi sous la ruche (1, 10, 100 ou tout ce que les
- * pages permettent ; Maj enfoncée : 10), et le sceau ne luit que si le lot entier est payable (« max » :
+ * pages permettent, à mesure que la Brassée les ouvre ; Maj enfoncée : 10), et le sceau ne luit que si le lot entier est payable (« max » :
  * dès qu'on peut en prendre une). Le détail de chaque méthode est dans le livre blanc.
  */
 export const createMethodHive = (state: GameState): Component => {
@@ -48,7 +49,6 @@ export const createMethodHive = (state: GameState): Component => {
   let pointed: ToolId | null = null;
   /** Maj enfoncée : dix d'un coup, le temps du clic. */
   let shift = false;
-  const lot = (): BuyLot => (shift ? 10 : validLot(state.settings.buyLot));
   const lotMark = createMethodLot((chosen) => {
     state.settings.buyLot = chosen;
     update();
@@ -67,7 +67,7 @@ export const createMethodHive = (state: GameState): Component => {
   const seals = TOOLS.map((tool) => {
     const seal = createMethodSeal(tool.id);
     seal.root.addEventListener('click', (event) => {
-      buyTools(state, tool.id, event.shiftKey ? 10 : validLot(state.settings.buyLot));
+      buyTools(state, tool.id, chosenLot(state, event.shiftKey));
       update();
     });
     const point = (on: boolean): void => {
@@ -113,8 +113,8 @@ export const createMethodHive = (state: GameState): Component => {
       columns = perRow(total);
       laidOut = layout;
     }
-    const chosen = lot();
-    lotMark.show(chosen);
+    const chosen = chosenLot(state, shift);
+    lotMark.show(chosen, armfulLots(state));
     let place = 0;
     for (const entry of seals) {
       const { id, seal } = entry;

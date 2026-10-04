@@ -188,3 +188,7 @@
     transition: none;
   }
 }
+.method-lot[hidden],
+.method-lot button[hidden] {
+  display: none;
+}

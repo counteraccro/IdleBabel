@@ -4,7 +4,7 @@ import { SENTENCES, type SentenceDef, type SentenceKind } from '../../data/sente
 import { ANOMALY_FAMILIES } from '../../data/anomalies';
 import { anomalyPages, familyTitle, ofFamily } from './anomalyPages';
 import { contentsItems, type ContentsEntry } from './contents';
-import { partTitleItems, partTitleLayout, type WhiteBookPart } from './partTitle';
+import { partTitleItems, partTitleLayout, subPartLayout, type WhiteBookPart } from './partTitle';
 import { intuitionItems, reminiscenceNote } from './intuitionPage';
 import { TECHNOLOGIES } from '../../data/technologies';
 import { technologiesCompletion, understand } from '../../systems/technologies';
@@ -156,10 +156,22 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
       if (id === 'reminiscence') state.reminiscence.on = !state.reminiscence.on;
     },
   });
-  for (const tech of TECHNOLOGIES) {
+  const intuitionPage = (tech: (typeof TECHNOLOGIES)[number]): void => {
     const number = pages.length;
     pages.push(createLeafPage(() => intuitionItems(state, tech.id, number), goTo, { onPay: () => understand(state, tech.id) }));
+  };
+  const lasting = (tech: (typeof TECHNOLOGIES)[number]): boolean => 'permanent' in tech && tech.permanent;
+  TECHNOLOGIES.filter((tech) => !lasting(tech)).forEach(intuitionPage);
+  // Les intuitions permanentes (des conforts, que l'Exil ne fait pas oublier) : une sous-partie, son titre
+  // à gauche (une page blanche avant si besoin), en face de la première d'entre elles.
+  if (pages.length % 2 === 1) {
+    const blank = pages.length;
+    pages.push(createLeafPage(() => [folio(blank)], goTo));
   }
+  const lastingTitle = pages.length;
+  entries.push({ title: () => t('whiteBook.parts.permanent'), page: lastingTitle, sub: true });
+  pages.push(createLeafPage(() => subPartLayout('permanent'), goTo));
+  TECHNOLOGIES.filter(lasting).forEach(intuitionPage);
   sentencePart('memory', 3);
   partTitle('anomaly', 4);
   const anomalyPart = anomalyPages(state, pages.length, freshOf);

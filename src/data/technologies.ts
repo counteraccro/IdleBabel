@@ -14,6 +14,8 @@ export interface TechnologyDef {
   growth?: number;
   /** Intuition d'une méthode de lecture : elle double sa production à chaque niveau. */
   tool?: ToolId;
+  /** Un confort, pas un progrès : comprise une fois pour toutes, l'Exil ne la fait pas oublier. */
+  permanent?: boolean;
 }
 
 /** Filtre sémantique : chaque niveau multiplie la chance qu'une page cache une trouvaille. */
@@ -50,6 +52,8 @@ export const TECHNOLOGIES = [
   { id: 'deepSleep', prices: [2_500], growth: 2 },
   { id: 'flair', prices: [500, 2_000, 8_000, 32_000] },
   { id: 'bargain', prices: [1_000], growth: 2 },
+  // La Brassée : un niveau par lot de la marque sous la ruche (×10, ×100, max).
+  { id: 'armful', prices: [100, 1_000, 5_000], permanent: true },
   { id: 'diagonalGesture', prices: gesture(50), tool: 'diagonal' },
   { id: 'fingerGesture', prices: gesture(125), tool: 'finger' },
   { id: 'thumbGesture', prices: gesture(300), tool: 'thumb' },
