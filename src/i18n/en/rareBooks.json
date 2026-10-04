@@ -391,6 +391,12 @@
     "mark": "THE LIBRARY OF BABEL",
     "spineMark": "BABEL",
     "back": "Two strokes, nothing more.",
+    "runningHead": "THE BIG BOOK OF X",
+    "contents": "CONTENTS",
+    "chapter": "CHAPTER",
+    "legal": ["XXX XXX XXXX XX X", "", "Xxx xxxxx xx x xxxxxx", "", "© Xxx Xxxxxxx xx Xxxxx, XXXX", "Xxx xxxxxx xxxxxxxx.", "", "Xxxxx xxxxxxx : XXXX", "XXXX : x-xxxx-xxxx-x", "", "Xxxxxxx xx xxx Xxxxxxx xx xxx", "xxxxx xxxxxxxx xx xxxxx."],
+    "colophon": ["Xxxxxxx xxxxxxx", "xx xxx xxxxxxxx xx xxx Xxxxxxx", "xx Xxxxx, xx xxx xxxx XXX."],
+    "ending": "The X believes it is alone. It always has. It does not look closely. Xx xx xxxx xxx xxx xxxxx.",
     "preface": {
       "title": "Preface",
       "text": "They pushed it to the end of the alphabet, into the corners of maps, to the foot of letters we dare not finish. They gave it all they could not name: the unknown, the treasure, the light that passes through hands, the names of those who could not write their own. It carried everything without a word. Two strokes, nothing more. This book is for it. To honour it, most of these pages are written in its own tongue, the X language. Do not try to translate it. It says nothing, and it says everything. Read it the way you listen to rain."

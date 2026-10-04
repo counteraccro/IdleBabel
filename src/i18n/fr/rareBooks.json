@@ -391,6 +391,12 @@
     "mark": "BIBLIOTHÈQUE DE BABEL",
     "spineMark": "BABEL",
     "back": "Deux traits, rien de plus.",
+    "runningHead": "LE GRAND LIVRE DU X",
+    "contents": "SOMMAIRE",
+    "chapter": "CHAPITRE",
+    "legal": ["XX XXXXX XXXXX XX X", "", "Xxxxxx x'xxx xxxxxx", "", "© Xxxxxxxxxxxx xx Xxxxx, XXXX", "Xxxx xxx xxxxxx xxxxxxxx.", "", "Xxxxx xxxxx : xxxxxxx XXXX", "XXXX : x-xxxx-xxxx-x", "", "Xxxxxxx xx Xxxxxxx xxx xx xxxxxx xx", "xxxxxxx xxxxxxx xx xxxxx."],
+    "colophon": ["Xxxxxx x'xxxxxxxx", "xxx xxx xxxxxxx xx xx Xxxxxxxxxxxx", "xx Xxxxx, xx xxxx XXX."],
+    "ending": "Le X croit qu'il est seul. Il l'a toujours cru. Il ne regarde pas de près. Xx xx xxxx xxx xxx xxxxx.",
     "preface": {
       "title": "Préface",
       "text": "On l'a relégué au bout de l'alphabet, dans le coin des cartes, au bas des lettres qu'on n'ose pas finir. On lui a confié ce qu'on ne savait pas nommer : l'inconnue, le trésor, la lumière qui traverse les mains, le nom de ceux qui ne savaient pas écrire le leur. Il a tout porté sans rien dire. Deux traits, rien de plus. Ce livre est pour lui. Pour lui rendre hommage, la plus grande part en est écrite dans sa langue, la langue X. Ne cherche pas à la traduire. Elle ne dit rien, et elle dit tout. Lis-la comme on écoute la pluie."

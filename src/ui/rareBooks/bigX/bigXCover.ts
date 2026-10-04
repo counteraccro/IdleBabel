@@ -17,7 +17,7 @@ const K = WIDTH / W;
 /** Le dos de la maquette à ses vraies proportions (le dos d'un livre fait 1,4 fois son épaisseur). */
 export const THICKNESS = SPINE_W / H / 1.4;
 
-const PLAY = "'Playfair Display', Georgia, serif";
+export const PLAY = "'Playfair Display', Georgia, serif";
 export const CREAM: [string, string] = ['#f1e8d4', '#e2d5b9'];
 export const INK = '#1c1a17';
 export const RED = '#b0302a';
@@ -63,7 +63,8 @@ const bigX = (context: Context, x: number, y: number, size: number, bounds: [num
   text(context, 'X', x, y, `900 ${size}px ${PLAY}`, INK);
   const random = rng(32);
   context.fillStyle = 'rgba(241,232,212,0.35)';
-  for (let i = 0; i < specks; i++) context.fillRect(bounds[0] + random() * bounds[2], bounds[1] + random() * bounds[3], 1 + random() * 2, 1);
+  for (let i = 0; i < specks; i++)
+    context.fillRect(bounds[0] + random() * bounds[2], bounds[1] + random() * bounds[3], 1 + random() * 2, 1);
 };
 
 const plate = (seed: number, draw: (context: Context) => void): THREE.CanvasTexture =>

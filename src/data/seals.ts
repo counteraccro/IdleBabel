@@ -100,6 +100,8 @@ export const SEALS: readonly SealDef[] = [
   secret('trueCatalogue'),
   // Une page numérotée 410 dans le Livre de sable, lu dans la bibliothèque (ui/rareBooks/sand/sand.ts).
   secret('sandLastPage'),
+  // Le seul y du grand livre du X, page 205, lu dans la bibliothèque (ui/rareBooks/bigX/bigX.ts).
+  secret('foundTypo'),
   // Les deux collègues, AlexH et Oriana, trouvés tous les deux (ils travaillent ensemble, jusque dans leurs livres).
   seal('colleagues', 'secrets', (s) => 'alexH' in s.rareBooks && 'oriana' in s.rareBooks),
 ];

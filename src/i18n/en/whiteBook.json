@@ -168,6 +168,7 @@
     "hintNeverLaughed": "In a book of jokes, / someone laughed. / They swear they didn't.",
     "hintOneWord": "Someone circled a word. / At the very end.",
     "hintSandLastPage": "The book of sand / has no last page. / Really?",
+    "hintFoundTypo": "Nothing but X. / Page after page. / Almost.",
     "hintTrueCatalogue": "The catalogue is wrong. / Except once?"
   },
   "guess": "guess · {n} Knowledge",

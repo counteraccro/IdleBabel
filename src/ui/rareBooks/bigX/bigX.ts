@@ -1,14 +1,15 @@
-import { MODERN_PAPER } from '../../book/pageRender';
+import { MODERN_PAPER, preparePageTexture } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
-import { loremPages } from '../defaultArt';
+import { sealEvent } from '../../../systems/seals';
 import { CREAM, INK, RED, THICKNESS, bigXBack, bigXFront, bigXInside, bigXSpine, loadBigXFonts } from './bigXCover';
+import { CONTENTS_PAGE, Y_PAGE, bigXLinks, loadBigXPageFonts, paintBigXPage } from './bigXPages';
 import type { RareBookArt } from '../rareBookArt';
 
 /**
  * Le grand livre du X : l'histoire de la lettre X, en douze chapitres qui finissent tous en x, et dont la
- * plus grande part est écrite en langue X. Couverture d'après la maquette (bigXCover.ts) ; les pages restent
- * à dessiner (page de titre et lorem ipsum en attendant).
+ * plus grande part est écrite en langue X. Couverture et pages d'après les maquettes (bigXCover.ts,
+ * bigXPages.ts) ; page 205, un seul y.
  */
 export const bigXArt: RareBookArt = {
   thickness: THICKNESS,
@@ -27,5 +28,17 @@ export const bigXArt: RareBookArt = {
       ribbon: RED,
     };
   },
-  paint: loremPages('bigX', MODERN_PAPER),
+  prepare: async () => {
+    await loadBigXPageFonts();
+  },
+  paint: (page, canvas, spineOnLeft) => {
+    paintBigXPage(preparePageTexture(canvas, spineOnLeft, MODERN_PAPER), page);
+    return true;
+  },
+  bookmark: CONTENTS_PAGE,
+  links: bigXLinks,
+  // Secret : page 205, le seul y du livre.
+  passed: (page, state) => {
+    if (page === Y_PAGE) sealEvent(state, 'foundTypo');
+  },
 };
