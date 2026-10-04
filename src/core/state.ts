@@ -87,6 +87,11 @@ export interface GameState {
    * retrouvés, et gardés à l'Exil (la bibliothèque personnelle n'est jamais remise à zéro).
    */
   rareBooks: Record<string, number>;
+  /**
+   * Livres rares que le joueur a vus écrits, à leur place, dans le Catalogue des catalogues lu dans la
+   * bibliothèque (systems/catalogue.ts) : s'il en prend un ensuite, un sceau secret.
+   */
+  catalogueSpotted: string[];
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
@@ -125,6 +130,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   partsRead: [],
   seals: {},
   rareBooks: {},
+  catalogueSpotted: [],
   newSeals: [],
   libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],

@@ -95,6 +95,9 @@ export const SEALS: readonly SealDef[] = [
   secret('neverLaughed'),
   // Un mot entouré au crayon, à la dernière page du Manuscrit de Voynich (ui/rareBooks/voynich/voynich.ts).
   secret('oneWord'),
+  // Un livre rare lu à sa place dans le Catalogue des catalogues, ouvert dans la bibliothèque, puis pris en main
+  // (systems/catalogue.ts, systems/rareBooks.ts).
+  secret('trueCatalogue'),
   // Les deux collègues, AlexH et Oriana, trouvés tous les deux (ils travaillent ensemble, jusque dans leurs livres).
   seal('colleagues', 'secrets', (s) => 'alexH' in s.rareBooks && 'oriana' in s.rareBooks),
 ];

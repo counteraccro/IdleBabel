@@ -314,7 +314,69 @@
   },
   "catalogue": {
     "name": "The Catalogue of Catalogues",
-    "cover": ["Catalogue", "of Catalogues"]
+    "cover": ["Catalogue", "of Catalogues"],
+    "coverTitle": [
+      "THE CATALOGUE",
+      "of catalogues"
+    ],
+    "titlePage": {
+      "library": "THE LIBRARY OF BABEL",
+      "title": "THE CATALOGUE",
+      "subtitle": "of catalogues",
+      "edition": "Faithful edition"
+    },
+    "notice": {
+      "heading": "NOTICE",
+      "paragraphs": [
+        [
+          "This catalogue records the books that follow",
+          "this one, in the order of the shelf."
+        ],
+        [
+          "There is one faithful catalogue. The others lie."
+        ],
+        [
+          "This catalogue does not say which one it is."
+        ],
+        [
+          "It records itself, on the first line."
+        ],
+        [
+          "The reader who finds a mistake is asked",
+          "not to correct it: another page",
+          "already contains it."
+        ]
+      ]
+    },
+    "register": "REGISTER",
+    "columns": {
+      "no": "NO.",
+      "title": "TITLE",
+      "wall": "WALL",
+      "shelf": "SH.",
+      "volume": "VOL."
+    },
+    "runningHead": "CATALOGUE OF CATALOGUES",
+    "range": "nos. {from} – {to}",
+    "russell": [
+      "Catalogue of all catalogues that do not list",
+      "themselves"
+    ],
+    "end": {
+      "title": "The Catalogue of Catalogues",
+      "see": "see page 3.",
+      "close": "END OF VOLUME"
+    },
+    "pencil": {
+      "edition": "?",
+      "first": "The first line is this one.",
+      "wrong": "wrong",
+      "russell": [
+        "Should it list itself?",
+        "Then no. Then yes."
+      ],
+      "last": "I'm already here."
+    }
   },
   "sand": {
     "name": "The Book of Sand",
@@ -1437,7 +1499,8 @@
             "Later, a sports almanac, straight off an eighties newsstand: fifty years of results, already written.",
             "Then the Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read. Inside, a manuscript in a script no one reads; only a reader who came before left Lovecraft’s line in pencil.",
             "Then Dad Jokes, a humour book of the kind people give on Father’s Day: bright yellow, glasses, a moustache, a question you have heard before. It takes the place of a Book of the Dead, planned at first. Inside, four hundred and seven jokes. There are only ninety: they keep coming back.",
-            "Then the Voynich Manuscript, the one book no one has ever been able to read. On its vellum cover grows a plant that does not exist. Inside, more plants, circles of stars, pools, apothecary jars, and an unknown script, drawn stroke by stroke."
+            "Then the Voynich Manuscript, the one book no one has ever been able to read. On its vellum cover grows a plant that does not exist. Inside, more plants, circles of stars, pools, apothecary jars, and an unknown script, drawn stroke by stroke.",
+            "Then the Catalogue of Catalogues, the one Borges’s librarians search for. On its midnight-blue leather cover, the book contains itself, until it is nothing but a point of gold. Inside, a register of books, one per line, each with its shelf mark."
           ]
         },
         "library": {
@@ -1511,6 +1574,8 @@
         "dadJokes-c": "Dad's notebook",
         "voynich-a": "The bare vellum",
         "voynich-b": "The facsimile",
+        "catalogue-a": "The register",
+        "catalogue-b": "The index card",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

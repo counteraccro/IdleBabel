@@ -166,7 +166,8 @@
     "hintBabelDefinition": "Un vieux dictionnaire / sait ce que veut dire / Babel.",
     "hintGreatScott": "Dans les notes / d'un almanach, / quelqu'un a juré.",
     "hintNeverLaughed": "Dans un livre de blagues, / quelqu'un a ri. / Il jure que non.",
-    "hintOneWord": "Quelqu'un a entouré un mot. / Tout au bout."
+    "hintOneWord": "Quelqu'un a entouré un mot. / Tout au bout.",
+    "hintTrueCatalogue": "Le catalogue est faux. / Sauf une fois ?"
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",

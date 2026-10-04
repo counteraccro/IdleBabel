@@ -314,7 +314,69 @@
   },
   "catalogue": {
     "name": "Le Catalogue des catalogues",
-    "cover": ["Catalogue", "des catalogues"]
+    "cover": ["Catalogue", "des catalogues"],
+    "coverTitle": [
+      "LE CATALOGUE",
+      "des catalogues"
+    ],
+    "titlePage": {
+      "library": "BIBLIOTHÈQUE DE BABEL",
+      "title": "LE CATALOGUE",
+      "subtitle": "des catalogues",
+      "edition": "Édition fidèle"
+    },
+    "notice": {
+      "heading": "AVERTISSEMENT",
+      "paragraphs": [
+        [
+          "Ce catalogue recense les livres qui suivent",
+          "celui-ci, dans l'ordre de l'étagère."
+        ],
+        [
+          "Il en existe un fidèle. Les autres mentent."
+        ],
+        [
+          "Ce catalogue ne dit pas lequel il est."
+        ],
+        [
+          "Il se recense lui-même, à la première ligne."
+        ],
+        [
+          "Le lecteur qui trouve une erreur est prié",
+          "de ne pas la corriger : une autre page",
+          "la contient déjà."
+        ]
+      ]
+    },
+    "register": "REGISTRE",
+    "columns": {
+      "no": "N°",
+      "title": "TITRE",
+      "wall": "MUR",
+      "shelf": "ÉT.",
+      "volume": "VOL."
+    },
+    "runningHead": "CATALOGUE DES CATALOGUES",
+    "range": "n° {from} – {to}",
+    "russell": [
+      "Catalogue des catalogues qui ne se recensent",
+      "pas eux-mêmes"
+    ],
+    "end": {
+      "title": "Le Catalogue des catalogues",
+      "see": "voir page 3.",
+      "close": "FIN DU TOME"
+    },
+    "pencil": {
+      "edition": "?",
+      "first": "La première ligne, c'est celui-ci.",
+      "wrong": "faux",
+      "russell": [
+        "Doit-il s'y mettre ?",
+        "Alors non. Alors oui."
+      ],
+      "last": "J'y suis déjà."
+    }
   },
   "sand": {
     "name": "Le Livre de sable",
@@ -1450,7 +1512,8 @@
             "Plus tard, un almanach des sports, tout droit sorti d’un kiosque des années 80 : cinquante ans de résultats, déjà écrits.",
             "Puis le Necronomicon, le livre inventé par Lovecraft, que la Bibliothèque contient forcément : l’original arabe, Al Azif, relié de maroquin, un médaillon d’or rempli de signes qui ne se lisent pas. Dedans, un manuscrit dans une écriture que personne ne lit ; seul un lecteur venu avant y a laissé, au crayon, la phrase de Lovecraft.",
             "Puis les Jokes de Papa, un livre d’humour comme on en offre à la fête des pères : jaune vif, des lunettes, une moustache, une question qu’on a déjà entendue. Il prend la place d’un Livre des morts, prévu au départ. Dedans, quatre cent sept blagues. Il n’y en a que quatre-vingt-dix : elles reviennent.",
-            "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait."
+            "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait.",
+            "Puis le Catalogue des catalogues, celui que cherchent les bibliothécaires de Borges. Sur sa couverture de cuir bleu nuit, le livre se contient lui-même, jusqu’à n’être plus qu’un point d’or. Dedans, un registre de livres, un par ligne, chacun avec sa cote."
           ]
         },
         "library": {
@@ -1524,6 +1587,8 @@
         "dadJokes-c": "Le carnet de papa",
         "voynich-a": "Le vélin nu",
         "voynich-b": "Le fac-similé",
+        "catalogue-a": "Le registre",
+        "catalogue-b": "La fiche",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

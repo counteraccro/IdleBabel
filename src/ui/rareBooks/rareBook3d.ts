@@ -55,7 +55,7 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
       return coverTick ? { ...look, liveCover: true } : look;
     },
     ready: art.prepare,
-    passed: art.passed && ((page) => art.passed?.(page, state)),
+    passed: art.passed && ((page) => art.passed?.(page, state, shape !== READING_SHAPE)),
     tick: (now) => tick?.(now) ?? false,
     // Le signet : de n'importe où dans le livre, on revient au sommaire (ou au titre), puis on le referme.
     bookmark: art.bookmark ?? 1,

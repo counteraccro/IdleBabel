@@ -166,7 +166,8 @@
     "hintBabelDefinition": "An old dictionary / knows what / Babel means.",
     "hintGreatScott": "In the notes / of an almanac, / someone swore.",
     "hintNeverLaughed": "In a book of jokes, / someone laughed. / They swear they didn't.",
-    "hintOneWord": "Someone circled a word. / At the very end."
+    "hintOneWord": "Someone circled a word. / At the very end.",
+    "hintTrueCatalogue": "The catalogue is wrong. / Except once?"
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",
