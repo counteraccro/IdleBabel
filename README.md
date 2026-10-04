@@ -94,6 +94,9 @@ Copier `src/i18n/fr/`, traduire les fichiers JSON, puis déclarer la langue dans
 - Univers, histoire et direction artistique : [@counteraccro](https://github.com/counteraccro)
 - Code, conception détaillée et équilibrage : **Claude Code** (Anthropic)
 - Inspiration : *La Bibliothèque de Babel*, Jorge Luis Borges (1941)
+- Blagues des *Jokes de Papa* : en partie reprises, et retouchées, de [Blagues-API](https://github.com/Blagues-API/blagues-api)
+  (licence MIT, © 2020-2024 Nicolas Van Aarsen) et de [dad-jokes](https://github.com/JunderscoreB/dad-jokes)
+  (licence MIT, © 2026 J_B)
 
 ---
 
