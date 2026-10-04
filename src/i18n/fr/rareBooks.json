@@ -383,9 +383,9 @@
     "cover": ["Le Livre", "de sable"],
     "coverTitle": ["LE LIVRE", "de sable"]
   },
-  "vindication": {
-    "name": "Ta Justification",
-    "cover": ["Ta", "Justification"]
+  "bigX": {
+    "name": "Le grand livre du X",
+    "cover": ["Le grand livre", "du X"]
   },
   "deathBook": {
     "name": "Le DeathBook",

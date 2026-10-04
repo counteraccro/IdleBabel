@@ -383,9 +383,9 @@
     "cover": ["The Book", "of Sand"],
     "coverTitle": ["THE BOOK", "of Sand"]
   },
-  "vindication": {
-    "name": "Your Vindication",
-    "cover": ["Your", "Vindication"]
+  "bigX": {
+    "name": "The Big Book of X",
+    "cover": ["The Big Book", "of X"]
   },
   "deathBook": {
     "name": "The DeathBook",

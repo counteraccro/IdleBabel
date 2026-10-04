@@ -105,4 +105,14 @@ describe('sauvegarde', () => {
     expect(loaded.newSeals).toEqual(['rare-dadJokes']);
     expect(loaded.history.at(-1)?.detail).toBe('dadJokes');
   });
+
+  it('donne le grand livre du X aux parties qui avaient trouvé Ta Justification', () => {
+    const state = createInitialState('fr');
+    state.rareBooks = { vindication: 40 };
+    state.seals = { 'rare-vindication': 200 };
+    saveGame(state);
+    const loaded = loadGame('fr');
+    expect(loaded.rareBooks).toEqual({ bigX: 40 });
+    expect(loaded.seals).toEqual({ 'rare-bigX': 200 });
+  });
 });

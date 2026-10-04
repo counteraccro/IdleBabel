@@ -25,8 +25,8 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   { id: 'encyclopedia' },
   { id: 'catalogue' },
   { id: 'sand' },
-  // Le livre qui justifie ta vie, que cherchent les bibliothécaires de Borges : dix fois plus rare.
-  { id: 'vindication', weight: 0.1 },
+  // Le grand livre du X (remplace « Ta Justification », 04/10) : que des X, et un seul Y caché (un sceau secret).
+  { id: 'bigX' },
   // Façon Death Note : des listes de noms, et page 15 le joueur (un sceau secret).
   { id: 'deathBook' },
   // Rempli de blocs d'une chaîne de blocs.
