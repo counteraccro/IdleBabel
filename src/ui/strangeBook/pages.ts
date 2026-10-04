@@ -140,15 +140,27 @@ export const priceNote = (state: GameState, price: number, offer: string, short:
 /** Chiffre écrit en symboles de Babel (notation choisie dans les options) : doré, comme les titres. */
 const babelGold = (item: TextItem): TextItem => (currentNotation() === 'babel' && !/\d/.test(item.text) ? { ...item, gold: true } : item);
 
+/** Relevé des méthodes : une ligne chacune, sous le titre ; les grands chiffres viennent après. */
+const ROW_TOP = 180;
+const ROW_STEP = 36;
+
 const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[] => {
-  const figures = chapter.figures.filter((figure) => figureShown(state, figure));
+  const shown = chapter.figures.filter((figure) => figureShown(state, figure));
+  const rows = shown.filter((figure) => figure.row);
+  const figures = shown.filter((figure) => !figure.row);
+  // Sous le relevé, les grands chiffres plus petits et plus serrés : ils tiennent au-dessus du numéro de page.
+  const compact = rows.length > 0;
+  const top = compact ? ROW_TOP + rows.length * ROW_STEP + 40 : FIGURE_TOP;
+  const step = compact ? Math.min(FIGURE_STEP, (690 - top) / Math.max(1, figures.length)) : FIGURE_STEP;
+  const size = compact ? 40 : 52;
+  const below = compact ? 50 : 64;
   const captions = figures.map((figure, index): TextItem =>
     fitCaption({
       kind: 'text',
       text: figureCaption(state, chapter, figure),
       x: 320,
-      y: FIGURE_TOP + index * FIGURE_STEP + 64,
-      size: 20,
+      y: top + index * step + below,
+      size: compact ? 18 : 20,
       align: 'center',
       italic: true,
       faded: true,
@@ -157,13 +169,21 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
   );
   return [
     ...heading(chapterTitle(state, chapter), CHAPTERS.indexOf(chapter) + 1),
+    ...rows.flatMap((figure, index): Item[] => {
+      const y = ROW_TOP + index * ROW_STEP;
+      return [
+        fitRow({ kind: 'text', text: figureCaption(state, chapter, figure), x: 110, y, size: 22, align: 'left', spacing: 2 }),
+        { kind: 'dots', x1: 380, x2: 460, y: y + 17 },
+        babelGold({ kind: 'text', text: figure.value(state), x: 530, y, size: 22, align: 'right' }),
+      ];
+    }),
     ...figures.flatMap((figure, index): Item[] => [
       babelGold({
         kind: 'text',
         text: figure.value(state),
         x: 320,
-        y: FIGURE_TOP + index * FIGURE_STEP,
-        size: 52,
+        y: top + index * step,
+        size,
         align: 'center',
         spacing: 2,
       }),
@@ -173,7 +193,7 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
               kind: 'text',
               text: figure.detail(state, isDeciphered(state, chapter.id)),
               x: 320,
-              y: FIGURE_TOP + index * FIGURE_STEP + 60,
+              y: top + index * step + 60,
               size: 19,
               align: 'center',
               spacing: 2,
@@ -184,6 +204,13 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
     ]),
     folio(number),
   ];
+};
+
+/** Le nom d'une ligne du relevé tient avant les points de conduite (« Le Double Feuilletage »). */
+const fitRow = (item: TextItem): TextItem => {
+  const width = textWidth(item);
+  const room = 380 - 110 - 10;
+  return width > room ? { ...item, size: Math.floor((item.size * room) / width), spacing: 1 } : item;
 };
 
 /** La page dont un sceau est survolé : une seule légende à la fois dans tout le livre. */

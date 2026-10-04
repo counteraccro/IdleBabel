@@ -24,6 +24,8 @@ export interface Figure {
   value: (state: GameState) => string;
   /** Un chiffre n'apparaît qu'une fois qu'il existe vraiment. */
   shown?: (state: GameState) => boolean;
+  /** Une ligne d'un relevé (nom … nombre), en haut de la page, au lieu d'un grand chiffre : les méthodes. */
+  row?: boolean;
   /** De quoi il est fait, en petit sous le chiffre (les mots, une fois le chapitre déchiffré). */
   detail?: (state: GameState, readable: boolean) => string;
 }
@@ -125,6 +127,7 @@ export const CHAPTERS: readonly Chapter[] = [
         caption: TOOL_CAPTIONS[tool.id] ?? tool.id,
         value: (s: GameState) => number(s.tools[tool.id]),
         shown: (s: GameState) => s.tools[tool.id] > 0,
+        row: true,
       })),
       { id: 'pagesPerSecond', caption: 'zo selim', value: (s) => formatNumber(pagesPerSecond(s), getLocale()) },
       { id: 'bestPagesPerSecond', caption: 'amprel duc', value: (s) => formatNumber(s.stats.bestPagesPerSecond, getLocale()) },
