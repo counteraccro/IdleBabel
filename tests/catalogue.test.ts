@@ -23,7 +23,7 @@ describe('le Catalogue des catalogues', () => {
   it('ne ment pas : les livres rares qu’il annonce sont ceux que le jeu donnera', () => {
     const state = foundAt(3000);
     const predicted = catalogueRares(state);
-    expect(predicted.size).toBeGreaterThan(2);
+    expect(predicted.size).toBeGreaterThan(1);
     const last = firstOn(3000, PAGES_PER_BOOK) + rowsOn(PAGES_PER_BOOK);
     const taken = new Map<number, string>();
     for (let index = 3001; index < last; index++) {

@@ -15,6 +15,8 @@
     "booksFinished": "volumes closed behind you",
     "bookPage": "the page where your gaze stopped",
     "meaningfulCovers": "covers that tried to tell you something",
+    "rareChance": "your chance that the next book is not like the others",
+    "rareChanceParts": "one book in {n}",
     "playTime": "the time the Library has taken from you",
     "startDate": "the day you awoke",
     "days": "days since you awoke",

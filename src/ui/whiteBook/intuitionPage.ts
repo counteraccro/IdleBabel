@@ -21,6 +21,7 @@ import {
   turnsPerSecond,
 } from '../../systems/technologies';
 import { reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
+import { nextRareChance } from '../../systems/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
 import { babelize, seedOf } from './babelMask';
 import { paragraph } from './paragraph';
@@ -77,7 +78,8 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
     case 'deepSleep':
       return `${plain(maxAwaySeconds(state, level) / 3600)} h`;
     case 'flair':
-      return `1 / ${plain(Math.round(1 / rareChance(state, level)))}`;
+      // Le prochain livre rare : plus rare à chaque livre déjà trouvé (systems/rareBooks.ts).
+      return `1 / ${plain(Math.round(1 / nextRareChance(Object.keys(state.rareBooks).length, rareChance(state, level))))}`;
     case 'bargain':
       return percent(toolPriceFactor(state, level));
     case 'reminiscence':

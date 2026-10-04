@@ -6,7 +6,9 @@ import { pagesPerSecond } from '../../systems/production';
 import { meaningfulCovers } from '../../systems/stats';
 import { findChance } from '../../systems/knowledge';
 import { BASE_FIND_CHANCE } from '../../data/knowledge';
-import { filterMultiplier } from '../../systems/technologies';
+import { filterMultiplier, rareChance } from '../../systems/technologies';
+import { nextRareChance } from '../../systems/rareBooks';
+import { RARE_BOOKS } from '../../data/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
 import { isDeciphered } from '../../systems/decipher';
 import { statsRevealed } from '../../systems/strangeBook';
@@ -52,6 +54,9 @@ const clock = (seconds: number): string => {
 
 const percent = (value: number): string =>
   writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(value));
+/** Les très petites chances gardent leurs chiffres : 0,0037 %, pas 0 %. */
+const smallPercent = (value: number): string =>
+  writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumSignificantDigits: 2 }).format(value));
 const factor = (value: number): string => `×${formatNumber(value, getLocale())}`;
 
 /** La chance de trouvaille, décomposée : le hasard, × les intuitions (le filtre sémantique), × les sceaux. */
@@ -60,6 +65,14 @@ const findChanceParts = (state: GameState, readable: boolean): string => {
   if (!readable) return parts.join('  ');
   const [base, filter, seals] = parts;
   return t('strangeBook.figures.findChanceParts').replace('{base}', base).replace('{filter}', filter).replace('{seals}', seals);
+};
+
+const rareFound = (state: GameState): number => Object.keys(state.rareBooks).length;
+/** La chance que le prochain livre soit rare : le Flair, et plus basse à chaque livre rare trouvé. */
+const nextRare = (state: GameState): number => nextRareChance(rareFound(state), rareChance(state));
+const nextRareParts = (state: GameState, readable: boolean): string => {
+  const one = number(Math.round(1 / nextRare(state)));
+  return readable ? t('strangeBook.figures.rareChanceParts').replace('{n}', one) : `1 / ${one}`;
 };
 
 const startedAt = (state: GameState): number => state.history.find((e) => e.type === 'gameStarted')?.at ?? Date.now();
@@ -100,6 +113,14 @@ export const CHAPTERS: readonly Chapter[] = [
       { id: 'booksFinished', caption: 'odrez mui', value: (s) => number(s.booksFinished) },
       { id: 'bookPage', caption: 'faso lu tren', value: (s) => writeDigits(`${s.bookPage} / ${PAGES_PER_BOOK}`) },
       { id: 'meaningfulCovers', caption: 'quel sabiro', value: (s) => number(meaningfulCovers(s)), shown: (s) => meaningfulCovers(s) > 0 },
+      // Une fois le premier livre rare trouvé, tant qu'il en reste.
+      {
+        id: 'rareChance',
+        caption: 'serbo alin',
+        value: (s) => smallPercent(nextRare(s)),
+        detail: nextRareParts,
+        shown: (s) => rareFound(s) > 0 && rareFound(s) < RARE_BOOKS.length,
+      },
     ],
   },
   {
