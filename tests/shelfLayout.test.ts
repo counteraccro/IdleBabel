@@ -19,6 +19,13 @@ describe('vitrine de la bibliothèque', () => {
     expect(all.some((place) => place.cell === 2)).toBe(false);
   });
 
+  it('les places de plus ne se prennent qu’une fois les premières pleines, sans rien déplacer', () => {
+    const first = layoutBookcase(books(5), CELLS, [1, 0]);
+    const more = layoutBookcase(books(8), CELLS, [1, 0], [3]);
+    expect(more.map((place) => place.cell).sort()).toEqual([0, 0, 1, 1, 1, 3, 3, 3]);
+    for (const place of first) expect(more.find((other) => other.id === place.id)).toEqual(place);
+  });
+
   it('un livre arrivé ne bouge plus quand d’autres arrivent', () => {
     // Six livres : la case 3 a déjà sa pile et un livre debout dessus ; le huitième s’y ajoute.
     const before = layoutBookcase(books(6), CELLS, ORDER);

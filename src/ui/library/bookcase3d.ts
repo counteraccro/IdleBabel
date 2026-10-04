@@ -28,7 +28,8 @@ export interface BookcaseCell {
 /**
  * Les colonnes du meuble, de gauche à droite : leur largeur, puis leurs cases de bas en haut (hauteur,
  * remplissage). Les étagères ne tombent jamais à la même hauteur d'une colonne à l'autre, comme dans un
- * meuble mural fait sur mesure ; 21 places pour les 21 livres rares, des cases vides pour le reste.
+ * meuble mural fait sur mesure. 21 places d'abord (FILL_ORDER), puis 12 de plus (MORE_FILL_ORDER) dans des
+ * cases jusque-là vides ; les cases basses et étroites restent vides (un livre n'y tient ni debout ni couché).
  */
 const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
   {
@@ -36,7 +37,7 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
     cells: [
       [LOW, ['lie', 'lie']],
       [HIGH, ['stand', 'stand', 'lean']],
-      [LOW, []],
+      [LOW, ['lie', 'lie']],
       [HIGH, ['stand']],
     ],
   },
@@ -44,7 +45,7 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
     width: 0.7,
     cells: [
       [HIGH, ['stand', 'lean']],
-      [HIGH, []],
+      [HIGH, ['stand', 'stand']],
       [LOW, []],
       [LOW, []],
     ],
@@ -54,7 +55,7 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
     cells: [
       [HIGH, ['lie', 'stand', 'stand']],
       [LOW, ['lie']],
-      [HIGH, []],
+      [HIGH, ['lie', 'stand', 'stand']],
       [LOW, ['lie', 'lie']],
     ],
   },
@@ -75,13 +76,13 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
       // Réservée au livre de débogage (DEBUG_CELL), hors de FILL_ORDER : les livres rares n'y vont jamais.
       [LOW, ['lie']],
       [HIGH, ['stand', 'lean']],
-      [HIGH, []],
+      [HIGH, ['stand', 'stand', 'lean']],
     ],
   },
   {
     width: 0.7,
     cells: [
-      [HIGH, []],
+      [HIGH, ['stand', 'lean']],
       [LOW, []],
       [LOW, []],
       [HIGH, ['stand', 'lean']],
@@ -93,6 +94,11 @@ const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
  * de bas en haut) : la vitrine se garnit un peu partout à la fois, pas case après case.
  */
 export const FILL_ORDER = [8, 1, 18, 4, 13, 23, 0, 11, 9, 3, 16];
+/**
+ * Les 12 places de plus (ajoutées le 04/10 : 21 places ne suffisaient plus), prises seulement quand les 21
+ * premières sont pleines : aucun livre déjà rangé ne change de place.
+ */
+export const MORE_FILL_ORDER = [10, 5, 19, 2, 20];
 /** La case du livre de débogage, couché comme une plaque : à part, il ne décale pas les autres. */
 export const DEBUG_CELL = 17;
 /** La case du livre de la fin : à part, seul, debout. */

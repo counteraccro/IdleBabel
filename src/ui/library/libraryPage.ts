@@ -14,7 +14,7 @@ import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { visibleBox } from '../book3d/visibleBox';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
-import { DEBUG_CELL, FILL_ORDER, FINAL_CELL, FRONT, createBookcase } from './bookcase3d';
+import { DEBUG_CELL, FILL_ORDER, FINAL_CELL, FRONT, MORE_FILL_ORDER, createBookcase } from './bookcase3d';
 import { finalBook3d } from '../finalBook/finalBook3d';
 import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
@@ -158,6 +158,7 @@ export const createLibraryPage = (
       found.map((id) => ({ id, thickness: thickness(id) })),
       bookcase.cells,
       FILL_ORDER,
+      MORE_FILL_ORDER,
     ),
     ...debugShelf,
     ...finalShelf,

@@ -85,8 +85,9 @@ const slotOrder = (cells: ShelfCell[], order: number[]): number[] => {
  * haut appuyé sur ses voisins. Rien ne tient par magie. Un livre garde sa place quand d'autres arrivent ;
  * ses irrégularités sont tirées de son nom.
  */
-export const layoutBookcase = (books: ShelfBook[], cells: ShelfCell[], order: number[]): ShelfPlace[] => {
-  const slots = slotOrder(cells, order);
+export const layoutBookcase = (books: ShelfBook[], cells: ShelfCell[], order: number[], then: number[] = []): ShelfPlace[] => {
+  // Les places de `then` ne viennent qu'après toutes celles de `order`.
+  const slots = [...slotOrder(cells, order), ...slotOrder(cells, then)];
   const byCell = new Map<number, ShelfBook[]>();
   books.slice(0, slots.length).forEach((book, index) => byCell.set(slots[index], [...(byCell.get(slots[index]) ?? []), book]));
   const places: ShelfPlace[] = [];
