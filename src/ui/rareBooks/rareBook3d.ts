@@ -34,15 +34,18 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
   // Une entrée du sommaire se prend sur 80 % de la largeur de la page, comme dans le livre blanc.
   const linkAt = (page: number, x: number, y: number) =>
     x >= PAGE_TEXTURE.width * 0.1 && x <= PAGE_TEXTURE.width * 0.9
-      ? art.links?.(page).find(
-          (link) =>
-            y >= link.y &&
-            y <= link.y + link.height &&
-            (link.x === undefined || (x >= link.x && x <= link.x + (link.width ?? 0))),
-        )
+      ? art
+          .links?.(page)
+          .find(
+            (link) =>
+              y >= link.y && y <= link.y + link.height && (link.x === undefined || (x >= link.x && x <= link.x + (link.width ?? 0))),
+          )
       : undefined;
   // La couverture qui vit est celle de ce livre-ci : chaque exemplaire (vitrine, livre ouvert) a la sienne.
   let tick: ((now: number) => boolean) | null = null;
+  // Les secrets d'un livre rare se trouvent en le lisant soi-même, dans la bibliothèque : jamais dans le livre
+  // en main, dont les pages tournent seules.
+  const found = art.passed && shape === READING_SHAPE ? (page: number) => art.passed?.(page, state) : undefined;
   const book: Book3d = {
     shape: { ...shape, thickness: art.thickness ?? shape.thickness },
     source: {
@@ -55,9 +58,10 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
       return coverTick ? { ...look, liveCover: true } : look;
     },
     ready: art.prepare,
-    // Les secrets d'un livre rare se trouvent en le lisant soi-même, dans la bibliothèque : jamais dans le livre
-    // en main, dont les pages tournent seules.
-    passed: art.passed && shape === READING_SHAPE ? (page) => art.passed?.(page, state) : undefined,
+    // Une page tournée en avançant, même vite ; ou celle où le livre est ouvert, quel que soit le chemin (revenu en
+    // arrière, rouvert là, sommaire) : avant, une page atteinte en reculant ne comptait pas.
+    passed: found,
+    shown: found,
     tick: (now) => tick?.(now) ?? false,
     // Le signet : de n'importe où dans le livre, on revient au sommaire (ou au titre), puis on le referme.
     bookmark: art.bookmark ?? 1,
