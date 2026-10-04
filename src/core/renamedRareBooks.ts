@@ -12,8 +12,7 @@ const RENAMED: Readonly<Record<string, string>> = {
 const renameKeys = <T>(record: Record<string, T>, rename: (key: string) => string): Record<string, T> =>
   Object.fromEntries(Object.entries(record).map(([key, value]) => [rename(key), value]));
 
-const renameSeal = (id: string): string =>
-  id.startsWith('rare-') ? `rare-${RENAMED[id.slice(5)] ?? id.slice(5)}` : id;
+const renameSeal = (id: string): string => (id.startsWith('rare-') ? `rare-${RENAMED[id.slice(5)] ?? id.slice(5)}` : id);
 
 export const renameRareBooks = (state: GameState): GameState => ({
   ...state,
@@ -21,8 +20,6 @@ export const renameRareBooks = (state: GameState): GameState => ({
   seals: renameKeys(state.seals, renameSeal),
   newSeals: state.newSeals.map(renameSeal),
   history: state.history.map((entry) =>
-    entry.type === 'rareBook' && entry.detail && RENAMED[entry.detail]
-      ? { ...entry, detail: RENAMED[entry.detail] }
-      : entry,
+    entry.type === 'rareBook' && entry.detail && RENAMED[entry.detail] ? { ...entry, detail: RENAMED[entry.detail] } : entry,
   ),
 });

@@ -1179,7 +1179,21 @@
   },
   "dadJokes": {
     "name": "Les Jokes de Papa",
-    "cover": ["Les Jokes", "de Papa"]
+    "cover": ["Les Jokes", "de Papa"],
+    "title": ["LES", "JOKES", "de Papa"],
+    "bubble": ["Tu la connais,", "celle-là ?"],
+    "badge": ["+ de 400", "blagues", "testées en famille"],
+    "banner": "RIRE NON GARANTI",
+    "mark": "Bibliothèque de Babel",
+    "shelf": "Humour · Famille",
+    "spine": "LES JOKES DE PAPA",
+    "backTitle": "ATTENTION !",
+    "blurb": [
+      "Plus de 400 blagues choisies, essayées, répétées. Surtout répétées.",
+      "À raconter à table, en voiture, au mariage de la cousine. Personne ne rira. Vous, si."
+    ],
+    "warning": "DÉCONSEILLÉ AUX ADOS",
+    "price": "9,90 €"
   },
   "idleBabel": {
     "name": "Idle Babel",
@@ -1309,7 +1323,8 @@
           "text": [
             "Un livre sur deux cents n’est pas comme les autres : un livre rare, avec un vrai titre et un sceau à lui. Un cahier noir où des noms s’écrivent, un annuaire où quelqu’un a déjà ta place, un essai sur la page blanche signé d’un auteur qui n’existe pas.",
             "Plus tard, un almanach des sports, tout droit sorti d’un kiosque des années 80 : cinquante ans de résultats, déjà écrits.",
-            "Puis le Necronomicon, le livre inventé par Lovecraft, que la Bibliothèque contient forcément : l’original arabe, Al Azif, relié de maroquin, un médaillon d’or rempli de signes qui ne se lisent pas. Dedans, un manuscrit dans une écriture que personne ne lit ; seul un lecteur venu avant y a laissé, au crayon, la phrase de Lovecraft."
+            "Puis le Necronomicon, le livre inventé par Lovecraft, que la Bibliothèque contient forcément : l’original arabe, Al Azif, relié de maroquin, un médaillon d’or rempli de signes qui ne se lisent pas. Dedans, un manuscrit dans une écriture que personne ne lit ; seul un lecteur venu avant y a laissé, au crayon, la phrase de Lovecraft.",
+            "Puis les Jokes de Papa, un livre d’humour comme on en offre à la fête des pères : jaune vif, des lunettes, une moustache, une question qu’on a déjà entendue. Il prend la place d’un Livre des morts, prévu au départ."
           ]
         },
         "library": {
@@ -1379,6 +1394,8 @@
         "almanac-c": "Revenu de l’avenir",
         "necronomicon-b": "Le vélin de Wormius",
         "necronomicon-c": "Le livre enchaîné",
+        "dadJokes-b": "Le poche qui soupire",
+        "dadJokes-c": "Le carnet de papa",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

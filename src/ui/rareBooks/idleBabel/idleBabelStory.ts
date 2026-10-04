@@ -48,6 +48,7 @@ export const BOOK_DRAFTS: Record<string, string[]> = {
   idleBabel: ['idleBabel-a', 'idleBabel-b', 'idleBabel-c'],
   almanac: ['almanac-b', 'almanac-c'],
   necronomicon: ['necronomicon-b', 'necronomicon-c'],
+  dadJokes: ['dadJokes-b', 'dadJokes-c'],
 };
 
 /** Les pistes écartées hors livres : les fenêtres, les méthodes, la vitrine… */
@@ -76,7 +77,7 @@ export const STORY: StoryChapter[] = [
       { key: 'anomalies' },
       // Toutes les couvertures au même endroit : une partie « Les livres », et dedans les rares puis les classiques.
       { key: 'books' },
-      { key: 'rareBooks', sub: true, plates: ['deathBook', 'directory', 'blankPage', 'debug', 'alexH', 'oriana', 'credits', 'idleBabel', 'almanac', 'necronomicon'] },
+      { key: 'rareBooks', sub: true, plates: ['deathBook', 'directory', 'blankPage', 'debug', 'alexH', 'oriana', 'credits', 'idleBabel', 'almanac', 'necronomicon', 'dadJokes'] },
       {
         key: 'classics',
         sub: true,

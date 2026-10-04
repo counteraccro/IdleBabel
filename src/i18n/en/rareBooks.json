@@ -1166,7 +1166,21 @@
   },
   "dadJokes": {
     "name": "Dad Jokes",
-    "cover": ["Dad", "Jokes"]
+    "cover": ["Dad", "Jokes"],
+    "title": ["THE BIG BOOK OF", "DAD", "Jokes"],
+    "bubble": ["Heard the one", "about…?"],
+    "badge": ["400+", "jokes", "family-tested"],
+    "banner": "LAUGHS NOT GUARANTEED",
+    "mark": "Library of Babel",
+    "shelf": "Humour · Family",
+    "spine": "DAD JOKES",
+    "backTitle": "WARNING!",
+    "blurb": [
+      "Over 400 jokes, hand-picked, tried and repeated. Mostly repeated.",
+      "Tell them at dinner, in the car, at your cousin's wedding. Nobody will laugh. You will."
+    ],
+    "warning": "NOT SUITABLE FOR TEENAGERS",
+    "price": "$12.99"
   },
   "idleBabel": {
     "name": "Idle Babel",
@@ -1296,7 +1310,8 @@
           "text": [
             "One book in two hundred is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist.",
             "Later, a sports almanac, straight off an eighties newsstand: fifty years of results, already written.",
-            "Then the Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read. Inside, a manuscript in a script no one reads; only a reader who came before left Lovecraft’s line in pencil."
+            "Then the Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read. Inside, a manuscript in a script no one reads; only a reader who came before left Lovecraft’s line in pencil.",
+            "Then Dad Jokes, a humour book of the kind people give on Father’s Day: bright yellow, glasses, a moustache, a question you have heard before. It takes the place of a Book of the Dead, planned at first."
           ]
         },
         "library": {
@@ -1366,6 +1381,8 @@
         "almanac-c": "Back from the future",
         "necronomicon-b": "Wormius's vellum",
         "necronomicon-c": "The chained book",
+        "dadJokes-b": "The sighing paperback",
+        "dadJokes-c": "Dad's notebook",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

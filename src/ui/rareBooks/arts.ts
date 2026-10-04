@@ -5,6 +5,7 @@ import { aliceArt } from './alice/alice';
 import { bibleArt } from './bible/bible';
 import { blankPageArt } from './blankPage/blankPage';
 import { creditsArt } from './credits/credits';
+import { dadJokesArt } from './dadJokes/dadJokes';
 import { deathBookArt } from './deathBook/deathBook';
 import { divineComedyArt } from './divineComedy/divineComedy';
 import { encyclopediaArt } from './encyclopedia/encyclopedia';
@@ -29,6 +30,7 @@ const ARTS: Record<string, RareBookArt> = {
   bible: bibleArt,
   blankPage: blankPageArt,
   credits: creditsArt,
+  dadJokes: dadJokesArt,
   deathBook: deathBookArt,
   divineComedy: divineComedyArt,
   directory: directoryArt,
