@@ -54,7 +54,7 @@ const percent = (value: number): string =>
   writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(value));
 const factor = (value: number): string => `×${formatNumber(value, getLocale())}`;
 
-/** La chance de trouvaille, décomposée : le hasard, × le filtre sémantique, × les sceaux. */
+/** La chance de trouvaille, décomposée : le hasard, × les intuitions (le filtre sémantique), × les sceaux. */
 const findChanceParts = (state: GameState, readable: boolean): string => {
   const parts = [percent(BASE_FIND_CHANCE), factor(filterMultiplier(state)), factor(sealFindMultiplier(state))];
   if (!readable) return parts.join('  ');

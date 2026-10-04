@@ -24,7 +24,7 @@
     "lifetimeKnowledge": "Connaissance qui t'a été donnée",
     "finds": "mots · morceaux · phrases arrachés au hasard",
     "findChance": "ta chance, à chaque page, de comprendre quelque chose",
-    "findChanceParts": "le hasard {base} · ton filtre {filter} · tes sceaux {seals}"
+    "findChanceParts": "le hasard {base} · tes intuitions {filter} · tes sceaux {seals}"
   },
   "sealsTitle": "Sceaux",
   "sealsCompletion": "des sceaux portent ta marque",
