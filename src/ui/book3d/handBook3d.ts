@@ -1,3 +1,4 @@
+import type * as THREE from 'three';
 import { createPage } from '../../systems/babelText';
 import { coverDesign } from '../../systems/coverDesign';
 import { rareBookAt, takeBook } from '../../systems/rareBooks';
@@ -19,6 +20,12 @@ import { leatherCover } from './leatherCover';
 import { modernCover } from './modernCover';
 import { headbandTexture } from './headband';
 import { edgeTexture } from './textures';
+import { headbandColors, ordinaryEdge } from './ordinary/edges';
+import { AUTOBIOGRAPHY_RED } from './ordinary/autobiography';
+import { COMIC } from './ordinary/comic';
+import type { Binding } from '../book/bindings';
+import type { CoverDesign } from '../../systems/coverDesign';
+import type { Paper } from '../book/pageRender';
 import type { Book3d } from './book3dBook';
 import type { BookShape } from './bookMesh';
 import type { HandFinds } from './handFinds';
@@ -94,20 +101,42 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
     },
     look: async () => {
       // Un livre moderne a une couverture d'éditeur ; les autres, du cuir.
-      const { front, back, plain } = await (design.modern && !strange ? modernCover : leatherCover)(design, binding);
+      const { front, back, plain, spine, inside } = await (design.modern && !strange ? modernCover : leatherCover)(design, binding);
+      const [edge, headband] = strange
+        ? // Le livre étrange : les tranches et les tranchefiles du grand livre (strangeBook3d.ts).
+          [edgeTexture(paper[1], '#a39d8b'), headbandTexture('#6e1a20', '#b89a5a')]
+        : edgeAndHeadband(design, binding, paper);
       return {
         cover: front,
         back,
-        inside: plain,
-        spine: plain,
+        inside: inside ?? plain,
+        spine: spine ?? plain,
         leather: 0xc8c8c8,
-        // Le livre étrange : les tranches et les tranchefiles du grand livre (strangeBook3d.ts).
-        edge: edgeTexture(paper[1], strange ? '#a39d8b' : '#b39d74'),
+        edge,
         paper: paper[0],
-        headband: strange ? headbandTexture('#6e1a20', '#b89a5a') : headbandTexture(binding.leather, '#d9c48f'),
+        headband,
       };
     },
     next,
     autoTurn,
   };
+};
+
+/**
+ * Tranche et tranchefiles d'un livre ordinaire : tirées de ses détails (coverDetails.ts) ; la tranche nature
+ * est celle d'avant. Un livre moderne : papier blanc, parfois teint de la couleur de sa couverture.
+ */
+const edgeAndHeadband = (design: CoverDesign, binding: Binding, paper: Paper): [THREE.Texture, THREE.Texture] => {
+  const details = design.details;
+  const plain = edgeTexture(paper[1], '#b39d74');
+  if (!details) return [plain, headbandTexture(binding.leather, '#d9c48f')];
+  if (details.kind === 'autobiography') return [plain, headbandTexture(AUTOBIOGRAPHY_RED, '#f2ece0')];
+  if (details.kind === 'comic') return [plain, headbandTexture(COMIC[details.comicColor].ink, '#111111')];
+  if (design.modern)
+    return [
+      details.sprayed ? ordinaryEdge('tint', paper[1], details, binding.leather) : plain,
+      headbandTexture(binding.leather, '#d9c48f'),
+    ];
+  const edge = details.edge === 'plain' ? plain : ordinaryEdge(details.edge, paper[1], details);
+  return [edge, headbandTexture(...headbandColors(details.edge, details, binding.leather))];
 };

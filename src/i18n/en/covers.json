@@ -26,5 +26,10 @@
     ["The Lamp", "and the Well"],
     ["Vindication", "of the", "Library"],
     ["The Garden", "of Paths"]
-  ]
+  ],
+  "binding": {
+    "tome": "Vol.",
+    "exLibris": "Ex libris",
+    "library": "BIBLIOTHECA"
+  }
 }

@@ -1602,6 +1602,14 @@
             "The strange book was given a name: the Ledger, where the accounts are kept. Nobody pays to read it any more: each part clears up on its own once Knowledge has grown enough, and a golden star says so. When it comes to hand, a short story announces it, then it opens wide."
           ]
         },
+        "bindings": {
+          "head": "The bindings",
+          "text": [
+            "The ordinary books got their details. Leather with a grain, gilt tools in the corners, a roll around the frame, and gold that wears away with the leather. One book in four is half-bound: leather on the spine and corners, marbled paper on the boards.",
+            "On the spine, raised bands, a title label, sometimes a volume number, and the shelf mark sticker. The edges took on colours: sprinkled, red, yellow, gilt, marbled. Inside, marbled endpapers and the Library’s bookplate.",
+            "Among the modern books, two new kinds: autobiographies, where the faces stay blank, and comics, numbered like a series."
+          ]
+        },
         "thisBook": {
           "head": "This book",
           "text": [

@@ -4,6 +4,20 @@ import { coverTitle, hasMeaningfulTitle } from '../../systems/coverTitle';
 import { CQW, HEIGHT, WIDTH, canvas, type LeatherCover } from './leatherCover';
 import { canvasTexture, svgImage } from './textures';
 import type { Binding } from '../book/bindings';
+import { MODERN_PAPER } from '../book/pageRender';
+import {
+  autobiographyBack,
+  autobiographyFront,
+  autobiographyInside,
+  autobiographySpine,
+  loadAutobiographyFonts,
+} from './ordinary/autobiography';
+import { comicBack, comicFront, comicInside, comicSpine, loadComicFonts } from './ordinary/comic';
+import { libraryStamp } from './ordinary/endpapers';
+import { MH, MW, SPINE_W, mockupCanvas, rng } from './ordinary/mockup';
+import { babelWord, gloss as mockupGloss } from './ordinary/modernDraw';
+import { spineWear } from './ordinary/ordinarySpine';
+import type { CoverDetails } from '../../systems/coverDetails';
 
 /** Encre claire des aplats, et encre sombre (sur le bandeau clair, les carrés). */
 const LIGHT = '#f6f3ec';
@@ -206,9 +220,12 @@ const back = (context: CanvasRenderingContext2D, design: CoverDesign): void => {
  * code-barres et cote. Le dos et l'intérieur : la toile unie.
  */
 export const modernCover = async (design: CoverDesign, binding: Binding): Promise<LeatherCover> => {
+  const details = design.details;
+  if (details && details.kind !== 'none') return modernKind(design, details);
   const [front, frontContext] = canvas();
   await cloth(frontContext, design, binding);
   LAYOUTS[design.layout % LAYOUTS.length](frontContext, design);
+  if (details?.band) band(frontContext, details);
   gloss(frontContext);
 
   const [backCanvas, backContext] = canvas();
@@ -218,6 +235,97 @@ export const modernCover = async (design: CoverDesign, binding: Binding): Promis
 
   const [plain, plainContext] = canvas();
   await cloth(plainContext, design, binding);
+  if (!details) return { front: canvasTexture(front), back: canvasTexture(backCanvas), plain: canvasTexture(plain) };
 
-  return { front: canvasTexture(front), back: canvasTexture(backCanvas), plain: canvasTexture(plain) };
+  return {
+    front: canvasTexture(front),
+    back: canvasTexture(backCanvas),
+    plain: canvasTexture(plain),
+    spine: canvasTexture(await modernSpine(design, binding)),
+    inside: canvasTexture(whiteEndpaper(design)),
+  };
+};
+
+/** Bandeau d'éditeur : une bande de papier rouge autour du bas du livre, un mot de Babel en grand. */
+const band = (context: CanvasRenderingContext2D, details: CoverDetails): void => {
+  const random = rng(details.seed + 23);
+  context.save();
+  context.shadowColor = 'rgba(0, 0, 0, 0.35)';
+  context.shadowBlur = 1.2 * CQW;
+  context.shadowOffsetY = -0.3 * CQW;
+  context.fillStyle = '#c9221d';
+  context.fillRect(0, 101 * CQW, WIDTH, HEIGHT - 101 * CQW);
+  context.restore();
+  text(context, babelWord(random).toUpperCase(), 8, 104.5, { size: 8.5, weight: 800, color: '#fff', spacing: 0.02 });
+  text(context, `${babelWord(random)} ${babelWord(random)} ${babelWord(random)}`, 8, 115.5, {
+    size: 3.4,
+    weight: 500,
+    color: '#fff',
+    spacing: 0.06,
+  });
+};
+
+/** Dos d'une couverture d'éditeur (maquette : 134 × 800) : le titre et l'auteur en long, la marque au pied. */
+const modernSpine = async (design: CoverDesign, binding: Binding): Promise<HTMLCanvasElement> => {
+  const [node, context] = mockupCanvas(SPINE_W, MH);
+  context.fillStyle = binding.leather;
+  context.fillRect(0, 0, SPINE_W, MH);
+  await spineWear(context, design, 0.3, false);
+  context.save();
+  context.translate(SPINE_W / 2, 40);
+  context.rotate(Math.PI / 2);
+  context.fillStyle = LIGHT;
+  context.textBaseline = 'middle';
+  context.font = `800 40px ${SANS}`;
+  const casing = hasMeaningfulTitle(design) ? (word: string) => word : capitalize;
+  const title = coverTitle(design).map(casing).join(' ');
+  const width = context.measureText(title).width;
+  context.save();
+  if (width > 470) context.scale(470 / width, 1);
+  context.fillText(title, 0, 0);
+  context.restore();
+  context.font = `500 22px ${SANS}`;
+  context.letterSpacing = '3px';
+  context.fillText(design.author.join(' ').toUpperCase(), 500, 0);
+  context.restore();
+  context.strokeStyle = LIGHT;
+  context.fillStyle = LIGHT;
+  context.lineWidth = 4;
+  context.beginPath();
+  context.arc(SPINE_W / 2, MH - 50, 20, 0, 2 * Math.PI);
+  context.stroke();
+  context.beginPath();
+  context.arc(SPINE_W / 2, MH - 50, 7.5, 0, 2 * Math.PI);
+  context.fill();
+  mockupGloss(context, SPINE_W, MH);
+  return node;
+};
+
+/** Garde blanche d'un livre moderne, et le tampon de la Bibliothèque. */
+const whiteEndpaper = (design: CoverDesign): HTMLCanvasElement => {
+  const [node, context] = mockupCanvas(MW, MH);
+  const paper = context.createLinearGradient(0, 0, 0, MH);
+  paper.addColorStop(0, MODERN_PAPER[0]);
+  paper.addColorStop(1, MODERN_PAPER[2]);
+  context.fillStyle = paper;
+  context.fillRect(0, 0, MW, MH);
+  libraryStamp(context, design, MW * 0.68, MH * 0.2);
+  return node;
+};
+
+/** Une autobiographie ou une bande dessinée : tout est dessiné d'après la maquette. */
+const modernKind = async (design: CoverDesign, details: CoverDetails): Promise<LeatherCover> => {
+  const comic = details.kind === 'comic';
+  await (comic ? loadComicFonts() : loadAutobiographyFonts());
+  const [front, back, spine, inside] = comic
+    ? [comicFront(design, details), comicBack(design, details), comicSpine(design, details), comicInside(details)]
+    : [autobiographyFront(design, details), autobiographyBack(design, details), autobiographySpine(design), autobiographyInside(details)];
+  // Le cuir des chants : la garde de l'album (ses couleurs), un plat sans rien de plus.
+  return {
+    front: canvasTexture(front),
+    back: canvasTexture(back),
+    plain: canvasTexture(inside),
+    spine: canvasTexture(spine),
+    inside: canvasTexture(inside),
+  };
 };

@@ -1,6 +1,7 @@
 import { LETTERS } from './babelText';
 import { gameRandom, seeded } from '../core/random';
 import { STRANGE_BOOK_INDEX, randomDigitText } from './strangeBook';
+import { coverDetails, type CoverDetails } from './coverDetails';
 
 /** Couverture d'un livre de la Bibliothèque, tirée de son numéro : toujours la même pour un livre donné. */
 export interface CoverDesign {
@@ -32,6 +33,8 @@ export interface CoverDesign {
   strange?: boolean;
   /** Un livre rare (data/rareBooks.ts) : son vrai titre sur la couverture. */
   rare?: string;
+  /** Détails de la reliure (coverDetails.ts) : seulement les livres ordinaires. */
+  details?: CoverDetails;
 }
 
 export const FRAME_COUNT = 4;
@@ -73,7 +76,10 @@ export const coverDesign = (bookIndex: number): CoverDesign => {
     // Tiré en dernier : les couvertures déjà vues ne changent pas.
     sense: { kind: senseKind(random()), slot: Math.floor(random() * title.length), pick: random() },
   };
-  return bookIndex === STRANGE_BOOK_INDEX ? strangeCover(design, random) : design;
+  if (bookIndex === STRANGE_BOOK_INDEX) return strangeCover(design, random);
+  // Le premier livre (gardé dans la bibliothèque) reste ce qu'il était : jamais une autobiographie ni une bande dessinée.
+  const details = coverDetails(bookIndex, design.ornament, bookIndex > 0 && !design.modern);
+  return { ...design, details, modern: design.modern || details.kind !== 'none' };
 };
 
 /** Le livre étrange : titre doré en symboles de Babel, sans encadrement ; sa page de titre n'a que des chiffres. */
@@ -89,6 +95,7 @@ const strangeCover = (design: CoverDesign, random: () => number): CoverDesign =>
 /** Couverture d'un livre rare : le cuir tiré de son numéro, son vrai titre, pas de livre moderne. */
 export const rareCover = (design: CoverDesign, id: string): CoverDesign => ({
   ...design,
+  details: undefined,
   rare: id,
   modern: false,
   sense: { kind: 'none', slot: 0, pick: 0 },

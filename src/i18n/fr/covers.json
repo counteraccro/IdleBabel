@@ -26,5 +26,10 @@
     ["La lampe", "et le puits"],
     ["Justification", "de la", "Bibliothèque"],
     ["Le jardin", "des sentiers"]
-  ]
+  ],
+  "binding": {
+    "tome": "Tome",
+    "exLibris": "Ex libris",
+    "library": "BIBLIOTHECA"
+  }
 }

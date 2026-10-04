@@ -1615,6 +1615,14 @@
             "Le livre étrange a reçu un nom : le Grand Livre, celui où l’on tient les comptes. On ne paie plus pour le lire : chaque partie s’éclaire seule, quand la Connaissance a assez grandi, et une étoile dorée le signale. Quand il arrive en main, un court récit l’annonce, puis il s’ouvre en grand."
           ]
         },
+        "bindings": {
+          "head": "Les reliures",
+          "text": [
+            "Les livres ordinaires ont reçu leurs détails. Un cuir qui a du grain, des fers dorés aux angles, une frise autour du cadre, et de l’or qui s’en va avec le cuir. Un livre sur quatre est en demi-reliure : du cuir au dos et aux coins, du papier marbré sur les plats.",
+            "Au dos, des nerfs, une pièce de titre, parfois un numéro de tome, et l’étiquette de la cote. Les tranches ont pris des couleurs : mouchetées, rouges, jaunes, dorées, marbrées. À l’intérieur, des gardes marbrées et l’ex-libris de la Bibliothèque.",
+            "Parmi les livres modernes, deux sortes nouvelles : des autobiographies, où les visages restent vides, et des bandes dessinées, numérotées comme une série."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [

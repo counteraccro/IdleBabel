@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { isStrangeBook } from '../src/systems/strangeBook';
 import { FRAME_COUNT, MODERN_LAYOUT_COUNT, ORNAMENT_COUNT, coverDesign, toRoman } from '../src/systems/coverDesign';
+import { DETAIL_ORNAMENTS } from '../src/systems/coverDetails';
 
 describe('couvertures', () => {
   it('donne toujours la même couverture au même livre', () => {
@@ -36,8 +37,9 @@ describe('couvertures', () => {
 
   it('montre de temps en temps un livre moderne, mais rarement', () => {
     const modern = Array.from({ length: 1200 }, (_, i) => coverDesign(i).modern).filter(Boolean).length;
-    expect(modern).toBeGreaterThan(40);
-    expect(modern).toBeLessThan(180);
+    // Un sur douze, plus les autobiographies et les bandes dessinées (un sur trente chacune).
+    expect(modern).toBeGreaterThan(110);
+    expect(modern).toBeLessThan(260);
   });
 
   it('donne aux livres modernes un auteur, un résumé et un code-barres', () => {
@@ -56,5 +58,32 @@ describe('couvertures', () => {
     expect(toRoman(17)).toBe('XVII');
     expect(toRoman(29)).toBe('XXIX');
     expect(toRoman(32)).toBe('XXXII');
+  });
+
+  it('donne aux livres ordinaires des détails de reliure, toujours les mêmes', () => {
+    expect(coverDesign(42).details).toEqual(coverDesign(42).details);
+    for (let i = 0; i < 500; i++) {
+      const { details, strange } = coverDesign(i);
+      if (strange) {
+        expect(details).toBeUndefined();
+        continue;
+      }
+      expect(details).toBeDefined();
+      expect(details!.ornament).toBeLessThan(DETAIL_ORNAMENTS);
+      expect([4, 5]).toContain(details!.nerfs);
+      expect(details!.album).toBeGreaterThanOrEqual(1);
+      expect(details!.album).toBeLessThanOrEqual(12);
+    }
+  });
+
+  it('montre parfois une autobiographie ou une bande dessinée, toujours moderne, jamais le premier livre', () => {
+    const designs = Array.from({ length: 3000 }, (_, i) => coverDesign(i));
+    const kinds = designs.filter((design) => design.details && design.details.kind !== 'none');
+    expect(kinds.length).toBeGreaterThan(120);
+    expect(kinds.length).toBeLessThan(300);
+    for (const design of kinds) expect(design.modern).toBe(true);
+    expect(designs[0].details!.kind).toBe('none');
+    expect(kinds.some((design) => design.details!.kind === 'comic')).toBe(true);
+    expect(kinds.some((design) => design.details!.kind === 'autobiography')).toBe(true);
   });
 });
