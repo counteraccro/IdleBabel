@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { el } from '../dom';
 import { createBookMesh } from './bookMesh';
+import { pileLook } from './pileLook';
 import { createBookRenderer } from './renderer3d';
 import { createLighting } from './lighting';
 import { isDebugEnabled } from '../../debug/enabled';
@@ -201,7 +202,7 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
     const book = spec.book();
     slot.tick = book.tick;
     void book.look().then((look) => {
-      const mesh = createBookMesh(book.shape, look);
+      const mesh = createBookMesh(book.shape, pileLook(look));
       mesh.setOpen(0);
       const body = new THREE.Group();
       body.add(mesh.root);

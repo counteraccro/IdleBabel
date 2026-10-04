@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { shrinkTexture as shrink } from '../book3d/textures';
 import type { BookLook } from '../book3d/bookMesh';
 import type { ShelfPlace } from './shelfLayout';
 
@@ -21,31 +21,6 @@ const SPINE_SIZE = { width: 256, height: 640 };
 const HIDDEN_PLATE = { width: 128, height: 160 };
 /** L'intérieur des plats ne se voit jamais dans la vitrine (les livres y sont fermés). */
 const INSIDE_SIZE = { width: 64, height: 80 };
-
-/**
- * La texture `texture` réduite pour tenir dans `size` (proportions gardées, sauf `keepRatio` faux : chaque
- * côté réduit à sa limite) ; telle quelle si elle y tient déjà ou n'est pas une image. Une texture neuve, qui
- * ne partage rien avec l'ancienne : celle-ci peut servir ailleurs (le même livre ouvert), elle n'est pas
- * touchée ; jamais envoyée à la carte graphique de la vitrine, il n'y a rien à y libérer.
- */
-const shrink = (texture: THREE.Texture, size: { width: number; height: number }, keepRatio = true): THREE.Texture => {
-  const image: unknown = texture.image;
-  if (!(image instanceof HTMLCanvasElement || image instanceof HTMLImageElement || image instanceof ImageBitmap)) return texture;
-  const scaleX = Math.min(1, size.width / image.width);
-  const scaleY = Math.min(1, size.height / image.height);
-  if (scaleX === 1 && scaleY === 1) return texture;
-  const scale = Math.min(scaleX, scaleY);
-  const canvas = document.createElement('canvas');
-  canvas.width = Math.max(1, Math.round(image.width * (keepRatio ? scale : scaleX)));
-  canvas.height = Math.max(1, Math.round(image.height * (keepRatio ? scale : scaleY)));
-  const context = canvas.getContext('2d')!;
-  context.imageSmoothingQuality = 'high';
-  context.drawImage(image, 0, 0, canvas.width, canvas.height);
-  const small = texture.clone();
-  small.source = new THREE.Source(canvas);
-  small.needsUpdate = true;
-  return small;
-};
 
 /**
  * L'habillage d'un livre pour la vitrine, à sa place `spot` : seul ce qu'on y voit garde de quoi être net (le
