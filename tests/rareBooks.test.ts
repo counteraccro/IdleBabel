@@ -3,6 +3,7 @@ import { createInitialState } from '../src/core/state';
 import { RARE_BOOKS } from '../src/data/rareBooks';
 import { RARE_CHANCE, RARITY_GROWTH, nextRareChance, rareBookAt, takeBook } from '../src/systems/rareBooks';
 import { STRANGE_BOOK_INDEX } from '../src/systems/strangeBook';
+import { partHasNews } from '../src/systems/decipher';
 
 const BOOKS = 200_000;
 
@@ -51,5 +52,15 @@ describe('livres rares de plus en plus rares', () => {
     const expected = nextRareChance(10) * BOOKS * 5;
     expect(rare).toBeGreaterThan(expected * 0.8);
     expect(rare).toBeLessThan(expected * 1.2);
+  });
+});
+
+describe('chapitre « Raretés » du Grand Livre', () => {
+  it('pas de nouveauté tant qu’aucun livre rare n’est trouvé, puis une étoile', () => {
+    const state = createInitialState('fr');
+    state.lifetimeKnowledge = 1_000;
+    expect(partHasNews(state, 'rareBooks')).toBe(false);
+    state.rareBooks[RARE_BOOKS[0].id] = 10;
+    expect(partHasNews(state, 'rareBooks')).toBe(true);
   });
 });

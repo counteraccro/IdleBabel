@@ -113,14 +113,6 @@ export const CHAPTERS: readonly Chapter[] = [
       { id: 'booksFinished', caption: 'odrez mui', value: (s) => number(s.booksFinished) },
       { id: 'bookPage', caption: 'faso lu tren', value: (s) => writeDigits(`${s.bookPage} / ${PAGES_PER_BOOK}`) },
       { id: 'meaningfulCovers', caption: 'quel sabiro', value: (s) => number(meaningfulCovers(s)), shown: (s) => meaningfulCovers(s) > 0 },
-      // Une fois le premier livre rare trouvé, tant qu'il en reste.
-      {
-        id: 'rareChance',
-        caption: 'serbo alin',
-        value: (s) => smallPercent(nextRare(s)),
-        detail: nextRareParts,
-        shown: (s) => rareFound(s) > 0 && rareFound(s) < RARE_BOOKS.length,
-      },
     ],
   },
   {
@@ -172,6 +164,24 @@ export const CHAPTERS: readonly Chapter[] = [
         value: (s) => percent(findChance(s)),
         detail: findChanceParts,
       },
+    ],
+  },
+  {
+    id: 'rareBooks',
+    title: 'ravunel',
+    // Une fois le premier livre rare trouvé. Combien il en reste, comme sur leur planche de sceaux : ça ne se dit pas.
+    shown: (s) => rareFound(s) > 0,
+    figures: [
+      { id: 'rareFound', caption: 'odri sabiro', value: (s) => number(rareFound(s)) },
+      {
+        id: 'rareChance',
+        caption: 'serbo alin',
+        value: (s) => smallPercent(nextRare(s)),
+        detail: nextRareParts,
+        shown: (s) => rareFound(s) < RARE_BOOKS.length,
+      },
+      // Tous trouvés : plus de chance à dire, une phrase à la place.
+      { id: 'rareAll', caption: 'nul serbo vane', value: () => '', shown: (s) => rareFound(s) >= RARE_BOOKS.length },
     ],
   },
 ];

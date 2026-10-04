@@ -6,7 +6,8 @@
     "books": "Volumes",
     "time": "Heures",
     "methods": "Manières",
-    "knowledge": "Révélations"
+    "knowledge": "Révélations",
+    "rareBooks": "Raretés"
   },
   "figures": {
     "totalPages": "pages que tes yeux ont traversées",
@@ -15,7 +16,9 @@
     "booksFinished": "volumes refermés derrière toi",
     "bookPage": "la page où ton regard s'est arrêté",
     "meaningfulCovers": "couvertures qui ont voulu te dire quelque chose",
+    "rareFound": "livres qui n'étaient pas comme les autres",
     "rareChance": "ta chance que le prochain livre ne soit pas comme les autres",
+    "rareAll": "tu les as tous trouvés, il n'en reste plus aucun",
     "rareChanceParts": "un livre sur {n}",
     "playTime": "le temps que la Bibliothèque t'a pris",
     "startDate": "le jour de ton réveil",

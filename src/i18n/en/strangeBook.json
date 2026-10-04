@@ -6,7 +6,8 @@
     "books": "Volumes",
     "time": "Hours",
     "methods": "Ways",
-    "knowledge": "Revelations"
+    "knowledge": "Revelations",
+    "rareBooks": "Rarities"
   },
   "figures": {
     "totalPages": "pages your eyes have crossed",
@@ -15,7 +16,9 @@
     "booksFinished": "volumes closed behind you",
     "bookPage": "the page where your gaze stopped",
     "meaningfulCovers": "covers that tried to tell you something",
+    "rareFound": "books that were not like the others",
     "rareChance": "your chance that the next book is not like the others",
+    "rareAll": "you found them all, there are none left",
     "rareChanceParts": "one book in {n}",
     "playTime": "the time the Library has taken from you",
     "startDate": "the day you awoke",

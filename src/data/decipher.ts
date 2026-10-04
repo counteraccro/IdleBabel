@@ -3,7 +3,7 @@
  * vie atteint son palier. Une fois lue, pour toujours. (Elles s'achetaient aussi : retiré le 03/10/2026,
  * décision de l'auteur, le palier venait presque aussitôt.)
  */
-export type PartId = 'contents' | 'pages' | 'books' | 'time' | 'methods' | 'knowledge' | 'seals';
+export type PartId = 'contents' | 'pages' | 'books' | 'time' | 'methods' | 'knowledge' | 'rareBooks' | 'seals';
 
 /** Connaissance trouvée à vie à partir de laquelle chaque partie se lit. */
 export const READABLE_AT: Record<PartId, number> = {
@@ -14,6 +14,7 @@ export const READABLE_AT: Record<PartId, number> = {
   time: 5,
   methods: 8,
   knowledge: 8,
+  rareBooks: 8,
   seals: 12,
 };
 

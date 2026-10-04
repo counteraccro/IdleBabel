@@ -3,9 +3,12 @@ import { STRANGE_BOOK_INDEX, statsRevealed } from './strangeBook';
 import { loreTold, tellLore } from './lore';
 import type { GameState } from '../core/state';
 
+/** Le chapitre « Raretés » n'existe qu'une fois le premier livre rare trouvé : pas d'étoile avant. */
+const exists = (state: GameState, part: PartId): boolean => part !== 'rareBooks' || Object.keys(state.rareBooks).length > 0;
+
 /** Lisible pour de bon : palier de Connaissance à vie atteint (ou partie payée, du temps où elles s'achetaient). */
 const readable = (state: GameState, part: PartId): boolean =>
-  state.deciphered.includes(part) || state.lifetimeKnowledge >= READABLE_AT[part];
+  exists(state, part) && (state.deciphered.includes(part) || state.lifetimeKnowledge >= READABLE_AT[part]);
 
 /** La partie se lit-elle en clair ? (débogage : tout.) */
 export const isDeciphered = (state: GameState, part: PartId): boolean => statsRevealed() || readable(state, part);
