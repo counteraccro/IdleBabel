@@ -201,43 +201,65 @@
       "name": "Ariadne's thread",
       "description": "Finds lean more often toward the sentence I am looking for.",
       "effect": "finds in the sentence I seek",
-      "notes": ["I pull a thread. At the end, always the same sentence."]
+      "notes": [
+        "I pull a thread. At the end, always the same sentence."
+      ]
     },
     "sentenceMemory": {
       "name": "Memory of sentences",
       "description": "I recognise what I have already read. Fewer repeats.",
       "effect": "finds already written",
-      "notes": ["That one, I already have. I move on."]
+      "notes": [
+        "That one, I already have. I move on."
+      ]
     },
     "speedReading": {
       "name": "Speed reading",
       "description": "My fingers turn the pages faster than my eyes.",
       "effect": "leaves turning on their own per second, at most",
-      "notes": ["I no longer read. I leaf through, and it is enough."]
+      "notes": [
+        "I no longer read. I leaf through, and it is enough."
+      ]
     },
     "muscleMemory": {
       "name": "Muscle memory",
       "description": "When I turn a page by hand, everything else follows.",
       "effect": "per click, on top: one second of reading",
-      "notes": ["My gesture pulls the others along."]
+      "notes": [
+        "My gesture pulls the others along."
+      ]
     },
     "returnMap": {
       "name": "Map of the Return",
       "description": "When I am away, I lose less of my reading.",
       "effect": "reading counted while away",
-      "notes": ["I leave marks to find my page again."]
+      "notes": [
+        "I leave marks to find my page again."
+      ]
     },
     "deepSleep": {
       "name": "Deep sleep",
       "description": "I sleep longer. The pages turn all that time.",
       "effect": "time away counted, at most",
-      "notes": ["I sleep. The pages do not."]
+      "notes": [
+        "I sleep. The pages do not."
+      ]
     },
     "flair": {
       "name": "Flair",
       "description": "I can sense the books that are not like the others.",
       "effect": "rare books",
-      "notes": ["That one. I don't know why, but that one."]
+      "notes": [
+        "That one. I don't know why, but that one."
+      ]
+    },
+    "bargain": {
+      "name": "Economy of gesture",
+      "description": "Each method costs me a little less to learn. Without end.",
+      "effect": "price of methods",
+      "notes": [
+        "I no longer need to reread everything to learn."
+      ]
     },
     "gestures": {
       "description": "I know this gesture by heart. Each level doubles what it makes me read.",

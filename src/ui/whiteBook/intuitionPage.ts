@@ -14,6 +14,7 @@ import {
   nextPrice,
   rareChance,
   targetShare,
+  toolPriceFactor,
   technology,
   turnsPerSecond,
 } from '../../systems/technologies';
@@ -73,6 +74,8 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
       return `${plain(maxAwaySeconds(state, level) / 3600)} h`;
     case 'flair':
       return `1 / ${plain(Math.round(1 / rareChance(state, level)))}`;
+    case 'bargain':
+      return percent(toolPriceFactor(state, level));
     default:
       return '';
   }

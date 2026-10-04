@@ -1,13 +1,15 @@
 import { COST_GROWTH, TOOLS, type ToolId } from '../data/tools';
 import type { GameState } from '../core/state';
 import { recordOnce } from '../core/history';
+import { toolPriceFactor } from './technologies';
 
 /** Prix(n) = PrixBase × 1,15^n */
 export const toolCost = (baseCost: number, owned: number): number => baseCost * COST_GROWTH ** owned;
 
+/** Prix de la prochaine, Économie du geste comprise. */
 export const nextToolCost = (state: GameState, id: ToolId): number => {
   const tool = TOOLS.find((t) => t.id === id)!;
-  return toolCost(tool.baseCost, state.tools[id]);
+  return toolCost(tool.baseCost, state.tools[id]) * toolPriceFactor(state);
 };
 
 export const buyTool = (state: GameState, id: ToolId): boolean => {

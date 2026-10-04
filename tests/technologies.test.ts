@@ -7,6 +7,7 @@ import { maxTurnsPerSecond } from '../src/systems/knowledge';
 import { pagesPerSecond, toolRate } from '../src/systems/production';
 import { PAGES_PER_CLICK, readPage } from '../src/systems/click';
 import { RARE_CHANCE, drawRareBook } from '../src/systems/rareBooks';
+import { nextToolCost } from '../src/systems/tools';
 import { write, segments } from '../src/systems/sentences';
 import {
   duplicateShare,
@@ -116,5 +117,17 @@ describe('Intuitions de l’Âge I', () => {
     expect(technologiesCompletion(state)).toBe(0);
     state.technologies.ariadne = 3;
     expect(technologiesCompletion(state)).toBeGreaterThan(0);
+  });
+});
+
+describe('Économie du geste', () => {
+  it('baisse le prix des méthodes de 0,5 % par niveau, sans fin, et coûte deux fois plus à chaque niveau', () => {
+    const state = createInitialState('fr');
+    const base = nextToolCost(state, 'diagonal');
+    state.technologies.bargain = 100;
+    expect(nextToolCost(state, 'diagonal')).toBeCloseTo(base * 0.995 ** 100);
+    expect(maxLevel('bargain')).toBe(Infinity);
+    expect(priceAt('bargain', 0)).toBe(1_000);
+    expect(priceAt('bargain', 10)).toBe(1_024_000);
   });
 });

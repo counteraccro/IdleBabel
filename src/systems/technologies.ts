@@ -1,5 +1,6 @@
 import {
   ARIADNE_STEP,
+  BARGAIN_FACTOR,
   FILTER_BONUS,
   FLAIR_LEVELS,
   GESTURE_BONUS,
@@ -90,6 +91,9 @@ export const maxAwaySeconds = (state: GameState, level = levelOf(state, 'deepSle
 /** Flair : chance qu'un livre soit rare. */
 export const rareChance = (state: GameState, level = levelOf(state, 'flair')): number =>
   1 / FLAIR_LEVELS[Math.min(level, FLAIR_LEVELS.length - 1)];
+
+/** Économie du geste : ce qu'elle fait au prix des méthodes. */
+export const toolPriceFactor = (state: GameState, level = levelOf(state, 'bargain')): number => BARGAIN_FACTOR ** level;
 
 /** L'intuition d'une méthode. */
 export const gestureOf = (tool: ToolId): TechnologyId => TECHNOLOGIES.find((tech) => 'tool' in tech && tech.tool === tool)!.id;
