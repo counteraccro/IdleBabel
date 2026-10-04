@@ -6,6 +6,7 @@ import { createKit, subjectName } from './subjects/subject';
 import { onPinsChange, pinnedSubjects, unpin } from './pins';
 import { DEBUG_BOOK_HASH } from './enabled';
 import { markDebugActions } from './debugMark';
+import { setDebugState } from './debugState';
 import type { GameState } from '../core/state';
 
 const icon = (path: string): string =>
@@ -57,6 +58,7 @@ const createCard = (id: string, state: GameState): Card | null => {
  * dans l'ordre où on les a choisis. Vide, elle invite à ouvrir le livre.
  */
 export const mountDebugPanel = (state: GameState): void => {
+  setDebugState(state);
   const panel = el('aside', 'debug');
   const header = el('div', 'debug-header');
   // Barre réduite : il ne reste que son titre et les FPS, un clic la rouvre.

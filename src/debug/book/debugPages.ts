@@ -3,6 +3,8 @@ import { folio, heading, type Item } from '../../ui/strangeBook/pageItems';
 import { CHAPTERS, subjectName, type DebugSubject } from '../subjects/subject';
 import { chapterSubjects } from '../subjects/catalog';
 import { isPinned, togglePin } from '../pins';
+import { shrinkTo, wrapTo } from './fitText';
+import { RECAP_TITLE, recapPages } from './recapPages';
 
 /** Entrées d'une page de chapitre : au plus tant, espacées d'autant (repère de la texture, 640 × 800). */
 const PER_PAGE = 6;
@@ -10,6 +12,8 @@ const ENTRY_TOP = 176;
 const ENTRY_STEP = 88;
 
 const PIN_PREFIX = 'pin:';
+/** Largeur d'une entrée, de son nom jusqu'à la marge de droite. */
+const TEXT_ROOM = 640 - 112 - 60;
 
 /** Page de titre : le livre dit ce qu'il est. */
 const titleItems = (): Item[] => [
@@ -49,16 +53,21 @@ const entryItems = (subject: DebugSubject, top: number): Item[] => {
   const pinned = isPinned(subject.id);
   return [
     { kind: 'text', text: pinned ? '◆' : '◇', x: 74, y: top, size: 24, align: 'left', gold: pinned, faded: !pinned },
-    { kind: 'text', text: subjectName(subject), x: 112, y: top, size: 23, align: 'left', gold: pinned },
-    { kind: 'text', text: subject.description, x: 112, y: top + 34, size: 15, align: 'left', italic: true, faded: true },
+    // Trop longs, le nom rétrécit et la description passe sur deux lignes : rien ne déborde de la page.
+    shrinkTo({ kind: 'text', text: subjectName(subject), x: 112, y: top, size: 23, align: 'left', gold: pinned }, TEXT_ROOM),
+    ...wrapTo(
+      { kind: 'text', text: subject.description, x: 112, y: top + 32, size: 15, align: 'left', italic: true, faded: true },
+      TEXT_ROOM,
+      2,
+      20,
+    ),
     { kind: 'action', id: `${PIN_PREFIX}${subject.id}`, y: top - 8, height: ENTRY_STEP - 10 },
   ];
 };
 
 const chapterItems = (page: ChapterPage, number: number): Item[] => {
-  const title = CHAPTERS[page.chapter].title + (page.from > 0 ? ' (suite)' : '');
   return [
-    ...heading(title, page.chapter + 1),
+    ...heading(CHAPTERS[page.chapter].title, page.chapter + 1),
     ...page.subjects.flatMap((subject, i) => entryItems(subject, ENTRY_TOP + i * ENTRY_STEP)),
     folio(number),
   ];
@@ -81,12 +90,23 @@ const contentsItems = (pages: ChapterPage[], first: number): Item[] => [
       { kind: 'link', y: top - 10, height: 56, target: page },
     ];
   }),
+  // Le récapitulatif, après les chapitres : tous les chiffres du jeu.
+  ...((): Item[] => {
+    const top = 180 + CHAPTERS.length * 60;
+    const page = first + pages.length;
+    return [
+      { kind: 'text', text: RECAP_TITLE, x: 90, y: top, size: 26, align: 'left', spacing: 2 },
+      { kind: 'dots', x1: 420, x2: 520, y: top + 20 },
+      { kind: 'text', text: String(page + 1), x: 550, y: top, size: 26, align: 'right' },
+      { kind: 'link', y: top - 10, height: 56, target: page },
+    ];
+  })(),
   folio(2),
 ];
 
 /**
  * Les pages du livre de débogage, un catalogue : la page de titre, la table, puis chaque chapitre et
- * ses sujets. Un clic sur un sujet le choisit (ou le retire) : il apparaît dans la barre de débogage.
+ * ses sujets, et le récapitulatif des chiffres. Un clic sur un sujet le choisit (ou le retire) : il apparaît dans la barre de débogage.
  */
 export const createDebugPages = (goTo: (page: number) => void): LeafPage[] => {
   const pages = chapterPages();
@@ -98,5 +118,6 @@ export const createDebugPages = (goTo: (page: number) => void): LeafPage[] => {
     createLeafPage(titleItems, goTo),
     createLeafPage(() => contentsItems(pages, first), goTo),
     ...pages.map((page, index) => createLeafPage(() => chapterItems(page, first + index + 1), goTo, { onAct })),
+    ...recapPages(goTo, first + pages.length, CHAPTERS.length + 1),
   ];
 };
