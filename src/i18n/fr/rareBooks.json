@@ -380,7 +380,8 @@
   },
   "sand": {
     "name": "Le Livre de sable",
-    "cover": ["Le Livre", "de sable"]
+    "cover": ["Le Livre", "de sable"],
+    "coverTitle": ["LE LIVRE", "de sable"]
   },
   "vindication": {
     "name": "Ta Justification",
@@ -1513,7 +1514,8 @@
             "Puis le Necronomicon, le livre inventé par Lovecraft, que la Bibliothèque contient forcément : l’original arabe, Al Azif, relié de maroquin, un médaillon d’or rempli de signes qui ne se lisent pas. Dedans, un manuscrit dans une écriture que personne ne lit ; seul un lecteur venu avant y a laissé, au crayon, la phrase de Lovecraft.",
             "Puis les Jokes de Papa, un livre d’humour comme on en offre à la fête des pères : jaune vif, des lunettes, une moustache, une question qu’on a déjà entendue. Il prend la place d’un Livre des morts, prévu au départ. Dedans, quatre cent sept blagues. Il n’y en a que quatre-vingt-dix : elles reviennent.",
             "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait.",
-            "Puis le Catalogue des catalogues, celui que cherchent les bibliothécaires de Borges. Sur sa couverture de cuir bleu nuit, le livre se contient lui-même, jusqu’à n’être plus qu’un point d’or. Dedans, un registre de livres, un par ligne, chacun avec sa cote."
+            "Puis le Catalogue des catalogues, celui que cherchent les bibliothécaires de Borges. Sur sa couverture de cuir bleu nuit, le livre se contient lui-même, jusqu’à n’être plus qu’un point d’or. Dedans, un registre de livres, un par ligne, chacun avec sa cote.",
+            "Puis le Livre de sable, celui d’une nouvelle de Borges, qui n’a ni première ni dernière page. Sur sa couverture, un désert au soir, et le mot « sable » qui s’en va en grains. Dedans, des versets sans fin, des numéros de page sans suite, et pas une page qu’on retrouve."
           ]
         },
         "library": {
@@ -1589,6 +1591,8 @@
         "voynich-b": "Le fac-similé",
         "catalogue-a": "Le registre",
         "catalogue-b": "La fiche",
+        "sand-a": "La toile",
+        "sand-c": "Sans commencement",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

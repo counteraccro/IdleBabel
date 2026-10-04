@@ -55,7 +55,9 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
       return coverTick ? { ...look, liveCover: true } : look;
     },
     ready: art.prepare,
-    passed: art.passed && ((page) => art.passed?.(page, state, shape !== READING_SHAPE)),
+    // Les secrets d'un livre rare se trouvent en le lisant soi-même, dans la bibliothèque : jamais dans le livre
+    // en main, dont les pages tournent seules.
+    passed: art.passed && shape === READING_SHAPE ? (page) => art.passed?.(page, state) : undefined,
     tick: (now) => tick?.(now) ?? false,
     // Le signet : de n'importe où dans le livre, on revient au sommaire (ou au titre), puis on le referme.
     bookmark: art.bookmark ?? 1,

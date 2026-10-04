@@ -30,10 +30,10 @@ export interface RareBookArt {
   /** Les entrées cliquables de la page `page` (un sommaire) : chacune mène à sa page. */
   links?: (page: number) => PageLink[];
   /**
-   * La page `page` a été découverte en tournant les pages, même vite (un secret à apposer…) ; `inHand` : dans
-   * le livre tenu en main (les pages y tournent seules), sinon lu dans la bibliothèque.
+   * La page `page` a été découverte en tournant les pages, même vite (un secret à apposer…) ; seulement en
+   * lisant le livre dans la bibliothèque, jamais dans le livre en main (rareBook3d.ts).
    */
-  passed?: (page: number, state: GameState, inHand: boolean) => void;
+  passed?: (page: number, state: GameState) => void;
 }
 
 /** L'habillage d'un livre rare ; `tick` : couverture qui vit (le livre de débogage), propre à cet habillage. */

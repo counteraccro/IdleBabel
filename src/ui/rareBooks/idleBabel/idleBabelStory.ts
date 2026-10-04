@@ -51,6 +51,7 @@ export const BOOK_DRAFTS: Record<string, string[]> = {
   dadJokes: ['dadJokes-b', 'dadJokes-c'],
   voynich: ['voynich-a', 'voynich-b'],
   catalogue: ['catalogue-a', 'catalogue-b'],
+  sand: ['sand-a', 'sand-c'],
 };
 
 /** Les pistes écartées hors livres : les fenêtres, les méthodes, la vitrine… */
@@ -79,7 +80,7 @@ export const STORY: StoryChapter[] = [
       { key: 'anomalies' },
       // Toutes les couvertures au même endroit : une partie « Les livres », et dedans les rares puis les classiques.
       { key: 'books' },
-      { key: 'rareBooks', sub: true, plates: ['deathBook', 'directory', 'blankPage', 'debug', 'alexH', 'oriana', 'credits', 'idleBabel', 'almanac', 'necronomicon', 'dadJokes', 'voynich', 'catalogue'] },
+      { key: 'rareBooks', sub: true, plates: ['deathBook', 'directory', 'blankPage', 'debug', 'alexH', 'oriana', 'credits', 'idleBabel', 'almanac', 'necronomicon', 'dadJokes', 'voynich', 'catalogue', 'sand'] },
       {
         key: 'classics',
         sub: true,

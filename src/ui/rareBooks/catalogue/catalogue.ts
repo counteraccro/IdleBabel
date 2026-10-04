@@ -38,7 +38,5 @@ export const catalogueArt: RareBookArt = {
     return true;
   },
   // Secret : un livre rare lu à sa place dans la bibliothèque, puis pris en main (systems/rareBooks.ts).
-  passed: (page, state, inHand) => {
-    if (!inHand) spotCatalogue(state, page);
-  },
+  passed: (page, state) => spotCatalogue(state, page),
 };
