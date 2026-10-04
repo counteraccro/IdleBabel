@@ -10,6 +10,7 @@ const PLATE_NAMES: Record<PlateId, string> = {
   fragments: 'Trouvailles',
   time: 'Temps',
   methods: 'Méthodes',
+  intuitions: 'Intuitions',
   rare: 'Livres rares',
   secrets: 'Secrets',
 };

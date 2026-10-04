@@ -6,6 +6,7 @@ import { babelName, checkSeals, completion, sealEvent } from '../src/systems/sea
 import { LOCALES } from '../src/i18n/locales';
 import { ANOMALIES } from '../src/data/anomalies';
 import { segments, write } from '../src/systems/sentences';
+import { RARE_BOOKS } from '../src/data/rareBooks';
 
 describe('sceaux', () => {
   it('scelle un palier atteint, avec sa date, et pas les suivants', () => {
@@ -79,5 +80,22 @@ describe('sceaux', () => {
   it('dessine un sigle différent pour chaque sceau', () => {
     const drawn = SEALS.map((seal) => JSON.stringify(sigil(sealSeries(seal), seal.tier?.index ?? 0)));
     expect(new Set(drawn).size).toBe(SEALS.length);
+  });
+
+  it('scelle une intuition comprise jusqu’au bout ; une sans fin, au niveau 10 ; le Flair, quand il ne reste rien à trouver', () => {
+    const state = createInitialState('fr');
+    state.technologies = { ariadne: 2, deepSleep: 9 };
+    checkSeals(state, 1);
+    expect(state.seals['intuition-ariadne']).toBeUndefined();
+    expect(state.seals['intuition-deepSleep']).toBeUndefined();
+    state.technologies = { ariadne: 3, deepSleep: 10, armful: 3 };
+    checkSeals(state, 2);
+    expect(state.seals['intuition-ariadne']).toBe(2);
+    expect(state.seals['intuition-deepSleep']).toBe(2);
+    expect(state.seals['intuition-armful']).toBe(2);
+    expect(state.seals['intuition-flair']).toBeUndefined();
+    for (const book of RARE_BOOKS) state.rareBooks[book.id] = 1;
+    checkSeals(state, 3);
+    expect(state.seals['intuition-flair']).toBe(3);
   });
 });

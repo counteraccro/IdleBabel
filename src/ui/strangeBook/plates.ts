@@ -48,7 +48,8 @@ export const plateTitle = (state: GameState, plate: PlateId): string =>
   isDeciphered(state, 'contents') ? t(`strangeBook.plates.${plate}`) : babelName(`plate:${plate}`, 1);
 
 const sealText = (seal: SealDef): string => {
-  const text = t(`strangeBook.seals.${seal.text}`).replace('{title}', seal.rareBook ? t(`rareBooks.${seal.rareBook}.name`) : '');
+  const title = seal.rareBook ? t(`rareBooks.${seal.rareBook}.name`) : seal.tool ? t(`tools.${seal.tool}.name`) : '';
+  const text = t(`strangeBook.seals.${seal.text}`).replace('{title}', title);
   return seal.tier ? text.replace('{n}', formatNumber(seal.tier.n, getLocale())) : text;
 };
 

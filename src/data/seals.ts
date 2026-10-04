@@ -4,13 +4,16 @@ import { meaningfulCovers } from '../systems/stats';
 import { isComplete } from '../systems/sentences';
 import { ANOMALIES, ANOMALY_FAMILIES } from './anomalies';
 import { RARE_BOOKS } from './rareBooks';
+import { TECHNOLOGIES } from './technologies';
+import { levelOf, lockOf, maxLevel } from '../systems/technologies';
+import type { ToolId } from './tools';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
  * une ligne ici, et son texte dans i18n (strangeBook.seals.<texte>) — le sigle, la place sur la
  * planche et la légende sont générés.
  */
-export const PLATES = ['pages', 'books', 'fragments', 'time', 'methods', 'rare', 'secrets'] as const;
+export const PLATES = ['pages', 'books', 'fragments', 'time', 'methods', 'intuitions', 'rare', 'secrets'] as const;
 export type PlateId = (typeof PLATES)[number];
 
 export interface SealDef {
@@ -22,11 +25,13 @@ export interface SealDef {
   tier?: { n: number; index: number };
   /** Sceau d'un livre rare (data/rareBooks.ts) : son titre remplace `{title}` dans le texte. */
   rareBook?: string;
+  /** Sceau de l'intuition d'une méthode : le nom de la méthode remplace `{title}` dans le texte. */
+  tool?: ToolId;
   reached: (state: GameState) => boolean;
 }
 
 /** Graine du sigle : celui de la série (les paliers en héritent), ou le sien pour un livre rare (tous ont le même texte). */
-export const sealSeries = (seal: SealDef): string => (seal.rareBook ? seal.id : seal.text);
+export const sealSeries = (seal: SealDef): string => (seal.rareBook || seal.tool ? seal.id : seal.text);
 
 /** Une série : un sceau par palier, atteint quand `value` dépasse le palier. */
 const series = (id: string, plate: PlateId, value: (state: GameState) => number, steps: number[]): SealDef[] =>
@@ -37,6 +42,26 @@ const seal = (id: string, plate: PlateId, reached: (state: GameState) => boolean
 
 /** Un secret qui tient à un geste, pas à l'état de la partie : apposé par sealEvent (systems/seals.ts). */
 const secret = (id: string): SealDef => seal(id, 'secrets', () => false);
+
+/** Niveau d'une intuition sans fin qui lui vaut son sceau (elle n'a pas de 100 %). */
+const ENDLESS_SEAL_LEVEL = 10;
+
+/**
+ * Le sceau d'une intuition, au dernier niveau compris ; une sans fin, au niveau 10. Le Flair aussi quand
+ * il ne reste plus de livre rare à trouver (il ne peut plus monter). Une intuition de méthode : un texte
+ * commun, le nom de la méthode dedans.
+ */
+const intuitionSeal = (tech: (typeof TECHNOLOGIES)[number]): SealDef => {
+  const last = maxLevel(tech.id) === Infinity ? ENDLESS_SEAL_LEVEL : maxLevel(tech.id);
+  const tool = 'tool' in tech ? tech.tool : undefined;
+  return {
+    id: `intuition-${tech.id}`,
+    plate: 'intuitions',
+    text: tool ? 'intuitionGesture' : `intuition-${tech.id}`,
+    tool,
+    reached: (s) => levelOf(s, tech.id) >= last || lockOf(s, tech.id) === 'nothingLeft',
+  };
+};
 
 const K = 1_000;
 const M = 1_000_000;
@@ -65,6 +90,8 @@ export const SEALS: readonly SealDef[] = [
   ...series('playTime', 'time', (s) => s.stats.playSeconds / HOUR, [1, 10, 100]),
 
   ...series('diagonal', 'methods', (s) => s.tools.diagonal, [1, 10, 100, K]),
+
+  ...TECHNOLOGIES.map(intuitionSeal),
 
   // Un sceau par livre rare, apposé quand il arrive en main.
   ...RARE_BOOKS.map((book): SealDef => ({
