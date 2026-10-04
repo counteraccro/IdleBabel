@@ -1,5 +1,6 @@
 import { SAVE_VERSION, createInitialState, type GameState } from './state';
 import type { Locale } from '../i18n';
+import { renameRareBooks } from './renamedRareBooks';
 
 const SAVE_KEY = 'idle-babel-save';
 
@@ -10,7 +11,7 @@ export const loadGame = (defaultLocale: Locale): GameState => {
       const saved = JSON.parse(raw) as GameState;
       if (saved.version === SAVE_VERSION) {
         const initial = createInitialState(defaultLocale);
-        return {
+        return renameRareBooks({
           ...initial,
           ...saved,
           settings: { ...initial.settings, ...saved.settings },
@@ -21,7 +22,7 @@ export const loadGame = (defaultLocale: Locale): GameState => {
           totalPagesRead: saved.totalPagesRead ?? saved.pages,
           // Une partie d'avant les graines garde sa Bibliothèque.
           seed: saved.seed ?? 0,
-        };
+        });
       }
     }
   } catch {

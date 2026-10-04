@@ -1164,9 +1164,9 @@
     "usefulNumbers": "Useful numbers",
     "backCover": "back cover"
   },
-  "deadBook": {
-    "name": "The Book of the Dead",
-    "cover": ["The Book", "of the Dead"]
+  "dadJokes": {
+    "name": "Dad Jokes",
+    "cover": ["Dad", "Jokes"]
   },
   "idleBabel": {
     "name": "Idle Babel",

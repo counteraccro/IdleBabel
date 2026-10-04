@@ -91,4 +91,18 @@ describe('sauvegarde', () => {
     localStorage.setItem(SAVE_KEY, JSON.stringify(old));
     expect(loadGame('fr').seed).toBe(0);
   });
+
+  it('donne les Blagues de papa aux parties qui avaient trouvé le Livre des morts', () => {
+    const state = createInitialState('fr');
+    state.rareBooks = { deadBook: 12, bible: 3 };
+    state.seals = { 'rare-deadBook': 100, 'rare-bible': 50, firstBook: 10 };
+    state.newSeals = ['rare-deadBook'];
+    state.history.push({ type: 'rareBook', at: 100, detail: 'deadBook' });
+    saveGame(state);
+    const loaded = loadGame('fr');
+    expect(loaded.rareBooks).toEqual({ dadJokes: 12, bible: 3 });
+    expect(loaded.seals).toEqual({ 'rare-dadJokes': 100, 'rare-bible': 50, firstBook: 10 });
+    expect(loaded.newSeals).toEqual(['rare-dadJokes']);
+    expect(loaded.history.at(-1)?.detail).toBe('dadJokes');
+  });
 });

@@ -38,7 +38,8 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   { id: 'almanac' },
   // Des noms et des numéros, et une seule fois celui du joueur.
   { id: 'directory' },
-  { id: 'deadBook' },
+  // Des blagues de papa (remplace « Le Livre des morts », 03/10 ; core/renamedRareBooks.ts).
+  { id: 'dadJokes' },
   // L'autobiographie du jeu (décidée le 03/10) : la Bibliothèque contient le livre de sa propre création.
   { id: 'idleBabel' },
   // Le livre de débogage (décidé le 01/10) : dix fois plus rare ; du charabia qui bugue, et il ne s'ouvre

@@ -1177,9 +1177,9 @@
     "usefulNumbers": "Numéros utiles",
     "backCover": "au dos"
   },
-  "deadBook": {
-    "name": "Le Livre des morts",
-    "cover": ["Le Livre", "des morts"]
+  "dadJokes": {
+    "name": "Les Blagues de papa",
+    "cover": ["Les Blagues", "de papa"]
   },
   "idleBabel": {
     "name": "Idle Babel",
