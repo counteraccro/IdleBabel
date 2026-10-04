@@ -234,7 +234,7 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
   }
   if (item.kind === 'tally') {
     // Les mêmes traits qu'en 3D, en SVG posé sur la page.
-    const [left, top, width, height] = [item.x - tallyWidth(item.count) / 2 - 6, item.y - 4, tallyWidth(item.count) + 12, 28];
+    const [left, top, width, height] = [item.x - tallyWidth(item.count) / 2 - 6, item.y - 4, tallyWidth(item.count) + 12, 24];
     const node = el('span', 'sb-tally');
     node.style.left = unit(left);
     node.style.top = unit(top);
@@ -246,7 +246,7 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
           `<line x1="${s.x1 - left}" y1="${s.y1 - top}" x2="${s.x2 - left}" y2="${s.y2 - top}" stroke="${s.done ? PENCIL : PENCIL_GHOST}" />`,
       )
       .join('');
-    node.innerHTML = `<svg viewBox="0 0 ${width} ${height}" stroke-width="1.8" stroke-linecap="round">${lines}</svg>`;
+    node.innerHTML = `<svg viewBox="0 0 ${width} ${height}" stroke-width="1.5" stroke-linecap="round">${lines}</svg>`;
     return node;
   }
   if (item.kind === 'seal') {
@@ -434,7 +434,7 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
       for (let x = item.x1, n = 0; x < item.x2; x += 7, n++)
         context.fillRect(x, item.y + ((n * 7) % 3) * 0.4, Math.min(4, item.x2 - x), 1.6);
     } else if (item.kind === 'tally') {
-      context.lineWidth = 1.8;
+      context.lineWidth = 1.5;
       context.lineCap = 'round';
       for (const stroke of tallyStrokes(item)) {
         context.strokeStyle = stroke.done ? PENCIL : PENCIL_GHOST;

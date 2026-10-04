@@ -21,9 +21,9 @@ export interface TallyStroke {
   done: boolean;
 }
 
-const HEIGHT = 20;
-const STEP = 7;
-const GAP = 14;
+const HEIGHT = 15;
+const STEP = 5;
+const GAP = 10;
 
 /** Petit écart fixe d'un trait (-1 à 1), tiré de son rang. */
 const wobble = (index: number, salt: number): number => ((Math.imul(index * 31 + salt, 0x9e3779b1) >>> 0) / 0xffffffff) * 2 - 1;
@@ -45,7 +45,7 @@ export const tallyStrokes = (item: TallyItem): TallyStroke[] => {
     const done = index < item.done;
     if (rank === 4)
       // Le cinquième barre les quatre, de bas en haut.
-      return { x1: x0 - 4, y1: item.y + HEIGHT - 3 + wobble(index, 1), x2: x0 + groupWidth + 4, y2: item.y + 4 + wobble(index, 2), done };
+      return { x1: x0 - 3, y1: item.y + HEIGHT - 2 + wobble(index, 1), x2: x0 + groupWidth + 3, y2: item.y + 3 + wobble(index, 2), done };
     const x = x0 + rank * STEP;
     return {
       x1: x + wobble(index, 3),

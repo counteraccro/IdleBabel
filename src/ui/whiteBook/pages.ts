@@ -22,7 +22,7 @@ const SEAL_Y = 108;
 const SEAL_SIZE = 112;
 const NAME_Y = 182;
 /** Bâtons d'une méthode qui attend : entre son nom et sa phrase. */
-const TALLY_Y = 208;
+const TALLY_Y = 214;
 
 /**
  * Page d'une phrase : son sceau hexagonal (doré une fois la phrase complète), le nom de la méthode
