@@ -386,6 +386,11 @@
   "bigX": {
     "name": "Le grand livre du X",
     "cover": ["Le grand livre", "du X"],
+    "coverTitle": "LE GRAND LIVRE DU",
+    "subtitle": "Histoire d'une lettre",
+    "mark": "BIBLIOTHÈQUE DE BABEL",
+    "spineMark": "BABEL",
+    "back": "Deux traits, rien de plus.",
     "preface": {
       "title": "Préface",
       "text": "On l'a relégué au bout de l'alphabet, dans le coin des cartes, au bas des lettres qu'on n'ose pas finir. On lui a confié ce qu'on ne savait pas nommer : l'inconnue, le trésor, la lumière qui traverse les mains, le nom de ceux qui ne savaient pas écrire le leur. Il a tout porté sans rien dire. Deux traits, rien de plus. Ce livre est pour lui. Pour lui rendre hommage, la plus grande part en est écrite dans sa langue, la langue X. Ne cherche pas à la traduire. Elle ne dit rien, et elle dit tout. Lis-la comme on écoute la pluie."
@@ -1569,7 +1574,8 @@
             "Puis les Jokes de Papa, un livre d’humour comme on en offre à la fête des pères : jaune vif, des lunettes, une moustache, une question qu’on a déjà entendue. Il prend la place d’un Livre des morts, prévu au départ. Dedans, quatre cent sept blagues. Il n’y en a que quatre-vingt-dix : elles reviennent.",
             "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait.",
             "Puis le Catalogue des catalogues, celui que cherchent les bibliothécaires de Borges. Sur sa couverture de cuir bleu nuit, le livre se contient lui-même, jusqu’à n’être plus qu’un point d’or. Dedans, un registre de livres, un par ligne, chacun avec sa cote.",
-            "Puis le Livre de sable, celui d’une nouvelle de Borges, qui n’a ni première ni dernière page. Sur sa couverture, un désert au soir, et le mot « sable » qui s’en va en grains. Dedans, des versets sans fin, des numéros de page sans suite, et pas une page qu’on retrouve."
+            "Puis le Livre de sable, celui d’une nouvelle de Borges, qui n’a ni première ni dernière page. Sur sa couverture, un désert au soir, et le mot « sable » qui s’en va en grains. Dedans, des versets sans fin, des numéros de page sans suite, et pas une page qu’on retrouve.",
+            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X."
           ]
         },
         "library": {
@@ -1647,6 +1653,8 @@
         "catalogue-b": "La fiche",
         "sand-a": "La toile",
         "sand-c": "Sans commencement",
+        "bigX-b": "La carte au trésor",
+        "bigX-c": "La langue X",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

@@ -3,6 +3,7 @@ import { almanacArt } from './almanac/almanac';
 import { arabianNightsArt } from './arabianNights/arabianNights';
 import { aliceArt } from './alice/alice';
 import { bibleArt } from './bible/bible';
+import { bigXArt } from './bigX/bigX';
 import { catalogueArt } from './catalogue/catalogue';
 import { blankPageArt } from './blankPage/blankPage';
 import { creditsArt } from './credits/credits';
@@ -31,6 +32,7 @@ const ARTS: Record<string, RareBookArt> = {
   arabianNights: arabianNightsArt,
   alice: aliceArt,
   bible: bibleArt,
+  bigX: bigXArt,
   blankPage: blankPageArt,
   catalogue: catalogueArt,
   credits: creditsArt,
