@@ -21,6 +21,9 @@ import type { GameState } from '../core/state';
 
 export const technology = (id: TechnologyId): TechnologyDef => TECHNOLOGIES.find((tech) => tech.id === id)!;
 
+/** Le niveau le plus haut qu'elle ait atteint, tous cycles confondus. */
+export const bestOf = (state: GameState, id: TechnologyId): number => state.technologiesBest[id] ?? 0;
+
 /** Niveaux compris d'une intuition (0 : pas encore). */
 export const levelOf = (state: GameState, id: TechnologyId): number => state.technologies[id] ?? 0;
 
@@ -59,6 +62,7 @@ export const understand = (state: GameState, id: TechnologyId): boolean => {
   if (price === undefined || state.knowledge < price) return false;
   state.knowledge -= price;
   state.technologies[id] = levelOf(state, id) + 1;
+  state.technologiesBest[id] = Math.max(bestOf(state, id), levelOf(state, id));
   return true;
 };
 

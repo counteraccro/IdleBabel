@@ -24,6 +24,7 @@ export interface DebugSubject {
 export const CHAPTERS = [
   { id: 'resources', title: 'Ressources' },
   { id: 'methods', title: 'Méthodes' },
+  { id: 'intuitions', title: 'Intuitions' },
   { id: 'sentences', title: 'Phrases' },
   { id: 'books', title: 'Livres' },
   { id: 'lore', title: 'Lore' },

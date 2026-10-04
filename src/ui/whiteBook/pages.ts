@@ -5,14 +5,14 @@ import { ANOMALY_FAMILIES } from '../../data/anomalies';
 import { anomalyPages, familyTitle, ofFamily } from './anomalyPages';
 import { contentsItems, type ContentsEntry } from './contents';
 import { partTitleItems, partTitleLayout, type WhiteBookPart } from './partTitle';
-import { intuitionItems } from './intuitionPage';
+import { intuitionItems, reminiscenceNote } from './intuitionPage';
 import { TECHNOLOGIES } from '../../data/technologies';
 import { technologiesCompletion, understand } from '../../systems/technologies';
 import { completion, guess, guessPrice, isComplete, written } from '../../systems/sentences';
 import { babelize, seedOf } from './babelMask';
 import { sentenceBody } from './sentencePage';
 import { folio, type Item, type TextItem } from '../strangeBook/pageItems';
-import { createLeafPage, pencilOffer, priceNote, type LeafPage } from '../strangeBook/pages';
+import { createLeafPage, pencilOffer, priceNote, type LeafPage, type PageHooks } from '../strangeBook/pages';
 import type { GameState } from '../../core/state';
 
 /** Sceau de la phrase, et nom de la méthode dessous (repère de la page : 640 × 800). */
@@ -128,13 +128,14 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
     kind: WhiteBookPart,
     number: number,
     layout: () => Item[] = () => partTitleItems(state, kind as SentenceKind, number),
+    hooks: PageHooks = {},
   ): void => {
     if (pages.length % 2 === 0) {
       const blank = pages.length;
       pages.push(createLeafPage(() => [folio(blank)], goTo));
     }
     entries.push({ title: () => t(`whiteBook.parts.${kind}`), page: pages.length });
-    pages.push(createLeafPage(layout, goTo));
+    pages.push(createLeafPage(layout, goTo, hooks));
   };
   const sentencePart = (kind: 'method' | 'memory', number: number): void => {
     partTitle(kind, number);
@@ -149,7 +150,12 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
   };
   sentencePart('method', 1);
   // Les intuitions, achetées en Connaissance : une page chacune, juste après les méthodes qu'elles aident.
-  partTitle('intuition', 2, () => partTitleLayout('intuition', 2, technologiesCompletion(state)));
+  // Sa page de titre porte la note au crayon de la Réminiscence, une fois obtenue : un clic la laisse faire ou non.
+  partTitle('intuition', 2, () => [...partTitleLayout('intuition', 2, technologiesCompletion(state)), ...reminiscenceNote(state)], {
+    onAct: (id) => {
+      if (id === 'reminiscence') state.reminiscence.on = !state.reminiscence.on;
+    },
+  });
   for (const tech of TECHNOLOGIES) {
     const number = pages.length;
     pages.push(createLeafPage(() => intuitionItems(state, tech.id, number), goTo, { onPay: () => understand(state, tech.id) }));

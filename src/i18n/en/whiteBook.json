@@ -182,7 +182,8 @@
     "done": "I will understand no more of it.",
     "levelEndless": "Level {n}",
     "unknownGesture": "I do not know this gesture yet.",
-    "nothingLeft": "There are none left to find."
+    "nothingLeft": "There are none left to find.",
+    "remembered": "I had understood it up to level {n}."
   },
   "intuitions": {
     "semanticFilter": {
@@ -276,6 +277,10 @@
         "ladder": "I no longer climb down. I read up there."
       }
     }
+  },
+  "reminiscence": {
+    "on": "I let what I knew come back.",
+    "off": "I no longer let anything come back."
   },
   "methods": {
     "diagonal": {

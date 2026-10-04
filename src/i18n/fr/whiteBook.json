@@ -182,7 +182,8 @@
     "done": "Je n'en comprendrai pas plus.",
     "levelEndless": "Niveau {n}",
     "unknownGesture": "Je ne connais pas encore ce geste.",
-    "nothingLeft": "Il n'en reste plus à trouver."
+    "nothingLeft": "Il n'en reste plus à trouver.",
+    "remembered": "Je l'avais compris jusqu'au niveau {n}."
   },
   "intuitions": {
     "semanticFilter": {
@@ -276,6 +277,10 @@
         "ladder": "Je ne descends plus. Je lis là-haut."
       }
     }
+  },
+  "reminiscence": {
+    "on": "Je laisse revenir ce que je savais.",
+    "off": "Je ne laisse plus rien revenir."
   },
   "methods": {
     "diagonal": {

@@ -3,6 +3,7 @@ import { formatNumber, writeDigits } from '../../core/format';
 import { BASE_FIND_CHANCE } from '../../data/knowledge';
 import {
   awayShare,
+  bestOf,
   clickShare,
   duplicateShare,
   filterMultiplier,
@@ -18,6 +19,7 @@ import {
   technology,
   turnsPerSecond,
 } from '../../systems/technologies';
+import { reminiscing } from '../../systems/reminiscence';
 import { babelize, seedOf } from './babelMask';
 import { paragraph } from './paragraph';
 import { folio, type Item } from '../strangeBook/pageItems';
@@ -131,6 +133,21 @@ export const intuitionItems = (state: GameState, id: TechnologyId, number: numbe
         { kind: 'text', text: levelText(id, level), x: 320, y, size: 22, align: 'center', spacing: 3, face: 'title' },
         { kind: 'text', text: raw.effect, x: 320, y: y + 44, size: 18, align: 'center', italic: true, faded: true, spacing: 2 },
         { kind: 'text', text: effect, x: 320, y: y + 74, size: 28, align: 'center', spacing: 2, face: 'title' },
+        // Oubliée à l'Exil : jusqu'où elle était allée (la Réminiscence y remonte seule).
+        ...(bestOf(state, id) > level
+          ? [
+              {
+                kind: 'text',
+                text: t('whiteBook.intuition.remembered').replace('{n}', writeDigits(String(bestOf(state, id)))),
+                x: 320,
+                y: y + 112,
+                size: 17,
+                align: 'center',
+                italic: true,
+                faded: true,
+              } satisfies Item,
+            ]
+          : []),
       ];
   return [
     {
@@ -161,5 +178,28 @@ export const intuitionItems = (state: GameState, id: TechnologyId, number: numbe
     },
     ...(affordable ? [{ kind: 'action', id: 'pay', y: 632, height: 44 } satisfies Item] : []),
     folio(number),
+  ];
+};
+
+/**
+ * Réminiscence, une fois obtenue : une note au crayon en bas de la page de titre des intuitions, que l'on
+ * coche ou décoche d'un clic (estompée quand on ne la laisse pas faire).
+ */
+export const reminiscenceNote = (state: GameState): Item[] => {
+  if (!state.reminiscence.known) return [];
+  const on = reminiscing(state);
+  return [
+    {
+      kind: 'text',
+      text: t(on ? 'whiteBook.reminiscence.on' : 'whiteBook.reminiscence.off'),
+      x: 320,
+      y: 680,
+      size: 24,
+      align: 'center',
+      face: 'hand',
+      faded: !on,
+      steady: true,
+    },
+    { kind: 'action', id: 'reminiscence', y: 672, height: 40 },
   ];
 };

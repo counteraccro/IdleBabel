@@ -26,14 +26,20 @@ export interface VellumOptions {
  * `ornaments` : les petits hexagones dorés des coins (sans eux pour un dos, où ils s'écraseraient).
  * `dark` : son négatif, le livre noir (maquette .ai/maquette-livre-fin.html, piste A) ; `width` : un dos.
  */
-export const createVellum = (seed: number, stamped: boolean, { ornaments = true, dark = false, width = 100 }: VellumOptions = {}): HTMLElement => {
+export const createVellum = (
+  seed: number,
+  stamped: boolean,
+  { ornaments = true, dark = false, width = 100 }: VellumOptions = {},
+): HTMLElement => {
   const id = `vellum-${vellumId++}`;
   const root = el('span', 'cover-vellum');
   const w = width;
   const skin = dark ? ['#1a1816', '#0d0c0b'] : ['#e6dabb', '#d9caa4'];
   // Le relief : sur le blanc, des ombres brunes ; sur le noir, des reflets froids (la lumière rasante accroche les plis).
   const relief = dark ? '0 0 0 0 0.86  0 0 0 0 0.84  0 0 0 0 0.8  1 0 0 0 -0.62' : '0 0 0 0 0.3  0 0 0 0 0.22  0 0 0 0 0.12  -1 0 0 0 1';
-  const clouds = dark ? '0 0 0 0 0.3  0 0 0 0 0.28  0 0 0 0 0.25  0 0 0 0.6 -0.32' : '0 0 0 0 0.5  0 0 0 0 0.37  0 0 0 0 0.19  0 0 0 1.6 -0.62';
+  const clouds = dark
+    ? '0 0 0 0 0.3  0 0 0 0 0.28  0 0 0 0 0.25  0 0 0 0.6 -0.32'
+    : '0 0 0 0 0.5  0 0 0 0 0.37  0 0 0 0 0.19  0 0 0 1.6 -0.62';
   const pores = dark ? '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 4.5 -3.7' : '0 0 0 0 0.33  0 0 0 0 0.24  0 0 0 0 0.12  0 0 0 4.5 -3.7';
   // Les bords : bruns par les mains sur le blanc ; sur le noir, la peau s'use et s'éclaircit.
   const edge = dark ? 'rgb(120, 110, 96)' : 'rgb(112, 86, 48)';

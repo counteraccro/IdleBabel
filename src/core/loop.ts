@@ -3,6 +3,7 @@ import { produce } from '../systems/production';
 import { trackPlay } from '../systems/stats';
 import { checkSeals } from '../systems/seals';
 import { chronicle } from '../systems/chronicle';
+import { remember } from '../systems/reminiscence';
 
 const TICK_MS = 100;
 
@@ -16,6 +17,7 @@ export const startLoop = (state: GameState, onTick: () => void): void => {
     const seconds = (now - state.lastTick) / 1000;
     if (!document.hidden) produce(state, seconds);
     trackPlay(state, seconds);
+    remember(state);
     checkSeals(state, now);
     chronicle(state, now);
     state.lastTick = now;

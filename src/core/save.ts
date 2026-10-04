@@ -18,6 +18,9 @@ export const loadGame = (defaultLocale: Locale): GameState => {
           stats: { ...initial.stats, ...saved.stats },
           tools: { ...initial.tools, ...saved.tools },
           technologies: { ...saved.technologies },
+          // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
+          technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
+          reminiscence: { ...initial.reminiscence, ...saved.reminiscence },
           // Trouvailles d'avant le livre blanc (sans phrase) : oubliées.
           finds: (saved.finds ?? []).filter((find) => typeof find.sentence === 'string'),
           totalPagesRead: saved.totalPagesRead ?? saved.pages,

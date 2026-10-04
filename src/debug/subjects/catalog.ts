@@ -1,6 +1,7 @@
 import { RESOURCE_SUBJECTS } from './resources';
 import { SEED_SUBJECT } from './seed';
 import { METHOD_SUBJECTS } from './methods';
+import { INTUITION_SUBJECTS } from './intuitions';
 import { SENTENCE_SUBJECTS } from './sentences';
 import { ALL_SENTENCES_SUBJECT } from './allSentences';
 import { BOOK_SUBJECTS } from './books';
@@ -15,6 +16,7 @@ export const SUBJECTS: readonly DebugSubject[] = [
   ...RESOURCE_SUBJECTS,
   SEED_SUBJECT,
   ...METHOD_SUBJECTS,
+  ...INTUITION_SUBJECTS,
   ALL_SENTENCES_SUBJECT,
   ...SENTENCE_SUBJECTS,
   ...BOOK_SUBJECTS,
