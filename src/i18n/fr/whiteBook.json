@@ -273,6 +273,16 @@
       ],
       "all": "toutes"
     },
+    "reminiscence": {
+      "name": "La Réminiscence",
+      "description": "Ce que j'ai compris une fois me revient seul, jusqu'où j'étais allé.",
+      "effect": "après l'Exil, les intuitions reviennent",
+      "notes": [
+        "Je l'avais déjà compris. Ça revient."
+      ],
+      "byHand": "à la main",
+      "alone": "seules"
+    },
     "gestures": {
       "description": "Je connais ce geste par cœur. Chaque niveau double ce qu'il me fait lire.",
       "effect": "pages lues par ce geste",

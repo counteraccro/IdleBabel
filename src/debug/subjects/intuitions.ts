@@ -1,7 +1,7 @@
 import { messages, t } from '../../i18n';
 import { TECHNOLOGIES, type TechnologyId } from '../../data/technologies';
 import { bestOf, levelOf, maxLevel, technologiesCompletion, technology } from '../../systems/technologies';
-import { forgetIntuitions, nextRemembered, remember, reminiscing } from '../../systems/reminiscence';
+import { forgetIntuitions, nextRemembered, remember, reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
 import { format, type DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
@@ -59,15 +59,16 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
     id: 'reminiscence',
     chapter: 'intuitions',
     name: 'La Réminiscence',
-    description: 'Après l’Exil, les intuitions reviennent seules jusqu’à leur meilleur niveau.',
-    peek: (state) => (!state.reminiscence.known ? 'pas obtenue' : reminiscing(state) ? 'active' : 'laissée de côté'),
+    description: 'Intuition permanente, après le premier Exil : les intuitions reviennent seules jusqu’à leur meilleur niveau.',
+    peek: (state) => (!reminiscenceKnown(state) ? 'pas comprise' : reminiscing(state) ? 'active' : 'laissée de côté'),
     build: (kit, state) => {
       kit.check(
-        'Obtenue',
-        'La mutation d’Épiphanie (à venir avec l’Exil). Obtenue : la note au crayon apparaît sur la page de titre des intuitions.',
-        () => state.reminiscence.known,
-        (on) => (state.reminiscence.known = on),
+        'Comprise',
+        'L’intuition permanente (10 000 🧠, après le premier Exil). Comprise : la note au crayon apparaît sur la page de titre des intuitions.',
+        () => reminiscenceKnown(state),
+        (on) => setLevel(state, 'reminiscence', on ? 1 : 0),
       );
+      kit.info('Exils faits', () => String(state.exiles));
       kit.check(
         'Laissée faire',
         'La note au crayon : cochée, les intuitions reviennent seules.',
@@ -82,8 +83,12 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
       kit.actions(
         [
           'Oublier, comme à l’Exil',
-          () => forgetIntuitions(state),
-          { title: 'Niveaux à zéro (sauf les permanentes), meilleurs niveaux gardés.' },
+          () => {
+            forgetIntuitions(state);
+            // En attendant l'Exil : compté comme un Exil (la Réminiscence apparaît dans le livre blanc).
+            state.exiles += 1;
+          },
+          { title: 'Niveaux à zéro (sauf les permanentes), meilleurs niveaux gardés ; compte un Exil.' },
         ],
         ['Se souvenir', () => remember(state), { title: 'Rachète tout de suite ce qui peut l’être (sinon : au prochain tour de boucle).' }],
       );

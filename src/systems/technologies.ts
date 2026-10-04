@@ -110,9 +110,15 @@ export const gestureOf = (tool: ToolId): TechnologyId => TECHNOLOGIES.find((tech
 export const gestureMultiplier = (state: GameState, tool: ToolId, level = levelOf(state, gestureOf(tool))): number =>
   GESTURE_BONUS ** level;
 
-/** Part des niveaux compris, des intuitions qui ont une fin (page de titre de la partie). */
+/** Elle a sa page dans le livre blanc : celles d'après l'Exil, seulement une fois le premier fait. */
+export const intuitionVisible = (state: GameState, id: TechnologyId): boolean => {
+  const tech = technology(id);
+  return !tech.afterExile || state.exiles > 0;
+};
+
+/** Part des niveaux compris, des intuitions qui ont une fin et une page (page de titre de la partie). */
 export const technologiesCompletion = (state: GameState): number => {
-  const bounded = TECHNOLOGIES.filter((tech) => maxLevel(tech.id) !== Infinity);
+  const bounded = TECHNOLOGIES.filter((tech) => maxLevel(tech.id) !== Infinity && intuitionVisible(state, tech.id));
   const total = bounded.reduce((sum, tech) => sum + tech.prices.length, 0);
   return bounded.reduce((sum, tech) => sum + levelOf(state, tech.id), 0) / total;
 };

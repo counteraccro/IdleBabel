@@ -7,7 +7,7 @@ import { contentsItems, type ContentsEntry } from './contents';
 import { partTitleItems, partTitleLayout, subPartLayout, type WhiteBookPart } from './partTitle';
 import { intuitionItems, reminiscenceNote } from './intuitionPage';
 import { TECHNOLOGIES } from '../../data/technologies';
-import { technologiesCompletion, understand } from '../../systems/technologies';
+import { intuitionVisible, technologiesCompletion, understand } from '../../systems/technologies';
 import { completion, guess, guessPrice, isComplete, written } from '../../systems/sentences';
 import { babelize, seedOf } from './babelMask';
 import { sentenceBody } from './sentencePage';
@@ -171,7 +171,7 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
   const lastingTitle = pages.length;
   entries.push({ title: () => t('whiteBook.parts.permanent'), page: lastingTitle, sub: true });
   pages.push(createLeafPage(() => subPartLayout('permanent'), goTo));
-  TECHNOLOGIES.filter(lasting).forEach(intuitionPage);
+  TECHNOLOGIES.filter((tech) => lasting(tech) && intuitionVisible(state, tech.id)).forEach(intuitionPage);
   sentencePart('memory', 3);
   partTitle('anomaly', 4);
   const anomalyPart = anomalyPages(state, pages.length, freshOf);

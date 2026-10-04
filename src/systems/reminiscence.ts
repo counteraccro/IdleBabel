@@ -2,8 +2,11 @@ import { TECHNOLOGIES } from '../data/technologies';
 import { bestOf, levelOf, nextPrice, understand } from './technologies';
 import type { GameState } from '../core/state';
 
-/** La Réminiscence agit : obtenue, et laissée faire. */
-export const reminiscing = (state: GameState): boolean => state.reminiscence.known && state.reminiscence.on;
+/** La Réminiscence est comprise (intuition permanente, 10 000 de Connaissance, après le premier Exil). */
+export const reminiscenceKnown = (state: GameState): boolean => levelOf(state, 'reminiscence') > 0;
+
+/** La Réminiscence agit : comprise, et laissée faire. */
+export const reminiscing = (state: GameState): boolean => reminiscenceKnown(state) && state.reminiscence.on;
 
 /** Les intuitions qui reviendraient seules : sous leur meilleur niveau, et qui peuvent se comprendre. */
 const remembered = (state: GameState) =>

@@ -20,7 +20,7 @@ import {
   technology,
   turnsPerSecond,
 } from '../../systems/technologies';
-import { reminiscing } from '../../systems/reminiscence';
+import { reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
 import { sealFindMultiplier } from '../../systems/seals';
 import { babelize, seedOf } from './babelMask';
 import { paragraph } from './paragraph';
@@ -80,6 +80,8 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
       return `1 / ${plain(Math.round(1 / rareChance(state, level)))}`;
     case 'bargain':
       return percent(toolPriceFactor(state, level));
+    case 'reminiscence':
+      return t(level > 0 ? 'whiteBook.intuitions.reminiscence.alone' : 'whiteBook.intuitions.reminiscence.byHand');
     case 'armful': {
       const lots = armfulLots(state, level);
       const most = lots[lots.length - 1];
@@ -193,7 +195,7 @@ export const intuitionItems = (state: GameState, id: TechnologyId, number: numbe
  * coche ou décoche d'un clic (estompée quand on ne la laisse pas faire).
  */
 export const reminiscenceNote = (state: GameState): Item[] => {
-  if (!state.reminiscence.known) return [];
+  if (!reminiscenceKnown(state)) return [];
   const on = reminiscing(state);
   return [
     {

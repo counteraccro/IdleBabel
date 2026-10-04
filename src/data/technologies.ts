@@ -16,6 +16,8 @@ export interface TechnologyDef {
   tool?: ToolId;
   /** Un confort, pas un progrès : comprise une fois pour toutes, l'Exil ne la fait pas oublier. */
   permanent?: boolean;
+  /** N'apparaît qu'après le premier Exil (elle ne servirait à rien avant). */
+  afterExile?: boolean;
 }
 
 /** Filtre sémantique : chaque niveau multiplie la chance qu'une page cache une trouvaille. */
@@ -54,6 +56,8 @@ export const TECHNOLOGIES = [
   { id: 'bargain', prices: [1_000], growth: 2 },
   // La Brassée : un niveau par lot de la marque sous la ruche (×10, ×100, max).
   { id: 'armful', prices: [100, 1_000, 5_000], permanent: true },
+  // La Réminiscence : les intuitions oubliées à l'Exil reviennent seules (systems/reminiscence.ts).
+  { id: 'reminiscence', prices: [10_000], permanent: true, afterExile: true },
   { id: 'diagonalGesture', prices: gesture(50), tool: 'diagonal' },
   { id: 'fingerGesture', prices: gesture(125), tool: 'finger' },
   { id: 'thumbGesture', prices: gesture(300), tool: 'thumb' },

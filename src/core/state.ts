@@ -110,10 +110,12 @@ export interface GameState {
   /** Le niveau le plus haut atteint par chaque intuition, tous cycles confondus : la Réminiscence y remonte. */
   technologiesBest: Partial<Record<TechnologyId, number>>;
   /**
-   * Réminiscence (systems/reminiscence.ts) : `known`, obtenue (mutation d'Épiphanie, à venir ; débogage pour
-   * l'instant) ; `on`, laissée faire (note au crayon de la partie « Intuitions »).
+   * Réminiscence (systems/reminiscence.ts ; une intuition permanente) : `on`, laissée faire (note au crayon
+   * de la partie « Intuitions »).
    */
-  reminiscence: { known: boolean; on: boolean };
+  reminiscence: { on: boolean };
+  /** Exils faits (le premier fait apparaître la Réminiscence) ; compté par le débogage en attendant l'Exil. */
+  exiles: number;
   lastTick: number;
   /**
    * La graine de la partie (core/random.ts, gameRandom) : les couvertures, le texte des pages, les livres rares
@@ -151,7 +153,8 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   loreSeen: [],
   technologies: {},
   technologiesBest: {},
-  reminiscence: { known: false, on: true },
+  reminiscence: { on: true },
+  exiles: 0,
   lastTick: now,
   seed,
 });
