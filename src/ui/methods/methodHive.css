@@ -136,3 +136,55 @@
     transition: none;
   }
 }
+
+/* Sous la ruche, combien un clic achète (methodLot.ts) : la marque du choix, dépliée au survol. */
+.method-lot {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 12px);
+  display: inline-flex;
+  align-items: baseline;
+  padding: 4px 8px 4px 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-shadow: var(--shadow);
+  user-select: none;
+}
+.method-lot button {
+  all: unset;
+  cursor: pointer;
+  color: #8b7a5c;
+  padding: 0 2px 1px;
+  border-bottom: 1px solid transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  margin-right: 0;
+  transition:
+    max-width 0.25s ease,
+    opacity 0.2s,
+    margin 0.25s,
+    color 0.2s;
+}
+.method-lot button.on {
+  max-width: 60px;
+  opacity: 1;
+  color: #e8c776;
+  border-bottom-color: #c9a45a;
+}
+.method-lot.open button {
+  max-width: 60px;
+  opacity: 1;
+  margin-right: 10px;
+}
+.method-lot.open button:not(.on):hover,
+.method-lot button:not(.on):focus-visible {
+  color: var(--ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .method-lot button {
+    transition: none;
+  }
+}

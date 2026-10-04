@@ -1,6 +1,6 @@
 import type { Notation } from './format';
 import type { TechnologyId } from '../data/technologies';
-import { TOOLS, type ToolId } from '../data/tools';
+import { TOOLS, type BuyLot, type ToolId } from '../data/tools';
 import type { HistoryEntry } from './history';
 import type { Locale } from '../i18n';
 import type { Find } from '../data/knowledge';
@@ -23,6 +23,8 @@ export interface Settings {
   pageArrows: boolean;
   /** Façon d'écrire les grands nombres (core/format.ts). */
   notation: Notation;
+  /** Combien de méthodes un clic achète (choisi sous la ruche). */
+  buyLot: BuyLot;
 }
 
 /** Chiffres de la partie, relevés en silence : le joueur ne les découvre que plus tard. */
@@ -46,6 +48,7 @@ export const DEFAULT_SETTINGS: Settings = {
   reduceBlur: false,
   pageArrows: false,
   notation: 'full',
+  buyLot: 1,
 };
 
 export interface GameState {

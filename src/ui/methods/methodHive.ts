@@ -3,11 +3,12 @@ import './methodHive.css';
 import { el, type Component } from '../dom';
 import { getLocale, t } from '../../i18n';
 import { formatNumber } from '../../core/format';
-import { TOOLS, type ToolId } from '../../data/tools';
-import { buyTool, nextToolCost } from '../../systems/tools';
+import { TOOLS, type BuyLot, type ToolId } from '../../data/tools';
+import { buyTools, lotCost, lotSize, validLot } from '../../systems/tools';
 import { toolUnlocked } from '../../systems/sentences';
 import { toolRate } from '../../systems/production';
 import { createMethodSeal } from './methodSeal';
+import { createMethodLot } from './methodLot';
 import type { GameState } from '../../core/state';
 
 /** Taille d'un sceau (largeur ; hexagone pointe en haut), et l'écart entre deux. */
@@ -28,7 +29,9 @@ const hiveHeight = (rows: number): number => (rows > 0 ? (rows - 1) * (SEAL_HEIG
  * Les méthodes de lecture, sur les étagères de gauche : leurs sceaux (ceux du livre blanc) en nid
  * d'abeille, qui grandit à chaque méthode découverte. Doré et luisant : on peut en acheter une de plus ;
  * éteint : pas assez de pages. Le nombre possédé est dans le sceau ; au survol (ou au clavier), le nom,
- * la description et le prix. Un clic achète. Le détail de chaque méthode est dans le livre blanc.
+ * la description et le prix. Un clic achète le lot choisi sous la ruche (1, 10, 100 ou tout ce que les
+ * pages permettent ; Maj enfoncée : 10), et le sceau ne luit que si le lot entier est payable (« max » :
+ * dès qu'on peut en prendre une). Le détail de chaque méthode est dans le livre blanc.
  */
 export const createMethodHive = (state: GameState): Component => {
   const root = el('section', 'tools method-hive');
@@ -43,11 +46,28 @@ export const createMethodHive = (state: GameState): Component => {
   tip.append(tipName, tipText, tipPrice);
   tip.setAttribute('aria-hidden', 'true');
   let pointed: ToolId | null = null;
+  /** Maj enfoncée : dix d'un coup, le temps du clic. */
+  let shift = false;
+  const lot = (): BuyLot => (shift ? 10 : validLot(state.settings.buyLot));
+  const lotMark = createMethodLot((chosen) => {
+    state.settings.buyLot = chosen;
+    update();
+  });
+  const watchShift = (event: KeyboardEvent): void => {
+    if (event.key !== 'Shift' || shift === (event.type === 'keydown')) return;
+    shift = event.type === 'keydown';
+    update();
+  };
+  window.addEventListener('keydown', watchShift);
+  window.addEventListener('keyup', watchShift);
+  window.addEventListener('blur', () => {
+    shift = false;
+  });
 
   const seals = TOOLS.map((tool) => {
     const seal = createMethodSeal(tool.id);
-    seal.root.addEventListener('click', () => {
-      buyTool(state, tool.id);
+    seal.root.addEventListener('click', (event) => {
+      buyTools(state, tool.id, event.shiftKey ? 10 : validLot(state.settings.buyLot));
       update();
     });
     const point = (on: boolean): void => {
@@ -61,7 +81,7 @@ export const createMethodHive = (state: GameState): Component => {
     root.append(seal.root);
     return { id: tool.id, seal, shown: toolUnlocked(state, tool.id) };
   });
-  root.append(tip);
+  root.append(tip, lotMark.root);
 
   /**
    * Place laissée à la ruche en hauteur : la rangée du milieu de la grille de l'écran (entre l'en-tête et
@@ -93,6 +113,8 @@ export const createMethodHive = (state: GameState): Component => {
       columns = perRow(total);
       laidOut = layout;
     }
+    const chosen = lot();
+    lotMark.show(chosen);
     let place = 0;
     for (const entry of seals) {
       const { id, seal } = entry;
@@ -107,21 +129,25 @@ export const createMethodHive = (state: GameState): Component => {
       seal.root.style.left = `${column * (SEAL_WIDTH + GAP) + ((row % 2) * (SEAL_WIDTH + GAP)) / 2}px`;
       seal.root.style.top = `${row * (SEAL_HEIGHT * 0.75 + GAP)}px`;
       place += 1;
-      const cost = Math.ceil(nextToolCost(state, id));
+      // Le prix du lot entier ; « max » sans assez de pages pour une seule : le prix de la prochaine.
+      const size = lotSize(state, id, chosen);
+      const cost = Math.ceil(lotCost(state, id, size));
+      const affordable = state.pages >= cost;
       const count = formatNumber(state.tools[id], locale);
-      const price = t('ui.nextCost').replace('{n}', formatNumber(cost, locale));
+      const priceKey = chosen === 1 ? 'ui.nextCost' : chosen !== 'max' ? 'ui.lotCost' : affordable ? 'ui.lotMax' : 'ui.lotMaxNone';
+      const price = t(priceKey).replace('{k}', formatNumber(size, locale)).replace('{n}', formatNumber(cost, locale));
       const name = t(`tools.${id}.name`);
       // Ce que lit chacune, intuition comprise, puis ce qu'elle fait.
       const rate = toolRate(state, id);
       const description = `${t(rate < 2 ? 'ui.toolRateOne' : 'ui.toolRate').replace('{n}', formatNumber(rate, locale))} — ${t(`tools.${id}.description`)}`;
-      seal.show(count, state.pages >= cost);
+      seal.show(count, affordable);
       seal.root.setAttribute('aria-label', `${name}, ${count}. ${description} ${price}`);
       if (pointed === id) {
         tipTitle.textContent = `${name} · `;
         setNumberText(tipCount, count, 14);
         tipText.textContent = description;
         tipPrice.textContent = price;
-        tipPrice.classList.toggle('short', state.pages < cost);
+        tipPrice.classList.toggle('short', !affordable);
         tip.style.top = seal.root.style.top;
       }
     }

@@ -14,6 +14,10 @@ export type ToolId = 'diagonal' | 'finger' | 'thumb' | 'voice' | 'wide' | 'doubl
 
 export const COST_GROWTH = 1.15;
 
+/** Combien de méthodes un clic achète (la marque sous la ruche) : « max », tout ce que les pages permettent. */
+export const BUY_LOTS = [1, 10, 100, 'max'] as const;
+export type BuyLot = (typeof BUY_LOTS)[number];
+
 export const TOOLS: readonly ToolDefinition[] = [
   { id: 'diagonal', baseCost: 15, pagesPerSecond: 0.1 },
   { id: 'finger', baseCost: 100, pagesPerSecond: 0.5 },
