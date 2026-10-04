@@ -5,12 +5,14 @@
   "parts": {
     "method": "Methods",
     "memory": "Memories",
-    "anomaly": "Anomalies"
+    "anomaly": "Anomalies",
+    "intuition": "Intuitions"
   },
   "partDescriptions": {
     "method": "Ways of reading I found again. Each one takes me a little faster.",
     "memory": "Things from before. I no longer know if they are true.",
-    "anomaly": "Sentences that should not have been there. I keep them all."
+    "anomaly": "Sentences that should not have been there. I keep them all.",
+    "intuition": "Things I sense before I understand them. Each one changes the way I read."
   },
   "anomaliesCompletion": "sentences found · {percent}",
   "anomalyFamilies": {
@@ -173,6 +175,26 @@
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",
+  "intuition": {
+    "level": "Level {n} / {max}",
+    "offer": "understand · {n} Knowledge",
+    "short": "I need {n} Knowledge",
+    "done": "I will understand no more of it."
+  },
+  "intuitions": {
+    "semanticFilter": {
+      "name": "Semantic filter",
+      "description": "My eye learns where meaning hides. Each level makes finds more frequent.",
+      "effect": "chance that a page hides a find",
+      "notes": [
+        "Sentences don't hide at random.",
+        "They flee the edges. Read the middle.",
+        "One sentence calls another.",
+        "Stop reading letters: read the gaps.",
+        "Meaning finds me. I no longer have to search."
+      ]
+    }
+  },
   "methods": {
     "diagonal": {
       "description": "The eye no longer follows the line: it crosses it. One word in two is enough to guess the other, and the page empties twice as fast.",

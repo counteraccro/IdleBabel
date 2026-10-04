@@ -1,4 +1,5 @@
 import type { Notation } from './format';
+import type { TechnologyId } from '../data/technologies';
 import { TOOLS, type ToolId } from '../data/tools';
 import type { HistoryEntry } from './history';
 import type { Locale } from '../i18n';
@@ -101,6 +102,8 @@ export interface GameState {
   lorePending: string[];
   /** Moments de lore déjà lus : chacun ne se raconte qu'une fois. */
   loreSeen: string[];
+  /** Intuitions comprises (data/technologies.ts), achetées en Connaissance : leur niveau. */
+  technologies: Partial<Record<TechnologyId, number>>;
   lastTick: number;
   /**
    * La graine de la partie (core/random.ts, gameRandom) : les couvertures, le texte des pages, les livres rares
@@ -136,6 +139,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   history: [{ type: 'gameStarted', at: now }],
   lorePending: [],
   loreSeen: [],
+  technologies: {},
   lastTick: now,
   seed,
 });

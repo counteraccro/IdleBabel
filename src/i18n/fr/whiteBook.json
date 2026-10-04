@@ -5,12 +5,14 @@
   "parts": {
     "method": "Méthodes",
     "memory": "Souvenirs",
-    "anomaly": "Anomalies"
+    "anomaly": "Anomalies",
+    "intuition": "Intuitions"
   },
   "partDescriptions": {
     "method": "Des façons de lire que j'ai retrouvées. Chacune me fait aller un peu plus vite.",
     "memory": "Des choses d'avant. Je ne sais plus si elles sont vraies.",
-    "anomaly": "Des phrases qui n'auraient pas dû être là. Je les garde toutes."
+    "anomaly": "Des phrases qui n'auraient pas dû être là. Je les garde toutes.",
+    "intuition": "Des choses que je sens avant de les comprendre. Chacune change ma façon de lire."
   },
   "anomaliesCompletion": "phrases retrouvées · {percent}",
   "anomalyFamilies": {
@@ -173,6 +175,26 @@
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",
+  "intuition": {
+    "level": "Niveau {n} / {max}",
+    "offer": "comprendre · {n} de Connaissance",
+    "short": "il me faut {n} de Connaissance",
+    "done": "Je n'en comprendrai pas plus."
+  },
+  "intuitions": {
+    "semanticFilter": {
+      "name": "Filtre sémantique",
+      "description": "Mon œil apprend où le sens se cache. Chaque niveau rend les trouvailles plus fréquentes.",
+      "effect": "chance qu'une page cache une trouvaille",
+      "notes": [
+        "Les phrases ne se cachent pas au hasard.",
+        "Elles fuient les bords. Lire le milieu.",
+        "Une phrase en appelle une autre.",
+        "Ne plus lire les lettres : lire les blancs.",
+        "Le sens me trouve. Je n'ai plus à chercher."
+      ]
+    }
+  },
   "methods": {
     "diagonal": {
       "description": "L'œil ne suit plus la ligne : il la traverse. Un mot sur deux suffit à deviner l'autre, et la page se vide deux fois plus vite.",

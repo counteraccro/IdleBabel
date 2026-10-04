@@ -1624,6 +1624,7 @@
           ]
         },
         "away": {"head": "L’absence", "text": ["Le jeu a appris à continuer sans le joueur. Jeu fermé ou onglet caché, les pages se lisent au rythme de la production, à moitié, huit heures au plus. Le livre en main avance, les livres finis se referment, les livres rares croisés en route sont trouvés, les sceaux suivent.", "Au retour, le chercheur croit sortir d’un rêve. Une modale le détrompe, et dit ce que ses mains ont fait sans lui."]},
+        "intuitions": {"head": "Les intuitions", "text": ["La Connaissance a trouvé à quoi servir. Le livre blanc a reçu une partie de plus, juste après les méthodes : les intuitions, des choses que le chercheur sent avant de les comprendre.", "La première est le filtre sémantique. Cinq niveaux, payés en Connaissance, et à chacun les trouvailles se font plus fréquentes. Sa page dit tout : le niveau, la chance d’avant et d’après, le prix au crayon. Un premier essai, des notes dans la marge, n’était pas compréhensible. Il a été refait."]},
         "thisBook": {
           "head": "Ce livre",
           "text": [

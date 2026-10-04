@@ -6,6 +6,9 @@ import { paragraph } from './paragraph';
 import { roman, type Item } from '../strangeBook/pageItems';
 import type { GameState } from '../../core/state';
 
+/** Parties du livre blanc : celles des phrases, et les intuitions (achetées, sans phrase). */
+export type WhiteBookPart = SentenceKind | 'intuition';
+
 /**
  * Page de titre d'une partie du livre blanc (méthodes, souvenirs, anomalies), toujours sur une page de
  * droite : son numéro en chiffres romains, son nom, un filet, quelques mots du chercheur, et la part de
@@ -14,7 +17,12 @@ import type { GameState } from '../../core/state';
 export const partTitleItems = (state: GameState, kind: SentenceKind, number: number): Item[] => {
   const sentences = SENTENCES.filter((sentence) => sentence.kind === kind);
   const done = sentences.filter((sentence) => isComplete(state, sentence.id)).length;
-  const percent = Math.floor((done / Math.max(1, sentences.length)) * 100);
+  return partTitleLayout(kind, number, done / Math.max(1, sentences.length));
+};
+
+/** La page de titre d'une partie, `share` (de 0 à 1) de son contenu déjà là. */
+export const partTitleLayout = (kind: WhiteBookPart, number: number, share: number): Item[] => {
+  const percent = Math.floor(share * 100);
   const description = paragraph(t(`whiteBook.partDescriptions.${kind}`), 430, {
     left: 120,
     width: 400,

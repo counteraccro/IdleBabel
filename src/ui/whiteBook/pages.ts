@@ -4,7 +4,10 @@ import { SENTENCES, type SentenceDef, type SentenceKind } from '../../data/sente
 import { ANOMALY_FAMILIES } from '../../data/anomalies';
 import { anomalyPages, familyTitle, ofFamily } from './anomalyPages';
 import { contentsItems, type ContentsEntry } from './contents';
-import { partTitleItems } from './partTitle';
+import { partTitleItems, partTitleLayout, type WhiteBookPart } from './partTitle';
+import { intuitionItems } from './intuitionPage';
+import { TECHNOLOGIES } from '../../data/technologies';
+import { technologiesCompletion, understand } from '../../systems/technologies';
 import { completion, guess, guessPrice, isComplete, written } from '../../systems/sentences';
 import { babelize, seedOf } from './babelMask';
 import { sentenceBody } from './sentencePage';
@@ -101,8 +104,8 @@ const ofKind = (kind: SentenceKind): SentenceDef[] => SENTENCES.filter((sentence
 /**
  * Le livre blanc, toutes ses pages dès le début. Le numéro imprimé d'une page est sa place dans la
  * liste (0 : l'intérieur de la couverture, à gauche). Dans l'ordre : la page de titre seule à droite,
- * le sommaire à gauche, puis trois parties : méthodes et souvenirs (le lore, une page par phrase), puis
- * les anomalies (leur introduction, puis les familles). Chaque partie s'ouvre sur sa page de titre, à
+ * le sommaire à gauche, puis quatre parties : les méthodes (une page par phrase), les intuitions (une page
+ * chacune), les souvenirs (le lore, une page par phrase), puis les anomalies (leur introduction, puis les familles). Chaque partie s'ouvre sur sa page de titre, à
  * droite, son contenu commençant en face ; et de nouveau l'intérieur de la
  * couverture si la dernière page tombe à gauche.
  */
@@ -121,16 +124,20 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
   ];
   // Page de titre d'une partie, sur une page de droite (une page blanche avant si besoin) : son contenu
   // commence en face, à gauche.
-  const partTitle = (kind: SentenceKind, number: number): void => {
+  const partTitle = (
+    kind: WhiteBookPart,
+    number: number,
+    layout: () => Item[] = () => partTitleItems(state, kind as SentenceKind, number),
+  ): void => {
     if (pages.length % 2 === 0) {
       const blank = pages.length;
       pages.push(createLeafPage(() => [folio(blank)], goTo));
     }
     entries.push({ title: () => t(`whiteBook.parts.${kind}`), page: pages.length });
-    pages.push(createLeafPage(() => partTitleItems(state, kind, number), goTo));
+    pages.push(createLeafPage(layout, goTo));
   };
-  (['method', 'memory'] as const).forEach((kind, index) => {
-    partTitle(kind, index + 1);
+  const sentencePart = (kind: 'method' | 'memory', number: number): void => {
+    partTitle(kind, number);
     for (const sentence of ofKind(kind)) {
       const number = pages.length;
       pages.push(
@@ -139,8 +146,16 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
         }),
       );
     }
-  });
-  partTitle('anomaly', 3);
+  };
+  sentencePart('method', 1);
+  // Les intuitions, achetées en Connaissance : une page chacune, juste après les méthodes qu'elles aident.
+  partTitle('intuition', 2, () => partTitleLayout('intuition', 2, technologiesCompletion(state)));
+  for (const tech of TECHNOLOGIES) {
+    const number = pages.length;
+    pages.push(createLeafPage(() => intuitionItems(state, tech.id, number), goTo, { onPay: () => understand(state, tech.id) }));
+  }
+  sentencePart('memory', 3);
+  partTitle('anomaly', 4);
   const anomalyPart = anomalyPages(state, pages.length, freshOf);
   entries.push(
     ...ANOMALY_FAMILIES.filter((family) => ofFamily(family).length > 0).map((family) => ({

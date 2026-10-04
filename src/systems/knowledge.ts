@@ -14,6 +14,7 @@ import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { pagesPerSecond } from './production';
 import { currentTarget, isComplete, missing, segmentKind, segments, write, written } from './sentences';
 import { tellLore } from './lore';
+import { filterMultiplier } from './technologies';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -31,8 +32,8 @@ export const setTurnCap = (value: number): void => {
 /** Pages tournées seules au plus par seconde, à l'écran comme hors-ligne. */
 export const maxTurnsPerSecond = (): number => turnCap;
 
-/** Chance qu'une page tournée cache une trouvaille (les bonus s'ajouteront ici). */
-export const findChance = (_state: GameState): number => (forced ? 1 : BASE_FIND_CHANCE);
+/** Chance qu'une page tournée cache une trouvaille : la base, et les Filtres Sémantiques compris (les autres bonus s'ajouteront ici). */
+export const findChance = (state: GameState): number => (forced ? 1 : Math.min(1, BASE_FIND_CHANCE * filterMultiplier(state)));
 
 /** Pages tournées dans le livre en main depuis le début de la partie. */
 const pagesTurned = (state: GameState): number => state.booksFinished * PAGES_PER_BOOK + state.bookPage;

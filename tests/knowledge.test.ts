@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { BASE_FIND_CHANCE, GUESS_PRICE, LUCK_PAGES, MAX_AWAY_SECONDS } from '../src/data/knowledge';
-import { drawFind, findText, findWhileAway, gainFind, rollFind } from '../src/systems/knowledge';
+import { drawFind, findChance, findText, findWhileAway, gainFind, rollFind } from '../src/systems/knowledge';
+import { levelOf, nextPrice, technologiesCompletion, understand } from '../src/systems/technologies';
+import { FILTER_BONUS, TECHNOLOGIES } from '../src/data/technologies';
 import { completion, currentTarget, guess, isComplete, segments, toolUnlocked, write } from '../src/systems/sentences';
 import { anyPartNews, isDeciphered, markAllPartsRead, markPartRead, partHasNews } from '../src/systems/decipher';
 import { READABLE_AT } from '../src/data/decipher';
@@ -147,5 +149,39 @@ describe('déchiffrer le Grand Livre', () => {
     expect(partHasNews(state, 'methods')).toBe(false);
     markPartRead(state, 'books');
     expect(partHasNews(state, 'books')).toBe(false);
+  });
+});
+
+describe('Intuitions', () => {
+  it('se comprennent niveau après niveau, contre de la Connaissance ; le filtre multiplie la chance de trouvaille', () => {
+    const state = createInitialState('fr');
+    state.knowledge = 4;
+    expect(understand(state, 'semanticFilter')).toBe(false);
+    state.knowledge = 60;
+    expect(understand(state, 'semanticFilter')).toBe(true);
+    expect(state.knowledge).toBe(55);
+    expect(nextPrice(state, 'semanticFilter')).toBe(50);
+    expect(findChance(state)).toBeCloseTo(BASE_FIND_CHANCE * FILTER_BONUS);
+    expect(understand(state, 'semanticFilter')).toBe(true);
+    expect(levelOf(state, 'semanticFilter')).toBe(2);
+    expect(findChance(state)).toBeCloseTo(BASE_FIND_CHANCE * FILTER_BONUS ** 2);
+    expect(technologiesCompletion(state)).toBeCloseTo(2 / 5);
+  });
+
+  it('s’arrêtent au dernier niveau', () => {
+    const state = createInitialState('fr');
+    state.knowledge = 1e9;
+    for (let i = 0; i < 10; i++) understand(state, 'semanticFilter');
+    expect(levelOf(state, 'semanticFilter')).toBe(5);
+    expect(nextPrice(state, 'semanticFilter')).toBeUndefined();
+  });
+
+  it('ont toutes leurs textes, une phrase par niveau, en français et en anglais', () => {
+    for (const locale of Object.values(LOCALES))
+      for (const tech of TECHNOLOGIES) {
+        const text = (locale.whiteBook.intuitions as Record<string, { name: string; notes: string[] }>)[tech.id];
+        expect(text.name).toBeTruthy();
+        expect(text.notes).toHaveLength(tech.prices.length);
+      }
   });
 });
