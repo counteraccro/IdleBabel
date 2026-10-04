@@ -32,8 +32,8 @@ export const RETURN_STEP = 0.1;
 export const SLEEP_STEP = 3600;
 /** Flair : un livre sur combien est rare, à chaque niveau (le premier : sans lui). */
 export const FLAIR_LEVELS = [200, 175, 150, 125, 100] as const;
-/** Économie du geste : le prix des méthodes multiplié par tant, à chaque niveau (−0,5 %, sans fin). */
-export const BARGAIN_FACTOR = 0.995;
+/** Économie du geste : le prix des méthodes multiplié par tant, à chaque niveau (−2 %, sans fin). */
+export const BARGAIN_FACTOR = 0.98;
 /** Intuition d'une méthode : sa production multipliée par tant, à chaque niveau. */
 export const GESTURE_BONUS = 2;
 
