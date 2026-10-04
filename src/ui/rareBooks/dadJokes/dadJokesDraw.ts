@@ -17,7 +17,7 @@ export const loadDadJokesFonts = (): Promise<unknown> =>
 
 export { hexagon, text };
 
-/** Texte cerné (contour épais derrière le remplissage), avec, au besoin, une ombre décalée de 10. */
+/** Texte cerné (contour épais derrière le remplissage), avec, au besoin, une ombre décalée de `offset`. */
 export const outlined = (
   context: CanvasRenderingContext2D,
   label: string,
@@ -28,6 +28,7 @@ export const outlined = (
   stroke: string,
   width: number,
   shadow?: string,
+  offset = 10,
 ): void => {
   context.save();
   context.font = font;
@@ -38,8 +39,8 @@ export const outlined = (
     context.fillStyle = shadow;
     context.strokeStyle = shadow;
     context.lineWidth = width;
-    context.strokeText(label, x + 10, y + 10);
-    context.fillText(label, x + 10, y + 10);
+    context.strokeText(label, x + offset, y + offset);
+    context.fillText(label, x + offset, y + offset);
   }
   context.strokeStyle = stroke;
   context.lineWidth = width;

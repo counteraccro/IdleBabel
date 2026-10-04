@@ -1181,6 +1181,36 @@
     ],
     "warning": "NOT SUITABLE FOR TEENAGERS",
     "price": "$12.99",
+    "pages": {
+      "running": "DAD JOKES",
+      "number": "JOKE NO.",
+      "subtitle": "400+ jokes, family-tested",
+      "legal": [
+        "DAD JOKES",
+        "The complete edition",
+        "",
+        "All rights reserved.",
+        "All jokes too,",
+        "especially the one about the well.",
+        "",
+        "Printed in the Library of Babel.",
+        "",
+        "No teenagers were harmed",
+        "in the making of this book.",
+        "",
+        "Any resemblance to a funny joke",
+        "is purely coincidental."
+      ],
+      "howTo": "HOW TO USE THIS BOOK",
+      "steps": [
+        "Announce it: “Have you heard this one?”",
+        "Don’t wait for an answer.",
+        "Laugh before the punchline.",
+        "If nobody laughs, tell it again. Louder.",
+        "Repeat at the next family dinner."
+      ],
+      "ha": "ha!"
+    },
     "jokes": [
       ["Why did the man fall down the well?", "He couldn’t see that well."],
       ["What’s orange and sounds like a parrot?", "A carrot."],
@@ -1193,7 +1223,6 @@
       ["What did the ocean say to the beach?", "Nothing, it just waved."],
       ["Why can’t your nose be twelve inches long?", "Because then it would be a foot."],
       ["What do you call a deer with no eyes?", "No eye deer."],
-      ["What do you call a fish with no eyes?", "A fsh."],
       ["What do you call a bear with no teeth?", "A gummy bear."],
       ["What do you call a sheep with no legs?", "A cloud."],
       ["They say memory is the second thing to go. What’s the first?", "I forget."],
@@ -1235,7 +1264,6 @@
       ["How many apples grow on an apple tree?", "All of them."],
       ["What do you call a careful wolf?", "Aware wolf."],
       ["“My dog has no nose.” “How does he smell?”", "“Awful.”"],
-      ["How do you steal a coat?", "You jacket."],
       ["Why do you never see elephants hiding in trees?", "Because they’re really good at it."],
       ["Did you hear about the two thieves who stole a calendar?", "They each got six months."],
       ["What’s the longest word in the dictionary?", "“Smiles”: there’s a mile between the two S’s."],
@@ -1247,17 +1275,14 @@
       ["What do you call a fly without wings?", "A walk."],
       ["Did you hear the rumour about butter?", "Never mind, I shouldn’t spread it."],
       ["What do you call someone with no body and no nose?", "Nobody knows."],
-      ["What do you call a criminal going down the stairs?", "Condescending."],
       ["Why do divers fall backwards out of the boat?", "If they fell forwards, they’d still be in the boat."],
       ["What’s the best time to go to the dentist?", "Tooth-hurty."],
       ["How do you know there’s an elephant under your bed?", "Your head hits the ceiling."],
       ["“Can I watch the TV?”", "“Yes, but don’t turn it on.”"],
       ["What’s the hardest part of skydiving?", "The ground."],
       ["Why are elevator jokes so good?", "They work on so many levels."],
-      ["Why do cows wear bells?", "Their horns don’t work."],
       ["What has a bed but never sleeps?", "A river."],
       ["What has ears but cannot hear?", "A field of corn."],
-      ["What’s the ninth letter of the alphabet?", "It was a complete guess, but I was right: I."],
       ["“Dad, can you put my shoes on?”", "“No, I don’t think they’ll fit me.”"],
       ["What’s black and white and read all over?", "A newspaper."],
       ["What do you call a boomerang that doesn’t come back?", "A stick."],
@@ -1408,7 +1433,7 @@
             "One book in two hundred is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist.",
             "Later, a sports almanac, straight off an eighties newsstand: fifty years of results, already written.",
             "Then the Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read. Inside, a manuscript in a script no one reads; only a reader who came before left Lovecraft’s line in pencil.",
-            "Then Dad Jokes, a humour book of the kind people give on Father’s Day: bright yellow, glasses, a moustache, a question you have heard before. It takes the place of a Book of the Dead, planned at first."
+            "Then Dad Jokes, a humour book of the kind people give on Father’s Day: bright yellow, glasses, a moustache, a question you have heard before. It takes the place of a Book of the Dead, planned at first. Inside, four hundred and seven jokes. There are only ninety: they keep coming back."
           ]
         },
         "library": {

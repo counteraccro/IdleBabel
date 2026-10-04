@@ -91,6 +91,8 @@ export const SEALS: readonly SealDef[] = [
   secret('babelDefinition'),
   // « Nom de Zeus ! », écrit à la main dans les notes de l'Almanach des sports (ui/rareBooks/almanac/almanac.ts).
   secret('greatScott'),
+  // Un « ha ! » au crayon, barré, page 25 des Jokes de Papa (ui/rareBooks/dadJokes/dadJokes.ts).
+  secret('neverLaughed'),
   // Les deux collègues, AlexH et Oriana, trouvés tous les deux (ils travaillent ensemble, jusque dans leurs livres).
   seal('colleagues', 'secrets', (s) => 'alexH' in s.rareBooks && 'oriana' in s.rareBooks),
 ];

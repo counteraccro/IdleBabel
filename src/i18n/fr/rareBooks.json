@@ -1194,6 +1194,36 @@
     ],
     "warning": "DÉCONSEILLÉ AUX ADOS",
     "price": "9,90 €",
+    "pages": {
+      "running": "LES JOKES DE PAPA",
+      "number": "BLAGUE N°",
+      "subtitle": "+ de 400 blagues, testées en famille",
+      "legal": [
+        "LES JOKES DE PAPA",
+        "Édition intégrale",
+        "",
+        "Tous droits réservés.",
+        "Toutes les blagues aussi,",
+        "surtout celle de la chaise.",
+        "",
+        "Imprimé dans la Bibliothèque de Babel.",
+        "",
+        "Aucun adolescent n’a été blessé",
+        "pendant la fabrication de ce livre.",
+        "",
+        "Toute ressemblance avec une blague drôle",
+        "serait purement fortuite."
+      ],
+      "howTo": "MODE D’EMPLOI",
+      "steps": [
+        "Annoncer la blague : « Tu la connais, celle-là ? »",
+        "Ne pas attendre la réponse.",
+        "Rire avant la chute.",
+        "Si personne ne rit, la répéter. Plus fort.",
+        "Recommencer au prochain repas."
+      ],
+      "ha": "ha !"
+    },
     "jokes": [
       ["Tu connais la blague de la chaise ?", "Elle est pliante."],
       ["Pourquoi les canards sont-ils toujours à l’heure ?", "Parce qu’ils sont dans l’étang."],
@@ -1416,7 +1446,7 @@
             "Un livre sur deux cents n’est pas comme les autres : un livre rare, avec un vrai titre et un sceau à lui. Un cahier noir où des noms s’écrivent, un annuaire où quelqu’un a déjà ta place, un essai sur la page blanche signé d’un auteur qui n’existe pas.",
             "Plus tard, un almanach des sports, tout droit sorti d’un kiosque des années 80 : cinquante ans de résultats, déjà écrits.",
             "Puis le Necronomicon, le livre inventé par Lovecraft, que la Bibliothèque contient forcément : l’original arabe, Al Azif, relié de maroquin, un médaillon d’or rempli de signes qui ne se lisent pas. Dedans, un manuscrit dans une écriture que personne ne lit ; seul un lecteur venu avant y a laissé, au crayon, la phrase de Lovecraft.",
-            "Puis les Jokes de Papa, un livre d’humour comme on en offre à la fête des pères : jaune vif, des lunettes, une moustache, une question qu’on a déjà entendue. Il prend la place d’un Livre des morts, prévu au départ."
+            "Puis les Jokes de Papa, un livre d’humour comme on en offre à la fête des pères : jaune vif, des lunettes, une moustache, une question qu’on a déjà entendue. Il prend la place d’un Livre des morts, prévu au départ. Dedans, quatre cent sept blagues. Il n’y en a que quatre-vingt-dix : elles reviennent."
           ]
         },
         "library": {
