@@ -1,6 +1,7 @@
 import { getLocale, t } from '../../i18n';
 import { formatNumber } from '../../core/format';
 import { TOOLS } from '../../data/tools';
+import { toolRate } from '../../systems/production';
 import { isComplete, segments, sentenceSource, written } from '../../systems/sentences';
 import { babelize, seedOf } from './babelMask';
 import { paragraph, wordsParagraph, type Word } from './paragraph';
@@ -76,7 +77,7 @@ export const sentenceBody = (state: GameState, sentence: SentenceDef, top: numbe
   const epigraph = wordsParagraph(words, top, { ...COLUMN, size: 22, line: 30, align: 'center', italic: true, reveal: delay(0) });
   const statTop = epigraph.bottom + 14;
   const stat = t('whiteBook.stat')
-    .replace('{n}', formatNumber(tool.pagesPerSecond, getLocale()))
+    .replace('{n}', formatNumber(toolRate(state, tool.id), getLocale()))
     .replace('{count}', formatNumber(state.tools[tool.id], getLocale()));
   const description = paragraph(
     text('description'),

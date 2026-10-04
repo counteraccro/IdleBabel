@@ -6,6 +6,8 @@
   "owned": "Owned",
   "buy": "Buy",
   "nextCost": "Next: {n} pages",
+  "toolRateOne": "+{n} page/s",
+  "toolRate": "+{n} pages/s",
   "reset": "Erase save",
   "build": "Build of",
   "options": "Options",

@@ -1,4 +1,4 @@
-import { TOOLS } from '../data/tools';
+import { TOOLS, type ToolId } from '../data/tools';
 import { gestureMultiplier } from './technologies';
 import type { GameState } from '../core/state';
 
@@ -9,10 +9,13 @@ export const forcePagesPerSecond = (value: number | undefined): void => {
 };
 export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== undefined;
 
-/** Production : celle de chaque méthode, doublée par son intuition à chaque niveau. */
+/** Ce que lit une méthode, pour chaque exemplaire : sa base, doublée par son intuition à chaque niveau. */
+export const toolRate = (state: GameState, id: ToolId): number =>
+  TOOLS.find((tool) => tool.id === id)!.pagesPerSecond * gestureMultiplier(state, id);
+
+/** Production : celle de chaque méthode (toolRate). */
 export const pagesPerSecond = (state: GameState): number =>
-  forcedPagesPerSecond ??
-  TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id), 0);
+  forcedPagesPerSecond ?? TOOLS.reduce((total, tool) => total + state.tools[tool.id] * toolRate(state, tool.id), 0);
 
 /**
  * Ce qu'un ajout n'a pas pu compter : au-delà de ~10¹⁵ pages, un nombre à virgule ne distingue plus les

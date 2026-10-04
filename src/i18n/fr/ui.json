@@ -6,6 +6,8 @@
   "owned": "Possédés",
   "buy": "Acheter",
   "nextCost": "Prochaine : {n} pages",
+  "toolRateOne": "+{n} page/s",
+  "toolRate": "+{n} pages/s",
   "reset": "Effacer la sauvegarde",
   "build": "Version du",
   "options": "Options",

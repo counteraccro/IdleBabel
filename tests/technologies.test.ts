@@ -4,7 +4,7 @@ import { passTime } from '../src/core/absence';
 import { AWAY_SHARE, DUPLICATE_SHARE, MAX_AWAY_SECONDS, MAX_TURNS_PER_SECOND, TARGET_SHARE } from '../src/data/knowledge';
 import { RARE_BOOKS } from '../src/data/rareBooks';
 import { maxTurnsPerSecond } from '../src/systems/knowledge';
-import { pagesPerSecond } from '../src/systems/production';
+import { pagesPerSecond, toolRate } from '../src/systems/production';
 import { PAGES_PER_CLICK, readPage } from '../src/systems/click';
 import { RARE_CHANCE, drawRareBook } from '../src/systems/rareBooks';
 import { write, segments } from '../src/systems/sentences';
@@ -107,6 +107,8 @@ describe('Intuitions de l’Âge I', () => {
     expect(understand(state, 'fingerGesture')).toBe(true);
     expect(understand(state, 'fingerGesture')).toBe(true);
     expect(pagesPerSecond(state)).toBeCloseTo(4);
+    // Ce que lit chacune (livre blanc, ruche des méthodes) : 0,5 × 2².
+    expect(toolRate(state, 'finger')).toBeCloseTo(2);
   });
 
   it('la page de titre compte les intuitions qui ont une fin', () => {

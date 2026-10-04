@@ -6,6 +6,7 @@ import { formatNumber } from '../../core/format';
 import { TOOLS, type ToolId } from '../../data/tools';
 import { buyTool, nextToolCost } from '../../systems/tools';
 import { toolUnlocked } from '../../systems/sentences';
+import { toolRate } from '../../systems/production';
 import { createMethodSeal } from './methodSeal';
 import type { GameState } from '../../core/state';
 
@@ -110,12 +111,15 @@ export const createMethodHive = (state: GameState): Component => {
       const count = formatNumber(state.tools[id], locale);
       const price = t('ui.nextCost').replace('{n}', formatNumber(cost, locale));
       const name = t(`tools.${id}.name`);
+      // Ce que lit chacune, intuition comprise, puis ce qu'elle fait.
+      const rate = toolRate(state, id);
+      const description = `${t(rate < 2 ? 'ui.toolRateOne' : 'ui.toolRate').replace('{n}', formatNumber(rate, locale))} — ${t(`tools.${id}.description`)}`;
       seal.show(count, state.pages >= cost);
-      seal.root.setAttribute('aria-label', `${name}, ${count}. ${t(`tools.${id}.description`)} ${price}`);
+      seal.root.setAttribute('aria-label', `${name}, ${count}. ${description} ${price}`);
       if (pointed === id) {
         tipTitle.textContent = `${name} · `;
         setNumberText(tipCount, count, 14);
-        tipText.textContent = t(`tools.${id}.description`);
+        tipText.textContent = description;
         tipPrice.textContent = price;
         tipPrice.classList.toggle('short', state.pages < cost);
         tip.style.top = seal.root.style.top;
