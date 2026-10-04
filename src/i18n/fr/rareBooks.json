@@ -1,7 +1,8 @@
 {
   "necronomicon": {
     "name": "Le Necronomicon",
-    "cover": ["Necronomicon"]
+    "cover": ["Necronomicon"],
+    "note": ["That is not dead which can eternal lie,", "And with strange aeons even death may die.", "— Alhazred?"]
   },
   "bible": {
     "name": "La Bible",
@@ -1308,7 +1309,7 @@
           "text": [
             "Un livre sur deux cents n’est pas comme les autres : un livre rare, avec un vrai titre et un sceau à lui. Un cahier noir où des noms s’écrivent, un annuaire où quelqu’un a déjà ta place, un essai sur la page blanche signé d’un auteur qui n’existe pas.",
             "Plus tard, un almanach des sports, tout droit sorti d’un kiosque des années 80 : cinquante ans de résultats, déjà écrits.",
-            "Puis le Necronomicon, le livre inventé par Lovecraft, que la Bibliothèque contient forcément : l’original arabe, Al Azif, relié de maroquin, un médaillon d’or rempli de signes qui ne se lisent pas."
+            "Puis le Necronomicon, le livre inventé par Lovecraft, que la Bibliothèque contient forcément : l’original arabe, Al Azif, relié de maroquin, un médaillon d’or rempli de signes qui ne se lisent pas. Dedans, un manuscrit dans une écriture que personne ne lit ; seul un lecteur venu avant y a laissé, au crayon, la phrase de Lovecraft."
           ]
         },
         "library": {

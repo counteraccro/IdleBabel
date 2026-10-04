@@ -1,4 +1,5 @@
 import { HEIGHT, WIDTH, board } from '../draw';
+import { almond, gold, rng, type Random } from './necronomiconDraw';
 import type * as THREE from 'three';
 
 /**
@@ -14,20 +15,7 @@ const [W, H, SPINE_W] = [640, 800, 130];
 /** Le dos de la maquette à ses vraies proportions (le dos d'un livre fait 1,4 fois son épaisseur). */
 export const THICKNESS = SPINE_W / H / 1.4;
 
-/** Hasard reproductible (Park-Miller), le même que la maquette : mêmes signes aux mêmes places. */
-const rng = (seed: number) => (): number => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
-type Random = () => number;
 type Draw = (context: CanvasRenderingContext2D) => void;
-
-const gold = (context: CanvasRenderingContext2D, y0: number, y1: number): CanvasGradient => {
-  const gradient = context.createLinearGradient(0, y0, 0, y1);
-  gradient.addColorStop(0, '#8a6a2c');
-  gradient.addColorStop(0.35, '#f2d68e');
-  gradient.addColorStop(0.55, '#c9a24f');
-  gradient.addColorStop(0.8, '#f0d48a');
-  gradient.addColorStop(1, '#7a5a22');
-  return gradient;
-};
 
 /** Le maroquin : teinte, grain, taches, éraflures, usure aux bords. */
 const leather = (context: CanvasRenderingContext2D, w: number, h: number, color: string, dark: string, seed: number): void => {
@@ -127,14 +115,6 @@ const glyph = (context: CanvasRenderingContext2D, random: Random, x: number, y: 
     context.arc(x + (random() - 0.5) * s, y - s * (1.1 + random() * 0.4), s * 0.12, 0, Math.PI * 2);
     context.fill();
   }
-};
-
-/** Le médaillon en amande (shamsa). */
-const almond = (context: CanvasRenderingContext2D, cx: number, cy: number, rx: number, ry: number): void => {
-  context.beginPath();
-  context.moveTo(cx, cy - ry);
-  context.bezierCurveTo(cx + rx * 0.9, cy - ry * 0.55, cx + rx * 0.9, cy + ry * 0.55, cx, cy + ry);
-  context.bezierCurveTo(cx - rx * 0.9, cy + ry * 0.55, cx - rx * 0.9, cy - ry * 0.55, cx, cy - ry);
 };
 
 /** Le cadre : deux filets dorés, une frise de petits signes à froid entre eux. */

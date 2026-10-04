@@ -69,12 +69,17 @@ export const preparePageTexture = (
   paper.addColorStop(1, paperColors[2]);
   context.fillStyle = paper;
   context.fillRect(0, 0, width, height);
+  shadeGutter(context, spineOnLeft);
+  return context;
+};
 
+/** L'ombre de la gouttière sur la page (un papier redessiné par-dessus la reprend). */
+export const shadeGutter = (context: CanvasRenderingContext2D, spineOnLeft: boolean): void => {
+  const { width, height } = PAGE_TEXTURE;
   const gutter = context.createLinearGradient(spineOnLeft ? 0 : width, 0, spineOnLeft ? width : 0, 0);
   for (const [at, color] of GUTTER) gutter.addColorStop(at, color);
   context.fillStyle = gutter;
   context.fillRect(0, 0, width, height);
-  return context;
 };
 
 /**

@@ -1,7 +1,8 @@
 {
   "necronomicon": {
     "name": "The Necronomicon",
-    "cover": ["Necronomicon"]
+    "cover": ["Necronomicon"],
+    "note": ["That is not dead which can eternal lie,", "And with strange aeons even death may die.", "— Alhazred?"]
   },
   "bible": {
     "name": "The Bible",
@@ -1295,7 +1296,7 @@
           "text": [
             "One book in two hundred is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist.",
             "Later, a sports almanac, straight off an eighties newsstand: fifty years of results, already written.",
-            "Then the Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read."
+            "Then the Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read. Inside, a manuscript in a script no one reads; only a reader who came before left Lovecraft’s line in pencil."
           ]
         },
         "library": {
