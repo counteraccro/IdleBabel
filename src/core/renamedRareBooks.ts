@@ -3,7 +3,7 @@ import type { GameState } from './state';
 /**
  * Livres rares remplacés par un autre (ancien id → nouveau). Une partie qui avait trouvé l'ancien a le
  * nouveau à sa place, au chargement : même numéro de livre, même sceau, même moment dans l'histoire.
- * « Le Livre des morts » a laissé sa place aux « Blagues de papa » (décision de l'auteur, 03/10/2026).
+ * « Le Livre des morts » a laissé sa place aux « Jokes de Papa » (décision de l'auteur, 03/10/2026).
  */
 const RENAMED: Readonly<Record<string, string>> = {
   deadBook: 'dadJokes',

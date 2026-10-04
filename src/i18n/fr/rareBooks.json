@@ -1178,8 +1178,8 @@
     "backCover": "au dos"
   },
   "dadJokes": {
-    "name": "Les Blagues de papa",
-    "cover": ["Les Blagues", "de papa"]
+    "name": "Les Jokes de Papa",
+    "cover": ["Les Jokes", "de Papa"]
   },
   "idleBabel": {
     "name": "Idle Babel",

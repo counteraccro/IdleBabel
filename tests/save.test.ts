@@ -92,7 +92,7 @@ describe('sauvegarde', () => {
     expect(loadGame('fr').seed).toBe(0);
   });
 
-  it('donne les Blagues de papa aux parties qui avaient trouvé le Livre des morts', () => {
+  it('donne les Jokes de Papa aux parties qui avaient trouvé le Livre des morts', () => {
     const state = createInitialState('fr');
     state.rareBooks = { deadBook: 12, bible: 3 };
     state.seals = { 'rare-deadBook': 100, 'rare-bible': 50, firstBook: 10 };
