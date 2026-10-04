@@ -20,12 +20,17 @@ export const bookSpread = (state: GameState): number => Math.floor(state.bookPag
 export const turnBookPage = (state: GameState): boolean => {
   state.bookPage += PAGES_PER_LEAF;
   if (state.bookPage < PAGES_PER_BOOK) return false;
+  closeBook(state);
+  return true;
+};
+
+/** Le livre en main est lu jusqu'au bout : le chercheur le referme et en prend un autre, ouvert au début. */
+export const closeBook = (state: GameState): void => {
   state.bookPage = 0;
   state.booksFinished += 1;
   recordOnce(state, 'firstBook');
   // Son récit attend qu'il arrive en main (meetStrangeBook, handReading3d.ts).
   if (state.booksFinished === STRANGE_BOOK_INDEX) recordOnce(state, 'strangeBook');
-  return true;
 };
 
 /**

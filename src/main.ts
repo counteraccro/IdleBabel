@@ -28,7 +28,6 @@ onResume((seconds) => pauseEnded(state, seconds));
 chronicle(state);
 readStrangeTitleWith(() => isDeciphered(state, 'contents'));
 readReaderNameWith(() => state.playerName);
-state.lastTick = Date.now(); // pas encore de pages lues hors-ligne dans le prototype
 
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);
 mountSealVisions();

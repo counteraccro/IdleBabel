@@ -1623,6 +1623,7 @@
             "Parmi les livres modernes, deux sortes nouvelles : des autobiographies, où les visages restent vides, et des bandes dessinées, numérotées comme une série."
           ]
         },
+        "away": {"head": "L’absence", "text": ["Le jeu a appris à continuer sans le joueur. Jeu fermé ou onglet caché, les pages se lisent au rythme de la production, à moitié, huit heures au plus. Le livre en main avance, les livres finis se referment, les livres rares croisés en route sont trouvés, les sceaux suivent.", "Au retour, le chercheur croit sortir d’un rêve. Une modale le détrompe, et dit ce que ses mains ont fait sans lui."]},
         "thisBook": {
           "head": "Ce livre",
           "text": [

@@ -1,0 +1,40 @@
+/* Ce que l'absence a rapporté, sous le récit du retour (awayNotice.ts) : il attend la fin du récit. */
+.away-tally {
+  margin: 18px auto 0;
+  padding: 12px 0 0;
+  border-top: 1px solid rgba(214, 178, 106, 0.35);
+  max-width: 22rem;
+  opacity: 0;
+  animation: modal-story-in 0.8s ease forwards;
+}
+.away-tally h3 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  font-weight: normal;
+  font-style: italic;
+  color: #c9b48a;
+  text-align: center;
+}
+.away-tally dl {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 4px 14px;
+  margin: 0;
+  justify-content: center;
+}
+.away-tally dt {
+  color: #c9b48a;
+  text-align: right;
+}
+.away-tally dd {
+  margin: 0;
+  color: #f0e2c0;
+  font-variant-numeric: tabular-nums;
+}
+.away-tally p {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #a8956e;
+  text-align: center;
+}

@@ -62,5 +62,22 @@
       "A few signs seem almost familiar, like a word on the tip of your tongue. The more you understand the Library, the more it will speak to you."
     ],
     "button": "Open the Ledger"
+  },
+  "away": {
+    "title": "A dream",
+    "text": [
+      "You open your eyes again. A dream withdraws, slowly, the way ink fades on a page read too often.",
+      "For a moment, you thought you were somewhere else.",
+      "But no. The dust, the low light, the shelves that never end.",
+      "You are still here, searching for what escapes you."
+    ],
+    "while": "During this dream ({time}), your hands kept going:",
+    "pages": "pages read",
+    "books": "books closed",
+    "finds": "finds",
+    "rareBooks": "rare books",
+    "seals": "seals",
+    "capped": "Only the first eight hours count.",
+    "button": "Go back to reading"
   }
 }

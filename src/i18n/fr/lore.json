@@ -67,5 +67,22 @@
       "Quelques signes vous semblent presque familiers, comme un mot sur le bout de la langue. Plus vous comprendrez la Bibliothèque, plus il vous parlera."
     ],
     "button": "Ouvrir le Grand Livre"
+  },
+  "away": {
+    "title": "Un songe",
+    "text": [
+      "Vous rouvrez les yeux. Un rêve se retire, lentement, comme l'encre pâlit sur une page trop lue.",
+      "Un instant, vous avez cru être ailleurs.",
+      "Mais non. La poussière, la lumière basse, les rayonnages qui n'en finissent pas.",
+      "Vous êtes toujours là, à chercher ce qui vous échappe."
+    ],
+    "while": "Pendant ce songe ({time}), vos mains ont continué :",
+    "pages": "pages lues",
+    "books": "livres refermés",
+    "finds": "trouvailles",
+    "rareBooks": "livres rares",
+    "seals": "sceaux",
+    "capped": "Seules les huit premières heures comptent.",
+    "button": "Reprendre la lecture"
   }
 }

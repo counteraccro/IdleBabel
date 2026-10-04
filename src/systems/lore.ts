@@ -20,6 +20,9 @@ export const tellLore = (state: GameState, id: LoreId): void => {
   listeners.forEach((listener) => listener());
 };
 
+/** Relance les récits en attente : ce qui les retenait (ui/awayNotice.ts) vient de se fermer. */
+export const nudgeLore = (): void => listeners.forEach((listener) => listener());
+
 /** Le joueur a lu ce moment : il ne reviendra plus. */
 export const loreRead = (state: GameState, id: string): void => {
   state.lorePending = state.lorePending.filter((pending) => pending !== id);

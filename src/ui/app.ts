@@ -11,6 +11,7 @@ import { createHandReading3d } from './book3d/handReading3d';
 import { notebook3d } from './options/notebook3d';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { anyPartNews, meetStrangeBook } from '../systems/decipher';
+import { mountAwayNotice } from './awayNotice/awayNotice';
 import { setLocale, t } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
 import { createInitialState, type GameState } from '../core/state';
@@ -314,6 +315,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   if (state.booksFinished > 0) tellLore(state, 'firstBookKept');
   // Partie qui avait déjà le Grand Livre avant que son récit existe : il est raconté une fois.
   meetStrangeBook(state);
+  // Retour d'une longue absence : avant les récits en attente, qui le suivent.
+  mountAwayNotice(state);
   const tellPendingLore = mountLore(state);
   // Nouvelle partie (ou partie d'avant le nom) : le joueur se présente et choisit sa langue.
   if (!state.playerName)

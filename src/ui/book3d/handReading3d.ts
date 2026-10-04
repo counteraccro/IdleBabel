@@ -3,6 +3,7 @@ import { bookSpread, turnBookPage } from '../../systems/books';
 import { tellLore } from '../../systems/lore';
 import { meetStrangeBook } from '../../systems/decipher';
 import { DEBUG_BOOK_EVENT } from '../../debug/events';
+import { BOOK_MOVED_EVENT } from '../../core/absence';
 import { createHeldBook3d } from './heldBook3d';
 import { handBook3d } from './handBook3d';
 import { createHandFinds } from './handFinds';
@@ -41,11 +42,12 @@ export const createHandReading3d = (state: GameState): Component => {
     // Le Grand Livre arrive en main, encore fermé : son récit l'annonce avant qu'il s'ouvre.
     onArrived: () => meetStrangeBook(state),
   });
-  // Débogage : page ou numéro du livre changés à la main, le livre en main suit.
-  const onDebugBook = (): void => {
+  // Page ou numéro du livre changés hors de l'écran (absence, modale, débogage) : le livre en main suit.
+  const onBookMoved = (): void => {
     const closed = state.bookPage === 0 && !state.settings.autoTurn;
     held.reset(handBook3d(state, state.booksFinished, finds), bookSpread(state), closed);
   };
-  window.addEventListener(DEBUG_BOOK_EVENT, onDebugBook, { signal: held.signal });
+  window.addEventListener(DEBUG_BOOK_EVENT, onBookMoved, { signal: held.signal });
+  window.addEventListener(BOOK_MOVED_EVENT, onBookMoved, { signal: held.signal });
   return held;
 };

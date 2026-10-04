@@ -1610,6 +1610,7 @@
             "Among the modern books, two new kinds: autobiographies, where the faces stay blank, and comics, numbered like a series."
           ]
         },
+        "away": {"head": "Absence", "text": ["The game learned to go on without the player. Game closed or tab hidden, pages are read at the pace of production, at half rate, eight hours at most. The book in hand moves on, finished books close, rare books met along the way are found, seals follow.", "On return, the seeker thinks they are waking from a dream. A modal sets them straight, and tells what their hands did without them."]},
         "thisBook": {
           "head": "This book",
           "text": [

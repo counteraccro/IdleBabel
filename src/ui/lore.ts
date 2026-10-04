@@ -2,6 +2,7 @@ import { el } from './dom';
 import { openModal } from './modal/modal';
 import { messages, t } from '../i18n';
 import { loreRead, onLore } from '../systems/lore';
+import { awayNoticeOpen } from './awayNotice/awayNotice';
 import { LORE_BACKDROP, type LoreId } from '../data/lore';
 import type { GameState } from '../core/state';
 
@@ -55,7 +56,7 @@ export const mountLore = (state: GameState): (() => void) => {
   let telling = false;
   const next = (): void => {
     const id = state.lorePending[0];
-    if (telling || !id || !state.playerName) return;
+    if (telling || !id || !state.playerName || awayNoticeOpen()) return;
     const story = (messages().lore as unknown as Record<string, { title: string; text: string[]; button?: string } | undefined>)[id];
     // Un moment sans texte (retiré depuis) : oublié.
     if (!story) {

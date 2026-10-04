@@ -116,13 +116,21 @@ export const gainFind = (state: GameState, find: Find): void => {
 };
 
 /**
- * Absence (onglet fermé ou caché) : les pages lues des feuilles qui auraient tourné seules au rythme de la
- * production, plafonné comme à l'écran (en feuilles), cachent leurs trouvailles comme les autres. Renvoie
- * le nombre trouvé.
+ * Pages tournées seules pendant `seconds` d'absence (ou de modale) : au rythme de la production, plafonné
+ * comme à l'écran (en feuilles), sur 8 h au plus. Rien si les pages ne tournent pas seules.
  */
-export const findWhileAway = (state: GameState, seconds: number, random: () => number = Math.random): number => {
+export const pagesTurnedAway = (state: GameState, seconds: number): number => {
   if (!state.settings.autoTurn || seconds <= 0) return 0;
-  const turned = Math.min(pagesPerSecond(state), maxTurnsPerSecond() * PAGES_PER_LEAF) * Math.min(seconds, MAX_AWAY_SECONDS);
+  return Math.min(pagesPerSecond(state), maxTurnsPerSecond() * PAGES_PER_LEAF) * Math.min(seconds, MAX_AWAY_SECONDS);
+};
+
+/**
+ * Absence (onglet fermé ou caché) : les pages tournées seules (pagesTurnedAway), dont on compte la part
+ * `share`, cachent leurs trouvailles comme les autres. Renvoie le nombre trouvé.
+ */
+export const findWhileAway = (state: GameState, seconds: number, random: () => number = Math.random, share = 1): number => {
+  const turned = pagesTurnedAway(state, seconds) * share;
+  if (turned <= 0) return 0;
   // Nombre attendu, arrondi au hasard : la moyenne est juste, et une courte absence peut rapporter.
   const count = Math.floor(turned * findChance(state) + random());
   for (let i = 0; i < count; i++) gainFind(state, drawFind(state, random));
