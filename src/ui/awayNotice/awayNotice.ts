@@ -7,7 +7,6 @@ import { getLocale, messages, t } from '../../i18n';
 import { formatNumber, writeDigits } from '../../core/format';
 import { onLongAbsence, type AwayReport } from '../../core/absence';
 import { nudgeLore } from '../../systems/lore';
-import { MAX_AWAY_SECONDS } from '../../data/knowledge';
 import type { GameState } from '../../core/state';
 
 /** Ce que l'absence a rapporté, dans cet ordre (lore.away.<clé>), ce qui vaut zéro en moins. */
@@ -34,7 +33,7 @@ const tally = (report: AwayReport): HTMLElement => {
     list.append(el('dt', '', t(`lore.away.${key}`)), el('dd', '', formatNumber(Math.floor(report[key]), getLocale())));
   }
   root.append(list);
-  if (report.seconds > MAX_AWAY_SECONDS) root.append(el('p', '', t('lore.away.capped')));
+  if (report.capped) root.append(el('p', '', t('lore.away.capped')));
   return root;
 };
 

@@ -58,7 +58,7 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
   // Une feuille tourne toutes les deux pages entières produites : au rythme du compteur (plafonné).
   const autoTurn = {
     produced: () => Math.floor(producedWholePages() / PAGES_PER_LEAF),
-    max: () => (state.settings.autoTurn ? maxTurnsPerSecond() : 0),
+    max: () => (state.settings.autoTurn ? maxTurnsPerSecond(state) : 0),
   };
   // Un livre rare arrive en main : il est trouvé, pour toujours. C'est le livre de la bibliothèque, tenu
   // en main (sans trouvailles : on ne lit pas de charabia).

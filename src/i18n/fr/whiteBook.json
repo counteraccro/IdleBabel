@@ -179,7 +179,10 @@
     "level": "Niveau {n} / {max}",
     "offer": "comprendre · {n} de Connaissance",
     "short": "il me faut {n} de Connaissance",
-    "done": "Je n'en comprendrai pas plus."
+    "done": "Je n'en comprendrai pas plus.",
+    "levelEndless": "Niveau {n}",
+    "unknownGesture": "Je ne connais pas encore ce geste.",
+    "nothingLeft": "Il n'en reste plus à trouver."
   },
   "intuitions": {
     "semanticFilter": {
@@ -193,6 +196,63 @@
         "Ne plus lire les lettres : lire les blancs.",
         "Le sens me trouve. Je n'ai plus à chercher."
       ]
+    },
+    "ariadne": {
+      "name": "Fil d'Ariane",
+      "description": "Les trouvailles vont plus souvent vers la phrase que je cherche.",
+      "effect": "trouvailles dans la phrase cherchée",
+      "notes": ["Je tire un fil. Au bout, toujours la même phrase."]
+    },
+    "sentenceMemory": {
+      "name": "Mémoire des phrases",
+      "description": "Je reconnais ce que j'ai déjà lu. Moins de doublons.",
+      "effect": "trouvailles déjà écrites",
+      "notes": ["Celle-là, je l'ai déjà. Je passe."]
+    },
+    "speedReading": {
+      "name": "Lecture rapide",
+      "description": "Mes doigts tournent les pages plus vite que mes yeux.",
+      "effect": "feuilles tournées seules par seconde, au plus",
+      "notes": ["Je ne lis plus. Je feuillette, et ça suffit."]
+    },
+    "muscleMemory": {
+      "name": "Mémoire musculaire",
+      "description": "Quand je tourne une page à la main, tout le reste suit.",
+      "effect": "par clic, en plus : la lecture d'une seconde",
+      "notes": ["Mon geste entraîne les autres."]
+    },
+    "returnMap": {
+      "name": "Cartographie du Retour",
+      "description": "Quand je m'absente, je perds moins de ma lecture.",
+      "effect": "lecture comptée pendant l'absence",
+      "notes": ["Je laisse des marques pour retrouver ma page."]
+    },
+    "deepSleep": {
+      "name": "Sommeil profond",
+      "description": "Je dors plus longtemps. Les pages tournent tout ce temps.",
+      "effect": "absence comptée, au plus",
+      "notes": ["Je dors. Les pages, elles, ne dorment pas."]
+    },
+    "flair": {
+      "name": "Flair",
+      "description": "Je sens les livres qui ne sont pas comme les autres.",
+      "effect": "livres rares",
+      "notes": ["Celui-là. Je ne sais pas pourquoi, mais celui-là."]
+    },
+    "gestures": {
+      "description": "Je connais ce geste par cœur. Chaque niveau double ce qu'il me fait lire.",
+      "effect": "pages lues par ce geste",
+      "notes": {
+        "diagonal": "Un mot sur deux. Puis un sur trois.",
+        "finger": "Mon doigt sait où aller avant moi.",
+        "thumb": "La corne de mon pouce connaît chaque coin de page.",
+        "voice": "Je ne murmure plus. Je n'en ai plus besoin.",
+        "wide": "Je vois la page entière d'un seul coup.",
+        "double": "Deux livres, deux mains, une seule lecture.",
+        "mirror": "Le reflet lit la page que je ne regarde pas.",
+        "lectern": "La pierre tient le livre. Mes mains sont libres.",
+        "ladder": "Je ne descends plus. Je lis là-haut."
+      }
     }
   },
   "methods": {

@@ -15,7 +15,7 @@ export interface Find {
 }
 
 /** Chance qu'une page tournée cache une trouvaille, avant les bonus (technologies, mutations…). */
-export const BASE_FIND_CHANCE = 0.005;
+export const BASE_FIND_CHANCE = 0.002;
 
 /** Part de chaque sorte parmi les trouvailles. */
 export const FIND_WEIGHTS: Record<FindKind, number> = { word: 70, piece: 25, sentence: 5 };
@@ -26,20 +26,20 @@ export const FIND_WEIGHTS: Record<FindKind, number> = { word: 70, piece: 25, sen
  */
 export const LUCK_PAGES = { from: 15, to: 30 };
 
-/** Part des trouvailles tirées dans la phrase de méthode en cours (le reste : n'importe quelle phrase). */
+/** Part des trouvailles tirées dans la phrase de méthode en cours (le reste : n'importe quelle phrase), avant le Fil d'Ariane. */
 export const TARGET_SHARE = 0.6;
 
-/** Loi de Redondance : part des trouvailles qui répètent un morceau déjà écrit. */
+/** Loi de Redondance : part des trouvailles qui répètent un morceau déjà écrit, avant la Mémoire des phrases. */
 export const DUPLICATE_SHARE = 0.2;
 
 /** Prix en Connaissance pour deviner le dernier morceau d'une phrase. */
-export const GUESS_PRICE = 2;
+export const GUESS_PRICE = 10;
 
-/** Pages tournées seules au plus par seconde (ui/book3d/autoTurn3d.ts) : la même limite hors-ligne. */
+/** Feuilles tournées seules au plus par seconde (ui/book3d/autoTurn3d.ts), avant la Lecture rapide : la même limite hors-ligne. */
 export const MAX_TURNS_PER_SECOND = 8;
 
-/** Absence prise en compte au plus (conception §10). */
+/** Absence prise en compte au plus (conception §10), avant le Sommeil profond. */
 export const MAX_AWAY_SECONDS = 8 * 3600;
 
-/** Part de la lecture comptée pendant une absence, jeu fermé ou onglet caché (conception §10) : pages, livres, trouvailles. */
+/** Part de la lecture comptée pendant une absence, jeu fermé ou onglet caché (conception §10) : pages, livres, trouvailles ; avant la Cartographie du Retour. */
 export const AWAY_SHARE = 0.5;

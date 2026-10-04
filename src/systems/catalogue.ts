@@ -1,5 +1,6 @@
 import { PAGES_PER_BOOK } from './books';
 import { drawRareBook } from './rareBooks';
+import { rareChance } from './technologies';
 import type { GameState } from '../core/state';
 
 /**
@@ -27,8 +28,7 @@ export const LAST_ROWS = 9;
 export const catalogueIndex = (state: GameState): number => state.rareBooks[CATALOGUE_ID] ?? state.booksFinished;
 
 /** Combien de livres sur la page `page` du registre (page 3 : le Catalogue compris). */
-export const rowsOn = (page: number): number =>
-  page === PAGES_PER_BOOK ? LAST_ROWS : page === RUSSELL_PAGE ? ROWS - RUSSELL_ROWS : ROWS;
+export const rowsOn = (page: number): number => (page === PAGES_PER_BOOK ? LAST_ROWS : page === RUSSELL_PAGE ? ROWS - RUSSELL_ROWS : ROWS);
 
 /** Le numéro du premier livre de la page `page` (page 3 : le Catalogue lui-même). */
 export const firstOn = (found: number, page: number): number =>
@@ -44,12 +44,13 @@ export const catalogueRares = (state: GameState): Map<number, string> => {
   const found = catalogueIndex(state);
   // Ceux qu'on avait le jour où on l'a trouvé (lui compris) : la suite en découle.
   const had = Object.keys(state.rareBooks).filter((id) => state.rareBooks[id] <= found);
-  const key = `${state.seed}:${found}:${had.sort().join(',')}`;
+  const chance = rareChance(state);
+  const key = `${state.seed}:${found}:${chance}:${had.sort().join(',')}`;
   if (cached?.key === key) return cached.rares;
   const taken = new Set([...had, CATALOGUE_ID]);
   const rares = new Map<number, string>();
   for (let index = found + 1; index <= lastListed(found); index++) {
-    const id = drawRareBook(index, (rare) => taken.has(rare));
+    const id = drawRareBook(index, (rare) => taken.has(rare), chance);
     if (!id) continue;
     rares.set(index, id);
     taken.add(id);

@@ -179,7 +179,10 @@
     "level": "Level {n} / {max}",
     "offer": "understand · {n} Knowledge",
     "short": "I need {n} Knowledge",
-    "done": "I will understand no more of it."
+    "done": "I will understand no more of it.",
+    "levelEndless": "Level {n}",
+    "unknownGesture": "I do not know this gesture yet.",
+    "nothingLeft": "There are none left to find."
   },
   "intuitions": {
     "semanticFilter": {
@@ -193,6 +196,63 @@
         "Stop reading letters: read the gaps.",
         "Meaning finds me. I no longer have to search."
       ]
+    },
+    "ariadne": {
+      "name": "Ariadne's thread",
+      "description": "Finds lean more often toward the sentence I am looking for.",
+      "effect": "finds in the sentence I seek",
+      "notes": ["I pull a thread. At the end, always the same sentence."]
+    },
+    "sentenceMemory": {
+      "name": "Memory of sentences",
+      "description": "I recognise what I have already read. Fewer repeats.",
+      "effect": "finds already written",
+      "notes": ["That one, I already have. I move on."]
+    },
+    "speedReading": {
+      "name": "Speed reading",
+      "description": "My fingers turn the pages faster than my eyes.",
+      "effect": "leaves turning on their own per second, at most",
+      "notes": ["I no longer read. I leaf through, and it is enough."]
+    },
+    "muscleMemory": {
+      "name": "Muscle memory",
+      "description": "When I turn a page by hand, everything else follows.",
+      "effect": "per click, on top: one second of reading",
+      "notes": ["My gesture pulls the others along."]
+    },
+    "returnMap": {
+      "name": "Map of the Return",
+      "description": "When I am away, I lose less of my reading.",
+      "effect": "reading counted while away",
+      "notes": ["I leave marks to find my page again."]
+    },
+    "deepSleep": {
+      "name": "Deep sleep",
+      "description": "I sleep longer. The pages turn all that time.",
+      "effect": "time away counted, at most",
+      "notes": ["I sleep. The pages do not."]
+    },
+    "flair": {
+      "name": "Flair",
+      "description": "I can sense the books that are not like the others.",
+      "effect": "rare books",
+      "notes": ["That one. I don't know why, but that one."]
+    },
+    "gestures": {
+      "description": "I know this gesture by heart. Each level doubles what it makes me read.",
+      "effect": "pages read by this gesture",
+      "notes": {
+        "diagonal": "One word in two. Then one in three.",
+        "finger": "My finger knows where to go before I do.",
+        "thumb": "The callus on my thumb knows every corner of the page.",
+        "voice": "I no longer whisper. I no longer need to.",
+        "wide": "I see the whole page at once.",
+        "double": "Two books, two hands, a single reading.",
+        "mirror": "The reflection reads the page I am not looking at.",
+        "lectern": "The stone holds the book. My hands are free.",
+        "ladder": "I no longer climb down. I read up there."
+      }
     }
   },
   "methods": {

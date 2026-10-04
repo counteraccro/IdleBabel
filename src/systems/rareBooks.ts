@@ -2,9 +2,10 @@ import { RARE_BOOKS } from '../data/rareBooks';
 import { gameRandom } from '../core/random';
 import { STRANGE_BOOK_INDEX } from './strangeBook';
 import { sealEvent } from './seals';
+import { rareChance } from './technologies';
 import type { GameState } from '../core/state';
 
-/** Un livre sur 200 est un livre rare (tant qu'il en reste à trouver). */
+/** Un livre sur 200 est un livre rare (tant qu'il en reste à trouver), avant le Flair. */
 export const RARE_CHANCE = 1 / 200;
 /** Pas avant le livre étrange : les premiers livres restent ordinaires. */
 const FIRST_RARE_INDEX = STRANGE_BOOK_INDEX + 1;
@@ -20,14 +21,15 @@ export const isRareBookFound = (state: GameState, id: string): boolean => id in 
 
 /**
  * Le livre rare que tirerait le livre n° `index`, si ceux de `found` étaient déjà trouvés. Tiré de son
- * numéro (toujours le même tant que rien ne change), parmi ceux qui restent.
+ * numéro (toujours le même tant que rien ne change), parmi ceux qui restent ; `chance` : celle d'être rare
+ * (le Flair la monte : un livre rare le reste).
  */
-export const drawRareBook = (index: number, found: (id: string) => boolean): string | undefined => {
+export const drawRareBook = (index: number, found: (id: string) => boolean, chance = RARE_CHANCE): string | undefined => {
   const imposed = forced.get(index);
   if (imposed && !found(imposed)) return imposed;
   if (index < FIRST_RARE_INDEX) return undefined;
   const random = gameRandom(`rare:${index}`);
-  if (random() >= RARE_CHANCE) return undefined;
+  if (random() >= chance) return undefined;
   const left = RARE_BOOKS.filter((book) => !found(book.id));
   const total = left.reduce((sum, book) => sum + (book.weight ?? 1), 0);
   let roll = random() * total;
@@ -41,7 +43,7 @@ export const drawRareBook = (index: number, found: (id: string) => boolean): str
 export const rareBookAt = (state: GameState, index: number): string | undefined => {
   const kept = Object.keys(state.rareBooks).find((id) => state.rareBooks[id] === index);
   if (kept) return kept;
-  return drawRareBook(index, (id) => isRareBookFound(state, id));
+  return drawRareBook(index, (id) => isRareBookFound(state, id), rareChance(state));
 };
 
 /** Le livre n° `index` arrive en main : s'il est rare, il est trouvé (pour toujours). */

@@ -61,8 +61,8 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
         { hint: 'Numéro du livre : couverture, reliure.', steps: true },
       );
       kit.row('Titres', titlesMenu(), 'Titres des couvertures.');
-      kit.number('Défilement', maxTurnsPerSecond, setTurnCap, {
-        hint: 'Pages/s au plus quand elles tournent seules (8 par défaut ; 0 : remettre).',
+      kit.number('Défilement', () => maxTurnsPerSecond(state), setTurnCap, {
+        hint: 'Feuilles/s au plus quand elles tournent seules (Lecture rapide par défaut ; 0 : remettre).',
       });
     },
   },

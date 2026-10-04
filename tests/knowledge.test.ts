@@ -113,9 +113,9 @@ describe('Connaissance', () => {
   it('trouve aussi pendant une absence, au rythme plafonné des pages qui tournent seules', () => {
     const state = started();
     state.tools.diagonal = 1_000; // 100 pages/s : plafonné à 8 feuilles, 16 pages par seconde
-    // 8 h au plus, même après une semaine : 16 × 28 800 × 0,5 % = 2 304 trouvailles.
+    // 8 h au plus, même après une semaine : 16 × 28 800 × 0,2 % = 921 trouvailles.
     expect(findWhileAway(state, 7 * 24 * 3600, () => 0)).toBe(Math.floor(16 * MAX_AWAY_SECONDS * BASE_FIND_CHANCE));
-    expect(state.knowledge).toBe(2304);
+    expect(state.knowledge).toBe(921);
     state.settings.autoTurn = false;
     expect(findWhileAway(state, 3600, () => 0)).toBe(0);
   });
@@ -155,17 +155,17 @@ describe('déchiffrer le Grand Livre', () => {
 describe('Intuitions', () => {
   it('se comprennent niveau après niveau, contre de la Connaissance ; le filtre multiplie la chance de trouvaille', () => {
     const state = createInitialState('fr');
-    state.knowledge = 4;
+    state.knowledge = 20;
     expect(understand(state, 'semanticFilter')).toBe(false);
-    state.knowledge = 60;
+    state.knowledge = 30;
     expect(understand(state, 'semanticFilter')).toBe(true);
-    expect(state.knowledge).toBe(55);
-    expect(nextPrice(state, 'semanticFilter')).toBe(50);
+    expect(state.knowledge).toBe(5);
+    expect(nextPrice(state, 'semanticFilter')).toBe(250);
     expect(findChance(state)).toBeCloseTo(BASE_FIND_CHANCE * FILTER_BONUS);
+    state.knowledge = 250;
     expect(understand(state, 'semanticFilter')).toBe(true);
     expect(levelOf(state, 'semanticFilter')).toBe(2);
     expect(findChance(state)).toBeCloseTo(BASE_FIND_CHANCE * FILTER_BONUS ** 2);
-    expect(technologiesCompletion(state)).toBeCloseTo(2 / 5);
   });
 
   it('s’arrêtent au dernier niveau', () => {
@@ -176,12 +176,21 @@ describe('Intuitions', () => {
     expect(nextPrice(state, 'semanticFilter')).toBeUndefined();
   });
 
-  it('ont toutes leurs textes, une phrase par niveau, en français et en anglais', () => {
-    for (const locale of Object.values(LOCALES))
+  it('ont toutes leurs textes en français et en anglais, une phrase au moins, pas plus que de niveaux', () => {
+    for (const locale of Object.values(LOCALES)) {
+      const all = locale.whiteBook.intuitions as unknown as Record<string, { name: string; notes: string[] }> & {
+        gestures: { description: string; notes: Record<string, string> };
+      };
       for (const tech of TECHNOLOGIES) {
-        const text = (locale.whiteBook.intuitions as Record<string, { name: string; notes: string[] }>)[tech.id];
+        if ('tool' in tech) {
+          expect(all.gestures.notes[tech.tool]).toBeTruthy();
+          continue;
+        }
+        const text = all[tech.id];
         expect(text.name).toBeTruthy();
-        expect(text.notes).toHaveLength(tech.prices.length);
+        expect(text.notes.length).toBeGreaterThan(0);
+        expect(text.notes.length).toBeLessThanOrEqual(tech.prices.length);
       }
+    }
   });
 });

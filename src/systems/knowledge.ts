@@ -1,20 +1,10 @@
 import { SENTENCES } from '../data/sentences';
-import {
-  BASE_FIND_CHANCE,
-  DUPLICATE_SHARE,
-  FIND_WEIGHTS,
-  LUCK_PAGES,
-  MAX_AWAY_SECONDS,
-  MAX_TURNS_PER_SECOND,
-  TARGET_SHARE,
-  type Find,
-  type FindKind,
-} from '../data/knowledge';
+import { BASE_FIND_CHANCE, FIND_WEIGHTS, LUCK_PAGES, type Find, type FindKind } from '../data/knowledge';
 import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { pagesPerSecond } from './production';
 import { currentTarget, isComplete, missing, segmentKind, segments, write, written } from './sentences';
 import { tellLore } from './lore';
-import { filterMultiplier } from './technologies';
+import { duplicateShare, filterMultiplier, maxAwaySeconds, targetShare, turnsPerSecond } from './technologies';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -24,13 +14,13 @@ export const forceFinds = (on: boolean): void => {
 };
 export const isForcingFinds = (): boolean => forced;
 
-/** Débogage : plafond des pages qui tournent seules, à la place de MAX_TURNS_PER_SECOND. */
-let turnCap = MAX_TURNS_PER_SECOND;
+/** Débogage : plafond des feuilles qui tournent seules, à la place de celui de la Lecture rapide. */
+let turnCap: number | undefined;
 export const setTurnCap = (value: number): void => {
-  turnCap = value > 0 ? value : MAX_TURNS_PER_SECOND;
+  turnCap = value > 0 ? value : undefined;
 };
-/** Pages tournées seules au plus par seconde, à l'écran comme hors-ligne. */
-export const maxTurnsPerSecond = (): number => turnCap;
+/** Feuilles tournées seules au plus par seconde (Lecture rapide), à l'écran comme hors-ligne. */
+export const maxTurnsPerSecond = (state: GameState): number => turnCap ?? turnsPerSecond(state);
 
 /** Chance qu'une page tournée cache une trouvaille : la base, et les Filtres Sémantiques compris (les autres bonus s'ajouteront ici). */
 export const findChance = (state: GameState): number => (forced ? 1 : Math.min(1, BASE_FIND_CHANCE * filterMultiplier(state)));
@@ -82,12 +72,12 @@ export const drawFind = (state: GameState, random: () => number, lucky = false):
     (sentence) => !isComplete(state, sentence.id) && (sentence.kind !== 'method' || sentence.id === target),
   ).map((sentence) => sentence.id);
   const started = SENTENCES.filter((sentence) => written(state, sentence.id).length > 0).map((sentence) => sentence.id);
-  if (open.length === 0 || (kind !== 'sentence' && started.length > 0 && random() < DUPLICATE_SHARE)) {
+  if (open.length === 0 || (kind !== 'sentence' && started.length > 0 && random() < duplicateShare(state))) {
     const sentence = pick(started.length > 0 ? started : SENTENCES.map((s) => s.id), random);
     const segment = pick(written(state, sentence), random) ?? 0;
     return { kind: segmentKind(segments(sentence)[segment]), sentence, segment, duplicate: true };
   }
-  const sentence = target && random() < TARGET_SHARE ? target : pick(open, random);
+  const sentence = target && random() < targetShare(state) ? target : pick(open, random);
   if (kind === 'sentence') return { kind, sentence };
   return missingSegment(state, sentence, kind, random);
 };
@@ -118,11 +108,11 @@ export const gainFind = (state: GameState, find: Find): void => {
 
 /**
  * Pages tournées seules pendant `seconds` d'absence (ou de modale) : au rythme de la production, plafonné
- * comme à l'écran (en feuilles), sur 8 h au plus. Rien si les pages ne tournent pas seules.
+ * comme à l'écran (en feuilles), sur 8 h au plus (et le Sommeil profond). Rien si les pages ne tournent pas seules.
  */
 export const pagesTurnedAway = (state: GameState, seconds: number): number => {
   if (!state.settings.autoTurn || seconds <= 0) return 0;
-  return Math.min(pagesPerSecond(state), maxTurnsPerSecond() * PAGES_PER_LEAF) * Math.min(seconds, MAX_AWAY_SECONDS);
+  return Math.min(pagesPerSecond(state), maxTurnsPerSecond(state) * PAGES_PER_LEAF) * Math.min(seconds, maxAwaySeconds(state));
 };
 
 /**

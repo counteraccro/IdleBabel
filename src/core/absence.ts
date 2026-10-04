@@ -4,7 +4,7 @@ import { gainPages, pagesPerSecond } from '../systems/production';
 import { checkSeals } from '../systems/seals';
 import { tellLore } from '../systems/lore';
 import { meetStrangeBook } from '../systems/decipher';
-import { AWAY_SHARE, MAX_AWAY_SECONDS } from '../data/knowledge';
+import { awayShare, maxAwaySeconds } from '../systems/technologies';
 import { gameRandom } from './random';
 import { recordOnce } from './history';
 import type { GameState } from './state';
@@ -25,18 +25,21 @@ export interface AwayReport {
   finds: number;
   rareBooks: number;
   seals: number;
+  /** L'absence a duré plus que ce qui est compté (Sommeil profond). */
+  capped: boolean;
 }
 
 /**
  * Le jeu continue sans le chercheur : `away`, jeu fermé ou onglet caché (rien n'a tourné, on compte la part
- * AWAY_SHARE de tout) ; `pause`, une modale ouverte (les pages sont déjà comptées par la boucle, le livre
+ * part awayShare de tout, Cartographie du Retour) ; `pause`, une modale ouverte (les pages sont déjà comptées par la boucle, le livre
  * à l'écran était figé). Pages au rythme de la production, livres, trouvailles, livres rares et sceaux.
  */
 export const passTime = (state: GameState, seconds: number, mode: 'away' | 'pause'): AwayReport => {
-  const share = mode === 'away' ? AWAY_SHARE : 1;
+  const share = mode === 'away' ? awayShare(state) : 1;
+  const counted = maxAwaySeconds(state);
   const before = { pages: state.totalPagesRead, rareBooks: Object.keys(state.rareBooks).length, seals: Object.keys(state.seals).length };
   const book = { index: state.booksFinished, page: state.bookPage };
-  if (mode === 'away') gainPages(state, pagesPerSecond(state) * Math.min(seconds, MAX_AWAY_SECONDS) * share);
+  if (mode === 'away') gainPages(state, pagesPerSecond(state) * Math.min(seconds, counted) * share);
   let books = 0;
   let finds = 0;
   // Le livre en main ne s'ouvre qu'une fois son récit lu (lore firstBook) : avant, rien ne tourne.
@@ -59,6 +62,7 @@ export const passTime = (state: GameState, seconds: number, mode: 'away' | 'paus
     finds,
     rareBooks: Object.keys(state.rareBooks).length - before.rareBooks,
     seals: Object.keys(state.seals).length - before.seals,
+    capped: seconds > counted,
   };
 };
 

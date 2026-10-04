@@ -1,4 +1,5 @@
 import { TOOLS } from '../data/tools';
+import { gestureMultiplier } from './technologies';
 import type { GameState } from '../core/state';
 
 /** Débogage : production imposée à la main, à la place de celle des méthodes (pas dans la sauvegarde). */
@@ -8,8 +9,10 @@ export const forcePagesPerSecond = (value: number | undefined): void => {
 };
 export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== undefined;
 
+/** Production : celle de chaque méthode, doublée par son intuition à chaque niveau. */
 export const pagesPerSecond = (state: GameState): number =>
-  forcedPagesPerSecond ?? TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
+  forcedPagesPerSecond ??
+  TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id), 0);
 
 /**
  * Ce qu'un ajout n'a pas pu compter : au-delà de ~10¹⁵ pages, un nombre à virgule ne distingue plus les
