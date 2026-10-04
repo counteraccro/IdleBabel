@@ -202,7 +202,10 @@
   },
   "voynich": {
     "name": "The Voynich Manuscript",
-    "cover": ["The Voynich", "Manuscript"]
+    "cover": ["The Voynich", "Manuscript"],
+    "pencil": "Voynich?",
+    "stamp": "LIBRARY OF",
+    "last": { "counted": "410 pages.", "nothing": "Not one word I know.", "except": "Except that one?" }
   },
   "saragossa": {
     "name": "The Manuscript Found in Saragossa",
@@ -1433,7 +1436,8 @@
             "One book in two hundred is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist.",
             "Later, a sports almanac, straight off an eighties newsstand: fifty years of results, already written.",
             "Then the Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read. Inside, a manuscript in a script no one reads; only a reader who came before left Lovecraft’s line in pencil.",
-            "Then Dad Jokes, a humour book of the kind people give on Father’s Day: bright yellow, glasses, a moustache, a question you have heard before. It takes the place of a Book of the Dead, planned at first. Inside, four hundred and seven jokes. There are only ninety: they keep coming back."
+            "Then Dad Jokes, a humour book of the kind people give on Father’s Day: bright yellow, glasses, a moustache, a question you have heard before. It takes the place of a Book of the Dead, planned at first. Inside, four hundred and seven jokes. There are only ninety: they keep coming back.",
+            "Then the Voynich Manuscript, the one book no one has ever been able to read. On its vellum cover grows a plant that does not exist. Inside, more plants, circles of stars, pools, apothecary jars, and an unknown script, drawn stroke by stroke."
           ]
         },
         "library": {
@@ -1505,6 +1509,8 @@
         "necronomicon-c": "The chained book",
         "dadJokes-b": "The sighing paperback",
         "dadJokes-c": "Dad's notebook",
+        "voynich-a": "The bare vellum",
+        "voynich-b": "The facsimile",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

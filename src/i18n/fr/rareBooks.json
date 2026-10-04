@@ -202,7 +202,10 @@
   },
   "voynich": {
     "name": "Le Manuscrit de Voynich",
-    "cover": ["Manuscrit", "de Voynich"]
+    "cover": ["Manuscrit", "de Voynich"],
+    "pencil": "Voynich ?",
+    "stamp": "BIBLIOTHÈQUE DE",
+    "last": { "counted": "410 pages.", "nothing": "Pas un mot que je connaisse.", "except": "Sauf celui-là ?" }
   },
   "saragossa": {
     "name": "Le Manuscrit trouvé à Saragosse",
@@ -1446,7 +1449,8 @@
             "Un livre sur deux cents n’est pas comme les autres : un livre rare, avec un vrai titre et un sceau à lui. Un cahier noir où des noms s’écrivent, un annuaire où quelqu’un a déjà ta place, un essai sur la page blanche signé d’un auteur qui n’existe pas.",
             "Plus tard, un almanach des sports, tout droit sorti d’un kiosque des années 80 : cinquante ans de résultats, déjà écrits.",
             "Puis le Necronomicon, le livre inventé par Lovecraft, que la Bibliothèque contient forcément : l’original arabe, Al Azif, relié de maroquin, un médaillon d’or rempli de signes qui ne se lisent pas. Dedans, un manuscrit dans une écriture que personne ne lit ; seul un lecteur venu avant y a laissé, au crayon, la phrase de Lovecraft.",
-            "Puis les Jokes de Papa, un livre d’humour comme on en offre à la fête des pères : jaune vif, des lunettes, une moustache, une question qu’on a déjà entendue. Il prend la place d’un Livre des morts, prévu au départ. Dedans, quatre cent sept blagues. Il n’y en a que quatre-vingt-dix : elles reviennent."
+            "Puis les Jokes de Papa, un livre d’humour comme on en offre à la fête des pères : jaune vif, des lunettes, une moustache, une question qu’on a déjà entendue. Il prend la place d’un Livre des morts, prévu au départ. Dedans, quatre cent sept blagues. Il n’y en a que quatre-vingt-dix : elles reviennent.",
+            "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait."
           ]
         },
         "library": {
@@ -1518,6 +1522,8 @@
         "necronomicon-c": "Le livre enchaîné",
         "dadJokes-b": "Le poche qui soupire",
         "dadJokes-c": "Le carnet de papa",
+        "voynich-a": "Le vélin nu",
+        "voynich-b": "Le fac-similé",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

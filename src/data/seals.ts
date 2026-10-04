@@ -93,6 +93,8 @@ export const SEALS: readonly SealDef[] = [
   secret('greatScott'),
   // Un « ha ! » au crayon, barré, page 25 des Jokes de Papa (ui/rareBooks/dadJokes/dadJokes.ts).
   secret('neverLaughed'),
+  // Un mot entouré au crayon, à la dernière page du Manuscrit de Voynich (ui/rareBooks/voynich/voynich.ts).
+  secret('oneWord'),
   // Les deux collègues, AlexH et Oriana, trouvés tous les deux (ils travaillent ensemble, jusque dans leurs livres).
   seal('colleagues', 'secrets', (s) => 'alexH' in s.rareBooks && 'oriana' in s.rareBooks),
 ];

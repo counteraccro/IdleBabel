@@ -165,7 +165,8 @@
     "hintReread": "Some books / are read / twice.",
     "hintBabelDefinition": "An old dictionary / knows what / Babel means.",
     "hintGreatScott": "In the notes / of an almanac, / someone swore.",
-    "hintNeverLaughed": "In a book of jokes, / someone laughed. / They swear they didn't."
+    "hintNeverLaughed": "In a book of jokes, / someone laughed. / They swear they didn't.",
+    "hintOneWord": "Someone circled a word. / At the very end."
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",

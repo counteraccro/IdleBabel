@@ -17,6 +17,7 @@ import { odysseyArt } from './odyssey/odyssey';
 import { orianaArt } from './oriana/oriana';
 import { quixoteArt } from './quixote/quixote';
 import { saragossaArt } from './saragossa/saragossa';
+import { voynichArt } from './voynich/voynich';
 import { defaultArt } from './defaultArt';
 import { debugBookArt } from './debugBook/debugBook';
 import type { RareBookArt } from './rareBookArt';
@@ -42,6 +43,7 @@ const ARTS: Record<string, RareBookArt> = {
   oriana: orianaArt,
   quixote: quixoteArt,
   saragossa: saragossaArt,
+  voynich: voynichArt,
   debug: debugBookArt,
 };
 
