@@ -134,7 +134,9 @@ export const createBookcase = (onLoad: () => void): Bookcase => {
     const material = oldWood(seed, { length: Math.max(width, height), color: PIECE }, onLoad);
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
-    mesh.castShadow = mesh.receiveShadow = true;
+    // Le meuble reçoit l'ombre des livres sans en porter : chaque case a son spot, l'étagère du dessus ne
+    // l'assombrit pas (la lumière qui porte les ombres vient d'en haut, libraryPage.ts).
+    mesh.receiveShadow = true;
     root.add(mesh);
   };
   const columnHeight = (cells: [number, Slot[]][]): number => cells.reduce((sum, [height]) => sum + height, 0) + (cells.length - 1) * BOARD;

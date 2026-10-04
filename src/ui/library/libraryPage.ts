@@ -63,6 +63,12 @@ const PULL_RATE = 10;
 const SET_BACK = 0.03;
 /** La lumière de la pièce, baissée d'autant devant les spots des cases. */
 const ROOM_DIM = 0.6;
+/**
+ * D'où vient la lumière qui porte les ombres des livres : d'en haut et de devant, comme celle des spots des
+ * cases ; à cette distance du milieu de la vitrine.
+ */
+const SHADOW_FROM = new THREE.Vector3(0, 1, 1).normalize();
+const SHADOW_DISTANCE = 8;
 /** Épaisseur d'un livre rare qui ne dit pas la sienne (rareBook3d.ts). */
 const THICKNESS = 0.12;
 
@@ -120,14 +126,12 @@ export const createLibraryPage = (
   scene.add(bookcase.root);
   const { center } = bookcase;
   const lighting = createLighting(scene, new THREE.Vector3(1.7, -0.7, 1.9), new THREE.Vector3(0.4, 0, 0));
-  // Les ombres de la lampe sont réglées pour un livre : élargies à toute la vitrine (sinon, un cadre plus
-  // clair découpe la vitrine).
-  scene.traverse((object) => {
-    if (!(object instanceof THREE.DirectionalLight) || !object.castShadow) return;
-    const reach = Math.max(bookcase.size.x, bookcase.size.y) * 0.75;
-    Object.assign(object.shadow.camera, { left: -reach, right: reach, top: reach, bottom: -reach, far: 40 });
-    object.shadow.camera.updateProjectionMatrix();
-  });
+  // La lampe qui porte les ombres : réglée pour un livre, ses ombres sont élargies à toute la vitrine (sinon,
+  // un cadre plus clair découpe la vitrine). Elle est placée comme les spots des cases (shadowLamp).
+  const shadowLamp = scene.getObjectsByProperty('isDirectionalLight', true).find((light) => light.castShadow) as THREE.DirectionalLight;
+  const reach = Math.max(bookcase.size.x, bookcase.size.y) * 0.75;
+  Object.assign(shadowLamp.shadow.camera, { left: -reach, right: reach, top: reach, bottom: -reach, far: 40 });
+  shadowLamp.shadow.camera.updateProjectionMatrix();
   // Une lampe au-dessus de la vitrine, un peu devant : les dos des livres et les étiquettes accrochent la lumière.
   const lamp = new THREE.SpotLight(0xffd9a0, 18, 14, THREE.MathUtils.degToRad(40), 0.6, 1.4);
   lamp.position.set(0, bookcase.size.y + 1.4, 3);
@@ -217,6 +221,12 @@ export const createLibraryPage = (
     camera.position.set(0, center.y, distance);
     camera.lookAt(center);
     lighting.follow(camera, center, 1);
+    // La lumière qui porte les ombres vient d'en haut et de devant, comme celle des spots des cases (qui n'en
+    // portent pas) : un livre tiré de sa case pose son ombre derrière lui et vers le bas, pas sur le côté.
+    const rig = shadowLamp.parent!;
+    rig.updateMatrixWorld(true);
+    shadowLamp.position.copy(rig.worldToLocal(center.clone().addScaledVector(SHADOW_FROM, SHADOW_DISTANCE)));
+    shadowLamp.target.position.copy(rig.worldToLocal(center.clone()));
   };
 
   /** Le nom du livre survolé, posé sur le bord avant de son étagère, au milieu du livre. */
