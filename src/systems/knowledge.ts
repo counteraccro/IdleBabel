@@ -88,8 +88,7 @@ export const drawFind = (state: GameState, random: () => number, lucky = false):
 };
 
 /** La page tournée cache-t-elle une trouvaille ? Rien n'est gagné tant qu'elle n'est pas lue (gainFind). */
-export const rollFind = (state: GameState, random: () => number = Math.random): Find | undefined =>
-  rollFinds(state, random)[0];
+export const rollFind = (state: GameState, random: () => number = Math.random): Find | undefined => rollFinds(state, random)[0];
 
 /**
  * Les trouvailles d'une page. Au-delà de 100 %, la chance en garantit : 554 %, c'est 5 trouvailles, et

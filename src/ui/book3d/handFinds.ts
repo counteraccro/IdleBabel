@@ -21,7 +21,11 @@ export const createHandFinds = (state: GameState) => {
   const rolled = new Map<number, Hidden[]>();
   let book = -1;
   const roll = (page: number): Hidden[] => {
-    if (!rolled.has(page)) rolled.set(page, rollFinds(state, gameRandom(`find:${book}:${page}`)).map((find) => ({ find })));
+    if (!rolled.has(page))
+      rolled.set(
+        page,
+        rollFinds(state, gameRandom(`find:${book}:${page}`)).map((find) => ({ find })),
+      );
     return rolled.get(page)!;
   };
   return {
