@@ -23,10 +23,12 @@
     "knowledge": "Knowledge you carry",
     "lifetimeKnowledge": "Knowledge you have been given",
     "finds": "words · pieces · sentences torn from chance",
-    "findChance": "your chance, on each page, of understanding something"
+    "findChance": "your chance, on each page, of understanding something",
+    "findChanceParts": "chance {base} · your filter {filter} · your seals {seals}"
   },
   "sealsTitle": "Seals",
   "sealsCompletion": "of the seals bear your mark",
+  "sealsBonus": "each seal: +1% finds · {total}",
   "plates": {
     "pages": "Pages",
     "books": "Volumes",

@@ -1,7 +1,7 @@
 import { getLocale, t } from '../../i18n';
 import { formatNumber, writeDigits } from '../../core/format';
 import { PLATES, SEALS, sealSeries, type PlateId, type SealDef } from '../../data/seals';
-import { babelName, completion, countObtained, plateSeals, sealObtained } from '../../systems/seals';
+import { babelName, completion, countObtained, plateSeals, sealFindMultiplier, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
 import { isDeciphered } from '../../systems/decipher';
 import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
@@ -78,7 +78,7 @@ const tally = (state: GameState, plate: PlateId): string => {
 };
 
 const LINE_TOP = 400;
-const LINE_STEP = 46;
+const LINE_STEP = 40;
 
 /** Légende du pourcentage des sceaux (illisible tant que les sceaux ne sont pas déchiffrés). */
 const completionCaption = (state: GameState): TextItem => ({
@@ -93,11 +93,26 @@ const completionCaption = (state: GameState): TextItem => ({
   spacing: 3,
 });
 
+/** Ce que les sceaux rapportent : +1 % de trouvailles chacun, et le total (illisible tant qu'ils ne sont pas déchiffrés). */
+const bonusLine = (state: GameState): TextItem => {
+  const total = writeDigits(`+${Math.round((sealFindMultiplier(state) - 1) * 100)} %`);
+  return fitCaption({
+    kind: 'text',
+    text: isDeciphered(state, 'seals') ? t('strangeBook.sealsBonus').replace('{total}', total) : `${babelName('bonus', 3)} · ${total}`,
+    x: 320,
+    y: 340,
+    size: 20,
+    align: 'center',
+    spacing: 2,
+  });
+};
+
 /** Introduction : la part des sceaux obtenus, et l'avancement de chaque planche. */
 export const completionItems = (state: GameState, plates: PlatePage[], number: number): Item[] => [
   ...heading(sealsTitle(state)),
   { kind: 'text', text: writeDigits(`${Math.floor(completion(state) * 100)} %`), x: 320, y: 200, size: 84, align: 'center', spacing: 2 },
   completionCaption(state),
+  bonusLine(state),
   ...plates
     .filter((plate) => plate.part === 0)
     .flatMap((plate, index): Item[] => {

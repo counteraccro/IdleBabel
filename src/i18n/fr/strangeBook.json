@@ -23,10 +23,12 @@
     "knowledge": "Connaissance que tu portes",
     "lifetimeKnowledge": "Connaissance qui t'a été donnée",
     "finds": "mots · morceaux · phrases arrachés au hasard",
-    "findChance": "ta chance, à chaque page, de comprendre quelque chose"
+    "findChance": "ta chance, à chaque page, de comprendre quelque chose",
+    "findChanceParts": "le hasard {base} · ton filtre {filter} · tes sceaux {seals}"
   },
   "sealsTitle": "Sceaux",
   "sealsCompletion": "des sceaux portent ta marque",
+  "sealsBonus": "chaque sceau : +1 % de trouvailles · {total}",
   "plates": {
     "pages": "Pages",
     "books": "Volumes",

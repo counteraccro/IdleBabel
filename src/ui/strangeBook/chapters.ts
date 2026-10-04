@@ -5,6 +5,9 @@ import { PAGES_PER_BOOK } from '../../systems/books';
 import { pagesPerSecond } from '../../systems/production';
 import { meaningfulCovers } from '../../systems/stats';
 import { findChance } from '../../systems/knowledge';
+import { BASE_FIND_CHANCE } from '../../data/knowledge';
+import { filterMultiplier } from '../../systems/technologies';
+import { sealFindMultiplier } from '../../systems/seals';
 import { isDeciphered } from '../../systems/decipher';
 import { statsRevealed } from '../../systems/strangeBook';
 import type { PartId } from '../../data/decipher';
@@ -21,6 +24,8 @@ export interface Figure {
   value: (state: GameState) => string;
   /** Un chiffre n'apparaît qu'une fois qu'il existe vraiment. */
   shown?: (state: GameState) => boolean;
+  /** De quoi il est fait, en petit sous le chiffre (les mots, une fois le chapitre déchiffré). */
+  detail?: (state: GameState, readable: boolean) => string;
 }
 
 export interface Chapter {
@@ -41,6 +46,18 @@ const pad = (value: number): string => String(value).padStart(2, '0');
 const clock = (seconds: number): string => {
   const total = Math.floor(seconds);
   return `${Math.floor(total / 3600)}:${pad(Math.floor(total / 60) % 60)}:${pad(total % 60)}`;
+};
+
+const percent = (value: number): string =>
+  writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(value));
+const factor = (value: number): string => `×${formatNumber(value, getLocale())}`;
+
+/** La chance de trouvaille, décomposée : le hasard, × le filtre sémantique, × les sceaux. */
+const findChanceParts = (state: GameState, readable: boolean): string => {
+  const parts = [percent(BASE_FIND_CHANCE), factor(filterMultiplier(state)), factor(sealFindMultiplier(state))];
+  if (!readable) return parts.join('  ');
+  const [base, filter, seals] = parts;
+  return t('strangeBook.figures.findChanceParts').replace('{base}', base).replace('{filter}', filter).replace('{seals}', seals);
 };
 
 const startedAt = (state: GameState): number => state.history.find((e) => e.type === 'gameStarted')?.at ?? Date.now();
@@ -128,7 +145,8 @@ export const CHAPTERS: readonly Chapter[] = [
       {
         id: 'findChance',
         caption: 'gilo mepar',
-        value: (s) => writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(findChance(s))),
+        value: (s) => percent(findChance(s)),
+        detail: findChanceParts,
       },
     ],
   },

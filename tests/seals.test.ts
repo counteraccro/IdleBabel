@@ -7,6 +7,8 @@ import { LOCALES } from '../src/i18n/locales';
 import { ANOMALIES } from '../src/data/anomalies';
 import { segments, write } from '../src/systems/sentences';
 import { RARE_BOOKS } from '../src/data/rareBooks';
+import { findChance } from '../src/systems/knowledge';
+import { BASE_FIND_CHANCE } from '../src/data/knowledge';
 
 describe('sceaux', () => {
   it('scelle un palier atteint, avec sa date, et pas les suivants', () => {
@@ -97,5 +99,15 @@ describe('sceaux', () => {
     for (const book of RARE_BOOKS) state.rareBooks[book.id] = 1;
     checkSeals(state, 3);
     expect(state.seals['intuition-flair']).toBe(3);
+  });
+
+  it('chaque sceau obtenu ajoute 1 % à la chance de trouvaille', () => {
+    const state = createInitialState('fr');
+    expect(findChance(state)).toBeCloseTo(BASE_FIND_CHANCE);
+    for (const seal of SEALS.slice(0, 50)) state.seals[seal.id] = 1;
+    expect(findChance(state)).toBeCloseTo(BASE_FIND_CHANCE * 1.5);
+    // Un sceau inconnu (renommé, retiré) ne compte pas.
+    state.seals['inconnu'] = 1;
+    expect(findChance(state)).toBeCloseTo(BASE_FIND_CHANCE * 1.5);
   });
 });

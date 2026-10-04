@@ -5,6 +5,7 @@ import { pagesPerSecond } from './production';
 import { currentTarget, isComplete, missing, segmentKind, segments, write, written } from './sentences';
 import { tellLore } from './lore';
 import { duplicateShare, filterMultiplier, maxAwaySeconds, targetShare, turnsPerSecond } from './technologies';
+import { sealFindMultiplier } from './seals';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -22,8 +23,12 @@ export const setTurnCap = (value: number): void => {
 /** Feuilles tournées seules au plus par seconde (Lecture rapide), à l'écran comme hors-ligne. */
 export const maxTurnsPerSecond = (state: GameState): number => turnCap ?? turnsPerSecond(state);
 
-/** Chance qu'une page tournée cache une trouvaille : la base, et les Filtres Sémantiques compris (les autres bonus s'ajouteront ici). */
-export const findChance = (state: GameState): number => (forced ? 1 : Math.min(1, BASE_FIND_CHANCE * filterMultiplier(state)));
+/**
+ * Chance qu'une page tournée cache une trouvaille : la base, × le filtre sémantique, × les sceaux obtenus
+ * (+1 % chacun) ; les autres bonus s'ajouteront ici. Détail : dans le chapitre « Révélations » du Grand Livre.
+ */
+export const findChance = (state: GameState): number =>
+  forced ? 1 : Math.min(1, BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state));
 
 /** Pages tournées dans le livre en main depuis le début de la partie. */
 const pagesTurned = (state: GameState): number => state.booksFinished * PAGES_PER_BOOK + state.bookPage;

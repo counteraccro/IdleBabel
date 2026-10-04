@@ -1,4 +1,5 @@
 import { el } from '../dom';
+import { isDeciphered } from '../../systems/decipher';
 import { coverDesign, shelfMarkText } from '../../systems/coverDesign';
 import { STRANGE_BOOK_INDEX } from '../../systems/strangeBook';
 import { CHAPTERS, chapterShown, chapterTitle, contentsTitle, figureCaption, figureShown, type Chapter } from './chapters';
@@ -136,7 +137,6 @@ export const pencilOffer = (note: string, asking: boolean, noteY: number, marked
 export const priceNote = (state: GameState, price: number, offer: string, short: string): string =>
   t(state.knowledge >= price ? offer : short).replace('{n}', formatNumber(price, getLocale()));
 
-
 /** Chiffre écrit en symboles de Babel (notation choisie dans les options) : doré, comme les titres. */
 const babelGold = (item: TextItem): TextItem => (currentNotation() === 'babel' && !/\d/.test(item.text) ? { ...item, gold: true } : item);
 
@@ -167,7 +167,20 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
         align: 'center',
         spacing: 2,
       }),
-      captions[index],
+      ...(figure.detail
+        ? [
+            fitCaption({
+              kind: 'text',
+              text: figure.detail(state, isDeciphered(state, chapter.id)),
+              x: 320,
+              y: FIGURE_TOP + index * FIGURE_STEP + 60,
+              size: 19,
+              align: 'center',
+              spacing: 2,
+            }),
+            { ...captions[index], y: captions[index].y + 28 },
+          ]
+        : [captions[index]]),
     ]),
     folio(number),
   ];

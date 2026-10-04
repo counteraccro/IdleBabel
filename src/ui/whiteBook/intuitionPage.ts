@@ -21,6 +21,7 @@ import {
   turnsPerSecond,
 } from '../../systems/technologies';
 import { reminiscing } from '../../systems/reminiscence';
+import { sealFindMultiplier } from '../../systems/seals';
 import { babelize, seedOf } from './babelMask';
 import { paragraph } from './paragraph';
 import { folio, type Item } from '../strangeBook/pageItems';
@@ -62,7 +63,7 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
   if (tool) return `×${plain(gestureMultiplier(state, tool, level))}`;
   switch (id) {
     case 'semanticFilter':
-      return percent(Math.min(1, BASE_FIND_CHANCE * filterMultiplier(state, level)));
+      return percent(Math.min(1, BASE_FIND_CHANCE * filterMultiplier(state, level) * sealFindMultiplier(state)));
     case 'ariadne':
       return percent(targetShare(state, level));
     case 'sentenceMemory':

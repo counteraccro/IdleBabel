@@ -1,5 +1,6 @@
 import type { GameState } from '../core/state';
 import { SEALS, type PlateId, type SealDef } from '../data/seals';
+import { SEAL_FIND_BONUS } from '../data/knowledge';
 import { seeded, hashText } from '../core/random';
 import { LETTERS } from './babelText';
 
@@ -69,3 +70,6 @@ export const babelName = (id: string, minWords = 2): string => {
     return Array.from({ length: size }, () => LETTERS[Math.floor(random() * LETTERS.length)]).join('');
   }).join(' ');
 };
+
+/** Les sceaux obtenus : chacun ajoute 1 % à la chance de trouvaille (×1,34 avec 34 sceaux). */
+export const sealFindMultiplier = (state: GameState): number => 1 + SEAL_FIND_BONUS * countObtained(state, SEALS);

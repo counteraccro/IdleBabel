@@ -17,6 +17,9 @@ export interface Find {
 /** Chance qu'une page tournée cache une trouvaille, avant les bonus (technologies, mutations…). */
 export const BASE_FIND_CHANCE = 0.002;
 
+/** Chaque sceau obtenu, pour toujours (l'Exil ne les reprend pas) : la chance de trouvaille +1 %, additionné. */
+export const SEAL_FIND_BONUS = 0.01;
+
 /** Part de chaque sorte parmi les trouvailles. */
 export const FIND_WEIGHTS: Record<FindKind, number> = { word: 70, piece: 25, sentence: 5 };
 
