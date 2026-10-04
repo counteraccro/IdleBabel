@@ -122,8 +122,8 @@ export const SEALS: readonly SealDef[] = [
   secret('neverLaughed'),
   // Un mot entouré au crayon, à la dernière page du Manuscrit de Voynich (ui/rareBooks/voynich/voynich.ts).
   secret('oneWord'),
-  // Un livre rare lu à sa place dans le Catalogue des catalogues, ouvert dans la bibliothèque, puis pris en main
-  // (systems/catalogue.ts, systems/rareBooks.ts).
+  // Vingt pages du Catalogue des catalogues lues dans la bibliothèque, à la recherche d'un cadeau de Noël
+  // (systems/catalogue.ts).
   secret('trueCatalogue'),
   // Une page numérotée 410 dans le Livre de sable, lu dans la bibliothèque (ui/rareBooks/sand/sand.ts).
   secret('sandLastPage'),

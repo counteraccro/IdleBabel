@@ -1,5 +1,6 @@
 import { PAGES_PER_BOOK } from './books';
 import { drawRareBook } from './rareBooks';
+import { sealEvent } from './seals';
 import { rareChance } from './technologies';
 import type { GameState } from '../core/state';
 
@@ -72,8 +73,15 @@ export const raresOn = (state: GameState, page: number): string[] => {
   return ids;
 };
 
-/** Le joueur a vu la page `page` dans la bibliothèque : ses livres rares encore à trouver sont repérés. */
-export const spotCatalogue = (state: GameState, page: number): void => {
-  for (const id of raresOn(state, page))
-    if (!(id in state.rareBooks) && !state.catalogueSpotted.includes(id)) state.catalogueSpotted.push(id);
+/** Pages du Catalogue à lire dans la bibliothèque pour le sceau secret (choix de l'auteur, 05/10/2026). */
+export const CATALOGUE_PAGES = 20;
+
+/**
+ * Le joueur a vu la page `page` dans la bibliothèque. Au bout de vingt pages différentes, comme un enfant qui
+ * feuillette le catalogue de jouets en décembre, un sceau secret (le nom d'avant, trueCatalogue, est gardé).
+ */
+export const readCatalogue = (state: GameState, page: number): void => {
+  if (page < 1 || state.catalogueRead.includes(page)) return;
+  state.catalogueRead.push(page);
+  if (state.catalogueRead.length >= CATALOGUE_PAGES) sealEvent(state, 'trueCatalogue');
 };

@@ -1,7 +1,7 @@
 import { preparePageTexture, type Paper } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
-import { spotCatalogue } from '../../../systems/catalogue';
+import { readCatalogue } from '../../../systems/catalogue';
 import { LEATHER, THICKNESS, catalogueBack, catalogueFront, catalogueInside, catalogueSpine } from './catalogueCover';
 import { loadCatalogueFonts } from './catalogueDraw';
 import { paintCataloguePage } from './cataloguePages';
@@ -37,6 +37,6 @@ export const catalogueArt: RareBookArt = {
     paintCataloguePage(preparePageTexture(canvas, spineOnLeft, PAPER), page, spineOnLeft, state);
     return true;
   },
-  // Secret : un livre rare lu à sa place dans la bibliothèque, puis pris en main (systems/rareBooks.ts).
-  passed: (page, state) => spotCatalogue(state, page),
+  // Secret : vingt pages lues dans la bibliothèque (systems/catalogue.ts).
+  passed: (page, state) => readCatalogue(state, page),
 };

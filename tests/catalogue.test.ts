@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { PAGES_PER_BOOK } from '../src/systems/books';
-import { REGISTER_PAGE, catalogueRares, firstOn, raresOn, rowsOn, spotCatalogue } from '../src/systems/catalogue';
+import { CATALOGUE_PAGES, REGISTER_PAGE, catalogueRares, firstOn, readCatalogue, rowsOn } from '../src/systems/catalogue';
 import { rareBookAt, takeBook } from '../src/systems/rareBooks';
 
 /** Une partie qui a trouvé le Catalogue au livre `found`, en prenant tous les livres d'avant. */
@@ -36,23 +36,13 @@ describe('le Catalogue des catalogues', () => {
     expect([...catalogueRares(state)]).toEqual([...predicted]);
   });
 
-  it('un livre rare lu à sa place, puis pris en main : le sceau secret', () => {
+  it('vingt pages différentes lues dans la bibliothèque : le sceau secret', () => {
     const state = foundAt(3000);
-    const [index, id] = [...catalogueRares(state)][0];
-    let page = REGISTER_PAGE;
-    while (!raresOn(state, page).includes(id)) page++;
-    spotCatalogue(state, page);
-    expect(state.catalogueSpotted).toContain(id);
-    for (let i = 3001; i < index; i++) takeBook(state, i);
+    for (let page = 1; page < CATALOGUE_PAGES; page++) readCatalogue(state, page);
+    // Revenir sur une page déjà lue ne compte pas.
+    readCatalogue(state, 1);
     expect('trueCatalogue' in state.seals).toBe(false);
-    takeBook(state, index);
+    readCatalogue(state, CATALOGUE_PAGES);
     expect('trueCatalogue' in state.seals).toBe(true);
-  });
-
-  it('sans l’avoir lu, pas de sceau', () => {
-    const state = foundAt(3000);
-    const [index] = [...catalogueRares(state)][0];
-    for (let i = 3001; i <= index; i++) takeBook(state, i);
-    expect('trueCatalogue' in state.seals).toBe(false);
   });
 });

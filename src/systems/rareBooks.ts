@@ -1,7 +1,6 @@
 import { RARE_BOOKS } from '../data/rareBooks';
 import { gameRandom } from '../core/random';
 import { STRANGE_BOOK_INDEX } from './strangeBook';
-import { sealEvent } from './seals';
 import { rareChance } from './technologies';
 import type { GameState } from '../core/state';
 
@@ -57,10 +56,6 @@ export const rareBookAt = (state: GameState, index: number): string | undefined 
 /** Le livre n° `index` arrive en main : s'il est rare, il est trouvé (pour toujours). */
 export const takeBook = (state: GameState, index: number): string | undefined => {
   const id = rareBookAt(state, index);
-  if (id && !isRareBookFound(state, id)) {
-    state.rareBooks[id] = index;
-    // Secret : le joueur l'avait lu, à sa place, dans le Catalogue des catalogues (systems/catalogue.ts).
-    if (state.catalogueSpotted.includes(id)) sealEvent(state, 'trueCatalogue');
-  }
+  if (id && !isRareBookFound(state, id)) state.rareBooks[id] = index;
   return id;
 };
