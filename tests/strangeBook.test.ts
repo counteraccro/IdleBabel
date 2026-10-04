@@ -4,6 +4,8 @@ import { coverDesign } from '../src/systems/coverDesign';
 import { LEAVES_PER_BOOK, turnBookPage } from '../src/systems/books';
 import { STRANGE_BOOK_INDEX, randomDigitText, strangeBookFound } from '../src/systems/strangeBook';
 import { meaningfulCovers, trackPlay } from '../src/systems/stats';
+import { meetStrangeBook } from '../src/systems/decipher';
+import { loreTold } from '../src/systems/lore';
 
 describe('livre étrange', () => {
   it("a un titre en symboles de Babel sans sens caché, et sa page de titre n'a que des chiffres", () => {
@@ -28,6 +30,14 @@ describe('livre étrange', () => {
     expect(strangeBookFound(state)).toBe(true);
     for (let i = 0; i < LEAVES_PER_BOOK; i++) turnBookPage(state);
     expect(state.history.filter((e) => e.type === 'strangeBook')).toHaveLength(1);
+  });
+
+  it('est annoncé par son récit quand il arrive en main, pas quand le livre d’avant se termine', () => {
+    const state = createInitialState('fr');
+    for (let i = 0; i < LEAVES_PER_BOOK * STRANGE_BOOK_INDEX; i++) turnBookPage(state);
+    expect(loreTold(state, 'strangeBook')).toBe(false);
+    meetStrangeBook(state);
+    expect(state.lorePending).toContain('strangeBook');
   });
 });
 

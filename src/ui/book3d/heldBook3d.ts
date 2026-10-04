@@ -60,6 +60,11 @@ export interface HeldBookOptions {
    * qu'une fois les modales fermées.
    */
   onClosed?: () => void;
+  /**
+   * Le livre suivant vient de remonter entre les mains, encore fermé (un récit peut s'ouvrir) : il ne
+   * s'ouvre qu'une fois les modales fermées.
+   */
+  onArrived?: () => void;
 }
 
 /** Le livre en main, avec de quoi le remplacer (débogage : page ou livre changés à la main). */
@@ -181,6 +186,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     await take(current, 0, true);
     pose.set({ shut: 0 });
     await tweens.run(RAISE_MS, (e) => pose.set({ drop: 1 - e }), 'out');
+    options.onArrived?.();
     closedAt = animationNow();
     phase = 'closed';
   };

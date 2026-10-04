@@ -2,7 +2,6 @@ import type { GameState } from '../core/state';
 import { recordOnce } from '../core/history';
 import { STRANGE_BOOK_INDEX } from './strangeBook';
 import { loreTold } from './lore';
-import { meetStrangeBook } from './decipher';
 
 /** Tous les livres de la Bibliothèque ont 410 pages (Borges), comme le Livre Total. */
 export const PAGES_PER_BOOK = 410;
@@ -24,10 +23,8 @@ export const turnBookPage = (state: GameState): boolean => {
   state.bookPage = 0;
   state.booksFinished += 1;
   recordOnce(state, 'firstBook');
-  if (state.booksFinished === STRANGE_BOOK_INDEX) {
-    recordOnce(state, 'strangeBook');
-    meetStrangeBook(state);
-  }
+  // Son récit attend qu'il arrive en main (meetStrangeBook, handReading3d.ts).
+  if (state.booksFinished === STRANGE_BOOK_INDEX) recordOnce(state, 'strangeBook');
   return true;
 };
 
