@@ -32,6 +32,20 @@ export const LUCK_PAGES = { from: 15, to: 30 };
 /** Part des trouvailles tirées dans la phrase de méthode en cours (le reste : n'importe quelle phrase), avant le Fil d'Ariane. */
 export const TARGET_SHARE = 0.6;
 
+/**
+ * La phrase d'une méthode ne se trouve qu'une fois la méthode d'avant possédée à tant d'exemplaires
+ * (décision de l'auteur, 04/10) : chaque méthode arrive quand on peut à peu près se l'offrir, de plus en
+ * plus espacées (Doigt vers 20 min, Échelle vers 14 h), et la chance de trouvaille n'y change rien.
+ */
+export const METHOD_GATE = 25;
+
+/**
+ * Au-delà de 100 % de chance, les trouvailles en plus de la page (la première suit la règle d'avant) :
+ * chacune a sa part, le reste ne rapporte que sa Connaissance (un morceau déjà écrit). Idée de l'auteur,
+ * 04/10 : 554 %, c'est 5,5 fois plus de Connaissance, pas 5,5 fois plus vite le livre blanc.
+ */
+export const EXTRA_FIND_SHARES = { method: 0.03, hint: 0.1, memory: 0.02 } as const;
+
 /** Loi de Redondance : part des trouvailles qui répètent un morceau déjà écrit, avant la Mémoire des phrases. */
 export const DUPLICATE_SHARE = 0.2;
 

@@ -124,3 +124,20 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
 export const ANOMALIES: readonly SentenceDef[] = ANOMALY_FAMILIES.flatMap((family) =>
   IDS[family].map((id): SentenceDef => ({ id, kind: 'anomaly', family })),
 );
+
+/**
+ * Les indices qui mènent à un livre rare ne tombent qu'une fois ce livre trouvé (un des livres, s'il y en a
+ * plusieurs) : sans lui, ils ne voudraient rien dire. Les autres tombent n'importe quand. Décision de l'auteur, 04/10.
+ */
+export const HINT_BOOKS: Readonly<Record<string, readonly string[]>> = {
+  hintDeathBook: ['deathBook'],
+  hintDirectory: ['directory'],
+  hintColleagues: ['alexH', 'oriana'],
+  hintBabelDefinition: ['encyclopedia'],
+  hintGreatScott: ['almanac'],
+  hintNeverLaughed: ['dadJokes'],
+  hintOneWord: ['voynich'],
+  hintTrueCatalogue: ['catalogue'],
+  hintSandLastPage: ['sand'],
+  hintFoundTypo: ['bigX'],
+};

@@ -1,8 +1,9 @@
 import { SENTENCES } from '../data/sentences';
-import { BASE_FIND_CHANCE, FIND_WEIGHTS, LUCK_PAGES, type Find, type FindKind } from '../data/knowledge';
+import { BASE_FIND_CHANCE, EXTRA_FIND_SHARES, FIND_WEIGHTS, LUCK_PAGES, type Find, type FindKind } from '../data/knowledge';
 import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { pagesPerSecond } from './production';
-import { currentTarget, isComplete, missing, segmentKind, segments, write, written } from './sentences';
+import { isComplete, missing, segmentKind, segments, write, written } from './sentences';
+import { findableTarget, hintFindable } from './findable';
 import { tellLore } from './lore';
 import { duplicateShare, filterMultiplier, maxAwaySeconds, targetShare, turnsPerSecond } from './technologies';
 import { sealFindMultiplier } from './seals';
@@ -62,29 +63,61 @@ const missingSegment = (state: GameState, id: string, kind: FindKind, random: ()
   return { kind: segmentKind(texts[segment]), sentence: id, segment };
 };
 
+/** Un morceau déjà écrit (Loi de Redondance) : il rapporte sa Connaissance, mais n'écrit rien de neuf. */
+const repeatFind = (state: GameState, started: string[], random: () => number): Find => {
+  const sentence = pick(started.length > 0 ? started : SENTENCES.map((s) => s.id), random);
+  const segment = pick(written(state, sentence), random) ?? 0;
+  return { kind: segmentKind(segments(sentence)[segment]), sentence, segment, duplicate: true };
+};
+
+const startedSentences = (state: GameState): string[] =>
+  SENTENCES.filter((sentence) => written(state, sentence.id).length > 0).map((sentence) => sentence.id);
+
 /**
  * Ce que cache la page : surtout des morceaux de la phrase de méthode en cours, parfois d'une autre
- * phrase (jamais d'une méthode suivante : elles se découvrent dans l'ordre), parfois un morceau déjà
- * écrit ; rarement une phrase entière. `lucky` : la toute première
+ * phrase (jamais d'une méthode suivante : elles se découvrent dans l'ordre, et chacune attend la méthode
+ * d'avant à METHOD_GATE exemplaires ; jamais d'un indice dont le livre rare n'est pas trouvé), parfois un
+ * morceau déjà écrit ; rarement une phrase entière. `lucky` : la toute première
  * trouvaille, la phrase entière de la première méthode (la Lecture Diagonale), qui se découvre d'un coup.
  */
 export const drawFind = (state: GameState, random: () => number, lucky = false): Find => {
-  const target = currentTarget(state);
+  const target = findableTarget(state);
   if (lucky && target) return { kind: 'sentence', sentence: target };
   const kind = drawKind(random);
   // Seule la méthode en cours se trouve : les suivantes attendent leur tour.
   const open = SENTENCES.filter(
-    (sentence) => !isComplete(state, sentence.id) && (sentence.kind !== 'method' || sentence.id === target),
+    (sentence) =>
+      !isComplete(state, sentence.id) && (sentence.kind !== 'method' || sentence.id === target) && hintFindable(state, sentence.id),
   ).map((sentence) => sentence.id);
-  const started = SENTENCES.filter((sentence) => written(state, sentence.id).length > 0).map((sentence) => sentence.id);
-  if (open.length === 0 || (kind !== 'sentence' && started.length > 0 && random() < duplicateShare(state))) {
-    const sentence = pick(started.length > 0 ? started : SENTENCES.map((s) => s.id), random);
-    const segment = pick(written(state, sentence), random) ?? 0;
-    return { kind: segmentKind(segments(sentence)[segment]), sentence, segment, duplicate: true };
-  }
+  const started = startedSentences(state);
+  if (open.length === 0 || (kind !== 'sentence' && started.length > 0 && random() < duplicateShare(state)))
+    return repeatFind(state, started, random);
   const sentence = target && random() < targetShare(state) ? target : pick(open, random);
   if (kind === 'sentence') return { kind, sentence };
   return missingSegment(state, sentence, kind, random);
+};
+
+/**
+ * Une trouvaille en plus, au-delà de 100 % (EXTRA_FIND_SHARES) : un morceau de la méthode en cours, d'un
+ * indice ou d'un souvenir, chacun à sa part ; sinon (ou s'il n'y a rien à y trouver), un morceau déjà écrit.
+ */
+export const drawExtraFind = (state: GameState, random: () => number): Find => {
+  const roll = random();
+  const { method, hint, memory } = EXTRA_FIND_SHARES;
+  const target = findableTarget(state);
+  const pool =
+    roll < method
+      ? target
+        ? [target]
+        : []
+      : roll < method + hint
+        ? SENTENCES.filter((sentence) => sentence.family === 'hints' && hintFindable(state, sentence.id)).map((s) => s.id)
+        : roll < method + hint + memory
+          ? SENTENCES.filter((sentence) => sentence.kind === 'memory').map((s) => s.id)
+          : [];
+  const open = pool.filter((id) => !isComplete(state, id));
+  if (open.length > 0) return missingSegment(state, pick(open, random), drawKind(random), random);
+  return repeatFind(state, startedSentences(state), random);
 };
 
 /** La page tournée cache-t-elle une trouvaille ? Rien n'est gagné tant qu'elle n'est pas lue (gainFind). */
@@ -101,7 +134,8 @@ export const rollFinds = (state: GameState, random: () => number = Math.random):
   // pas deux fois le même morceau sur une page, comme hors-ligne (findWhileAway).
   const draft: GameState = { ...state, written: { ...state.written } };
   return Array.from({ length: count }, (_, index) => {
-    const find = drawFind(draft, random, index === 0 && state.lifetimeKnowledge === 0);
+    // La première suit la règle d'avant ; celles d'au-delà de 100 %, leur table (drawExtraFind).
+    const find = index === 0 ? drawFind(draft, random, state.lifetimeKnowledge === 0) : drawExtraFind(draft, random);
     if (!find.duplicate)
       write(draft, find.sentence, find.segment === undefined ? segments(find.sentence).map((_, i) => i) : [find.segment]);
     return find;
@@ -145,9 +179,13 @@ export const findWhileAway = (state: GameState, seconds: number, random: () => n
   const turned = pagesTurnedAway(state, seconds) * share;
   if (turned <= 0) return 0;
   // Nombre attendu, arrondi au hasard : la moyenne est juste, et une courte absence peut rapporter.
-  const count = Math.floor(turned * findChance(state) + random());
+  // Une par page au plus suit la règle d'avant ; au-delà de 100 %, les autres suivent leur table.
+  const chance = findChance(state);
+  const count = Math.floor(turned * Math.min(1, chance) + random());
+  const extra = chance > 1 ? Math.floor(turned * (chance - 1) + random()) : 0;
   for (let i = 0; i < count; i++) gainFind(state, drawFind(state, random));
-  return count;
+  for (let i = 0; i < extra; i++) gainFind(state, drawExtraFind(state, random));
+  return count + extra;
 };
 
 /** Débogage : de la Connaissance sans rien trouver. */

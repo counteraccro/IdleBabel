@@ -9,6 +9,8 @@ import { intuitionItems, reminiscenceNote } from './intuitionPage';
 import { TECHNOLOGIES } from '../../data/technologies';
 import { intuitionVisible, technologiesCompletion, understand } from '../../systems/technologies';
 import { completion, guess, guessPrice, isComplete, written } from '../../systems/sentences';
+import { waitingFor } from '../../systems/findable';
+import { METHOD_GATE } from '../../data/knowledge';
 import { babelize, seedOf } from './babelMask';
 import { sentenceBody } from './sentencePage';
 import { folio, type Item, type TextItem } from '../strangeBook/pageItems';
@@ -61,9 +63,24 @@ const sentenceLayout = (
     },
     title,
     ...sentenceBody(state, sentence, 240, { known, reveal: known && fresh(-1), fresh }),
+    ...waitingNote(state, sentence),
     ...(price === undefined ? [] : pencilOffer(priceNote(state, price, 'whiteBook.guess', 'whiteBook.guessShort'), asking, 20, [title])),
     folio(number),
   ];
+};
+
+/**
+ * La méthode en cours qui attend la précédente à METHOD_GATE exemplaires : une note au crayon dans la
+ * marge du haut (« Pas encore. D'abord : La Lecture Diagonale, 12 / 25 »), là où se proposerait la devinette.
+ */
+const waitingNote = (state: GameState, sentence: SentenceDef): Item[] => {
+  const before = waitingFor(state, sentence.id);
+  if (!before) return [];
+  const text = t('whiteBook.notYet')
+    .replace('{method}', t(`tools.${before}.name`))
+    .replace('{owned}', writeDigits(String(state.tools[before])))
+    .replace('{n}', writeDigits(String(METHOD_GATE)));
+  return [{ kind: 'text', text, x: 320, y: 20, size: 26, align: 'center', face: 'hand', steady: true }];
 };
 
 /**
