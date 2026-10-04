@@ -177,7 +177,6 @@
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",
-  "notYet": "Not yet. First: {method}, {owned} / {n}",
   "intuition": {
     "level": "Level {n} / {max}",
     "offer": "understand · {n} Knowledge",

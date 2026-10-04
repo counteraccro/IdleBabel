@@ -22,6 +22,15 @@
   height: 0.234cqw;
   background: repeating-linear-gradient(90deg, #5d5f66 0 0.234cqw, transparent 0.234cqw 0.9375cqw);
 }
+.sb-tally {
+  position: absolute;
+  pointer-events: none;
+}
+.sb-tally svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 .sb-underline {
   position: absolute;
   height: 0.25cqw;

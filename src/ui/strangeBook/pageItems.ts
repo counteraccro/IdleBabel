@@ -2,6 +2,7 @@ import '@fontsource/caveat/400.css';
 import './strangeBook.css';
 import { el } from '../dom';
 import { PAGE_TEXTURE } from '../book/pageLayout';
+import { tallyStrokes, tallyWidth, type TallyItem } from './tally';
 import { cssBaseline, preparePageTexture, type Paper } from '../book/pageRender';
 import { drawSeal, sealSvg, sigil, type Look } from './sigil';
 import { writeDigits } from '../../core/format';
@@ -54,7 +55,9 @@ export type Item =
    */
   | { kind: 'action'; id: string; y: number; height: number; x?: number; width?: number }
   /** Sceau : carré de côté `size` centré en `x`, `y` ; survolé, il écrit sa légende (`hover`). */
-  | { kind: 'seal'; id: string; series: string; tier: number; look: Look; x: number; y: number; size: number; fresh?: boolean };
+  | { kind: 'seal'; id: string; series: string; tier: number; look: Look; x: number; y: number; size: number; fresh?: boolean }
+  /** Bâtons au crayon, comptés par cinq (tally.ts). */
+  | TallyItem;
 
 /** Ce que les éléments d'une page peuvent déclencher. */
 export interface ItemActions {
@@ -81,6 +84,8 @@ void document.fonts?.load(`600 30px ${TITLE}`).then(() => window.dispatchEvent(n
 export const HAND = "'Caveat', cursive";
 const PENCIL = '#4a463f';
 const PENCIL_FADED = '#aaa391';
+/** Bâtons pas encore tracés : on devine leur place. */
+const PENCIL_GHOST = 'rgba(74, 70, 63, 0.14)';
 /** Livre blanc : symboles de Babel presque effacés, et lettres d'une phrase pas encore ordonnée. */
 export const NOISE_INK = '#d8d0bd';
 const GHOST_INK = '#bdb39c';
@@ -225,6 +230,23 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
     node.style.top = unit(item.y);
     node.style.left = unit(item.x1);
     node.style.width = unit(item.x2 - item.x1);
+    return node;
+  }
+  if (item.kind === 'tally') {
+    // Les mêmes traits qu'en 3D, en SVG posé sur la page.
+    const [left, top, width, height] = [item.x - tallyWidth(item.count) / 2 - 6, item.y - 4, tallyWidth(item.count) + 12, 28];
+    const node = el('span', 'sb-tally');
+    node.style.left = unit(left);
+    node.style.top = unit(top);
+    node.style.width = unit(width);
+    node.style.height = unit(height);
+    const lines = tallyStrokes(item)
+      .map(
+        (s) =>
+          `<line x1="${s.x1 - left}" y1="${s.y1 - top}" x2="${s.x2 - left}" y2="${s.y2 - top}" stroke="${s.done ? PENCIL : PENCIL_GHOST}" />`,
+      )
+      .join('');
+    node.innerHTML = `<svg viewBox="0 0 ${width} ${height}" stroke-width="1.8" stroke-linecap="round">${lines}</svg>`;
     return node;
   }
   if (item.kind === 'seal') {
@@ -411,6 +433,16 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
       context.fillStyle = PENCIL_FADED;
       for (let x = item.x1, n = 0; x < item.x2; x += 7, n++)
         context.fillRect(x, item.y + ((n * 7) % 3) * 0.4, Math.min(4, item.x2 - x), 1.6);
+    } else if (item.kind === 'tally') {
+      context.lineWidth = 1.8;
+      context.lineCap = 'round';
+      for (const stroke of tallyStrokes(item)) {
+        context.strokeStyle = stroke.done ? PENCIL : PENCIL_GHOST;
+        context.beginPath();
+        context.moveTo(stroke.x1, stroke.y1);
+        context.lineTo(stroke.x2, stroke.y2);
+        context.stroke();
+      }
     } else if (item.kind === 'seal') {
       drawSeal(context, sigil(item.series, item.tier), item.look, item.x - item.size / 2, item.y - item.size / 2, item.size);
     }

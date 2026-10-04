@@ -21,6 +21,8 @@ import type { GameState } from '../../core/state';
 const SEAL_Y = 108;
 const SEAL_SIZE = 112;
 const NAME_Y = 182;
+/** Bâtons d'une méthode qui attend : entre son nom et sa phrase. */
+const TALLY_Y = 208;
 
 /**
  * Page d'une phrase : son sceau hexagonal (doré une fois la phrase complète), le nom de la méthode
@@ -63,24 +65,20 @@ const sentenceLayout = (
     },
     title,
     ...sentenceBody(state, sentence, 240, { known, reveal: known && fresh(-1), fresh }),
-    ...waitingNote(state, sentence),
+    ...waitingTally(state, sentence),
     ...(price === undefined ? [] : pencilOffer(priceNote(state, price, 'whiteBook.guess', 'whiteBook.guessShort'), asking, 20, [title])),
     folio(number),
   ];
 };
 
 /**
- * La méthode en cours qui attend la précédente à METHOD_GATE exemplaires : une note au crayon dans la
- * marge du haut (« Pas encore. D'abord : La Lecture Diagonale, 12 / 25 »), là où se proposerait la devinette.
+ * La méthode en cours qui attend la précédente à METHOD_GATE exemplaires : des bâtons au crayon sous son
+ * nom, un par exemplaire possédé (choix de l'auteur, 04/10 : pas de texte, on compte comme le chercheur).
  */
-const waitingNote = (state: GameState, sentence: SentenceDef): Item[] => {
+const waitingTally = (state: GameState, sentence: SentenceDef): Item[] => {
   const before = waitingFor(state, sentence.id);
   if (!before) return [];
-  const text = t('whiteBook.notYet')
-    .replace('{method}', t(`tools.${before}.name`))
-    .replace('{owned}', writeDigits(String(state.tools[before])))
-    .replace('{n}', writeDigits(String(METHOD_GATE)));
-  return [{ kind: 'text', text, x: 320, y: 20, size: 26, align: 'center', face: 'hand', steady: true }];
+  return [{ kind: 'tally', x: 320, y: TALLY_Y, count: METHOD_GATE, done: Math.min(state.tools[before], METHOD_GATE) }];
 };
 
 /**

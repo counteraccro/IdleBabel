@@ -177,7 +177,6 @@
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",
-  "notYet": "Pas encore. D'abord : {method}, {owned} / {n}",
   "intuition": {
     "level": "Niveau {n} / {max}",
     "offer": "comprendre · {n} de Connaissance",
