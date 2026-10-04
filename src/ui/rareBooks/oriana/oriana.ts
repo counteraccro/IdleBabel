@@ -1,7 +1,7 @@
 import { MODERN_PAPER, preparePageTexture } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { loadOrianaFonts, orianaBack, orianaFront, orianaSpine } from './orianaCover';
 import { CONTENTS_PAGE, isTravelPage, orianaLinks, paintOrianaPage } from './orianaPages';
 import { KRAFT } from './orianaTravel';
@@ -24,7 +24,7 @@ export const orianaArt: RareBookArt = {
       cover: orianaFront(),
       back: orianaBack(),
       // L'intérieur des plats : la nuit de son couchant (crème, il se confondait avec les pages).
-      inside: board('#3a2a33', '#221a20'),
+      inside: plainBoard('#3a2a33', '#221a20'),
       spine: orianaSpine(THICKNESS),
       leather: 0x2a2848,
       edge: edgeTexture(MODERN_PAPER[1], '#c9c1b0'),

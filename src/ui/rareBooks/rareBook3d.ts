@@ -52,7 +52,7 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
     look: async () => {
       const { tick: coverTick, ...look } = await inTurn(() => art.look(state, design));
       tick = coverTick ?? null;
-      return look;
+      return coverTick ? { ...look, liveCover: true } : look;
     },
     ready: art.prepare,
     passed: art.passed && ((page) => art.passed?.(page, state)),

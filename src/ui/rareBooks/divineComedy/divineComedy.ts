@@ -2,7 +2,7 @@ import { getLocale, messages } from '../../../i18n';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { headbandTexture } from '../../book3d/headband';
 import { canvasTexture, edgeTexture } from '../../book3d/textures';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { slowPieces } from '../slowDrawing';
 import { classicArt } from '../classic/classicArt';
 import { GARAMOND, NIGHT, divineComedyBack, divineComedyFront, divineComedySpine, loadDivineComedyFonts } from './divineComedyBinding';
@@ -86,7 +86,7 @@ export const divineComedyArt = classicArt({
     cover: canvasTexture(pieces.now('front')),
     back: canvasTexture(pieces.now('back')),
     // L'intérieur des plats : un bleu plus sombre (crème, il se confondrait avec les pages).
-    inside: board('#141d36', '#070b18'),
+    inside: plainBoard('#141d36', '#070b18'),
     spine: canvasTexture(pieces.now('spine')),
     leather: Number.parseInt(NIGHT[0].slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c4b088'),

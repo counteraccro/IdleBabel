@@ -2,7 +2,7 @@ import { getLocale, messages } from '../../../i18n';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { headbandTexture } from '../../book3d/headband';
 import { canvasTexture, edgeTexture } from '../../book3d/textures';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { slowPieces } from '../slowDrawing';
 import { classicArt } from '../classic/classicArt';
 import { DIDOT, RED, loadQuixoteFonts, quixoteBack, quixoteFront, quixoteSpine } from './quixoteBinding';
@@ -88,7 +88,7 @@ export const quixoteArt = classicArt({
     cover: canvasTexture(pieces.now('front')),
     back: canvasTexture(pieces.now('back')),
     // L'intérieur des plats : un rouge sombre (crème, il se confondrait avec les pages).
-    inside: board('#4a1512', '#2a0a08'),
+    inside: plainBoard('#4a1512', '#2a0a08'),
     spine: canvasTexture(pieces.now('spine')),
     leather: Number.parseInt(RED[0].slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c4b088'),

@@ -1,7 +1,7 @@
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
 import { messages } from '../../../i18n';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { classicArt } from '../classic/classicArt';
 import { CASLON, CLOTH, INK, loadMobyDickFonts, mobyDickBack, mobyDickFront, mobyDickSpine, mobyDickTitlePage } from './mobyDickCover';
 import type { Paper } from '../../book/pageRender';
@@ -28,7 +28,7 @@ export const mobyDickArt = classicArt({
     cover: mobyDickFront(),
     back: mobyDickBack(),
     // L'intérieur des plats : l'ardoise de la toile, plus sombre (crème, il se confondait avec les pages).
-    inside: board('#3a4148', '#22272c'),
+    inside: plainBoard('#3a4148', '#22272c'),
     spine: mobyDickSpine(THICKNESS),
     leather: Number.parseInt(CLOTH.slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c4b088'),

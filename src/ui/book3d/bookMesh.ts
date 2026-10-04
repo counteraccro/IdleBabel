@@ -57,6 +57,8 @@ export interface BookLook {
   spineGlow?: THREE.Texture;
   /** Une lumière qui passe sur ces titres de lettre en lettre (glowSweep.ts), et où ils courent. */
   glowSweep?: { sweep: GlowSweep; cover?: GlowSpan; spine?: GlowSpan };
+  /** Les plats sont redessinés pendant qu'on les voit (Book3d.tick) : la vitrine ne les réduit pas (shelfLook.ts). */
+  liveCover?: boolean;
 }
 
 export interface BookMesh {

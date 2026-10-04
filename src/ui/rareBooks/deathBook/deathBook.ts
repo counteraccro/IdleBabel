@@ -2,7 +2,7 @@ import { sealEvent } from '../../../systems/seals';
 import { edgeTexture } from '../../book3d/textures';
 import { GOTHIC, deathBookBack, deathBookFront, deathBookSpine } from './deathBookCover';
 import { DEATH_PAPER, SCENARIO_PAGE, loadDeathFonts, paintDeathPage } from './deathBookPages';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import type { RareBookArt } from '../rareBookArt';
 
 /** 410 pages, comme tous les livres de Babel : l'épaisseur d'un livre ordinaire. */
@@ -21,7 +21,7 @@ export const deathBookArt: RareBookArt = {
     return {
       cover: deathBookFront(),
       back: deathBookBack(),
-      inside: board('#151516', '#070708'),
+      inside: plainBoard('#151516', '#070708'),
       spine: deathBookSpine(THICKNESS),
       leather: 0x1a1a1b,
       edge: edgeTexture(DEATH_PAPER[1], '#bdb8ac'),

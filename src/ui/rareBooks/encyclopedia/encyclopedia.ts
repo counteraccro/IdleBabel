@@ -3,9 +3,11 @@ import { sealEvent } from '../../../systems/seals';
 import { preparePageTexture } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { canvasTexture } from '../../book3d/textures';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { slowPieces } from '../slowDrawing';
 import { loadClassicText } from '../classic/classicText';
+import { keepLayout } from '../keptLayouts';
+import { forgetWidths } from './encyclopediaText';
 import { CALF, encyclopediaBack, encyclopediaFront, encyclopediaSpine, sprinkledEdge } from './encyclopediaBinding';
 import { loadEncyclopediaFonts } from './encyclopediaFonts';
 import { CONTENTS_PAGE, layoutEncyclopedia, type EncyclopediaLayout } from './encyclopediaLayout';
@@ -34,12 +36,25 @@ const warm = async (): Promise<void> => {
 let laid: EncyclopediaLayout | null = null;
 /** La préparation (polices, texte, mise en page), faite une fois : le texte est le même dans les deux langues. */
 let preparing: Promise<void> | null = null;
+/** Combien de fois la mise en page a été oubliée : une préparation commencée avant ne garde rien. */
+let forgotten = 0;
+/** Oublie la mise en page et les largeurs mesurées (keptLayouts.ts) : refaites à la prochaine ouverture. */
+const forget = (): void => {
+  laid = null;
+  preparing = null;
+  forgotten++;
+  forgetWidths();
+};
 const prepare = (): Promise<void> => {
+  keepLayout(forget);
   if (!preparing) {
+    const since = forgotten;
     const done = (async () => {
       await loadEncyclopediaFonts();
       const text = await loadClassicText('encyclopedia', 'fr');
-      laid = await layoutEncyclopedia(document.createElement('canvas').getContext('2d')!, text);
+      const layout = await layoutEncyclopedia(document.createElement('canvas').getContext('2d')!, text);
+      // Oublié entre-temps : rien n'est gardé.
+      if (forgotten === since) laid = layout;
     })();
     // Un échec (hors ligne…) ne reste pas : on réessaiera à la prochaine ouverture.
     done.catch(() => {
@@ -71,7 +86,7 @@ export const encyclopediaArt: RareBookArt = {
       cover: canvasTexture(pieces.now('front')),
       back: canvasTexture(pieces.now('back')),
       // L'intérieur des plats : un veau plus sombre (crème, il se confondrait avec les pages).
-      inside: board('#45260f', '#24130a'),
+      inside: plainBoard('#45260f', '#24130a'),
       spine: canvasTexture(pieces.now('spine')),
       leather: Number.parseInt(CALF[1].slice(1), 16),
       edge: sprinkledEdge(PAPER[1]),

@@ -46,6 +46,9 @@ export const canonFont = (size: number, italic = false): string => `${italic ? '
 /** Les largeurs déjà mesurées : le livre a 160 000 mots, beaucoup reviennent. */
 const widths = new Map<string, number>();
 
+/** Oublie les largeurs mesurées (le livre n'est plus gardé) : elles se remesurent à la demande. */
+export const forgetWidths = (): void => widths.clear();
+
 /** La largeur d'un mot à la taille `size`. */
 export const wordWidth = (context: CanvasRenderingContext2D, word: Word, size: number): number => {
   let total = 0;

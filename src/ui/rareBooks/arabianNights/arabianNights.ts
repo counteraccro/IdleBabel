@@ -3,7 +3,7 @@ import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { headbandTexture } from '../../book3d/headband';
 import { getLocale, messages } from '../../../i18n';
 import { canvasTexture, edgeTexture } from '../../book3d/textures';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { slowPieces } from '../slowDrawing';
 import { classicArt } from '../classic/classicArt';
 import {
@@ -98,7 +98,7 @@ export const arabianNightsArt = classicArt({
     cover: canvasTexture(pieces.now('front')),
     back: canvasTexture(pieces.now('back')),
     // L'intérieur des plats : le bordeaux du maroquin, plus sombre (crème, il se confondait avec les pages).
-    inside: board('#4a1518', '#2a0b0d'),
+    inside: plainBoard('#4a1518', '#2a0b0d'),
     spine: canvasTexture(pieces.now('spine')),
     leather: Number.parseInt(MOROCCO.slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c4b088'),

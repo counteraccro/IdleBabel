@@ -2,7 +2,7 @@ import { getLocale, messages } from '../../../i18n';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { headbandTexture } from '../../book3d/headband';
 import { canvasTexture, edgeTexture } from '../../book3d/textures';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { slowPieces } from '../slowDrawing';
 import { classicArt } from '../classic/classicArt';
 import { GARAMOND, MOROCCO, loadOdysseyFonts, odysseyBack, odysseyFront, odysseySpine } from './odysseyBinding';
@@ -64,7 +64,7 @@ export const odysseyArt = classicArt({
     cover: canvasTexture(pieces.now('front')),
     back: canvasTexture(pieces.now('back')),
     // L'intérieur des plats : un bordeaux sombre (crème, il se confondrait avec les pages).
-    inside: board('#4a1520', '#2a0a10'),
+    inside: plainBoard('#4a1520', '#2a0a10'),
     spine: canvasTexture(pieces.now('spine')),
     leather: Number.parseInt(MOROCCO[0].slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c4b088'),

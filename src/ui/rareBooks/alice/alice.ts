@@ -1,7 +1,7 @@
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
 import { messages } from '../../../i18n';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { classicArt } from '../classic/classicArt';
 import { CLOTH, INK, OLD, PLAYFAIR, aliceBack, aliceFront, aliceSpine, aliceTitlePage, loadAliceFonts } from './aliceCover';
 import type { Paper } from '../../book/pageRender';
@@ -24,7 +24,7 @@ export const aliceArt = classicArt({
     cover: aliceFront(),
     back: aliceBack(),
     // L'intérieur des plats : le rouge de la toile, plus sombre (crème, il se confondait avec les pages).
-    inside: board('#6e161c', '#430c10'),
+    inside: plainBoard('#6e161c', '#430c10'),
     spine: aliceSpine(THICKNESS),
     leather: Number.parseInt(CLOTH.slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c9b790'),

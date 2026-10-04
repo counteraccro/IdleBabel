@@ -2,7 +2,7 @@ import { getLocale, messages } from '../../../i18n';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { headbandTexture } from '../../book3d/headband';
 import { canvasTexture, edgeTexture } from '../../book3d/textures';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { slowPieces } from '../slowDrawing';
 import { classicArt } from '../classic/classicArt';
 import { CALF, DIDOT, loadSaragossaFonts, saragossaBack, saragossaFront, saragossaSpine } from './saragossaBinding';
@@ -78,7 +78,7 @@ export const saragossaArt = classicArt({
     cover: canvasTexture(pieces.now('front')),
     back: canvasTexture(pieces.now('back')),
     // L'intérieur des plats : un veau plus sombre (crème, il se confondrait avec les pages).
-    inside: board('#5a3417', '#2e1909'),
+    inside: plainBoard('#5a3417', '#2e1909'),
     spine: canvasTexture(pieces.now('spine')),
     leather: Number.parseInt(CALF[1].slice(1), 16),
     edge: edgeTexture(PAPER[1], '#c4b088'),

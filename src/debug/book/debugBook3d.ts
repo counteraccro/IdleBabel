@@ -32,6 +32,7 @@ export const debugBook3d = (): Book3d => {
         edge: edgeTexture(DEBUG_PAPER[1], '#9d9a90'),
         paper: DEBUG_PAPER[0],
         headband: headbandTexture('#d9b56a', '#1c1a2a'),
+        liveCover: true,
       };
     },
     // Les losanges suivent le choix (fait dans le livre ou retiré depuis la barre).

@@ -2,7 +2,7 @@ import { hashText, seeded } from '../../../core/random';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { preparePageTexture, type Paper } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import { LEATHER, bibleBack, bibleFront, bibleSpine, bibleTitlePage, giltEdge, loadBibleFonts } from './bibleCover';
 import { CONTENTS_PAGE } from './bibleBooks';
 import { bibleLinks, paintBiblePage } from './biblePages';
@@ -36,7 +36,7 @@ export const bibleArt: RareBookArt = {
     return {
       cover: bibleFront(),
       back: bibleBack(),
-      inside: board('#1c1a18', '#0c0b0a'),
+      inside: plainBoard('#1c1a18', '#0c0b0a'),
       spine: bibleSpine(THICKNESS),
       leather: Number.parseInt(LEATHER.slice(1), 16),
       // Les tranches dorées.

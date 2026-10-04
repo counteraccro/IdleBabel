@@ -14,15 +14,37 @@ export const HAND = "'Caveat', cursive";
 
 export { CQW, HEIGHT, WIDTH };
 
-/** Un plat uni de couleur `color`, à peine plus sombre sur les bords, et ce qu'on y dessine. */
-export const board = (color: string, edge: string, draw?: (context: CanvasRenderingContext2D) => void): THREE.CanvasTexture => {
-  const [node, context] = canvas();
+/** Le fond d'un plat uni : `color`, à peine plus sombre sur les bords (`edge`). */
+const shadeBoard = (context: CanvasRenderingContext2D, color: string, edge: string): void => {
   const shade = context.createRadialGradient(WIDTH / 2, HEIGHT / 2, WIDTH * 0.15, WIDTH / 2, HEIGHT / 2, WIDTH * 0.85);
   shade.addColorStop(0, color);
   shade.addColorStop(1, edge);
   context.fillStyle = shade;
   context.fillRect(0, 0, WIDTH, HEIGHT);
+};
+
+/** Un plat uni de couleur `color`, à peine plus sombre sur les bords, et ce qu'on y dessine. */
+export const board = (color: string, edge: string, draw?: (context: CanvasRenderingContext2D) => void): THREE.CanvasTexture => {
+  const [node, context] = canvas();
+  shadeBoard(context, color, edge);
   draw?.(context);
+  return canvasTexture(node);
+};
+
+/** Réduction d'un plat sans rien dessus : un dégradé reste le même en petit. */
+const PLAIN_SCALE = 8;
+
+/**
+ * Un plat uni, sans rien dessus (l'intérieur des plats) : le même que `board`, en 100 × 125 au lieu de
+ * 800 × 1000 (3 Mo de moins par livre, en mémoire comme sur la carte graphique).
+ */
+export const plainBoard = (color: string, edge: string): THREE.CanvasTexture => {
+  const node = document.createElement('canvas');
+  node.width = WIDTH / PLAIN_SCALE;
+  node.height = HEIGHT / PLAIN_SCALE;
+  const context = node.getContext('2d')!;
+  context.scale(1 / PLAIN_SCALE, 1 / PLAIN_SCALE);
+  shadeBoard(context, color, edge);
   return canvasTexture(node);
 };
 

@@ -20,6 +20,7 @@ import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
 import { addCellLights } from './cellLights';
 import { layoutBookcase, type ShelfPlace } from './shelfLayout';
+import { shelfLook } from './shelfLook';
 import type { GameState } from '../../core/state';
 import { animationNow } from '../animationClock';
 
@@ -178,7 +179,7 @@ export const createLibraryPage = (
     place.tick = book.tick;
     void book.look().then((look) => {
       if (!root.isConnected && mounted) return;
-      const mesh = createBookMesh(book.shape, look);
+      const mesh = createBookMesh(book.shape, shelfLook(look));
       mesh.setOpen(0);
       const standing = place.spot.pose === 'stand';
       // Le dos vers le lecteur : debout, ou couché sur le plat (tourné d'un quart de tour dans son plan).

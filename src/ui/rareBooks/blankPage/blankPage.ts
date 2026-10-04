@@ -3,7 +3,7 @@ import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
 import { SLATE, SLATE_EDGE, blankPageBack, blankPageFront, blankPageSpine, loadBlankPageFonts } from './blankPageCover';
 import { CONTENTS_PAGE, blankPageLinks, paintBlankPage } from './blankPagePages';
-import { board } from '../draw';
+import { plainBoard } from '../draw';
 import type { RareBookArt } from '../rareBookArt';
 
 const THICKNESS = 0.12;
@@ -21,7 +21,7 @@ export const blankPageArt: RareBookArt = {
     return {
       cover: blankPageFront(),
       back: blankPageBack(),
-      inside: board(SLATE, SLATE_EDGE),
+      inside: plainBoard(SLATE, SLATE_EDGE),
       spine: blankPageSpine(THICKNESS),
       leather: 0x3b4a52,
       edge: edgeTexture(MODERN_PAPER[1], '#d8d3c8'),
