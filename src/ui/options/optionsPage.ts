@@ -8,6 +8,8 @@ import type { GameState } from '../../core/state';
 
 export interface OptionsHandlers extends NotebookActions {
   onBack: () => void;
+  /** Le texte du bouton de retour (relu au changement de langue) ; par défaut, retour au jeu. */
+  backLabel?: () => string;
 }
 
 /**
@@ -15,16 +17,18 @@ export interface OptionsHandlers extends NotebookActions {
  * les réglages au stylo. Changer de langue réécrit les pages sans refermer le cahier.
  */
 export const createOptionsPage = (state: GameState, handlers: OptionsHandlers): Component => {
+  const backLabel = handlers.backLabel ?? (() => t('ui.back'));
   const page = createBook3dPage(
     notebook3d(state, {
       ...handlers,
       onLocale: (locale) => {
         handlers.onLocale(locale);
-        page.root.querySelector('.options-back')!.textContent = `← ${t('ui.back')}`;
+        page.root.querySelector('.options-back')!.textContent = `← ${backLabel()}`;
         window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
       },
     }),
     handlers.onBack,
+    backLabel(),
   );
   return page;
 };

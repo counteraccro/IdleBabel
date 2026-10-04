@@ -61,9 +61,28 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   applySettings(state);
   // Page ouverte depuis le jeu : « retour » revient en arrière dans l'historique du navigateur.
   let openedFromGame = false;
+  // Livre de la pile ouvert depuis la bibliothèque : il s'ouvre par-dessus la vitrine, « retour » y ramène
+  // (en arrière dans l'historique si elle y est juste avant).
+  let overLibrary = false;
+  let libraryBelow = false;
   const open = (hash: string) => (): void => {
+    // La clé, depuis un livre ouvert par-dessus la vitrine : on y retourne.
+    if (overLibrary && hash === LIBRARY_HASH) return back();
+    if (inLibrary() && hash !== LIBRARY_HASH) {
+      overLibrary = true;
+      if (window.location.hash === LIBRARY_HASH) {
+        libraryBelow = true;
+        window.location.hash = hash;
+      } else {
+        // Depuis un livre de la vitrine : il est rangé, la page de la pile prend sa place dans l'historique.
+        libraryBelow = openedFromLibrary;
+        openedFromLibrary = false;
+        window.location.replace(hash);
+      }
+      return;
+    }
     // D'un livre à un autre (pile de l'en-tête) : la page remplace celle d'avant dans l'historique, et
-    // « retour » ramène au jeu, pas au livre qu'on vient de quitter.
+    // « retour » ramène au jeu (ou à la vitrine), pas au livre qu'on vient de quitter.
     if (openBook() !== null) {
       window.location.replace(hash);
       return;
@@ -71,10 +90,18 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     openedFromGame = true;
     window.location.hash = hash;
   };
-  const back = (): void => {
+  /** Le bouton de retour d'un livre de la pile : vers la vitrine s'il a été ouvert depuis elle. */
+  const backLabel = (): string => t(overLibrary ? 'ui.backToLibrary' : 'ui.back');
+  function back(): void {
+    if (overLibrary) {
+      overLibrary = false;
+      if (libraryBelow) window.history.back();
+      else window.location.replace(LIBRARY_HASH);
+      return;
+    }
     if (openedFromGame) window.history.back();
     else window.location.hash = '';
-  };
+  }
 
   /** Le livre rare de la bibliothèque ouvert en grand (#bibliotheque:<id>), s'il a bien été trouvé. */
   const libraryBook = (): string | null => {
@@ -129,33 +156,33 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   const game = (): Component[] => [header, counter, createMethodHive(state), createHandReading3d(state), createFooter(state.settings)];
 
-  const options = (): Component[] => [
-    header,
-    counter,
-    createOptionsPage(state, {
-      // Le cahier se réécrit lui-même, ouvert là où il est : l'écran n'est pas reconstruit.
-      onLocale: (locale) => {
-        state.locale = locale;
-        setLocale(locale);
-        document.documentElement.lang = locale;
-        saveGame(state);
-      },
-      onSettings: () => {
-        applySettings(state);
-        saveGame(state);
-      },
-      onReset: () => {
-        deleteSave();
-        // Nouvelle partie : le livre étrange est à retrouver, même si le débogage le montrait.
-        revealStats(false);
-        Object.assign(state, createInitialState(state.locale), { settings: state.settings });
-        saveGame(state);
-        // On repart de zéro à l'accueil du site : page rechargée, sans #options ni ?debug.
-        window.location.replace(import.meta.env.BASE_URL);
-      },
-      onBack: back,
-    }),
-  ];
+  const options = (): Component[] =>
+    pileBook(
+      createOptionsPage(state, {
+        // Le cahier se réécrit lui-même, ouvert là où il est : l'écran n'est pas reconstruit.
+        onLocale: (locale) => {
+          state.locale = locale;
+          setLocale(locale);
+          document.documentElement.lang = locale;
+          saveGame(state);
+        },
+        onSettings: () => {
+          applySettings(state);
+          saveGame(state);
+        },
+        onReset: () => {
+          deleteSave();
+          // Nouvelle partie : le livre étrange est à retrouver, même si le débogage le montrait.
+          revealStats(false);
+          Object.assign(state, createInitialState(state.locale), { settings: state.settings });
+          saveGame(state);
+          // On repart de zéro à l'accueil du site : page rechargée, sans #options ni ?debug.
+          window.location.replace(import.meta.env.BASE_URL);
+        },
+        onBack: back,
+        backLabel,
+      }),
+    );
 
   // Un livre de la vitrine : il s'ouvre par-dessus elle, et « retour » y ramène.
   let openedFromLibrary = false;
@@ -181,7 +208,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   };
   const library = (): Component[] => {
     const page = libraryPage();
-    page.setBackdrop(null);
+    page.setBackdrop(false);
     return [header, counter, page];
   };
   const libraryBookPage = (id: string): Component[] => {
@@ -192,11 +219,19 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     };
     // La vitrine reste en fond, floue, sous le livre ouvert.
     const page = libraryPage();
-    page.setBackdrop(id);
+    page.setBackdrop(true, id);
     const spec = shelfBook3d(state, id, debugging);
     // Le livre de débogage, hors du mode ?debug : on le prend en main, mais il refuse de s'ouvrir.
     if (id === LIBRARY_DEBUG_BOOK && !debugging) spec.sealed = showDebugBookError;
     return [header, counter, page, createBook3dPage(spec, leave, t('ui.shelveBook'))];
+  };
+
+  /** La page d'un livre de la pile ; ouvert depuis la bibliothèque, la vitrine reste en fond, floue. */
+  const pileBook = (page: Component): Component[] => {
+    if (!overLibrary) return [header, counter, page];
+    const shelf = libraryPage();
+    shelf.setBackdrop(true);
+    return [header, counter, shelf, page];
   };
 
   const screen = (): Component[] => {
@@ -205,7 +240,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     const shelved = libraryBook();
     if (shelved) return libraryBookPage(shelved);
     if (inLibrary()) return library();
-    if (window.location.hash === DEBUG_BOOK_HASH && debugging) return [header, counter, createBook3dPage(debugBook3d(), back)];
+    if (window.location.hash === DEBUG_BOOK_HASH && debugging) return pileBook(createBook3dPage(debugBook3d(), back, backLabel()));
     // Débogage : un livre rare ouvert en grand, comme il sera lu dans la bibliothèque.
     if (window.location.hash.startsWith(RARE_BOOK_HASH) && debugging)
       return [header, counter, createBook3dPage(rareBook3d(state, window.location.hash.slice(RARE_BOOK_HASH.length)), back)];
@@ -218,10 +253,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         tellLore(state, 'firstBook');
         back();
       };
-      return [header, counter, createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : undefined)];
+      return pileBook(createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : backLabel()));
     }
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state))
-      return [header, counter, createBook3dPage(strangeBook3d(state), back)];
+      return pileBook(createBook3dPage(strangeBook3d(state), back, backLabel()));
     return game();
   };
 
@@ -229,6 +264,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     document.documentElement.lang = state.locale;
     // L'en-tête et le compteur restent ; le reste de l'écran d'avant s'efface puis s'en va, le nouveau
     // apparaît en fondu (la page d'un livre venu de la pile gère elle-même son arrivée).
+    // Plus de livre de la pile ouvert (retour du navigateur…) : il ne l'est plus par-dessus la vitrine.
+    const book = openBook();
+    if (book === null || book === 'library') overLibrary = false;
     const next = screen();
     // Ce qui reste d'un écran à l'autre (en-tête, compteur, vitrine sous un livre ouvert) ne bouge pas.
     const leaving = components.filter((c) => !lasting.includes(c) && !next.includes(c));

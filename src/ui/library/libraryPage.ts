@@ -96,10 +96,10 @@ interface Place {
  */
 export interface LibraryPage extends Component {
   /**
-   * Un de ses livres (`id`) est ouvert par-dessus : la vitrine reste en fond, floue, sa place vide, et ne
-   * répond plus ; null : elle revient au premier plan.
+   * Un livre est ouvert par-dessus (`backdrop`) : la vitrine reste en fond, floue, et ne répond plus ; l'un
+   * des siens (`id`) y laisse sa place vide. Faux : elle revient au premier plan.
    */
-  setBackdrop: (id: string | null) => void;
+  setBackdrop: (backdrop: boolean, id?: string) => void;
 }
 
 export const createLibraryPage = (
@@ -330,11 +330,11 @@ export const createLibraryPage = (
 
   return {
     root,
-    setBackdrop: (id) => {
-      if (id) hover(null);
+    setBackdrop: (backdrop, id) => {
+      if (backdrop) hover(null);
       // Au retour, le livre est déjà en vol vers sa place (flyingHome) : elle reste vide jusqu'à son arrivée.
-      opened = id;
-      root.classList.toggle('backdrop', id !== null);
+      opened = id ?? null;
+      root.classList.toggle('backdrop', backdrop);
       dirty = true;
     },
     update: () => {
