@@ -20,8 +20,9 @@ describe('sceaux', () => {
     expect(state.seals['pagesRead-10000']).toBeUndefined();
   });
 
-  it('scelle la Lecture Diagonale à 1, 25, 50, 100, 150 et 500 exemplaires dans une même partie', () => {
-    expect(SEALS.filter((seal) => seal.text === 'diagonal').map((seal) => seal.tier?.n)).toEqual([1, 25, 50, 100, 150, 500]);
+  it('scelle chaque méthode à 1, 25, 50, 100, 150 et 500 exemplaires dans une même partie', () => {
+    for (const tool of ['diagonal', 'finger', 'voice', 'lectern', 'ladder'])
+      expect(SEALS.filter((seal) => seal.text === tool).map((seal) => seal.tier?.n)).toEqual([1, 25, 50, 100, 150, 500]);
     const state = createInitialState('fr');
     state.tools.diagonal = 30;
     checkSeals(state, 1);

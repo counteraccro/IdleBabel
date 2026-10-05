@@ -6,6 +6,7 @@ import { statsRevealed } from '../../systems/strangeBook';
 import { isDeciphered } from '../../systems/decipher';
 import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
 import type { GameState } from '../../core/state';
+import { TOOLS, type ToolId } from '../../data/tools';
 
 /**
  * Les sceaux dans le livre étrange : une page d'avancement, puis une planche par thème, en alvéoles
@@ -18,12 +19,16 @@ const SEAL_SIZE = 100;
 const STEP_X = 94;
 const FIRST_ROW = 228;
 const STEP_Y = 82;
+/** Une page de méthode descend ses alvéoles sous le sous-titre. */
+const METHOD_SHIFT = 40;
 
 export interface PlatePage {
   plate: PlateId;
   seals: SealDef[];
   /** Morceau de la planche (0 : sa première page) ; `page` : index de la page dans le livre. */
   part: number;
+  /** Planche « Méthodes » : la méthode de la page (une page chacune). */
+  method?: ToolId;
   page: number;
 }
 
@@ -32,6 +37,13 @@ export const platePages = (first: number): PlatePage[] => {
   const pages: PlatePage[] = [];
   for (const plate of PLATES) {
     const seals = plateSeals(plate);
+    // Une page par méthode, ses sceaux seulement (l'auteur a d'autres idées de sceaux pour chacune).
+    if (seals.some((seal) => seal.method)) {
+      TOOLS.forEach((tool, part) =>
+        pages.push({ plate, seals: seals.filter((seal) => seal.method === tool.id), part, method: tool.id, page: first + pages.length }),
+      );
+      continue;
+    }
     for (let part = 0; part * PER_PAGE < seals.length; part++) {
       pages.push({ plate, seals: seals.slice(part * PER_PAGE, (part + 1) * PER_PAGE), part, page: first + pages.length });
     }
@@ -72,10 +84,15 @@ export const sealLegend = (state: GameState, id: string | null): { name: string;
 const HIDDEN_PLATES: readonly PlateId[] = ['rare', 'secrets'];
 
 /** Obtenus sur total ; les secrets et les livres rares ne disent pas combien il en reste. */
-const tally = (state: GameState, plate: PlateId): string => {
-  const seals = plateSeals(plate);
-  return writeDigits(`${countObtained(state, seals)} / ${HIDDEN_PLATES.includes(plate) && !statsRevealed() ? '?' : seals.length}`);
-};
+const tally = (state: GameState, plate: PlateId, seals = plateSeals(plate)): string =>
+  writeDigits(`${countObtained(state, seals)} / ${HIDDEN_PLATES.includes(plate) && !statsRevealed() ? '?' : seals.length}`);
+
+/**
+ * Sous-titre d'une page de méthode : son nom, une fois la méthode possédée au moins une fois (son premier
+ * sceau), et le sommaire déchiffré ; sinon en symboles (le livre ne la révèle pas avant le livre blanc).
+ */
+const methodTitle = (state: GameState, method: ToolId): string =>
+  isDeciphered(state, 'contents') && `${method}-1` in state.seals ? t(`tools.${method}.name`) : babelName(`method:${method}`, 2);
 
 const LINE_TOP = 400;
 const LINE_STEP = 40;
@@ -152,7 +169,8 @@ const legendLines = (name: string): TextItem[] => {
     size,
     spacing,
   });
-  if (textWidth(line(name, 1, LEGEND.size, LEGEND.spacing)) <= CAPTION_WIDTH) return [line('', 0, 22, 2), line(name, 1, LEGEND.size, LEGEND.spacing)];
+  if (textWidth(line(name, 1, LEGEND.size, LEGEND.spacing)) <= CAPTION_WIDTH)
+    return [line('', 0, 22, 2), line(name, 1, LEGEND.size, LEGEND.spacing)];
   // Coupure au mot le plus proche du milieu (en largeur).
   const words = name.split(' ');
   const cut = (at: number): [string, string] => [words.slice(0, at).join(' '), words.slice(at).join(' ')];
@@ -194,19 +212,34 @@ export const plateItems = (
         tier: seal.tier?.index ?? 0,
         look,
         x: 320 + (first + i - (count - 1) / 2) * STEP_X,
-        y: FIRST_ROW + row * STEP_Y,
+        y: FIRST_ROW + (page.method ? METHOD_SHIFT : 0) + row * STEP_Y,
         size: SEAL_SIZE,
         fresh: obtained && fresh(seal.id),
       };
     });
   });
+  const subtitle: Item[] = page.method
+    ? [
+        fitCaption({
+          kind: 'text',
+          text: methodTitle(state, page.method),
+          x: 320,
+          y: 146,
+          size: 24,
+          align: 'center',
+          italic: true,
+          spacing: 2,
+        }),
+      ]
+    : [];
   return [
     ...heading(plateTitle(state, page.plate)),
+    ...subtitle,
     {
       kind: 'text',
-      text: `✦ ${tally(state, page.plate)}`,
+      text: `✦ ${tally(state, page.plate, page.method ? page.seals : undefined)}`,
       x: 320,
-      y: 150,
+      y: page.method ? 182 : 150,
       size: 20,
       align: 'center',
       italic: true,

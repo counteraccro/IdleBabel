@@ -6,7 +6,7 @@ import { ANOMALIES, ANOMALY_FAMILIES } from './anomalies';
 import { RARE_BOOKS } from './rareBooks';
 import { TECHNOLOGIES } from './technologies';
 import { levelOf, lockOf, maxLevel } from '../systems/technologies';
-import type { ToolId } from './tools';
+import { TOOLS, type ToolId } from './tools';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
@@ -27,6 +27,8 @@ export interface SealDef {
   rareBook?: string;
   /** Sceau de l'intuition d'une méthode : le nom de la méthode remplace `{title}` dans le texte. */
   tool?: ToolId;
+  /** Sceau d'une méthode (planche « Méthodes ») : chacune a sa page, son nom en sous-titre. */
+  method?: ToolId;
   reached: (state: GameState) => boolean;
 }
 
@@ -89,9 +91,12 @@ export const SEALS: readonly SealDef[] = [
 
   ...series('playTime', 'time', (s) => s.stats.playSeconds / HOUR, [1, 10, 100]),
 
-  // Exemplaires possédés dans une même partie (le prestige les remet à zéro), décision de l'auteur le 05/10 : 25, le
-  // moment où la Diagonale ouvre le Doigt ; 150 coûte ~10¹¹ pages, 500 ~10³² : fait pour la très longue partie.
-  ...series('diagonal', 'methods', (s) => s.tools.diagonal, [1, 25, 50, 100, 150, 500]),
+  // Exemplaires possédés dans une même partie (le prestige les remet à zéro), les mêmes paliers pour chaque méthode
+  // (décision de l'auteur, 05/10) : 25, le moment où elle ouvre la suivante ; 500 coûte de 10³² pages (Diagonale)
+  // à 10³⁹ (Échelle) : fait pour la très longue partie, comme les derniers succès de Cookie Clicker.
+  ...TOOLS.flatMap((tool) =>
+    series(tool.id, 'methods', (s) => s.tools[tool.id], [1, 25, 50, 100, 150, 500]).map((seal) => ({ ...seal, method: tool.id })),
+  ),
 
   ...TECHNOLOGIES.map(intuitionSeal),
 
