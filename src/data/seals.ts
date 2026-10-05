@@ -69,6 +69,8 @@ const K = 1_000;
 const M = 1_000_000;
 const G = 1_000_000_000;
 const HOUR = 3600;
+/** Paliers des pages lues par une méthode, en multiples de son prix de base (même difficulté pour toutes). */
+const METHOD_PAGES_STEPS = [10, 1e3, 1e5, 1e7, 1e9, 1e12];
 
 export const SEALS: readonly SealDef[] = [
   ...series('pagesRead', 'pages', (s) => s.totalPagesRead, [1, 100, 10 * K, M, G, K * G]),
@@ -95,7 +97,16 @@ export const SEALS: readonly SealDef[] = [
   // (décision de l'auteur, 05/10) : 25, le moment où elle ouvre la suivante ; 500 coûte de 10³² pages (Diagonale)
   // à 10³⁹ (Échelle) : fait pour la très longue partie, comme les derniers succès de Cookie Clicker.
   ...TOOLS.flatMap((tool) =>
-    series(tool.id, 'methods', (s) => s.tools[tool.id], [1, 25, 50, 100, 150, 500]).map((seal) => ({ ...seal, method: tool.id })),
+    [
+      ...series(tool.id, 'methods', (s) => s.tools[tool.id], [1, 25, 50, 100, 150, 500]),
+      // Pages qu'elle a lues depuis le début de la partie : son prix de base × 10, 10³, 10⁵, 10⁷, 10⁹, 10¹² (05/10).
+      ...series(
+        `${tool.id}Pages`,
+        'methods',
+        (s) => s.methodPages[tool.id] ?? 0,
+        METHOD_PAGES_STEPS.map((step) => tool.baseCost * step),
+      ),
+    ].map((seal) => ({ ...seal, method: tool.id })),
   ),
 
   ...TECHNOLOGIES.map(intuitionSeal),

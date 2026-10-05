@@ -30,6 +30,15 @@ describe('sceaux', () => {
     expect(state.seals['diagonal-50']).toBeUndefined();
   });
 
+  it('scelle les pages lues par une méthode, en multiples de son prix de base', () => {
+    expect(SEALS.filter((seal) => seal.text === 'ladderPages').map((seal) => seal.tier?.n)).toEqual([6e8, 6e10, 6e12, 6e14, 6e16, 6e19]);
+    const state = createInitialState('fr');
+    state.methodPages.diagonal = 20_000;
+    checkSeals(state, 1);
+    expect(state.seals['diagonalPages-15000']).toBe(1);
+    expect(state.seals['diagonalPages-1500000']).toBeUndefined();
+  });
+
   it('scelle un secret sur un geste, une seule fois, et jamais par le tick', () => {
     const state = createInitialState('fr');
     checkSeals(state, 1);

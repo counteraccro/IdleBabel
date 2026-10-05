@@ -45,8 +45,18 @@ export const gainPages = (state: GameState, amount: number): void => {
 let producedWhole = 0;
 export const producedWholePages = (): number => producedWhole;
 
+/** Ce que chaque méthode a lu pendant `seconds` (ses sceaux) ; rien quand le débogage impose la production. */
+export const creditMethods = (state: GameState, seconds: number): void => {
+  if (forcedPagesPerSecond !== undefined) return;
+  for (const tool of TOOLS) {
+    const read = state.tools[tool.id] * toolRate(state, tool.id) * seconds;
+    if (read > 0) state.methodPages[tool.id] = (state.methodPages[tool.id] ?? 0) + read;
+  }
+};
+
 export const produce = (state: GameState, seconds: number): void => {
   const before = Math.floor(state.pages);
   gainPages(state, pagesPerSecond(state) * seconds);
+  creditMethods(state, seconds);
   producedWhole += Math.max(0, Math.floor(state.pages) - before);
 };

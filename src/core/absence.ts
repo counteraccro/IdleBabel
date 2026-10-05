@@ -1,6 +1,6 @@
 import { findWhileAway, pagesTurnedAway } from '../systems/knowledge';
 import { readWhileAway } from '../systems/awayReading';
-import { gainPages, pagesPerSecond } from '../systems/production';
+import { creditMethods, gainPages, pagesPerSecond } from '../systems/production';
 import { checkSeals } from '../systems/seals';
 import { tellLore } from '../systems/lore';
 import { meetStrangeBook } from '../systems/decipher';
@@ -39,7 +39,10 @@ export const passTime = (state: GameState, seconds: number, mode: 'away' | 'paus
   const counted = maxAwaySeconds(state);
   const before = { pages: state.totalPagesRead, rareBooks: Object.keys(state.rareBooks).length, seals: Object.keys(state.seals).length };
   const book = { index: state.booksFinished, page: state.bookPage };
-  if (mode === 'away') gainPages(state, pagesPerSecond(state) * Math.min(seconds, counted) * share);
+  if (mode === 'away') {
+    gainPages(state, pagesPerSecond(state) * Math.min(seconds, counted) * share);
+    creditMethods(state, Math.min(seconds, counted) * share);
+  }
   let books = 0;
   let finds = 0;
   // Le livre en main ne s'ouvre qu'une fois son récit lu (lore firstBook) : avant, rien ne tourne.

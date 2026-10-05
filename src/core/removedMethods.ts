@@ -15,6 +15,7 @@ const without = <T>(record: Record<string, T>, drop: (key: string) => boolean): 
 export const dropRemovedMethods = (state: GameState): GameState => ({
   ...state,
   tools: without(state.tools, (id) => REMOVED.includes(id)) as GameState['tools'],
+  methodPages: without(state.methodPages, (id) => REMOVED.includes(id)),
   technologies: without(state.technologies, removedTech) as GameState['technologies'],
   technologiesBest: without(state.technologiesBest, removedTech) as GameState['technologiesBest'],
   written: without(state.written, (id) => REMOVED.includes(id)),

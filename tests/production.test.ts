@@ -3,6 +3,16 @@ import { createInitialState } from '../src/core/state';
 import { gainPages, produce, producedWholePages } from '../src/systems/production';
 
 describe('pages gagnées', () => {
+  it('comptent ce que chaque méthode a lu dans la partie', () => {
+    const state = createInitialState('fr');
+    state.tools.diagonal = 10;
+    state.tools.finger = 2;
+    produce(state, 5);
+    expect(state.methodPages.diagonal).toBeCloseTo(5);
+    expect(state.methodPages.finger).toBeCloseTo(5);
+    expect(state.methodPages.voice).toBeUndefined();
+  });
+
   it('avancent encore au-delà de 10¹⁵ pages, même par petites quantités', () => {
     const state = createInitialState('fr');
     state.pages = 1e15;

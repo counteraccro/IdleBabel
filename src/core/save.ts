@@ -19,6 +19,7 @@ export const loadGame = (defaultLocale: Locale): GameState => {
             settings: { ...initial.settings, ...saved.settings },
             stats: { ...initial.stats, ...saved.stats },
             tools: { ...initial.tools, ...saved.tools },
+            methodPages: { ...saved.methodPages },
             technologies: { ...saved.technologies },
             // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
             technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
