@@ -16,7 +16,14 @@ export const ETHERIUM_HASH = '#etherium';
  * Un récit du prestige (textes validés par l'auteur, conception §4.1) : ses strophes apparaissent l'une après
  * l'autre, les vers à la ligne, puis `extra` (une précision, plus petite), puis les boutons.
  */
-const tell = (title: string, stanzas: string[], actions: ModalAction[], backdrop: 'dim' | 'black' = 'dim', extra?: string): void => {
+const tell = (
+  title: string,
+  stanzas: string[],
+  actions: ModalAction[],
+  backdrop: 'dim' | 'black' = 'dim',
+  extra?: string,
+  enterConfirms = true,
+): void => {
   const story = storyLines(stanzas.length);
   story.root.classList.add('prestige-story');
   story.lines.forEach((line, index) => (line.textContent = stanzas[index]));
@@ -26,7 +33,7 @@ const tell = (title: string, stanzas: string[], actions: ModalAction[], backdrop
     note.style.animationDelay = `${stanzas.length * PARAGRAPH_MS}ms`;
     body.push(note);
   }
-  const modal = openModal({ title, body, actions, backdrop });
+  const modal = openModal({ title, body, actions, backdrop, enterConfirms });
   modal.root.querySelector<HTMLElement>('.modal-actions')!.style.animationDelay = `${(stanzas.length + (extra ? 1 : 0)) * PARAGRAPH_MS}ms`;
 };
 
@@ -54,7 +61,8 @@ export const reachForEtherium = (state: GameState): void => {
         label: reach.reach,
         kind: 'primary',
         onClick: () => {
-          prestige(state);
+          // Rien à gagner entre-temps (Éther changé au débogage) : pas de prestige, pas de réveil.
+          if (prestige(state) < 1) return;
           saveGame(state);
           if (!first) return goThroughTheDark(ETHERIUM_HASH);
           const wake = story('wake');
@@ -69,6 +77,8 @@ export const reachForEtherium = (state: GameState): void => {
     ],
     'dim',
     reach.warning.replace('{n}', formatNumber(gain, getLocale())),
+    // Tout est perdu : pas d'Entrée machinale (sans récit, elle tendrait la main aussitôt) ; un clic.
+    false,
   );
 };
 

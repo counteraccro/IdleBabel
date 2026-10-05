@@ -31,6 +31,11 @@ export interface ModalOptions {
   backdrop?: 'dim' | 'black' | 'light';
   /** Échap ou un clic à côté la ferment (pas pour une question obligatoire). */
   dismissible?: boolean;
+  /**
+   * La touche Entrée lance l'action principale (par défaut). false pour une action qu'on ne peut pas défaire
+   * (le prestige) : Entrée n'affiche que le récit en entier, l'action se choisit au clic.
+   */
+  enterConfirms?: boolean;
   onClose?: () => void;
 }
 
@@ -68,6 +73,7 @@ export const openModal = ({
   actions = [],
   backdrop: shade = 'dim',
   dismissible = false,
+  enterConfirms = true,
   onClose,
 }: ModalOptions): Modal => {
   const backdrop = el('div', `modal-backdrop ${shade}`);
@@ -98,7 +104,7 @@ export const openModal = ({
     if (finishStory()) return void event.preventDefault();
     if (card.contains(document.activeElement)) return;
     event.preventDefault();
-    card.requestSubmit();
+    if (enterConfirms) card.requestSubmit();
   };
   const buttons = actions.map((action) => {
     const button = el('button', `modal-button ${action.kind ?? 'secondary'}`, action.label);
