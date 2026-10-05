@@ -89,7 +89,9 @@ export const SEALS: readonly SealDef[] = [
 
   ...series('playTime', 'time', (s) => s.stats.playSeconds / HOUR, [1, 10, 100]),
 
-  ...series('diagonal', 'methods', (s) => s.tools.diagonal, [1, 10, 100, K]),
+  // Exemplaires possédés dans une même partie (le prestige les remet à zéro), décision de l'auteur le 05/10 : 25, le
+  // moment où la Diagonale ouvre le Doigt ; 150 coûte ~10¹¹ pages, 500 ~10³² : fait pour la très longue partie.
+  ...series('diagonal', 'methods', (s) => s.tools.diagonal, [1, 25, 50, 100, 150, 500]),
 
   ...TECHNOLOGIES.map(intuitionSeal),
 

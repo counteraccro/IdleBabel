@@ -20,6 +20,15 @@ describe('sceaux', () => {
     expect(state.seals['pagesRead-10000']).toBeUndefined();
   });
 
+  it('scelle la Lecture Diagonale à 1, 25, 50, 100, 150 et 500 exemplaires dans une même partie', () => {
+    expect(SEALS.filter((seal) => seal.text === 'diagonal').map((seal) => seal.tier?.n)).toEqual([1, 25, 50, 100, 150, 500]);
+    const state = createInitialState('fr');
+    state.tools.diagonal = 30;
+    checkSeals(state, 1);
+    expect(state.seals['diagonal-25']).toBe(1);
+    expect(state.seals['diagonal-50']).toBeUndefined();
+  });
+
   it('scelle un secret sur un geste, une seule fois, et jamais par le tick', () => {
     const state = createInitialState('fr');
     checkSeals(state, 1);
