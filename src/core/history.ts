@@ -20,6 +20,7 @@ export type HistoryType =
   | 'firstSeal'
   | 'secretSeal'
   | 'firstAbsence'
+  | 'prestige'
   | 'debug';
 
 export interface HistoryEntry {

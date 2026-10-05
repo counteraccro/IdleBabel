@@ -33,7 +33,7 @@ export const missing = (state: GameState, id: string): number[] => {
 
 export const isComplete = (state: GameState, id: string): boolean => missing(state, id).length === 0;
 
-/** Écrit des morceaux dans le livre blanc (pour toujours, Exil compris). */
+/** Écrit des morceaux dans le livre blanc (pour toujours ; sauf les phrases des méthodes, que le prestige fait oublier). */
 export const write = (state: GameState, id: string, indices: number[]): void => {
   const done = new Set(written(state, id));
   for (const index of indices) done.add(index);

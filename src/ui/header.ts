@@ -7,20 +7,29 @@ import { libraryKey } from './library/libraryKey';
 import type { Book3d } from './book3d/book3dBook';
 import type { Component } from './dom';
 
+/** Le contour de l'Etherium : le violet de sa goutte. */
+const ETHERIUM_GLOW = 0xb47cff;
+
 export interface HeaderHandlers {
   onOptions: () => void;
   onWhiteBook: () => void;
   onStrangeBook: () => void;
+  /** L'Etherium : le prendre (« L'attraper ? », le prestige), ou l'ouvrir au réveil. */
+  onEtherium: () => void;
+  /** L'Etherium est dans la pile : le prestige rapporte, ou il est en main depuis le réveil. */
+  etheriumShown: () => boolean;
+  /** Il attend d'être attrapé (le prestige) : il luit de violet. */
+  etheriumWaiting: () => boolean;
   /** Le livre de débogage : seulement avec ?debug (sinon absent de la pile). */
   onDebugBook?: () => void;
   /** Les modèles 3D des trois livres du joueur. */
-  books: { options: () => Book3d; white: () => Book3d; strange: () => Book3d; debug?: () => Book3d };
+  books: { options: () => Book3d; white: () => Book3d; strange: () => Book3d; etherium: () => Book3d; debug?: () => Book3d };
   /** Le livre étrange a-t-il été trouvé ? Il n'est avec les autres qu'ensuite. */
   strangeBookFound: () => boolean;
   /** Des sceaux obtenus ou une partie devenue lisible attendent d'être vus : le contour du Grand Livre luit. */
   strangeBookNews: () => boolean;
   /** Le livre ouvert en ce moment (sa page à l'écran), absent de la pile ; null : le jeu. */
-  openBook: () => 'white' | 'strange' | 'options' | 'debug' | 'library' | null;
+  openBook: () => 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | null;
   /** Entrer dans la bibliothèque personnelle (la clé). */
   onLibrary: () => void;
   /** La clé est posée près de la pile : un livre rare a été trouvé (ou débogage). */
@@ -57,6 +66,18 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
         dz: -0.1,
         tilt: 0.05,
       },
+      // L'Etherium, debout à côté de la pile (elle en a déjà quatre) : le livre du puits, au contour violet.
+      {
+        id: 'etherium',
+        label: () => t(handlers.etheriumWaiting() ? 'etherium.catch' : 'etherium.name'),
+        book: handlers.books.etherium,
+        onOpen: handlers.onEtherium,
+        yaw: -0.1,
+        dx: 0,
+        dz: 0.04,
+        outline: ETHERIUM_GLOW,
+        stays: handlers.etheriumWaiting,
+      },
       // Débogage : la plaque d'obsidienne posée sur tout le reste, sa couverture vers le ciel.
       ...(handlers.books.debug && handlers.onDebugBook
         ? [
@@ -78,6 +99,8 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
   // Déjà trouvé à l'affichage : le livre est là. Trouvé pendant la partie : il tombe sur la pile.
   let found = handlers.strangeBookFound();
   pile.show('strange', found);
+  let etherium = handlers.etheriumShown();
+  pile.show('etherium', etherium);
   let written = handlers.writtenCount();
   pile.show('library', handlers.libraryKey());
   const update = (): void => {
@@ -85,6 +108,11 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     if (now !== found) pile.show('strange', now, true);
     found = now;
     pile.news('strange', handlers.strangeBookNews());
+    // Le prestige rapporte : le livre du puits arrive dans la pile, et luit tant qu'il attend.
+    const shown = handlers.etheriumShown();
+    if (shown !== etherium) pile.show('etherium', shown, shown);
+    etherium = shown;
+    pile.news('etherium', handlers.etheriumWaiting());
     const count = handlers.writtenCount();
     if (count > written) pile.shake('white');
     written = count;

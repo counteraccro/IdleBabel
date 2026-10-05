@@ -1,5 +1,6 @@
 import { TOOLS, type ToolId } from '../data/tools';
 import { gestureMultiplier } from './technologies';
+import { readingMultiplier } from './prestige';
 import type { GameState } from '../core/state';
 
 /** Débogage : production imposée à la main, à la place de celle des méthodes (pas dans la sauvegarde). */
@@ -9,9 +10,12 @@ export const forcePagesPerSecond = (value: number | undefined): void => {
 };
 export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== undefined;
 
-/** Ce que lit une méthode, pour chaque exemplaire : sa base, doublée par son intuition à chaque niveau. */
+/**
+ * Ce que lit une méthode, pour chaque exemplaire : sa base, doublée par son intuition à chaque niveau, et
+ * multipliée par la Lecture de l'Etherium.
+ */
 export const toolRate = (state: GameState, id: ToolId): number =>
-  TOOLS.find((tool) => tool.id === id)!.pagesPerSecond * gestureMultiplier(state, id);
+  TOOLS.find((tool) => tool.id === id)!.pagesPerSecond * gestureMultiplier(state, id) * readingMultiplier(state);
 
 /** Production : celle de chaque méthode (toolRate). */
 export const pagesPerSecond = (state: GameState): number =>
@@ -29,6 +33,11 @@ const addKeepingRest = (state: GameState, key: keyof typeof carry, amount: numbe
   const next = state[key] + wanted;
   carry[key] = wanted - (next - state[key]);
   state[key] = next;
+};
+
+/** Les pages remises à zéro (prestige) : leur reste d'avant ne s'y ajoute pas (il ferait −0,00000002 page). */
+export const forgetPagesRest = (): void => {
+  carry.pages = 0;
 };
 
 /** Toute page lue passe par ici : elle s'ajoute au stock et au total à vie. */

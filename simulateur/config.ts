@@ -1,3 +1,5 @@
+import { ETHERIUM_TREES, type EtheriumTreeId } from '../src/data/etherium';
+
 /**
  * Ce que le jeu n'a pas encore : les chiffres proposés (conception §3.1 ter, §4), à changer ici pour essayer.
  * Le reste (méthodes de l'Âge Manuel, intuitions, trouvailles) vient du code du jeu (src/data).
@@ -33,23 +35,13 @@ export interface Tree {
 }
 
 export const ETHERIUM = {
-  /** Passer à l'Âge Automatique (un seul nœud). */
+  /** Passer à l'Âge Automatique (un seul nœud ; pas encore dans le jeu). */
   ageAutomatic: { costs: [1], values: [1] },
-  /** Se souvenir de la Page Cornée (un seul nœud ; sa phrase reste à compléter, une fois). */
+  /** Se souvenir de la Page Cornée (un seul nœud ; sa phrase reste à compléter, une fois ; pas encore dans le jeu). */
   secretManual: { costs: [1], values: [1] },
-  /** Lecture : pages/s de toutes les méthodes, multipliées. */
-  reading: { costs: [1, 3, 8, 20, 50, 120], values: [1.1, 1.25, 1.5, 2, 3, 5] },
-  /** Mains : force du clic, multipliée. */
-  hands: { costs: [2, 6, 15], values: [2, 3, 5] },
-  /** Connaissance : chaque trouvaille en rapporte tant. */
-  knowledge: { costs: [1, 4, 12, 30], values: [1.5, 2, 3, 5] },
-  /** Trouvailles : chance de trouvaille multipliée. */
-  finds: { costs: [1, 3, 8, 20], values: [1.05, 1.1, 1.15, 1.25] },
-  /** Départ : Lectures Diagonales offertes au réveil. */
-  start: { costs: [1, 3, 10], values: [5, 25, 100] },
-  /** Mémoire des méthodes : tant de méthodes de l'Âge Manuel gardées (leur phrase n'est plus à retrouver). */
-  memory: { costs: [2, 4, 8, 16, 32], values: [1, 2, 3, 4, 5] },
-} as const satisfies Record<string, Tree>;
+  // Les arbres du jeu (src/data/etherium.ts) : lecture, mains, connaissance, trouvailles, départ, mémoire.
+  ...(Object.fromEntries(ETHERIUM_TREES.map((tree) => [tree.id, tree])) as Record<EtheriumTreeId, Tree>),
+};
 
 export type TreeId = keyof typeof ETHERIUM;
 

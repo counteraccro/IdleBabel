@@ -7,6 +7,7 @@ import { findableTarget, hintFindable } from './findable';
 import { tellLore } from './lore';
 import { duplicateShare, filterMultiplier, maxAwaySeconds, targetShare, turnsPerSecond } from './technologies';
 import { sealFindMultiplier } from './seals';
+import { findsMultiplier, knowledgePerFind } from './prestige';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -26,21 +27,28 @@ export const maxTurnsPerSecond = (state: GameState): number => turnCap ?? turnsP
 
 /**
  * Chance qu'une page tournée cache une trouvaille : la base, × le filtre sémantique, × les sceaux obtenus
- * (+1 % chacun) ; les autres bonus s'ajouteront ici. Détail : dans le chapitre « Révélations » du Grand Livre.
+ * (+1 % chacun), × les Trouvailles de l'Etherium. Détail : dans le chapitre « Révélations » du Grand Livre.
  */
 export const findChance = (state: GameState): number =>
-  forced ? 1 : BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state);
+  forced ? 1 : BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state) * findsMultiplier(state);
 
 /** Pages tournées dans le livre en main depuis le début de la partie. */
 const pagesTurned = (state: GameState): number => state.booksFinished * PAGES_PER_BOOK + state.bookPage;
 
 /**
- * Coup de chance : tant que rien n'a été trouvé, la chance grandit à partir de la 15e page tournée
- * pour qu'une trouvaille tombe à coup sûr avant la 30e (au hasard entre les deux).
+ * La phrase de la première méthode (la Lecture Diagonale) n'est pas écrite : rien trouvé encore, ou le prestige
+ * l'a fait oublier. Elle revient d'un coup, par chance (chanceNow).
+ */
+const firstMethodLost = (state: GameState): boolean => !isComplete(state, SENTENCES[0].id);
+
+/**
+ * Coup de chance : tant que la première phrase n'est pas écrite, la chance grandit à partir de la 15e page
+ * tournée pour qu'une trouvaille tombe à coup sûr avant la 30e (au hasard entre les deux) ; après un prestige,
+ * dès la première page (les pages tournées se comptent depuis toujours).
  */
 const chanceNow = (state: GameState): number => {
   const chance = findChance(state);
-  if (state.lifetimeKnowledge > 0) return chance;
+  if (!firstMethodLost(state)) return chance;
   const turned = pagesTurned(state);
   if (turned < LUCK_PAGES.from) return chance;
   return Math.max(chance, 1 / Math.max(1, LUCK_PAGES.to - turned + 1));
@@ -135,7 +143,7 @@ export const rollFinds = (state: GameState, random: () => number = Math.random):
   const draft: GameState = { ...state, written: { ...state.written } };
   return Array.from({ length: count }, (_, index) => {
     // La première suit la règle d'avant ; celles d'au-delà de 100 %, leur table (drawExtraFind).
-    const find = index === 0 ? drawFind(draft, random, state.lifetimeKnowledge === 0) : drawExtraFind(draft, random);
+    const find = index === 0 ? drawFind(draft, random, firstMethodLost(state)) : drawExtraFind(draft, random);
     if (!find.duplicate)
       write(draft, find.sentence, find.segment === undefined ? segments(find.sentence).map((_, i) => i) : [find.segment]);
     return find;
@@ -149,15 +157,16 @@ export const findText = (find: Find): string => {
   return texts[find.segment]?.replace(/[\s,;:.]+$/, '') ?? '';
 };
 
-/** Une trouvaille lue : 1 point de Connaissance, et elle s'écrit dans le livre blanc. */
+/** Une trouvaille lue : 1 point de Connaissance (plus, avec l'Etherium), et elle s'écrit dans le livre blanc. */
 export const gainFind = (state: GameState, find: Find): void => {
-  state.knowledge += 1;
-  state.cycleKnowledge += 1;
-  state.lifetimeKnowledge += 1;
+  const gained = knowledgePerFind(state);
+  state.knowledge += gained;
+  state.cycleKnowledge += gained;
+  state.lifetimeKnowledge += gained;
   state.stats.fragments += 1;
   state.finds.push(find);
   // La toute première : le joueur comprend une phrase, pour la première fois.
-  if (state.lifetimeKnowledge === 1) tellLore(state, 'firstKnowledge');
+  if (state.lifetimeKnowledge === gained) tellLore(state, 'firstKnowledge');
   if (find.duplicate) return;
   write(state, find.sentence, find.segment === undefined ? segments(find.sentence).map((_, index) => index) : [find.segment]);
 };

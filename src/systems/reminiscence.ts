@@ -35,7 +35,7 @@ export const remember = (state: GameState): number => {
 
 /**
  * Ce que l'Exil fera aux intuitions : tout oublié, sauf le meilleur niveau de chacune, et celles qui
- * restent pour toujours (la Brassée) (débogage pour l'instant).
+ * restent pour toujours (la Brassée). Au prestige (systems/prestige.ts), et au débogage.
  */
 export const forgetIntuitions = (state: GameState): void => {
   state.technologies = Object.fromEntries(

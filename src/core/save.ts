@@ -25,12 +25,12 @@ export const loadGame = (defaultLocale: Locale): GameState => {
             // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
             technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
             reminiscence: { ...initial.reminiscence, ...saved.reminiscence },
+            etherium: { ...saved.etherium },
             // Trouvailles d'avant le livre blanc (sans phrase) : oubliées.
             finds: (saved.finds ?? []).filter((find) => typeof find.sentence === 'string'),
             totalPagesRead: saved.totalPagesRead ?? saved.pages,
             // Une partie d'avant ces compteurs part de ce qu'elle sait : les pages de ses méthodes, ses clics.
-            pagesByMethods:
-              saved.pagesByMethods ?? Object.values(saved.methodPages ?? {}).reduce((sum, read) => sum + (read ?? 0), 0),
+            pagesByMethods: saved.pagesByMethods ?? Object.values(saved.methodPages ?? {}).reduce((sum, read) => sum + (read ?? 0), 0),
             pagesByHand: saved.pagesByHand ?? (saved.stats?.clicks ?? 0) * PAGES_PER_CLICK,
             // Une partie d'avant les graines garde sa Bibliothèque.
             seed: saved.seed ?? 0,

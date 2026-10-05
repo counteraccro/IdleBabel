@@ -35,6 +35,9 @@ import { firstBookKept } from '../systems/books';
 import { libraryHasNews, visitLibrary } from '../systems/library';
 import { showDebugBookError } from './library/debugBookError';
 import { isRareBookFound } from '../systems/rareBooks';
+import { etherium3d } from './etherium/etherium3d';
+import { ETHERIUM_HASH, reachForEtherium, tellEtheriumGone } from './etherium/prestigeStory';
+import { closeEtherium, prestigeReady } from '../systems/prestige';
 import type { Component } from './dom';
 
 const OPTIONS_HASH = '#options';
@@ -120,9 +123,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const inLibrary = (): boolean => window.location.hash === LIBRARY_HASH || window.location.hash.startsWith(LIBRARY_BOOK_HASH);
 
   /** Le livre dont la page est ouverte (null : le jeu). */
-  const openBook = (): 'white' | 'strange' | 'options' | 'debug' | 'library' | null => {
+  const openBook = (): 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | null => {
     const hash = window.location.hash;
     if (hash === OPTIONS_HASH) return 'options';
+    if (hash === ETHERIUM_HASH && state.etheriumInHand) return 'etherium';
     if (inLibrary()) return 'library';
     if ((hash === DEBUG_BOOK_HASH || hash.startsWith(RARE_BOOK_HASH)) && debugging) return 'debug';
     if (hash === WHITE_BOOK_HASH) return 'white';
@@ -136,10 +140,15 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     onWhiteBook: open(WHITE_BOOK_HASH),
     onStrangeBook: open(STRANGE_BOOK_HASH),
     onDebugBook: debugging ? open(DEBUG_BOOK_HASH) : undefined,
+    // Avant le prestige, le livre du puits ne s'ouvre pas : on tente de l'attraper. Au réveil, il est en main.
+    onEtherium: () => (state.etheriumInHand ? open(ETHERIUM_HASH)() : reachForEtherium(state)),
+    etheriumShown: () => state.etheriumInHand || prestigeReady(state),
+    etheriumWaiting: () => prestigeReady(state),
     books: {
       options: () => notebook3d(state, { onLocale: () => {}, onSettings: () => {}, onReset: () => {} }),
       white: () => whiteBook3d(state),
       strange: () => strangeBook3d(state),
+      etherium: () => etherium3d(state),
       debug: debugging ? debugBook3d : undefined,
     },
     strangeBookFound: () => strangeBookFound(state),
@@ -256,13 +265,24 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       };
       return pileBook(createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : backLabel()));
     }
+    // L'Etherium, en main depuis le réveil : une fois refermé, il disparaît (render).
+    if (window.location.hash === ETHERIUM_HASH && state.etheriumInHand)
+      return pileBook(createBook3dPage(etherium3d(state), back, t('etherium.close')));
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state))
       return pileBook(createBook3dPage(strangeBook3d(state), back, backLabel()));
     return game();
   };
 
+  /** L'Etherium était ouvert : quitté, de quelque façon que ce soit, il est refermé, et il disparaît. */
+  let etheriumOpen = false;
   const render = (): void => {
     document.documentElement.lang = state.locale;
+    if (etheriumOpen && openBook() !== 'etherium') {
+      closeEtherium(state);
+      saveGame(state);
+      tellEtheriumGone();
+    }
+    etheriumOpen = openBook() === 'etherium';
     // L'en-tête et le compteur restent ; le reste de l'écran d'avant s'efface puis s'en va, le nouveau
     // apparaît en fondu (la page d'un livre venu de la pile gère elle-même son arrivée).
     // Plus de livre de la pile ouvert (retour du navigateur…) : il ne l'est plus par-dessus la vitrine.

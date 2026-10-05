@@ -22,6 +22,13 @@ export interface PileBook {
   dz: number;
   /** Posé négligemment : penché de tant (radians), un bout plus haut que l'autre. */
   tilt?: number;
+  /** Couleur de son contour (survol, lueur), si elle n'est pas dorée : le violet de l'Etherium. */
+  outline?: number;
+  /**
+   * Au clic, il reste dans la pile, sans s'envoler vers une page (true) : ce qu'il ouvre n'est pas sa page
+   * (l'Etherium, avant le prestige : le récit du puits).
+   */
+  stays?: () => boolean;
 }
 
 /**
@@ -169,7 +176,7 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
     // Repoussé en profondeur : là où est le livre, le livre passe devant (sinon, sur un livre mince, le
     // liseré couvre sa couverture).
     const outline = new THREE.MeshBasicMaterial({
-      color: OUTLINE_GOLD,
+      color: spec.outline ?? OUTLINE_GOLD,
       side: THREE.BackSide,
       transparent: true,
       opacity: 0,
@@ -454,6 +461,7 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
    */
   function open(slot: Slot): void {
     if (slot.away) return;
+    if (slot.spec.stays?.()) return slot.spec.onOpen();
     const mesh = slot.body?.children[0];
     if (mesh && !still.matches) {
       slot.outline.opacity = 0;

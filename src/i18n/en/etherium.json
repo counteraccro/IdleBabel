@@ -1,0 +1,49 @@
+{
+  "catch": "Catch it?",
+  "name": "The Etherium",
+  "close": "Close the book",
+  "reach": {
+    "title": "The well",
+    "text": [
+      "Books disappear.\nI read them. I put them down.\nThey are gone.",
+      "I never cared.\nThere are so many.",
+      "Today, I watched.\nThey slide to the well.\nThey fall without a sound.",
+      "In the middle, a book floats.\nIt does not fall.\nA strange liquid runs over it.\nDrop by drop.\nIs it everything I have read?",
+      "I lean over.\nI reach out.\nIt is almost mine."
+    ],
+    "warning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions. +{n} Ether.",
+    "stay": "Step back",
+    "reach": "Reach out"
+  },
+  "fall": {
+    "title": "The railing",
+    "text": ["The railing is low.", "I fall."]
+  },
+  "wake": {
+    "title": "Elsewhere",
+    "text": ["I wake up.\nA hexagon.\nIt is not mine.", "In my hand, the book.\nIt is still wet."],
+    "button": "Open the book"
+  },
+  "gone": {
+    "title": "Nothing",
+    "text": ["The book is gone.", "A dream? Another reality?", "I was sure I was holding it."]
+  },
+  "ether": "Ether to spend",
+  "next": "Next Ether: {n} pages read in all",
+  "contents": "Contents",
+  "take": "Take · {n} Ether",
+  "cost": "{n} Ether",
+  "taken": "acquired",
+  "trees": {
+    "reading": { "name": "Reading", "description": "My methods read faster.", "effect": "×{v} pages per second" },
+    "hands": { "name": "Hands", "description": "My fingers remember.", "effect": "×{v} pages per click" },
+    "knowledge": { "name": "Knowledge", "description": "Every find teaches me more.", "effect": "×{v} Knowledge per find" },
+    "finds": { "name": "Finds", "description": "Sentences leap out at me.", "effect": "find chance ×{v}" },
+    "start": {
+      "name": "Head start",
+      "description": "When I wake, I already know how to skim.",
+      "effect": "{v} Diagonal Readings on waking"
+    },
+    "memory": { "name": "Memory of methods", "description": "These sentences, the well no longer erases.", "effect": "{method}" }
+  }
+}

@@ -195,6 +195,15 @@
   font-size: 1.5em;
   color: #b8913a;
 }
+.sb-stem {
+  position: absolute;
+  background: #bdb6a3;
+}
+
+.sb-stem.taken {
+  background: #b8913a;
+}
+
 .sb-rule {
   position: absolute;
   height: 1px;

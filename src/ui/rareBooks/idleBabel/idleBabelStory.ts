@@ -94,6 +94,7 @@ export const STORY: StoryChapter[] = [
       { key: 'bindings' },
       { key: 'away' },
       { key: 'intuitions' },
+      { key: 'prestige' },
       { key: 'thisBook' },
     ],
   },

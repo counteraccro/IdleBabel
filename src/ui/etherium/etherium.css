@@ -1,0 +1,14 @@
+/* Récits du prestige (prestigeStory.ts) : des vers, chacun à la ligne. */
+.prestige-story p {
+  white-space: pre-line;
+}
+
+/* Ce que le prestige fait perdre et rapporte : sous le récit, plus petit, sans italique. */
+.prestige-warning {
+  margin: 18px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #c9b3e8;
+  opacity: 0;
+  animation: modal-story-in 0.8s ease forwards;
+}

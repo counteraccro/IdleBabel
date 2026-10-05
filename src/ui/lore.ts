@@ -36,7 +36,7 @@ const VEIL_LIFT_MS = 800;
  * Change d'écran derrière un voile noir qui se lève ensuite : sans lui, on verrait le jeu entre deux
  * modales, puis l'écran suivant se construire.
  */
-const goThroughTheDark = (hash: string): void => {
+export const goThroughTheDark = (hash: string): void => {
   const veil = el('div', 'modal-veil');
   document.body.append(veil);
   window.location.hash = hash;

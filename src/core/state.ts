@@ -5,6 +5,7 @@ import type { HistoryEntry } from './history';
 import type { Locale } from '../i18n';
 import type { Find } from '../data/knowledge';
 import type { PartId } from '../data/decipher';
+import type { EtheriumTreeId } from '../data/etherium';
 import { newGameSeed } from './random';
 
 export const SAVE_VERSION = 1;
@@ -55,10 +56,10 @@ export interface GameState {
   version: number;
   /** Pages disponibles, que l'on dépense. */
   pages: number;
-  /** Pages lues depuis le début de la partie : ne baisse jamais, ni en dépensant ni à l'Exil. */
+  /** Pages lues depuis le tout début : ne baisse jamais, ni en dépensant ni au prestige (l'Éther en vient). */
   totalPagesRead: number;
   tools: Record<ToolId, number>;
-  /** Pages lues par chaque méthode depuis le début de la partie (ses sceaux) ; le prestige les remettra à zéro. */
+  /** Pages lues par chaque méthode depuis le dernier réveil (ses sceaux) ; le prestige les remet à zéro. */
   methodPages: Partial<Record<ToolId, number>>;
   /** Pages lues par les méthodes depuis toujours (production et absence) : le prestige ne les reprend pas. */
   pagesByMethods: number;
@@ -119,8 +120,16 @@ export interface GameState {
    * de la partie « Intuitions »).
    */
   reminiscence: { on: boolean };
-  /** Exils faits (le premier fait apparaître la Réminiscence) ; compté par le débogage en attendant l'Exil. */
+  /** Prestiges faits (le premier fait apparaître la Réminiscence ; systems/prestige.ts). */
   exiles: number;
+  /** Éther à dépenser dans l'Etherium (data/etherium.ts) : reçu au prestige, gardé s'il n'est pas dépensé. */
+  ether: number;
+  /** Éther reçu depuis toujours : le prochain prestige rapporte ce que méritent les pages à vie, moins ceci. */
+  etherReceived: number;
+  /** Nœuds pris dans chaque arbre de l'Etherium, pour toujours. */
+  etherium: Partial<Record<EtheriumTreeId, number>>;
+  /** Au réveil d'un prestige, l'Etherium est en main ; refermé, il disparaît (jusqu'au prochain). */
+  etheriumInHand: boolean;
   lastTick: number;
   /**
    * La graine de la partie (core/random.ts, gameRandom) : les couvertures, le texte des pages, les livres rares
@@ -163,6 +172,10 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   technologiesBest: {},
   reminiscence: { on: true },
   exiles: 0,
+  ether: 0,
+  etherReceived: 0,
+  etherium: {},
+  etheriumInHand: false,
   lastTick: now,
   seed,
 });

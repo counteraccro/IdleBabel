@@ -45,6 +45,8 @@ export type Item =
   | { kind: 'dots'; x1: number; x2: number; y: number }
   /** Filet doré sous un titre, un losange au milieu ; centré, de largeur `width`. */
   | { kind: 'rule'; y: number; width: number }
+  /** Tige verticale (un arbre de l'Etherium), de `y1` à `y2` : dorée, ou à l'encre pâle. */
+  | { kind: 'stem'; x: number; y1: number; y2: number; gold?: boolean }
   /** Soulignement en pointillé au crayon : ce que le chercheur n'a pas su lire (un clic propose de déchiffrer). */
   | { kind: 'underline'; x1: number; x2: number; y: number }
   /** Zone cliquable (entrée du sommaire) : rien n'est dessiné. */
@@ -72,6 +74,9 @@ const INK = '#1a1c22';
 const FADED = '#5d5f66';
 /** Or des sceaux, pour l'étoile qui signale du nouveau. */
 const GOLD = '#b8913a';
+/** Tige d'un arbre de l'Etherium : son épaisseur, et son encre tant que ses nœuds ne sont pas pris. */
+const STEM_WIDTH = 4;
+const STEM_FADED = '#bdb6a3';
 const SERIF = "Georgia, 'Times New Roman', serif";
 /** Titres : les capitales du titre du jeu (chargées dans index.html). */
 const TITLE = "'Cinzel', Georgia, serif";
@@ -206,6 +211,14 @@ const placeText = (node: HTMLElement, item: TextItem): void => {
 };
 
 const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement => {
+  if (item.kind === 'stem') {
+    const node = el('span', `sb-stem${item.gold ? ' taken' : ''}`);
+    node.style.left = unit(item.x - STEM_WIDTH / 2);
+    node.style.top = unit(item.y1);
+    node.style.width = unit(STEM_WIDTH);
+    node.style.height = unit(item.y2 - item.y1);
+    return node;
+  }
   if (item.kind === 'rule') {
     const node = el('span', 'sb-rule');
     node.style.top = unit(item.y);
@@ -425,6 +438,9 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
       context.lineWidth = 1.5;
       context.strokeRect(-4, -4, 8, 8);
       context.restore();
+    } else if (item.kind === 'stem') {
+      context.fillStyle = item.gold ? GOLD : STEM_FADED;
+      context.fillRect(item.x - STEM_WIDTH / 2, item.y1, STEM_WIDTH, item.y2 - item.y1);
     } else if (item.kind === 'dots') {
       context.fillStyle = FADED;
       for (let x = item.x1; x < item.x2; x += 6) context.fillRect(x, item.y, 1.5, 1.5);
