@@ -54,6 +54,14 @@ describe('sceaux', () => {
     expect(state.seals['pagesByHand-100']).toBeUndefined();
   });
 
+  it('scelle la meilleure vitesse, sur sa propre page : de dix en dix jusqu’à 10⁸, puis de cent en cent jusqu’à 10³⁰', () => {
+    const speed = SEALS.filter((seal) => seal.text === 'speed');
+    expect(speed.map((seal) => seal.tier?.n)).toEqual([
+      1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e10, 1e12, 1e14, 1e16, 1e18, 1e20, 1e22, 1e24, 1e26, 1e28, 1e30,
+    ]);
+    expect(speed.every((seal) => seal.page === 2)).toBe(true);
+  });
+
   it('scelle les volumes de méthodes : 410 achetées dans la partie chacun, jusqu’à neuf', () => {
     expect(SEALS.filter((seal) => seal.text === 'methodsBought').map((seal) => seal.tier?.n)).toEqual([
       410, 820, 1230, 1640, 2050, 2460, 2870, 3280, 3690,

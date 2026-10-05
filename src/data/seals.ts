@@ -78,19 +78,27 @@ const METHOD_PAGES_STEPS = [10, 1e3, 1e5, 1e7, 1e9, 1e12];
 /** Les volumes de méthodes : un à neuf livres de 410 achats. */
 const VOLUMES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 export const BOOK_PAGES = 410;
-/** Paliers de `base` en `base` : 1, base, base²… (`count` paliers). */
-const powers = (base: number, count: number): number[] => Array.from({ length: count }, (_, index) => base ** index);
+/**
+ * Puissances de dix de `step` en `step` (exposants), de 10^from à 10^to : écrites « 1e24 » plutôt que calculées
+ * (10 ** 23 n'est pas tout à fait 1e23), pour des paliers ronds.
+ */
+const powers = (step: number, from: number, to: number): number[] =>
+  Array.from({ length: (to - from) / step + 1 }, (_, index) => Number(`1e${from + index * step}`));
+/** Pages par seconde : 1, 10… 10⁸, puis 10¹⁰, 10¹²… 10³⁰. */
+const SPEED_STEPS = [...powers(1, 0, 8), ...powers(2, 10, 30)];
 
 export const SEALS: readonly SealDef[] = [
   ...series('pagesRead', 'pages', (s) => s.totalPagesRead, [1, 100, 10 * K, M, G, K * G]),
   ...series('clicks', 'pages', (s) => s.stats.clicks, [100, K, 10 * K, 100 * K]),
   ...series('stock', 'pages', (s) => s.pages, [K, M, G]),
-  ...series('speed', 'pages', (s) => s.stats.bestPagesPerSecond, [1, 10, K, M]),
+  // La meilleure vitesse de la vie (idée de l'auteur, 05/10), sur sa propre page : de dix en dix jusqu'à 10⁸, puis
+  // de cent en cent jusqu'à 10³⁰.
+  ...series('speed', 'pages', (s) => s.stats.bestPagesPerSecond, SPEED_STEPS).map((seal): SealDef => ({ ...seal, page: 2 })),
   // Pages lues depuis toujours, que le prestige ne reprend pas (idée de l'auteur, 05/10), sur leur propre page et
   // une phrase par palier : par les méthodes, de mille en mille jusqu'à 10³⁰ ; à la main, de dix en dix jusqu'à 10⁵.
   ...[
-    ...series('pagesByMethods', 'pages', (s) => s.pagesByMethods, powers(1000, 11)),
-    ...series('pagesByHand', 'pages', (s) => s.pagesByHand, powers(10, 6)),
+    ...series('pagesByMethods', 'pages', (s) => s.pagesByMethods, powers(3, 0, 30)),
+    ...series('pagesByHand', 'pages', (s) => s.pagesByHand, powers(1, 0, 5)),
   ].map((seal): SealDef => ({ ...seal, phrases: true, page: 1 })),
 
   ...series('booksFinished', 'books', (s) => s.booksFinished, [1, 10, 100, K, 10 * K]),
