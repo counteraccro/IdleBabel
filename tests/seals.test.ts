@@ -39,6 +39,21 @@ describe('sceaux', () => {
     expect(state.seals['diagonalPages-1500000']).toBeUndefined();
   });
 
+  it('scelle les pages lues depuis toujours, sur leur propre page : par les méthodes jusqu’à 10³⁰, à la main jusqu’à 10²⁴', () => {
+    const steps = (text: string) => SEALS.filter((seal) => seal.text === text).map((seal) => seal.tier?.n);
+    expect(steps('pagesByMethods')).toEqual([1, 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24, 1e27, 1e30]);
+    expect(steps('pagesByHand')).toEqual([1, 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24]);
+    expect(SEALS.filter((seal) => seal.page === 1).every((seal) => seal.plate === 'pages')).toBe(true);
+    const state = createInitialState('fr');
+    state.pagesByMethods = 2e6;
+    state.pagesByHand = 999;
+    checkSeals(state, 1);
+    expect(state.seals['pagesByMethods-1000000']).toBe(1);
+    expect(state.seals['pagesByMethods-1000000000']).toBeUndefined();
+    expect(state.seals['pagesByHand-1']).toBe(1);
+    expect(state.seals['pagesByHand-1000']).toBeUndefined();
+  });
+
   it('scelle les volumes de méthodes : 410 achetées dans la partie chacun, jusqu’à neuf', () => {
     expect(SEALS.filter((seal) => seal.text === 'methodsBought').map((seal) => seal.tier?.n)).toEqual([
       410, 820, 1230, 1640, 2050, 2460, 2870, 3280, 3690,

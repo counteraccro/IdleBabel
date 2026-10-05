@@ -61,6 +61,8 @@
     "clicks": "Tourne {n} pages de ta main",
     "stock": "Retiens {n} pages en mémoire",
     "speed": "Lis {n} pages en une seule seconde",
+    "pagesByMethods": "Laisse tes méthodes lire {n} pages pour toi",
+    "pagesByHand": "Lis {n} pages de ta propre main",
     "booksFinished": "Referme {n} volumes",
     "meaningfulCovers": "Reconnais {n} couvertures qui ont un sens",
     "fragments": "Arrache {n} phrases au hasard",

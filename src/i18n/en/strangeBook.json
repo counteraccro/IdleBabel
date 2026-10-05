@@ -61,6 +61,8 @@
     "clicks": "Turn {n} pages with your hand",
     "stock": "Hold {n} pages in memory",
     "speed": "Read {n} pages in a single second",
+    "pagesByMethods": "Let your methods read {n} pages for you",
+    "pagesByHand": "Read {n} pages with your own hand",
     "booksFinished": "Close {n} volumes",
     "meaningfulCovers": "Recognize {n} covers that make sense",
     "fragments": "Tear {n} sentences from chance",

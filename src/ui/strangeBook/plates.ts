@@ -45,8 +45,14 @@ export const platePages = (first: number): PlatePage[] => {
       );
       continue;
     }
-    for (let part = 0; part * PER_PAGE < seals.length; part++) {
-      pages.push({ plate, seals: seals.slice(part * PER_PAGE, (part + 1) * PER_PAGE), part, page: first + pages.length });
+    // Une série peut avoir sa propre page (seal.page) ; une page trop remplie continue sur la suivante.
+    const groups = [...new Set(seals.map((seal) => seal.page ?? 0))].sort((a, b) => a - b);
+    let part = 0;
+    for (const group of groups) {
+      const inGroup = seals.filter((seal) => (seal.page ?? 0) === group);
+      for (let start = 0; start < inGroup.length; start += PER_PAGE, part++) {
+        pages.push({ plate, seals: inGroup.slice(start, start + PER_PAGE), part, page: first + pages.length });
+      }
     }
   }
   return pages;

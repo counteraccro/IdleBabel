@@ -22,7 +22,7 @@ export const pagesPerSecond = (state: GameState): number =>
  * petites quantités (0,1 page ajoutée à 10¹⁵ ne change rien). On garde ce reste de côté et on le rajoute
  * aux ajouts suivants, jusqu'à ce qu'il compte : le compteur avance, même lentement, à toute échelle.
  */
-const carry = { pages: 0, totalPagesRead: 0 };
+const carry = { pages: 0, totalPagesRead: 0, pagesByMethods: 0 };
 
 const addKeepingRest = (state: GameState, key: keyof typeof carry, amount: number): void => {
   const wanted = carry[key] + amount;
@@ -45,12 +45,17 @@ export const gainPages = (state: GameState, amount: number): void => {
 let producedWhole = 0;
 export const producedWholePages = (): number => producedWhole;
 
-/** Ce que chaque méthode a lu pendant `seconds` (ses sceaux) ; rien quand le débogage impose la production. */
+/**
+ * Ce que chaque méthode a lu pendant `seconds`, et toutes ensemble depuis toujours (leurs sceaux) ; rien quand
+ * le débogage impose la production.
+ */
 export const creditMethods = (state: GameState, seconds: number): void => {
   if (forcedPagesPerSecond !== undefined) return;
   for (const tool of TOOLS) {
     const read = state.tools[tool.id] * toolRate(state, tool.id) * seconds;
-    if (read > 0) state.methodPages[tool.id] = (state.methodPages[tool.id] ?? 0) + read;
+    if (read <= 0) continue;
+    state.methodPages[tool.id] = (state.methodPages[tool.id] ?? 0) + read;
+    addKeepingRest(state, 'pagesByMethods', read);
   }
 };
 

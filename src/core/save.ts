@@ -2,6 +2,7 @@ import { SAVE_VERSION, createInitialState, type GameState } from './state';
 import type { Locale } from '../i18n';
 import { renameRareBooks } from './renamedRareBooks';
 import { dropRemovedMethods } from './removedMethods';
+import { PAGES_PER_CLICK } from '../systems/click';
 
 const SAVE_KEY = 'idle-babel-save';
 
@@ -27,6 +28,10 @@ export const loadGame = (defaultLocale: Locale): GameState => {
             // Trouvailles d'avant le livre blanc (sans phrase) : oubliées.
             finds: (saved.finds ?? []).filter((find) => typeof find.sentence === 'string'),
             totalPagesRead: saved.totalPagesRead ?? saved.pages,
+            // Une partie d'avant ces compteurs part de ce qu'elle sait : les pages de ses méthodes, ses clics.
+            pagesByMethods:
+              saved.pagesByMethods ?? Object.values(saved.methodPages ?? {}).reduce((sum, read) => sum + (read ?? 0), 0),
+            pagesByHand: saved.pagesByHand ?? (saved.stats?.clicks ?? 0) * PAGES_PER_CLICK,
             // Une partie d'avant les graines garde sa Bibliothèque.
             seed: saved.seed ?? 0,
           }),

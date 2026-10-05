@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../src/core/state';
+import { PAGES_PER_CLICK, readPage } from '../src/systems/click';
 import { gainPages, produce, producedWholePages } from '../src/systems/production';
 
 describe('pages gagnées', () => {
@@ -11,6 +12,14 @@ describe('pages gagnées', () => {
     expect(state.methodPages.diagonal).toBeCloseTo(5);
     expect(state.methodPages.finger).toBeCloseTo(5);
     expect(state.methodPages.voice).toBeUndefined();
+    expect(state.pagesByMethods).toBeCloseTo(10);
+  });
+
+  it('comptent à vie les pages lues à la main', () => {
+    const state = createInitialState('fr');
+    readPage(state);
+    readPage(state);
+    expect(state.pagesByHand).toBe(2 * PAGES_PER_CLICK);
   });
 
   it('avancent encore au-delà de 10¹⁵ pages, même par petites quantités', () => {

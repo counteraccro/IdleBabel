@@ -60,6 +60,10 @@ export interface GameState {
   tools: Record<ToolId, number>;
   /** Pages lues par chaque méthode depuis le début de la partie (ses sceaux) ; le prestige les remettra à zéro. */
   methodPages: Partial<Record<ToolId, number>>;
+  /** Pages lues par les méthodes depuis toujours (production et absence) : le prestige ne les reprend pas. */
+  pagesByMethods: number;
+  /** Pages lues à la main (clics) depuis toujours : le prestige ne les reprend pas. */
+  pagesByHand: number;
   /** Pages lues à l'écran dans le livre en main (0 à 408, deux par feuille tournée). */
   bookPage: number;
   /** Livres lus jusqu'au bout. */
@@ -132,6 +136,8 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   totalPagesRead: 0,
   tools: Object.fromEntries(TOOLS.map((tool) => [tool.id, 0])) as Record<ToolId, number>,
   methodPages: {},
+  pagesByMethods: 0,
+  pagesByHand: 0,
   bookPage: 0,
   booksFinished: 0,
   locale,
