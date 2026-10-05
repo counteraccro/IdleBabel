@@ -31,46 +31,37 @@ const tell = (title: string, stanzas: string[], actions: ModalAction[], backdrop
 };
 
 type Story = { title: string; text: string[] };
-const story = (id: 'fall' | 'wake' | 'gone'): Story => messages().etherium[id];
+const story = (id: 'wake' | 'gone'): Story => messages().etherium[id];
 
 /**
  * Le livre violet de la pile, cliqué : le chercheur regarde le puits, se penche, et peut encore reculer. S'il
- * tend la main, il tombe (le prestige), puis se réveille ailleurs, l'Etherium en main : il s'ouvre.
+ * tend la main, il l'attrape, le vide l'attire (le prestige), puis il se réveille ailleurs, l'Etherium en main :
+ * il s'ouvre (une seule modale, du vide au réveil).
+ * Le récit ne se raconte qu'au premier prestige : ensuite, le puits ne garde que ce qui sera perdu et le choix,
+ * et l'Etherium s'ouvre aussitôt la main tendue.
  */
 export const reachForEtherium = (state: GameState): void => {
   const reach = messages().etherium.reach;
   const gain = prestigeGain(state);
   if (gain < 1) return;
+  const first = state.exiles === 0;
   tell(
     reach.title,
-    reach.text,
+    first ? reach.text : [],
     [
       { label: reach.stay, kind: 'secondary' },
       {
         label: reach.reach,
         kind: 'primary',
         onClick: () => {
-          const fall = story('fall');
+          prestige(state);
+          saveGame(state);
+          if (!first) return goThroughTheDark(ETHERIUM_HASH);
+          const wake = story('wake');
           tell(
-            fall.title,
-            fall.text,
-            [
-              {
-                label: t('lore.continue'),
-                kind: 'primary',
-                onClick: () => {
-                  prestige(state);
-                  saveGame(state);
-                  const wake = story('wake');
-                  tell(
-                    wake.title,
-                    wake.text,
-                    [{ label: messages().etherium.wake.button, kind: 'primary', onClick: () => goThroughTheDark(ETHERIUM_HASH) }],
-                    'black',
-                  );
-                },
-              },
-            ],
+            wake.title,
+            wake.text,
+            [{ label: messages().etherium.wake.button, kind: 'primary', onClick: () => goThroughTheDark(ETHERIUM_HASH) }],
             'black',
           );
         },
@@ -81,8 +72,9 @@ export const reachForEtherium = (state: GameState): void => {
   );
 };
 
-/** L'Etherium refermé : il n'est plus là. */
-export const tellEtheriumGone = (): void => {
+/** L'Etherium refermé : il n'est plus là. Raconté la première fois seulement (après le premier prestige). */
+export const tellEtheriumGone = (state: GameState): void => {
+  if (state.exiles > 1) return;
   const gone = story('gone');
   tell(gone.title, gone.text, [{ label: t('lore.continue'), kind: 'primary' }]);
 };

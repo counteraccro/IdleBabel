@@ -280,7 +280,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     if (etheriumOpen && openBook() !== 'etherium') {
       closeEtherium(state);
       saveGame(state);
-      tellEtheriumGone();
+      tellEtheriumGone(state);
     }
     etheriumOpen = openBook() === 'etherium';
     // L'en-tête et le compteur restent ; le reste de l'écran d'avant s'efface puis s'en va, le nouveau

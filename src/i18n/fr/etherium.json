@@ -15,13 +15,14 @@
     "stay": "Reculer",
     "reach": "Tendre la main"
   },
-  "fall": {
-    "title": "La rambarde",
-    "text": ["La rambarde est basse.", "Je tombe."]
-  },
   "wake": {
-    "title": "Ailleurs",
-    "text": ["Je me réveille.\nUn hexagone.\nCe n'est pas le mien.", "Dans ma main, le livre.\nIl est encore humide."],
+    "title": "Le vide",
+    "text": [
+      "Mes doigts se referment sur le livre.\nJe le tiens.",
+      "Sous moi, le vide.\nIl m'appelle.\nComme si la réponse que je cherche\ndormait tout au fond.\nJe me laisse aller.",
+      "Je me réveille.\nUn hexagone.\nCe n'est pas le mien.",
+      "Dans ma main, le livre.\nIl est encore humide."
+    ],
     "button": "Ouvrir le livre"
   },
   "gone": {

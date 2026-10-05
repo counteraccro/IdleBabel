@@ -15,13 +15,14 @@
     "stay": "Step back",
     "reach": "Reach out"
   },
-  "fall": {
-    "title": "The railing",
-    "text": ["The railing is low.", "I fall."]
-  },
   "wake": {
-    "title": "Elsewhere",
-    "text": ["I wake up.\nA hexagon.\nIt is not mine.", "In my hand, the book.\nIt is still wet."],
+    "title": "The void",
+    "text": [
+      "My fingers close on the book.\nI am holding it.",
+      "Below me, the void.\nIt calls me.\nAs if the answer I seek\nslept at the very bottom.\nI let go.",
+      "I wake up.\nA hexagon.\nIt is not mine.",
+      "In my hand, the book.\nIt is still wet."
+    ],
     "button": "Open the book"
   },
   "gone": {
