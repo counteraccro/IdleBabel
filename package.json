@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "simule": "node --import ./simulateur/loader.mjs simulateur/main.ts"
   },
   "devDependencies": {
     "prettier": "^3.9.9",
