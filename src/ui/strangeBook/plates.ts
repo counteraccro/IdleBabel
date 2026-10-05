@@ -1,6 +1,6 @@
 import { getLocale, t } from '../../i18n';
 import { formatNumber, writeDigits } from '../../core/format';
-import { PLATES, SEALS, sealSeries, type PlateId, type SealDef } from '../../data/seals';
+import { BOOK_PAGES, PLATES, SEALS, sealSeries, type PlateId, type SealDef } from '../../data/seals';
 import { babelName, completion, countObtained, plateSeals, sealFindMultiplier, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
 import { isDeciphered } from '../../systems/decipher';
@@ -27,8 +27,8 @@ export interface PlatePage {
   seals: SealDef[];
   /** Morceau de la planche (0 : sa première page) ; `page` : index de la page dans le livre. */
   part: number;
-  /** Planche « Méthodes » : la méthode de la page (une page chacune). */
-  method?: ToolId;
+  /** Planche « Méthodes » : la méthode de la page (une page chacune) ; `all`, toutes à la fois. */
+  method?: ToolId | 'all';
   page: number;
 }
 
@@ -37,10 +37,11 @@ export const platePages = (first: number): PlatePage[] => {
   const pages: PlatePage[] = [];
   for (const plate of PLATES) {
     const seals = plateSeals(plate);
-    // Une page par méthode, ses sceaux seulement (l'auteur a d'autres idées de sceaux pour chacune).
+    // Une page par méthode, ses sceaux seulement (l'auteur a d'autres idées de sceaux pour chacune), puis
+    // celle de toutes les méthodes à la fois.
     if (seals.some((seal) => seal.method)) {
-      TOOLS.forEach((tool, part) =>
-        pages.push({ plate, seals: seals.filter((seal) => seal.method === tool.id), part, method: tool.id, page: first + pages.length }),
+      [...TOOLS.map((tool) => tool.id), 'all' as const].forEach((method, part) =>
+        pages.push({ plate, seals: seals.filter((seal) => seal.method === method), part, method, page: first + pages.length }),
       );
       continue;
     }
@@ -62,7 +63,11 @@ export const plateTitle = (state: GameState, plate: PlateId): string =>
 const sealText = (seal: SealDef): string => {
   const title = seal.rareBook ? t(`rareBooks.${seal.rareBook}.name`) : seal.tool ? t(`tools.${seal.tool}.name`) : '';
   const text = t(`strangeBook.seals.${seal.text}`).replace('{title}', title);
-  return seal.tier ? text.replace('{n}', formatNumber(seal.tier.n, getLocale())) : text;
+  if (!seal.tier) return text;
+  // Les volumes de méthodes : « un volume », « deux volumes »… (410 achats chacun).
+  return text
+    .replace('{volumes}', () => t(`strangeBook.volumes.${seal.tier!.n / BOOK_PAGES}`))
+    .replace('{n}', formatNumber(seal.tier.n, getLocale()));
 };
 
 const date = (at: number): string =>
@@ -91,8 +96,11 @@ const tally = (state: GameState, plate: PlateId, seals = plateSeals(plate)): str
  * Sous-titre d'une page de méthode : son nom, une fois la méthode possédée au moins une fois (son premier
  * sceau), et le sommaire déchiffré ; sinon en symboles (le livre ne la révèle pas avant le livre blanc).
  */
-const methodTitle = (state: GameState, method: ToolId): string =>
-  isDeciphered(state, 'contents') && `${method}-1` in state.seals ? t(`tools.${method}.name`) : babelName(`method:${method}`, 2);
+const methodTitle = (state: GameState, method: ToolId | 'all'): string => {
+  if (!isDeciphered(state, 'contents')) return babelName(`method:${method}`, 2);
+  if (method === 'all') return t('strangeBook.allMethods');
+  return `${method}-1` in state.seals ? t(`tools.${method}.name`) : babelName(`method:${method}`, 2);
+};
 
 const LINE_TOP = 400;
 const LINE_STEP = 40;

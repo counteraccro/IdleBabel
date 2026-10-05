@@ -5,6 +5,14 @@ import { pagesPerSecond, produce } from '../src/systems/production';
 import { createInitialState } from '../src/core/state';
 
 describe('outils', () => {
+  it('compte chaque méthode achetée, pour toujours (les volumes de méthodes)', () => {
+    const state = createInitialState('fr');
+    state.pages = 1e6;
+    buyTools(state, 'diagonal', 10);
+    buyTool(state, 'diagonal');
+    expect(state.methodsBought).toBe(11);
+  });
+
   it('le prix augmente de 15 % par exemplaire', () => {
     expect(toolCost(15, 0)).toBe(15);
     expect(toolCost(15, 1)).toBeCloseTo(17.25);

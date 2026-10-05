@@ -27,8 +27,8 @@ export interface SealDef {
   rareBook?: string;
   /** Sceau de l'intuition d'une méthode : le nom de la méthode remplace `{title}` dans le texte. */
   tool?: ToolId;
-  /** Sceau d'une méthode (planche « Méthodes ») : chacune a sa page, son nom en sous-titre. */
-  method?: ToolId;
+  /** Sceau d'une méthode (planche « Méthodes ») : chacune a sa page, son nom en sous-titre ; `all`, toutes à la fois. */
+  method?: ToolId | 'all';
   reached: (state: GameState) => boolean;
 }
 
@@ -71,6 +71,9 @@ const G = 1_000_000_000;
 const HOUR = 3600;
 /** Paliers des pages lues par une méthode, en multiples de son prix de base (même difficulté pour toutes). */
 const METHOD_PAGES_STEPS = [10, 1e3, 1e5, 1e7, 1e9, 1e12];
+/** Les volumes de méthodes : un à neuf livres de 410 achats. */
+const VOLUMES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+export const BOOK_PAGES = 410;
 
 export const SEALS: readonly SealDef[] = [
   ...series('pagesRead', 'pages', (s) => s.totalPagesRead, [1, 100, 10 * K, M, G, K * G]),
@@ -108,6 +111,13 @@ export const SEALS: readonly SealDef[] = [
       ),
     ].map((seal) => ({ ...seal, method: tool.id })),
   ),
+  // Méthodes achetées depuis toujours, par volumes de 410 (les pages d'un livre de Babel), jusqu'à neuf (05/10).
+  ...series(
+    'methodsBought',
+    'methods',
+    (s) => s.methodsBought,
+    VOLUMES.map((volume) => volume * BOOK_PAGES),
+  ).map((seal): SealDef => ({ ...seal, method: 'all' })),
 
   ...TECHNOLOGIES.map(intuitionSeal),
 

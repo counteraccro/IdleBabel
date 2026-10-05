@@ -44,6 +44,18 @@
     "rare": "Livres rares",
     "secrets": "Secrets"
   },
+  "allMethods": "Toutes les méthodes",
+  "volumes": {
+    "1": "un volume",
+    "2": "deux volumes",
+    "3": "trois volumes",
+    "4": "quatre volumes",
+    "5": "cinq volumes",
+    "6": "six volumes",
+    "7": "sept volumes",
+    "8": "huit volumes",
+    "9": "neuf volumes"
+  },
   "seals": {
     "pagesRead": "Traverse {n} pages",
     "clicks": "Tourne {n} pages de ta main",
@@ -63,6 +75,7 @@
     "voicePages": "Lis {n} pages par la Voix Éteinte depuis ton réveil",
     "lecternPages": "Lis {n} pages par le Lutrin de Pierre depuis ton réveil",
     "ladderPages": "Lis {n} pages par l'Échelle Roulante depuis ton réveil",
+    "methodsBought": "Remplis {volumes} de méthodes",
     "intuition-semanticFilter": "Sépare le sens du bruit",
     "intuition-ariadne": "Ne lâche plus le fil",
     "intuition-sentenceMemory": "Ne lis plus jamais deux fois la même chose",

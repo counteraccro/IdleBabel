@@ -39,6 +39,17 @@ describe('sceaux', () => {
     expect(state.seals['diagonalPages-1500000']).toBeUndefined();
   });
 
+  it('scelle les volumes de méthodes : 410 achats chacun, jusqu’à neuf', () => {
+    expect(SEALS.filter((seal) => seal.text === 'methodsBought').map((seal) => seal.tier?.n)).toEqual([
+      410, 820, 1230, 1640, 2050, 2460, 2870, 3280, 3690,
+    ]);
+    const state = createInitialState('fr');
+    state.methodsBought = 900;
+    checkSeals(state, 1);
+    expect(state.seals['methodsBought-820']).toBe(1);
+    expect(state.seals['methodsBought-1230']).toBeUndefined();
+  });
+
   it('scelle un secret sur un geste, une seule fois, et jamais par le tick', () => {
     const state = createInitialState('fr');
     checkSeals(state, 1);

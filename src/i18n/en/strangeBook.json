@@ -44,6 +44,18 @@
     "rare": "Rare books",
     "secrets": "Secrets"
   },
+  "allMethods": "All methods",
+  "volumes": {
+    "1": "one volume",
+    "2": "two volumes",
+    "3": "three volumes",
+    "4": "four volumes",
+    "5": "five volumes",
+    "6": "six volumes",
+    "7": "seven volumes",
+    "8": "eight volumes",
+    "9": "nine volumes"
+  },
   "seals": {
     "pagesRead": "Cross {n} pages",
     "clicks": "Turn {n} pages with your hand",
@@ -63,6 +75,7 @@
     "voicePages": "Read {n} pages through the Silenced Voice since you woke up",
     "lecternPages": "Read {n} pages through the Stone Lectern since you woke up",
     "ladderPages": "Read {n} pages through the Rolling Ladder since you woke up",
+    "methodsBought": "Fill {volumes} of methods",
     "intuition-semanticFilter": "Tell meaning from noise",
     "intuition-ariadne": "Never let go of the thread",
     "intuition-sentenceMemory": "Never read the same thing twice",
