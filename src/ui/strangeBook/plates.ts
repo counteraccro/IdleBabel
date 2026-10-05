@@ -68,6 +68,8 @@ export const plateTitle = (state: GameState, plate: PlateId): string =>
 
 const sealText = (seal: SealDef): string => {
   const title = seal.rareBook ? t(`rareBooks.${seal.rareBook}.name`) : seal.tool ? t(`tools.${seal.tool}.name`) : '';
+  // Une phrase à lui (le nombre y est écrit en toutes lettres).
+  if (seal.phrases && seal.tier) return t(`strangeBook.seals.${seal.text}.${seal.tier.index}`);
   const text = t(`strangeBook.seals.${seal.text}`).replace('{title}', title);
   if (!seal.tier) return text;
   // Les volumes de méthodes : « un volume », « deux volumes »… (410 achats chacun).
