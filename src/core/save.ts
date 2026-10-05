@@ -20,8 +20,6 @@ export const loadGame = (defaultLocale: Locale): GameState => {
             stats: { ...initial.stats, ...saved.stats },
             tools: { ...initial.tools, ...saved.tools },
             methodPages: { ...saved.methodPages },
-            // Parties d'avant ce compte : les méthodes possédées aujourd'hui.
-            methodsBought: saved.methodsBought ?? Object.values(saved.tools ?? {}).reduce((sum, count) => sum + count, 0),
             technologies: { ...saved.technologies },
             // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
             technologiesBest: { ...saved.technologies, ...saved.technologiesBest },

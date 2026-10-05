@@ -111,11 +111,12 @@ export const SEALS: readonly SealDef[] = [
       ),
     ].map((seal) => ({ ...seal, method: tool.id })),
   ),
-  // Méthodes achetées depuis toujours, par volumes de 410 (les pages d'un livre de Babel), jusqu'à neuf (05/10).
+  // Méthodes achetées dans la partie (toutes possédées : on ne revend pas), par volumes de 410 (les pages d'un livre
+  // de Babel), jusqu'à neuf : 3 690 à la fois, pour la très longue partie (05/10).
   ...series(
     'methodsBought',
     'methods',
-    (s) => s.methodsBought,
+    (s) => TOOLS.reduce((sum, tool) => sum + s.tools[tool.id], 0),
     VOLUMES.map((volume) => volume * BOOK_PAGES),
   ).map((seal): SealDef => ({ ...seal, method: 'all' })),
 

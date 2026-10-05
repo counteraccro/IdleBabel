@@ -58,7 +58,6 @@ export const buyTools = (state: GameState, id: ToolId, lot: BuyLot = 1): number 
   if (!canPay(state, cost)) return 0;
   state.pages = Math.max(0, state.pages - cost);
   state.tools[id] += count;
-  state.methodsBought += count;
   recordOnce(state, 'firstTool', id);
   return count;
 };
