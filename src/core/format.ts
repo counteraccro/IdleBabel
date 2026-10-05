@@ -97,3 +97,13 @@ export const formatNumber = (value: number, locale: Locale, notation: Notation =
     return new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 2 }).format(value);
   return exponent(value, locale, notation === 'engineering' ? 3 : 1);
 };
+
+/**
+ * Nombre suivi de ce qu'il compte (« {n} pages ») : en toutes lettres, le français demande « de » après le nom
+ * de la puissance (1 million de pages) ; l'anglais, rien.
+ */
+export const formatCount = (value: number, locale: Locale): string => {
+  const text = formatNumber(value, locale);
+  const before = LOCALES[locale].numbers.before;
+  return current === 'words' && before && /\p{L}$/u.test(text) ? `${text} ${before}` : text;
+};

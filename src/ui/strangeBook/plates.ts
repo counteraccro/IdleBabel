@@ -1,5 +1,5 @@
 import { getLocale, t } from '../../i18n';
-import { formatNumber, writeDigits } from '../../core/format';
+import { formatCount, writeDigits } from '../../core/format';
 import { BOOK_PAGES, PLATES, SEALS, sealSeries, type PlateId, type SealDef } from '../../data/seals';
 import { babelName, completion, countObtained, plateSeals, sealFindMultiplier, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
@@ -68,14 +68,14 @@ export const plateTitle = (state: GameState, plate: PlateId): string =>
 
 const sealText = (seal: SealDef): string => {
   const title = seal.rareBook ? t(`rareBooks.${seal.rareBook}.name`) : seal.tool ? t(`tools.${seal.tool}.name`) : '';
-  // Une phrase à lui (le nombre y est écrit en toutes lettres).
-  if (seal.phrases && seal.tier) return t(`strangeBook.seals.${seal.text}.${seal.tier.index}`);
-  const text = t(`strangeBook.seals.${seal.text}`).replace('{title}', title);
+  // Une phrase à lui, à son palier ; le nombre, dans la notation choisie au cahier d'options comme les autres.
+  const key = seal.phrases && seal.tier ? `${seal.text}.${seal.tier.index}` : seal.text;
+  const text = t(`strangeBook.seals.${key}`).replace('{title}', title);
   if (!seal.tier) return text;
   // Les volumes de méthodes : « un volume », « deux volumes »… (410 achats chacun).
   return text
     .replace('{volumes}', () => t(`strangeBook.volumes.${seal.tier!.n / BOOK_PAGES}`))
-    .replace('{n}', formatNumber(seal.tier.n, getLocale()));
+    .replace('{n}', formatCount(seal.tier.n, getLocale()));
 };
 
 const date = (at: number): string =>

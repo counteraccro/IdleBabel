@@ -54,6 +54,14 @@ describe('sceaux', () => {
     expect(state.seals['pagesByHand-100']).toBeUndefined();
   });
 
+  it('laisse le nombre des phrases de palier à la notation choisie : {n}, jamais écrit en toutes lettres', () => {
+    for (const messages of Object.values(LOCALES)) {
+      const texts = (messages.strangeBook as { seals: Record<string, string | string[]> }).seals;
+      for (const seal of SEALS.filter((candidate) => candidate.phrases && candidate.tier!.index > 0))
+        expect(texts[seal.text][seal.tier!.index], seal.id).toContain('{n}');
+    }
+  });
+
   it('scelle la meilleure vitesse, sur sa propre page : de dix en dix jusqu’à 10⁸, puis de cent en cent jusqu’à 10³⁰', () => {
     const speed = SEALS.filter((seal) => seal.text === 'speed');
     expect(speed.map((seal) => seal.tier?.n)).toEqual([

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatNumber, setNotation, writeDigits } from '../src/core/format';
+import { formatCount, formatNumber, setNotation, writeDigits } from '../src/core/format';
 
 const fr = (value: number, notation: Parameters<typeof formatNumber>[2]): string => formatNumber(value, 'fr', notation).replace(/\s/g, ' ');
 
@@ -50,6 +50,18 @@ describe('writeDigits', () => {
   it('change chaque chiffre en son sceau, le reste tel quel', () => {
     setNotation('babel');
     expect(writeDigits('1:05')).toBe('◆:◇⬘');
+    setNotation('full');
+  });
+});
+
+describe('formatCount', () => {
+  it('ajoute « de » après le nom de la puissance, en toutes lettres et en français seulement', () => {
+    setNotation('words');
+    expect(formatCount(1e6, 'fr')).toBe('1 million de');
+    expect(formatCount(100_000, 'fr').replace(/\s/g, ' ')).toBe('100 000');
+    expect(formatCount(1e6, 'en')).toBe('1 million');
+    setNotation('short');
+    expect(formatCount(1e6, 'fr').replace(/\s/g, ' ')).toBe('1 M');
     setNotation('full');
   });
 });
