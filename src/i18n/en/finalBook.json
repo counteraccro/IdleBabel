@@ -41,11 +41,7 @@
   "methods": {
     "diagonal": "{when}, you learned to skip every other word.",
     "finger": "{when}, your finger began to guide your eyes. They no longer went back.",
-    "thumb": "{when}, your thumb grew calloused. The pages turned without hesitation.",
     "voice": "{when}, the voice in your head fell silent. Without it, you went faster.",
-    "wide": "{when}, you learned to read words by the handful.",
-    "double": "{when}, you took a book in each hand.",
-    "mirror": "{when}, you polished a piece of copper until you could see the light in it.",
     "lectern": "{when}, you tore a stone from the railing. It became your lectern.",
     "ladder": "{when}, you found a ladder. The top shelves became yours."
   },

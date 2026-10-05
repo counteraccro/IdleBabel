@@ -1,11 +1,7 @@
 {
   "diagonal": { "name": "La Lecture Diagonale", "description": "le cerveau saute un mot sur deux." },
   "finger": { "name": "Le Doigt qui Guide", "description": "l'œil ne revient plus en arrière." },
-  "thumb": { "name": "Le Pouce Corné", "description": "les pages tournent sans hésiter." },
   "voice": { "name": "La Voix Éteinte", "description": "plus de voix dans la tête pour ralentir." },
-  "wide": { "name": "Le Regard Large", "description": "les mots se lisent par poignées." },
-  "double": { "name": "Le Double Feuilletage", "description": "deux mains, deux volumes." },
-  "mirror": { "name": "Le Miroir de Cuivre", "description": "la lueur tombe sur deux pages." },
   "lectern": { "name": "Le Lutrin de Pierre", "description": "un bloc arraché à une rambarde." },
   "ladder": { "name": "L'Échelle Roulante", "description": "lire les étagères hautes sans descendre." }
 }

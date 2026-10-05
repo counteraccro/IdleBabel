@@ -41,11 +41,7 @@
   "methods": {
     "diagonal": "{when}, tu as appris à sauter un mot sur deux.",
     "finger": "{when}, ton doigt a commencé à guider tes yeux. Ils ne revenaient plus en arrière.",
-    "thumb": "{when}, ton pouce s'est corné. Les pages tournaient sans hésiter.",
     "voice": "{when}, la voix dans ta tête s'est tue. Sans elle, tu allais plus vite.",
-    "wide": "{when}, tu as appris à lire les mots par poignées.",
-    "double": "{when}, tu as pris un livre dans chaque main.",
-    "mirror": "{when}, tu as poli un morceau de cuivre jusqu'à y voir la lumière.",
     "lectern": "{when}, tu as arraché une pierre à la rambarde. Elle est devenue ton lutrin.",
     "ladder": "{when}, tu as trouvé une échelle. Les étagères du haut sont devenues les tiennes."
   },

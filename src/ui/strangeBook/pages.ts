@@ -206,7 +206,7 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
   ];
 };
 
-/** Le nom d'une ligne du relevé tient avant les points de conduite (« Le Double Feuilletage »). */
+/** Le nom d'une ligne du relevé tient avant les points de conduite (« La Lecture Diagonale »). */
 const fitRow = (item: TextItem): TextItem => {
   const width = textWidth(item);
   const room = 380 - 110 - 10;

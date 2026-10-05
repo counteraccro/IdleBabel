@@ -1,6 +1,7 @@
 import { SAVE_VERSION, createInitialState, type GameState } from './state';
 import type { Locale } from '../i18n';
 import { renameRareBooks } from './renamedRareBooks';
+import { dropRemovedMethods } from './removedMethods';
 
 const SAVE_KEY = 'idle-babel-save';
 
@@ -11,22 +12,24 @@ export const loadGame = (defaultLocale: Locale): GameState => {
       const saved = JSON.parse(raw) as GameState;
       if (saved.version === SAVE_VERSION) {
         const initial = createInitialState(defaultLocale);
-        return renameRareBooks({
-          ...initial,
-          ...saved,
-          settings: { ...initial.settings, ...saved.settings },
-          stats: { ...initial.stats, ...saved.stats },
-          tools: { ...initial.tools, ...saved.tools },
-          technologies: { ...saved.technologies },
-          // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
-          technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
-          reminiscence: { ...initial.reminiscence, ...saved.reminiscence },
-          // Trouvailles d'avant le livre blanc (sans phrase) : oubliées.
-          finds: (saved.finds ?? []).filter((find) => typeof find.sentence === 'string'),
-          totalPagesRead: saved.totalPagesRead ?? saved.pages,
-          // Une partie d'avant les graines garde sa Bibliothèque.
-          seed: saved.seed ?? 0,
-        });
+        return dropRemovedMethods(
+          renameRareBooks({
+            ...initial,
+            ...saved,
+            settings: { ...initial.settings, ...saved.settings },
+            stats: { ...initial.stats, ...saved.stats },
+            tools: { ...initial.tools, ...saved.tools },
+            technologies: { ...saved.technologies },
+            // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
+            technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
+            reminiscence: { ...initial.reminiscence, ...saved.reminiscence },
+            // Trouvailles d'avant le livre blanc (sans phrase) : oubliées.
+            finds: (saved.finds ?? []).filter((find) => typeof find.sentence === 'string'),
+            totalPagesRead: saved.totalPagesRead ?? saved.pages,
+            // Une partie d'avant les graines garde sa Bibliothèque.
+            seed: saved.seed ?? 0,
+          }),
+        );
       }
     }
   } catch {

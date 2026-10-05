@@ -60,11 +60,7 @@ export const TECHNOLOGIES = [
   { id: 'reminiscence', prices: [10_000], permanent: true, afterExile: true },
   { id: 'diagonalGesture', prices: gesture(50), tool: 'diagonal' },
   { id: 'fingerGesture', prices: gesture(125), tool: 'finger' },
-  { id: 'thumbGesture', prices: gesture(300), tool: 'thumb' },
   { id: 'voiceGesture', prices: gesture(750), tool: 'voice' },
-  { id: 'wideGesture', prices: gesture(2_000), tool: 'wide' },
-  { id: 'doubleGesture', prices: gesture(5_000), tool: 'double' },
-  { id: 'mirrorGesture', prices: gesture(12_500), tool: 'mirror' },
   { id: 'lecternGesture', prices: gesture(30_000), tool: 'lectern' },
   { id: 'ladderGesture', prices: gesture(75_000), tool: 'ladder' },
 ] as const satisfies readonly TechnologyDef[];

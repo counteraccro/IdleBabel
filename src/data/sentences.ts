@@ -21,11 +21,7 @@ export const SENTENCES: readonly SentenceDef[] = [
   // Au réveil, le livre blanc est vierge : même la première méthode est à trouver.
   { id: 'diagonal', kind: 'method', tool: 'diagonal' },
   { id: 'finger', kind: 'method', tool: 'finger' },
-  { id: 'thumb', kind: 'method', tool: 'thumb' },
   { id: 'voice', kind: 'method', tool: 'voice' },
-  { id: 'wide', kind: 'method', tool: 'wide' },
-  { id: 'double', kind: 'method', tool: 'double' },
-  { id: 'mirror', kind: 'method', tool: 'mirror' },
   { id: 'lectern', kind: 'method', tool: 'lectern' },
   { id: 'ladder', kind: 'method', tool: 'ladder' },
   { id: 'cup', kind: 'memory' },

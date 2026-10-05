@@ -29,6 +29,24 @@ describe('sauvegarde', () => {
     expect(state.pages).toBe(0);
   });
 
+  it("oublie les méthodes retirées de l'Âge Manuel (05/10)", () => {
+    const state = createInitialState('fr') as unknown as Record<string, any>;
+    state.tools.thumb = 12;
+    state.tools.voice = 3;
+    state.technologies = { mirrorGesture: 2, voiceGesture: 1 };
+    state.written = { wide: [0, 1], voice: [0] };
+    state.seals = { 'intuition-doubleGesture': 1, 'intuition-voiceGesture': 1 };
+    state.history.push({ type: 'firstTool', at: 1, detail: 'thumb' });
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    const loaded = loadGame('fr');
+    expect(Object.keys(loaded.tools)).not.toContain('thumb');
+    expect(loaded.tools.voice).toBe(3);
+    expect(loaded.technologies).toEqual({ voiceGesture: 1 });
+    expect(loaded.written).toEqual({ voice: [0] });
+    expect(Object.keys(loaded.seals)).toEqual(['intuition-voiceGesture']);
+    expect(loaded.history.some((entry) => entry.detail === 'thumb')).toBe(false);
+  });
+
   it('retrouve la partie enregistrée', () => {
     const state = createInitialState('fr');
     state.pages = 42;

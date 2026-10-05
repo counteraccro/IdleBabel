@@ -85,11 +85,7 @@ const found = (state: GameState, kind: string): number => state.finds.filter((fi
 const TOOL_CAPTIONS: Record<string, string> = {
   diagonal: 'bruda vex',
   finger: 'olmo dite',
-  thumb: 'parsu nel',
   voice: 'vox teduri',
-  wide: 'larbe io',
-  double: 'dimpa roel',
-  mirror: 'cuprel ana',
   lectern: 'lotiz perma',
   ladder: 'escal u virn',
 };

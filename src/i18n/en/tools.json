@@ -1,11 +1,7 @@
 {
   "diagonal": { "name": "Diagonal Reading", "description": "the mind skips every other word." },
   "finger": { "name": "The Guiding Finger", "description": "the eye no longer goes back." },
-  "thumb": { "name": "The Worn Thumb", "description": "pages turn without hesitation." },
   "voice": { "name": "The Silenced Voice", "description": "no inner voice to slow things down." },
-  "wide": { "name": "The Wide Gaze", "description": "words read by the handful." },
-  "double": { "name": "Double Leafing", "description": "two hands, two volumes." },
-  "mirror": { "name": "The Copper Mirror", "description": "the glow falls on two pages." },
   "lectern": { "name": "The Stone Lectern", "description": "a block torn from a railing." },
   "ladder": { "name": "The Rolling Ladder", "description": "reading the high shelves without coming down." }
 }
