@@ -99,6 +99,8 @@ export const CHAPTERS: readonly Chapter[] = [
       { id: 'totalPages', caption: 'lacimo tev', value: (s) => number(s.totalPagesRead) },
       { id: 'stock', caption: 'dru pesna', value: (s) => number(s.pages) },
       { id: 'clicks', caption: 'mao nirvel', value: (s) => number(s.stats.clicks), shown: (s) => s.stats.clicks > 0 },
+      // L'Éther vient des pages lues : ce que les prestiges en ont rapporté, en tout (il a quitté l'Etherium).
+      { id: 'etherReceived', caption: 'etra vunel', value: (s) => number(s.etherReceived), shown: (s) => s.etherReceived > 0 },
     ],
   },
   {

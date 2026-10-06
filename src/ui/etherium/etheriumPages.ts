@@ -4,7 +4,7 @@ import { paragraph } from '../whiteBook/paragraph';
 import { ETHERIUM_TREES, type EtheriumTreeId } from '../../data/etherium';
 import { TOOLS } from '../../data/tools';
 import { nextEtherPages, nextNodeCost, nodesOf, takeNode } from '../../systems/prestige';
-import { formatNumber, writeDigits } from '../../core/format';
+import { formatCount, formatNumber, writeDigits } from '../../core/format';
 import { getLocale, t } from '../../i18n';
 import type { GameState } from '../../core/state';
 
@@ -45,7 +45,8 @@ const titleItems = (state: GameState): Item[] => [
   { kind: 'text', text: t('etherium.ether'), x: 320, y: 470, size: 20, align: 'center', italic: true, faded: true, spacing: 3 },
   {
     kind: 'text',
-    text: t('etherium.next').replace('{n}', plain(nextEtherPages(state))),
+    // Ce qu'il reste à lire : « dans 125 milliards de pages » (le « de » des toutes lettres : formatCount).
+    text: t('etherium.next').replace('{n}', formatCount(Math.max(0, nextEtherPages(state) - state.totalPagesRead), getLocale())),
     x: 320,
     y: 620,
     size: 18,

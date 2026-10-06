@@ -29,8 +29,9 @@
     "title": "Nothing",
     "text": ["The book is gone.", "A dream? Another reality?", "I was sure I was holding it."]
   },
+  "cover": { "title": "ETHERIUM", "next": "next Ether: {n}", "reserve": "Ether in reserve" },
   "ether": "Ether to spend",
-  "next": "Next Ether: {n} pages read in all",
+  "next": "Next Ether: in {n} pages",
   "contents": "Contents",
   "take": "Take · {n} Ether",
   "cost": "{n} Ether",

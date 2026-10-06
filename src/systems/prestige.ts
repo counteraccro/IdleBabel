@@ -23,6 +23,12 @@ export const prestigeReady = (state: GameState): boolean => prestigeGain(state) 
 /** Pages lues à vie qu'il faut pour l'Éther suivant (le n-ième en demande n³ milliards). */
 export const nextEtherPages = (state: GameState): number => (etherDeserved(state) + 1) ** 3 * ETHER_PAGES;
 
+/** Où en est l'Éther suivant, de 0 à 1 : depuis les pages du dernier Éther mérité. */
+export const nextEtherProgress = (state: GameState): number => {
+  const from = etherDeserved(state) ** 3 * ETHER_PAGES;
+  return Math.min(1, Math.max(0, (state.totalPagesRead - from) / (nextEtherPages(state) - from)));
+};
+
 const tree = (id: EtheriumTreeId) => ETHERIUM_TREES.find((candidate) => candidate.id === id)!;
 
 /** Nœuds pris dans un arbre. */

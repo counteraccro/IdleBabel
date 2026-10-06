@@ -29,8 +29,9 @@
     "title": "Plus rien",
     "text": ["Le livre n'est plus là.", "Un rêve ? Une autre réalité ?", "J'étais persuadé de l'avoir en main."]
   },
+  "cover": { "title": "ETHERIUM", "next": "prochain Éther : {n}", "reserve": "Éther en réserve" },
   "ether": "Éther à dépenser",
-  "next": "Prochain Éther : {n} pages lues depuis toujours",
+  "next": "Prochain Éther : dans {n} pages",
   "contents": "Sommaire",
   "take": "Prendre · {n} Éther",
   "cost": "{n} Éther",

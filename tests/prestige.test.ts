@@ -4,6 +4,7 @@ import {
   closeEtherium,
   etherDeserved,
   nextEtherPages,
+  nextEtherProgress,
   prestige,
   prestigeGain,
   prestigeReady,
@@ -35,6 +36,14 @@ const reader = (pages: number) => {
 };
 
 describe('Prestige', () => {
+  it('le prochain Éther : de 0 à 1 entre deux Éthers mérités', () => {
+    expect(nextEtherProgress(reader(0))).toBe(0);
+    expect(nextEtherProgress(reader(5e8))).toBeCloseTo(0.5);
+    // 8 Md : le 2ᵉ, tout juste ; le 3ᵉ demande 27 Md.
+    expect(nextEtherProgress(reader(8e9))).toBe(0);
+    expect(nextEtherProgress(reader(1.75e10))).toBeCloseTo(0.5);
+  });
+
   it('l’Éther mérité : la racine cubique des pages à vie, en milliards', () => {
     expect(etherDeserved(reader(999_999_999))).toBe(0);
     expect(etherDeserved(reader(1e9))).toBe(1);

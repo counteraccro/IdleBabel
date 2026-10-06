@@ -62,6 +62,7 @@ export const DRAFT_GROUPS = {
   modalForms: ['modal-form-1', 'modal-form-3'],
   numerals: ['numerals-b'],
   showcase: ['showcase-a', 'showcase-b', 'showcase-c'],
+  etherium: ['etherium-a', 'etherium-b', 'etherium-c'],
 };
 
 export const STORY: StoryChapter[] = [
@@ -94,7 +95,7 @@ export const STORY: StoryChapter[] = [
       { key: 'bindings' },
       { key: 'away' },
       { key: 'intuitions' },
-      { key: 'prestige' },
+      { key: 'prestige', drafts: ['etherium'] },
       { key: 'thisBook' },
     ],
   },
