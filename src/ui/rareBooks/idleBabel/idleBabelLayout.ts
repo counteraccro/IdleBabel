@@ -44,9 +44,13 @@ const CHAPTER_WIDTH = MEASURE * 0.75;
 export const TITLE_PAGE = 1;
 export const FOREWORD_PAGE = 3;
 export const CONTENTS_PAGE = 5;
-const FIRST_CHAPTER_PAGE = 7;
-/** Le sommaire : ligne de base de la première entrée, pas d'un chapitre, pas d'une partie. */
+/**
+ * Le sommaire : ligne de base de la première entrée (sous le titre ; en haut de page quand il continue), dernière
+ * ligne de base permise, pas d'un chapitre, pas d'une partie.
+ */
 const CONTENTS_TOP = 176;
+const CONTENTS_CONTINUED_TOP = TOP;
+const CONTENTS_BOTTOM = BOTTOM;
 const CONTENTS_STEP = 42;
 const CONTENTS_SUB_STEP = 26;
 /** Le pas d'une sous-partie, plus serré. */
@@ -208,7 +212,8 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
     folio(target, FOREWORD_PAGE);
   });
 
-  let page = FIRST_CHAPTER_PAGE;
+  // Les chapitres commencent après le sommaire, qui continue sur les pages suivantes s'il déborde.
+  let page = CONTENTS_PAGE + contentsPageCount();
   let plateNumber = 1;
   STORY.forEach((chapter, c) => {
     const { title, text: intro } = text.chapters[chapter.key];
@@ -315,27 +320,60 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
     flush();
   });
 
-  pages.set(CONTENTS_PAGE, (target) => {
-    heading(target, text.contents, 110);
-    const baselines = contentsBaselines(contents);
-    contents.forEach(({ name, page: at, part, sub }, i) => {
-      const y = baselines[i];
-      const left = sub ? 146 : part ? 118 : 90;
-      const font = sub ? `italic 15px ${GARAMOND}` : part ? `italic 17px ${GARAMOND}` : `400 21px ${GARAMOND}`;
-      write(target, name, left, y, { font, color: part ? SOFT : INK, align: 'left' });
-      write(target, String(at), WIDTH - 90, y, { font: `500 ${part ? 13 : 15}px ${TITLE}`, color: SOFT, align: 'right', spacing: 1 });
-      target.font = font;
-      target.fillStyle = RULE;
-      for (let x = left + target.measureText(name).width + 12; x < WIDTH - 124; x += 9) target.fillRect(x, y - 5, 1.2, 1.2);
+  const placed = contentsPlaces(contents);
+  for (let sheet = 0; sheet < contentsPageCount(); sheet++) {
+    const number = CONTENTS_PAGE + sheet;
+    pages.set(number, (target) => {
+      if (sheet === 0) heading(target, text.contents, 110);
+      contents.forEach(({ name, page: at, part, sub }, i) => {
+        const { sheet: on, y } = placed[i];
+        if (on !== sheet) return;
+        const left = sub ? 146 : part ? 118 : 90;
+        const font = sub ? `italic 15px ${GARAMOND}` : part ? `italic 17px ${GARAMOND}` : `400 21px ${GARAMOND}`;
+        write(target, name, left, y, { font, color: part ? SOFT : INK, align: 'left' });
+        write(target, String(at), WIDTH - 90, y, { font: `500 ${part ? 13 : 15}px ${TITLE}`, color: SOFT, align: 'right', spacing: 1 });
+        target.font = font;
+        target.fillStyle = RULE;
+        for (let x = left + target.measureText(name).width + 12; x < WIDTH - 124; x += 9) target.fillRect(x, y - 5, 1.2, 1.2);
+      });
+      folio(target, number);
     });
-    folio(target, CONTENTS_PAGE);
-  });
+  }
 
   return { pages, contents };
 };
 
-/** Les lignes du sommaire (ligne de base de chacune), pour les rendre cliquables. */
-export const contentsBaselines = (contents: ContentsEntry[]): number[] => {
+/** Une ligne du sommaire : sa page (0 pour la première du sommaire) et sa ligne de base. */
+export interface ContentsPlace {
+  sheet: number;
+  y: number;
+}
+
+/**
+ * La place de chaque ligne du sommaire. Au-delà de CONTENTS_BOTTOM, il continue en haut de la page suivante ;
+ * un chapitre n'y reste pas seul en bas de page, sans sa première partie.
+ */
+export const contentsPlaces = (contents: Pick<ContentsEntry, 'part' | 'sub'>[]): ContentsPlace[] => {
+  const step = ({ part, sub }: Pick<ContentsEntry, 'part' | 'sub'>) =>
+    sub ? CONTENTS_SUB_SUB_STEP : part ? CONTENTS_SUB_STEP : CONTENTS_STEP;
+  let sheet = 0;
   let y = CONTENTS_TOP;
-  return contents.map(({ part, sub }, i) => (y += sub ? CONTENTS_SUB_SUB_STEP : part ? CONTENTS_SUB_STEP : i ? CONTENTS_STEP : 0));
+  return contents.map((entry, i) => {
+    if (i) {
+      y += step(entry);
+      const next = contents[i + 1];
+      const orphan = !entry.part && next?.part && y + step(next) > CONTENTS_BOTTOM;
+      if (y > CONTENTS_BOTTOM || orphan) [sheet, y] = [sheet + 1, CONTENTS_CONTINUED_TOP];
+    }
+    return { sheet, y };
+  });
 };
+
+/** Les lignes du sommaire, avant la mise en page : l'avant-propos, puis chaque chapitre et ses parties. */
+const contentsShape = (): Pick<ContentsEntry, 'part' | 'sub'>[] => [
+  {},
+  ...STORY.flatMap((chapter) => [{}, ...(chapter.sections ?? []).map(({ sub }) => ({ part: true, sub }))]),
+];
+
+/** Les pages du sommaire : elles ne dépendent que du nombre de chapitres et de parties. */
+export const contentsPageCount = (): number => Math.max(...contentsPlaces(contentsShape()).map(({ sheet }) => sheet)) + 1;

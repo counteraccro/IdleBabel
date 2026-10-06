@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { setLocale } from '../src/i18n';
 import { PAGES_PER_BOOK } from '../src/systems/books';
-import { CONTENTS_PAGE, FOREWORD_PAGE, layoutIdleBabel, words, type PlateArt } from '../src/ui/rareBooks/idleBabel/idleBabelLayout';
+import {
+  CONTENTS_PAGE,
+  FOREWORD_PAGE,
+  contentsPageCount,
+  contentsPlaces,
+  layoutIdleBabel,
+  words,
+  type PlateArt,
+} from '../src/ui/rareBooks/idleBabel/idleBabelLayout';
 import { BOOK_DRAFTS, DRAFT_GROUPS, PLATE_BOOKS, STORY } from '../src/ui/rareBooks/idleBabel/idleBabelStory';
 
 /** Un contexte qui mesure le texte au nombre de lettres (la mise en page n'a besoin que de mesurer). */
@@ -42,6 +50,13 @@ describe('livre « Idle Babel »', () => {
       const written = [...pages.keys()].filter((page) => page > CONTENTS_PAGE && page < PAGES_PER_BOOK).sort((a, b) => a - b);
       for (let page = written[0]; page <= written[written.length - 1]; page++)
         if (!pages.has(page)) expect(chapters.some((chapter) => chapter.page === page + 1)).toBe(true);
+
+      // Le sommaire tient dans ses pages (au-dessus du numéro de page), et le premier chapitre vient après.
+      const places = contentsPlaces(contents);
+      expect(Math.max(...places.map(({ sheet }) => sheet)) + 1).toBe(contentsPageCount());
+      for (const { y } of places) expect(y).toBeLessThanOrEqual(690);
+      for (let sheet = 0; sheet < contentsPageCount(); sheet++) expect(pages.has(CONTENTS_PAGE + sheet)).toBe(true);
+      expect(chapters[0].page).toBeGreaterThanOrEqual(CONTENTS_PAGE + contentsPageCount());
 
       // Toutes les pages dessinées sur un contexte qui mesure et ignore le reste.
       const base = measuring() as Record<string, unknown>;

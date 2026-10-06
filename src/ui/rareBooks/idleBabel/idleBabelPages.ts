@@ -1,7 +1,7 @@
 import '@fontsource/eb-garamond/400.css';
 import { getLocale } from '../../../i18n';
 import { TITLE } from '../draw';
-import { CONTENTS_PAGE, GARAMOND, contentsBaselines, layoutIdleBabel, type BookLayout } from './idleBabelLayout';
+import { CONTENTS_PAGE, GARAMOND, contentsPlaces, layoutIdleBabel, type BookLayout } from './idleBabelLayout';
 import { loadPlateArt } from './idleBabelPlates';
 import type { PageLink } from '../rareBookArt';
 
@@ -43,13 +43,13 @@ export const paintIdleBabelPage = (context: CanvasRenderingContext2D, page: numb
   return true;
 };
 
-/** Les lignes du sommaire mènent à leur chapitre ou à leur partie. */
+/** Les lignes du sommaire (sur une page ou plus) mènent à leur chapitre ou à leur partie. */
 export const idleBabelLinks = (page: number): PageLink[] => {
-  if (page !== CONTENTS_PAGE || laid?.locale !== getLocale()) return [];
+  if (laid?.locale !== getLocale()) return [];
   const { contents } = laid.layout;
-  return contentsBaselines(contents).map((y, i) => ({
-    y: y - (contents[i].part ? 20 : 26),
-    height: contents[i].part ? 26 : 34,
-    target: contents[i].page,
-  }));
+  return contentsPlaces(contents).flatMap(({ sheet, y }, i) =>
+    CONTENTS_PAGE + sheet === page
+      ? [{ y: y - (contents[i].part ? 20 : 26), height: contents[i].part ? 26 : 34, target: contents[i].page }]
+      : [],
+  );
 };
