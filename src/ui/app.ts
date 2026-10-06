@@ -143,7 +143,6 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     onDebugBook: debugging ? open(DEBUG_BOOK_HASH) : undefined,
     // On le prend toujours en main (sa couverture, son dos) ; c'est l'ouvrir qui fait le prestige (screen).
     onEtherium: open(ETHERIUM_HASH),
-    etheriumInHand: () => state.etheriumInHand,
     etheriumWaiting: () => prestigeReady(state),
     etheriumNamed: () => state.totalPagesRead >= ETHERIUM_NAMED_PAGES,
     books: {

@@ -16,8 +16,6 @@ export interface HeaderHandlers {
   onStrangeBook: () => void;
   /** L'Etherium, pris en main : sa couverture, son dos ; l'ouvrir, c'est le prestige (ou, au réveil, ses pages). */
   onEtherium: () => void;
-  /** Ses pages sont à lui depuis le réveil. */
-  etheriumInHand: () => boolean;
   /** Son ouverture rapporte au moins 1 Éther (le prestige) : il luit de violet. */
   etheriumWaiting: () => boolean;
   /** Son nom est paru sur sa couverture (1 million de pages lues à vie) ; avant, c'est un livre violet. */
@@ -72,16 +70,8 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
       // en main comme les autres ; tant que l'ouvrir ne rapporte pas 1 Éther, sa couverture résiste.
       {
         id: 'etherium',
-        label: () =>
-          t(
-            handlers.etheriumInHand()
-              ? 'etherium.name'
-              : handlers.etheriumWaiting()
-                ? 'etherium.open'
-                : handlers.etheriumNamed()
-                  ? 'etherium.name'
-                  : 'etherium.unnamed',
-          ),
+        // Son nom au survol dès qu'il paraît sur la couverture, même quand il peut s'ouvrir (l'auteur, 06/10).
+        label: () => t(handlers.etheriumNamed() ? 'etherium.name' : 'etherium.unnamed'),
         book: handlers.books.etherium,
         onOpen: handlers.onEtherium,
         yaw: -0.1,
