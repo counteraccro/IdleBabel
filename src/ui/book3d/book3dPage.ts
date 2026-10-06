@@ -22,6 +22,9 @@ import { animationNow } from '../animationClock';
 
 /** Durée de l'ouverture de la couverture. */
 const OPEN_MS = 1100;
+/** Un livre scellé qui résiste : sa couverture se soulève de si peu (0 : fermé, 1 : ouvert). */
+const NUDGE = 0.1;
+const NUDGE_MS = 280;
 
 /** Pages qui suivent la partie : redessinées à ce rythme, livre posé. */
 const LIVE_MS = 1000;
@@ -181,14 +184,14 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
    * refermé sur son dos, le livre se retourne sur sa couverture (les deux plats ensemble, livre fermé
    * d'un bloc), puis revient au début.
    */
-  const swing = (board: 'front' | 'back' | 'flip', target: number): void => {
+  const swing = (board: 'front' | 'back' | 'flip', target: number, ms?: number): void => {
     const from = board === 'back' ? shut : Number(open.value);
     // Le livre s'ouvre (couverture, ou plat arrière qui se relève) : la caméra rejoint la vue de lecture
     // et s'y bloque ; il se referme : elle garde son angle et glisse jusqu'au milieu du livre fermé, autour
     // duquel il tourne ensuite, puis redevient libre.
     view.begin(board === 'front' ? target === 1 : board === 'back' && target === 0, closedOn(board === 'back' ? 'back' : 'front'));
     const start = animationNow();
-    const duration = OPEN_MS * Math.abs(target - from);
+    const duration = ms ?? OPEN_MS * Math.abs(target - from);
     swinging = true;
     const step = (frameTime: number): void => {
       const now = animationNow(frameTime);
@@ -212,6 +215,15 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     };
     requestAnimationFrame(step);
   };
+  /** Un livre scellé : sa couverture s'ouvre quand même, ou s'entrouvre à peine et retombe. */
+  const cover = {
+    open: (): void => swing('front', 1),
+    nudge: (): void => {
+      if (swinging || Number(open.value) > 0) return;
+      swing('front', NUDGE, NUDGE_MS);
+      setTimeout(() => swing('front', 0, NUDGE_MS), NUDGE_MS + 60);
+    },
+  };
   /** Retour au signet (le sommaire), livre ouvert : toutes les pages tournent jusqu'à lui. */
   const backToBookmark = (): void => {
     if (!turner || spec.bookmark === undefined || swinging || shut > 0 || Number(open.value) < 1) return;
@@ -226,7 +238,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     // Livre fermé (ou entrouvert) : la flèche ouvre d'abord la couverture ; revenue à la première double
     // page, revenir en arrière la referme. À la dernière, avancer referme le plat arrière.
     const opening = Number(open.value);
-    if (forward && opening < 1) return spec.sealed ? spec.sealed() : swing('front', 1);
+    if (forward && opening < 1) return spec.sealed ? spec.sealed(cover) : swing('front', 1);
     if (!forward && turner.target === 0 && opening > 0) return swing('front', 0);
     if (forward && turner.target === spreads - 1) return turner.idle ? swing('back', 1) : undefined;
     turner.go(turner.target + (forward ? 1 : -1));
@@ -288,7 +300,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   open.addEventListener('input', () => {
     if (spec.sealed) {
       open.value = '0';
-      return spec.sealed();
+      return spec.sealed(cover);
     }
     book?.setOpen(Number(open.value));
     invalidate();

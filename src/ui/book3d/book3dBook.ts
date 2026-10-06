@@ -5,6 +5,12 @@ import type { AutoTurnSource } from './autoTurn3d';
 /** Le contenu d'un grand livre a changé (débogage…) : le livre ouvert se réécrit sans se refermer. */
 export const BIG_BOOK_REWRITE = 'bigbook:rewrite';
 
+/** Ce que peut faire un livre scellé de sa couverture (Book3d.sealed). */
+export interface SealedCover {
+  open: () => void;
+  nudge: () => void;
+}
+
 /** Un livre montré en 3D : sa forme, ses pages, son apparence (plats, tranche, papier). */
 export interface Book3d {
   shape: BookShape;
@@ -47,10 +53,11 @@ export interface Book3d {
   /** Le plat arrière vient de se refermer après la dernière page : le livre a été lu jusqu'au bout (un secret). */
   finished?: () => void;
   /**
-   * Le livre ne s'ouvre pas (le livre de débogage hors du mode ?debug) : on le prend, on le tourne, mais
-   * ouvrir sa couverture appelle ceci à la place.
+   * Le livre ne s'ouvre pas tout seul (le livre de débogage hors du mode ?debug, l'Etherium) : on le prend, on le
+   * tourne, mais ouvrir sa couverture appelle ceci à la place ; `cover.open` l'ouvre quand même (l'Etherium, le
+   * prestige confirmé), `cover.nudge` l'entrouvre à peine et le laisse retomber (il résiste).
    */
-  sealed?: () => void;
+  sealed?: (cover: SealedCover) => void;
   /** Couverture qui vit (le livre de débogage) : appelé à chaque image ; true si elle a changé (à redessiner). */
   tick?: (now: number) => boolean;
   /** Le livre demande d'aller à une page (entrée du sommaire) : branché par la page 3D. */

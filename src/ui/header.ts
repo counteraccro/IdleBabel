@@ -14,9 +14,9 @@ export interface HeaderHandlers {
   onOptions: () => void;
   onWhiteBook: () => void;
   onStrangeBook: () => void;
-  /** L'Etherium, ouvert : le prestige (« L'ouvrir ? ») ou, au réveil, ses pages. */
+  /** L'Etherium, pris en main : sa couverture, son dos ; l'ouvrir, c'est le prestige (ou, au réveil, ses pages). */
   onEtherium: () => void;
-  /** Ses pages sont à lui depuis le réveil : il s'ouvre comme les autres livres. */
+  /** Ses pages sont à lui depuis le réveil. */
   etheriumInHand: () => boolean;
   /** Son ouverture rapporte au moins 1 Éther (le prestige) : il luit de violet. */
   etheriumWaiting: () => boolean;
@@ -68,8 +68,8 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
         dz: -0.1,
         tilt: 0.05,
       },
-      // L'Etherium, debout à côté de la pile (elle en a déjà quatre), au contour violet, là dès le début. Tant que
-      // l'ouvrir ne rapporte pas 1 Éther, il ne s'ouvre pas : on le regarde (sa couverture), il résiste.
+      // L'Etherium, debout à côté de la pile (elle en a déjà quatre), au contour violet, là dès le début. On le prend
+      // en main comme les autres ; tant que l'ouvrir ne rapporte pas 1 Éther, sa couverture résiste.
       {
         id: 'etherium',
         label: () =>
@@ -83,12 +83,11 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
                   : 'etherium.unnamed',
           ),
         book: handlers.books.etherium,
-        onOpen: () => (handlers.etheriumInHand() || handlers.etheriumWaiting() ? handlers.onEtherium() : pile.shake('etherium')),
+        onOpen: handlers.onEtherium,
         yaw: -0.1,
         dx: 0,
         dz: 0.04,
         outline: ETHERIUM_GLOW,
-        stays: () => !handlers.etheriumInHand(),
       },
       // Débogage : la plaque d'obsidienne posée sur tout le reste, sa couverture vers le ciel.
       ...(handlers.books.debug && handlers.onDebugBook

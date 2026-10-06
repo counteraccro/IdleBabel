@@ -1,7 +1,7 @@
 import './etherium.css';
 import { el } from '../dom';
 import { openModal, type ModalAction } from '../modal/modal';
-import { goThroughTheDark, PARAGRAPH_MS, storyLines } from '../lore';
+import { PARAGRAPH_MS, storyLines } from '../lore';
 import { messages } from '../../i18n';
 import { formatNumber } from '../../core/format';
 import { getLocale } from '../../i18n';
@@ -38,14 +38,15 @@ const tell = (
 };
 
 /**
- * L'Etherium de la pile, cliqué quand son ouverture rapporte : une confirmation courte, à chaque fois (ce qui sera
- * perdu, l'Éther gagné ; « Ouvrir » se clique, pas d'Entrée machinale). L'ouvrir, c'est le prestige : au premier,
- * le récit de l'ouverture (texte validé par l'auteur, version B), puis ses pages ; ensuite, ses pages aussitôt.
+ * On ouvre la couverture de l'Etherium, pris en main (on peut toujours regarder sa couverture et son dos). Tant que
+ * l'ouvrir ne rapporte pas 1 Éther, il résiste (`nudge`). Ensuite, une confirmation courte, à chaque fois (ce qui sera
+ * perdu, l'Éther gagné ; « Ouvrir » se clique, pas d'Entrée machinale). L'ouvrir, c'est le prestige : au premier, le
+ * récit de l'ouverture (texte validé par l'auteur, version B), puis la couverture s'ouvre (`open`) ; ensuite, aussitôt.
  */
-export const offerEtherium = (state: GameState): void => {
+export const openEtherium = (state: GameState, open: () => void, nudge: () => void): void => {
   const etherium = messages().etherium;
   const gain = prestigeGain(state);
-  if (gain < 1) return;
+  if (gain < 1) return nudge();
   const first = state.exiles === 0;
   tell(
     etherium.confirm.title,
@@ -59,14 +60,9 @@ export const offerEtherium = (state: GameState): void => {
           // Rien à gagner entre-temps (Éther changé au débogage) : pas de prestige.
           if (prestige(state) < 1) return;
           saveGame(state);
-          if (!first) return goThroughTheDark(ETHERIUM_HASH);
+          if (!first) return open();
           const opening = etherium.opening;
-          tell(
-            opening.title,
-            opening.text,
-            [{ label: opening.button, kind: 'primary', onClick: () => goThroughTheDark(ETHERIUM_HASH) }],
-            'black',
-          );
+          tell(opening.title, opening.text, [{ label: opening.button, kind: 'primary', onClick: open }], 'black');
         },
       },
     ],

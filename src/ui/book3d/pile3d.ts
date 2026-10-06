@@ -24,11 +24,6 @@ export interface PileBook {
   tilt?: number;
   /** Couleur de son contour (survol, lueur), si elle n'est pas dorée : le violet de l'Etherium. */
   outline?: number;
-  /**
-   * Au clic, il reste dans la pile, sans s'envoler vers une page (true) : ce qu'il ouvre n'est pas sa page
-   * (l'Etherium, avant le prestige : il résiste, ou demande s'il faut l'ouvrir).
-   */
-  stays?: () => boolean;
 }
 
 /**
@@ -461,7 +456,6 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
    */
   function open(slot: Slot): void {
     if (slot.away) return;
-    if (slot.spec.stays?.()) return slot.spec.onOpen();
     const mesh = slot.body?.children[0];
     if (mesh && !still.matches) {
       slot.outline.opacity = 0;
