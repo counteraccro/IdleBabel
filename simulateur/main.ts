@@ -4,12 +4,14 @@
  *
  *   npm run simule                       30 jours de jeu sans fermer le jeu
  *   npm run simule -- --jours=60 --rythme=2,22 --sans-cornee --porte=échelle --prestige=taux
+ *   npm run simule -- --pages=reading,hands    le bot n'allume que les étoiles de ces pages (et l'Âge Automatique)
  */
-import { PLAYER, SPENDING_ORDER } from './config';
+import { PLAYER } from './config';
+import type { PageId } from './etoiles';
 import { AUTOMATIC } from './config';
 import { away, buyMethods, newRun, pagesPerSecond, play, type Run } from './partie';
 import { buyIntuitions } from './intuitions';
-import { etherGain, newLife, spendEther } from './vie';
+import { etherGain, litPerPage, newLife, spendEther } from './vie';
 
 const option = (name: string): string | undefined =>
   process.argv.find((arg) => arg === `--${name}` || arg.startsWith(`--${name}=`))?.split('=')[1] ??
@@ -19,8 +21,9 @@ const days = Number(option('jours') ?? 30);
 if (option('rythme')) PLAYER.rhythm = option('rythme')!.split(',').map(Number) as [number, number];
 if (option('porte') === 'échelle') PLAYER.automaticGate = 'échelle';
 if (option('prestige') === 'taux') PLAYER.prestige = 'taux';
-const order = option('sans-cornee') === undefined ? SPENDING_ORDER : SPENDING_ORDER.filter((tree) => tree !== 'secretManual');
-(SPENDING_ORDER as string[]).splice(0, SPENDING_ORDER.length, ...order);
+if (option('sans-cornee') !== undefined) PLAYER.cornee = false;
+// L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
+if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
 
 const duration = (seconds: number | undefined): string => {
   if (seconds === undefined) return '—';
@@ -75,6 +78,7 @@ for (let number = 1; life.clock < end; number++) {
     break;
   }
   life.pages += run.read;
+  life.previous = { owned: { ...run.owned }, read: run.read, knowledge: run.knowledgeGained, levels: { ...run.levels } };
   life.etherReceived += gain;
   life.etherFree += gain;
   const bought = spendEther(life);
@@ -89,8 +93,4 @@ console.log(
 );
 console.log(line(header));
 rows.forEach((row) => console.log(line(row)));
-console.log(
-  `Éther non dépensé : ${life.etherFree} · nœuds : ${Object.entries(life.nodes)
-    .map(([id, n]) => `${id} ${n}`)
-    .join(', ')}`,
-);
+console.log(`Éther reçu : ${life.etherReceived} · non dépensé : ${life.etherFree} · étoiles : ${litPerPage(life)}`);

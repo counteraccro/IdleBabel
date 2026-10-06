@@ -1,4 +1,4 @@
-import { ETHERIUM_TREES, type EtheriumTreeId } from '../src/data/etherium';
+import type { PageId } from './etoiles';
 
 /**
  * Ce que le jeu n'a pas encore : les chiffres proposés (conception §3.1 ter, §4), à changer ici pour essayer.
@@ -25,37 +25,7 @@ export const AUTOMATIC: readonly ExtraMethod[] = [
   { id: 'galerie', baseCost: 1e18, pagesPerSecond: 16e9, pieces: 5 },
 ];
 
-/**
- * L'Etherium : chaque arbre, ses nœuds dans l'ordre (prix en 🌌, et ce que donne le nœud, cumulé : le niveau 3
- * donne `values[2]`). Prix et effets provisoires (§4.2), c'est ce que le simulateur aide à caler.
- */
-export interface Tree {
-  costs: readonly number[];
-  values: readonly number[];
-}
-
-export const ETHERIUM = {
-  /** Passer à l'Âge Automatique (un seul nœud ; pas encore dans le jeu). */
-  ageAutomatic: { costs: [1], values: [1] },
-  /** Se souvenir de la Page Cornée (un seul nœud ; sa phrase reste à compléter, une fois ; pas encore dans le jeu). */
-  secretManual: { costs: [1], values: [1] },
-  // Les arbres du jeu (src/data/etherium.ts) : lecture, mains, connaissance, trouvailles, départ, mémoire.
-  ...(Object.fromEntries(ETHERIUM_TREES.map((tree) => [tree.id, tree])) as Record<EtheriumTreeId, Tree>),
-};
-
-export type TreeId = keyof typeof ETHERIUM;
-
-/** Ordre dans lequel le bot dépense l'Éther : à chaque passage, le premier nœud qu'il peut s'offrir. */
-export const SPENDING_ORDER: readonly TreeId[] = [
-  'ageAutomatic',
-  'secretManual',
-  'reading',
-  'knowledge',
-  'start',
-  'finds',
-  'hands',
-  'memory',
-];
+// L'Etherium (les constellations) est dans etoiles.ts.
 
 /** Le joueur imité par le bot. */
 export const PLAYER = {
@@ -82,4 +52,8 @@ export const PLAYER = {
   prestige: 'double' as 'double' | 'taux',
   prestigeWhenRateBelow: 0.8,
   maxRunHours: 48,
+  /** Les pages de l'Etherium où le bot allume des étoiles (--pages=reading,hands pour n'en essayer que quelques-unes). */
+  pages: ['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'ages'] as PageId[],
+  /** La Page Cornée (1re étoile de la Ruche) ; --sans-cornee pour s'en passer (et donc de toute la Ruche). */
+  cornee: true,
 };

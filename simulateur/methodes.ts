@@ -1,6 +1,7 @@
 import { TOOLS } from '../src/data/tools';
 import { AUTOMATIC, SECRET_MANUAL } from './config';
-import { treeValue, type Life } from './vie';
+import { KEEPS, S } from './etoiles';
+import { lit, type Life } from './vie';
 
 /** Une méthode pour le simulateur : celles du jeu (src/data/tools.ts), puis celles proposées (config.ts). */
 export interface Method {
@@ -28,7 +29,7 @@ const MANUAL: Method[] = TOOLS.map((tool) => ({
 export const SECRET: Method = { ...SECRET_MANUAL };
 
 /** Les méthodes dans l'ordre où leurs phrases se trouvent, selon les Âges achetés. */
-export const methodSequence = (life: Life): Method[] => (life.nodes.ageAutomatic > 0 ? [...MANUAL, ...AUTOMATIC] : MANUAL);
+export const methodSequence = (life: Life): Method[] => (lit(life, S.age) ? [...MANUAL, ...AUTOMATIC] : MANUAL);
 
-/** Méthodes de l'Âge Manuel gardées par la Mémoire des méthodes (les premières). */
-export const keptMethods = (life: Life): string[] => MANUAL.slice(0, treeValue(life, 'memory', 0)).map((m) => m.id);
+/** Méthodes gardées par la Mémoire des méthodes (une étoile de la Ruche chacune). */
+export const keptMethods = (life: Life): string[] => Object.keys(KEEPS).filter((id) => lit(life, KEEPS[id]));
