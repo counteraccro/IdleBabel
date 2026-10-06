@@ -39,11 +39,10 @@ describe('sceaux', () => {
     expect(state.seals['diagonalPages-1500000']).toBeUndefined();
   });
 
-  it('scelle les pages lues depuis toujours, sur leur propre page : par les méthodes jusqu’à 10³⁰, à la main, de dix en dix, jusqu’à 10⁵', () => {
+  it('scelle les pages lues depuis toujours : par les méthodes jusqu’à 10³⁰, à la main, de dix en dix, jusqu’à 10⁵', () => {
     const steps = (text: string) => SEALS.filter((seal) => seal.text === text).map((seal) => seal.tier?.n);
     expect(steps('pagesByMethods')).toEqual([1, 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24, 1e27, 1e30]);
     expect(steps('pagesByHand')).toEqual([1, 10, 100, 1e3, 1e4, 1e5]);
-    expect(SEALS.filter((seal) => seal.page === 1).every((seal) => seal.plate === 'pages')).toBe(true);
     const state = createInitialState('fr');
     state.pagesByMethods = 2e6;
     state.pagesByHand = 99;
@@ -62,12 +61,12 @@ describe('sceaux', () => {
     }
   });
 
-  it('scelle la meilleure vitesse, sur sa propre page : de dix en dix jusqu’à 10⁸, puis de cent en cent jusqu’à 10³⁰', () => {
+  it('scelle la meilleure vitesse : de dix en dix jusqu’à 10⁸, puis de cent en cent jusqu’à 10³⁰', () => {
     const speed = SEALS.filter((seal) => seal.text === 'speed');
     expect(speed.map((seal) => seal.tier?.n)).toEqual([
       1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e10, 1e12, 1e14, 1e16, 1e18, 1e20, 1e22, 1e24, 1e26, 1e28, 1e30,
     ]);
-    expect(speed.every((seal) => seal.page === 2)).toBe(true);
+    expect(speed.every((seal) => seal.plate === 'pages')).toBe(true);
   });
 
   it('scelle les volumes de méthodes : 410 achetées dans la partie chacun, jusqu’à neuf', () => {

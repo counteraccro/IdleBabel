@@ -10,7 +10,7 @@ import { TOOLS, type ToolId } from '../../data/tools';
 
 /**
  * Les sceaux dans le livre étrange : une page d'avancement, puis une planche par thème, en alvéoles
- * (cinq rangées de 4 et 5 sceaux par page ; une planche trop remplie continue sur la page suivante).
+ * (cinq rangées de 4 et 5 sceaux par page ; une planche ne passe à la page suivante qu'une fois ses cinq rangées pleines).
  */
 const ROWS = [4, 5, 4, 5, 4];
 const PER_PAGE = ROWS.reduce((sum, count) => sum + count, 0);
@@ -45,15 +45,9 @@ export const platePages = (first: number): PlatePage[] => {
       );
       continue;
     }
-    // Une série peut avoir sa propre page (seal.page) ; une page trop remplie continue sur la suivante.
-    const groups = [...new Set(seals.map((seal) => seal.page ?? 0))].sort((a, b) => a - b);
-    let part = 0;
-    for (const group of groups) {
-      const inGroup = seals.filter((seal) => (seal.page ?? 0) === group);
-      for (let start = 0; start < inGroup.length; start += PER_PAGE, part++) {
-        pages.push({ plate, seals: inGroup.slice(start, start + PER_PAGE), part, page: first + pages.length });
-      }
-    }
+    // Les sceaux à la suite : une page pleine (cinq rangées) continue sur la suivante, jamais avant (demande de l'auteur, 06/10).
+    for (let start = 0, part = 0; start < seals.length; start += PER_PAGE, part++)
+      pages.push({ plate, seals: seals.slice(start, start + PER_PAGE), part, page: first + pages.length });
   }
   return pages;
 };
