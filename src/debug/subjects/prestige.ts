@@ -29,7 +29,7 @@ export const PRESTIGE_SUBJECTS: DebugSubject[] = [
       kit.info('Prestiges faits', () => String(state.exiles));
       kit.check(
         'Etherium en main',
-        'Au réveil : il est dans la pile et s’ouvre ; refermé, il disparaît.',
+        'Au réveil : ses pages s’ouvrent ; refermé, il reste sur la pile, fermé jusqu’au prochain prestige.',
         () => state.etheriumInHand,
         (on) => (state.etheriumInHand = on),
       );
@@ -46,7 +46,7 @@ export const PRESTIGE_SUBJECTS: DebugSubject[] = [
         [
           'Prestige tout de suite',
           () => void prestige(state),
-          { title: 'Sans le récit du puits : l’Éther reçu, tout est remis à zéro, l’Etherium en main.' },
+          { title: 'Sans confirmation ni récit : l’Éther reçu, tout est remis à zéro, l’Etherium en main.' },
         ],
       );
     },

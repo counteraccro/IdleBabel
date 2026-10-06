@@ -26,7 +26,7 @@ export interface PileBook {
   outline?: number;
   /**
    * Au clic, il reste dans la pile, sans s'envoler vers une page (true) : ce qu'il ouvre n'est pas sa page
-   * (l'Etherium, avant le prestige : le récit du puits).
+   * (l'Etherium, avant le prestige : il résiste, ou demande s'il faut l'ouvrir).
    */
   stays?: () => boolean;
 }

@@ -7,8 +7,8 @@ import { forgetPagesRest } from './production';
 import type { GameState } from '../core/state';
 
 /**
- * Le prestige (conception §4.1) : le chercheur tente d'attraper le livre qui flotte au centre du puits, tombe,
- * et se réveille ailleurs, l'Etherium en main. Il y dépense l'Éther que valent les pages lues depuis toujours.
+ * Le prestige (conception §4.1) : le chercheur ouvre l'Etherium, le livre qui se nourrit des pages lues ; le sol se
+ * dérobe, et quand il rouvre les yeux, ses pages l'attendent. Il y dépense l'Éther que valent les pages lues depuis toujours.
  */
 
 /** L'Éther que méritent les pages lues depuis toujours : floor(∛(pages / 1 Md)). */
@@ -17,7 +17,7 @@ export const etherDeserved = (state: GameState): number => Math.floor(Math.cbrt(
 /** Ce que rapporterait le prestige maintenant. */
 export const prestigeGain = (state: GameState): number => Math.max(0, etherDeserved(state) - state.etherReceived);
 
-/** Le livre violet attend dans la pile : le prestige rapporte au moins 1 Éther, et l'Etherium n'est pas en main. */
+/** L'Etherium peut s'ouvrir : le prestige rapporte au moins 1 Éther, et ses pages ne sont pas déjà ouvertes. */
 export const prestigeReady = (state: GameState): boolean => prestigeGain(state) >= 1 && !state.etheriumInHand;
 
 /** Pages lues à vie qu'il faut pour l'Éther suivant (le n-ième en demande n³ milliards). */
@@ -96,7 +96,7 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   return gain;
 };
 
-/** L'Etherium refermé : il disparaît de la pile, jusqu'au prochain prestige. */
+/** L'Etherium refermé : il retourne sur la pile, et ne se rouvre plus avant le prochain prestige. */
 export const closeEtherium = (state: GameState): void => {
   state.etheriumInHand = false;
 };

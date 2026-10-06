@@ -2,7 +2,7 @@ import './etherium.css';
 import { el } from '../dom';
 import { openModal, type ModalAction } from '../modal/modal';
 import { goThroughTheDark, PARAGRAPH_MS, storyLines } from '../lore';
-import { messages, t } from '../../i18n';
+import { messages } from '../../i18n';
 import { formatNumber } from '../../core/format';
 import { getLocale } from '../../i18n';
 import { saveGame } from '../../core/save';
@@ -13,7 +13,7 @@ import type { GameState } from '../../core/state';
 export const ETHERIUM_HASH = '#etherium';
 
 /**
- * Un récit du prestige (textes validés par l'auteur, conception §4.1) : ses strophes apparaissent l'une après
+ * Une modale du prestige (conception §4.1) : ses strophes apparaissent l'une après
  * l'autre, les vers à la ligne, puis `extra` (une précision, plus petite), puis les boutons.
  */
 const tell = (
@@ -37,54 +37,41 @@ const tell = (
   modal.root.querySelector<HTMLElement>('.modal-actions')!.style.animationDelay = `${(stanzas.length + (extra ? 1 : 0)) * PARAGRAPH_MS}ms`;
 };
 
-type Story = { title: string; text: string[] };
-const story = (id: 'wake' | 'gone'): Story => messages().etherium[id];
-
 /**
- * Le livre violet de la pile, cliqué : le chercheur regarde le puits, se penche, et peut encore reculer. S'il
- * tend la main, il l'attrape, le vide l'attire (le prestige), puis il se réveille ailleurs, l'Etherium en main :
- * il s'ouvre (une seule modale, du vide au réveil).
- * Le récit ne se raconte qu'au premier prestige : ensuite, le puits ne garde que ce qui sera perdu et le choix,
- * et l'Etherium s'ouvre aussitôt la main tendue.
+ * L'Etherium de la pile, cliqué quand son ouverture rapporte : une confirmation courte, à chaque fois (ce qui sera
+ * perdu, l'Éther gagné ; « Ouvrir » se clique, pas d'Entrée machinale). L'ouvrir, c'est le prestige : au premier,
+ * le récit de l'ouverture (texte validé par l'auteur, version B), puis ses pages ; ensuite, ses pages aussitôt.
  */
-export const reachForEtherium = (state: GameState): void => {
-  const reach = messages().etherium.reach;
+export const offerEtherium = (state: GameState): void => {
+  const etherium = messages().etherium;
   const gain = prestigeGain(state);
   if (gain < 1) return;
   const first = state.exiles === 0;
   tell(
-    reach.title,
-    first ? reach.text : [],
+    etherium.confirm.title,
+    [],
     [
-      { label: reach.stay, kind: 'secondary' },
+      { label: etherium.confirm.stay, kind: 'secondary' },
       {
-        label: reach.reach,
+        label: etherium.confirm.open,
         kind: 'primary',
         onClick: () => {
-          // Rien à gagner entre-temps (Éther changé au débogage) : pas de prestige, pas de réveil.
+          // Rien à gagner entre-temps (Éther changé au débogage) : pas de prestige.
           if (prestige(state) < 1) return;
           saveGame(state);
           if (!first) return goThroughTheDark(ETHERIUM_HASH);
-          const wake = story('wake');
+          const opening = etherium.opening;
           tell(
-            wake.title,
-            wake.text,
-            [{ label: messages().etherium.wake.button, kind: 'primary', onClick: () => goThroughTheDark(ETHERIUM_HASH) }],
+            opening.title,
+            opening.text,
+            [{ label: opening.button, kind: 'primary', onClick: () => goThroughTheDark(ETHERIUM_HASH) }],
             'black',
           );
         },
       },
     ],
     'dim',
-    reach.warning.replace('{n}', formatNumber(gain, getLocale())),
-    // Tout est perdu : pas d'Entrée machinale (sans récit, elle tendrait la main aussitôt) ; un clic.
+    etherium.confirm.warning.replace('{n}', formatNumber(gain, getLocale())),
     false,
   );
-};
-
-/** L'Etherium refermé : il n'est plus là. Raconté la première fois seulement (après le premier prestige). */
-export const tellEtheriumGone = (state: GameState): void => {
-  if (state.exiles > 1) return;
-  const gone = story('gone');
-  tell(gone.title, gone.text, [{ label: t('lore.continue'), kind: 'primary' }]);
 };

@@ -8,9 +8,9 @@ import type { Book3d } from '../book3d/book3dBook';
 import type { GameState } from '../../core/state';
 
 /**
- * L'Etherium : le livre qui flottait au centre du puits, en cuir violet ; sur le plat, une ruche qui dit l'Éther
- * que l'ouverture rapporterait (etheriumCover.ts). Dans la pile, il attend le prestige (« L'attraper ? ») ; au réveil, il est en main, et
- * l'Éther s'y dépense (etheriumPages.ts).
+ * L'Etherium : le livre étrange qui se nourrit des pages lues, en cuir violet, sur la pile dès le début ; sur le plat,
+ * une ruche qui dit l'Éther que l'ouverture rapporterait (etheriumCover.ts). L'ouvrir, c'est le prestige (« L'ouvrir ? ») ;
+ * au réveil, ses pages sont là, et l'Éther s'y dépense (etheriumPages.ts).
  */
 export const etherium3d = (state: GameState): Book3d => {
   let tick: ((now: number) => boolean) | null = null;

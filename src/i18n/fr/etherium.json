@@ -1,33 +1,22 @@
 {
-  "catch": "L'attraper ?",
+  "unnamed": "Un livre violet",
+  "open": "L'ouvrir ?",
   "name": "L'Etherium",
   "close": "Refermer le livre",
-  "reach": {
-    "title": "Le puits",
-    "text": [
-      "Les livres disparaissent.\nJe les lis. Je les repose.\nIls ne sont plus là.",
-      "Je ne m'en étais jamais soucié.\nIl y en a tant.",
-      "Aujourd'hui, j'ai regardé.\nIls glissent jusqu'au puits.\nIls tombent sans bruit.",
-      "Au centre, un livre flotte.\nIl ne tombe pas.\nUn liquide étrange coule dessus.\nGoutte après goutte.\nEst-ce tout ce que j'ai lu ?",
-      "Je me penche.\nJe tends la main.\nIl est presque à moi."
-    ],
+  "confirm": {
+    "title": "L'ouvrir ?",
     "warning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions. +{n} Éther.",
-    "stay": "Reculer",
-    "reach": "Tendre la main"
+    "stay": "Le reposer",
+    "open": "Ouvrir"
   },
-  "wake": {
-    "title": "Le vide",
+  "opening": {
+    "title": "L'ouverture",
     "text": [
-      "Mes doigts se referment sur le livre.\nJe le tiens.",
-      "Sous moi, le vide.\nIl m'appelle.\nComme si la réponse que je cherche\ndormait tout au fond.\nJe me laisse aller.",
-      "Je me réveille.\nUn hexagone.\nCe n'est pas le mien.",
-      "Dans ma main, le livre.\nIl est encore humide."
+      "Que s'est-il passé ?\nJ'ai ouvert le livre.\nLe sol s'est dérobé.",
+      "Quand je rouvre les yeux,\nses pages m'attendent.\nJe peux enfin le lire.",
+      "Autour de moi, plus rien.\nIl s'est nourri de tout."
     ],
-    "button": "Ouvrir le livre"
-  },
-  "gone": {
-    "title": "Plus rien",
-    "text": ["Le livre n'est plus là.", "Un rêve ? Une autre réalité ?", "J'étais persuadé de l'avoir en main."]
+    "button": "Lire"
   },
   "cover": { "title": "ETHERIUM", "next": "prochain Éther : {n}", "reserve": "Éther en réserve" },
   "ether": "Éther à dépenser",
@@ -50,10 +39,6 @@
       "description": "Au réveil, je sais déjà lire en diagonale.",
       "effect": "{v} Lectures Diagonales au réveil"
     },
-    "memory": {
-      "name": "Mémoire des méthodes",
-      "description": "Ces phrases-là, le puits ne les efface plus.",
-      "effect": "{method}"
-    }
+    "memory": { "name": "Mémoire des méthodes", "description": "Ces phrases-là, le livre ne les dévore plus.", "effect": "{method}" }
   }
 }
