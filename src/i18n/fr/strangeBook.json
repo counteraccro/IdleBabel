@@ -7,13 +7,13 @@
     "time": "Heures",
     "methods": "Manières",
     "knowledge": "Révélations",
-    "rareBooks": "Raretés"
+    "rareBooks": "Raretés",
+    "ether": "Éther"
   },
   "figures": {
     "totalPages": "pages que tes yeux ont traversées",
     "stock": "pages dont tu te souviens encore",
     "clicks": "pages que ta main a tournées",
-    "etherReceived": "Éther que les prestiges ont rapporté",
     "booksFinished": "volumes refermés derrière toi",
     "bookPage": "la page où ton regard s'est arrêté",
     "meaningfulCovers": "couvertures qui ont voulu te dire quelque chose",
@@ -30,7 +30,14 @@
     "lifetimeKnowledge": "Connaissance qui t'a été donnée",
     "finds": "mots · morceaux · phrases arrachés au hasard",
     "findChance": "ta chance, à chaque page, de comprendre quelque chose",
-    "findChanceParts": "le hasard {base} · tes intuitions {filter} · tes sceaux {seals}"
+    "findChanceParts": "le hasard {base} · tes intuitions {filter} · tes sceaux {seals}",
+    "ether": "Éther qui attend d'être dépensé",
+    "etherSpent": "{n} déjà versé dans l'Etherium",
+    "etherReceived": "Éther que les prestiges ont rapporté",
+    "onePrestige": "en un prestige",
+    "prestiges": "en {n} prestiges",
+    "prestigeGain": "Éther qu'un prestige rapporterait maintenant",
+    "nextEther": "pages à lire avant le prochain Éther"
   },
   "sealsTitle": "Sceaux",
   "sealsCompletion": "des sceaux portent ta marque",

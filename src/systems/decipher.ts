@@ -3,8 +3,9 @@ import { STRANGE_BOOK_INDEX, statsRevealed } from './strangeBook';
 import { loreTold, tellLore } from './lore';
 import type { GameState } from '../core/state';
 
-/** Le chapitre « Raretés » n'existe qu'une fois le premier livre rare trouvé : pas d'étoile avant. */
-const exists = (state: GameState, part: PartId): boolean => part !== 'rareBooks' || Object.keys(state.rareBooks).length > 0;
+/** Les chapitres « Raretés » et « Éther » n'existent qu'une fois le premier livre rare trouvé, le premier Éther reçu : pas d'étoile avant. */
+const exists = (state: GameState, part: PartId): boolean =>
+  part === 'rareBooks' ? Object.keys(state.rareBooks).length > 0 : part === 'ether' ? state.etherReceived > 0 : true;
 
 /** Lisible pour de bon : palier de Connaissance à vie atteint (ou partie payée, du temps où elles s'achetaient). */
 const readable = (state: GameState, part: PartId): boolean =>

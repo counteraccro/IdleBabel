@@ -12,6 +12,7 @@ import { RARE_BOOKS } from '../../data/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
 import { isDeciphered } from '../../systems/decipher';
 import { statsRevealed } from '../../systems/strangeBook';
+import { nextEtherPages, nextEtherProgress, prestigeGain } from '../../systems/prestige';
 import type { PartId } from '../../data/decipher';
 import type { GameState } from '../../core/state';
 
@@ -75,6 +76,18 @@ const nextRareParts = (state: GameState, readable: boolean): string => {
   return readable ? t('strangeBook.figures.rareChanceParts').replace('{n}', one) : `1 / ${one}`;
 };
 
+/** L'Éther versé dans l'Etherium, et les prestiges qui l'ont rapporté. */
+const etherSpentParts = (state: GameState, readable: boolean): string => {
+  const spent = number(state.etherReceived - state.ether);
+  return readable ? t('strangeBook.figures.etherSpent').replace('{n}', spent) : spent;
+};
+const prestigesParts = (state: GameState, readable: boolean): string => {
+  const count = number(state.exiles);
+  return readable ? t(`strangeBook.figures.${state.exiles === 1 ? 'onePrestige' : 'prestiges'}`).replace('{n}', count) : count;
+};
+/** Où en est le prochain Éther, en pour cent des pages qui le séparent du dernier. */
+const nextEtherParts = (state: GameState): string => percent(Math.floor(nextEtherProgress(state) * 100) / 100);
+
 const startedAt = (state: GameState): number => state.history.find((e) => e.type === 'gameStarted')?.at ?? Date.now();
 
 const DAY_MS = 86_400_000;
@@ -99,8 +112,6 @@ export const CHAPTERS: readonly Chapter[] = [
       { id: 'totalPages', caption: 'lacimo tev', value: (s) => number(s.totalPagesRead) },
       { id: 'stock', caption: 'dru pesna', value: (s) => number(s.pages) },
       { id: 'clicks', caption: 'mao nirvel', value: (s) => number(s.stats.clicks), shown: (s) => s.stats.clicks > 0 },
-      // L'Éther vient des pages lues : ce que les prestiges en ont rapporté, en tout (il a quitté l'Etherium).
-      { id: 'etherReceived', caption: 'etra vunel', value: (s) => number(s.etherReceived), shown: (s) => s.etherReceived > 0 },
     ],
   },
   {
@@ -180,6 +191,23 @@ export const CHAPTERS: readonly Chapter[] = [
       },
       // Tous trouvés : plus de chance à dire, une phrase à la place.
       { id: 'rareAll', caption: 'nul serbo vane', value: () => '', shown: (s) => rareFound(s) >= RARE_BOOKS.length },
+    ],
+  },
+  {
+    id: 'ether',
+    title: 'etravunel',
+    // Après le premier prestige : ce que l'Éther est devenu, et ce qui vient.
+    shown: (s) => s.etherReceived > 0,
+    figures: [
+      { id: 'ether', caption: 'etra dulmo', value: (s) => number(s.ether), detail: etherSpentParts },
+      { id: 'etherReceived', caption: 'etra vunel', value: (s) => number(s.etherReceived), detail: prestigesParts },
+      { id: 'prestigeGain', caption: 'etra sopi nar', value: (s) => number(prestigeGain(s)) },
+      {
+        id: 'nextEther',
+        caption: 'vanu etra lis',
+        value: (s) => number(Math.max(0, nextEtherPages(s) - s.totalPagesRead)),
+        detail: nextEtherParts,
+      },
     ],
   },
 ];
