@@ -6,6 +6,7 @@ import { tellLore } from '../systems/lore';
 import { meetStrangeBook } from '../systems/decipher';
 import { awayShare, maxAwaySeconds } from '../systems/technologies';
 import { awayFindsShare, awayTurnsMultiplier } from '../systems/etherium';
+import { etherDeserved } from '../systems/prestige';
 import { gameRandom } from './random';
 import { recordOnce } from './history';
 import type { GameState } from './state';
@@ -26,6 +27,8 @@ export interface AwayReport {
   finds: number;
   rareBooks: number;
   seals: number;
+  /** Éther mérité en plus (à recueillir au prochain prestige) ; rien avant le premier prestige, qui le fait connaître. */
+  ether: number;
   /** L'absence a duré plus que ce qui est compté (Sommeil profond). */
   capped: boolean;
 }
@@ -38,7 +41,7 @@ export interface AwayReport {
 export const passTime = (state: GameState, seconds: number, mode: 'away' | 'pause'): AwayReport => {
   const share = mode === 'away' ? awayShare(state) : 1;
   const counted = maxAwaySeconds(state);
-  const before = { pages: state.totalPagesRead, rareBooks: Object.keys(state.rareBooks).length, seals: Object.keys(state.seals).length };
+  const before = { pages: state.totalPagesRead, ether: etherDeserved(state), rareBooks: Object.keys(state.rareBooks).length, seals: Object.keys(state.seals).length };
   const book = { index: state.booksFinished, page: state.bookPage };
   if (mode === 'away') {
     gainPages(state, pagesPerSecond(state) * Math.min(seconds, counted) * share);
@@ -70,6 +73,7 @@ export const passTime = (state: GameState, seconds: number, mode: 'away' | 'paus
     finds,
     rareBooks: Object.keys(state.rareBooks).length - before.rareBooks,
     seals: Object.keys(state.seals).length - before.seals,
+    ether: state.etherReceived > 0 ? etherDeserved(state) - before.ether : 0,
     capped: seconds > counted,
   };
 };

@@ -10,7 +10,7 @@ import { nudgeLore } from '../../systems/lore';
 import type { GameState } from '../../core/state';
 
 /** Ce que l'absence a rapporté, dans cet ordre (lore.away.<clé>), ce qui vaut zéro en moins. */
-const TALLY = ['pages', 'books', 'finds', 'rareBooks', 'seals'] as const;
+const TALLY = ['pages', 'books', 'finds', 'rareBooks', 'seals', 'ether'] as const;
 
 let showing = false;
 /** Le récit du retour est à l'écran : les autres récits attendent qu'il se ferme (ui/lore.ts). */

@@ -46,6 +46,16 @@ describe('absence', () => {
     expect(state.bookPage).toBe(0);
   });
 
+  it('compte l’Éther mérité en plus, une fois le premier prestige fait', () => {
+    const state = reading(10_000_000);
+    state.totalPagesRead = 7.9e9;
+    expect(passTime(state, 3600, 'away').ether).toBe(0);
+    state.totalPagesRead = 7.9e9;
+    state.etherReceived = 1;
+    // 7,9 Md → plus de 8 Md pages lues depuis toujours : le 2e Éther (∛8 = 2).
+    expect(passTime(state, 3600, 'away').ether).toBe(1);
+  });
+
   it('compte les pages au rythme de la production, et le livre avance', () => {
     const state = reading(10);
     const report = passTime(state, 3600, 'away');
