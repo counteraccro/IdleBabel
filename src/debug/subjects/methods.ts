@@ -5,7 +5,7 @@ import { buyTool, nextToolCost } from '../../systems/tools';
 import { pagesPerSecond, toolRate } from '../../systems/production';
 import { currentTarget, segments, toolUnlocked, write, written } from '../../systems/sentences';
 import { rewriteBigBook } from '../refresh';
-import { compact, duration, format, type Action, type DebugSubject } from './subject';
+import { ageTitle, compact, duration, format, type Action, type DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
 /** Débogage : efface ce qui est écrit d'une phrase dans le livre blanc. */
@@ -31,6 +31,7 @@ export const METHOD_SUBJECTS: DebugSubject[] = TOOLS.map((tool) => {
     chapter: 'methods',
     name: () => t(`tools.${tool.id}.name`),
     description: 'Sa phrase, son niveau, son prix, ce qu’elle rapporte.',
+    age: ageTitle(tool.age),
     peek: (state) => {
       const level = `niv. ${compact(state.tools[tool.id])}`;
       return sentence === undefined ? level : `${level} · ${written(state, sentence).length}/${segments(sentence).length}`;

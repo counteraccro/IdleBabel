@@ -1,8 +1,9 @@
 import { messages, t } from '../../i18n';
 import { TECHNOLOGIES, type TechnologyId } from '../../data/technologies';
-import { bestOf, levelOf, maxLevel, technologiesCompletion, technology } from '../../systems/technologies';
+import { bestOf, levelOf, maxLevel, technology } from '../../systems/technologies';
+import { AUTOMATIC_AGE, TOOLS } from '../../data/tools';
 import { nextRemembered, remember, reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
-import { format, type DebugSubject } from './subject';
+import { ageTitle, format, type DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
 /** Nom d'une intuition (celle d'une méthode : le nom de la méthode). */
@@ -19,20 +20,27 @@ const setLevel = (state: GameState, id: TechnologyId, value: number): void => {
   state.technologiesBest[id] = Math.max(bestOf(state, id), level);
 };
 
-/** Toutes les intuitions au maximum (les intuitions sans fin : niveau 10). */
-export const maxIntuitions = (state: GameState): void =>
-  TECHNOLOGIES.forEach((tech) => setLevel(state, tech.id, maxLevel(tech.id) === Infinity ? 10 : maxLevel(tech.id)));
+/** Une intuition au maximum (sans fin : niveau 10). */
+const toMax = (state: GameState, id: TechnologyId): void => setLevel(state, id, maxLevel(id) === Infinity ? 10 : maxLevel(id));
 
-/** Les intuitions (partie II du livre blanc) et la Réminiscence, qui les rachète après le prestige. */
-export const INTUITION_SUBJECTS: DebugSubject[] = [
-  {
-    id: 'intuitions',
+/** Toutes les intuitions au maximum. */
+export const maxIntuitions = (state: GameState): void => TECHNOLOGIES.forEach((tech) => toMax(state, tech.id));
+
+/** L'Âge d'une intuition : celui de sa méthode ; les autres sont de l'Âge Manuel. */
+const ageOfIntuition = (id: TechnologyId): string => ageTitle(TOOLS.find((tool) => tool.id === technology(id).tool)?.age);
+
+/** Une fiche par Âge : le niveau de chacune de ses intuitions, et le meilleur atteint. */
+const ageSubject = (id: string, age: string): DebugSubject => {
+  const techs = TECHNOLOGIES.filter((tech) => ageOfIntuition(tech.id) === age);
+  return {
+    id,
     chapter: 'intuitions',
-    name: 'Les intuitions',
+    name: `Les intuitions de ${age.replace(/^L’/, 'l’')}`,
     description: 'Le niveau de chacune, et le meilleur atteint.',
-    peek: (state) => `${format(technologiesCompletion(state) * 100)} %`,
+    age,
+    peek: (state) => `${techs.filter((tech) => levelOf(state, tech.id) >= Math.min(maxLevel(tech.id), 10)).length}/${techs.length} au max.`,
     build: (kit, state) => {
-      for (const tech of TECHNOLOGIES)
+      for (const tech of techs)
         kit.number(
           nameOf(tech.id),
           () => levelOf(state, tech.id),
@@ -43,25 +51,30 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
           },
         );
       kit.actions(
-        [
-          'Tout au maximum',
-          () => maxIntuitions(state),
-          { title: 'Les intuitions sans fin : niveau 10.' },
-        ],
+        ['Tout au maximum', () => techs.forEach((tech) => toMax(state, tech.id)), { title: 'Les intuitions sans fin : niveau 10.' }],
         [
           'Tout effacer',
-          () => {
-            state.technologies = {};
-            state.technologiesBest = {};
-          },
+          () =>
+            techs.forEach((tech) => {
+              delete state.technologies[tech.id];
+              delete state.technologiesBest[tech.id];
+            }),
           { danger: true, title: 'Niveaux et meilleurs niveaux à zéro.' },
         ],
       );
     },
-  },
+  };
+};
+
+const MANUAL = ageTitle(undefined);
+
+/** Les intuitions (partie II du livre blanc), Âge par Âge, et la Réminiscence, qui les rachète après le prestige. */
+export const INTUITION_SUBJECTS: DebugSubject[] = [
+  ageSubject('intuitions', MANUAL),
   {
     id: 'reminiscence',
     chapter: 'intuitions',
+    age: MANUAL,
     name: 'La Réminiscence',
     description: 'Intuition permanente, après le premier prestige : les intuitions reviennent seules jusqu’à leur meilleur niveau.',
     peek: (state) => (!reminiscenceKnown(state) ? 'pas comprise' : reminiscing(state) ? 'active' : 'laissée de côté'),
@@ -91,4 +104,5 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
       ]);
     },
   },
+  ageSubject('intuitions:auto', ageTitle(AUTOMATIC_AGE)),
 ];

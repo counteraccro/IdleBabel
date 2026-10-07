@@ -31,21 +31,34 @@ const titleItems = (): Item[] => [
   },
 ];
 
-/** Une page d'un chapitre : son titre, ses entrées ; `from` : première entrée (le chapitre continue). */
+/** Une page d'un chapitre : son titre, ses entrées ; `from` : première entrée (le chapitre continue) ; `age` : l'Âge de ses entrées. */
 interface ChapterPage {
   chapter: number;
   subjects: DebugSubject[];
   from: number;
+  age?: string;
 }
+
+/** Les sujets d'un chapitre, Âge par Âge (un seul groupe, sans Âge, pour les autres chapitres). */
+const byAge = (subjects: DebugSubject[]): DebugSubject[][] =>
+  subjects.reduce<DebugSubject[][]>((groups, subject) => {
+    const last = groups.at(-1);
+    if (last && last[0].age === subject.age) last.push(subject);
+    else groups.push([subject]);
+    return groups;
+  }, []);
 
 const chapterPages = (): ChapterPage[] =>
   CHAPTERS.flatMap((chapter, index) => {
-    const subjects = chapterSubjects(chapter.id);
-    return Array.from({ length: Math.ceil(subjects.length / PER_PAGE) }, (_, part) => ({
-      chapter: index,
-      subjects: subjects.slice(part * PER_PAGE, (part + 1) * PER_PAGE),
-      from: part * PER_PAGE,
-    }));
+    let from = 0;
+    // Chaque Âge commence une page.
+    return byAge(chapterSubjects(chapter.id)).flatMap((group) =>
+      Array.from({ length: Math.ceil(group.length / PER_PAGE) }, (_, part) => {
+        const page = { chapter: index, subjects: group.slice(part * PER_PAGE, (part + 1) * PER_PAGE), from, age: group[0].age };
+        from += page.subjects.length;
+        return page;
+      }),
+    );
   });
 
 /** Une entrée : sa case (losange plein une fois choisie), son nom, ce qu'on y trouve ; toute la ligne se clique. */
@@ -65,10 +78,17 @@ const entryItems = (subject: DebugSubject, top: number): Item[] => {
   ];
 };
 
+/** Sous un Âge, les entrées descendent d'autant pour laisser son nom. */
+const AGE_ROOM = 26;
+
 const chapterItems = (page: ChapterPage, number: number): Item[] => {
+  const top = ENTRY_TOP + (page.age ? AGE_ROOM : 0);
   return [
     ...heading(CHAPTERS[page.chapter].title, page.chapter + 1),
-    ...page.subjects.flatMap((subject, i) => entryItems(subject, ENTRY_TOP + i * ENTRY_STEP)),
+    ...(page.age
+      ? [{ kind: 'text', text: page.age, x: 320, y: 150, size: 19, align: 'center', italic: true, gold: true } satisfies Item]
+      : []),
+    ...page.subjects.flatMap((subject, i) => entryItems(subject, top + i * ENTRY_STEP)),
     folio(number),
   ];
 };

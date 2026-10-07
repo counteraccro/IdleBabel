@@ -67,11 +67,7 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
         { title: 'Passe au livre suivant, qui sera celui-ci.' },
       ],
       ['L’ouvrir en grand', () => (window.location.hash = `${RARE_BOOK_HASH}${menu.value}`), { title: 'Comme dans la bibliothèque.' }],
-      [
-        'Tout trouver',
-        () => findAllRareBooks(state),
-        { title: 'Remplit la vitrine de la bibliothèque (sans les sceaux).' },
-      ],
+      ['Tout trouver', () => findAllRareBooks(state), { title: 'Remplit la vitrine de la bibliothèque (sans les sceaux).' }],
       [
         'Tout oublier',
         () => {
