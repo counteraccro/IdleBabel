@@ -1,11 +1,12 @@
 import { forcePagesPerSecond, isForcingPagesPerSecond, pagesPerSecond } from '../../systems/production';
 import { addKnowledge, findChance, forceFinds, isForcingFinds } from '../../systems/knowledge';
+import { BASE_FIND_CHANCE } from '../../data/knowledge';
 import { rewriteBigBook } from '../refresh';
 import { compact, format, type DebugSubject } from './subject';
 
 const PRESETS = [0, 100, 1_000, 10_000, 1_000_000];
 
-/** Libellés repris du livre étrange (chapitres Lectures et Révélations), en plus court. */
+/** Libellés repris du Grand Livre (chapitres Lectures et Révélations), en plus court. */
 export const RESOURCE_SUBJECTS: DebugSubject[] = [
   {
     id: 'pages',
@@ -55,7 +56,7 @@ export const RESOURCE_SUBJECTS: DebugSubject[] = [
         () => state.knowledge,
         (v) => (state.knowledge = v),
         {
-          hint: '« Connaissance que tu portes » : déchiffre le livre étrange, devine un morceau. Les + la donnent aussi (paliers compris), sans rien trouver ; les − ne retirent que la portée.',
+          hint: '« Connaissance que tu portes » : déchiffre le Grand Livre, devine un morceau. Les + la donnent aussi (paliers compris), sans rien trouver ; les − ne retirent que la portée.',
           steps: true,
           step: (delta) => {
             if (delta > 0) addKnowledge(state, delta);
@@ -68,9 +69,14 @@ export const RESOURCE_SUBJECTS: DebugSubject[] = [
         'Donnée',
         () => state.lifetimeKnowledge,
         (v) => (state.lifetimeKnowledge = v),
-        { hint: '« Connaissance qui t’a été donnée » : ses paliers déchiffrent seuls le livre étrange.' },
+        { hint: '« Connaissance qui t’a été donnée » : ses paliers déchiffrent seuls le Grand Livre.' },
       );
-      kit.check('Toujours trouver', 'Une trouvaille à chaque page, au lieu d’une page sur 200.', isForcingFinds, forceFinds);
+      kit.check(
+        'Toujours trouver',
+        `Une trouvaille à chaque page, au lieu d’une page sur ${1 / BASE_FIND_CHANCE} (jusqu’au rechargement).`,
+        isForcingFinds,
+        forceFinds,
+      );
       kit.info('Chance', () => `${format(findChance(state) * 100)} %`, '« Ta chance, à chaque page, de comprendre quelque chose. »');
       kit.info('Fragments', () => format(state.finds.length), '« Mots · morceaux · phrases arrachés au hasard. »');
       kit.actions([

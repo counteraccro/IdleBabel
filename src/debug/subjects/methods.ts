@@ -2,7 +2,7 @@ import { t } from '../../i18n';
 import { TOOLS } from '../../data/tools';
 import { SENTENCES } from '../../data/sentences';
 import { buyTool, nextToolCost } from '../../systems/tools';
-import { pagesPerSecond } from '../../systems/production';
+import { pagesPerSecond, toolRate } from '../../systems/production';
 import { currentTarget, segments, toolUnlocked, write, written } from '../../systems/sentences';
 import { rewriteBigBook } from '../refresh';
 import { compact, duration, format, type Action, type DebugSubject } from './subject';
@@ -47,12 +47,14 @@ export const METHOD_SUBJECTS: DebugSubject[] = TOOLS.map((tool) => {
         return sentence !== undefined && currentTarget(state) === sentence ? 'à découvrir (phrase en cours)' : 'à découvrir (pas son tour)';
       });
       if (sentence !== undefined) kit.progress('Phrase', () => [written(state, sentence).length, segments(sentence).length]);
-      kit.info('Prix du suivant', () => `${format(nextToolCost(state, tool.id))} pages`);
+      kit.info('Prix du suivant', () => `${format(Math.ceil(nextToolCost(state, tool.id)))} pages`);
       kit.info('Production', () => {
-        const own = state.tools[tool.id] * tool.pagesPerSecond;
+        // Ce que lit vraiment un exemplaire : intuitions et Etherium compris.
+        const rate = toolRate(state, tool.id);
+        const own = state.tools[tool.id] * rate;
         const total = pagesPerSecond(state);
         const share = total > 0 ? ` (${format((own / total) * 100)} %)` : '';
-        return `${format(tool.pagesPerSecond)}/s × ${format(state.tools[tool.id])} = ${format(own)}/s${share}`;
+        return `${format(rate)}/s × ${format(state.tools[tool.id])} = ${format(own)}/s${share}`;
       });
       kit.info('Achat possible', () => {
         const missing = nextToolCost(state, tool.id) - state.pages;

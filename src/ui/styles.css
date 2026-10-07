@@ -226,7 +226,8 @@ footer {
   bottom: 12px;
   z-index: 10;
   width: 320px;
-  max-height: calc(100vh - 24px);
+  /* Jamais sur la pile de l'en-tête (en haut à droite), même avec beaucoup de fiches ouvertes. */
+  max-height: calc(100vh - 140px);
   overflow-y: auto;
   background: rgba(8, 6, 5, 0.94);
   border: 1px solid var(--border);

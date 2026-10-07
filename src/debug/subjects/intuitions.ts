@@ -19,7 +19,7 @@ const setLevel = (state: GameState, id: TechnologyId, value: number): void => {
   state.technologiesBest[id] = Math.max(bestOf(state, id), level);
 };
 
-/** Les intuitions (partie II du livre blanc) et la Réminiscence, qui les rachète après l'Exil. */
+/** Les intuitions (partie II du livre blanc) et la Réminiscence, qui les rachète après le prestige. */
 export const INTUITION_SUBJECTS: DebugSubject[] = [
   {
     id: 'intuitions',
@@ -59,16 +59,16 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
     id: 'reminiscence',
     chapter: 'intuitions',
     name: 'La Réminiscence',
-    description: 'Intuition permanente, après le premier Exil : les intuitions reviennent seules jusqu’à leur meilleur niveau.',
+    description: 'Intuition permanente, après le premier prestige : les intuitions reviennent seules jusqu’à leur meilleur niveau.',
     peek: (state) => (!reminiscenceKnown(state) ? 'pas comprise' : reminiscing(state) ? 'active' : 'laissée de côté'),
     build: (kit, state) => {
       kit.check(
         'Comprise',
-        'L’intuition permanente (10 000 🧠, après le premier Exil). Comprise : la note au crayon apparaît sur la page de titre des intuitions.',
+        'L’intuition permanente (10 000 🧠, après le premier prestige). Comprise : la note au crayon apparaît sur la page de titre des intuitions.',
         () => reminiscenceKnown(state),
         (on) => setLevel(state, 'reminiscence', on ? 1 : 0),
       );
-      kit.info('Exils faits', () => String(state.exiles));
+      kit.info('Prestiges faits', () => String(state.exiles));
       kit.check(
         'Laissée faire',
         'La note au crayon : cochée, les intuitions reviennent seules.',
@@ -82,13 +82,16 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
       });
       kit.actions(
         [
-          'Oublier, comme à l’Exil',
+          'Oublier, comme au prestige',
           () => {
             forgetIntuitions(state);
-            // En attendant l'Exil : compté comme un Exil (la Réminiscence apparaît dans le livre blanc).
+            // Compté comme un prestige : la Réminiscence apparaît dans le livre blanc.
             state.exiles += 1;
           },
-          { title: 'Niveaux à zéro (sauf les permanentes), meilleurs niveaux gardés ; compte un Exil.' },
+          {
+            title:
+              'Niveaux à zéro (sauf les permanentes), meilleurs niveaux gardés ; compte un prestige (sans Éther ni étoiles : le vrai est dans « Le prestige »).',
+          },
         ],
         ['Se souvenir', () => remember(state), { title: 'Rachète tout de suite ce qui peut l’être (sinon : au prochain tour de boucle).' }],
       );

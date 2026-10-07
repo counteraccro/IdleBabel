@@ -1,6 +1,7 @@
 import { ETHERIUM_PAGES, STARS, type PageId } from '../../data/etheriumStars';
 import { etherDeserved, nextEtherPages, prestige, prestigeGain } from '../../systems/prestige';
 import { starLit } from '../../systems/etherium';
+import { t } from '../../i18n';
 import { format, type DebugSubject } from './subject';
 
 const starsOf = (page: PageId) => STARS.filter((star) => star.page === page);
@@ -63,7 +64,7 @@ export const PRESTIGE_SUBJECTS: DebugSubject[] = [
     build: (kit, state) => {
       for (const page of ETHERIUM_PAGES)
         kit.number(
-          page,
+          t(`etherium.pages.${page}.name`),
           () => starsOf(page).filter((star) => starLit(state, star.id)).length,
           (v) => {
             const lit = starsOf(page)

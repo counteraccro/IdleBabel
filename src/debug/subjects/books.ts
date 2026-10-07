@@ -1,4 +1,6 @@
 import { el } from '../../ui/dom';
+import { t } from '../../i18n';
+import { SENTENCES } from '../../data/sentences';
 import { maxTurnsPerSecond, setTurnCap } from '../../systems/knowledge';
 import { forceTitles, type TitleOverride } from '../../systems/coverTitle';
 import { STRANGE_BOOK_INDEX, revealStats, statsRevealed, strangeBookFound } from '../../systems/strangeBook';
@@ -74,7 +76,14 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
     peek: (state) => `${format(completion(state) * 100)} %`,
     build: (kit, state) => {
       kit.info('Écrit', () => `${format(completion(state) * 100)} % des morceaux`);
-      kit.info('Phrase en cours', () => currentTarget(state) ?? 'aucune', 'Aucune : toutes les méthodes sont trouvées.');
+      kit.info(
+        'Phrase en cours',
+        () => {
+          const tool = SENTENCES.find((sentence) => sentence.id === currentTarget(state))?.tool;
+          return tool ? t(`tools.${tool}.name`) : 'aucune';
+        },
+        'Celle de la méthode à découvrir. Aucune : toutes les méthodes sont trouvées.',
+      );
       kit.actions(
         [
           'Compléter la phrase en cours',
@@ -98,7 +107,7 @@ export const BOOK_SUBJECTS: DebugSubject[] = [
   {
     id: 'strangeBook',
     chapter: 'books',
-    name: 'Le livre étrange',
+    name: 'Le Grand Livre',
     description: 'Trouvé ou non, statistiques en clair, déchiffrage.',
     peek: (state) => (strangeBookFound(state) ? 'trouvé' : 'pas trouvé'),
     build: (kit, state) => {

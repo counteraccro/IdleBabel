@@ -7,6 +7,7 @@ import { PLATES, SEALS } from '../../data/seals';
 import { TECHNOLOGIES } from '../../data/technologies';
 import { COST_GROWTH, TOOLS } from '../../data/tools';
 import { findChance, maxTurnsPerSecond } from '../../systems/knowledge';
+import { findsMultiplier } from '../../systems/etherium';
 import { findableTarget, hintFindable, waitingFor } from '../../systems/findable';
 import { completion, isComplete, toolUnlocked } from '../../systems/sentences';
 import { pagesPerSecond, toolRate } from '../../systems/production';
@@ -62,6 +63,7 @@ const finds = (state: GameState): RecapRow[] => {
     ['· le hasard', percent(BASE_FIND_CHANCE)],
     ['· filtre sémantique', times(filterMultiplier(state))],
     ['· sceaux', times(sealFindMultiplier(state))],
+    ['· Etherium (la Loupe)', times(findsMultiplier(state))],
     ['Par page', chance >= 1 ? `${Math.floor(chance)} sûres + ${percent(chance % 1)}` : `au plus 1`],
     ['Sortes : mot · morceau · phrase', `${FIND_WEIGHTS.word} · ${FIND_WEIGHTS.piece} · ${FIND_WEIGHTS.sentence} %`],
     ['Doublons (Mémoire des phrases)', percent(duplicateShare(state))],
@@ -150,7 +152,7 @@ const sentences = (state: GameState): RecapRow[] => {
     ['Souvenirs', ratio(done(of('memory'), state), of('memory').length)],
     ...ANOMALY_FAMILIES.map((family): RecapRow => {
       const ids = SENTENCES.filter((sentence) => sentence.family === family).map((sentence) => sentence.id);
-      return [`· anomalies ${family}`, ratio(done(ids, state), ids.length)];
+      return [`· ${t(`whiteBook.anomalyFamilies.${family}`)}`, ratio(done(ids, state), ids.length)];
     }),
     ['Connaissance', format(state.knowledge)],
     ['Connaissance à vie', format(state.lifetimeKnowledge)],
