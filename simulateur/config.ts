@@ -13,13 +13,18 @@ export interface ExtraMethod {
   pieces: number;
 }
 
-/** Âge Automatique (§3.1 ter, chiffres provisoires) ; les morceaux des phrases sont devinés (pas encore écrites). */
+/**
+ * Âge Automatique (§3.1 ter, noms choisis le 07/10, chiffres provisoires) : Métronome, Roue à Livres, Monte-Livres,
+ * Automate Lecteur, Horloge des Galeries. Prix « D », choisis le 07/10 : dans une partie avancée, les cinq
+ * s'échelonnent (quelques minutes, 4 h, 11 h, 23 h, 42 h) ; l'Horloge vers le 13e jour (24 h de jeu par jour).
+ * Les morceaux des phrases sont devinés (pas encore écrites).
+ */
 export const AUTOMATIC: readonly ExtraMethod[] = [
-  { id: 'tourne', baseCost: 320e6, pagesPerSecond: 1e5, pieces: 5 },
-  { id: 'roue', baseCost: 13e9, pagesPerSecond: 2e6, pieces: 5 },
-  { id: 'chariot', baseCost: 550e9, pagesPerSecond: 40e6, pieces: 5 },
-  { id: 'automate', baseCost: 23e12, pagesPerSecond: 800e6, pieces: 5 },
-  { id: 'galerie', baseCost: 1e18, pagesPerSecond: 16e9, pieces: 5 },
+  { id: 'metronome', baseCost: 250e6, pagesPerSecond: 1e5, pieces: 5 },
+  { id: 'roue', baseCost: 4e9, pagesPerSecond: 1e6, pieces: 5 },
+  { id: 'monte', baseCost: 80e9, pagesPerSecond: 12e6, pieces: 5 },
+  { id: 'automate', baseCost: 1.5e12, pagesPerSecond: 150e6, pieces: 5 },
+  { id: 'horloge', baseCost: 30e12, pagesPerSecond: 2e9, pieces: 5 },
 ];
 
 // L'Etherium (les constellations) est dans etoiles.ts.

@@ -355,7 +355,7 @@
         "effect": "secret method: its blurry memory, then its sentence stays"
       },
       "a1": {
-        "name": "Counterweight Page-Turner",
+        "name": "Metronome",
         "effect": "its sentence stays through prestige"
       },
       "a2": {
@@ -363,7 +363,7 @@
         "effect": "its sentence stays through prestige"
       },
       "a3": {
-        "name": "Gallery Cart",
+        "name": "Book Lift",
         "effect": "its sentence stays through prestige"
       },
       "a4": {
@@ -371,7 +371,7 @@
         "effect": "its sentence stays through prestige"
       },
       "a5": {
-        "name": "The Reading Gallery",
+        "name": "Gallery Clock",
         "effect": "its sentence stays through prestige"
       }
     },

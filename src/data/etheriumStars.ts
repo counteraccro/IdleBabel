@@ -194,9 +194,9 @@ export const KEEPS: Record<string, string> = {
   voice: 'memory.m3',
   lectern: 'memory.m4',
   ladder: 'memory.m5',
-  tourne: 'memory.a1',
+  metronome: 'memory.a1',
   roue: 'memory.a2',
-  chariot: 'memory.a3',
+  monte: 'memory.a3',
   automate: 'memory.a4',
-  galerie: 'memory.a5',
+  horloge: 'memory.a5',
 };

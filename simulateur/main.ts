@@ -32,6 +32,13 @@ const duration = (seconds: number | undefined): string => {
   if (hours < 48) return `${hours.toFixed(1).replace('.', ',')} h`;
   return `${(hours / 24).toFixed(1).replace('.', ',')} j`;
 };
+/** Durée en bref, pour la colonne des méthodes Automatiques : 45m, 3h, 2j. */
+const short = (seconds: number | undefined): string => {
+  if (seconds === undefined) return '–';
+  if (seconds < 3600) return `${Math.round(seconds / 60)}m`;
+  if (seconds < 172800) return `${Math.round(seconds / 3600)}h`;
+  return `${Math.round(seconds / 86400)}j`;
+};
 const big = (n: number): string => (n < 1e6 ? String(Math.round(n)) : n.toExponential(1).replace('.', ','));
 
 const [active, closed] = PLAYER.rhythm.map((hours) => hours * 3600);
@@ -71,6 +78,8 @@ for (let number = 1; life.clock < end; number++) {
     big(pagesPerSecond(run)),
     duration(run.firstBought.cornee),
     duration(firstAutomatic),
+    // Première fois que chaque méthode Automatique s'achète dans la partie (– : jamais).
+    AUTOMATIC.map((method) => short(run.firstBought[method.id])).join(' · '),
     gain > 0 ? `+${gain}` : '(en cours)',
   ];
   if (gain === 0) {
@@ -85,7 +94,19 @@ for (let number = 1; life.clock < end; number++) {
   rows.push([...row, String(life.etherReceived), bought.join(', '), duration(life.clock)]);
 }
 
-const header = ['n°', 'durée', 'pages lues', 'pages/s fin', 'Cornée', '1re Auto', 'Éther', 'total', 'achats au réveil', 'temps total'];
+const header = [
+  'n°',
+  'durée',
+  'pages lues',
+  'pages/s fin',
+  'Cornée',
+  '1re Auto',
+  'Auto 1 · 2 · 3 · 4 · 5',
+  'Éther',
+  'total',
+  'achats au réveil',
+  'temps total',
+];
 const widths = header.map((title, i) => Math.max(title.length, ...rows.map((row) => row[i].length)));
 const line = (cells: string[]): string => cells.map((cell, i) => cell.padEnd(widths[i])).join('  ');
 console.log(

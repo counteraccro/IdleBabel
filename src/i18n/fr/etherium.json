@@ -355,7 +355,7 @@
         "effect": "méthode secrète : son souvenir flou, puis sa phrase reste"
       },
       "a1": {
-        "name": "Tourne-Page à Contrepoids",
+        "name": "Métronome",
         "effect": "sa phrase reste au prestige"
       },
       "a2": {
@@ -363,7 +363,7 @@
         "effect": "sa phrase reste au prestige"
       },
       "a3": {
-        "name": "Chariot de Galerie",
+        "name": "Monte-Livres",
         "effect": "sa phrase reste au prestige"
       },
       "a4": {
@@ -371,7 +371,7 @@
         "effect": "sa phrase reste au prestige"
       },
       "a5": {
-        "name": "Galerie qui Lit",
+        "name": "Horloge des Galeries",
         "effect": "sa phrase reste au prestige"
       }
     },
