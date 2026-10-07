@@ -5,7 +5,8 @@
  * se multiplient (ou s'ajoutent, pour les quantités). Prix provisoires : le simulateur s'en sert aussi
  * (simulateur/vie.ts). Textes : etherium.pages.<page> et etherium.stars.<page>.<étoile>.
  */
-export const ETHERIUM_PAGES = ['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'ages'] as const;
+/** L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10). */
+export const ETHERIUM_PAGES = ['ages', 'reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory'] as const;
 export type PageId = (typeof ETHERIUM_PAGES)[number];
 
 export interface Star {
