@@ -145,7 +145,7 @@ const LAYOUTS: ((context: CanvasRenderingContext2D, design: CoverDesign) => void
 const wrap = (context: CanvasRenderingContext2D, value: string, room: number, max: number): string[] => {
   const lines: string[] = [];
   let line = '';
-  for (const word of value.split(/\s+/)) {
+  for (const word of value.split(/[^\S\u00a0]+/)) {
     const next = line ? `${line} ${word}` : word;
     if (context.measureText(next).width <= room || !line) line = next;
     else {

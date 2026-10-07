@@ -38,7 +38,7 @@ describe('livre de la fin', () => {
     recordOnce(state, 'firstTool', 'diagonal', 21 * MINUTE);
     const [chapter] = tellFinalBook(state).chapters;
     expect(chapter.paragraphs.map((p) => p.text)).toEqual([
-      expect.stringContaining('sauf ton nom : Ana.'),
+      expect.stringContaining('sauf ton nom\u00a0: Ana.'),
       'Vingt minutes plus tard, tu as tourné ta première page. Elle ne voulait rien dire.',
       'Quelques minutes plus tard, tu as appris à sauter un mot sur deux.',
     ]);
