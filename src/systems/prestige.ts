@@ -6,6 +6,7 @@ import { forgetIntuitions } from './reminiscence';
 import { forgetPagesRest } from './production';
 import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor } from './etherium';
 import { levelOf, maxLevel } from './technologies';
+import { segments, write } from './sentences';
 import type { GameState } from '../core/state';
 
 /**
@@ -35,7 +36,7 @@ export const nextEtherProgress = (state: GameState): number => {
  * Le prestige : l'Éther mérité est reçu, et tout ce que le chercheur avait en main est perdu (pages, méthodes,
  * Connaissance, intuitions, phrases des méthodes que la Mémoire ne garde pas). Restent les pages à vie, les sceaux,
  * les livres rares, le reste du livre blanc, l'Éther et les étoiles de l'Etherium, et ce que celles-ci donnent au réveil
- * (la Porte, l'Aigrette gauche, le Reflet). Il se réveille l'Etherium en main.
+ * (la Porte, et les phrases des méthodes qu'elle donne ; l'Aigrette gauche, le Reflet). Il se réveille l'Etherium en main.
  * Renvoie l'Éther reçu (rien si le prestige ne rapporte pas encore).
  */
 export const prestige = (state: GameState, now = Date.now()): number => {
@@ -64,6 +65,14 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   state.wake = { pages: state.totalPagesRead, book: state.booksFinished + 1 };
   const kept = keptMethodSentences(state);
   for (const sentence of SENTENCES) if (sentence.kind === 'method' && !kept.includes(sentence.id)) delete state.written[sentence.id];
+  // Une méthode donnée par la Porte se retrouve aussitôt : sa phrase s'écrit, son intuition peut se comprendre.
+  for (const sentence of SENTENCES)
+    if (sentence.kind === 'method' && sentence.tool && state.tools[sentence.tool] > 0)
+      write(
+        state,
+        sentence.id,
+        segments(sentence.id).map((_, index) => index),
+      );
   state.etheriumInHand = true;
   recordOnce(state, 'prestige', String(state.exiles), now);
   return gain;

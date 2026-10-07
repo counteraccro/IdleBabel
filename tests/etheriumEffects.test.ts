@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createInitialState, type GameState } from '../src/core/state';
 import { prestige } from '../src/systems/prestige';
 import { awayFindsShare, awayTurnsMultiplier, handFindsMultiplier } from '../src/systems/etherium';
-import { guessPrice, segments, write } from '../src/systems/sentences';
+import { guessPrice, segments, toolUnlocked, write } from '../src/systems/sentences';
 import {
   awayShare,
   clickShare,
@@ -94,6 +94,9 @@ describe('Au réveil', () => {
     expect(state.pages).toBeCloseTo(9e7);
     expect(state.knowledge).toBeCloseTo(30);
     expect(state.wake).toEqual({ pages: 1e10, book: 41 });
+    // Les méthodes données se retrouvent : leur phrase est écrite.
+    for (const tool of ['diagonal', 'finger', 'voice'] as const) expect(toolUnlocked(state, tool), tool).toBe(true);
+    expect(toolUnlocked(state, 'lectern')).toBe(false);
   });
 
   it('sans étoile, rien ne reste', () => {
@@ -102,6 +105,7 @@ describe('Au réveil', () => {
     expect(state.tools.diagonal).toBe(0);
     expect(state.pages).toBe(0);
     expect(state.knowledge).toBe(0);
+    expect(toolUnlocked(state, 'diagonal')).toBe(false);
   });
 
   it('l’Aigrette gauche garde le 1er niveau, le Reflet offre un niveau de Filtre', () => {
