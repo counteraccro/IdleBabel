@@ -4,6 +4,7 @@ import { createCounter } from './counter';
 import { createMethodHive } from './methods/methodHive';
 import { createFooter } from './footer';
 import { createOptionsPage } from './options/optionsPage';
+import { BIG_BOOK_REWRITE } from './book3d/book3dBook';
 import { createBook3dPage } from './book3d/book3dPage';
 import { whiteBook3d } from './book3d/whiteBook3d';
 import { strangeBook3d } from './book3d/strangeBook3d';
@@ -276,6 +277,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
             state,
             () => {
               delete spec.sealed;
+              // Ses pages ont été dessinées avant le prestige : la garde redessinée montre l'Éther qu'il vient de verser.
+              window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
               cover.open();
             },
             cover.nudge,
