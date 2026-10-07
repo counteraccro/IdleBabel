@@ -12,7 +12,7 @@ const count = (state: GameState, sentences: readonly SentenceDef[]): [number, nu
   sentences.length,
 ];
 
-const writeAll = (state: GameState, sentences: readonly SentenceDef[]): void => {
+export const writeAll = (state: GameState, sentences: readonly SentenceDef[]): void => {
   for (const sentence of sentences)
     write(
       state,

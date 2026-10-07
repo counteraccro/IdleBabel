@@ -1,3 +1,4 @@
+import { UNLOCK_ALL_SUBJECT } from './unlockAll';
 import { RESOURCE_SUBJECTS } from './resources';
 import { SEED_SUBJECT } from './seed';
 import { METHOD_SUBJECTS } from './methods';
@@ -14,6 +15,7 @@ import { CHAPTERS, type ChapterId, type DebugSubject } from './subject';
 
 /** Tout ce que recense le livre de débogage, chapitre après chapitre. */
 export const SUBJECTS: readonly DebugSubject[] = [
+  UNLOCK_ALL_SUBJECT,
   ...RESOURCE_SUBJECTS,
   SEED_SUBJECT,
   ...METHOD_SUBJECTS,

@@ -31,6 +31,13 @@ const rareMenu = (state: GameState): HTMLSelectElement => {
   return menu;
 };
 
+/** Chacun « trouvé » dans un livre à lui, loin devant : la vitrine se remplit, rien d'autre ne change. */
+export const findAllRareBooks = (state: GameState): void => {
+  RARE_BOOKS.forEach((book, index) => (state.rareBooks[book.id] ??= -1 - index));
+  refreshBook();
+  refreshLibrary();
+};
+
 export const RARE_BOOK_SUBJECT: DebugSubject = {
   id: 'rareBooks',
   chapter: 'books',
@@ -62,12 +69,7 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
       ['L’ouvrir en grand', () => (window.location.hash = `${RARE_BOOK_HASH}${menu.value}`), { title: 'Comme dans la bibliothèque.' }],
       [
         'Tout trouver',
-        () => {
-          // Chacun « trouvé » dans un livre à lui, loin devant : la vitrine se remplit, rien d'autre ne change.
-          RARE_BOOKS.forEach((book, index) => (state.rareBooks[book.id] ??= -1 - index));
-          refreshBook();
-          refreshLibrary();
-        },
+        () => findAllRareBooks(state),
         { title: 'Remplit la vitrine de la bibliothèque (sans les sceaux).' },
       ],
       [

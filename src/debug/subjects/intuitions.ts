@@ -19,6 +19,10 @@ const setLevel = (state: GameState, id: TechnologyId, value: number): void => {
   state.technologiesBest[id] = Math.max(bestOf(state, id), level);
 };
 
+/** Toutes les intuitions au maximum (les intuitions sans fin : niveau 10). */
+export const maxIntuitions = (state: GameState): void =>
+  TECHNOLOGIES.forEach((tech) => setLevel(state, tech.id, maxLevel(tech.id) === Infinity ? 10 : maxLevel(tech.id)));
+
 /** Les intuitions (partie II du livre blanc) et la Réminiscence, qui les rachète après le prestige. */
 export const INTUITION_SUBJECTS: DebugSubject[] = [
   {
@@ -41,7 +45,7 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
       kit.actions(
         [
           'Tout au maximum',
-          () => TECHNOLOGIES.forEach((tech) => setLevel(state, tech.id, maxLevel(tech.id) === Infinity ? 10 : maxLevel(tech.id))),
+          () => maxIntuitions(state),
           { title: 'Les intuitions sans fin : niveau 10.' },
         ],
         [
