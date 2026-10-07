@@ -7,6 +7,8 @@ import { contentsItems, type ContentsEntry } from './contents';
 import { partTitleItems, partTitleLayout, subPartLayout, type WhiteBookPart } from './partTitle';
 import { intuitionItems, reminiscenceNote } from './intuitionPage';
 import { TECHNOLOGIES } from '../../data/technologies';
+import { AUTOMATIC_AGE, TOOLS } from '../../data/tools';
+import { starLit } from '../../systems/etherium';
 import { intuitionVisible, technologiesCompletion, understand } from '../../systems/technologies';
 import { completion, guess, guessPrice, isComplete, sentenceShown, written } from '../../systems/sentences';
 import { waitingFor } from '../../systems/findable';
@@ -114,13 +116,17 @@ const titleItems = (state: GameState): Item[] => [
   { kind: 'text', text: t('whiteBook.completion'), x: 320, y: 600, size: 18, align: 'center', italic: true, faded: true, spacing: 2 },
 ];
 
+/** Les Âges, dans l'ordre (aucun : l'Âge Manuel), et le nom de leur sous-partie (whiteBook.parts). */
+const AGES = [undefined, AUTOMATIC_AGE] as const;
+const AGE_KEYS: Record<string, string> = { manual: 'manualAge', [AUTOMATIC_AGE]: 'automaticAge' };
+
 const ofKind = (kind: SentenceKind): SentenceDef[] => SENTENCES.filter((sentence) => sentence.kind === kind);
 
 /**
  * Le livre blanc, toutes ses pages dès le début. Le numéro imprimé d'une page est sa place dans la
  * liste (0 : l'intérieur de la couverture, à gauche). Dans l'ordre : la page de titre seule à droite,
  * le sommaire à gauche, puis quatre parties : les méthodes (une page par phrase), les intuitions (une page
- * chacune), les souvenirs (le lore, une page par phrase), puis les anomalies (leur introduction, puis les familles). Chaque partie s'ouvre sur sa page de titre, à
+ * chacune ; l'Âge Automatique acheté, ces deux parties se rangent par Âge), les souvenirs (le lore, une page par phrase), puis les anomalies (leur introduction, puis les familles). Chaque partie s'ouvre sur sa page de titre, à
  * droite, son contenu commençant en face ; et de nouveau l'intérieur de la
  * couverture si la dernière page tombe à gauche.
  */
@@ -152,19 +158,40 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
     entries.push({ title: () => t(`whiteBook.parts.${kind}`), page: pages.length });
     pages.push(createLeafPage(layout, goTo, hooks));
   };
-  const sentencePart = (kind: 'method' | 'memory', number: number): void => {
-    partTitle(kind, number);
-    // Une méthode secrète n'a sa page qu'une fois son souvenir revenu (l'Etherium).
-    for (const sentence of ofKind(kind).filter((candidate) => sentenceShown(state, candidate.id))) {
-      const number = pages.length;
-      pages.push(
-        createLeafPage(({ asking }) => sentenceLayout(state, sentence, number, asking, freshOf(sentence)), goTo, {
-          onPay: () => guess(state, sentence.id),
-        }),
-      );
+  // Titre d'une sous-partie, à gauche (une page blanche avant si besoin), en face de son premier contenu ; une ligne en
+  // retrait au sommaire.
+  const subPart = (key: string): void => {
+    if (pages.length % 2 === 1) {
+      const blank = pages.length;
+      pages.push(createLeafPage(() => [folio(blank)], goTo));
+    }
+    entries.push({ title: () => t(`whiteBook.parts.${key}`), page: pages.length, sub: true });
+    pages.push(createLeafPage(() => subPartLayout(key), goTo));
+  };
+  // L'Âge Automatique acheté, méthodes et intuitions se rangent par Âge, chacun sous son titre ; avant, rien ne le
+  // laisse deviner.
+  const byAge = starLit(state, AUTOMATIC_AGE);
+  const ages = <T>(items: T[], ageOf: (item: T) => string | undefined, add: (item: T) => void): void => {
+    if (!byAge) return items.forEach(add);
+    for (const age of AGES) {
+      const ofAge = items.filter((item) => ageOf(item) === age);
+      if (ofAge.length === 0) continue;
+      subPart(AGE_KEYS[age ?? 'manual']);
+      ofAge.forEach(add);
     }
   };
-  sentencePart('method', 1);
+  const sentencePage = (sentence: SentenceDef): void => {
+    const number = pages.length;
+    pages.push(
+      createLeafPage(({ asking }) => sentenceLayout(state, sentence, number, asking, freshOf(sentence)), goTo, {
+        onPay: () => guess(state, sentence.id),
+      }),
+    );
+  };
+  // Une méthode secrète n'a sa page qu'une fois son souvenir revenu (l'Etherium).
+  const shown = (kind: SentenceKind): SentenceDef[] => ofKind(kind).filter((candidate) => sentenceShown(state, candidate.id));
+  partTitle('method', 1);
+  ages(shown('method'), (sentence) => sentence.age, sentencePage);
   // Les intuitions, achetées en Connaissance : une page chacune, juste après les méthodes qu'elles aident.
   // Sa page de titre porte la note au crayon de la Réminiscence, une fois obtenue : un clic la laisse faire ou non.
   partTitle('intuition', 2, () => [...partTitleLayout('intuition', 2, technologiesCompletion(state)), ...reminiscenceNote(state)], {
@@ -177,18 +204,17 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
     pages.push(createLeafPage(() => intuitionItems(state, tech.id, number), goTo, { onPay: () => understand(state, tech.id) }));
   };
   const lasting = (tech: (typeof TECHNOLOGIES)[number]): boolean => 'permanent' in tech && tech.permanent;
-  TECHNOLOGIES.filter((tech) => !lasting(tech) && intuitionVisible(state, tech.id)).forEach(intuitionPage);
-  // Les intuitions permanentes (des conforts, que l'Exil ne fait pas oublier) : une sous-partie, son titre
-  // à gauche (une page blanche avant si besoin), en face de la première d'entre elles.
-  if (pages.length % 2 === 1) {
-    const blank = pages.length;
-    pages.push(createLeafPage(() => [folio(blank)], goTo));
-  }
-  const lastingTitle = pages.length;
-  entries.push({ title: () => t('whiteBook.parts.permanent'), page: lastingTitle, sub: true });
-  pages.push(createLeafPage(() => subPartLayout('permanent'), goTo));
+  // Celle d'une méthode est de son Âge ; les autres, de l'Âge Manuel.
+  ages(
+    TECHNOLOGIES.filter((tech) => !lasting(tech) && intuitionVisible(state, tech.id)),
+    (tech) => TOOLS.find((tool) => 'tool' in tech && tool.id === tech.tool)?.age,
+    intuitionPage,
+  );
+  // Les intuitions permanentes (des conforts, que l'Exil ne fait pas oublier) : une sous-partie.
+  subPart('permanent');
   TECHNOLOGIES.filter((tech) => lasting(tech) && intuitionVisible(state, tech.id)).forEach(intuitionPage);
-  sentencePart('memory', 3);
+  partTitle('memory', 3);
+  shown('memory').forEach(sentencePage);
   partTitle('anomaly', 4);
   const anomalyPart = anomalyPages(state, pages.length, freshOf);
   entries.push(

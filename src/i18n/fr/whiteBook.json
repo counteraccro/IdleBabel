@@ -7,14 +7,18 @@
     "memory": "Souvenirs",
     "anomaly": "Anomalies",
     "intuition": "Intuitions",
-    "permanent": "Intuitions permanentes"
+    "permanent": "Intuitions permanentes",
+    "manualAge": "L’Âge Manuel",
+    "automaticAge": "L’Âge Automatique"
   },
   "partDescriptions": {
     "method": "Des façons de lire que j'ai retrouvées. Chacune me fait aller un peu plus vite.",
     "memory": "Des choses d'avant. Je ne sais plus si elles sont vraies.",
     "anomaly": "Des phrases qui n'auraient pas dû être là. Je les garde toutes.",
     "intuition": "Des choses que je sens avant de les comprendre. Chacune change ma façon de lire.",
-    "permanent": "Celles-là, je les garde. Quoi qu'il arrive."
+    "permanent": "Celles-là, je les garde. Quoi qu'il arrive.",
+    "manualAge": "Mes mains, mes yeux. Rien d’autre.",
+    "automaticAge": "Maintenant, des choses lisent pour moi. Je ne sais pas si c’est mieux."
   },
   "anomaliesCompletion": "phrases retrouvées · {percent}",
   "anomalyFamilies": {

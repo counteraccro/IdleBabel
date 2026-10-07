@@ -7,14 +7,18 @@
     "memory": "Memories",
     "anomaly": "Anomalies",
     "intuition": "Intuitions",
-    "permanent": "Lasting intuitions"
+    "permanent": "Lasting intuitions",
+    "manualAge": "The Manual Age",
+    "automaticAge": "The Automatic Age"
   },
   "partDescriptions": {
     "method": "Ways of reading I found again. Each one takes me a little faster.",
     "memory": "Things from before. I no longer know if they are true.",
     "anomaly": "Sentences that should not have been there. I keep them all.",
     "intuition": "Things I sense before I understand them. Each one changes the way I read.",
-    "permanent": "These ones I keep. Whatever happens."
+    "permanent": "These ones I keep. Whatever happens.",
+    "manualAge": "My hands, my eyes. Nothing else.",
+    "automaticAge": "Now things read for me. I don’t know if that is better."
   },
   "anomaliesCompletion": "sentences found · {percent}",
   "anomalyFamilies": {
