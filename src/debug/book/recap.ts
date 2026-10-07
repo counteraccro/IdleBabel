@@ -7,7 +7,19 @@ import { PLATES, SEALS } from '../../data/seals';
 import { TECHNOLOGIES } from '../../data/technologies';
 import { COST_GROWTH, TOOLS } from '../../data/tools';
 import { findChance, maxTurnsPerSecond } from '../../systems/knowledge';
-import { findsMultiplier } from '../../systems/etherium';
+import {
+  awaySecondsBonus,
+  awayShareBonus,
+  findsMultiplier,
+  handsMultiplier,
+  knowledgePerFind,
+  rareMultiplier,
+  readingMultiplier,
+  starLit,
+  turnsBonus,
+} from '../../systems/etherium';
+import { etherDeserved, nextEtherPages, nextEtherProgress, prestigeGain } from '../../systems/prestige';
+import { ETHERIUM_PAGES, STARS } from '../../data/etheriumStars';
 import { findableTarget, hintFindable, waitingFor } from '../../systems/findable';
 import { completion, isComplete, toolUnlocked } from '../../systems/sentences';
 import { pagesPerSecond, toolRate } from '../../systems/production';
@@ -159,6 +171,32 @@ const sentences = (state: GameState): RecapRow[] => {
   ];
 };
 
+/** Le prestige et ce que donnent les étoiles allumées de l'Etherium. */
+const prestige = (state: GameState): RecapRow[] => {
+  const lit = (page?: string): number => STARS.filter((star) => (!page || star.page === page) && starLit(state, star.id)).length;
+  return [
+    ['Pages à vie', format(state.totalPagesRead)],
+    ['Éther mérité · reçu · à dépenser', `${format(etherDeserved(state))} · ${format(state.etherReceived)} · ${format(state.ether)}`],
+    ['Prestige maintenant', `+${format(prestigeGain(state))} Éther`],
+    ['Éther suivant', `à ${format(nextEtherPages(state))} pages (${percent(nextEtherProgress(state))})`],
+    ['Prestiges faits', String(state.exiles)],
+    ['Etherium en main', state.etheriumInHand ? 'oui' : 'non'],
+    ['Étoiles allumées', ratio(lit(), STARS.length)],
+    ...ETHERIUM_PAGES.map((page): RecapRow => [
+      `· ${t(`etherium.pages.${page}.name`)}`,
+      ratio(lit(page), STARS.filter((star) => star.page === page).length),
+    ]),
+    ['Lecture des méthodes', times(readingMultiplier(state))],
+    ['Feuilles tournées en plus', `+${format(turnsBonus(state))} /s`],
+    ['Pages d’un clic', times(handsMultiplier(state))],
+    ['Connaissance par trouvaille', times(knowledgePerFind(state))],
+    ['Chance de trouvaille', times(findsMultiplier(state))],
+    ['Chance d’un livre rare', times(rareMultiplier(state))],
+    ['Absence : part en plus', `+${percent(awayShareBonus(state))}`],
+    ['Absence : heures en plus', `+${format(awaySecondsBonus(state) / 3600)} h`],
+  ];
+};
+
 /** Tout le récapitulatif, dans l'ordre des pages. */
 export const recapSections = (state: GameState): RecapSection[] => [
   { title: 'Trouvailles', rows: finds(state) },
@@ -168,4 +206,5 @@ export const recapSections = (state: GameState): RecapSection[] => [
   { title: 'Sceaux', rows: seals(state) },
   { title: 'Intuitions : niveau · prochain prix', rows: intuitions(state) },
   { title: 'Phrases et Connaissance', rows: sentences(state) },
+  { title: 'Prestige et Etherium', rows: prestige(state) },
 ];

@@ -2,6 +2,9 @@ import { ETHERIUM_PAGES, STARS, type PageId } from '../../data/etheriumStars';
 import { etherDeserved, nextEtherPages, prestige, prestigeGain } from '../../systems/prestige';
 import { starLit } from '../../systems/etherium';
 import { t } from '../../i18n';
+import { saveGame } from '../../core/save';
+import { ETHERIUM_HASH } from '../../ui/etherium/prestigeStory';
+import { rebuildScreen } from '../refresh';
 import { format, type DebugSubject } from './subject';
 
 const starsOf = (page: PageId) => STARS.filter((star) => star.page === page);
@@ -49,8 +52,16 @@ export const PRESTIGE_SUBJECTS: DebugSubject[] = [
         ],
         [
           'Prestige tout de suite',
-          () => void prestige(state),
-          { title: 'Sans confirmation ni récit : l’Éther reçu, tout est remis à zéro, l’Etherium en main.' },
+          () => {
+            if (prestige(state) < 1) return;
+            // Comme dans le jeu : enregistré aussitôt, et l'on se réveille l'Etherium ouvert.
+            saveGame(state);
+            if (window.location.hash === ETHERIUM_HASH) rebuildScreen();
+            else window.location.hash = ETHERIUM_HASH;
+          },
+          {
+            title: 'Sans confirmation ni récit : l’Éther reçu, tout est remis à zéro, la partie enregistrée, l’Etherium ouvert.',
+          },
         ],
       );
     },
