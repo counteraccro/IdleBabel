@@ -7,7 +7,7 @@ import { findableTarget, hintFindable } from './findable';
 import { tellLore } from './lore';
 import { duplicateShare, filterMultiplier, maxAwaySeconds, targetShare, turnsPerSecond } from './technologies';
 import { sealFindMultiplier } from './seals';
-import { findsMultiplier, knowledgePerFind } from './prestige';
+import { findsMultiplier, knowledgePerFind } from './etherium';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */

@@ -47,6 +47,22 @@ describe('sauvegarde', () => {
     expect(loaded.history.some((entry) => entry.detail === 'thumb')).toBe(false);
   });
 
+  it('rend l’Éther des anciens arbres de l’Etherium (07/10), garde les étoiles', () => {
+    const state = createInitialState('fr') as unknown as Record<string, any>;
+    state.ether = 2;
+    state.etherium = { reading: 2, memory: 1, gone: 3 };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    const refunded = loadGame('fr');
+    expect(refunded.ether).toBe(2 + 1 + 3 + 2);
+    expect(refunded.etherium).toEqual([]);
+    state.ether = 0;
+    state.etherium = ['reading.s0', 'reading.nowhere'];
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    const kept = loadGame('fr');
+    expect(kept.ether).toBe(0);
+    expect(kept.etherium).toEqual(['reading.s0']);
+  });
+
   it('retrouve la partie enregistrée', () => {
     const state = createInitialState('fr');
     state.pages = 42;

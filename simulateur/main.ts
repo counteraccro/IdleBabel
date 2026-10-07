@@ -7,7 +7,7 @@
  *   npm run simule -- --pages=reading,hands    le bot n'allume que les étoiles de ces pages (et l'Âge Automatique)
  */
 import { PLAYER } from './config';
-import type { PageId } from './etoiles';
+import type { PageId } from '../src/data/etheriumStars';
 import { AUTOMATIC } from './config';
 import { away, buyMethods, newRun, pagesPerSecond, play, type Run } from './partie';
 import { buyIntuitions } from './intuitions';

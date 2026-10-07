@@ -1,4 +1,4 @@
-import type { PageId } from './etoiles';
+import type { PageId } from '../src/data/etheriumStars';
 
 /**
  * Ce que le jeu n'a pas encore : les chiffres proposés (conception §3.1 ter, §4), à changer ici pour essayer.

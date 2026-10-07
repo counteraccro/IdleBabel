@@ -24,7 +24,7 @@ import {
 } from '../src/data/knowledge';
 import { PLAYER } from './config';
 import { keptMethods, methodSequence, SECRET, type Method } from './methodes';
-import { EFFECT, S } from './etoiles';
+import { EFFECT, S } from '../src/data/etheriumStars';
 import { lit, product, sum, type Life } from './vie';
 
 /** Une partie, du réveil au prestige. */
@@ -75,7 +75,13 @@ export const newRun = (life: Life): Run => {
   give('diagonal', sum(life, EFFECT.diagonals));
   if (lit(life, S.fingers)) give('finger', 10);
   if (lit(life, S.arch)) for (const [id, count] of Object.entries(life.previous.owned)) give(id, Math.floor(count / 100));
-  run.pages = Math.max(0, ...Object.entries(EFFECT.previousPages).filter(([id]) => lit(life, id)).map(([, share]) => share)) * life.previous.read;
+  run.pages =
+    Math.max(
+      0,
+      ...Object.entries(EFFECT.previousPages)
+        .filter(([id]) => lit(life, id))
+        .map(([, share]) => share),
+    ) * life.previous.read;
   if (lit(life, S.previousKnowledge)) run.knowledge = life.previous.knowledge / 10;
   // La Chouette : le 1er niveau de chaque intuition reste ; la Loupe : un niveau de Filtre sémantique offert.
   if (lit(life, S.crestLeft)) for (const [id, n] of Object.entries(life.previous.levels)) if (n > 0) run.levels[id] = 1;
@@ -94,7 +100,10 @@ export const pagesPerSecond = (run: Run): number =>
   allMethods(run).reduce((total, method) => total + (run.owned[method.id] ?? 0) * rate(run, method), 0);
 
 const findChance = (run: Run): number =>
-  BASE_FIND_CHANCE * FILTER_BONUS ** level(run, 'semanticFilter') * (1 + SEAL_FIND_BONUS * PLAYER.seals) * product(run.life, EFFECT.findChance);
+  BASE_FIND_CHANCE *
+  FILTER_BONUS ** level(run, 'semanticFilter') *
+  (1 + SEAL_FIND_BONUS * PLAYER.seals) *
+  product(run.life, EFFECT.findChance);
 
 const turnsCap = (run: Run): number =>
   SPEED_LEVELS[Math.min(level(run, 'speedReading'), SPEED_LEVELS.length - 1)] + sum(run.life, EFFECT.turns);
@@ -152,7 +161,8 @@ const gain = (run: Run, pages: number): void => {
 export const play = (run: Run, seconds: number): void => {
   const pps = pagesPerSecond(run);
   const clicking = run.t < PLAYER.clickMinutes * 60 ? PLAYER.clicksPerSecond : 0;
-  const perClick = (2 + pps * (MUSCLE_STEP * level(run, 'muscleMemory') + sum(run.life, EFFECT.clickShare))) * product(run.life, EFFECT.click);
+  const perClick =
+    (2 + pps * (MUSCLE_STEP * level(run, 'muscleMemory') + sum(run.life, EFFECT.clickShare))) * product(run.life, EFFECT.click);
   gain(run, (pps + clicking * perClick) * seconds);
   // L'Annulaire : ×2 chance de trouvaille sur les pages tournées à la main (comme deux fois plus de pages).
   find(run, (Math.min(pps, turnsCap(run) * 2) + clicking * 2 * (lit(run.life, S.ring) ? 2 : 1)) * seconds);

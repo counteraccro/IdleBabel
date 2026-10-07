@@ -3,7 +3,7 @@ import { recordOnce } from '../core/history';
 import { gainPages, pagesPerSecond } from './production';
 import { clickShare } from './technologies';
 import { PAGES_PER_LEAF } from './books';
-import { handsMultiplier } from './prestige';
+import { handsMultiplier } from './etherium';
 
 /** Une feuille tournée à la main : ses deux pages lues. */
 export const PAGES_PER_CLICK = PAGES_PER_LEAF;

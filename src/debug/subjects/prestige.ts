@@ -1,8 +1,11 @@
-import { ETHERIUM_TREES } from '../../data/etherium';
-import { etherDeserved, nextEtherPages, nodesOf, prestige, prestigeGain } from '../../systems/prestige';
+import { ETHERIUM_PAGES, STARS, type PageId } from '../../data/etheriumStars';
+import { etherDeserved, nextEtherPages, prestige, prestigeGain } from '../../systems/prestige';
+import { starLit } from '../../systems/etherium';
 import { format, type DebugSubject } from './subject';
 
-/** Le prestige (conception §4) : l'Éther, ce qu'il rapporterait, et les arbres de l'Etherium. */
+const starsOf = (page: PageId) => STARS.filter((star) => star.page === page);
+
+/** Le prestige (conception §4) : l'Éther, ce qu'il rapporterait, et les étoiles de l'Etherium. */
 export const PRESTIGE_SUBJECTS: DebugSubject[] = [
   {
     id: 'prestige',
@@ -55,20 +58,25 @@ export const PRESTIGE_SUBJECTS: DebugSubject[] = [
     id: 'etherium',
     chapter: 'prestige',
     name: 'L’Etherium',
-    description: 'Les nœuds pris dans chaque arbre.',
-    peek: (state) => `${ETHERIUM_TREES.reduce((sum, tree) => sum + nodesOf(state, tree.id), 0)} nœuds`,
+    description: 'Les étoiles allumées sur chaque page (dans l’ordre des données, chacune après son étoile d’avant).',
+    peek: (state) => `${state.etherium.length} étoiles`,
     build: (kit, state) => {
-      for (const tree of ETHERIUM_TREES)
+      for (const page of ETHERIUM_PAGES)
         kit.number(
-          tree.id,
-          () => nodesOf(state, tree.id),
-          (v) => (state.etherium[tree.id] = Math.max(0, Math.min(tree.costs.length, Math.round(v)))),
-          { steps: true, max: tree.costs.length },
+          page,
+          () => starsOf(page).filter((star) => starLit(state, star.id)).length,
+          (v) => {
+            const lit = starsOf(page)
+              .slice(0, Math.max(0, Math.round(v)))
+              .map((star) => star.id);
+            state.etherium = [...state.etherium.filter((id) => !id.startsWith(`${page}.`)), ...lit];
+          },
+          { steps: true, max: starsOf(page).length },
         );
       kit.actions([
-        'Tout effacer',
-        () => (state.etherium = {}),
-        { danger: true, title: 'Aucun nœud pris (l’Éther dépensé n’est pas rendu).' },
+        'Tout éteindre',
+        () => (state.etherium = []),
+        { danger: true, title: 'Aucune étoile allumée (l’Éther dépensé n’est pas rendu).' },
       ]);
     },
   },

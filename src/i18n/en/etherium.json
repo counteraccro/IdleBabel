@@ -17,23 +17,394 @@
     ],
     "button": "Read"
   },
-  "cover": { "title": "ETHERIUM", "next": "next Ether: {n}", "reserve": "Ether in reserve" },
+  "cover": {
+    "title": "ETHERIUM",
+    "next": "next Ether: {n}",
+    "reserve": "Ether in reserve"
+  },
   "ether": "Ether to spend",
   "next": "Next Ether: in {n} pages",
   "contents": "Contents",
-  "take": "Take · {n} Ether",
-  "cost": "{n} Ether",
-  "taken": "acquired",
-  "trees": {
-    "reading": { "name": "Reading", "description": "My methods read faster.", "effect": "×{v} pages per second" },
-    "hands": { "name": "Hands", "description": "My fingers remember.", "effect": "×{v} pages per click" },
-    "knowledge": { "name": "Knowledge", "description": "Every find teaches me more.", "effect": "×{v} Knowledge per find" },
-    "finds": { "name": "Finds", "description": "Sentences leap out at me.", "effect": "find chance ×{v}" },
-    "start": {
-      "name": "Head start",
-      "description": "When I wake, I already know how to skim.",
-      "effect": "{v} Diagonal Readings on waking"
+  "pages": {
+    "reading": {
+      "name": "Reading",
+      "figure": "The Open Book",
+      "description": "My methods read faster."
     },
-    "memory": { "name": "Memory of methods", "description": "These sentences, the book no longer devours.", "effect": "{method}" }
-  }
+    "hands": {
+      "name": "Hands",
+      "figure": "The Hand",
+      "description": "My fingers remember."
+    },
+    "knowledge": {
+      "name": "Knowledge",
+      "figure": "The Owl",
+      "description": "Every find teaches me more."
+    },
+    "finds": {
+      "name": "Finds",
+      "figure": "The Magnifying Glass",
+      "description": "Sentences leap out at me."
+    },
+    "away": {
+      "name": "Absence",
+      "figure": "The Moon",
+      "description": "Even far from here, I keep reading."
+    },
+    "start": {
+      "name": "Departure",
+      "figure": "The Door",
+      "description": "When I wake, I already know how to skim."
+    },
+    "memory": {
+      "name": "Memory of Methods",
+      "figure": "The Hive",
+      "description": "These sentences, the book no longer devours."
+    },
+    "ages": {
+      "name": "The Ages",
+      "figure": "The Staircase",
+      "description": "Every step takes me further."
+    }
+  },
+  "stars": {
+    "reading": {
+      "s0": {
+        "name": "Foot of the spine",
+        "value": "×1.1",
+        "effect": "pages per second"
+      },
+      "s1": {
+        "name": "Head of the spine",
+        "value": "×1.25",
+        "effect": "pages per second"
+      },
+      "l1": {
+        "name": "Top of the left page",
+        "value": "×1.25",
+        "effect": "pages per second"
+      },
+      "l2": {
+        "name": "Upper left corner",
+        "value": "×1.5",
+        "effect": "pages per second"
+      },
+      "l3": {
+        "name": "Lower left corner",
+        "value": "×2",
+        "effect": "pages per second"
+      },
+      "r1": {
+        "name": "Top of the right page",
+        "value": "+2",
+        "effect": "leaves turned per second"
+      },
+      "r2": {
+        "name": "Upper right corner",
+        "value": "+4",
+        "effect": "leaves turned per second"
+      },
+      "r3": {
+        "name": "Lower right corner",
+        "value": "+6",
+        "effect": "leaves turned per second"
+      }
+    },
+    "hands": {
+      "w": {
+        "name": "Wrist",
+        "value": "×2",
+        "effect": "pages per click"
+      },
+      "p": {
+        "name": "Palm",
+        "value": "×2",
+        "effect": "pages per click"
+      },
+      "t": {
+        "name": "Thumb",
+        "value": "+1%",
+        "effect": "of one second's production per click"
+      },
+      "i": {
+        "name": "Index finger",
+        "value": "×2",
+        "effect": "pages per click"
+      },
+      "i2": {
+        "name": "Tip of the index",
+        "value": "×3",
+        "effect": "pages per click"
+      },
+      "m": {
+        "name": "Middle finger",
+        "value": "+2%",
+        "effect": "of production per click"
+      },
+      "m2": {
+        "name": "Tip of the middle finger",
+        "value": "+5%",
+        "effect": "of production per click"
+      },
+      "a": {
+        "name": "Ring finger",
+        "value": "×2",
+        "effect": "find chance, page turned by hand"
+      },
+      "o": {
+        "name": "Little finger",
+        "value": "−50%",
+        "effect": "Muscle Memory price"
+      }
+    },
+    "knowledge": {
+      "f": {
+        "name": "Talons",
+        "value": "×1.5",
+        "effect": "Knowledge per find"
+      },
+      "b": {
+        "name": "Body",
+        "value": "×1.5",
+        "effect": "Knowledge per find"
+      },
+      "wl": {
+        "name": "Left wing",
+        "value": "−10%",
+        "effect": "intuition prices"
+      },
+      "el": {
+        "name": "Left eye",
+        "value": "−15%",
+        "effect": "intuition prices (−25% in all)"
+      },
+      "al": {
+        "name": "Left tuft",
+        "value": "The 1st level",
+        "effect": "of each intuition stays through prestige"
+      },
+      "wr": {
+        "name": "Right wing",
+        "value": "×2",
+        "effect": "Knowledge per find"
+      },
+      "er": {
+        "name": "Right eye",
+        "value": "×2",
+        "effect": "Knowledge per find"
+      },
+      "ar": {
+        "name": "Right tuft",
+        "value": "×3",
+        "effect": "Knowledge per find"
+      },
+      "k": {
+        "name": "Beak",
+        "value": "Guess",
+        "effect": "a sentence once only two pieces are missing"
+      }
+    },
+    "finds": {
+      "h0": {
+        "name": "Foot of the handle",
+        "value": "×1.05",
+        "effect": "find chance"
+      },
+      "h1": {
+        "name": "Top of the handle",
+        "value": "×1.1",
+        "effect": "find chance"
+      },
+      "g0": {
+        "name": "Bottom of the lens",
+        "value": "×1.15",
+        "effect": "find chance"
+      },
+      "g1": {
+        "name": "Left of the lens",
+        "value": "×1.2",
+        "effect": "rare book chance"
+      },
+      "g2": {
+        "name": "Left of the lens, higher",
+        "value": "×1.5",
+        "effect": "rare book chance"
+      },
+      "g3": {
+        "name": "Top of the lens",
+        "value": "×2",
+        "effect": "rare book chance"
+      },
+      "r1": {
+        "name": "Right of the lens",
+        "value": "+10%",
+        "effect": "finds in the current method sentence"
+      },
+      "r2": {
+        "name": "Right of the lens, higher",
+        "value": "−10%",
+        "effect": "duplicate pieces"
+      },
+      "r3": {
+        "name": "Right of the lens, at the top",
+        "value": "×1.25",
+        "effect": "find chance"
+      },
+      "c": {
+        "name": "Glint",
+        "value": "One level",
+        "effect": "of Semantic Filter given at each awakening"
+      }
+    },
+    "away": {
+      "d0": {
+        "name": "Lower tip",
+        "value": "+5%",
+        "effect": "of reading counted while away"
+      },
+      "d1": {
+        "name": "Back 1",
+        "value": "+1 h",
+        "effect": "of absence counted"
+      },
+      "d2": {
+        "name": "Back 2",
+        "value": "+3 h",
+        "effect": "of absence counted"
+      },
+      "d3": {
+        "name": "Back 3",
+        "value": "+12 h",
+        "effect": "of absence counted (24 h in all)"
+      },
+      "c1": {
+        "name": "Hollow 1",
+        "value": "+10%",
+        "effect": "of reading counted while away"
+      },
+      "c2": {
+        "name": "Hollow 2",
+        "value": "+15%",
+        "effect": "of reading counted (80% in all)"
+      },
+      "tip": {
+        "name": "Upper tip",
+        "value": "In full",
+        "effect": "the finds made while away"
+      },
+      "x": {
+        "name": "Star by the moon",
+        "value": "×2",
+        "effect": "leaves counted for finds while away"
+      }
+    },
+    "start": {
+      "sill": {
+        "name": "Threshold",
+        "value": "5",
+        "effect": "Diagonal Readings on waking"
+      },
+      "l1": {
+        "name": "Left jamb, bottom",
+        "value": "+5",
+        "effect": "Diagonal Readings on waking (10 in all)"
+      },
+      "l2": {
+        "name": "Left jamb, middle",
+        "value": "+5",
+        "effect": "Diagonal Readings on waking (15 in all)"
+      },
+      "l3": {
+        "name": "Left jamb, top",
+        "value": "10",
+        "effect": "Finger Readings on waking"
+      },
+      "top": {
+        "name": "Arch",
+        "value": "1%",
+        "effect": "of the copies of each method from the previous run"
+      },
+      "r1": {
+        "name": "Right jamb, bottom",
+        "value": "0.1%",
+        "effect": "of the pages read in the previous run, on waking"
+      },
+      "r2": {
+        "name": "Right jamb, middle",
+        "value": "1%",
+        "effect": "of the pages read in the previous run, on waking"
+      },
+      "r3": {
+        "name": "Right jamb, top",
+        "value": "10%",
+        "effect": "of the Knowledge from the previous run, on waking"
+      },
+      "k": {
+        "name": "Handle",
+        "value": "×10",
+        "effect": "chance that the first book after waking is rare"
+      }
+    },
+    "memory": {
+      "m0": {
+        "name": "The Dog-Eared Page",
+        "effect": "secret method: its blurry memory, then its sentence stays"
+      },
+      "a0": {
+        "name": "The Drop",
+        "effect": "secret method: its blurry memory, then its sentence stays"
+      },
+      "a1": {
+        "name": "Counterweight Page-Turner",
+        "effect": "its sentence stays through prestige"
+      },
+      "a2": {
+        "name": "Book Wheel",
+        "effect": "its sentence stays through prestige"
+      },
+      "a3": {
+        "name": "Gallery Cart",
+        "effect": "its sentence stays through prestige"
+      },
+      "a4": {
+        "name": "Reading Automaton",
+        "effect": "its sentence stays through prestige"
+      },
+      "a5": {
+        "name": "The Reading Gallery",
+        "effect": "its sentence stays through prestige"
+      }
+    },
+    "ages": {
+      "auto": {
+        "name": "Automatic",
+        "value": "The Automatic Age",
+        "effect": "its methods, and one more cell in the Hive"
+      },
+      "quantum": {
+        "name": "Quantum",
+        "value": "The Quantum Age",
+        "effect": ""
+      },
+      "dim": {
+        "name": "Dimensional",
+        "value": "The Dimensional Age",
+        "effect": ""
+      },
+      "inf": {
+        "name": "Infinite",
+        "value": "The Infinite Age",
+        "effect": ""
+      }
+    }
+  },
+  "keep": "its sentence stays through prestige",
+  "manual": {
+    "name": "Manual",
+    "value": "The Manual Age",
+    "effect": "where it all begins"
+  },
+  "lit": "lit",
+  "light": "Light · {n} Ether",
+  "cost": "{n} Ether"
 }

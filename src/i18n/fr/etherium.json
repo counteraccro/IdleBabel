@@ -17,27 +17,394 @@
     ],
     "button": "Lire"
   },
-  "cover": { "title": "ETHERIUM", "next": "prochain Éther : {n}", "reserve": "Éther en réserve" },
+  "cover": {
+    "title": "ETHERIUM",
+    "next": "prochain Éther : {n}",
+    "reserve": "Éther en réserve"
+  },
   "ether": "Éther à dépenser",
   "next": "Prochain Éther : dans {n} pages",
   "contents": "Sommaire",
-  "take": "Prendre · {n} Éther",
-  "cost": "{n} Éther",
-  "taken": "acquis",
-  "trees": {
-    "reading": { "name": "Lecture", "description": "Mes méthodes lisent plus vite.", "effect": "×{v} pages par seconde" },
-    "hands": { "name": "Mains", "description": "Mes doigts se souviennent.", "effect": "×{v} pages par clic" },
+  "pages": {
+    "reading": {
+      "name": "Lecture",
+      "figure": "Le Livre ouvert",
+      "description": "Mes méthodes lisent plus vite."
+    },
+    "hands": {
+      "name": "Mains",
+      "figure": "La Main",
+      "description": "Mes doigts se souviennent."
+    },
     "knowledge": {
       "name": "Connaissance",
-      "description": "Chaque trouvaille m'en apprend davantage.",
-      "effect": "×{v} Connaissance par trouvaille"
+      "figure": "La Chouette",
+      "description": "Chaque trouvaille m'en apprend davantage."
     },
-    "finds": { "name": "Trouvailles", "description": "Les phrases me sautent aux yeux.", "effect": "chance de trouvaille ×{v}" },
+    "finds": {
+      "name": "Trouvailles",
+      "figure": "La Loupe",
+      "description": "Les phrases me sautent aux yeux."
+    },
+    "away": {
+      "name": "Absence",
+      "figure": "La Lune",
+      "description": "Même loin d'ici, je lis encore."
+    },
     "start": {
       "name": "Départ",
-      "description": "Au réveil, je sais déjà lire en diagonale.",
-      "effect": "{v} Lectures Diagonales au réveil"
+      "figure": "La Porte",
+      "description": "Au réveil, je sais déjà lire en diagonale."
     },
-    "memory": { "name": "Mémoire des méthodes", "description": "Ces phrases-là, le livre ne les dévore plus.", "effect": "{method}" }
-  }
+    "memory": {
+      "name": "Mémoire des méthodes",
+      "figure": "La Ruche",
+      "description": "Ces phrases-là, le livre ne les dévore plus."
+    },
+    "ages": {
+      "name": "Les Âges",
+      "figure": "L'Escalier",
+      "description": "Chaque marche m'emmène plus loin."
+    }
+  },
+  "stars": {
+    "reading": {
+      "s0": {
+        "name": "Bas du dos",
+        "value": "×1,1",
+        "effect": "pages par seconde"
+      },
+      "s1": {
+        "name": "Haut du dos",
+        "value": "×1,25",
+        "effect": "pages par seconde"
+      },
+      "l1": {
+        "name": "Haut de la page de gauche",
+        "value": "×1,25",
+        "effect": "pages par seconde"
+      },
+      "l2": {
+        "name": "Coin du haut, à gauche",
+        "value": "×1,5",
+        "effect": "pages par seconde"
+      },
+      "l3": {
+        "name": "Coin du bas, à gauche",
+        "value": "×2",
+        "effect": "pages par seconde"
+      },
+      "r1": {
+        "name": "Haut de la page de droite",
+        "value": "+2",
+        "effect": "feuilles tournées par seconde"
+      },
+      "r2": {
+        "name": "Coin du haut, à droite",
+        "value": "+4",
+        "effect": "feuilles tournées par seconde"
+      },
+      "r3": {
+        "name": "Coin du bas, à droite",
+        "value": "+6",
+        "effect": "feuilles tournées par seconde"
+      }
+    },
+    "hands": {
+      "w": {
+        "name": "Poignet",
+        "value": "×2",
+        "effect": "pages par clic"
+      },
+      "p": {
+        "name": "Paume",
+        "value": "×2",
+        "effect": "pages par clic"
+      },
+      "t": {
+        "name": "Pouce",
+        "value": "+1 %",
+        "effect": "de la production d'une seconde par clic"
+      },
+      "i": {
+        "name": "Index",
+        "value": "×2",
+        "effect": "pages par clic"
+      },
+      "i2": {
+        "name": "Bout de l'index",
+        "value": "×3",
+        "effect": "pages par clic"
+      },
+      "m": {
+        "name": "Majeur",
+        "value": "+2 %",
+        "effect": "de la production par clic"
+      },
+      "m2": {
+        "name": "Bout du majeur",
+        "value": "+5 %",
+        "effect": "de la production par clic"
+      },
+      "a": {
+        "name": "Annulaire",
+        "value": "×2",
+        "effect": "chance de trouvaille, page tournée à la main"
+      },
+      "o": {
+        "name": "Auriculaire",
+        "value": "−50 %",
+        "effect": "prix de la Mémoire musculaire"
+      }
+    },
+    "knowledge": {
+      "f": {
+        "name": "Pattes",
+        "value": "×1,5",
+        "effect": "Connaissance par trouvaille"
+      },
+      "b": {
+        "name": "Corps",
+        "value": "×1,5",
+        "effect": "Connaissance par trouvaille"
+      },
+      "wl": {
+        "name": "Aile gauche",
+        "value": "−10 %",
+        "effect": "prix des intuitions"
+      },
+      "el": {
+        "name": "Œil gauche",
+        "value": "−15 %",
+        "effect": "prix des intuitions (−25 % en tout)"
+      },
+      "al": {
+        "name": "Aigrette gauche",
+        "value": "Le 1er niveau",
+        "effect": "de chaque intuition reste au prestige"
+      },
+      "wr": {
+        "name": "Aile droite",
+        "value": "×2",
+        "effect": "Connaissance par trouvaille"
+      },
+      "er": {
+        "name": "Œil droit",
+        "value": "×2",
+        "effect": "Connaissance par trouvaille"
+      },
+      "ar": {
+        "name": "Aigrette droite",
+        "value": "×3",
+        "effect": "Connaissance par trouvaille"
+      },
+      "k": {
+        "name": "Bec",
+        "value": "Deviner",
+        "effect": "une phrase dès qu'il lui manque deux morceaux"
+      }
+    },
+    "finds": {
+      "h0": {
+        "name": "Bas du manche",
+        "value": "×1,05",
+        "effect": "chance de trouvaille"
+      },
+      "h1": {
+        "name": "Haut du manche",
+        "value": "×1,1",
+        "effect": "chance de trouvaille"
+      },
+      "g0": {
+        "name": "Bas du verre",
+        "value": "×1,15",
+        "effect": "chance de trouvaille"
+      },
+      "g1": {
+        "name": "Gauche du verre",
+        "value": "×1,2",
+        "effect": "chance de livre rare"
+      },
+      "g2": {
+        "name": "Gauche du verre, plus haut",
+        "value": "×1,5",
+        "effect": "chance de livre rare"
+      },
+      "g3": {
+        "name": "Haut du verre",
+        "value": "×2",
+        "effect": "chance de livre rare"
+      },
+      "r1": {
+        "name": "Droite du verre",
+        "value": "+10 %",
+        "effect": "de trouvailles dans la phrase de méthode en cours"
+      },
+      "r2": {
+        "name": "Droite du verre, plus haut",
+        "value": "−10 %",
+        "effect": "de morceaux en double"
+      },
+      "r3": {
+        "name": "Droite du verre, en haut",
+        "value": "×1,25",
+        "effect": "chance de trouvaille"
+      },
+      "c": {
+        "name": "Reflet",
+        "value": "Un niveau",
+        "effect": "de Filtre sémantique offert à chaque réveil"
+      }
+    },
+    "away": {
+      "d0": {
+        "name": "Pointe basse",
+        "value": "+5 %",
+        "effect": "de lecture comptée pendant l'absence"
+      },
+      "d1": {
+        "name": "Dos 1",
+        "value": "+1 h",
+        "effect": "d'absence comptée"
+      },
+      "d2": {
+        "name": "Dos 2",
+        "value": "+3 h",
+        "effect": "d'absence comptée"
+      },
+      "d3": {
+        "name": "Dos 3",
+        "value": "+12 h",
+        "effect": "d'absence comptée (24 h en tout)"
+      },
+      "c1": {
+        "name": "Creux 1",
+        "value": "+10 %",
+        "effect": "de lecture comptée pendant l'absence"
+      },
+      "c2": {
+        "name": "Creux 2",
+        "value": "+15 %",
+        "effect": "de lecture comptée (80 % en tout)"
+      },
+      "tip": {
+        "name": "Pointe haute",
+        "value": "En entier",
+        "effect": "les trouvailles de l'absence"
+      },
+      "x": {
+        "name": "Étoile près de la lune",
+        "value": "×2",
+        "effect": "feuilles comptées pour les trouvailles pendant l'absence"
+      }
+    },
+    "start": {
+      "sill": {
+        "name": "Seuil",
+        "value": "5",
+        "effect": "Lectures Diagonales au réveil"
+      },
+      "l1": {
+        "name": "Montant gauche, en bas",
+        "value": "+5",
+        "effect": "Lectures Diagonales au réveil (10 en tout)"
+      },
+      "l2": {
+        "name": "Montant gauche, au milieu",
+        "value": "+5",
+        "effect": "Lectures Diagonales au réveil (15 en tout)"
+      },
+      "l3": {
+        "name": "Montant gauche, en haut",
+        "value": "10",
+        "effect": "Lectures au Doigt au réveil"
+      },
+      "top": {
+        "name": "Arche",
+        "value": "1 %",
+        "effect": "des exemplaires de chaque méthode de la partie d'avant"
+      },
+      "r1": {
+        "name": "Montant droit, en bas",
+        "value": "0,1 %",
+        "effect": "des pages lues dans la partie d'avant, au réveil"
+      },
+      "r2": {
+        "name": "Montant droit, au milieu",
+        "value": "1 %",
+        "effect": "des pages lues dans la partie d'avant, au réveil"
+      },
+      "r3": {
+        "name": "Montant droit, en haut",
+        "value": "10 %",
+        "effect": "de la Connaissance de la partie d'avant, au réveil"
+      },
+      "k": {
+        "name": "Poignée",
+        "value": "×10",
+        "effect": "chance que le 1er livre du réveil soit rare"
+      }
+    },
+    "memory": {
+      "m0": {
+        "name": "La Page Cornée",
+        "effect": "méthode secrète : son souvenir flou, puis sa phrase reste"
+      },
+      "a0": {
+        "name": "La Goutte",
+        "effect": "méthode secrète : son souvenir flou, puis sa phrase reste"
+      },
+      "a1": {
+        "name": "Tourne-Page à Contrepoids",
+        "effect": "sa phrase reste au prestige"
+      },
+      "a2": {
+        "name": "Roue à Livres",
+        "effect": "sa phrase reste au prestige"
+      },
+      "a3": {
+        "name": "Chariot de Galerie",
+        "effect": "sa phrase reste au prestige"
+      },
+      "a4": {
+        "name": "Automate Lecteur",
+        "effect": "sa phrase reste au prestige"
+      },
+      "a5": {
+        "name": "Galerie qui Lit",
+        "effect": "sa phrase reste au prestige"
+      }
+    },
+    "ages": {
+      "auto": {
+        "name": "Automatique",
+        "value": "L'Âge Automatique",
+        "effect": "ses méthodes, et une alvéole de plus dans la Ruche"
+      },
+      "quantum": {
+        "name": "Quantique",
+        "value": "L'Âge Quantique",
+        "effect": ""
+      },
+      "dim": {
+        "name": "Dimensionnel",
+        "value": "L'Âge Dimensionnel",
+        "effect": ""
+      },
+      "inf": {
+        "name": "Infini",
+        "value": "L'Âge Infini",
+        "effect": ""
+      }
+    }
+  },
+  "keep": "sa phrase reste au prestige",
+  "manual": {
+    "name": "Manuel",
+    "value": "L'Âge Manuel",
+    "effect": "là où tout commence"
+  },
+  "lit": "allumée",
+  "light": "Allumer · {n} Éther",
+  "cost": "{n} Éther"
 }

@@ -1,9 +1,10 @@
-import { ETHER_PAGES, ETHERIUM_TREES, type EtheriumTreeId } from '../data/etherium';
+import { ETHER_PAGES } from '../data/etherium';
 import { SENTENCES } from '../data/sentences';
 import { TOOLS } from '../data/tools';
 import { recordOnce } from '../core/history';
 import { forgetIntuitions } from './reminiscence';
 import { forgetPagesRest } from './production';
+import { keptMethodSentences, startingDiagonals } from './etherium';
 import type { GameState } from '../core/state';
 
 /**
@@ -29,50 +30,10 @@ export const nextEtherProgress = (state: GameState): number => {
   return Math.min(1, Math.max(0, (state.totalPagesRead - from) / (nextEtherPages(state) - from)));
 };
 
-const tree = (id: EtheriumTreeId) => ETHERIUM_TREES.find((candidate) => candidate.id === id)!;
-
-/** Nœuds pris dans un arbre. */
-export const nodesOf = (state: GameState, id: EtheriumTreeId): number => state.etherium[id] ?? 0;
-
-/** Prix du nœud suivant d'un arbre, s'il en reste. */
-export const nextNodeCost = (state: GameState, id: EtheriumTreeId): number | undefined => tree(id).costs[nodesOf(state, id)];
-
-/** Ce que donne un arbre une fois `nodes` nœuds pris (les siens par défaut) ; `none` sans aucun. */
-export const treeValue = (state: GameState, id: EtheriumTreeId, none: number, nodes = nodesOf(state, id)): number =>
-  nodes === 0 ? none : tree(id).values[Math.min(nodes, tree(id).values.length) - 1];
-
-/** Prend le nœud suivant d'un arbre, s'il y a assez d'Éther. Renvoie true s'il est pris. */
-export const takeNode = (state: GameState, id: EtheriumTreeId): boolean => {
-  const cost = nextNodeCost(state, id);
-  if (cost === undefined || state.ether < cost) return false;
-  state.ether -= cost;
-  state.etherium[id] = nodesOf(state, id) + 1;
-  return true;
-};
-
-// Ce que fait chaque arbre.
-
-/** Lecture : les pages/s de toutes les méthodes. */
-export const readingMultiplier = (state: GameState): number => treeValue(state, 'reading', 1);
-/** Mains : les pages d'un clic. */
-export const handsMultiplier = (state: GameState): number => treeValue(state, 'hands', 1);
-/** Connaissance : ce que rapporte une trouvaille. */
-export const knowledgePerFind = (state: GameState): number => treeValue(state, 'knowledge', 1);
-/** Trouvailles : la chance de trouvaille. */
-export const findsMultiplier = (state: GameState): number => treeValue(state, 'finds', 1);
-/** Départ : Lectures Diagonales déjà là au réveil. */
-export const startingDiagonals = (state: GameState): number => treeValue(state, 'start', 0);
-
-/** Mémoire des méthodes : les phrases de méthode que le prestige laisse écrites (les premières de l'Âge Manuel). */
-export const keptMethodSentences = (state: GameState): string[] =>
-  SENTENCES.filter((sentence) => sentence.kind === 'method')
-    .slice(0, treeValue(state, 'memory', 0))
-    .map((sentence) => sentence.id);
-
 /**
  * Le prestige : l'Éther mérité est reçu, et tout ce que le chercheur avait en main est perdu (pages, méthodes,
  * Connaissance, intuitions, phrases des méthodes que la Mémoire ne garde pas). Restent les pages à vie, les sceaux,
- * les livres rares, le reste du livre blanc, l'Éther et l'Etherium. Il se réveille l'Etherium en main.
+ * les livres rares, le reste du livre blanc, l'Éther et les étoiles de l'Etherium. Il se réveille l'Etherium en main.
  * Renvoie l'Éther reçu (rien si le prestige ne rapporte pas encore).
  */
 export const prestige = (state: GameState, now = Date.now()): number => {

@@ -8,9 +8,8 @@ import {
   prestige,
   prestigeGain,
   prestigeReady,
-  readingMultiplier,
-  takeNode,
 } from '../src/systems/prestige';
+import { lightStar, readingMultiplier, starOpen } from '../src/systems/etherium';
 import { segments, toolUnlocked, write } from '../src/systems/sentences';
 import { toolRate } from '../src/systems/production';
 import { rollFinds } from '../src/systems/knowledge';
@@ -97,24 +96,41 @@ describe('Prestige', () => {
     expect(find).toEqual({ kind: 'sentence', sentence: 'diagonal' });
   });
 
-  it('un nœud se prend avec de l’Éther, dans l’ordre, et agit pour toujours', () => {
+  it('une étoile s’allume avec de l’Éther, après son étoile d’avant, et agit pour toujours', () => {
     const state = reader(27e9);
     prestige(state);
     const before = toolRate(state, 'diagonal');
-    expect(takeNode(state, 'reading')).toBe(true);
+    expect(lightStar(state, 'reading.s1')).toBe(false);
+    expect(lightStar(state, 'reading.s0')).toBe(true);
     expect(readingMultiplier(state)).toBe(1.1);
     expect(toolRate(state, 'diagonal')).toBeCloseTo(before * 1.1);
-    expect(takeNode(state, 'reading')).toBe(false);
+    expect(lightStar(state, 'reading.s0')).toBe(false);
+    expect(starOpen(state, 'reading.s1')).toBe(true);
+    expect(lightStar(state, 'reading.s1')).toBe(false);
     expect(state.ether).toBe(2);
-    expect(takeNode(state, 'memory')).toBe(true);
-    expect(state.ether).toBe(0);
+    expect(lightStar(state, 'hands.w')).toBe(true);
+    expect(state.ether).toBe(1);
   });
 
-  it('le Départ et la Mémoire des méthodes', () => {
+  it('les effets des étoiles allumées se multiplient', () => {
     const state = reader(1e9);
-    state.etherium = { start: 1, memory: 2 };
+    state.etherium = ['reading.s0', 'reading.s1', 'reading.l1'];
+    expect(readingMultiplier(state)).toBeCloseTo(1.1 * 1.25 * 1.25);
+  });
+
+  it('l’alvéole Automatique de la Ruche attend l’Âge Automatique', () => {
+    const state = reader(1e9);
+    state.etherium = ['memory.m0', 'memory.m1', 'memory.m2', 'memory.m3', 'memory.m4', 'memory.m5'];
+    expect(starOpen(state, 'memory.a0')).toBe(false);
+    state.etherium.push('ages.auto');
+    expect(starOpen(state, 'memory.a0')).toBe(true);
+  });
+
+  it('la Porte et la Ruche', () => {
+    const state = reader(1e9);
+    state.etherium = ['start.sill', 'start.l1', 'memory.m0', 'memory.m1', 'memory.m2'];
     prestige(state);
-    expect(state.tools.diagonal).toBe(5);
+    expect(state.tools.diagonal).toBe(10);
     expect(toolUnlocked(state, 'diagonal')).toBe(true);
     expect(toolUnlocked(state, 'finger')).toBe(true);
     expect(toolUnlocked(state, 'voice')).toBe(false);

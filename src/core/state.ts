@@ -5,7 +5,6 @@ import type { HistoryEntry } from './history';
 import type { Locale } from '../i18n';
 import type { Find } from '../data/knowledge';
 import type { PartId } from '../data/decipher';
-import type { EtheriumTreeId } from '../data/etherium';
 import { newGameSeed } from './random';
 
 export const SAVE_VERSION = 1;
@@ -126,8 +125,8 @@ export interface GameState {
   ether: number;
   /** Éther reçu depuis toujours : le prochain prestige rapporte ce que méritent les pages à vie, moins ceci. */
   etherReceived: number;
-  /** Nœuds pris dans chaque arbre de l'Etherium, pour toujours. */
-  etherium: Partial<Record<EtheriumTreeId, number>>;
+  /** Étoiles allumées dans l'Etherium (data/etheriumStars.ts), pour toujours : « page.étoile ». */
+  etherium: string[];
   /** Au réveil d'un prestige, l'Etherium est en main ; refermé, il disparaît (jusqu'au prochain). */
   etheriumInHand: boolean;
   lastTick: number;
@@ -174,7 +173,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   exiles: 0,
   ether: 0,
   etherReceived: 0,
-  etherium: {},
+  etherium: [],
   etheriumInHand: false,
   lastTick: now,
   seed,

@@ -1,5 +1,5 @@
 import { TECHNOLOGIES } from '../src/data/technologies';
-import { EFFECT, S } from './etoiles';
+import { EFFECT, S } from '../src/data/etheriumStars';
 import type { Run } from './partie';
 import { lit, product } from './vie';
 

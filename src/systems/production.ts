@@ -1,6 +1,6 @@
 import { TOOLS, type ToolId } from '../data/tools';
 import { gestureMultiplier } from './technologies';
-import { readingMultiplier } from './prestige';
+import { readingMultiplier } from './etherium';
 import type { GameState } from '../core/state';
 
 /** Débogage : production imposée à la main, à la place de celle des méthodes (pas dans la sauvegarde). */

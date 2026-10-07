@@ -1,6 +1,6 @@
 import { TOOLS } from '../src/data/tools';
 import { AUTOMATIC, SECRET_MANUAL } from './config';
-import { KEEPS, S } from './etoiles';
+import { KEEPS, S } from '../src/data/etheriumStars';
 import { lit, type Life } from './vie';
 
 /** Une méthode pour le simulateur : celles du jeu (src/data/tools.ts), puis celles proposées (config.ts). */
