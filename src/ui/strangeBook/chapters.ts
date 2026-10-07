@@ -30,6 +30,8 @@ export interface Figure {
   shown?: (state: GameState) => boolean;
   /** Une ligne d'un relevé (nom … nombre), sur les pages qui suivent les grands chiffres : les méthodes. */
   row?: boolean;
+  /** L'Âge d'une ligne du relevé (aucun : l'Âge Manuel), pour son sous-titre. */
+  age?: string;
   /**
    * De quoi il est fait, en petit (les mots, une fois le chapitre déchiffré) : une ligne entre le chiffre et sa légende,
    * ou plusieurs, sous la légende, pour ce qui grandit sans fin (la vitesse de lecture).
@@ -181,6 +183,7 @@ export const CHAPTERS: readonly Chapter[] = [
         value: (s: GameState) => number(s.tools[tool.id]),
         shown: (s: GameState) => s.tools[tool.id] > 0,
         row: true,
+        age: tool.age,
       })),
       {
         id: 'pagesPerSecond',

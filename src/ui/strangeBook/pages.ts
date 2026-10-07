@@ -1,4 +1,7 @@
 import { el } from '../dom';
+import { AUTOMATIC_AGE } from '../../data/tools';
+import { starLit } from '../../systems/etherium';
+import { babelize, seedOf } from '../whiteBook/babelMask';
 import { isDeciphered } from '../../systems/decipher';
 import { coverDesign, shelfMarkText } from '../../systems/coverDesign';
 import { STRANGE_BOOK_INDEX } from '../../systems/strangeBook';
@@ -178,30 +181,67 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
 };
 
 /**
- * Le relevé d'un chapitre (les méthodes : nom … exemplaires), sur ses propres pages après ses grands chiffres,
- * ROWS_PER_PAGE lignes par page : il y aura des dizaines de méthodes.
+ * Le relevé d'un chapitre (les méthodes : nom … exemplaires), sur ses propres pages après ses grands chiffres : il y
+ * aura des dizaines de méthodes. L'Âge Automatique acheté, chaque Âge s'ouvre sur son sous-titre, comme dans le livre
+ * blanc ; avant, rien ne le laisse deviner.
  */
 const ROW_TOP = 180;
 const ROW_STEP = 36;
-const ROWS_PER_PAGE = 14;
+const ROW_BOTTOM = 690;
+/** Un sous-titre d'Âge : de l'air au-dessus, sa ligne, et un peu d'air avant la première méthode. */
+const AGE_STEP = 60;
 
-const shownRows = (state: GameState, chapter: Chapter): Chapter['figures'] =>
-  chapter.figures.filter((figure) => figure.row && figureShown(state, figure));
+type Slot = { kind: 'age'; key: string } | { kind: 'row'; figure: Chapter['figures'][number] };
 
-const rowsItems = (state: GameState, chapter: Chapter, part: number, number: number): Item[] => [
-  ...heading(chapterTitle(state, chapter)),
-  ...shownRows(state, chapter)
-    .slice(part * ROWS_PER_PAGE, (part + 1) * ROWS_PER_PAGE)
-    .flatMap((figure, index): Item[] => {
-      const y = ROW_TOP + index * ROW_STEP;
+/** Les lignes du relevé, page par page ; un sous-titre ne reste jamais seul en bas d'une page. */
+const rowPages = (state: GameState, chapter: Chapter): Slot[][] => {
+  const byAge = starLit(state, AUTOMATIC_AGE);
+  const slots: Slot[] = [];
+  let age: string | null = null;
+  for (const figure of chapter.figures.filter((candidate) => candidate.row && figureShown(state, candidate))) {
+    const key = figure.age === AUTOMATIC_AGE ? 'automaticAge' : 'manualAge';
+    if (byAge && key !== age) slots.push({ kind: 'age', key });
+    age = key;
+    slots.push({ kind: 'row', figure });
+  }
+  const pages: Slot[][] = [];
+  let y = ROW_BOTTOM;
+  for (const slot of slots) {
+    // Un sous-titre passe à la page suivante s'il n'a pas sa première méthode sous lui.
+    if (y + (slot.kind === 'age' ? AGE_STEP + ROW_STEP : ROW_STEP) > ROW_BOTTOM) {
+      pages.push([]);
+      y = ROW_TOP;
+    }
+    pages[pages.length - 1].push(slot);
+    y += slot.kind === 'age' ? AGE_STEP : ROW_STEP;
+  }
+  return pages;
+};
+
+const rowsItems = (state: GameState, chapter: Chapter, slots: Slot[], number: number): Item[] => {
+  const readable = isDeciphered(state, chapter.id);
+  let y = ROW_TOP;
+  return [
+    ...heading(chapterTitle(state, chapter)),
+    ...slots.flatMap((slot): Item[] => {
+      const top = y;
+      if (slot.kind === 'age') {
+        y += AGE_STEP;
+        const name = t(`whiteBook.parts.${slot.key}`);
+        const text = readable ? name : babelize(name, seedOf(slot.key));
+        return [{ kind: 'text', text, x: 320, y: top + 14, size: 22, align: 'center', italic: true, faded: true, spacing: 3 }];
+      }
+      y += ROW_STEP;
+      const { figure } = slot;
       return [
-        fitRow({ kind: 'text', text: figureCaption(state, chapter, figure), x: 110, y, size: 22, align: 'left', spacing: 2 }),
-        { kind: 'dots', x1: 380, x2: 460, y: y + 17 },
-        babelGold({ kind: 'text', text: figure.value(state), x: 530, y, size: 22, align: 'right' }),
+        fitRow({ kind: 'text', text: figureCaption(state, chapter, figure), x: 110, y: top, size: 22, align: 'left', spacing: 2 }),
+        { kind: 'dots', x1: 380, x2: 460, y: top + 17 },
+        babelGold({ kind: 'text', text: figure.value(state), x: 530, y: top, size: 22, align: 'right' }),
       ];
     }),
-  folio(number),
-];
+    folio(number),
+  ];
+};
 
 /** Le nom d'une ligne du relevé tient avant les points de conduite (« La Lecture Diagonale »). */
 const fitRow = (item: TextItem): TextItem => {
@@ -288,7 +328,8 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
   const chapters = CHAPTERS.filter((chapter) => chapterShown(state, chapter));
   const first = 2;
   // Chaque chapitre : sa page de grands chiffres, puis celles de son relevé.
-  const chapterPages = chapters.map((chapter) => 1 + Math.ceil(shownRows(state, chapter).length / ROWS_PER_PAGE));
+  const listPages = chapters.map((chapter) => rowPages(state, chapter));
+  const chapterPages = listPages.map((list) => 1 + list.length);
   const chapterStart = chapters.map((_, index) => first + chapterPages.slice(0, index).reduce((total, count) => total + count, 0));
   // Les sceaux commencent sur une page de gauche, face à leur première page de contenu : sinon, une page
   // blanche est laissée avant eux.
@@ -324,9 +365,7 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
       const start = chapterStart[index];
       return [
         createLeafPage(() => chapterItems(state, chapter, start + 1), goTo, { onShown: () => markPartRead(state, chapter.id) }),
-        ...Array.from({ length: chapterPages[index] - 1 }, (_, part) =>
-          createLeafPage(() => rowsItems(state, chapter, part, start + part + 2), goTo),
-        ),
+        ...listPages[index].map((slots, part) => createLeafPage(() => rowsItems(state, chapter, slots, start + part + 2), goTo)),
       ];
     }),
     ...(sealsPage > afterChapters ? [blankPage(afterChapters)] : []),
