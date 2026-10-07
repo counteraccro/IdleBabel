@@ -28,7 +28,7 @@ export interface Figure {
   value: (state: GameState) => string;
   /** Un chiffre n'apparaît qu'une fois qu'il existe vraiment. */
   shown?: (state: GameState) => boolean;
-  /** Une ligne d'un relevé (nom … nombre), en haut de la page, au lieu d'un grand chiffre : les méthodes. */
+  /** Une ligne d'un relevé (nom … nombre), sur les pages qui suivent les grands chiffres : les méthodes. */
   row?: boolean;
   /**
    * De quoi il est fait, en petit (les mots, une fois le chapitre déchiffré) : une ligne entre le chiffre et sa légende,

@@ -140,46 +140,59 @@ export const priceNote = (state: GameState, price: number, offer: string, short:
 /** Chiffre écrit en symboles de Babel (notation choisie dans les options) : doré, comme les titres. */
 const babelGold = (item: TextItem): TextItem => (currentNotation() === 'babel' && !/\d/.test(item.text) ? { ...item, gold: true } : item);
 
-/** Relevé des méthodes : une ligne chacune, sous le titre ; les grands chiffres viennent après. */
-const ROW_TOP = 180;
 /** Une ligne d'une décomposition sous la légende (la vitesse de lecture). */
 const DETAIL_LINE = 28;
-const ROW_STEP = 36;
 
+/** Les grands chiffres d'un chapitre, chacun sous le précédent ; une décomposition en plusieurs lignes repousse les suivants. */
 const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[] => {
-  const shown = chapter.figures.filter((figure) => figureShown(state, figure));
-  const rows = shown.filter((figure) => figure.row);
-  const figures = shown.filter((figure) => !figure.row);
-  // Sous le relevé, les grands chiffres plus petits et plus serrés : ils tiennent au-dessus du numéro de page.
-  const compact = rows.length > 0;
-  const top = compact ? ROW_TOP + rows.length * ROW_STEP + 40 : FIGURE_TOP;
+  const figures = chapter.figures.filter((figure) => !figure.row && figureShown(state, figure));
   const readable = isDeciphered(state, chapter.id);
-  // Les décompositions en plusieurs lignes, sous la légende : leur place s'ajoute à l'écart avec le chiffre suivant.
   const details = figures.map((figure) => figure.detail?.(state, readable));
   const lines = details.map((detail) => (Array.isArray(detail) ? detail : []));
-  const room = lines.reduce((total, list) => total + list.length * DETAIL_LINE, 0);
-  const step = compact ? Math.min(FIGURE_STEP, (690 - top - room) / Math.max(1, figures.length)) : FIGURE_STEP;
-  const size = compact ? 40 : 52;
-  const below = compact ? 50 : 64;
   const tops = figures.map(
-    (_, index) => top + index * step + lines.slice(0, index).reduce((total, list) => total + list.length * DETAIL_LINE, 0),
-  );
-  const captions = figures.map((figure, index): TextItem =>
-    fitCaption({
-      kind: 'text',
-      text: figureCaption(state, chapter, figure),
-      x: 320,
-      y: tops[index] + below,
-      size: compact ? 18 : 20,
-      align: 'center',
-      italic: true,
-      faded: true,
-      spacing: 3,
-    }),
+    (_, index) => FIGURE_TOP + index * FIGURE_STEP + lines.slice(0, index).reduce((total, list) => total + list.length * DETAIL_LINE, 0),
   );
   return [
     ...heading(chapterTitle(state, chapter), CHAPTERS.indexOf(chapter) + 1),
-    ...rows.flatMap((figure, index): Item[] => {
+    ...figures.flatMap((figure, index): Item[] => {
+      const detail = details[index];
+      const value = babelGold({ kind: 'text', text: figure.value(state), x: 320, y: tops[index], size: 52, align: 'center', spacing: 2 });
+      const caption = fitCaption({
+        kind: 'text',
+        text: figureCaption(state, chapter, figure),
+        x: 320,
+        y: tops[index] + 64,
+        size: 20,
+        align: 'center',
+        italic: true,
+        faded: true,
+        spacing: 3,
+      });
+      const small = (text: string, y: number): TextItem =>
+        fitCaption({ kind: 'text', text, x: 320, y, size: 19, align: 'center', spacing: 2 });
+      if (typeof detail === 'string') return [value, small(detail, tops[index] + 60), { ...caption, y: caption.y + 28 }];
+      return [value, caption, ...lines[index].map((line, i) => small(line, caption.y + 34 + i * DETAIL_LINE))];
+    }),
+    folio(number),
+  ];
+};
+
+/**
+ * Le relevé d'un chapitre (les méthodes : nom … exemplaires), sur ses propres pages après ses grands chiffres,
+ * ROWS_PER_PAGE lignes par page : il y aura des dizaines de méthodes.
+ */
+const ROW_TOP = 180;
+const ROW_STEP = 36;
+const ROWS_PER_PAGE = 14;
+
+const shownRows = (state: GameState, chapter: Chapter): Chapter['figures'] =>
+  chapter.figures.filter((figure) => figure.row && figureShown(state, figure));
+
+const rowsItems = (state: GameState, chapter: Chapter, part: number, number: number): Item[] => [
+  ...heading(chapterTitle(state, chapter)),
+  ...shownRows(state, chapter)
+    .slice(part * ROWS_PER_PAGE, (part + 1) * ROWS_PER_PAGE)
+    .flatMap((figure, index): Item[] => {
       const y = ROW_TOP + index * ROW_STEP;
       return [
         fitRow({ kind: 'text', text: figureCaption(state, chapter, figure), x: 110, y, size: 22, align: 'left', spacing: 2 }),
@@ -187,17 +200,8 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
         babelGold({ kind: 'text', text: figure.value(state), x: 530, y, size: 22, align: 'right' }),
       ];
     }),
-    ...figures.flatMap((figure, index): Item[] => {
-      const detail = details[index];
-      const value = babelGold({ kind: 'text', text: figure.value(state), x: 320, y: tops[index], size, align: 'center', spacing: 2 });
-      const small = (text: string, y: number): TextItem =>
-        fitCaption({ kind: 'text', text, x: 320, y, size: 19, align: 'center', spacing: 2 });
-      if (typeof detail === 'string') return [value, small(detail, tops[index] + 60), { ...captions[index], y: captions[index].y + 28 }];
-      return [value, captions[index], ...lines[index].map((line, i) => small(line, captions[index].y + 32 + i * DETAIL_LINE))];
-    }),
-    folio(number),
-  ];
-};
+  folio(number),
+];
 
 /** Le nom d'une ligne du relevé tient avant les points de conduite (« La Lecture Diagonale »). */
 const fitRow = (item: TextItem): TextItem => {
@@ -283,17 +287,20 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
 export const createPages = (state: GameState, goTo: (page: number) => void, offset = 0): LeafPage[] => {
   const chapters = CHAPTERS.filter((chapter) => chapterShown(state, chapter));
   const first = 2;
+  // Chaque chapitre : sa page de grands chiffres, puis celles de son relevé.
+  const chapterPages = chapters.map((chapter) => 1 + Math.ceil(shownRows(state, chapter).length / ROWS_PER_PAGE));
+  const chapterStart = chapters.map((_, index) => first + chapterPages.slice(0, index).reduce((total, count) => total + count, 0));
   // Les sceaux commencent sur une page de gauche, face à leur première page de contenu : sinon, une page
   // blanche est laissée avant eux.
   const onLeft = (page: number): number => ((offset + page) % 2 === 1 ? page + 1 : page);
-  const afterChapters = first + chapters.length;
+  const afterChapters = first + chapterPages.reduce((total, count) => total + count, 0);
   const sealsPage = onLeft(afterChapters);
   const blankPage = (page: number): LeafPage => createLeafPage(() => [folio(page + 1)], goTo);
   const plates: PlatePage[] = platePages(sealsPage + 1);
   const entries: Entry[] = [
     ...chapters.map((chapter, index) => ({
       title: () => chapterTitle(state, chapter),
-      page: first + index,
+      page: chapterStart[index],
       news: () => partHasNews(state, chapter.id),
     })),
     { title: sealsTitle, page: sealsPage, news: () => state.newSeals.length > 0 || partHasNews(state, 'seals') },
@@ -313,11 +320,15 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
   return [
     createLeafPage(titleItems, goTo),
     createLeafPage(() => contentsItems(state, entries), goTo),
-    ...chapters.map((chapter, index) =>
-      createLeafPage(() => chapterItems(state, chapter, first + index + 1), goTo, {
-        onShown: () => markPartRead(state, chapter.id),
-      }),
-    ),
+    ...chapters.flatMap((chapter, index) => {
+      const start = chapterStart[index];
+      return [
+        createLeafPage(() => chapterItems(state, chapter, start + 1), goTo, { onShown: () => markPartRead(state, chapter.id) }),
+        ...Array.from({ length: chapterPages[index] - 1 }, (_, part) =>
+          createLeafPage(() => rowsItems(state, chapter, part, start + part + 2), goTo),
+        ),
+      ];
+    }),
     ...(sealsPage > afterChapters ? [blankPage(afterChapters)] : []),
     createLeafPage(() => completionItems(state, plates, sealsPage + 1), goTo, { onShown: () => markPartRead(state, 'seals') }),
     ...plates.map((plate) =>
