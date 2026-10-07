@@ -1,5 +1,6 @@
 import { ETHERIUM_PAGES } from '../../data/etheriumStars';
 import { nextEtherPages } from '../../systems/prestige';
+import { etherReading } from '../../systems/etherium';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
 import { getLocale, t } from '../../i18n';
 import { constellationPage, starViews } from './constellationPage';
@@ -10,7 +11,7 @@ import type { GameState } from '../../core/state';
 
 /**
  * Les pages de l'Etherium, de nuit (conception §4.2, maquette .ai/maquette-etherium-constellations.html) : la garde,
- * avec l'Éther à dépenser, le sommaire, puis une constellation par page (constellationPage.ts).
+ * avec l'Éther à dépenser et la lecture que donne l'Éther reçu, le sommaire, puis une constellation par page (constellationPage.ts).
  */
 
 const plain = (value: number): string => writeDigits(formatNumber(value, getLocale()));
@@ -38,6 +39,9 @@ const drawTitle = (ctx: Ctx, state: GameState): void => {
   rule(ctx, 294, 130);
   write(ctx, plain(state.ether), 320, 380, { size: 64, face: TITLE, weight: '600', color: C.gold, align: 'center' });
   write(ctx, t('etherium.ether'), 320, 470, { size: 20, italic: true, color: C.faded, align: 'center', spacing: 3 });
+  // L'Éther reçu depuis toujours, dépensé ou non : 1 % de lecture en plus chacun.
+  const reading = plain(Math.round((etherReading(state) - 1) * 100));
+  write(ctx, t('etherium.reading').replace('{n}', reading), 320, 535, { size: 18, italic: true, color: C.gold, align: 'center', fit: 560 });
   // Ce qu'il reste à lire : « dans 125 milliards de pages » (le « de » des toutes lettres : formatCount).
   const missing = formatCount(Math.max(0, nextEtherPages(state) - state.totalPagesRead), getLocale());
   write(ctx, t('etherium.next').replace('{n}', missing), 320, 620, { size: 18, italic: true, color: C.faded, align: 'center', fit: 560 });

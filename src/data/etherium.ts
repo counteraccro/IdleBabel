@@ -6,5 +6,8 @@
 /** Pages lues à vie pour le premier Éther : le n-ième en demande n³ fois plus (conception §4.1). */
 export const ETHER_PAGES = 1e9;
 
+/** Lecture en plus pour chaque Éther reçu depuis toujours (dépensé ou non) : 1 %. */
+export const ETHER_READING = 0.01;
+
 /** Pages lues à vie à partir desquelles le nom de l'Etherium et sa ruche paraissent sur sa couverture. */
 export const ETHERIUM_NAMED_PAGES = 1e6;

@@ -26,9 +26,9 @@ import enEtherium from './en/etherium.json';
  * copier le dossier fr/, traduire les fichiers, puis déclarer la langue ici.
  * Le français est la référence : le type Messages impose les mêmes clés partout.
  */
-/** Espaces insécables de la typographie française : « » et : ; ? ! ne restent jamais seuls en bout de ligne. */
+/** Espaces insécables de la typographie française : « » et : ; ? ! % ne restent jamais seuls en bout de ligne. */
 const unbreakable = <T>(node: T): T => {
-  if (typeof node === 'string') return node.replace(/« /g, '«\u00a0').replace(/ ([»:;?!])/g, '\u00a0$1') as T;
+  if (typeof node === 'string') return node.replace(/« /g, '«\u00a0').replace(/ ([»:;?!%])/g, '\u00a0$1') as T;
   if (Array.isArray(node)) return node.map(unbreakable) as T;
   if (node && typeof node === 'object') {
     return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, unbreakable(value)])) as T;

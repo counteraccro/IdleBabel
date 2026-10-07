@@ -1,6 +1,6 @@
 import { TOOLS, type ToolId } from '../data/tools';
 import { gestureMultiplier } from './technologies';
-import { readingMultiplier } from './etherium';
+import { etherReading, readingMultiplier } from './etherium';
 import type { GameState } from '../core/state';
 
 /** Débogage : production imposée à la main, à la place de celle des méthodes (pas dans la sauvegarde). */
@@ -12,10 +12,10 @@ export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== u
 
 /**
  * Ce que lit une méthode, pour chaque exemplaire : sa base, doublée par son intuition à chaque niveau, et
- * multipliée par la Lecture de l'Etherium.
+ * multipliée par la Lecture de l'Etherium et par l'Éther reçu.
  */
 export const toolRate = (state: GameState, id: ToolId): number =>
-  TOOLS.find((tool) => tool.id === id)!.pagesPerSecond * gestureMultiplier(state, id) * readingMultiplier(state);
+  TOOLS.find((tool) => tool.id === id)!.pagesPerSecond * gestureMultiplier(state, id) * readingMultiplier(state) * etherReading(state);
 
 /** Production : celle de chaque méthode (toolRate). */
 export const pagesPerSecond = (state: GameState): number =>

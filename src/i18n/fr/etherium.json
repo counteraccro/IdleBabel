@@ -4,7 +4,7 @@
   "close": "Refermer le livre",
   "confirm": {
     "title": "L'ouvrir ?",
-    "warning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions. +{n} Éther.",
+    "warning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions. +{n} Éther, +{n} % de lecture.",
     "stay": "Le reposer",
     "open": "Ouvrir"
   },
@@ -23,6 +23,7 @@
     "reserve": "Éther en réserve"
   },
   "ether": "Éther à dépenser",
+  "reading": "+{n} % de lecture : un par Éther reçu",
   "next": "Prochain Éther : dans {n} pages",
   "contents": "Sommaire",
   "pages": {

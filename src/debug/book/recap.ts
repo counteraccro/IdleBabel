@@ -10,6 +10,7 @@ import { findChance, maxTurnsPerSecond } from '../../systems/knowledge';
 import {
   awaySecondsBonus,
   awayShareBonus,
+  etherReading,
   findsMultiplier,
   handsMultiplier,
   knowledgePerFind,
@@ -187,6 +188,7 @@ const prestige = (state: GameState): RecapRow[] => {
       ratio(lit(page), STARS.filter((star) => star.page === page).length),
     ]),
     ['Lecture des méthodes', times(readingMultiplier(state))],
+    ['Lecture de l’Éther reçu', times(etherReading(state))],
     ['Feuilles tournées en plus', `+${format(turnsBonus(state))} /s`],
     ['Pages d’un clic', times(handsMultiplier(state))],
     ['Connaissance par trouvaille', times(knowledgePerFind(state))],

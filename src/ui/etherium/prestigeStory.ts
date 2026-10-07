@@ -67,7 +67,7 @@ export const openEtherium = (state: GameState, open: () => void, nudge: () => vo
       },
     ],
     'dim',
-    etherium.confirm.warning.replace('{n}', formatNumber(gain, getLocale())),
+    etherium.confirm.warning.replaceAll('{n}', formatNumber(gain, getLocale())),
     false,
   );
 };

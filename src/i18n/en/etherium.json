@@ -4,7 +4,7 @@
   "close": "Close the book",
   "confirm": {
     "title": "Open it?",
-    "warning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions. +{n} Ether.",
+    "warning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions. +{n} Ether, +{n}% reading.",
     "stay": "Put it down",
     "open": "Open"
   },
@@ -23,6 +23,7 @@
     "reserve": "Ether in reserve"
   },
   "ether": "Ether to spend",
+  "reading": "+{n}% reading: one per Ether received",
   "next": "Next Ether: in {n} pages",
   "contents": "Contents",
   "pages": {

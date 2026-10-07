@@ -9,7 +9,8 @@ import {
   prestigeGain,
   prestigeReady,
 } from '../src/systems/prestige';
-import { lightStar, readingMultiplier, starOpen } from '../src/systems/etherium';
+import { etherReading, lightStar, readingMultiplier, starOpen } from '../src/systems/etherium';
+import { readPage } from '../src/systems/click';
 import { segments, toolUnlocked, write } from '../src/systems/sentences';
 import { toolRate } from '../src/systems/production';
 import { rollFinds } from '../src/systems/knowledge';
@@ -110,6 +111,19 @@ describe('Prestige', () => {
     expect(state.ether).toBe(2);
     expect(lightStar(state, 'hands.w')).toBe(true);
     expect(state.ether).toBe(1);
+  });
+
+  it('chaque Éther reçu, dépensé ou non, donne 1 % de lecture aux méthodes et aux clics', () => {
+    const state = reader(27e9);
+    const before = toolRate(state, 'diagonal');
+    prestige(state);
+    expect(etherReading(state)).toBeCloseTo(1.03);
+    expect(toolRate(state, 'diagonal')).toBeCloseTo(before * 1.03);
+    lightStar(state, 'reading.s0');
+    expect(etherReading(state)).toBeCloseTo(1.03);
+    state.pages = 0;
+    readPage(state);
+    expect(state.pages).toBeCloseTo(2 * 1.03);
   });
 
   it('les effets des étoiles allumées se multiplient', () => {

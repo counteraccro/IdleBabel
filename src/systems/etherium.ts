@@ -1,4 +1,5 @@
 import { EFFECT, KEEPS, NEEDS_AGE, S, SIMPLE, starById } from '../data/etheriumStars';
+import { ETHER_READING } from '../data/etherium';
 import { SENTENCES } from '../data/sentences';
 import type { GameState } from '../core/state';
 
@@ -32,6 +33,9 @@ const product = (state: GameState, effect: Record<string, number>): number =>
 /** Les valeurs des étoiles allumées, ajoutées (0 sans aucune). */
 const sum = (state: GameState, effect: Record<string, number>): number =>
   Object.entries(effect).reduce((total, [id, value]) => (starLit(state, id) ? total + value : total), 0);
+
+/** L'Éther reçu depuis toujours, dépensé ou non : 1 % de lecture en plus chacun (méthodes et clics). */
+export const etherReading = (state: GameState): number => 1 + state.etherReceived * ETHER_READING;
 
 // Ce que font les étoiles.
 
