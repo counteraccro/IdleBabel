@@ -8,7 +8,7 @@ import { partTitleItems, partTitleLayout, subPartLayout, type WhiteBookPart } fr
 import { intuitionItems, reminiscenceNote } from './intuitionPage';
 import { TECHNOLOGIES } from '../../data/technologies';
 import { intuitionVisible, technologiesCompletion, understand } from '../../systems/technologies';
-import { completion, guess, guessPrice, isComplete, written } from '../../systems/sentences';
+import { completion, guess, guessPrice, isComplete, sentenceShown, written } from '../../systems/sentences';
 import { waitingFor } from '../../systems/findable';
 import { METHOD_GATE } from '../../data/knowledge';
 import { babelize, seedOf } from './babelMask';
@@ -154,7 +154,8 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
   };
   const sentencePart = (kind: 'method' | 'memory', number: number): void => {
     partTitle(kind, number);
-    for (const sentence of ofKind(kind)) {
+    // Une méthode secrète n'a sa page qu'une fois son souvenir revenu (l'Etherium).
+    for (const sentence of ofKind(kind).filter((candidate) => sentenceShown(state, candidate.id))) {
       const number = pages.length;
       pages.push(
         createLeafPage(({ asking }) => sentenceLayout(state, sentence, number, asking, freshOf(sentence)), goTo, {
@@ -176,7 +177,7 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
     pages.push(createLeafPage(() => intuitionItems(state, tech.id, number), goTo, { onPay: () => understand(state, tech.id) }));
   };
   const lasting = (tech: (typeof TECHNOLOGIES)[number]): boolean => 'permanent' in tech && tech.permanent;
-  TECHNOLOGIES.filter((tech) => !lasting(tech)).forEach(intuitionPage);
+  TECHNOLOGIES.filter((tech) => !lasting(tech) && intuitionVisible(state, tech.id)).forEach(intuitionPage);
   // Les intuitions permanentes (des conforts, que l'Exil ne fait pas oublier) : une sous-partie, son titre
   // à gauche (une page blanche avant si besoin), en face de la première d'entre elles.
   if (pages.length % 2 === 1) {

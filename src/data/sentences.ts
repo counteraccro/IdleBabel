@@ -15,6 +15,11 @@ export interface SentenceDef {
   tool?: ToolId;
   /** Famille d'une anomalie (data/anomalies.ts). */
   family?: AnomalyFamily;
+  /**
+   * Une méthode secrète : sa phrase n'existe pour le chercheur qu'une fois cette étoile de l'Etherium allumée (le
+   * souvenir flou), et le prestige ne la fait jamais oublier.
+   */
+  secret?: string;
 }
 
 export const SENTENCES: readonly SentenceDef[] = [
@@ -24,6 +29,7 @@ export const SENTENCES: readonly SentenceDef[] = [
   { id: 'voice', kind: 'method', tool: 'voice' },
   { id: 'lectern', kind: 'method', tool: 'lectern' },
   { id: 'ladder', kind: 'method', tool: 'ladder' },
+  { id: 'cornee', kind: 'method', tool: 'cornee', secret: 'memory.m0' },
   { id: 'cup', kind: 'memory' },
   ...ANOMALIES,
 ];

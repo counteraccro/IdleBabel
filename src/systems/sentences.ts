@@ -2,7 +2,7 @@ import { messages } from '../i18n';
 import { SENTENCES } from '../data/sentences';
 import { GUESS_PRICE, type FindKind } from '../data/knowledge';
 import { withReaderName } from './readerName';
-import { guessableMissing } from './etherium';
+import { guessableMissing, starLit } from './etherium';
 import type { ToolId } from '../data/tools';
 import type { GameState } from '../core/state';
 
@@ -41,9 +41,19 @@ export const write = (state: GameState, id: string, indices: number[]): void => 
   state.written[id] = [...done].sort((a, b) => a - b);
 };
 
-/** La phrase de méthode en cours : la première qui n'est pas complète. */
+/** La phrase existe pour le chercheur : toutes, sauf une méthode secrète dont l'étoile n'est pas allumée. */
+export const sentenceShown = (state: GameState, id: string): boolean => {
+  const secret = SENTENCES.find((sentence) => sentence.id === id)?.secret;
+  return !secret || starLit(state, secret);
+};
+
+/** La méthode secrète dont le souvenir flou est revenu, et dont la phrase n'est pas encore complète. */
+export const openSecret = (state: GameState): string | undefined =>
+  SENTENCES.find((sentence) => sentence.secret && sentenceShown(state, sentence.id) && !isComplete(state, sentence.id))?.id;
+
+/** La phrase de méthode en cours : la première qui n'est pas complète (hors méthode secrète, qui se trouve à côté). */
 export const currentTarget = (state: GameState): string | undefined =>
-  SENTENCES.find((sentence) => sentence.kind === 'method' && !isComplete(state, sentence.id))?.id;
+  SENTENCES.find((sentence) => sentence.kind === 'method' && !sentence.secret && !isComplete(state, sentence.id))?.id;
 
 /** Une méthode de lecture se découvre en complétant sa phrase. */
 export const toolUnlocked = (state: GameState, tool: ToolId): boolean => {
@@ -51,10 +61,11 @@ export const toolUnlocked = (state: GameState, tool: ToolId): boolean => {
   return !sentence || isComplete(state, sentence.id);
 };
 
-/** Part du livre blanc déjà écrite : morceaux écrits sur l'ensemble des morceaux de toutes les phrases. */
+/** Part du livre blanc déjà écrite : morceaux écrits sur l'ensemble des morceaux de ses phrases. */
 export const completion = (state: GameState): number => {
-  const total = SENTENCES.reduce((sum, sentence) => sum + segments(sentence.id).length, 0);
-  const done = SENTENCES.reduce((sum, sentence) => sum + written(state, sentence.id).length, 0);
+  const shown = SENTENCES.filter((sentence) => sentenceShown(state, sentence.id));
+  const total = shown.reduce((sum, sentence) => sum + segments(sentence.id).length, 0);
+  const done = shown.reduce((sum, sentence) => sum + written(state, sentence.id).length, 0);
   return total === 0 ? 0 : done / total;
 };
 

@@ -60,6 +60,7 @@
     "voice": "Je lisais / à voix basse / dans ma tête. / Je me suis tu.",
     "lectern": "Un bloc / tombé de la rambarde / tient un livre / mieux que / mes bras.",
     "ladder": "Les étagères / du haut / ne sont pas / plus loin : / il suffit / de ne plus / redescendre.",
+    "cornee": "Un coin / replié / me rend / la page / où je m'étais arrêté.",
     "cup": "Une tasse / ébréchée ; / je buvais toujours / du côté / de l'ébréchure.",
     "shelves": "Cinq étagères / par mur. / J'en ai compté / six, / une fois. / Je n'ai pas / recompté.",
     "thirtyOne": "Trente-deux livres / par étagère. / Sur celle-ci, / trente et un. / Quelqu'un / lit en ce moment.",
@@ -287,7 +288,8 @@
         "finger": "Mon doigt sait où aller avant moi.",
         "voice": "Je ne murmure plus. Je n'en ai plus besoin.",
         "lectern": "La pierre tient le livre. Mes mains sont libres.",
-        "ladder": "Je ne descends plus. Je lis là-haut."
+        "ladder": "Je ne descends plus. Je lis là-haut.",
+        "cornee": "Je ne cherche plus ma page. Elle m'attend."
       }
     }
   },
@@ -320,6 +322,11 @@
       "description": "L'échelle roule le long des rayonnages. Les étagères du haut ne sont plus un voyage : on lit sans redescendre.",
       "quote": "Chaque mur a cinq étagères et chaque étagère trente-deux livres ; les plus hauts sont les moins lus, et donc, disent certains, les plus vrais. Monter, c'est choisir ce que personne n'a choisi. Une légende parle d'un lecteur qui ne redescendit jamais de son échelle, et qu'on entend encore, certaines nuits, tourner des pages au-dessus des lampes.",
       "source": "légende de la galerie haute"
+    },
+    "cornee": {
+      "description": "Un coin plié garde la page. La lecture reprend où elle s'était arrêtée, sans rien relire.",
+      "quote": "Je ne me souviens pas d'avoir corné cette page. Le pli est pourtant ancien, usé comme si on l'avait ouvert mille fois. Chaque fois que je reprends le livre, il s'ouvre là, et je lis comme si je n'avais jamais cessé.",
+      "source": "souvenir d'avant le réveil"
     }
   },
   "stat": "Chacune : +{n} page/s · possédées : {count}"

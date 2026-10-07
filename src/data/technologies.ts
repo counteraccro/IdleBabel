@@ -63,6 +63,8 @@ export const TECHNOLOGIES = [
   { id: 'voiceGesture', prices: gesture(750), tool: 'voice' },
   { id: 'lecternGesture', prices: gesture(30_000), tool: 'lectern' },
   { id: 'ladderGesture', prices: gesture(75_000), tool: 'ladder' },
+  // La méthode secrète, dernière de l'Âge Manuel (l'auteur, 07/10) ; son prix, entre la Voix et le Lutrin.
+  { id: 'corneeGesture', prices: gesture(5_000), tool: 'cornee' },
 ] as const satisfies readonly TechnologyDef[];
 
 export type TechnologyId = (typeof TECHNOLOGIES)[number]['id'];

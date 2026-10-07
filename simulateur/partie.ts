@@ -147,9 +147,12 @@ const find = (run: Run, turned: number): void => {
   const share = Math.min(1, TARGET_SHARE + ARIADNE_STEP * level(run, 'ariadne') + sum(run.life, EFFECT.aim));
   const towardTarget = turned * (Math.min(1, chance) * (1 - duplicates) * share + Math.max(0, chance - 1) * EXTRA_FIND_SHARES.method);
   const current = target(run);
-  if (current) progress(run, current, towardTarget);
-  // Hypothèse : la phrase de la Page Cornée (souvenir flou) se trouve aussi vite que celle de la méthode en cours.
-  if (lit(run.life, S.cornee) && !run.unlocked.has(SECRET.id)) progress(run, SECRET, towardTarget);
+  // Comme dans le jeu : la phrase de la Page Cornée (souvenir flou) partage à parts égales les trouvailles de la
+  // méthode en cours ; seule, chacune prend tout.
+  const secret = lit(run.life, S.cornee) && !run.unlocked.has(SECRET.id);
+  const part = current && secret ? towardTarget / 2 : towardTarget;
+  if (current) progress(run, current, part);
+  if (secret) progress(run, SECRET, part);
 };
 
 const gain = (run: Run, pages: number): void => {

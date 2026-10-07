@@ -101,6 +101,7 @@ const TOOL_CAPTIONS: Record<string, string> = {
   voice: 'vox teduri',
   lectern: 'lotiz perma',
   ladder: 'escal u virn',
+  cornee: 'pagna corvi',
 };
 
 export const CHAPTERS: readonly Chapter[] = [

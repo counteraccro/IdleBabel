@@ -1,7 +1,7 @@
 import { METHOD_GATE } from '../data/knowledge';
 import { HINT_BOOKS } from '../data/anomalies';
 import { SENTENCES } from '../data/sentences';
-import { TOOLS, type ToolId } from '../data/tools';
+import { METHOD_CHAIN, type ToolId } from '../data/tools';
 import { currentTarget } from './sentences';
 import type { GameState } from '../core/state';
 
@@ -12,16 +12,16 @@ import type { GameState } from '../core/state';
 export const findableTarget = (state: GameState): string | undefined => {
   const target = currentTarget(state);
   const tool = SENTENCES.find((sentence) => sentence.id === target)?.tool;
-  const index = TOOLS.findIndex((candidate) => candidate.id === tool);
+  const index = METHOD_CHAIN.findIndex((candidate) => candidate.id === tool);
   if (index <= 0) return target;
-  return state.tools[TOOLS[index - 1].id] >= METHOD_GATE ? target : undefined;
+  return state.tools[METHOD_CHAIN[index - 1].id] >= METHOD_GATE ? target : undefined;
 };
 
 /** La phrase `id` est la méthode en cours, mais elle attend : la méthode d'avant, à METHOD_GATE exemplaires. */
 export const waitingFor = (state: GameState, id: string): ToolId | undefined => {
   if (currentTarget(state) !== id || findableTarget(state)) return undefined;
   const tool = SENTENCES.find((sentence) => sentence.id === id)?.tool;
-  return TOOLS[TOOLS.findIndex((candidate) => candidate.id === tool) - 1]?.id;
+  return METHOD_CHAIN[METHOD_CHAIN.findIndex((candidate) => candidate.id === tool) - 1]?.id;
 };
 
 /** Un indice qui mène à un livre rare attend que ce livre soit trouvé (data/anomalies.ts, HINT_BOOKS). */

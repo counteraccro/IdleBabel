@@ -15,7 +15,7 @@ import {
 } from '../data/technologies';
 import { AWAY_SHARE, DUPLICATE_SHARE, MAX_AWAY_SECONDS, TARGET_SHARE } from '../data/knowledge';
 import { RARE_BOOKS } from '../data/rareBooks';
-import { toolUnlocked } from './sentences';
+import { sentenceShown, toolUnlocked } from './sentences';
 import {
   aimBonus,
   awaySecondsBonus,
@@ -126,9 +126,13 @@ export const gestureOf = (tool: ToolId): TechnologyId => TECHNOLOGIES.find((tech
 export const gestureMultiplier = (state: GameState, tool: ToolId, level = levelOf(state, gestureOf(tool))): number =>
   GESTURE_BONUS ** level;
 
-/** Elle a sa page dans le livre blanc : celles d'après l'Exil, seulement une fois le premier fait. */
+/**
+ * Elle a sa page dans le livre blanc : celles d'après l'Exil, seulement une fois le premier fait ; celle d'une
+ * méthode secrète, une fois son souvenir revenu.
+ */
 export const intuitionVisible = (state: GameState, id: TechnologyId): boolean => {
   const tech = technology(id);
+  if (tech.tool && !sentenceShown(state, tech.tool)) return false;
   return !tech.afterExile || state.exiles > 0;
 };
 

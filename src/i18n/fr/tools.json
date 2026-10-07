@@ -3,5 +3,6 @@
   "finger": { "name": "Le Doigt qui Guide", "description": "l'œil ne revient plus en arrière." },
   "voice": { "name": "La Voix Éteinte", "description": "plus de voix dans la tête pour ralentir." },
   "lectern": { "name": "Le Lutrin de Pierre", "description": "un bloc arraché à une rambarde." },
-  "ladder": { "name": "L'Échelle Roulante", "description": "lire les étagères hautes sans descendre." }
+  "ladder": { "name": "L'Échelle Roulante", "description": "lire les étagères hautes sans descendre." },
+  "cornee": { "name": "La Page Cornée", "description": "un pli me rend la page où j'en étais." }
 }

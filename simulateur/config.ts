@@ -13,9 +13,6 @@ export interface ExtraMethod {
   pieces: number;
 }
 
-/** La Page Cornée, méthode secrète de l'Âge Manuel (validée le 05/10 : 50 000 pages, 5 000 /s, 1 🌌). */
-export const SECRET_MANUAL: ExtraMethod = { id: 'cornee', baseCost: 50_000, pagesPerSecond: 5_000, pieces: 5 };
-
 /** Âge Automatique (§3.1 ter, chiffres provisoires) ; les morceaux des phrases sont devinés (pas encore écrites). */
 export const AUTOMATIC: readonly ExtraMethod[] = [
   { id: 'tourne', baseCost: 320e6, pagesPerSecond: 1e5, pieces: 5 },

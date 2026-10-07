@@ -43,7 +43,8 @@
     "finger": "{when}, your finger began to guide your eyes. They no longer went back.",
     "voice": "{when}, the voice in your head fell silent. Without it, you went faster.",
     "lectern": "{when}, you tore a stone from the railing. It became your lectern.",
-    "ladder": "{when}, you found a ladder. The top shelves became yours."
+    "ladder": "{when}, you found a ladder. The top shelves became yours.",
+    "cornee": "{when}, you found a dog-eared page again. You did not remember folding it."
   },
   "memories": {
     "cup": "{when}, a memory came back. A chipped cup. You always drank from the chipped side."

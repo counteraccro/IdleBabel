@@ -3,5 +3,6 @@
   "finger": { "name": "The Guiding Finger", "description": "the eye no longer goes back." },
   "voice": { "name": "The Silenced Voice", "description": "no inner voice to slow things down." },
   "lectern": { "name": "The Stone Lectern", "description": "a block torn from a railing." },
-  "ladder": { "name": "The Rolling Ladder", "description": "reading the high shelves without coming down." }
+  "ladder": { "name": "The Rolling Ladder", "description": "reading the high shelves without coming down." },
+  "cornee": { "name": "The Dog-Eared Page", "description": "a fold gives me back the page where I was." }
 }

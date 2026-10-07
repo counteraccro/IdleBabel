@@ -63,7 +63,9 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   }
   state.wake = { pages: state.totalPagesRead, book: state.booksFinished + 1 };
   const kept = keptMethodSentences(state);
-  for (const sentence of SENTENCES) if (sentence.kind === 'method' && !kept.includes(sentence.id)) delete state.written[sentence.id];
+  // Une méthode secrète, elle, ne s'oublie jamais.
+  for (const sentence of SENTENCES)
+    if (sentence.kind === 'method' && !sentence.secret && !kept.includes(sentence.id)) delete state.written[sentence.id];
   state.etheriumInHand = true;
   recordOnce(state, 'prestige', String(state.exiles), now);
   return gain;

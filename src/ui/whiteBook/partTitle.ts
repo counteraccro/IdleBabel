@@ -1,7 +1,7 @@
 import { t } from '../../i18n';
 import { writeDigits } from '../../core/format';
 import { SENTENCES, type SentenceKind } from '../../data/sentences';
-import { isComplete } from '../../systems/sentences';
+import { isComplete, sentenceShown } from '../../systems/sentences';
 import { paragraph } from './paragraph';
 import { roman, type Item } from '../strangeBook/pageItems';
 import type { GameState } from '../../core/state';
@@ -15,7 +15,7 @@ export type WhiteBookPart = SentenceKind | 'intuition';
  * ses phrases déjà complètes.
  */
 export const partTitleItems = (state: GameState, kind: SentenceKind, number: number): Item[] => {
-  const sentences = SENTENCES.filter((sentence) => sentence.kind === kind);
+  const sentences = SENTENCES.filter((sentence) => sentence.kind === kind && sentenceShown(state, sentence.id));
   const done = sentences.filter((sentence) => isComplete(state, sentence.id)).length;
   return partTitleLayout(kind, number, done / Math.max(1, sentences.length));
 };

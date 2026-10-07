@@ -2,7 +2,7 @@ import { SENTENCES } from '../data/sentences';
 import { BASE_FIND_CHANCE, EXTRA_FIND_SHARES, FIND_WEIGHTS, LUCK_PAGES, type Find, type FindKind } from '../data/knowledge';
 import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { pagesPerSecond } from './production';
-import { isComplete, missing, segmentKind, segments, write, written } from './sentences';
+import { isComplete, missing, openSecret, segmentKind, segments, write, written } from './sentences';
 import { findableTarget, hintFindable } from './findable';
 import { tellLore } from './lore';
 import { duplicateShare, filterMultiplier, maxAwaySeconds, targetShare, turnsPerSecond } from './technologies';
@@ -78,6 +78,17 @@ const repeatFind = (state: GameState, started: string[], random: () => number): 
   return { kind: segmentKind(segments(sentence)[segment]), sentence, segment, duplicate: true };
 };
 
+/**
+ * La phrase de méthode où va une trouvaille de la méthode en cours : la méthode secrète, si son souvenir est revenu,
+ * la partage à parts égales avec elle (validé par l'auteur, 07/10) ; seule, chacune prend tout.
+ */
+const methodSentence = (state: GameState, target: string | undefined, random: () => number): string | undefined => {
+  const secret = openSecret(state);
+  if (!secret) return target;
+  if (!target) return secret;
+  return random() < 0.5 ? secret : target;
+};
+
 const startedSentences = (state: GameState): string[] =>
   SENTENCES.filter((sentence) => written(state, sentence.id).length > 0).map((sentence) => sentence.id);
 
@@ -92,15 +103,19 @@ export const drawFind = (state: GameState, random: () => number, lucky = false):
   const target = findableTarget(state);
   if (lucky && target) return { kind: 'sentence', sentence: target };
   const kind = drawKind(random);
-  // Seule la méthode en cours se trouve : les suivantes attendent leur tour.
+  // Seule la méthode en cours se trouve (et la méthode secrète revenue) : les suivantes attendent leur tour.
+  const secret = openSecret(state);
   const open = SENTENCES.filter(
     (sentence) =>
-      !isComplete(state, sentence.id) && (sentence.kind !== 'method' || sentence.id === target) && hintFindable(state, sentence.id),
+      !isComplete(state, sentence.id) &&
+      (sentence.kind !== 'method' || sentence.id === target || sentence.id === secret) &&
+      hintFindable(state, sentence.id),
   ).map((sentence) => sentence.id);
   const started = startedSentences(state);
   if (open.length === 0 || (kind !== 'sentence' && started.length > 0 && random() < duplicateShare(state)))
     return repeatFind(state, started, random);
-  const sentence = target && random() < targetShare(state) ? target : pick(open, random);
+  const method = target || secret ? methodSentence(state, target, random) : undefined;
+  const sentence = method && random() < targetShare(state) ? method : pick(open, random);
   if (kind === 'sentence') return { kind, sentence };
   return missingSegment(state, sentence, kind, random);
 };
@@ -113,10 +128,11 @@ export const drawExtraFind = (state: GameState, random: () => number): Find => {
   const roll = random();
   const { method, hint, memory } = EXTRA_FIND_SHARES;
   const target = findableTarget(state);
+  const toward = methodSentence(state, target, random);
   const pool =
     roll < method
-      ? target
-        ? [target]
+      ? toward
+        ? [toward]
         : []
       : roll < method + hint
         ? SENTENCES.filter((sentence) => sentence.family === 'hints' && hintFindable(state, sentence.id)).map((s) => s.id)

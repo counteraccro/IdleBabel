@@ -1,5 +1,5 @@
-import { TOOLS } from '../src/data/tools';
-import { AUTOMATIC, SECRET_MANUAL } from './config';
+import { METHOD_CHAIN, TOOLS } from '../src/data/tools';
+import { AUTOMATIC } from './config';
 import { KEEPS, S } from '../src/data/etheriumStars';
 import { lit, type Life } from './vie';
 
@@ -15,18 +15,21 @@ export interface Method {
 }
 
 /** Morceaux des phrases des méthodes du jeu (whiteBook.sentences, en français). */
-const PIECES: Record<string, number> = { diagonal: 4, finger: 4, voice: 4, lectern: 5, ladder: 7 };
+const PIECES: Record<string, number> = { diagonal: 4, finger: 4, voice: 4, lectern: 5, ladder: 7, cornee: 5 };
 
-const MANUAL: Method[] = TOOLS.map((tool) => ({
+const method = (tool: (typeof TOOLS)[number]): Method => ({
   id: tool.id,
   baseCost: tool.baseCost,
   pagesPerSecond: tool.pagesPerSecond,
   pieces: PIECES[tool.id] ?? 5,
   gesture: `${tool.id}Gesture`,
   manual: true,
-}));
+});
 
-export const SECRET: Method = { ...SECRET_MANUAL };
+const MANUAL: Method[] = METHOD_CHAIN.map(method);
+
+/** La Page Cornée, méthode secrète de l'Âge Manuel (dans le jeu : src/data/tools.ts). */
+export const SECRET: Method = method(TOOLS.find((tool) => tool.secret)!);
 
 /** Les méthodes dans l'ordre où leurs phrases se trouvent, selon les Âges achetés. */
 export const methodSequence = (life: Life): Method[] => (lit(life, S.age) ? [...MANUAL, ...AUTOMATIC] : MANUAL);

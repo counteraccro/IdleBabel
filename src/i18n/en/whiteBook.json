@@ -60,6 +60,7 @@
     "voice": "I used to read / in a low voice / inside my head. / I fell silent.",
     "lectern": "A block / fallen from the railing / holds a book / better than / my arms.",
     "ladder": "The top / shelves / are not / further away: / I only need / to stop / coming down.",
+    "cornee": "A folded / corner / gives me back / the page / where I had stopped.",
     "cup": "A cup, / chipped; / I always drank / from the side / of the chip.",
     "shelves": "Five shelves / per wall. / I counted / six, / once. / I did not / count again.",
     "thirtyOne": "Thirty-two books / per shelf. / On this one, / thirty-one. / Someone / is reading right now.",
@@ -287,7 +288,8 @@
         "finger": "My finger knows where to go before I do.",
         "voice": "I no longer whisper. I no longer need to.",
         "lectern": "The stone holds the book. My hands are free.",
-        "ladder": "I no longer climb down. I read up there."
+        "ladder": "I no longer climb down. I read up there.",
+        "cornee": "I no longer look for my page. It waits for me."
       }
     }
   },
@@ -320,6 +322,11 @@
       "description": "The ladder rolls along the shelves. The top shelves are no longer a journey: you read without coming down.",
       "quote": "Each wall has five shelves and each shelf thirty-two books; the highest are the least read, and therefore, some say, the truest. To climb is to choose what no one has chosen. A legend tells of a reader who never came down from his ladder, and who can still be heard, some nights, turning pages above the lamps.",
       "source": "legend of the upper gallery"
+    },
+    "cornee": {
+      "description": "A folded corner keeps the page. Reading resumes where it stopped, without reading anything twice.",
+      "quote": "I do not remember folding this page. Yet the crease is old, worn as if it had been opened a thousand times. Every time I pick up the book, it opens there, and I read as if I had never stopped.",
+      "source": "a memory from before waking"
     }
   },
   "stat": "Each: +{n} page/s · owned: {count}"

@@ -43,7 +43,8 @@
     "finger": "{when}, ton doigt a commencé à guider tes yeux. Ils ne revenaient plus en arrière.",
     "voice": "{when}, la voix dans ta tête s'est tue. Sans elle, tu allais plus vite.",
     "lectern": "{when}, tu as arraché une pierre à la rambarde. Elle est devenue ton lutrin.",
-    "ladder": "{when}, tu as trouvé une échelle. Les étagères du haut sont devenues les tiennes."
+    "ladder": "{when}, tu as trouvé une échelle. Les étagères du haut sont devenues les tiennes.",
+    "cornee": "{when}, tu as retrouvé une page cornée. Tu ne te souvenais pas de l'avoir pliée."
   },
   "memories": {
     "cup": "{when}, un souvenir est revenu. Une tasse ébréchée. Tu buvais toujours du côté de l'ébréchure."
