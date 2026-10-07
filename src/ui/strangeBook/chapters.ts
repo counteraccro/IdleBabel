@@ -6,7 +6,8 @@ import { pagesPerSecond } from '../../systems/production';
 import { meaningfulCovers } from '../../systems/stats';
 import { findChance } from '../../systems/knowledge';
 import { BASE_FIND_CHANCE } from '../../data/knowledge';
-import { filterMultiplier, rareChance } from '../../systems/technologies';
+import { filterMultiplier, gestureMultiplier, rareChance } from '../../systems/technologies';
+import { etherReading, readingMultiplier } from '../../systems/etherium';
 import { nextRareChance } from '../../systems/rareBooks';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
@@ -66,6 +67,28 @@ const findChanceParts = (state: GameState, readable: boolean): string => {
   if (!readable) return parts.join('  ');
   const [base, filter, seals] = parts;
   return t('strangeBook.figures.findChanceParts').replace('{base}', base).replace('{filter}', filter).replace('{seals}', seals);
+};
+
+/**
+ * La vitesse de lecture, décomposée : ce que lisent les méthodes d'elles-mêmes, × leurs intuitions (en moyenne, pesée
+ * par ce que lit chacune), puis, après un premier prestige, × l'Etherium (le Livre ouvert) et × l'Éther reçu.
+ */
+const pagesPerSecondParts = (state: GameState, readable: boolean): string => {
+  const base = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
+  const gestures = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id), 0);
+  const prestiged = state.etherReceived > 0;
+  const parts = [
+    formatNumber(base, getLocale()),
+    factor(base > 0 ? gestures / base : 1),
+    ...(prestiged ? [factor(readingMultiplier(state)), factor(etherReading(state))] : []),
+  ];
+  if (!readable) return parts.join('  ');
+  const [methods, intuitions, stars, ether] = parts;
+  return t(`strangeBook.figures.${prestiged ? 'pagesPerSecondEther' : 'pagesPerSecondParts'}`)
+    .replace('{methods}', methods)
+    .replace('{intuitions}', intuitions)
+    .replace('{stars}', stars)
+    .replace('{ether}', ether);
 };
 
 const rareFound = (state: GameState): number => Object.keys(state.rareBooks).length;
@@ -157,7 +180,7 @@ export const CHAPTERS: readonly Chapter[] = [
         shown: (s: GameState) => s.tools[tool.id] > 0,
         row: true,
       })),
-      { id: 'pagesPerSecond', caption: 'zo selim', value: (s) => formatNumber(pagesPerSecond(s), getLocale()) },
+      { id: 'pagesPerSecond', caption: 'zo selim', value: (s) => formatNumber(pagesPerSecond(s), getLocale()), detail: pagesPerSecondParts },
       { id: 'bestPagesPerSecond', caption: 'amprel duc', value: (s) => formatNumber(s.stats.bestPagesPerSecond, getLocale()) },
     ],
   },

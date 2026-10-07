@@ -25,6 +25,8 @@
     "startDate": "the day you awoke",
     "days": "days since you awoke",
     "pagesPerSecond": "pages passing before your eyes each second",
+    "pagesPerSecondParts": "your methods {methods} · your intuitions {intuitions}",
+    "pagesPerSecondEther": "your methods {methods} · your intuitions {intuitions} · the Etherium {stars} · your Ether {ether}",
     "bestPagesPerSecond": "pages in a single second, the fastest of your life",
     "knowledge": "Knowledge you carry",
     "lifetimeKnowledge": "Knowledge you have been given",
