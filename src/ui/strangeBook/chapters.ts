@@ -30,8 +30,11 @@ export interface Figure {
   shown?: (state: GameState) => boolean;
   /** Une ligne d'un relevé (nom … nombre), en haut de la page, au lieu d'un grand chiffre : les méthodes. */
   row?: boolean;
-  /** De quoi il est fait, en petit sous le chiffre (les mots, une fois le chapitre déchiffré). */
-  detail?: (state: GameState, readable: boolean) => string;
+  /**
+   * De quoi il est fait, en petit (les mots, une fois le chapitre déchiffré) : une ligne entre le chiffre et sa légende,
+   * ou plusieurs, sous la légende, pour ce qui grandit sans fin (la vitesse de lecture).
+   */
+  detail?: (state: GameState, readable: boolean) => string | string[];
 }
 
 export interface Chapter {
@@ -71,9 +74,10 @@ const findChanceParts = (state: GameState, readable: boolean): string => {
 
 /**
  * La vitesse de lecture, décomposée : ce que lisent les méthodes d'elles-mêmes, × leurs intuitions (en moyenne, pesée
- * par ce que lit chacune), puis, après un premier prestige, × l'Etherium (le Livre ouvert) et × l'Éther reçu.
+ * par ce que lit chacune) ; puis, après un premier prestige, une seconde ligne : × l'Etherium (le Livre ouvert) et
+ * × l'Éther reçu.
  */
-const pagesPerSecondParts = (state: GameState, readable: boolean): string => {
+const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
   const base = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
   const gestures = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id), 0);
   const prestiged = state.etherReceived > 0;
@@ -82,13 +86,11 @@ const pagesPerSecondParts = (state: GameState, readable: boolean): string => {
     factor(base > 0 ? gestures / base : 1),
     ...(prestiged ? [factor(readingMultiplier(state)), factor(etherReading(state))] : []),
   ];
-  if (!readable) return parts.join('  ');
   const [methods, intuitions, stars, ether] = parts;
-  return t(`strangeBook.figures.${prestiged ? 'pagesPerSecondEther' : 'pagesPerSecondParts'}`)
-    .replace('{methods}', methods)
-    .replace('{intuitions}', intuitions)
-    .replace('{stars}', stars)
-    .replace('{ether}', ether);
+  if (!readable) return prestiged ? [`${methods}  ${intuitions}`, `${stars}  ${ether}`] : [`${methods}  ${intuitions}`];
+  const first = t('strangeBook.figures.pagesPerSecondParts').replace('{methods}', methods).replace('{intuitions}', intuitions);
+  if (!prestiged) return [first];
+  return [first, t('strangeBook.figures.pagesPerSecondEther').replace('{stars}', stars).replace('{ether}', ether)];
 };
 
 const rareFound = (state: GameState): number => Object.keys(state.rareBooks).length;
@@ -180,7 +182,12 @@ export const CHAPTERS: readonly Chapter[] = [
         shown: (s: GameState) => s.tools[tool.id] > 0,
         row: true,
       })),
-      { id: 'pagesPerSecond', caption: 'zo selim', value: (s) => formatNumber(pagesPerSecond(s), getLocale()), detail: pagesPerSecondParts },
+      {
+        id: 'pagesPerSecond',
+        caption: 'zo selim',
+        value: (s) => formatNumber(pagesPerSecond(s), getLocale()),
+        detail: pagesPerSecondParts,
+      },
       { id: 'bestPagesPerSecond', caption: 'amprel duc', value: (s) => formatNumber(s.stats.bestPagesPerSecond, getLocale()) },
     ],
   },

@@ -142,6 +142,8 @@ const babelGold = (item: TextItem): TextItem => (currentNotation() === 'babel' &
 
 /** Relevé des méthodes : une ligne chacune, sous le titre ; les grands chiffres viennent après. */
 const ROW_TOP = 180;
+/** Une ligne d'une décomposition sous la légende (la vitesse de lecture). */
+const DETAIL_LINE = 28;
 const ROW_STEP = 36;
 
 const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[] => {
@@ -151,15 +153,23 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
   // Sous le relevé, les grands chiffres plus petits et plus serrés : ils tiennent au-dessus du numéro de page.
   const compact = rows.length > 0;
   const top = compact ? ROW_TOP + rows.length * ROW_STEP + 40 : FIGURE_TOP;
-  const step = compact ? Math.min(FIGURE_STEP, (690 - top) / Math.max(1, figures.length)) : FIGURE_STEP;
+  const readable = isDeciphered(state, chapter.id);
+  // Les décompositions en plusieurs lignes, sous la légende : leur place s'ajoute à l'écart avec le chiffre suivant.
+  const details = figures.map((figure) => figure.detail?.(state, readable));
+  const lines = details.map((detail) => (Array.isArray(detail) ? detail : []));
+  const room = lines.reduce((total, list) => total + list.length * DETAIL_LINE, 0);
+  const step = compact ? Math.min(FIGURE_STEP, (690 - top - room) / Math.max(1, figures.length)) : FIGURE_STEP;
   const size = compact ? 40 : 52;
   const below = compact ? 50 : 64;
+  const tops = figures.map(
+    (_, index) => top + index * step + lines.slice(0, index).reduce((total, list) => total + list.length * DETAIL_LINE, 0),
+  );
   const captions = figures.map((figure, index): TextItem =>
     fitCaption({
       kind: 'text',
       text: figureCaption(state, chapter, figure),
       x: 320,
-      y: top + index * step + below,
+      y: tops[index] + below,
       size: compact ? 18 : 20,
       align: 'center',
       italic: true,
@@ -177,31 +187,14 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
         babelGold({ kind: 'text', text: figure.value(state), x: 530, y, size: 22, align: 'right' }),
       ];
     }),
-    ...figures.flatMap((figure, index): Item[] => [
-      babelGold({
-        kind: 'text',
-        text: figure.value(state),
-        x: 320,
-        y: top + index * step,
-        size,
-        align: 'center',
-        spacing: 2,
-      }),
-      ...(figure.detail
-        ? [
-            fitCaption({
-              kind: 'text',
-              text: figure.detail(state, isDeciphered(state, chapter.id)),
-              x: 320,
-              y: top + index * step + 60,
-              size: 19,
-              align: 'center',
-              spacing: 2,
-            }),
-            { ...captions[index], y: captions[index].y + 28 },
-          ]
-        : [captions[index]]),
-    ]),
+    ...figures.flatMap((figure, index): Item[] => {
+      const detail = details[index];
+      const value = babelGold({ kind: 'text', text: figure.value(state), x: 320, y: tops[index], size, align: 'center', spacing: 2 });
+      const small = (text: string, y: number): TextItem =>
+        fitCaption({ kind: 'text', text, x: 320, y, size: 19, align: 'center', spacing: 2 });
+      if (typeof detail === 'string') return [value, small(detail, tops[index] + 60), { ...captions[index], y: captions[index].y + 28 }];
+      return [value, captions[index], ...lines[index].map((line, i) => small(line, captions[index].y + 32 + i * DETAIL_LINE))];
+    }),
     folio(number),
   ];
 };
