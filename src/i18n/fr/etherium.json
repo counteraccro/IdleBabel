@@ -63,7 +63,7 @@
     },
     "ages": {
       "name": "Les Âges",
-      "figure": "L'Escalier",
+      "figure": "L’Escalier",
       "description": "Chaque marche m'emmène plus loin."
     }
   },
@@ -124,7 +124,7 @@
       "t": {
         "name": "Pouce",
         "value": "+1 %",
-        "effect": "de la production d'une seconde par clic"
+        "effect": "de la production d’une seconde par clic"
       },
       "i": {
         "name": "Index",
@@ -132,7 +132,7 @@
         "effect": "pages par clic"
       },
       "i2": {
-        "name": "Bout de l'index",
+        "name": "Bout de l’index",
         "value": "×3",
         "effect": "pages par clic"
       },
@@ -201,7 +201,7 @@
       "k": {
         "name": "Bec",
         "value": "Deviner",
-        "effect": "une phrase dès qu'il lui manque deux morceaux"
+        "effect": "une phrase dès qu’il lui manque deux morceaux"
       }
     },
     "finds": {
@@ -260,27 +260,27 @@
       "d0": {
         "name": "Pointe basse",
         "value": "+5 %",
-        "effect": "de lecture comptée pendant l'absence"
+        "effect": "de lecture comptée pendant l’absence"
       },
       "d1": {
         "name": "Dos 1",
         "value": "+1 h",
-        "effect": "d'absence comptée"
+        "effect": "d’absence comptée"
       },
       "d2": {
         "name": "Dos 2",
         "value": "+3 h",
-        "effect": "d'absence comptée"
+        "effect": "d’absence comptée"
       },
       "d3": {
         "name": "Dos 3",
         "value": "+12 h",
-        "effect": "d'absence comptée (24 h en tout)"
+        "effect": "d’absence comptée (24 h en tout)"
       },
       "c1": {
         "name": "Creux 1",
         "value": "+10 %",
-        "effect": "de lecture comptée pendant l'absence"
+        "effect": "de lecture comptée pendant l’absence"
       },
       "c2": {
         "name": "Creux 2",
@@ -290,12 +290,12 @@
       "tip": {
         "name": "Pointe haute",
         "value": "En entier",
-        "effect": "les trouvailles de l'absence"
+        "effect": "les trouvailles de l’absence"
       },
       "x": {
         "name": "Étoile près de la lune",
         "value": "×2",
-        "effect": "feuilles comptées pour les trouvailles pendant l'absence"
+        "effect": "feuilles comptées pour les trouvailles pendant l’absence"
       }
     },
     "start": {
@@ -322,22 +322,22 @@
       "top": {
         "name": "Arche",
         "value": "1 %",
-        "effect": "des exemplaires de chaque méthode de la partie d'avant"
+        "effect": "des exemplaires de chaque méthode de la partie d’avant"
       },
       "r1": {
         "name": "Montant droit, en bas",
         "value": "0,1 %",
-        "effect": "des pages lues dans la partie d'avant, au réveil"
+        "effect": "des pages lues dans la partie d’avant, au réveil"
       },
       "r2": {
         "name": "Montant droit, au milieu",
         "value": "1 %",
-        "effect": "des pages lues dans la partie d'avant, au réveil"
+        "effect": "des pages lues dans la partie d’avant, au réveil"
       },
       "r3": {
         "name": "Montant droit, en haut",
         "value": "10 %",
-        "effect": "de la Connaissance de la partie d'avant, au réveil"
+        "effect": "de la Connaissance de la partie d’avant, au réveil"
       },
       "k": {
         "name": "Poignée",
@@ -406,5 +406,10 @@
   },
   "lit": "allumée",
   "light": "Allumer · {n} Éther",
-  "cost": "{n} Éther"
+  "cost": "{n} Éther",
+  "given": "allumée dès le début",
+  "afterAge": "quand l’Âge Automatique sera acheté",
+  "unknown": "une marche, plus haut",
+  "complete": "Toute la figure brille.",
+  "contentsLine": "Ce que l’Éther a éclairé."
 }

@@ -7,7 +7,7 @@ const PAGE_NUMBER_SIZE = 18;
 const PAGE_NUMBER_FONT = `${PAGE_NUMBER_SIZE}px Georgia, 'Times New Roman', serif`;
 const PAGE_NUMBER_INK = 'rgba(52, 36, 22, 0.55)';
 
-const TEXTURE_SCALE = 2;
+export const TEXTURE_SCALE = 2;
 
 /** Papier des pages, de haut en bas : jauni pour les livres anciens, blanc pour les modernes. */
 export type Paper = readonly [string, string, string];

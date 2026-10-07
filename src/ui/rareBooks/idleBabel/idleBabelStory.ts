@@ -63,6 +63,8 @@ export const DRAFT_GROUPS = {
   numerals: ['numerals-b'],
   showcase: ['showcase-a', 'showcase-b', 'showcase-c'],
   etherium: ['etherium-a', 'etherium-b', 'etherium-c'],
+  etheriumTrees: ['etherium-trees-a', 'etherium-trees-b', 'etherium-trees-c'],
+  etheriumInk: ['etherium-ink-d1', 'etherium-ink-d3', 'etherium-ink-d4'],
 };
 
 export const STORY: StoryChapter[] = [
@@ -82,7 +84,27 @@ export const STORY: StoryChapter[] = [
       { key: 'anomalies' },
       // Toutes les couvertures au même endroit : une partie « Les livres », et dedans les rares puis les classiques.
       { key: 'books' },
-      { key: 'rareBooks', sub: true, plates: ['deathBook', 'directory', 'blankPage', 'debug', 'alexH', 'oriana', 'credits', 'idleBabel', 'almanac', 'necronomicon', 'dadJokes', 'voynich', 'catalogue', 'sand', 'bigX'] },
+      {
+        key: 'rareBooks',
+        sub: true,
+        plates: [
+          'deathBook',
+          'directory',
+          'blankPage',
+          'debug',
+          'alexH',
+          'oriana',
+          'credits',
+          'idleBabel',
+          'almanac',
+          'necronomicon',
+          'dadJokes',
+          'voynich',
+          'catalogue',
+          'sand',
+          'bigX',
+        ],
+      },
       {
         key: 'classics',
         sub: true,
@@ -96,6 +118,7 @@ export const STORY: StoryChapter[] = [
       { key: 'away' },
       { key: 'intuitions' },
       { key: 'prestige', drafts: ['etherium'] },
+      { key: 'constellations', drafts: ['etheriumTrees', 'etheriumInk'] },
       { key: 'thisBook' },
     ],
   },

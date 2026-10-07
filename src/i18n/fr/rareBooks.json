@@ -1634,6 +1634,7 @@
             "Puis l’Etherium est venu sur la pile dès le début, un livre violet qui se nourrit des pages lues. On le prend en main comme les autres, on regarde sa couverture et son dos ; c’est ouvrir sa couverture qui fait le prestige. Tant que cela ne rapporte pas un Éther, elle résiste : elle se soulève à peine et retombe. Ensuite, il luit. Chaque fois, une question courte dit ce qui sera perdu et l’Éther gagné ; « Ouvrir » se clique. La première fois seulement, le sol se dérobe, et quand le chercheur rouvre les yeux, autour de lui, plus rien : le livre s’est nourri de tout. Reposé, il ne disparaît plus : il retourne sur la pile, scellé jusqu’au prochain prestige."
           ]
         },
+        "constellations": {"head": "Les constellations", "text": ["Puis l’Etherium est passé de nuit. Ses arbres à une tige devaient se séparer en branches ; trois pistes ont été dessinées : la fourche, l’arbre de Porphyre, la double page. Aucune n’a été gardée. À la place, une constellation inventée par page, dont la figure dit ce qu’elle donne : un livre ouvert pour la lecture, une main, une chouette pour la Connaissance, une loupe pour les trouvailles, une lune pour l’absence, une porte pour le réveil, une ruche pour la mémoire des méthodes, un escalier pour les Âges. Chaque étoile n’a qu’une étoile d’avant ; elle s’allume avec de l’Éther, et ce que donnent les étoiles se multiplie. Les nœuds des anciens arbres ont rendu leur Éther.", "Pour l’encre, quatre nuits ont été essayées : l’atlas sur papier, la nuit, la nuit retenue, la nuit qui se mérite. La nuit tout court l’a emporté : des pages violettes, une poussière d’étoiles fixe, des traits d’or qui brillent. Dans la pièce, la lampe la faisait virer au bordeaux ; ses pages ont reçu de quoi garder leur violet."]},
         "thisBook": {
           "head": "Ce livre",
           "text": [
@@ -1701,7 +1702,13 @@
         "showcase-c": "L’hexagone de losanges",
         "etherium-a": "Les coulures",
         "etherium-b": "Une alvéole par Éther",
-        "etherium-c": "Le tourbillon"
+        "etherium-c": "Le tourbillon",
+        "etherium-trees-a": "La fourche",
+        "etherium-trees-b": "L’arbre de Porphyre",
+        "etherium-trees-c": "La double page",
+        "etherium-ink-d1": "L’atlas",
+        "etherium-ink-d3": "La nuit retenue",
+        "etherium-ink-d4": "La nuit qui se mérite"
       },
       "draftGroups": {
         "methods": "Les méthodes de lecture",
@@ -1709,7 +1716,9 @@
         "modalForms": "La forme des fenêtres",
         "numerals": "Les chiffres de Babel",
         "showcase": "La vitrine",
-        "etherium": "La couverture de l’Etherium"
+        "etherium": "La couverture de l’Etherium",
+        "etheriumTrees": "Les branches de l’Etherium",
+        "etheriumInk": "L’encre des constellations"
       }
     }
   },

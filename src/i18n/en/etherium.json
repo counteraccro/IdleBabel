@@ -406,5 +406,10 @@
   },
   "lit": "lit",
   "light": "Light · {n} Ether",
-  "cost": "{n} Ether"
+  "cost": "{n} Ether",
+  "given": "lit from the start",
+  "afterAge": "once the Automatic Age is bought",
+  "unknown": "a step, further up",
+  "complete": "The whole figure shines.",
+  "contentsLine": "What the Ether has lit."
 }

@@ -1621,6 +1621,7 @@
             "Then the Etherium came to the pile from the very start, a violet book that feeds on the pages read. It is taken in hand like the others, its cover and its back looked at; opening its cover is the prestige. Until that brings one Ether, the cover resists: it barely lifts and falls back. Then it glows. Each time, a short question says what will be lost and the Ether gained; “Open” must be clicked. The first time only, the floor gives way, and when the seeker opens his eyes again, nothing is left around him: the book has fed on everything. Put back, it no longer disappears: it goes back to the pile, sealed until the next prestige."
           ]
         },
+        "constellations": {"head": "The constellations", "text": ["Then the Etherium turned to night. Its single-stemmed trees were meant to branch; three ideas were drawn: the fork, the tree of Porphyry, the double page. None was kept. Instead, one invented constellation per page, its figure telling what it gives: an open book for reading, a hand, an owl for Knowledge, a magnifying glass for finds, a moon for absence, a door for waking, a hive for the memory of methods, a staircase for the Ages. Each star has only one star before it; it is lit with Ether, and what the stars give multiplies. The nodes of the old trees gave back their Ether.", "For the ink, four nights were tried: the atlas on paper, the night, the restrained night, the night that is earned. Plain night won: violet pages, a fixed dust of stars, gold lines that shine. In the room, the lamp turned it maroon; its pages were given what they need to keep their violet."]},
         "thisBook": {
           "head": "This book",
           "text": [
@@ -1688,7 +1689,13 @@
         "showcase-c": "The lozenge hexagon",
         "etherium-a": "The drips",
         "etherium-b": "One cell per Ether",
-        "etherium-c": "The whirl"
+        "etherium-c": "The whirl",
+        "etherium-trees-a": "The fork",
+        "etherium-trees-b": "The tree of Porphyry",
+        "etherium-trees-c": "The double page",
+        "etherium-ink-d1": "The atlas",
+        "etherium-ink-d3": "The restrained night",
+        "etherium-ink-d4": "The night that is earned"
       },
       "draftGroups": {
         "methods": "Reading methods",
@@ -1696,7 +1703,9 @@
         "modalForms": "The shape of the windows",
         "numerals": "Babel’s numerals",
         "showcase": "The showcase",
-        "etherium": "The Etherium’s cover"
+        "etherium": "The Etherium’s cover",
+        "etheriumTrees": "The branches of the Etherium",
+        "etheriumInk": "The ink of the constellations"
       }
     }
   },

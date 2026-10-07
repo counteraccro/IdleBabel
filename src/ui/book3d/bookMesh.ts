@@ -45,6 +45,11 @@ export interface BookLook {
   leather: THREE.ColorRepresentation;
   edge: THREE.Texture;
   paper: THREE.ColorRepresentation;
+  /**
+   * Teinte des pages dessinées (blanc par défaut) : elle compense la lumière chaude de la pièce pour des pages
+   * qui doivent garder leur couleur (la nuit de l'Etherium, qui virerait au bordeaux).
+   */
+  pageTint?: THREE.Color;
   /** Fil des tranchefiles (bourrelets en haut et en bas du pli) ; sans : pas de tranchefiles (cahier agrafé). */
   headband?: THREE.Texture;
   /** Couleur du signet (ruban de soie). */
@@ -636,7 +641,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
         if (turn === null) continue;
         if (material.map !== map) {
           material.map = map;
-          material.color.set(map ? 0xffffff : look.paper);
+          material.color.set(map ? (look.pageTint ?? 0xffffff) : look.paper);
           material.needsUpdate = true;
         }
       }
@@ -685,8 +690,8 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
     setPages: (left, right) => {
       leftPage.map = left;
       rightPage.map = right;
-      leftPage.color.set(left ? 0xffffff : look.paper);
-      rightPage.color.set(right ? 0xffffff : look.paper);
+      leftPage.color.set(left ? (look.pageTint ?? 0xffffff) : look.paper);
+      rightPage.color.set(right ? (look.pageTint ?? 0xffffff) : look.paper);
       leftPage.needsUpdate = true;
       rightPage.needsUpdate = true;
       glow.show(leftPage, left);
