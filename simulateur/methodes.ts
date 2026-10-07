@@ -1,15 +1,14 @@
 import { METHOD_CHAIN, TOOLS } from '../src/data/tools';
-import { AUTOMATIC } from './config';
 import { KEEPS, S } from '../src/data/etheriumStars';
 import { lit, type Life } from './vie';
 
-/** Une méthode pour le simulateur : celles du jeu (src/data/tools.ts), puis celles proposées (config.ts). */
+/** Une méthode pour le simulateur : celles du jeu (src/data/tools.ts). */
 export interface Method {
   id: string;
   baseCost: number;
   pagesPerSecond: number;
   pieces: number;
-  /** Son intuition (les méthodes de l'Âge Manuel) : production ×2 par niveau. */
+  /** Son intuition : production ×2 par niveau. */
   gesture?: string;
   manual?: boolean;
 }
@@ -23,10 +22,13 @@ const method = (tool: (typeof TOOLS)[number]): Method => ({
   pagesPerSecond: tool.pagesPerSecond,
   pieces: PIECES[tool.id] ?? 5,
   gesture: `${tool.id}Gesture`,
-  manual: true,
+  manual: !tool.age,
 });
 
-const MANUAL: Method[] = METHOD_CHAIN.map(method);
+const MANUAL: Method[] = METHOD_CHAIN.filter((tool) => !tool.age).map(method);
+
+/** L'Âge Automatique (src/data/tools.ts) : ses méthodes ne se trouvent qu'une fois l'Âge acheté. */
+export const AUTOMATIC: Method[] = METHOD_CHAIN.filter((tool) => tool.age).map(method);
 
 /** La Page Cornée, méthode secrète de l'Âge Manuel (dans le jeu : src/data/tools.ts). */
 export const SECRET: Method = method(TOOLS.find((tool) => tool.secret)!);

@@ -65,6 +65,13 @@ export const TECHNOLOGIES = [
   { id: 'ladderGesture', prices: gesture(75_000), tool: 'ladder' },
   // La méthode secrète, dernière de l'Âge Manuel (l'auteur, 07/10) ; son prix, entre la Voix et le Lutrin.
   { id: 'corneeGesture', prices: gesture(5_000), tool: 'cornee' },
+  // L'Âge Automatique : une intuition par mécanisme, comme à l'Âge Manuel (l'auteur, 07/10) ; prix provisoires, dans la
+  // suite du Lutrin et de l'Échelle (simulés : une partie avancée gagne 300 000 à 450 000 de Connaissance).
+  { id: 'metronomeGesture', prices: gesture(100_000), tool: 'metronome' },
+  { id: 'wheelGesture', prices: gesture(200_000), tool: 'wheel' },
+  { id: 'liftGesture', prices: gesture(400_000), tool: 'lift' },
+  { id: 'automatonGesture', prices: gesture(800_000), tool: 'automaton' },
+  { id: 'clockGesture', prices: gesture(1_600_000), tool: 'clock' },
 ] as const satisfies readonly TechnologyDef[];
 
 export type TechnologyId = (typeof TECHNOLOGIES)[number]['id'];

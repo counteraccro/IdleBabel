@@ -61,6 +61,11 @@
     "lectern": "A block / fallen from the railing / holds a book / better than / my arms.",
     "ladder": "The top / shelves / are not / further away: / I only need / to stop / coming down.",
     "cornee": "A folded / corner / gives me back / the page / where I had stopped.",
+    "metronome": "It beats / the time. / My eyes / follow, / without me.",
+    "wheel": "Twenty books / turn / on the wheel: / all I do / is push it.",
+    "lift": "A pulley, / a basket. / The floors / come / to me.",
+    "automaton": "It understands / nothing. / But it reads, / and it never / stops.",
+    "clock": "Every hour, / the whole / gallery / turns / a page.",
     "cup": "A cup, / chipped; / I always drank / from the side / of the chip.",
     "shelves": "Five shelves / per wall. / I counted / six, / once. / I did not / count again.",
     "thirtyOne": "Thirty-two books / per shelf. / On this one, / thirty-one. / Someone / is reading right now.",
@@ -289,7 +294,12 @@
         "voice": "I no longer whisper. I no longer need to.",
         "lectern": "The stone holds the book. My hands are free.",
         "ladder": "I no longer climb down. I read up there.",
-        "cornee": "I no longer look for my page. It waits for me."
+        "cornee": "I no longer look for my page. It waits for me.",
+        "metronome": "I no longer hear the beat. I read inside it.",
+        "wheel": "I barely push. It turns on its own.",
+        "lift": "The basket never comes down empty.",
+        "automaton": "It reads faster than I do. I do not hold it against it.",
+        "clock": "The hours are shorter. The pages, more numerous."
       }
     }
   },
@@ -327,6 +337,31 @@
       "description": "A folded corner keeps the page. Reading resumes where it stopped, without reading anything twice.",
       "quote": "I do not remember folding this page. Yet the crease is old, worn as if it had been opened a thousand times. Every time I pick up the book, it opens there, and I read as if I had never stopped.",
       "source": "a memory from before waking"
+    },
+    "metronome": {
+      "description": "A brass pendulum keeps the beat. The eye no longer looks for its rhythm: it follows it, line after line, without tiring.",
+      "quote": "I found it in a niche between two shelves, covered in dust. Nobody knew what it was for. I wound it once, and it never stopped again: it still beats while I sleep, and when I wake, my eyes have already picked up its pace.",
+      "source": "volume 7,112, last page"
+    },
+    "wheel": {
+      "description": "A wooden wheel holds twenty open books. One push, and the next one settles before my eyes.",
+      "quote": "An engineer once drew this wheel for a king who wanted to read without getting up. I have no king and no kingdom, but in the end I built one out of shelf boards. The books turn before me like the hours of a clock, and none of them ever falls.",
+      "source": "after an engraving from 1588, glued into an untitled book"
+    },
+    "lift": {
+      "description": "A rope, a pulley, a basket in the well. Books from the other floors come up to the hexagon.",
+      "quote": "The well has no bottom, they say, but it has floors. I lowered a basket on a rope, and it came back up full. I do not know who fills it. I do not dare go down to look. Sometimes I thank them, softly, leaning over the railing.",
+      "source": "note scribbled on a railing"
+    },
+    "automaton": {
+      "description": "A reader of wood and brass, seated before a book. It understands nothing, but it turns the pages, and each one counts.",
+      "quote": "Its eyes are two glass marbles. Its fingers, springs. It reads without ever stopping, without ever understanding, and I sometimes wonder how it differs from the other readers of the Library. Perhaps only in this: it does not complain.",
+      "source": "volume 301,977, page 9"
+    },
+    "clock": {
+      "description": "A clock without hands links every room of the gallery. At each stroke, every open book turns a page.",
+      "quote": "I followed the ticking from one room to the next, for a long time, until I understood there was only one clock, hidden everywhere at once. It does not tell the time. It gives the signal. And at each signal, the whole gallery turns a page with me.",
+      "source": "inscription carved beneath an empty dial"
     }
   },
   "stat": "Each: +{n} page/s · owned: {count}"

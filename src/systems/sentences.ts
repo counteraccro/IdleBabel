@@ -41,10 +41,13 @@ export const write = (state: GameState, id: string, indices: number[]): void => 
   state.written[id] = [...done].sort((a, b) => a - b);
 };
 
-/** La phrase existe pour le chercheur : toutes, sauf une méthode secrète dont l'étoile n'est pas allumée. */
+/**
+ * La phrase existe pour le chercheur : toutes, sauf une méthode secrète dont l'étoile n'est pas allumée, et celles d'un
+ * Âge pas encore acheté.
+ */
 export const sentenceShown = (state: GameState, id: string): boolean => {
-  const secret = SENTENCES.find((sentence) => sentence.id === id)?.secret;
-  return !secret || starLit(state, secret);
+  const sentence = SENTENCES.find((candidate) => candidate.id === id);
+  return (!sentence?.secret || starLit(state, sentence.secret)) && (!sentence?.age || starLit(state, sentence.age));
 };
 
 /** La méthode secrète dont le souvenir flou est revenu, et dont la phrase n'est pas encore complète. */
@@ -53,7 +56,9 @@ export const openSecret = (state: GameState): string | undefined =>
 
 /** La phrase de méthode en cours : la première qui n'est pas complète (hors méthode secrète, qui se trouve à côté). */
 export const currentTarget = (state: GameState): string | undefined =>
-  SENTENCES.find((sentence) => sentence.kind === 'method' && !sentence.secret && !isComplete(state, sentence.id))?.id;
+  SENTENCES.find(
+    (sentence) => sentence.kind === 'method' && !sentence.secret && sentenceShown(state, sentence.id) && !isComplete(state, sentence.id),
+  )?.id;
 
 /** Une méthode de lecture se découvre en complétant sa phrase. */
 export const toolUnlocked = (state: GameState, tool: ToolId): boolean => {

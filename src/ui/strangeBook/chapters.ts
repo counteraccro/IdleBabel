@@ -102,6 +102,11 @@ const TOOL_CAPTIONS: Record<string, string> = {
   lectern: 'lotiz perma',
   ladder: 'escal u virn',
   cornee: 'pagna corvi',
+  metronome: 'metru bal',
+  wheel: 'rota libra',
+  lift: 'pulo vesk',
+  automaton: 'automa lir',
+  clock: 'horla galen',
 };
 
 export const CHAPTERS: readonly Chapter[] = [

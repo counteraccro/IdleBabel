@@ -7,14 +7,17 @@ import type { GameState } from '../core/state';
 
 /**
  * La phrase de méthode en cours, si elle peut déjà se trouver : la méthode d'avant possédée à METHOD_GATE
- * exemplaires (la première, la Lecture Diagonale, toujours). Sinon rien : les trouvailles vont ailleurs.
+ * exemplaires (la première, la Lecture Diagonale, toujours ; la première d'un Âge, dès l'Âge acheté). Sinon rien :
+ * les trouvailles vont ailleurs.
  */
 export const findableTarget = (state: GameState): string | undefined => {
   const target = currentTarget(state);
   const tool = SENTENCES.find((sentence) => sentence.id === target)?.tool;
   const index = METHOD_CHAIN.findIndex((candidate) => candidate.id === tool);
   if (index <= 0) return target;
-  return state.tools[METHOD_CHAIN[index - 1].id] >= METHOD_GATE ? target : undefined;
+  const previous = METHOD_CHAIN[index - 1];
+  if (previous.age !== METHOD_CHAIN[index].age) return target;
+  return state.tools[previous.id] >= METHOD_GATE ? target : undefined;
 };
 
 /** La phrase `id` est la méthode en cours, mais elle attend : la méthode d'avant, à METHOD_GATE exemplaires. */

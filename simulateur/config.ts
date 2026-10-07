@@ -1,31 +1,9 @@
 import type { PageId } from '../src/data/etheriumStars';
 
 /**
- * Ce que le jeu n'a pas encore : les chiffres proposés (conception §3.1 ter, §4), à changer ici pour essayer.
- * Le reste (méthodes de l'Âge Manuel, intuitions, trouvailles) vient du code du jeu (src/data).
+ * Le joueur imité par le bot. Les chiffres du jeu (méthodes des deux Âges, intuitions, trouvailles, Etherium) viennent
+ * du code du jeu (src/data).
  */
-
-/** Une méthode que le jeu n'a pas encore : prix de base, pages/s, morceaux de sa phrase. */
-export interface ExtraMethod {
-  id: string;
-  baseCost: number;
-  pagesPerSecond: number;
-  pieces: number;
-}
-
-/**
- * Âge Automatique (§3.1 ter, noms choisis le 07/10, chiffres provisoires) : Métronome, Roue à Livres, Monte-Livres,
- * Automate Lecteur, Horloge des Galeries. Prix « D », choisis le 07/10 : dans une partie avancée, les cinq
- * s'échelonnent (quelques minutes, 4 h, 11 h, 23 h, 42 h) ; l'Horloge vers le 13e jour (24 h de jeu par jour).
- * Les morceaux des phrases sont devinés (pas encore écrites).
- */
-export const AUTOMATIC: readonly ExtraMethod[] = [
-  { id: 'metronome', baseCost: 250e6, pagesPerSecond: 1e5, pieces: 5 },
-  { id: 'roue', baseCost: 4e9, pagesPerSecond: 1e6, pieces: 5 },
-  { id: 'monte', baseCost: 80e9, pagesPerSecond: 12e6, pieces: 5 },
-  { id: 'automate', baseCost: 1.5e12, pagesPerSecond: 150e6, pieces: 5 },
-  { id: 'horloge', baseCost: 30e12, pagesPerSecond: 2e9, pieces: 5 },
-];
 
 // L'Etherium (les constellations) est dans etoiles.ts.
 

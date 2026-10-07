@@ -44,7 +44,12 @@
     "voice": "{when}, la voix dans ta tête s'est tue. Sans elle, tu allais plus vite.",
     "lectern": "{when}, tu as arraché une pierre à la rambarde. Elle est devenue ton lutrin.",
     "ladder": "{when}, tu as trouvé une échelle. Les étagères du haut sont devenues les tiennes.",
-    "cornee": "{when}, tu as retrouvé une page cornée. Tu ne te souvenais pas de l'avoir pliée."
+    "cornee": "{when}, tu as retrouvé une page cornée. Tu ne te souvenais pas de l'avoir pliée.",
+    "metronome": "{when}, tu as remonté un métronome. Tes yeux ont pris sa cadence.",
+    "wheel": "{when}, tu as bâti une roue. Les livres tournaient devant toi.",
+    "lift": "{when}, tu as descendu un panier dans le puits. Il est remonté plein.",
+    "automaton": "{when}, un automate s'est mis à lire pour toi. Il ne comprenait rien. Toi non plus.",
+    "clock": "{when}, tu as entendu l'horloge des galeries. Depuis, toute la galerie lit avec toi."
   },
   "memories": {
     "cup": "{when}, un souvenir est revenu. Une tasse ébréchée. Tu buvais toujours du côté de l'ébréchure."

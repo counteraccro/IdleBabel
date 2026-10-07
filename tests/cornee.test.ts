@@ -31,8 +31,8 @@ const draws = (state: GameState, count = 2000): Set<string> => {
 
 describe('La Page Cornée', () => {
   it('dernière méthode de l’Âge Manuel, hors de la chaîne des 25 exemplaires', () => {
-    expect(TOOLS[TOOLS.length - 1].id).toBe('cornee');
-    expect(METHOD_CHAIN.map((tool) => tool.id)).toEqual(['diagonal', 'finger', 'voice', 'lectern', 'ladder']);
+    expect(TOOLS.filter((tool) => !tool.age).at(-1)?.id).toBe('cornee');
+    expect(METHOD_CHAIN.filter((tool) => !tool.age).map((tool) => tool.id)).toEqual(['diagonal', 'finger', 'voice', 'lectern', 'ladder']);
     const state = game(true, 'diagonal', 'finger', 'voice');
     expect(waitingFor(state, 'lectern')).toBe('voice');
     state.tools.cornee = 100;

@@ -120,6 +120,7 @@ export const STORY: StoryChapter[] = [
       { key: 'prestige', drafts: ['etherium'] },
       { key: 'constellations', drafts: ['etheriumTrees', 'etheriumInk'] },
       { key: 'cornee' },
+      { key: 'automaticAge' },
       { key: 'thisBook' },
     ],
   },

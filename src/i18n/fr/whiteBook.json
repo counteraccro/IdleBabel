@@ -61,6 +61,11 @@
     "lectern": "Un bloc / tombé de la rambarde / tient un livre / mieux que / mes bras.",
     "ladder": "Les étagères / du haut / ne sont pas / plus loin : / il suffit / de ne plus / redescendre.",
     "cornee": "Un coin / replié / me rend / la page / où je m'étais arrêté.",
+    "metronome": "Il bat / la mesure. / Mes yeux / suivent, / sans moi.",
+    "wheel": "Vingt livres / tournent / sur la roue : / il me suffit / de la pousser.",
+    "lift": "Une poulie, / un panier. / Les étages / viennent / à moi.",
+    "automaton": "Il ne comprend / rien. / Mais il lit, / et il ne / s'arrête jamais.",
+    "clock": "À chaque heure, / toute / la galerie / tourne / une page.",
     "cup": "Une tasse / ébréchée ; / je buvais toujours / du côté / de l'ébréchure.",
     "shelves": "Cinq étagères / par mur. / J'en ai compté / six, / une fois. / Je n'ai pas / recompté.",
     "thirtyOne": "Trente-deux livres / par étagère. / Sur celle-ci, / trente et un. / Quelqu'un / lit en ce moment.",
@@ -289,7 +294,12 @@
         "voice": "Je ne murmure plus. Je n'en ai plus besoin.",
         "lectern": "La pierre tient le livre. Mes mains sont libres.",
         "ladder": "Je ne descends plus. Je lis là-haut.",
-        "cornee": "Je ne cherche plus ma page. Elle m'attend."
+        "cornee": "Je ne cherche plus ma page. Elle m'attend.",
+        "metronome": "Je n'entends plus le battement. Je lis dedans.",
+        "wheel": "Je pousse à peine. Elle tourne seule.",
+        "lift": "Le panier ne redescend jamais vide.",
+        "automaton": "Il lit plus vite que moi. Je ne lui en veux pas.",
+        "clock": "Les heures sont plus courtes. Les pages, plus nombreuses."
       }
     }
   },
@@ -327,6 +337,31 @@
       "description": "Un coin plié garde la page. La lecture reprend où elle s'était arrêtée, sans rien relire.",
       "quote": "Je ne me souviens pas d'avoir corné cette page. Le pli est pourtant ancien, usé comme si on l'avait ouvert mille fois. Chaque fois que je reprends le livre, il s'ouvre là, et je lis comme si je n'avais jamais cessé.",
       "source": "souvenir d'avant le réveil"
+    },
+    "metronome": {
+      "description": "Un balancier de laiton bat la mesure. L'œil ne cherche plus son rythme : il le suit, ligne après ligne, sans fatigue.",
+      "quote": "Je l'ai trouvé dans une niche, entre deux étagères, couvert de poussière. Personne ne savait à quoi il servait. Je l'ai remonté une fois, et il n'a plus jamais cessé : il bat encore quand je dors, et mes yeux, au réveil, ont déjà repris sa cadence.",
+      "source": "volume 7 112, dernière page"
+    },
+    "wheel": {
+      "description": "Une roue de bois porte vingt livres ouverts. Une poussée, et le suivant vient se placer sous les yeux.",
+      "quote": "Un ingénieur avait dessiné cette roue pour un roi qui voulait lire sans se lever. Je n'ai ni roi ni royaume, mais j'ai fini par en bâtir une avec des planches d'étagères. Les livres tournent devant moi comme les heures d'une horloge, et aucun ne tombe jamais.",
+      "source": "d'après une gravure de 1588, collée dans un livre sans titre"
+    },
+    "lift": {
+      "description": "Une corde, une poulie, un panier dans le puits. Les livres des autres étages montent jusqu'à l'hexagone.",
+      "quote": "Le puits n'a pas de fond, dit-on, mais il a des étages. J'ai descendu un panier au bout d'une corde, et il est remonté plein. Je ne sais pas qui le remplit. Je n'ose pas descendre voir. Je le remercie, parfois, à voix basse, en me penchant sur la rambarde.",
+      "source": "note griffonnée sur une rambarde"
+    },
+    "automaton": {
+      "description": "Un lecteur de bois et de laiton, assis devant un livre. Il ne comprend rien, mais il tourne les pages, et chacune compte.",
+      "quote": "Ses yeux sont deux billes de verre. Ses doigts, des ressorts. Il lit sans jamais s'arrêter, sans jamais comprendre, et je me demande parfois en quoi il diffère des autres lecteurs de la Bibliothèque. Peut-être seulement en ceci : lui ne s'en plaint pas.",
+      "source": "volume 301 977, page 9"
+    },
+    "clock": {
+      "description": "Une horloge sans aiguilles relie toutes les salles de la galerie. À chaque coup, chaque livre ouvert tourne une page.",
+      "quote": "J'ai suivi le tic-tac d'une salle à l'autre, longtemps, jusqu'à comprendre qu'il n'y avait qu'une seule horloge, cachée partout à la fois. Elle ne donne pas l'heure. Elle donne le signal. Et à chaque signal, toute la galerie tourne une page avec moi.",
+      "source": "inscription gravée sous un cadran vide"
     }
   },
   "stat": "Chacune : +{n} page/s · possédées : {count}"

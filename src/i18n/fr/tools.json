@@ -4,5 +4,10 @@
   "voice": { "name": "La Voix Éteinte", "description": "plus de voix dans la tête pour ralentir." },
   "lectern": { "name": "Le Lutrin de Pierre", "description": "un bloc arraché à une rambarde." },
   "ladder": { "name": "L'Échelle Roulante", "description": "lire les étagères hautes sans descendre." },
-  "cornee": { "name": "La Page Cornée", "description": "un pli me rend la page où j'en étais." }
+  "cornee": { "name": "La Page Cornée", "description": "un pli me rend la page où j'en étais." },
+  "metronome": { "name": "Le Métronome", "description": "il bat la mesure ; mes yeux suivent." },
+  "wheel": { "name": "La Roue à Livres", "description": "vingt volumes qui défilent sous les yeux." },
+  "lift": { "name": "Le Monte-Livres", "description": "les livres des autres étages montent jusqu'à moi." },
+  "automaton": { "name": "L'Automate Lecteur", "description": "il ne comprend rien, mais il lit." },
+  "clock": { "name": "L'Horloge des Galeries", "description": "à chaque heure, toute la galerie tourne une page." }
 }

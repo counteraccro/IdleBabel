@@ -4,5 +4,10 @@
   "voice": { "name": "The Silenced Voice", "description": "no inner voice to slow things down." },
   "lectern": { "name": "The Stone Lectern", "description": "a block torn from a railing." },
   "ladder": { "name": "The Rolling Ladder", "description": "reading the high shelves without coming down." },
-  "cornee": { "name": "The Dog-Eared Page", "description": "a fold gives me back the page where I was." }
+  "cornee": { "name": "The Dog-Eared Page", "description": "a fold gives me back the page where I was." },
+  "metronome": { "name": "The Metronome", "description": "it keeps the beat; my eyes follow." },
+  "wheel": { "name": "The Book Wheel", "description": "twenty volumes turning before my eyes." },
+  "lift": { "name": "The Book Lift", "description": "books from other floors come up to me." },
+  "automaton": { "name": "The Reading Automaton", "description": "it understands nothing, but it reads." },
+  "clock": { "name": "The Gallery Clock", "description": "every hour, the whole gallery turns a page." }
 }

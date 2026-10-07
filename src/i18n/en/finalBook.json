@@ -44,7 +44,12 @@
     "voice": "{when}, the voice in your head fell silent. Without it, you went faster.",
     "lectern": "{when}, you tore a stone from the railing. It became your lectern.",
     "ladder": "{when}, you found a ladder. The top shelves became yours.",
-    "cornee": "{when}, you found a dog-eared page again. You did not remember folding it."
+    "cornee": "{when}, you found a dog-eared page again. You did not remember folding it.",
+    "metronome": "{when}, you wound a metronome. Your eyes took up its pace.",
+    "wheel": "{when}, you built a wheel. The books turned before you.",
+    "lift": "{when}, you lowered a basket into the well. It came back up full.",
+    "automaton": "{when}, an automaton began to read for you. It understood nothing. Neither did you.",
+    "clock": "{when}, you heard the gallery clock. Since then, the whole gallery reads with you."
   },
   "memories": {
     "cup": "{when}, a memory came back. A chipped cup. You always drank from the chipped side."

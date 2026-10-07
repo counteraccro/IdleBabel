@@ -1,4 +1,4 @@
-import type { ToolId } from './tools';
+import { AUTOMATIC_AGE, type ToolId } from './tools';
 import { ANOMALIES, type AnomalyFamily } from './anomalies';
 
 /**
@@ -20,6 +20,8 @@ export interface SentenceDef {
    * souvenir flou), et le prestige ne la fait jamais oublier.
    */
   secret?: string;
+  /** L'étoile de l'Etherium qui achète l'Âge de sa méthode : avant, la phrase n'existe pas pour le chercheur. */
+  age?: string;
 }
 
 export const SENTENCES: readonly SentenceDef[] = [
@@ -30,6 +32,11 @@ export const SENTENCES: readonly SentenceDef[] = [
   { id: 'lectern', kind: 'method', tool: 'lectern' },
   { id: 'ladder', kind: 'method', tool: 'ladder' },
   { id: 'cornee', kind: 'method', tool: 'cornee', secret: 'memory.m0' },
+  { id: 'metronome', kind: 'method', tool: 'metronome', age: AUTOMATIC_AGE },
+  { id: 'wheel', kind: 'method', tool: 'wheel', age: AUTOMATIC_AGE },
+  { id: 'lift', kind: 'method', tool: 'lift', age: AUTOMATIC_AGE },
+  { id: 'automaton', kind: 'method', tool: 'automaton', age: AUTOMATIC_AGE },
+  { id: 'clock', kind: 'method', tool: 'clock', age: AUTOMATIC_AGE },
   { id: 'cup', kind: 'memory' },
   ...ANOMALIES,
 ];

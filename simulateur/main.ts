@@ -8,7 +8,7 @@
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
-import { AUTOMATIC } from './config';
+import { AUTOMATIC } from './methodes';
 import { away, buyMethods, newRun, pagesPerSecond, play, type Run } from './partie';
 import { buyIntuitions } from './intuitions';
 import { etherGain, litPerPage, newLife, spendEther } from './vie';
