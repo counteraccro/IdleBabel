@@ -1,7 +1,7 @@
 import { messages, t } from '../../i18n';
 import { TECHNOLOGIES, type TechnologyId } from '../../data/technologies';
 import { bestOf, levelOf, maxLevel, technologiesCompletion, technology } from '../../systems/technologies';
-import { forgetIntuitions, nextRemembered, remember, reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
+import { nextRemembered, remember, reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
 import { format, type DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
@@ -80,21 +80,11 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
         const price = nextRemembered(state);
         return left === 0 ? 'rien' : `${left} intuition(s)${price === undefined ? '' : ` · prochaine : ${format(price)} 🧠`}`;
       });
-      kit.actions(
-        [
-          'Oublier, comme au prestige',
-          () => {
-            forgetIntuitions(state);
-            // Compté comme un prestige : la Réminiscence apparaît dans le livre blanc.
-            state.exiles += 1;
-          },
-          {
-            title:
-              'Niveaux à zéro (sauf les permanentes), meilleurs niveaux gardés ; compte un prestige (sans Éther ni étoiles : le vrai est dans « Le prestige »).',
-          },
-        ],
-        ['Se souvenir', () => remember(state), { title: 'Rachète tout de suite ce qui peut l’être (sinon : au prochain tour de boucle).' }],
-      );
+      kit.actions([
+        'Se souvenir',
+        () => remember(state),
+        { title: 'Rachète tout de suite ce qui peut l’être (sinon : au prochain tour de boucle).' },
+      ]);
     },
   },
 ];
