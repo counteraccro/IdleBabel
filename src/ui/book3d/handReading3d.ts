@@ -34,7 +34,7 @@ export const createHandReading3d = (state: GameState): Component => {
     },
     onLeaf: (spread, counted) => {
       if (counted) readPage(state);
-      finds.gain(spread);
+      finds.gain(spread, counted);
       return turnBookPage(state);
     },
     // Le premier livre refermé, encore en main : le chercheur le garde (rangé dans la bibliothèque).

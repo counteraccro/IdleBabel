@@ -16,6 +16,16 @@ import {
 import { AWAY_SHARE, DUPLICATE_SHARE, MAX_AWAY_SECONDS, TARGET_SHARE } from '../data/knowledge';
 import { RARE_BOOKS } from '../data/rareBooks';
 import { toolUnlocked } from './sentences';
+import {
+  aimBonus,
+  awaySecondsBonus,
+  awayShareBonus,
+  clickShareBonus,
+  duplicatesBonus,
+  intuitionPriceFactor,
+  rareMultiplier,
+  turnsBonus,
+} from './etherium';
 import { BUY_LOTS, type BuyLot, type ToolId } from '../data/tools';
 import type { GameState } from '../core/state';
 
@@ -52,9 +62,12 @@ export const lockOf = (state: GameState, id: TechnologyId): Locked | undefined =
   return undefined;
 };
 
-/** Prix du niveau suivant, s'il en reste et qu'il peut se comprendre. */
-export const nextPrice = (state: GameState, id: TechnologyId): number | undefined =>
-  lockOf(state, id) ? undefined : priceAt(id, levelOf(state, id));
+/** Prix du niveau suivant, s'il en reste et qu'il peut se comprendre (moins cher avec la Chouette de l'Etherium). */
+export const nextPrice = (state: GameState, id: TechnologyId): number | undefined => {
+  const price = lockOf(state, id) ? undefined : priceAt(id, levelOf(state, id));
+  const factor = intuitionPriceFactor(state, id);
+  return price === undefined || factor === 1 ? price : Math.ceil(price * factor);
+};
 
 /** Comprendre le niveau suivant, s'il y a assez de Connaissance. Renvoie true s'il est compris. */
 export const understand = (state: GameState, id: TechnologyId): boolean => {
@@ -66,35 +79,38 @@ export const understand = (state: GameState, id: TechnologyId): boolean => {
   return true;
 };
 
-// Ce que fait chaque intuition, au niveau `level` (le sien par défaut).
+// Ce que fait chaque intuition, au niveau `level` (le sien par défaut), avec ce qu'y ajoute l'Etherium.
 
 /** Filtre sémantique : ce qu'il fait à la chance de trouvaille. */
 export const filterMultiplier = (state: GameState, level = levelOf(state, 'semanticFilter')): number => FILTER_BONUS ** level;
 
 /** Fil d'Ariane : part des trouvailles tirées dans la phrase de méthode en cours. */
 export const targetShare = (state: GameState, level = levelOf(state, 'ariadne')): number =>
-  Math.min(1, TARGET_SHARE + ARIADNE_STEP * level);
+  Math.min(1, TARGET_SHARE + ARIADNE_STEP * level + aimBonus(state));
 
 /** Mémoire des phrases : part des trouvailles qui répètent un morceau déjà écrit. */
 export const duplicateShare = (state: GameState, level = levelOf(state, 'sentenceMemory')): number =>
-  Math.max(0, DUPLICATE_SHARE - MEMORY_STEP * level);
+  Math.max(0, DUPLICATE_SHARE - MEMORY_STEP * level - duplicatesBonus(state));
 
 /** Lecture rapide : feuilles tournées seules au plus par seconde. */
 export const turnsPerSecond = (state: GameState, level = levelOf(state, 'speedReading')): number =>
-  SPEED_LEVELS[Math.min(level, SPEED_LEVELS.length - 1)];
+  SPEED_LEVELS[Math.min(level, SPEED_LEVELS.length - 1)] + turnsBonus(state);
 
 /** Mémoire musculaire : part de la production d'une seconde que rapporte en plus chaque clic. */
-export const clickShare = (state: GameState, level = levelOf(state, 'muscleMemory')): number => MUSCLE_STEP * level;
+export const clickShare = (state: GameState, level = levelOf(state, 'muscleMemory')): number =>
+  MUSCLE_STEP * level + clickShareBonus(state);
 
 /** Cartographie du Retour : part de la lecture comptée pendant une absence. */
-export const awayShare = (state: GameState, level = levelOf(state, 'returnMap')): number => Math.min(1, AWAY_SHARE + RETURN_STEP * level);
+export const awayShare = (state: GameState, level = levelOf(state, 'returnMap')): number =>
+  Math.min(1, AWAY_SHARE + RETURN_STEP * level + awayShareBonus(state));
 
 /** Sommeil profond : absence comptée au plus (en secondes). */
-export const maxAwaySeconds = (state: GameState, level = levelOf(state, 'deepSleep')): number => MAX_AWAY_SECONDS + SLEEP_STEP * level;
+export const maxAwaySeconds = (state: GameState, level = levelOf(state, 'deepSleep')): number =>
+  MAX_AWAY_SECONDS + SLEEP_STEP * level + awaySecondsBonus(state);
 
 /** Flair : chance qu'un livre soit rare. */
 export const rareChance = (state: GameState, level = levelOf(state, 'flair')): number =>
-  1 / FLAIR_LEVELS[Math.min(level, FLAIR_LEVELS.length - 1)];
+  rareMultiplier(state) / FLAIR_LEVELS[Math.min(level, FLAIR_LEVELS.length - 1)];
 
 /** Économie du geste : ce qu'elle fait au prix des méthodes. */
 export const toolPriceFactor = (state: GameState, level = levelOf(state, 'bargain')): number => BARGAIN_FACTOR ** level;

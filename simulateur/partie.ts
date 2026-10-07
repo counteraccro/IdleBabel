@@ -143,8 +143,8 @@ const find = (run: Run, turned: number): void => {
   run.turned += turned;
   const lucky = (LUCK_PAGES.from + LUCK_PAGES.to) / 2;
   if (before < lucky && run.turned >= lucky) run.unlocked.add('diagonal');
-  const duplicates = Math.max(0, DUPLICATE_SHARE - MEMORY_STEP * level(run, 'sentenceMemory') - (lit(run.life, S.duplicates) ? 0.1 : 0));
-  const share = Math.min(1, TARGET_SHARE + ARIADNE_STEP * level(run, 'ariadne') + (lit(run.life, S.ariadne) ? 0.1 : 0));
+  const duplicates = Math.max(0, DUPLICATE_SHARE - MEMORY_STEP * level(run, 'sentenceMemory') - sum(run.life, EFFECT.duplicates));
+  const share = Math.min(1, TARGET_SHARE + ARIADNE_STEP * level(run, 'ariadne') + sum(run.life, EFFECT.aim));
   const towardTarget = turned * (Math.min(1, chance) * (1 - duplicates) * share + Math.max(0, chance - 1) * EXTRA_FIND_SHARES.method);
   const current = target(run);
   if (current) progress(run, current, towardTarget);

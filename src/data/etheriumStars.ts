@@ -128,6 +128,10 @@ export const EFFECT = {
   intuitions: { 'knowledge.wl': 0.9, 'knowledge.el': 0.75 / 0.9 },
   /** ×chance de trouvaille. */
   findChance: { 'finds.h0': 1.05, 'finds.h1': 1.1, 'finds.g0': 1.15, 'finds.r3': 1.25 },
+  /** + part des trouvailles tirées dans la phrase de méthode en cours (comme le Fil d'Ariane). */
+  aim: { 'finds.r1': 0.1 },
+  /** − part des morceaux en double (comme la Mémoire des phrases). */
+  duplicates: { 'finds.r2': 0.1 },
   /** ×chance de livre rare. */
   rareChance: { 'finds.g1': 1.2, 'finds.g2': 1.5, 'finds.g3': 2 },
   /** + part de lecture comptée pendant l'absence. */
@@ -140,20 +144,38 @@ export const EFFECT = {
   previousPages: { 'start.r1': 0.001, 'start.r2': 0.01 },
 } as const satisfies Record<string, Record<string, number>>;
 
+/** Ce que font les étoiles à effet simple (S). */
+export const SIMPLE = {
+  /** Annulaire : ×chance de trouvaille d'une page tournée à la main. */
+  ringFinds: 2,
+  /** Auriculaire : ×prix de la Mémoire musculaire. */
+  pinkyPrice: 0.5,
+  /** Bec : morceaux manquants au plus pour qu'une phrase se devine (un seul sans lui). */
+  beakMissing: 2,
+  /** Étoile près de la lune : ×feuilles comptées pour les trouvailles pendant l'absence. */
+  awayTurns: 2,
+  /** Gauche 3 de la Porte : Lectures au Doigt au réveil. */
+  fingers: 10,
+  /** Arche : part des exemplaires de chaque méthode de la partie d'avant, au réveil. */
+  archShare: 0.01,
+  /** Droite 3 de la Porte : part de la Connaissance gagnée dans la partie d'avant, au réveil. */
+  previousKnowledge: 0.1,
+  /** Poignée : ×chance d'être rare du premier livre pris au réveil. */
+  handleRare: 10,
+} as const;
+
 /**
  * Étoiles à effet simple, nommées pour le code : Annulaire (×2 chance de trouvaille des pages tournées à la main),
  * Auriculaire (Mémoire musculaire moitié prix), Aigrette gauche (1er niveau de chaque intuition gardé), Bec (phrase
- * devinée à deux morceaux), Droite 1 et 2 de la Loupe (Fil d'Ariane, Mémoire des phrases), Reflet (un niveau de
- * Filtre sémantique), Pointe haute et Étoile près de la lune, Gauche 3 et Arche de la Porte, Droite 3 (Connaissance),
- * Poignée (premier livre rare), la Page Cornée et l'Âge Automatique.
+ * devinée à deux morceaux), Reflet (un niveau de Filtre sémantique), Pointe haute et Étoile près de la lune, Gauche 3
+ * et Arche de la Porte, Droite 3 (Connaissance), Poignée (premier livre rare), la Page Cornée et l'Âge Automatique ;
+ * leurs valeurs : SIMPLE.
  */
 export const S = {
   ring: 'hands.a',
   pinky: 'hands.o',
   crestLeft: 'knowledge.al',
   beak: 'knowledge.k',
-  ariadne: 'finds.r1',
-  duplicates: 'finds.r2',
   filter: 'finds.c',
   awayFinds: 'away.tip',
   awayTurns: 'away.x',

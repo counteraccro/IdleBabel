@@ -2,6 +2,7 @@ import { RARE_BOOKS } from '../data/rareBooks';
 import { gameRandom } from '../core/random';
 import { STRANGE_BOOK_INDEX } from './strangeBook';
 import { rareChance } from './technologies';
+import { handleMultiplier } from './etherium';
 import type { GameState } from '../core/state';
 
 /** Un livre sur 200 est un livre rare (tant qu'il en reste à trouver), avant le Flair. */
@@ -45,12 +46,12 @@ export const drawRareBook = (index: number, found: (id: string) => boolean, chan
 
 /**
  * Le livre rare que cache le livre n° `index`, s'il y en a un, parmi ceux pas encore trouvés ; un livre où
- * l'on en a déjà trouvé un le garde.
+ * l'on en a déjà trouvé un le garde. Le premier pris au réveil a plus de chance (la Poignée de l'Etherium).
  */
 export const rareBookAt = (state: GameState, index: number): string | undefined => {
   const kept = Object.keys(state.rareBooks).find((id) => state.rareBooks[id] === index);
   if (kept) return kept;
-  return drawRareBook(index, (id) => isRareBookFound(state, id), rareChance(state));
+  return drawRareBook(index, (id) => isRareBookFound(state, id), rareChance(state) * handleMultiplier(state, index));
 };
 
 /** Le livre n° `index` arrive en main : s'il est rare, il est trouvé (pour toujours). */

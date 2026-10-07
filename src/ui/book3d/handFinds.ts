@@ -1,5 +1,6 @@
 import { findText, gainFind, rollFinds } from '../../systems/knowledge';
 import { gameRandom } from '../../core/random';
+import { handFindsMultiplier } from '../../systems/etherium';
 import type { Find } from '../../data/knowledge';
 import type { GameState } from '../../core/state';
 
@@ -43,14 +44,21 @@ export const createHandFinds = (state: GameState) => {
       const first = page < 2 ? undefined : roll(page)[0];
       return first ? findText(first.find) : undefined;
     },
-    /** La feuille s'est posée sur la double page `spread` : les trouvailles de ses deux pages sont lues. */
-    gain: (spread: number): void => {
+    /**
+     * La feuille s'est posée sur la double page `spread` : les trouvailles de ses deux pages sont lues. Tournée à
+     * la main (`byHand`), avec l'Annulaire de l'Etherium : chaque page tire encore (sa chance doublée), sans surligner.
+     */
+    gain: (spread: number, byHand = false): void => {
+      const extra = byHand ? handFindsMultiplier(state) - 1 : 0;
       for (const page of [2 * spread, 2 * spread + 1]) {
         for (const hidden of rolled.get(page) ?? []) {
           if (hidden.gained) continue;
           hidden.gained = true;
           gainFind(state, hidden.find);
         }
+        if (page < 2 || !rolled.has(page)) continue;
+        for (let i = 0; i < extra; i++)
+          for (const find of rollFinds(state, gameRandom(`find:${book}:${page}:hand${i}`))) gainFind(state, find);
       }
     },
   };

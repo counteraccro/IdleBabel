@@ -9,8 +9,8 @@ import { handsMultiplier } from './etherium';
 export const PAGES_PER_CLICK = PAGES_PER_LEAF;
 
 /**
- * Une feuille tournée à la main (ses pages comptent à vie : pagesByHand) ; la Mémoire musculaire y ajoute une
- * part de la production d'une seconde, les Mains de l'Etherium multiplient le tout.
+ * Une feuille tournée à la main (ses pages comptent à vie : pagesByHand) ; la Mémoire musculaire (et les doigts
+ * de l'Etherium) y ajoute une part de la production d'une seconde, les Mains de l'Etherium multiplient le tout.
  */
 export const readPage = (state: GameState): void => {
   const read = (PAGES_PER_CLICK + pagesPerSecond(state) * clickShare(state)) * handsMultiplier(state);

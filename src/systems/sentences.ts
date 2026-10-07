@@ -2,6 +2,7 @@ import { messages } from '../i18n';
 import { SENTENCES } from '../data/sentences';
 import { GUESS_PRICE, type FindKind } from '../data/knowledge';
 import { withReaderName } from './readerName';
+import { guessableMissing } from './etherium';
 import type { ToolId } from '../data/tools';
 import type { GameState } from '../core/state';
 
@@ -57,9 +58,16 @@ export const completion = (state: GameState): number => {
   return total === 0 ? 0 : done / total;
 };
 
-/** Il ne manque qu'un morceau : la Connaissance peut le deviner (pas pour une anomalie : elles se collectionnent en lisant). */
+/**
+ * Il ne manque qu'un morceau (deux, avec le Bec de l'Etherium) : la Connaissance peut les deviner (pas pour une
+ * anomalie : elles se collectionnent en lisant).
+ */
 export const guessPrice = (state: GameState, id: string): number | undefined =>
-  missing(state, id).length === 1 && SENTENCES.find((sentence) => sentence.id === id)?.kind !== 'anomaly' ? GUESS_PRICE : undefined;
+  missing(state, id).length > 0 &&
+  missing(state, id).length <= guessableMissing(state) &&
+  SENTENCES.find((sentence) => sentence.id === id)?.kind !== 'anomaly'
+    ? GUESS_PRICE
+    : undefined;
 
 export const guess = (state: GameState, id: string): boolean => {
   const price = guessPrice(state, id);

@@ -5,6 +5,7 @@ import { checkSeals } from '../systems/seals';
 import { tellLore } from '../systems/lore';
 import { meetStrangeBook } from '../systems/decipher';
 import { awayShare, maxAwaySeconds } from '../systems/technologies';
+import { awayFindsShare, awayTurnsMultiplier } from '../systems/etherium';
 import { gameRandom } from './random';
 import { recordOnce } from './history';
 import type { GameState } from './state';
@@ -50,7 +51,11 @@ export const passTime = (state: GameState, seconds: number, mode: 'away' | 'paus
     // Tiré de la graine de la partie, et de là où en est la lecture.
     const random = gameRandom(`away:${state.totalPagesRead}:${state.lifetimeKnowledge}`);
     books = readWhileAway(state, pagesTurnedAway(state, seconds) * share, random);
-    finds = findWhileAway(state, seconds, random, share);
+    // La Lune de l'Etherium : trouvailles comptées en entier (pointe haute), plus de feuilles (étoile près de la lune).
+    finds =
+      mode === 'away'
+        ? findWhileAway(state, seconds, random, awayFindsShare(state, share), awayTurnsMultiplier(state))
+        : findWhileAway(state, seconds, random);
   }
   // Les récits des livres refermés sans être vus : le premier gardé, le Grand Livre arrivé en main.
   if (state.booksFinished > 0) tellLore(state, 'firstBookKept');

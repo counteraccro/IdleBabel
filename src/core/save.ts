@@ -27,6 +27,7 @@ export const loadGame = (defaultLocale: Locale): GameState => {
               // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
               technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
               reminiscence: { ...initial.reminiscence, ...saved.reminiscence },
+              wake: { ...initial.wake, ...saved.wake },
               // Les nœuds des anciens arbres, ou les étoiles : core/etheriumTrees.ts.
               etherium: saved.etherium ?? [],
               // Trouvailles d'avant le livre blanc (sans phrase) : oubliées.

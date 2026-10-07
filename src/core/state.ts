@@ -129,6 +129,11 @@ export interface GameState {
   etherium: string[];
   /** Au réveil d'un prestige, l'Etherium est en main ; refermé, il disparaît (jusqu'au prochain). */
   etheriumInHand: boolean;
+  /**
+   * Le dernier réveil (systems/prestige.ts) : les pages lues à vie à ce moment (la partie d'après se compte de là,
+   * pour la Porte), et le numéro du premier livre pris ensuite (la Poignée) ; -1 : jamais réveillé.
+   */
+  wake: { pages: number; book: number };
   lastTick: number;
   /**
    * La graine de la partie (core/random.ts, gameRandom) : les couvertures, le texte des pages, les livres rares
@@ -175,6 +180,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   etherReceived: 0,
   etherium: [],
   etheriumInHand: false,
+  wake: { pages: 0, book: -1 },
   lastTick: now,
   seed,
 });

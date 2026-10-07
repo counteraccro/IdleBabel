@@ -173,19 +173,28 @@ export const gainFind = (state: GameState, find: Find): void => {
 
 /**
  * Pages tournées seules pendant `seconds` d'absence (ou de modale) : au rythme de la production, plafonné
- * comme à l'écran (en feuilles), sur 8 h au plus (et le Sommeil profond). Rien si les pages ne tournent pas seules.
+ * comme à l'écran (en feuilles, × `turnsFactor`), sur 8 h au plus (et le Sommeil profond). Rien si les pages ne
+ * tournent pas seules.
  */
-export const pagesTurnedAway = (state: GameState, seconds: number): number => {
+export const pagesTurnedAway = (state: GameState, seconds: number, turnsFactor = 1): number => {
   if (!state.settings.autoTurn || seconds <= 0) return 0;
-  return Math.min(pagesPerSecond(state), maxTurnsPerSecond(state) * PAGES_PER_LEAF) * Math.min(seconds, maxAwaySeconds(state));
+  return (
+    Math.min(pagesPerSecond(state), maxTurnsPerSecond(state) * PAGES_PER_LEAF * turnsFactor) * Math.min(seconds, maxAwaySeconds(state))
+  );
 };
 
 /**
- * Absence (onglet fermé ou caché) : les pages tournées seules (pagesTurnedAway), dont on compte la part
- * `share`, cachent leurs trouvailles comme les autres. Renvoie le nombre trouvé.
+ * Absence (onglet fermé ou caché) : les pages tournées seules (pagesTurnedAway, plafond × `turnsFactor`), dont on
+ * compte la part `share`, cachent leurs trouvailles comme les autres. Renvoie le nombre trouvé.
  */
-export const findWhileAway = (state: GameState, seconds: number, random: () => number = Math.random, share = 1): number => {
-  const turned = pagesTurnedAway(state, seconds) * share;
+export const findWhileAway = (
+  state: GameState,
+  seconds: number,
+  random: () => number = Math.random,
+  share = 1,
+  turnsFactor = 1,
+): number => {
+  const turned = pagesTurnedAway(state, seconds, turnsFactor) * share;
   if (turned <= 0) return 0;
   // Nombre attendu, arrondi au hasard : la moyenne est juste, et une courte absence peut rapporter.
   // Une par page au plus suit la règle d'avant ; au-delà de 100 %, les autres suivent leur table.

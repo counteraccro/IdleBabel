@@ -1,4 +1,4 @@
-import { EFFECT, KEEPS, NEEDS_AGE, S, starById } from '../data/etheriumStars';
+import { EFFECT, KEEPS, NEEDS_AGE, S, SIMPLE, starById } from '../data/etheriumStars';
 import { SENTENCES } from '../data/sentences';
 import type { GameState } from '../core/state';
 
@@ -43,8 +43,64 @@ export const handsMultiplier = (state: GameState): number => product(state, EFFE
 export const knowledgePerFind = (state: GameState): number => product(state, EFFECT.knowledge);
 /** La Loupe (manche, verre) : la chance de trouvaille. */
 export const findsMultiplier = (state: GameState): number => product(state, EFFECT.findChance);
-/** La Porte (seuil, montant gauche) : Lectures Diagonales déjà là au réveil. */
-export const startingDiagonals = (state: GameState): number => sum(state, EFFECT.diagonals);
+/** La Main (pouce, majeur) : part de la production d'une seconde en plus à chaque clic. */
+export const clickShareBonus = (state: GameState): number => sum(state, EFFECT.clickShare);
+/** L'Annulaire : la chance de trouvaille d'une page tournée à la main (×1 sans lui). */
+export const handFindsMultiplier = (state: GameState): number => (starLit(state, S.ring) ? SIMPLE.ringFinds : 1);
+/** La Chouette (aile et œil gauches, l'Auriculaire pour la Mémoire musculaire) : le prix d'une intuition. */
+export const intuitionPriceFactor = (state: GameState, id: string): number =>
+  product(state, EFFECT.intuitions) * (id === 'muscleMemory' && starLit(state, S.pinky) ? SIMPLE.pinkyPrice : 1);
+/** Le Bec : une phrase se devine dès qu'il lui manque au plus tant de morceaux. */
+export const guessableMissing = (state: GameState): number => (starLit(state, S.beak) ? SIMPLE.beakMissing : 1);
+/** Le Livre ouvert (page de droite) : feuilles tournées seules en plus, par seconde. */
+export const turnsBonus = (state: GameState): number => sum(state, EFFECT.turns);
+/** La Loupe (droite 1) : part en plus des trouvailles tirées dans la phrase de méthode en cours. */
+export const aimBonus = (state: GameState): number => sum(state, EFFECT.aim);
+/** La Loupe (droite 2) : part en moins des morceaux en double. */
+export const duplicatesBonus = (state: GameState): number => sum(state, EFFECT.duplicates);
+/** La Loupe (gauche, haut du verre) : la chance qu'un livre soit rare. */
+export const rareMultiplier = (state: GameState): number => product(state, EFFECT.rareChance);
+/** La Poignée : la chance d'être rare du livre n° `index`, s'il est le premier pris au réveil (×1 sinon). */
+export const handleMultiplier = (state: GameState, index: number): number =>
+  index === state.wake.book && starLit(state, S.handle) ? SIMPLE.handleRare : 1;
+/** La Lune (pointe basse, creux) : part de lecture en plus, comptée pendant l'absence. */
+export const awayShareBonus = (state: GameState): number => sum(state, EFFECT.awayShare);
+/** La Lune (dos) : heures d'absence comptées en plus, en secondes. */
+export const awaySecondsBonus = (state: GameState): number => sum(state, EFFECT.awayHours) * 3600;
+/** La pointe haute de la Lune : les trouvailles de l'absence comptent en entier, pas seulement leur part `share`. */
+export const awayFindsShare = (state: GameState, share: number): number => (starLit(state, S.awayFinds) ? 1 : share);
+/** L'étoile près de la lune : feuilles comptées pour les trouvailles de l'absence, au-delà du plafond (×1 sans elle). */
+export const awayTurnsMultiplier = (state: GameState): number => (starLit(state, S.awayTurns) ? SIMPLE.awayTurns : 1);
+
+/** La partie qui s'achève au prestige : ce dont la Porte se souvient. */
+export interface PreviousRun {
+  tools: GameState['tools'];
+  /** Pages lues depuis le réveil d'avant. */
+  pages: number;
+  /** Connaissance trouvée pendant la partie. */
+  knowledge: number;
+}
+
+/**
+ * La Porte, au réveil : Lectures Diagonales (seuil, montant gauche), au Doigt (gauche 3), une part des exemplaires
+ * de chaque méthode (l'arche) ; une part des pages lues (droite 1-2) et de la Connaissance trouvée (droite 3) dans
+ * la partie d'avant. `state` vient d'être remis à zéro.
+ */
+export const openDoor = (state: GameState, previous: PreviousRun): void => {
+  state.tools.diagonal += sum(state, EFFECT.diagonals);
+  if (starLit(state, S.fingers)) state.tools.finger += SIMPLE.fingers;
+  if (starLit(state, S.arch))
+    for (const id of Object.keys(previous.tools) as (keyof GameState['tools'])[])
+      state.tools[id] += Math.floor(previous.tools[id] * SIMPLE.archShare);
+  const share = Math.max(0, ...Object.entries(EFFECT.previousPages).map(([id, value]) => (starLit(state, id) ? value : 0)));
+  state.pages += previous.pages * share;
+  if (starLit(state, S.previousKnowledge)) state.knowledge += previous.knowledge * SIMPLE.previousKnowledge;
+};
+
+/** L'Aigrette gauche : le premier niveau de chaque intuition reste au prestige. */
+export const keepsFirstLevels = (state: GameState): boolean => starLit(state, S.crestLeft);
+/** Le Reflet : un niveau de Filtre sémantique offert à chaque réveil. */
+export const giftsFilter = (state: GameState): boolean => starLit(state, S.filter);
 
 /** La Ruche : les phrases de méthode que le prestige laisse écrites (celles dont l'étoile est allumée). */
 export const keptMethodSentences = (state: GameState): string[] =>
