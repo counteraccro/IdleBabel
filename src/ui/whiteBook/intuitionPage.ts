@@ -27,7 +27,7 @@ import { nextRareChance } from '../../systems/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
 import { babelize, seedOf } from './babelMask';
 import { paragraph } from './paragraph';
-import { folio, type Item } from '../strangeBook/pageItems';
+import { fitCaption, folio, type Item } from '../strangeBook/pageItems';
 import type { TechnologyId } from '../../data/technologies';
 import type { ToolId } from '../../data/tools';
 import type { GameState } from '../../core/state';
@@ -153,7 +153,8 @@ export const intuitionItems = (state: GameState, id: TechnologyId, number: numbe
     : [
         { kind: 'text', text: levelText(id, level), x: 320, y, size: 22, align: 'center', spacing: 3, face: 'title' },
         { kind: 'text', text: raw.effect, x: 320, y: y + 44, size: 18, align: 'center', italic: true, faded: true, spacing: 2 },
-        { kind: 'text', text: effect, x: 320, y: y + 74, size: 28, align: 'center', spacing: 2, face: 'title' },
+        // Trop longue (le Guet : deux durées de chaque côté), elle se resserre pour tenir dans la page.
+        fitCaption({ kind: 'text', text: effect, x: 320, y: y + 74, size: 28, align: 'center', spacing: 2, face: 'title' }),
         // Oubliée à l'Exil : jusqu'où elle était allée (la Réminiscence y remonte seule).
         ...(bestOf(state, id) > level
           ? [
