@@ -176,10 +176,24 @@ const fontsPage = (context: CanvasRenderingContext2D): void => {
   folio(context, FONTS_PAGE);
 };
 
+/**
+ * Les notes de mise à jour, la plus récente en haut : le nom de la version, sa date, puis ses lignes (coupées dans les
+ * textes, comme l'avant-propos ; une ligne vide fait un blanc).
+ */
 const notesPage = (context: CanvasRenderingContext2D): void => {
-  const { parts, notesEmpty } = text();
+  const { parts, notes } = text();
   heading(context, parts[4]);
-  write(context, notesEmpty, CENTER, 260, { font: `italic 20px ${GARAMOND}`, color: SOFT });
+  let y = 230;
+  for (const { title, date, lines } of notes) {
+    write(context, title.toLocaleUpperCase(), CENTER, y, { font: `600 20px ${TITLE}`, color: INK, spacing: 4 });
+    write(context, date, CENTER, y + 30, { font: `italic 18px ${GARAMOND}`, color: SOFT });
+    y += 80;
+    for (const line of lines) {
+      if (line) write(context, line, CENTER, y, { font: `20px ${GARAMOND}`, color: INK });
+      y += line ? 30 : 16;
+    }
+    y += 40;
+  }
   folio(context, NOTES_PAGE);
 };
 
@@ -210,7 +224,7 @@ const PAGES: Record<number, (context: CanvasRenderingContext2D, page: number) =>
   [COLOPHON_PAGE]: colophonPage,
 };
 
-/** Dessine la page `page` sur son papier ; les autres restent blanches (les notes de mise à jour à venir). */
+/** Dessine la page `page` sur son papier ; les autres restent blanches. */
 export const paintCreditsPage = (context: CanvasRenderingContext2D, page: number): void => PAGES[page]?.(context, page);
 
 /** Les lignes du sommaire mènent à leur partie ; les liens de l'avant-propos ouvrent GitHub (l'auteur, le dépôt). */

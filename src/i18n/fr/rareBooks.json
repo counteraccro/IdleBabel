@@ -1017,7 +1017,7 @@
           ["L’Encyclopédie", "Diderot et d’Alembert, tome I", "Paris, 1751 · Wikisource"]
         ],
         "fontsIntro": "Sous licence libre (SIL Open Font License).",
-        "notesEmpty": "Rien encore. La Bibliothèque se construit.",
+        "notes": [{"title": "Alpha 1", "date": "8 octobre 2026", "lines": ["La boucle est complète.", "Deux Âges de méthodes,", "le Manuel et l’Automatique.", "L’Etherium et ses huit constellations.", "Plus de trois cents sceaux, des livres rares,", "une bibliothèque pour les ranger.", "", "Ta partie est gardée d’une version à l’autre.", "D’autres Âges viendront."]}],
         "colophon": ["Achevé d’imprimer", "dans la Bibliothèque de Babel,", "sur les presses de l’hexagone", "où vous vous trouvez.", "", "Tirage : un exemplaire.", "Il y en a une infinité d’autres."]
     }
   },
@@ -1600,7 +1600,7 @@
         "credits": {
           "head": "Les crédits",
           "text": [
-            "Les crédits ont été écrits : qui a fait le jeu, avec quoi, d’après quoi. Plus tard, au pied de l’écran, la date de la version a laissé place à son nom, « Version Alpha 1 » : un clic ouvre les crédits sur leurs notes de mise à jour."
+            "Les crédits ont été écrits : qui a fait le jeu, avec quoi, d’après quoi. Plus tard, au pied de l’écran, la date de la version a laissé place à son nom, « Version Alpha 1 » : un clic ouvre les crédits sur leurs notes de mise à jour. Les premières y sont écrites : celles de l’Alpha 1."
           ]
         },
         "seed": {

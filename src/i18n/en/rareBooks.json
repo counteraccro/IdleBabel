@@ -1004,7 +1004,7 @@
           ["The Encyclopédie", "Diderot and d’Alembert, volume I", "Paris, 1751 · Wikisource"]
         ],
         "fontsIntro": "Under a free licence (SIL Open Font License).",
-        "notesEmpty": "Nothing yet. The Library is being built.",
+        "notes": [{"title": "Alpha 1", "date": "October 8, 2026", "lines": ["The loop is complete.", "Two Ages of methods,", "the Manual and the Automatic.", "The Etherium and its eight constellations.", "Over three hundred seals, rare books,", "a library to shelve them.", "", "Your game is kept from one version to the next.", "More Ages will come."]}],
         "colophon": ["Printed", "in the Library of Babel,", "on the presses of the hexagon", "where you stand.", "", "Print run: one copy.", "There are infinitely many others."]
     }
   },
@@ -1587,7 +1587,7 @@
         "credits": {
           "head": "The credits",
           "text": [
-            "The credits were written: who made the game, with what, after what. Later, at the foot of the screen, the build date gave way to the version’s name, “Version Alpha 1”: a click opens the credits on their update notes."
+            "The credits were written: who made the game, with what, after what. Later, at the foot of the screen, the build date gave way to the version’s name, “Version Alpha 1”: a click opens the credits on their update notes. The first ones are written there: those of Alpha 1."
           ]
         },
         "seed": {
