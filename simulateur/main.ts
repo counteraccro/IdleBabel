@@ -5,6 +5,8 @@
  *   npm run simule                       30 jours de jeu sans fermer le jeu
  *   npm run simule -- --jours=60 --rythme=2,22 --sans-cornee --porte=échelle --prestige=taux
  *   npm run simule -- --pages=reading,hands    le bot n'allume que les étoiles de ces pages (et l'Âge Automatique)
+ *   npm run simule -- --sceaux=30 --sans-ether-lecture   sceaux fixes, sans la lecture de l'Éther reçu (comme avant le 07/10)
+ *   npm run simule -- --partie-max=240         parties de 10 jours au plus (absences comprises), pour un rythme lent
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
@@ -12,6 +14,7 @@ import { AUTOMATIC } from './methodes';
 import { away, buyMethods, newRun, pagesPerSecond, play, type Run } from './partie';
 import { buyIntuitions } from './intuitions';
 import { etherGain, litPerPage, newLife, spendEther } from './vie';
+import { checkSeals, sealCount, sealsPerPlate } from './sceaux';
 
 const option = (name: string): string | undefined =>
   process.argv.find((arg) => arg === `--${name}` || arg.startsWith(`--${name}=`))?.split('=')[1] ??
@@ -22,6 +25,9 @@ if (option('rythme')) PLAYER.rhythm = option('rythme')!.split(',').map(Number) a
 if (option('porte') === 'échelle') PLAYER.automaticGate = 'échelle';
 if (option('prestige') === 'taux') PLAYER.prestige = 'taux';
 if (option('sans-cornee') !== undefined) PLAYER.cornee = false;
+if (option('partie-max')) PLAYER.maxRunHours = Number(option('partie-max'));
+if (option('sceaux')) PLAYER.seals = Number(option('sceaux'));
+if (option('sans-ether-lecture') !== undefined) PLAYER.etherReading = false;
 // L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
 if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
 
@@ -53,6 +59,7 @@ const playRun = (run: Run, end: number): number => {
     buyMethods(run);
     buyIntuitions(run);
     if (run.t % 60 >= 5) continue;
+    checkSeals(run);
     const gain = etherGain(run.life, run.read);
     if (gain < 1) continue;
     if (run.t >= PLAYER.maxRunHours * 3600) return gain;
@@ -70,6 +77,7 @@ const rows: string[][] = [];
 for (let number = 1; life.clock < end; number++) {
   const run = newRun(life);
   const gain = playRun(run, end);
+  checkSeals(run);
   const firstAutomatic = run.firstBought[AUTOMATIC[0].id];
   const row = [
     String(number),
@@ -80,6 +88,7 @@ for (let number = 1; life.clock < end; number++) {
     duration(firstAutomatic),
     // Première fois que chaque méthode Automatique s'achète dans la partie (– : jamais).
     AUTOMATIC.map((method) => short(run.firstBought[method.id])).join(' · '),
+    String(sealCount(run)),
     gain > 0 ? `+${gain}` : '(en cours)',
   ];
   if (gain === 0) {
@@ -90,6 +99,7 @@ for (let number = 1; life.clock < end; number++) {
   life.previous = { owned: { ...run.owned }, read: run.read, knowledge: run.knowledgeGained, levels: { ...run.levels } };
   life.etherReceived += gain;
   life.etherFree += gain;
+  life.prestiges += 1;
   const bought = spendEther(life);
   rows.push([...row, String(life.etherReceived), bought.join(', '), duration(life.clock)]);
 }
@@ -102,6 +112,7 @@ const header = [
   'Cornée',
   '1re Auto',
   'Auto 1 · 2 · 3 · 4 · 5',
+  'sceaux',
   'Éther',
   'total',
   'achats au réveil',
@@ -110,8 +121,9 @@ const header = [
 const widths = header.map((title, i) => Math.max(title.length, ...rows.map((row) => row[i].length)));
 const line = (cells: string[]): string => cells.map((cell, i) => cell.padEnd(widths[i])).join('  ');
 console.log(
-  `${days} jours · rythme ${PLAYER.rhythm.join(' h de jeu / ')} h fermé · porte de l'Âge Automatique : ${PLAYER.automaticGate} · prestige : ${PLAYER.prestige}`,
+  `${days} jours · rythme ${PLAYER.rhythm.join(' h de jeu / ')} h fermé · porte de l'Âge Automatique : ${PLAYER.automaticGate} · prestige : ${PLAYER.prestige} · sceaux : ${PLAYER.seals} · lecture de l'Éther : ${PLAYER.etherReading ? 'oui' : 'non'}`,
 );
 console.log(line(header));
 rows.forEach((row) => console.log(line(row)));
+console.log(`Sceaux : ${sealsPerPlate(life.seals)} (+ ${PLAYER.otherSeals} livres rares et secrets)`);
 console.log(`Éther reçu : ${life.etherReceived} · non dépensé : ${life.etherFree} · étoiles : ${litPerPage(life)}`);

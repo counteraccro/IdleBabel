@@ -22,7 +22,9 @@ import {
   SEAL_FIND_BONUS,
   TARGET_SHARE,
 } from '../src/data/knowledge';
+import { ETHER_READING } from '../src/data/etherium';
 import { PLAYER } from './config';
+import { sealCount } from './sceaux';
 import { keptMethods, methodSequence, SECRET, type Method } from './methodes';
 import { EFFECT, S } from '../src/data/etheriumStars';
 import { lit, product, sum, type Life } from './vie';
@@ -45,6 +47,8 @@ export interface Run {
   pieces: Record<string, number>;
   levels: Record<string, number>;
   turned: number;
+  /** Pages lues par chaque méthode dans cette partie (leurs sceaux). */
+  methodPages: Record<string, number>;
   /** Quand chaque méthode a été achetée la première fois (secondes depuis le réveil). */
   firstBought: Record<string, number>;
 }
@@ -63,6 +67,7 @@ export const newRun = (life: Life): Run => {
     pieces: {},
     levels: {},
     turned: 0,
+    methodPages: {},
     firstBought: {},
   };
   if (life.secretFound) run.unlocked.add(SECRET.id);
@@ -93,8 +98,14 @@ const level = (run: Run, id: string): number => run.levels[id] ?? 0;
 
 const allMethods = (run: Run): Method[] => [...run.methods, SECRET];
 
+/** L'Éther reçu depuis toujours : +1 % de lecture chacun (méthodes et feuille tournée à la main). */
+const etherReading = (run: Run): number => (PLAYER.etherReading ? 1 + ETHER_READING * run.life.etherReceived : 1);
+
 const rate = (run: Run, method: Method): number =>
-  method.pagesPerSecond * (method.gesture ? GESTURE_BONUS ** level(run, method.gesture) : 1) * product(run.life, EFFECT.readingRate);
+  method.pagesPerSecond *
+  (method.gesture ? GESTURE_BONUS ** level(run, method.gesture) : 1) *
+  product(run.life, EFFECT.readingRate) *
+  etherReading(run);
 
 export const pagesPerSecond = (run: Run): number =>
   allMethods(run).reduce((total, method) => total + (run.owned[method.id] ?? 0) * rate(run, method), 0);
@@ -102,7 +113,7 @@ export const pagesPerSecond = (run: Run): number =>
 const findChance = (run: Run): number =>
   BASE_FIND_CHANCE *
   FILTER_BONUS ** level(run, 'semanticFilter') *
-  (1 + SEAL_FIND_BONUS * PLAYER.seals) *
+  (1 + SEAL_FIND_BONUS * sealCount(run)) *
   product(run.life, EFFECT.findChance);
 
 const turnsCap = (run: Run): number =>
@@ -138,6 +149,9 @@ const find = (run: Run, turned: number): void => {
   const knowledge = finds * product(run.life, EFFECT.knowledge);
   run.knowledge += knowledge;
   run.knowledgeGained += knowledge;
+  run.life.finds += finds;
+  run.life.knowledge += knowledge;
+  run.life.turned += turned;
   // Toute première trouvaille : la phrase entière de la Lecture Diagonale, entre la 15e et la 30e page.
   const before = run.turned;
   run.turned += turned;
@@ -160,13 +174,28 @@ const gain = (run: Run, pages: number): void => {
   run.read += pages;
 };
 
+/** Ce que chaque méthode a lu pendant `seconds` (part `share` de sa lecture) : les sceaux de ses pages. */
+const credit = (run: Run, seconds: number, share = 1): void => {
+  for (const method of allMethods(run)) {
+    const read = (run.owned[method.id] ?? 0) * rate(run, method) * seconds * share;
+    if (read <= 0) continue;
+    run.methodPages[method.id] = (run.methodPages[method.id] ?? 0) + read;
+    run.life.methodPages += read;
+  }
+};
+
 /** Une seconde de jeu, ou `seconds` d'un coup (au-delà de la première heure, la partie change lentement). */
 export const play = (run: Run, seconds: number): void => {
   const pps = pagesPerSecond(run);
   const clicking = run.t < PLAYER.clickMinutes * 60 ? PLAYER.clicksPerSecond : 0;
   const perClick =
-    (2 + pps * (MUSCLE_STEP * level(run, 'muscleMemory') + sum(run.life, EFFECT.clickShare))) * product(run.life, EFFECT.click);
+    (2 * etherReading(run) + pps * (MUSCLE_STEP * level(run, 'muscleMemory') + sum(run.life, EFFECT.clickShare))) *
+    product(run.life, EFFECT.click);
   gain(run, (pps + clicking * perClick) * seconds);
+  credit(run, seconds);
+  run.life.clicks += clicking * seconds;
+  run.life.handPages += clicking * perClick * seconds;
+  run.life.bestSpeed = Math.max(run.life.bestSpeed, pps);
   // L'Annulaire : ×2 chance de trouvaille sur les pages tournées à la main (comme deux fois plus de pages).
   find(run, (Math.min(pps, turnsCap(run) * 2) + clicking * 2 * (lit(run.life, S.ring) ? 2 : 1)) * seconds);
   run.t += seconds;
@@ -179,6 +208,7 @@ export const away = (run: Run, seconds: number): void => {
   const share = Math.min(1, AWAY_SHARE + RETURN_STEP * level(run, 'returnMap') + sum(run.life, EFFECT.awayShare));
   const pps = pagesPerSecond(run);
   gain(run, pps * share * counted);
+  credit(run, counted, share);
   // La Lune : les trouvailles de l'absence en entier (Pointe haute), deux fois plus de feuilles comptées (l'étoile voisine).
   const sheets = Math.min(pps, turnsCap(run) * 2 * (lit(run.life, S.awayTurns) ? 2 : 1));
   find(run, sheets * (lit(run.life, S.awayFinds) ? 1 : share) * counted);

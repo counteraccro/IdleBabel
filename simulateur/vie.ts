@@ -10,6 +10,17 @@ export interface Life {
   secretFound: boolean;
   /** Secondes écoulées depuis le début, absences comprises. */
   clock: number;
+  prestiges: number;
+  /** Ce que comptent les sceaux, depuis toujours : clics, pages lues à la main et par les méthodes, meilleure vitesse,
+   * pages tournées, trouvailles, Connaissance. */
+  clicks: number;
+  handPages: number;
+  methodPages: number;
+  bestSpeed: number;
+  turned: number;
+  finds: number;
+  knowledge: number;
+  seals: Set<string>;
   /** La partie d'avant, pour la Porte : ses exemplaires, ses pages lues, sa Connaissance gagnée, ses intuitions. */
   previous: { owned: Record<string, number>; read: number; knowledge: number; levels: Record<string, number> };
 }
@@ -21,6 +32,15 @@ export const newLife = (): Life => ({
   stars: new Set(),
   secretFound: false,
   clock: 0,
+  prestiges: 0,
+  clicks: 0,
+  handPages: 0,
+  methodPages: 0,
+  bestSpeed: 0,
+  turned: 0,
+  finds: 0,
+  knowledge: 0,
+  seals: new Set(),
   previous: { owned: {}, read: 0, knowledge: 0, levels: {} },
 });
 

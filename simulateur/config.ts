@@ -17,8 +17,15 @@ export const PLAYER = {
    * [2, 22] : deux heures par jour.
    */
   rhythm: [24, 0] as readonly [number, number],
-  /** Sceaux obtenus (+1 % de trouvailles chacun), fixe pour toute la simulation. */
-  seals: 30,
+  /**
+   * Sceaux (+1 % de trouvailles chacun) : 'jeu', ceux du jeu, obtenus au fil des parties (sceaux.ts) ; un nombre, fixe
+   * pour toute la simulation (--sceaux=30).
+   */
+  seals: 'jeu' as 'jeu' | number,
+  /** Avec 'jeu' : sceaux des livres rares et des secrets, que le simulateur ne suit pas (le hasard, l'heure, les gestes). */
+  otherSeals: 10,
+  /** L'Éther reçu fait lire plus vite (+1 % chacun, 07/10) ; --sans-ether-lecture pour s'en passer. */
+  etherReading: true,
   /**
    * Quand la phrase de la première méthode Automatique se trouve : 'échelle', comme toutes les méthodes (l'Échelle à
    * 25 exemplaires, METHOD_GATE) ; 'âge', dès l'Âge acheté (le prix seul fait le verrou).
