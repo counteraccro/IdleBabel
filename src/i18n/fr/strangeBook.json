@@ -67,6 +67,11 @@
     "8": "huit volumes",
     "9": "neuf volumes"
   },
+  "sealVision": {
+    "more": "et {n} autres sceaux",
+    "moreOne": "et un autre sceau",
+    "unread": "Tu ne sais pas encore le lire."
+  },
   "sealsOne": {
     "pagesRead": "Traverse une page",
     "speed": "Lis une page en une seule seconde",

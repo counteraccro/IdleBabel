@@ -324,7 +324,8 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
  * 2D ; 1 : à droite, le livre 3D gardant la gauche pour l'intérieur de la couverture). Les numéros de
  * page restent ceux de la liste.
  */
-export const createPages = (state: GameState, goTo: (page: number) => void, offset = 0): LeafPage[] => {
+/** Où tombe chaque partie du livre : chapitres (et leur relevé), puis les sceaux (introduction, planches). */
+const layout = (state: GameState, offset: number) => {
   const chapters = CHAPTERS.filter((chapter) => chapterShown(state, chapter));
   const first = 2;
   // Chaque chapitre : sa page de grands chiffres, puis celles de son relevé.
@@ -336,8 +337,22 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
   const onLeft = (page: number): number => ((offset + page) % 2 === 1 ? page + 1 : page);
   const afterChapters = first + chapterPages.reduce((total, count) => total + count, 0);
   const sealsPage = onLeft(afterChapters);
-  const blankPage = (page: number): LeafPage => createLeafPage(() => [folio(page + 1)], goTo);
   const plates: PlatePage[] = platePages(state, sealsPage + 1);
+  return { chapters, listPages, chapterStart, afterChapters, sealsPage, plates };
+};
+
+/**
+ * La page d'un sceau dans la liste : celle de sa planche (la page qui le porte) ; sans sceau (plusieurs à la fois),
+ * l'introduction des sceaux. Pour la vision qu'on clique (ui/sealVision.ts).
+ */
+export const sealPage = (state: GameState, id: string | null, offset = 1): number => {
+  const { sealsPage, plates } = layout(state, offset);
+  return plates.find((plate) => plate.seals.some((seal) => seal.id === id))?.page ?? sealsPage;
+};
+
+export const createPages = (state: GameState, goTo: (page: number) => void, offset = 0): LeafPage[] => {
+  const { chapters, listPages, chapterStart, afterChapters, sealsPage, plates } = layout(state, offset);
+  const blankPage = (page: number): LeafPage => createLeafPage(() => [folio(page + 1)], goTo);
   const entries: Entry[] = [
     ...chapters.map((chapter, index) => ({
       title: () => chapterTitle(state, chapter),

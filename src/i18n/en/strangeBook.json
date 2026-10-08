@@ -67,6 +67,11 @@
     "8": "eight volumes",
     "9": "nine volumes"
   },
+  "sealVision": {
+    "more": "and {n} other seals",
+    "moreOne": "and one other seal",
+    "unread": "You cannot read it yet."
+  },
   "sealsOne": {
     "pagesRead": "Cross one page",
     "speed": "Read one page in a single second",

@@ -38,6 +38,7 @@ import { showDebugBookError } from './library/debugBookError';
 import { isRareBookFound } from '../systems/rareBooks';
 import { etherium3d } from './etherium/etherium3d';
 import { ETHERIUM_HASH, openEtherium } from './etherium/prestigeStory';
+import { takeStrangeBookPage } from './strangeBook/openAt';
 import { closeEtherium, prestigeReady } from '../systems/prestige';
 import { ETHERIUM_NAMED_PAGES } from '../data/etherium';
 import type { Component } from './dom';
@@ -286,7 +287,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       return pileBook(createBook3dPage(spec, back, state.etheriumInHand ? t('etherium.close') : backLabel()));
     }
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state))
-      return pileBook(createBook3dPage(strangeBook3d(state), back, backLabel()));
+      return pileBook(createBook3dPage(strangeBook3d(state, takeStrangeBookPage()), back, backLabel()));
     return game();
   };
 

@@ -13,8 +13,9 @@ import type { GameState } from '../../core/state';
 /**
  * Le livre étrange : les statistiques, en cuir noir, sur papier gris. La garde est la première page de
  * droite (à gauche, l'intérieur de la couverture) : les pages de la liste (createPages) décalées d'une place.
+ * `openAt` : la page de la liste où l'ouvrir dès qu'il est posé (une vision de sceau cliquée).
  */
-export const strangeBook3d = (state: GameState): Book3d => {
+export const strangeBook3d = (state: GameState, openAt?: number): Book3d => {
   const book: Book3d = {
     // 410 pages, comme le livre blanc : un livre épais.
     // Plats qui débordent nettement des pages : fermé, on distingue bien la couverture du bloc.
@@ -38,6 +39,7 @@ export const strangeBook3d = (state: GameState): Book3d => {
     live: true,
     // Le sommaire : la page de gauche de la deuxième double page.
     bookmark: 2,
+    openAt: openAt === undefined ? undefined : openAt + 1,
   };
   return book;
 };

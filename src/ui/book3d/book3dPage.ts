@@ -172,6 +172,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     // Débogage : accès au livre depuis la console (?debug seulement).
     if (isDebugEnabled()) (window as unknown as { book3d?: unknown }).book3d = { book, turner, camera, controls, invalidate };
     invalidate();
+    arrive();
   });
   let swinging = false;
   /** Le lecteur appuie sur le livre ouvert (page tenue) : les pages ne tournent pas seules. */
@@ -184,7 +185,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
    * refermé sur son dos, le livre se retourne sur sa couverture (les deux plats ensemble, livre fermé
    * d'un bloc), puis revient au début.
    */
-  const swing = (board: 'front' | 'back' | 'flip', target: number, ms?: number): void => {
+  const swing = (board: 'front' | 'back' | 'flip', target: number, ms?: number, done?: () => void): void => {
     const from = board === 'back' ? shut : Number(open.value);
     // Le livre s'ouvre (couverture, ou plat arrière qui se relève) : la caméra rejoint la vue de lecture
     // et s'y bloque ; il se referme : elle garde son angle et glisse jusqu'au milieu du livre fermé, autour
@@ -212,8 +213,16 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
       if (board === 'flip') turner?.jump(0);
       swinging = false;
       if (board === 'back' && target === 1) spec.finished?.();
+      done?.();
     };
     requestAnimationFrame(step);
+  };
+  /** Posé (ou chargé, sans vol) : un livre qui doit s'ouvrir sur une page s'ouvre, et ses pages tournent jusqu'à elle. */
+  const arrive = (): void => {
+    const page = spec.openAt;
+    if (page === undefined || !turner || flight) return;
+    spec.openAt = undefined;
+    swing('front', 1, undefined, () => turner?.go(Math.floor(page / 2)));
   };
   /** Un livre scellé : sa couverture s'ouvre quand même, ou s'entrouvre à peine et retombe. */
   const cover = {
@@ -412,6 +421,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
         flight = null;
         canvas.classList.remove('flying');
         resized = resize();
+        arrive();
       }
     }
     // Caméra qu'on fait tourner, ou qui finit sur son élan.

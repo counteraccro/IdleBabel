@@ -30,7 +30,7 @@ readStrangeTitleWith(() => isDeciphered(state, 'contents'));
 readReaderNameWith(() => state.playerName);
 
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);
-mountSealVisions();
+mountSealVisions(state);
 startLoop(state, update);
 void mountScene({ clarity: () => clarity(state), beyond: () => beyond(state) });
 if (isDebugEnabled()) mountDebugPanel(state);

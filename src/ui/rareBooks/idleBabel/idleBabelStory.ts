@@ -65,6 +65,7 @@ export const DRAFT_GROUPS = {
   etherium: ['etherium-a', 'etherium-b', 'etherium-c'],
   etheriumTrees: ['etherium-trees-a', 'etherium-trees-b', 'etherium-trees-c'],
   etheriumInk: ['etherium-ink-d1', 'etherium-ink-d3', 'etherium-ink-d4'],
+  sealVision: ['seal-vision-a', 'seal-vision-c'],
 };
 
 export const STORY: StoryChapter[] = [
@@ -121,7 +122,7 @@ export const STORY: StoryChapter[] = [
       { key: 'constellations', drafts: ['etheriumTrees', 'etheriumInk'] },
       { key: 'cornee' },
       { key: 'automaticAge' },
-      { key: 'sealsReview' },
+      { key: 'sealsReview', drafts: ['sealVision'] },
       { key: 'thisBook' },
     ],
   },

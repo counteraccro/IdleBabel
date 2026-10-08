@@ -31,6 +31,7 @@ const ALL: DebugSubject = {
         () => announceSeals([SEALS[Math.floor(Math.random() * SEALS.length)].id]),
         { title: 'Annonce un sceau sans rien débloquer' },
       ],
+      ['Plusieurs à la fois', () => announceSeals(SEALS.slice(0, 30).map((seal) => seal.id)), { title: 'Comme au retour d’une absence' }],
       ['Tout débloquer', () => (sealAll(state), rewriteBigBook())],
       [
         'Tout reprendre',

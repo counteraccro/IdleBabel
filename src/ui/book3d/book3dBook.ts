@@ -62,4 +62,6 @@ export interface Book3d {
   tick?: (now: number) => boolean;
   /** Le livre demande d'aller à une page (entrée du sommaire) : branché par la page 3D. */
   navigate?: (index: number) => void;
+  /** Ouvert dès qu'il est posé, puis feuilleté jusqu'à cette page (le Grand Livre, quand on clique une vision de sceau). */
+  openAt?: number;
 }
