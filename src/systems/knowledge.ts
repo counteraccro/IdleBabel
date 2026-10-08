@@ -180,7 +180,7 @@ export const gainFind = (state: GameState, find: Find): void => {
   state.cycleKnowledge += gained;
   state.lifetimeKnowledge += gained;
   state.stats.fragments += 1;
-  state.finds.push(find);
+  state.findCounts[find.kind] += 1;
   // La toute première : le joueur comprend une phrase, pour la première fois.
   if (state.lifetimeKnowledge === gained) tellLore(state, 'firstKnowledge');
   if (find.duplicate) return;

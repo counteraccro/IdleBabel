@@ -87,7 +87,7 @@ describe('sauvegarde', () => {
     expect(loaded.totalPagesRead).toBe(500);
   });
 
-  it("oublie les trouvailles d'avant le livre blanc (sans phrase)", () => {
+  it("compte les trouvailles gardées une à une (sans celles d'avant le livre blanc), puis ne les réécrit plus", () => {
     const state = createInitialState('fr');
     localStorage.setItem(
       SAVE_KEY,
@@ -96,10 +96,14 @@ describe('sauvegarde', () => {
         finds: [
           { kind: 'word', text: 'ancien' },
           { kind: 'word', sentence: 'diagonal', segment: 0 },
+          { kind: 'sentence', sentence: 'finger' },
+          { kind: 'piece', sentence: 'thumb', segment: 1 },
         ],
       }),
     );
-    expect(loadGame('fr').finds).toEqual([{ kind: 'word', sentence: 'diagonal', segment: 0 }]);
+    const loaded = loadGame('fr');
+    expect(loaded.findCounts).toEqual({ word: 1, piece: 0, sentence: 1 });
+    expect('finds' in loaded).toBe(false);
   });
 
   it("repart de zéro sur une sauvegarde illisible ou d'une autre version", () => {

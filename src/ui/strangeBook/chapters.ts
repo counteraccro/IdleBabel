@@ -5,7 +5,7 @@ import { PAGES_PER_BOOK } from '../../systems/books';
 import { pagesPerSecond } from '../../systems/production';
 import { meaningfulCovers } from '../../systems/stats';
 import { findChance } from '../../systems/knowledge';
-import { BASE_FIND_CHANCE } from '../../data/knowledge';
+import { BASE_FIND_CHANCE, type FindKind } from '../../data/knowledge';
 import { filterMultiplier, gestureMultiplier, rareChance } from '../../systems/technologies';
 import { etherReading, readingMultiplier } from '../../systems/etherium';
 import { nextRareChance } from '../../systems/rareBooks';
@@ -120,7 +120,7 @@ const startedAt = (state: GameState): number => state.history.find((e) => e.type
 const DAY_MS = 86_400_000;
 
 /** Trouvailles d'une sorte. */
-const found = (state: GameState, kind: string): number => state.finds.filter((find) => find.kind === kind).length;
+const found = (state: GameState, kind: FindKind): number => state.findCounts[kind];
 
 const TOOL_CAPTIONS: Record<string, string> = {
   diagonal: 'bruda vex',
@@ -204,7 +204,7 @@ export const CHAPTERS: readonly Chapter[] = [
       {
         id: 'finds',
         caption: 'pirno dalce vomi',
-        value: (s) => ['word', 'piece', 'sentence'].map((kind) => number(found(s, kind))).join(' · '),
+        value: (s) => (['word', 'piece', 'sentence'] as const).map((kind) => number(found(s, kind))).join(' · '),
       },
       {
         id: 'findChance',

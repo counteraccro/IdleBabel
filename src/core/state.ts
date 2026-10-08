@@ -3,7 +3,7 @@ import type { TechnologyId } from '../data/technologies';
 import { TOOLS, type BuyLot, type ToolId } from '../data/tools';
 import type { HistoryEntry } from './history';
 import type { Locale } from '../i18n';
-import type { Find } from '../data/knowledge';
+import { noFinds, type FindCounts } from './countedFinds';
 import type { PartId } from '../data/decipher';
 import { newGameSeed } from './random';
 
@@ -80,7 +80,7 @@ export interface GameState {
   /** Connaissance trouvée depuis le début de la partie : ne baisse jamais, ni à l'Exil. */
   lifetimeKnowledge: number;
   /** Mots, morceaux de phrase et phrases trouvés, dans l'ordre. */
-  finds: Find[];
+  findCounts: FindCounts;
   /** Livre blanc : morceaux écrits de chaque phrase (data/sentences.ts), gardés pour toujours. */
   written: Record<string, number[]>;
   /**
@@ -160,7 +160,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   knowledge: 0,
   cycleKnowledge: 0,
   lifetimeKnowledge: 0,
-  finds: [],
+  findCounts: noFinds(),
   written: {},
   deciphered: [],
   partsRead: [],

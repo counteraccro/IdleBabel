@@ -4,6 +4,8 @@ import { renameRareBooks } from './renamedRareBooks';
 import { dropRemovedMethods } from './removedMethods';
 import { refundEtheriumTrees } from './etheriumTrees';
 import { PAGES_PER_CLICK } from '../systems/click';
+import { countSavedFinds } from './countedFinds';
+import type { Find } from '../data/knowledge';
 
 const SAVE_KEY = 'idle-babel-save';
 
@@ -11,7 +13,8 @@ export const loadGame = (defaultLocale: Locale): GameState => {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
     if (raw) {
-      const saved = JSON.parse(raw) as GameState;
+      // Les trouvailles d'avant le 08/10, gardées une à une : comptées, puis plus jamais réécrites (core/countedFinds.ts).
+      const { finds, ...saved } = JSON.parse(raw) as GameState & { finds?: Partial<Find>[] };
       if (saved.version === SAVE_VERSION) {
         const initial = createInitialState(defaultLocale);
         return refundEtheriumTrees(
@@ -30,8 +33,7 @@ export const loadGame = (defaultLocale: Locale): GameState => {
               wake: { ...initial.wake, ...saved.wake },
               // Les nœuds des anciens arbres, ou les étoiles : core/etheriumTrees.ts.
               etherium: saved.etherium ?? [],
-              // Trouvailles d'avant le livre blanc (sans phrase) : oubliées.
-              finds: (saved.finds ?? []).filter((find) => typeof find.sentence === 'string'),
+              findCounts: countSavedFinds(saved.findCounts, finds),
               totalPagesRead: saved.totalPagesRead ?? saved.pages,
               // Une partie d'avant ces compteurs part de ce qu'elle sait : les pages de ses méthodes, ses clics.
               pagesByMethods: saved.pagesByMethods ?? Object.values(saved.methodPages ?? {}).reduce((sum, read) => sum + (read ?? 0), 0),

@@ -45,6 +45,9 @@ export const sealSeries = (seal: SealDef): string => (seal.rareBook || seal.tool
 const series = (id: string, plate: PlateId, value: (state: GameState) => number, steps: number[]): SealDef[] =>
   steps.map((n, index) => ({ id: `${id}-${n}`, plate, text: id, tier: { n, index }, reached: (state) => value(state) >= n }));
 
+/** Les chiffres d'un nombre de pages, tous écrits (jamais « 1e+21 »). */
+const wholeDigits = (value: number): string => (Number.isFinite(value) ? BigInt(Math.floor(value)).toString() : '');
+
 /** Un sceau seul. */
 const seal = (id: string, plate: PlateId, reached: (state: GameState) => boolean): SealDef => ({ id, plate, text: id, reached });
 
@@ -217,6 +220,6 @@ export const SEALS: readonly SealDef[] = [
   secret('emptyEtherium'),
   // Toute une partie, d'un réveil au prestige suivant, sans tourner une page à la main (systems/prestige.ts).
   secret('noHands'),
-  // Exactement 410 pages en réserve, sans rien qui lise : il a fallu s'arrêter de tourner.
-  seal('exactly410', 'secrets', (s) => Math.floor(s.pages) === BOOK_PAGES && pagesPerSecond(s) === 0),
+  // 410 dans le nombre des pages en réserve (1 410 523…), compteur au repos : rien ne lit (demande de l'auteur, 08/10).
+  seal('exactly410', 'secrets', (s) => pagesPerSecond(s) === 0 && wholeDigits(s.pages).includes(String(BOOK_PAGES))),
 ];

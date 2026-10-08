@@ -87,9 +87,12 @@ describe('revue des sceaux (08/10)', () => {
     expect(state.seals['fullNight']).toBeDefined();
   });
 
-  it('exactement 410 pages en réserve, sans rien qui lise : un secret', () => {
+  it('410 dans le nombre des pages en réserve, sans rien qui lise : un secret', () => {
     const state = createInitialState('fr');
-    state.pages = 410.5;
+    state.pages = 2e21;
+    checkSeals(state, 0);
+    expect(state.seals['exactly410']).toBeUndefined();
+    state.pages = 1_410_523.5;
     state.tools.diagonal = 1;
     checkSeals(state, 1);
     expect(state.seals['exactly410']).toBeUndefined();
