@@ -204,9 +204,16 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
     pages.push(createLeafPage(() => intuitionItems(state, tech.id, number), goTo, { onPay: () => understand(state, tech.id) }));
   };
   const lasting = (tech: (typeof TECHNOLOGIES)[number]): boolean => 'permanent' in tech && tech.permanent;
-  // Celle d'une méthode est de son Âge ; les autres, de l'Âge Manuel.
+  const visible = TECHNOLOGIES.filter((tech) => !lasting(tech) && intuitionVisible(state, tech.id));
+  // Rangées par Âge, celles qui ne tiennent à aucune méthode ont leur sous-partie, avant les Âges (elles ne sont d'aucun ;
+  // remarque de l'auteur, 08/10) ; celle d'une méthode est de son Âge. Avant l'Âge Automatique, toutes à la suite.
+  const general = byAge ? visible.filter((tech) => !('tool' in tech)) : [];
+  if (general.length > 0) {
+    subPart('general');
+    general.forEach(intuitionPage);
+  }
   ages(
-    TECHNOLOGIES.filter((tech) => !lasting(tech) && intuitionVisible(state, tech.id)),
+    visible.filter((tech) => !general.includes(tech)),
     (tech) => TOOLS.find((tool) => 'tool' in tech && tool.id === tech.tool)?.age,
     intuitionPage,
   );

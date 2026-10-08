@@ -64,7 +64,7 @@ export const partTitleLayout = (kind: WhiteBookPart, number: number, share: numb
 };
 
 /**
- * Page de titre d'une sous-partie (les intuitions permanentes), à gauche, en face de son contenu : son
+ * Page de titre d’une sous-partie (les intuitions générales, permanentes, d’un Âge), à gauche, en face de son contenu : son
  * nom, un filet, quelques mots du chercheur ; ni numéro, ni part déjà là.
  */
 export const subPartLayout = (key: string): Item[] => {
