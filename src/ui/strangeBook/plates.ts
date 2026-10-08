@@ -4,6 +4,7 @@ import { BOOK_PAGES, PLATES, SEALS, sealSeries, type PlateId, type SealDef } fro
 import { babelName, completion, countObtained, plateSeals, sealFindMultiplier, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
 import { isDeciphered } from '../../systems/decipher';
+import { sentenceShown } from '../../systems/sentences';
 import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
 import type { GameState } from '../../core/state';
 import { TOOLS, type ToolId } from '../../data/tools';
@@ -35,15 +36,28 @@ export interface PlatePage {
 /** La planche de l'Etherium n'existe qu'après un premier prestige, comme le chapitre Éther : avant, rien ne le laisse deviner. */
 const plateShown = (state: GameState, plate: PlateId): boolean => plate !== 'etherium' || state.etherReceived > 0 || statsRevealed();
 
+/**
+ * Les sceaux d'une méthode (ses pages, l'intuition de son geste) n'existent qu'avec elle, comme sa page du livre blanc :
+ * rien de la Page Cornée avant son étoile, rien de l'Âge Automatique avant de l'avoir acheté (demande de l'auteur, 08/10).
+ */
+const sealShown = (state: GameState, seal: SealDef): boolean => {
+  const tool = seal.tool ?? (seal.method === 'all' ? undefined : seal.method);
+  return !tool || sentenceShown(state, tool) || statsRevealed();
+};
+
+/** Les sceaux d'une planche que le chercheur peut connaître. */
+const knownSeals = (state: GameState, plate: PlateId): SealDef[] => plateSeals(plate).filter((seal) => sealShown(state, seal));
+
 /** Les pages des planches, à partir de la page `first`. */
 export const platePages = (state: GameState, first: number): PlatePage[] => {
   const pages: PlatePage[] = [];
   for (const plate of PLATES.filter((candidate) => plateShown(state, candidate))) {
-    const seals = plateSeals(plate);
+    const seals = knownSeals(state, plate);
     // Une page par méthode, ses sceaux seulement (l'auteur a d'autres idées de sceaux pour chacune), puis
     // celle de toutes les méthodes à la fois.
     if (seals.some((seal) => seal.method)) {
-      [...TOOLS.map((tool) => tool.id), 'all' as const].forEach((method, part) =>
+      const methods = TOOLS.map((tool) => tool.id).filter((method) => seals.some((seal) => seal.method === method));
+      [...methods, 'all' as const].forEach((method, part) =>
         pages.push({ plate, seals: seals.filter((seal) => seal.method === method), part, method, page: first + pages.length }),
       );
       continue;
@@ -97,7 +111,7 @@ export const sealLegend = (state: GameState, id: string | null): { name: string;
 const HIDDEN_PLATES: readonly PlateId[] = ['rare', 'secrets'];
 
 /** Obtenus sur total ; les secrets et les livres rares ne disent pas combien il en reste. */
-const tally = (state: GameState, plate: PlateId, seals = plateSeals(plate)): string =>
+const tally = (state: GameState, plate: PlateId, seals = knownSeals(state, plate)): string =>
   writeDigits(`${countObtained(state, seals)} / ${HIDDEN_PLATES.includes(plate) && !statsRevealed() ? '?' : seals.length}`);
 
 /**
