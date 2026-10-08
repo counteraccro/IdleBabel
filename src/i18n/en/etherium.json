@@ -4,7 +4,7 @@
   "close": "Close the book",
   "confirm": {
     "title": "Open it?",
-    "warning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions. +{n} Ether, +{n}% reading.",
+    "warning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions, method sentences. +{n} Ether, +{n}% reading.",
     "stay": "Put it down",
     "open": "Open"
   },
@@ -176,8 +176,8 @@
       },
       "el": {
         "name": "Left eye",
-        "value": "−15%",
-        "effect": "intuition prices (−25% in all)"
+        "value": "−25%",
+        "effect": "intuition prices, in all"
       },
       "al": {
         "name": "Left tuft",
@@ -411,6 +411,7 @@
   "given": "lit from the start",
   "afterAge": "once the Automatic Age is bought",
   "unknown": "a step, further up",
+  "closed": "Not yet.",
   "complete": "The whole figure shines.",
   "contentsLine": "What the Ether has lit."
 }

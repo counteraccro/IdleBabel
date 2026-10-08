@@ -7,7 +7,7 @@ import { meaningfulCovers } from '../../systems/stats';
 import { findChance } from '../../systems/knowledge';
 import { BASE_FIND_CHANCE, type FindKind } from '../../data/knowledge';
 import { filterMultiplier, gestureMultiplier, rareChance } from '../../systems/technologies';
-import { etherReading, readingMultiplier } from '../../systems/etherium';
+import { etherReading, findsMultiplier, readingMultiplier } from '../../systems/etherium';
 import { nextRareChance } from '../../systems/rareBooks';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
@@ -66,12 +66,17 @@ const smallPercent = (value: number): string =>
   writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumSignificantDigits: 2 }).format(value));
 const factor = (value: number): string => `×${formatNumber(value, getLocale())}`;
 
-/** La chance de trouvaille, décomposée : le hasard, × les intuitions (le filtre sémantique), × les sceaux. */
-const findChanceParts = (state: GameState, readable: boolean): string => {
-  const parts = [percent(BASE_FIND_CHANCE), factor(filterMultiplier(state)), factor(sealFindMultiplier(state))];
-  if (!readable) return parts.join('  ');
-  const [base, filter, seals] = parts;
-  return t('strangeBook.figures.findChanceParts').replace('{base}', base).replace('{filter}', filter).replace('{seals}', seals);
+/**
+ * La chance de trouvaille, décomposée : le hasard, × les intuitions (le filtre sémantique), × les sceaux ; puis, après un
+ * premier prestige, une seconde ligne : × l'Etherium (la Loupe), comme pour la vitesse de lecture.
+ */
+const findChanceParts = (state: GameState, readable: boolean): string | string[] => {
+  const [base, filter, seals] = [percent(BASE_FIND_CHANCE), factor(filterMultiplier(state)), factor(sealFindMultiplier(state))];
+  const stars = factor(findsMultiplier(state));
+  const prestiged = state.etherReceived > 0;
+  if (!readable) return prestiged ? [`${base}  ${filter}  ${seals}`, stars] : `${base}  ${filter}  ${seals}`;
+  const first = t('strangeBook.figures.findChanceParts').replace('{base}', base).replace('{filter}', filter).replace('{seals}', seals);
+  return prestiged ? [first, t('strangeBook.figures.findChanceEther').replace('{stars}', stars)] : first;
 };
 
 /**

@@ -3,7 +3,7 @@ import { createInitialState } from '../src/core/state';
 import { passTime } from '../src/core/absence';
 import { SEALS } from '../src/data/seals';
 import { ANOMALIES, hintSeal } from '../src/data/anomalies';
-import { STARS } from '../src/data/etheriumStars';
+import { OPEN_STARS, STARS } from '../src/data/etheriumStars';
 import { checkSeals } from '../src/systems/seals';
 import { closeEtherium, prestige } from '../src/systems/prestige';
 import { lightStar } from '../src/systems/etherium';
@@ -42,6 +42,16 @@ describe('revue des sceaux (08/10)', () => {
     expect(state.seals['constellation-reading']).toBe(1);
     expect(state.seals['constellation-hands']).toBeUndefined();
     expect(state.seals['automaticAge']).toBe(1);
+  });
+
+  it('les étoiles fermées ne comptent pas : l’Escalier entier, la Ruche entière, toutes les étoiles', () => {
+    const state = createInitialState('fr');
+    state.etherium = OPEN_STARS.map((star) => star.id);
+    checkSeals(state, 1);
+    expect(state.seals['constellation-ages']).toBe(1);
+    expect(state.seals['constellation-memory']).toBe(1);
+    expect(state.seals[`starsLit-${OPEN_STARS.length}`]).toBe(1);
+    expect(OPEN_STARS.length).toBe(STARS.length - 4);
   });
 
   it('scelle la Connaissance trouvée, et le livre blanc', () => {

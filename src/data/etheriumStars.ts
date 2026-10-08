@@ -109,6 +109,27 @@ export const STARS: readonly Star[] = RAW.map(([page, id, after, cost]) => ({
 
 export const starById = (id: string): Star | undefined => STARS.find((star) => star.id === id);
 
+/**
+ * Étoiles fermées, tant que ce qu'elles donnent n'existe pas (revue du 08/10, décision de l'auteur) : les Âges
+ * Quantique, Dimensionnel et Infini, et la Goutte (la méthode secrète de l'Âge Automatique, mise de côté). Elles se
+ * voient sans dire leur nom, ne s'allument pas, et les sceaux de l'Etherium ne les comptent pas.
+ */
+export const CLOSED: ReadonlySet<string> = new Set(['ages.quantum', 'ages.dim', 'ages.inf', 'memory.a0']);
+
+/** Fermées, mais sans bloquer la suite : les étoiles d'après la Goutte attendent celle d'avant elle. */
+const PASSABLE: ReadonlySet<string> = new Set(['memory.a0']);
+
+/** Les étoiles qui peuvent s'allumer aujourd'hui (les sceaux de l'Etherium les comptent). */
+export const OPEN_STARS: readonly Star[] = STARS.filter((star) => !CLOSED.has(star.id));
+
+/** L'étoile d'avant est allumée (ou, pour la Goutte, celle d'avant elle), ou il n'y en a pas : `star` peut s'allumer. */
+export const afterLit = (star: Star, lit: (id: string) => boolean): boolean => {
+  if (!star.after) return true;
+  if (lit(star.after)) return true;
+  const before = starById(star.after);
+  return !!before && PASSABLE.has(before.id) && afterLit(before, lit);
+};
+
 /** L'alvéole Automatique de la Ruche ne s'ouvre qu'avec l'Âge Automatique (l'étoile de l'Escalier). */
 export const NEEDS_AGE: ReadonlySet<string> = new Set(STARS.filter((star) => star.id.startsWith('memory.a')).map((star) => star.id));
 

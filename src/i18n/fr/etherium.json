@@ -4,7 +4,7 @@
   "close": "Refermer le livre",
   "confirm": {
     "title": "L'ouvrir ?",
-    "warning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions. +{n} Éther, +{n} % de lecture.",
+    "warning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions, phrases des méthodes. +{n} Éther, +{n} % de lecture.",
     "stay": "Le reposer",
     "open": "Ouvrir"
   },
@@ -176,8 +176,8 @@
       },
       "el": {
         "name": "Œil gauche",
-        "value": "−15 %",
-        "effect": "prix des intuitions (−25 % en tout)"
+        "value": "−25 %",
+        "effect": "prix des intuitions, en tout"
       },
       "al": {
         "name": "Aigrette gauche",
@@ -411,6 +411,7 @@
   "given": "allumée dès le début",
   "afterAge": "quand l’Âge Automatique sera acheté",
   "unknown": "une marche, plus haut",
+  "closed": "Pas encore.",
   "complete": "Toute la figure brille.",
   "contentsLine": "Ce que l’Éther a éclairé."
 }

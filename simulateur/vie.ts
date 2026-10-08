@@ -1,4 +1,4 @@
-import { NEEDS_AGE, S, STARS, type PageId } from '../src/data/etheriumStars';
+import { afterLit, CLOSED, NEEDS_AGE, S, STARS, type PageId } from '../src/data/etheriumStars';
 import { PLAYER } from './config';
 
 /** Ce qui survit au prestige : les pages à vie, l'Éther, les étoiles allumées, la Page Cornée une fois retrouvée. */
@@ -58,15 +58,18 @@ export const product = (life: Life, effect: Record<string, number>): number =>
 export const sum = (life: Life, effect: Record<string, number>): number =>
   Object.entries(effect).reduce((total, [id, value]) => (life.stars.has(id) ? total + value : total), 0);
 
-/** Les étoiles qu'on peut allumer maintenant : leur étoile d'avant est allumée (et l'Âge, pour l'alvéole Automatique). */
+/**
+ * Les étoiles qu'on peut allumer maintenant, comme en jeu : pas fermées, leur étoile d'avant est allumée (et l'Âge, pour
+ * l'alvéole Automatique).
+ */
 const open = (life: Life) =>
   STARS.filter(
     (star) =>
       !life.stars.has(star.id) &&
       PLAYER.pages.includes(star.page) &&
-      (!star.after || life.stars.has(star.after)) &&
+      !CLOSED.has(star.id) &&
+      afterLit(star, (id) => life.stars.has(id)) &&
       (!NEEDS_AGE.has(star.id) || life.stars.has(S.age)) &&
-      (star.page !== 'ages' || star.id === S.age) &&
       (PLAYER.cornee || star.id !== S.cornee),
   );
 

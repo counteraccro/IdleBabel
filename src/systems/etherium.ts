@@ -1,4 +1,4 @@
-import { EFFECT, KEEPS, NEEDS_AGE, S, SIMPLE, starById } from '../data/etheriumStars';
+import { afterLit, CLOSED, EFFECT, KEEPS, NEEDS_AGE, S, SIMPLE, starById } from '../data/etheriumStars';
 import { ETHER_READING } from '../data/etherium';
 import { SENTENCES } from '../data/sentences';
 import type { GameState } from '../core/state';
@@ -10,11 +10,14 @@ import type { GameState } from '../core/state';
 
 export const starLit = (state: GameState, id: string): boolean => state.etherium.includes(id);
 
-/** L'étoile peut s'allumer : pas encore allumée, son étoile d'avant l'est (et l'Âge Automatique, pour son alvéole). */
+/**
+ * L'étoile peut s'allumer : pas encore allumée ni fermée (CLOSED), son étoile d'avant l'est (et l'Âge Automatique, pour
+ * son alvéole).
+ */
 export const starOpen = (state: GameState, id: string): boolean => {
   const star = starById(id);
-  if (!star || starLit(state, id)) return false;
-  return (!star.after || starLit(state, star.after)) && (!NEEDS_AGE.has(id) || starLit(state, S.age));
+  if (!star || starLit(state, id) || CLOSED.has(id)) return false;
+  return afterLit(star, (before) => starLit(state, before)) && (!NEEDS_AGE.has(id) || starLit(state, S.age));
 };
 
 /** Allume une étoile ouverte, s'il y a assez d'Éther. Renvoie true si elle s'allume. */

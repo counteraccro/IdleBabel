@@ -285,7 +285,7 @@
     "reminiscence": {
       "name": "La Réminiscence",
       "description": "Ce que j'ai compris une fois me revient seul, jusqu'où j'étais allé.",
-      "effect": "après l'Exil, les intuitions reviennent",
+      "effect": "après un prestige, les intuitions reviennent",
       "notes": [
         "Je l'avais déjà compris. Ça revient."
       ],

@@ -1,4 +1,4 @@
-import { STARS } from '../../data/etheriumStars';
+import { OPEN_STARS } from '../../data/etheriumStars';
 import { SENTENCES } from '../../data/sentences';
 import { PARTS } from '../../data/decipher';
 import { LORE } from '../../data/lore';
@@ -23,7 +23,7 @@ export const unlockAll = (state: GameState): void => {
   // Un Éther déjà reçu (la partie « Éther » du Grand Livre) : les pages à vie le méritent.
   state.totalPagesRead = Math.max(state.totalPagesRead, ETHER_PAGES, ETHERIUM_NAMED_PAGES);
   state.etherReceived = Math.max(1, state.etherReceived);
-  state.etherium = STARS.map((star) => star.id);
+  state.etherium = OPEN_STARS.map((star) => star.id);
   writeAll(state, SENTENCES);
   maxIntuitions(state);
   state.booksFinished = Math.max(state.booksFinished, STRANGE_BOOK_INDEX + 1);

@@ -5,7 +5,7 @@ import { isComplete } from '../systems/sentences';
 import { fullyDeciphered } from '../systems/decipher';
 import { pagesPerSecond } from '../systems/production';
 import { SENTENCES } from './sentences';
-import { ETHERIUM_PAGES, STARS } from './etheriumStars';
+import { ETHERIUM_PAGES, OPEN_STARS } from './etheriumStars';
 import { ANOMALIES, ANOMALY_FAMILIES } from './anomalies';
 import { RARE_BOOKS } from './rareBooks';
 import { TECHNOLOGIES } from './technologies';
@@ -167,13 +167,14 @@ export const SEALS: readonly SealDef[] = [
   ...TECHNOLOGIES.map(intuitionSeal),
   ...series('knowledgeFound', 'intuitions', (s) => s.lifetimeKnowledge, [1, 100, 10 * K, M]),
 
-  // L'Etherium (revue des sceaux, 08/10) : prestiges, Éther reçu, étoiles, chaque constellation entière, les Âges.
+  // L'Etherium (revue des sceaux, 08/10) : prestiges, Éther reçu, étoiles, chaque constellation entière, les Âges. Les
+  // étoiles fermées (les Âges d'après l'Automatique, la Goutte) n'y comptent pas.
   ...series('prestiges', 'etherium', (s) => s.exiles, [1, 5, 10, 25, 100]),
   ...series('etherReceived', 'etherium', (s) => s.etherReceived, [1, 10, 100, K, 10 * K, 100 * K, M]),
-  ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, STARS.length]),
+  ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, OPEN_STARS.length]),
   ...ETHERIUM_PAGES.map((page) =>
     seal(`constellation-${page}`, 'etherium', (s) =>
-      STARS.filter((star) => star.page === page).every((star) => s.etherium.includes(star.id)),
+      OPEN_STARS.filter((star) => star.page === page).every((star) => s.etherium.includes(star.id)),
     ),
   ),
   seal('automaticAge', 'etherium', (s) => s.etherium.includes(AUTOMATIC_AGE)),

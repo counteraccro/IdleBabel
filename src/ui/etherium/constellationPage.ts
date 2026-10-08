@@ -1,4 +1,4 @@
-import { KEEPS, NEEDS_AGE, S, STARS, type PageId } from '../../data/etheriumStars';
+import { CLOSED, KEEPS, NEEDS_AGE, S, STARS, type PageId } from '../../data/etheriumStars';
 import { lightStar, starLit, starOpen } from '../../systems/etherium';
 import { formatNumber, writeDigits } from '../../core/format';
 import { getLocale, t } from '../../i18n';
@@ -14,7 +14,10 @@ import type { GameState } from '../../core/state';
  * son prix. Cliquer une étoile qui peut s'allumer l'allume.
  */
 
-/** allumée ; à prendre ; plus loin ; l'alvéole Automatique avant l'Âge ; une marche pas encore connue de l'Escalier. */
+/**
+ * allumée ; à prendre ; plus loin ; l'alvéole Automatique avant l'Âge ; une marche pas encore connue de l'Escalier, ou
+ * une étoile fermée (CLOSED).
+ */
 export type StarStatus = 'done' | 'next' | 'far' | 'hidden' | 'unknown';
 
 export interface StarView extends Point {
@@ -35,6 +38,8 @@ const statusOf = (state: GameState, page: PageId, id: string): StarStatus => {
   const full = `${page}.${id}`;
   if (NEEDS_AGE.has(full) && !starLit(state, S.age)) return 'hidden';
   if (starLit(state, full)) return 'done';
+  // Fermée : elle ne dit pas son nom (la Goutte, les Âges d'après l'Automatique).
+  if (CLOSED.has(full)) return 'unknown';
   if (starOpen(state, full)) return 'next';
   // L'Escalier : seule la prochaine marche dit son nom.
   return page === 'ages' ? 'unknown' : 'far';
@@ -224,12 +229,21 @@ const drawConstellation = (ctx: Ctx, state: GameState, page: PageId, number: num
     align: 'center',
     spacing: 5,
   });
-  // En haut : l'étoile survolée, ou la prochaine.
+  // En haut : l'étoile survolée, ou la prochaine ; sinon une étoile fermée (la figure n'est pas encore entière).
   const shown =
-    (hovered ? byId[hovered] : undefined) ?? stars.find((star) => star.affordable) ?? stars.find((star) => star.status === 'next');
+    (hovered ? byId[hovered] : undefined) ??
+    stars.find((star) => star.affordable) ??
+    stars.find((star) => star.status === 'next') ??
+    stars.find((star) => star.status === 'unknown');
   if (shown?.status === 'unknown') {
     write(ctx, '?', 320, 206, { size: 24, align: 'center', color: C.faded });
-    write(ctx, t('etherium.unknown'), 320, 240, { size: 26, face: HAND, align: 'center', color: C.faded });
+    // L'Escalier : une marche, plus haut ; ailleurs (la Goutte) : pas encore.
+    write(ctx, t(page === 'ages' ? 'etherium.unknown' : 'etherium.closed'), 320, 240, {
+      size: 26,
+      face: HAND,
+      align: 'center',
+      color: C.faded,
+    });
   } else if (shown) {
     const text = starText(page, shown);
     write(ctx, text, 320, 210, {

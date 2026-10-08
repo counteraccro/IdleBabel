@@ -20,7 +20,7 @@ import {
   turnsBonus,
 } from '../../systems/etherium';
 import { etherDeserved, nextEtherPages, nextEtherProgress, prestigeGain } from '../../systems/prestige';
-import { ETHERIUM_PAGES, STARS } from '../../data/etheriumStars';
+import { ETHERIUM_PAGES, OPEN_STARS as STARS } from '../../data/etheriumStars';
 import { findableTarget, hintFindable, waitingFor } from '../../systems/findable';
 import { completion, isComplete, toolUnlocked } from '../../systems/sentences';
 import { pagesPerSecond, toolRate } from '../../systems/production';

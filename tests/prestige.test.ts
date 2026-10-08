@@ -11,6 +11,7 @@ import {
 } from '../src/systems/prestige';
 import { etherReading, lightStar, readingMultiplier, starOpen } from '../src/systems/etherium';
 import { readPage } from '../src/systems/click';
+import { refundClosedStars } from '../src/core/closedStars';
 import { segments, toolUnlocked, write } from '../src/systems/sentences';
 import { toolRate } from '../src/systems/production';
 import { rollFinds } from '../src/systems/knowledge';
@@ -135,9 +136,31 @@ describe('Prestige', () => {
   it('l’alvéole Automatique de la Ruche attend l’Âge Automatique', () => {
     const state = reader(1e9);
     state.etherium = ['memory.m0', 'memory.m1', 'memory.m2', 'memory.m3', 'memory.m4', 'memory.m5'];
-    expect(starOpen(state, 'memory.a0')).toBe(false);
+    expect(starOpen(state, 'memory.a1')).toBe(false);
     state.etherium.push('ages.auto');
-    expect(starOpen(state, 'memory.a0')).toBe(true);
+    // La Goutte est fermée (08/10) : le Métronome ne l'attend pas, il suit l'Échelle.
+    expect(starOpen(state, 'memory.a0')).toBe(false);
+    expect(starOpen(state, 'memory.a1')).toBe(true);
+  });
+
+  it('les étoiles fermées ne s’allument pas : les Âges d’après l’Automatique, la Goutte', () => {
+    const state = reader(1e9);
+    state.ether = 10_000;
+    state.etherium = ['ages.auto', 'memory.m0', 'memory.m1', 'memory.m2', 'memory.m3', 'memory.m4', 'memory.m5'];
+    for (const id of ['ages.quantum', 'memory.a0']) {
+      expect(starOpen(state, id)).toBe(false);
+      expect(lightStar(state, id)).toBe(false);
+    }
+    expect(state.ether).toBe(10_000);
+  });
+
+  it('une partie qui avait allumé une étoile fermée récupère son Éther', () => {
+    const state = reader(1e9);
+    state.ether = 5;
+    state.etherium = ['ages.auto', 'ages.quantum', 'memory.a0', 'memory.a1'];
+    const after = refundClosedStars(state);
+    expect(after.etherium).toEqual(['ages.auto', 'memory.a1']);
+    expect(after.ether).toBe(25);
   });
 
   it('la Porte et la Ruche', () => {

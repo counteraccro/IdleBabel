@@ -1,4 +1,4 @@
-import { ETHERIUM_PAGES, STARS, type PageId } from '../../data/etheriumStars';
+import { ETHERIUM_PAGES, OPEN_STARS, type PageId } from '../../data/etheriumStars';
 import { etherDeserved, nextEtherPages, prestige, prestigeGain } from '../../systems/prestige';
 import { starLit } from '../../systems/etherium';
 import { t } from '../../i18n';
@@ -9,7 +9,8 @@ import { ETHERIUM_HASH } from '../../ui/etherium/prestigeStory';
 import { rebuildScreen } from '../refresh';
 import { format, type DebugSubject } from './subject';
 
-const starsOf = (page: PageId) => STARS.filter((star) => star.page === page);
+// Les étoiles fermées (CLOSED) ne s’allument pas, même en débogage.
+const starsOf = (page: PageId) => OPEN_STARS.filter((star) => star.page === page);
 
 /**
  * L'ouverture de l'Etherium rapportera `gain` Éther : les pages à vie montent jusqu'à le mériter (ajoutées aux pages,

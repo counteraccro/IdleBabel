@@ -285,7 +285,7 @@
     "reminiscence": {
       "name": "Reminiscence",
       "description": "What I once understood comes back on its own, as far as I had gone.",
-      "effect": "after the Exile, intuitions come back",
+      "effect": "after a prestige, intuitions come back",
       "notes": [
         "I had understood it before. It comes back."
       ],
