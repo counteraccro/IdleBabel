@@ -3,6 +3,8 @@ import { getLocale, t } from '../i18n';
 import { formatNumber } from '../core/format';
 import { setNumberText } from './babelDigits';
 import { pagesPerSecond } from '../systems/production';
+import { createBoonMedals } from './letter/boonMedals';
+import { boonOn } from '../systems/boons';
 import type { GameState } from '../core/state';
 
 export const createCounter = (state: GameState): Component => {
@@ -11,7 +13,9 @@ export const createCounter = (state: GameState): Component => {
   const rate = el('div', 'label');
   // Connaissance : la ligne n'apparaît qu'avec la première trouvaille.
   const knowledge = el('div', 'label knowledge');
-  root.append(value, rate, knowledge);
+  // Les bonus de la lettre en cours : leurs médaillons, à droite du compteur.
+  const medals = createBoonMedals(state);
+  root.append(value, rate, knowledge, medals.root);
   // Les nombres dans leur propre élément, dorés (classe number).
   const [pages, speed, carried] = [el('span', 'number'), el('span', 'number'), el('span', 'number')];
   const pagesLabel = document.createTextNode('');
@@ -32,6 +36,10 @@ export const createCounter = (state: GameState): Component => {
     knowledge.hidden = state.lifetimeKnowledge === 0;
     set(knowledgeLabel, `${t('ui.knowledge')} `);
     setNumberText(carried, formatNumber(state.knowledge, getLocale()), 13);
+    // Ce que porte un bonus en cours luit : la lecture pendant la Transe, la Connaissance pendant la Mémoire vive.
+    speed.classList.toggle('boosted', boonOn('trance'));
+    carried.classList.toggle('boosted', boonOn('mind'));
+    medals.update();
   };
   update();
   return { root, update };

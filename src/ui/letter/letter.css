@@ -1,0 +1,226 @@
+/*
+ * La lettre qui s'échappe (voir letter.ts) et les médaillons des bonus en cours (boonMedals.ts). Mesures de la maquette
+ * validée le 08/10 (.ai/maquette-bonus-temporaires.html), dont la scène fait 1 372 px de large : la lettre et sa légende
+ * en vw (34 px de la maquette = 34 / 13,72 vw), les médaillons en em du compteur (30 px dans la maquette).
+ */
+/* Sur tout l'écran, sans prendre les clics : seule la lettre se clique (#app > * les rend, d'où le #app). */
+#app > .letter-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* La lettre : un point qui suit sa trajectoire ; une large zone pour l'attraper. */
+.letter-catch {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.letter-hit {
+  position: absolute;
+  width: clamp(72px, 5.25vw, 140px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+.letter-glyph {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: -0.53em 0 0 -0.3em;
+  transform-origin: center;
+  pointer-events: none;
+  font-family: Georgia, serif;
+  font-size: clamp(30px, 2.48vw, 64px);
+  line-height: 1;
+  color: #e8c776;
+  text-shadow:
+    0 0 8px rgba(232, 199, 118, 0.9),
+    0 0 22px rgba(232, 199, 118, 0.45);
+}
+/* Une lettre du mot BABEL : plus vive. */
+.letter-glyph.word {
+  color: #fff1c8;
+  text-shadow:
+    0 0 10px rgba(255, 236, 180, 1),
+    0 0 28px rgba(232, 199, 118, 0.7);
+}
+.letter-catch:hover .letter-glyph {
+  filter: brightness(1.25);
+}
+/* Ratée : elle s'éteint. */
+.letter-catch.gone {
+  transition: opacity 1.2s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Attrapée : de la poussière d'or. */
+.letter-dust {
+  position: absolute;
+  width: clamp(4px, 0.29vw, 8px);
+  height: clamp(4px, 0.29vw, 8px);
+  border-radius: 50%;
+  background: #fbe6a8;
+  box-shadow: 0 0 6px #e8c776;
+}
+
+/* Ce qu'elle donne : comme la légende d'une vision de sceau. */
+.letter-gift {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  padding: 6px 12px;
+  text-align: center;
+  background: radial-gradient(ellipse at center, rgba(8, 6, 4, 0.62), rgba(8, 6, 4, 0) 72%);
+  text-shadow: var(--shadow);
+  animation: letter-gift 3.6s ease-in-out forwards;
+}
+.letter-gift-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: clamp(11px, 0.8vw, 20px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c9a45a;
+}
+.letter-gift-what {
+  margin-top: 3px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(201, 164, 106, 0.35);
+  font-style: italic;
+  font-size: clamp(15px, 1.09vw, 28px);
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+/* Le mot BABEL, qui s'écrit au-dessus du livre à mesure. */
+.letter-spelled {
+  position: absolute;
+  left: 50%;
+  top: 60.5%;
+  transform: translateX(-50%);
+  font-family: Georgia, serif;
+  font-size: clamp(24px, 1.9vw, 48px);
+  letter-spacing: 0.5em;
+  color: rgba(232, 199, 118, 0.25);
+  text-shadow: var(--shadow);
+  transition: opacity 0.8s;
+}
+.letter-spelled b {
+  font-weight: normal;
+  color: #e8c776;
+  text-shadow: 0 0 10px rgba(232, 199, 118, 0.8);
+}
+
+/* Les médaillons des bonus en cours, à droite du compteur, cerclés du temps qui reste (1 em : le nombre des pages). */
+.boon-medals {
+  position: absolute;
+  left: 100%;
+  top: 0.23em;
+  margin-left: 0.47em;
+  display: flex;
+  gap: 0.27em;
+  font-size: 2.6rem;
+  pointer-events: auto;
+}
+.boon-medal {
+  position: relative;
+  width: 1.27em;
+  height: 1.27em;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+.boon-medal.on {
+  opacity: 1;
+  transform: scale(1);
+}
+.boon-medal-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(#e8c776 calc(var(--left, 1) * 1turn), rgba(201, 164, 106, 0.18) 0);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 79%, #000 84%);
+  mask: radial-gradient(circle closest-side, transparent 79%, #000 84%);
+}
+.boon-medal-icon {
+  position: absolute;
+  inset: 0.17em;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #3a2a16, #120c06);
+}
+.boon-medal-icon svg {
+  width: 0.6em;
+  height: 0.6em;
+}
+.boon-medal-tip {
+  position: absolute;
+  top: 116%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.33em 0.83em;
+  white-space: nowrap;
+  font-size: 0.4em;
+  font-style: italic;
+  color: var(--ink);
+  text-shadow: var(--shadow);
+  background: radial-gradient(ellipse at center, rgba(8, 6, 4, 0.7), rgba(8, 6, 4, 0) 75%);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.boon-medal-tip .clock {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+.boon-medal:hover .boon-medal-tip {
+  opacity: 1;
+}
+/* Ses dix dernières secondes : il clignote. */
+.boon-medal.ending {
+  animation: boon-ending 1s ease-in-out infinite;
+}
+/* Un nombre du compteur que porte un bonus (la lecture pendant la Transe, la Connaissance pendant la Mémoire vive). */
+.counter .number.boosted {
+  text-shadow:
+    0 0 8px rgba(232, 199, 118, 0.6),
+    var(--shadow);
+}
+
+@keyframes letter-gift {
+  0% {
+    opacity: 0;
+    margin-top: 6px;
+  }
+  12% {
+    opacity: 1;
+    margin-top: 0;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    margin-top: -10px;
+  }
+}
+@keyframes boon-ending {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}

@@ -1,7 +1,7 @@
 import type { PageId } from '../../data/etheriumStars';
 
 /**
- * Les figures des huit constellations, telles que l'auteur les a validées (.ai/maquette-etherium-constellations.html,
+ * Les figures des constellations, telles que l'auteur les a validées (.ai/maquette-etherium-constellations.html,
  * 06/10/2026) : la place de chaque étoile sur la page (repère 640 × 800), les traits dessinés pour la figure qui n'ouvrent
  * rien, et les cercles de la lune. L'ordre et les prix sont dans data/etheriumStars.ts.
  */
@@ -142,5 +142,29 @@ export const FIGURES: Record<PageId, Figure> = {
     spots: { manual: [320, 665], auto: [440, 575], quantum: [215, 490], dim: [410, 405], inf: [280, 325] },
     deco: [],
     given: { id: 'manual', opens: 'auto' },
+  },
+  // La Plume, penchée : le bec en bas à gauche, la tige jusqu'à la pointe en haut à droite ; les barbes de chaque côté,
+  // que deux traits referment vers la pointe (Alpha 1.1, 08/10).
+  quill: {
+    spots: {
+      nib: [200, 680],
+      t1: [252, 608],
+      t2: [317, 518],
+      p1: [387, 421],
+      p2: [452, 331],
+      l1: [229, 537],
+      l2: [277, 462],
+      l3: [333, 393],
+      r1: [301, 643],
+      r2: [348, 595],
+      r3: [391, 544],
+      r4: [430, 490],
+      r5: [465, 433],
+      r6: [484, 381],
+    },
+    deco: [
+      ['l3', 'p2'],
+      ['r6', 'p2'],
+    ],
   },
 };

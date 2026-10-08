@@ -158,6 +158,9 @@
     "intuition-deepSleep": "Dors dix heures de plus sans te réveiller",
     "intuition-flair": "Sens chaque livre qui n'est pas comme les autres",
     "intuition-bargain": "Épargne ton geste dix fois",
+    "intuition-watch": "Guette jusqu’au bout",
+    "intuition-heldBreath": "Retiens ton souffle aussi longtemps qu’elle",
+    "intuition-letterUnderstood": "Comprends ce que disent les lettres",
     "intuition-armful": "Prends tout à pleins bras",
     "intuition-reminiscence": "Laisse revenir ce que tu savais",
     "intuitionGesture": "Maîtrise le geste : {title}",
@@ -189,6 +192,14 @@
     "strangeBookRead": "Lis-moi en entier",
     "firstSentence": "Écris ta première phrase entière",
     "whiteBookFull": "Remplis le livre blanc",
+    "letters": [
+      "Une lettre, attrapée au vol",
+      "{n} lettres. Elles ne forment aucun mot",
+      "{n} lettres. Tu les gardes au fond de ta poche",
+      "{n} lettres. Elles bruissent quand tu marches",
+      "{n} lettres. De quoi écrire ton nom, si tu t’en souvenais"
+    ],
+    "threeLights": "Garde trois lumières à la fois",
     "daysSinceArrival": "Reviens à la Bibliothèque depuis {n} jours",
     "fullNight": "Dors une nuit entière dans la Bibliothèque",
     "knowledgeFound": "Comprends {n} choses",
@@ -203,9 +214,12 @@
     "constellation-away": "Dors sous toutes ses phases",
     "constellation-start": "Franchis le seuil les mains pleines",
     "constellation-memory": "Remplis chaque alvéole",
+    "constellation-quill": "Taille la plume jusqu’à sa pointe",
     "automaticAge": "Entre dans l'Âge Automatique",
     "emptyEtherium": "J'ai refermé l'Etherium sans rien y allumer.",
     "noHands": "Toute une vie sans tourner une page de ma main.",
-    "exactly410": "410, caché dans mes pages."
+    "exactly410": "410, caché dans mes pages.",
+    "lastInstant": "Je l’ai rattrapée au moment où elle s’éteignait.",
+    "babelWord": "J’ai lu le nom de la Bibliothèque, lettre par lettre."
   }
 }

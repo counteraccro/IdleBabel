@@ -129,6 +129,11 @@ export interface GameState {
   etherium: string[];
   /** Au réveil d'un prestige, l'Etherium est en main ; refermé, il disparaît (jusqu'au prochain). */
   etheriumInHand: boolean;
+  /**
+   * Lettres attrapées depuis toujours (systems/letter.ts) : le prestige ne les reprend pas. Dès la première, les
+   * intuitions de la lettre se voient dans le livre blanc.
+   */
+  letters: number;
   /** Visions de sceau cliquables qui ont dit qu'on peut les toucher (ui/sealVision.ts) : trois, ou une fois cliquée. */
   visionHints: number;
   /**
@@ -182,6 +187,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   etherReceived: 0,
   etherium: [],
   etheriumInHand: false,
+  letters: 0,
   visionHints: 0,
   wake: { pages: 0, book: -1, clicks: 0, stars: 0 },
   lastTick: now,

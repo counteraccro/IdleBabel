@@ -66,6 +66,11 @@
       "name": "Les Âges",
       "figure": "L’Escalier",
       "description": "Chaque marche m'emmène plus loin."
+    },
+    "quill": {
+      "name": "Lettres",
+      "figure": "La Plume",
+      "description": "Les lettres qui s’échappent, je les rattrape."
     }
   },
   "stars": {
@@ -396,6 +401,78 @@
         "name": "Infini",
         "value": "L'Âge Infini",
         "effect": ""
+      }
+    },
+    "quill": {
+      "nib": {
+        "name": "Bec",
+        "value": "×0,8",
+        "effect": "attente entre deux lettres"
+      },
+      "t1": {
+        "name": "Tige",
+        "value": "×0,8",
+        "effect": "attente entre deux lettres"
+      },
+      "t2": {
+        "name": "Tige, plus haut",
+        "value": "×0,75",
+        "effect": "attente entre deux lettres"
+      },
+      "p1": {
+        "name": "Pointe",
+        "value": "×3",
+        "effect": "lecture pendant la Transe"
+      },
+      "p2": {
+        "name": "Pointe, tout en haut",
+        "value": "×4",
+        "effect": "lecture pendant la Transe"
+      },
+      "l1": {
+        "name": "Barbe gauche",
+        "value": "×1,5",
+        "effect": "durée des bonus de la lettre"
+      },
+      "l2": {
+        "name": "Barbe gauche, plus haut",
+        "value": "×2",
+        "effect": "durée des bonus de la lettre"
+      },
+      "l3": {
+        "name": "Barbe gauche, en haut",
+        "value": "+4 s",
+        "effect": "où la lettre reste à l’écran"
+      },
+      "r1": {
+        "name": "Barbe droite",
+        "value": "La lettre apprend",
+        "effect": "l’Œil vif : trouvailles +200 %"
+      },
+      "r2": {
+        "name": "Barbe droite, deuxième",
+        "value": "La lettre apprend",
+        "effect": "la Main légère : clics ×10"
+      },
+      "r3": {
+        "name": "Barbe droite, troisième",
+        "value": "La lettre apprend",
+        "effect": "la Mémoire vive : Connaissance ×3"
+      },
+      "r4": {
+        "name": "Barbe droite, quatrième",
+        "value": "La lettre apprend",
+        "effect": "l’Aubaine : méthodes à moitié prix"
+      },
+      "r5": {
+        "name": "Barbe droite, cinquième",
+        "value": "La lettre apprend",
+        "effect": "l’Éclair : trois minutes de lecture d’un coup"
+      },
+      "r6": {
+        "name": "Barbe droite, en haut",
+        "value": "La lettre apprend",
+        "effect": "la Trouvaille : une trouvaille tout de suite"
       }
     }
   },

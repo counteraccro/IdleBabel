@@ -134,6 +134,10 @@ export const SEALS: readonly SealDef[] = [
   // Le livre blanc : une première phrase entière, puis toutes à la fois (les phrases des méthodes s'oublient au prestige).
   seal('firstSentence', 'fragments', (s) => SENTENCES.some((sentence) => isComplete(s, sentence.id))),
   seal('whiteBookFull', 'fragments', (s) => SENTENCES.every((sentence) => isComplete(s, sentence.id))),
+  // La lettre qui s'échappe (Alpha 1.1, 08/10) : lettres attrapées depuis toujours, une phrase par palier ; trois bonus
+  // en cours à la fois (systems/letter.ts).
+  ...series('letters', 'fragments', (s) => s.letters, [1, 10, 50, 200, K]).map((seal): SealDef => ({ ...seal, phrases: true })),
+  event('threeLights', 'fragments'),
 
   ...series('playTime', 'time', (s) => s.stats.playSeconds / HOUR, [1, 10, 100, K]),
   ...series('daysSinceArrival', 'time', daysSinceArrival, [7, 30, 365]),
@@ -223,4 +227,8 @@ export const SEALS: readonly SealDef[] = [
   secret('noHands'),
   // 410 dans le nombre des pages en réserve (1 410 523…), compteur au repos : rien ne lit (demande de l'auteur, 08/10).
   seal('exactly410', 'secrets', (s) => pagesPerSecond(s) === 0 && wholeDigits(s.pages).includes(String(BOOK_PAGES))),
+  // Une lettre attrapée dans sa dernière demi-seconde, au moment où elle s'éteignait (systems/letter.ts).
+  secret('lastInstant'),
+  // Le mot BABEL attrapé en entier, lettre par lettre (systems/letter.ts).
+  secret('babelWord'),
 ];

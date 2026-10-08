@@ -4,7 +4,20 @@ import type { Run } from './partie';
 import { lit, product } from './vie';
 
 /** Celles qui changent le rythme de la partie ; le bot laisse les autres (Flair, Brassée, Réminiscence…). */
-const USEFUL = ['semanticFilter', 'ariadne', 'sentenceMemory', 'speedReading', 'muscleMemory', 'returnMap', 'deepSleep', 'bargain'];
+const USEFUL = [
+  'semanticFilter',
+  'ariadne',
+  'sentenceMemory',
+  'speedReading',
+  'muscleMemory',
+  'returnMap',
+  'deepSleep',
+  'bargain',
+  // Celles de la lettre (le bot en attrape dès la première partie).
+  'watch',
+  'heldBreath',
+  'letterUnderstood',
+];
 
 const priceAt = (id: string, level: number): number | undefined => {
   const tech = TECHNOLOGIES.find((t) => t.id === id)!;

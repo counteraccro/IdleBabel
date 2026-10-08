@@ -1,6 +1,7 @@
 import { UNLOCK_ALL_SUBJECT } from './unlockAll';
 import { RESOURCE_SUBJECTS } from './resources';
 import { SEED_SUBJECT } from './seed';
+import { LETTER_SUBJECT } from './letter';
 import { METHOD_SUBJECTS } from './methods';
 import { INTUITION_SUBJECTS } from './intuitions';
 import { PRESTIGE_SUBJECTS } from './prestige';
@@ -17,6 +18,7 @@ import { CHAPTERS, type ChapterId, type DebugSubject } from './subject';
 export const SUBJECTS: readonly DebugSubject[] = [
   UNLOCK_ALL_SUBJECT,
   ...RESOURCE_SUBJECTS,
+  LETTER_SUBJECT,
   SEED_SUBJECT,
   ...METHOD_SUBJECTS,
   ...INTUITION_SUBJECTS,

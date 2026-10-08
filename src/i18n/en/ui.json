@@ -48,5 +48,52 @@
   "shelveBook": "Put the book back",
   "firstBook": "My first book",
   "debugBookError": "Fatal error",
-  "debugBookErrorClose": "Close"
+  "debugBookErrorClose": "Close",
+  "letter": {
+    "boons": {
+      "trance": {
+        "name": "Trance",
+        "what": "Reading ×{x} for {d}",
+        "short": "Trance · reading ×{x}"
+      },
+      "eye": {
+        "name": "Sharp Eye",
+        "what": "Finds +200% for {d}",
+        "short": "Sharp Eye · finds +200%"
+      },
+      "hand": {
+        "name": "Light Hand",
+        "what": "Clicks ×10 for {d}",
+        "short": "Light Hand · clicks ×10"
+      },
+      "mind": {
+        "name": "Quick Memory",
+        "what": "Knowledge ×3 for {d}",
+        "short": "Quick Memory · Knowledge ×3"
+      },
+      "deal": {
+        "name": "Windfall",
+        "what": "Methods at half price for {d}",
+        "short": "Windfall · methods −50%"
+      },
+      "flash": {
+        "name": "Flash",
+        "what": "Three minutes of reading, all at once"
+      },
+      "find": {
+        "name": "Find",
+        "what": "A find, right away"
+      }
+    },
+    "word": {
+      "name": "Babel",
+      "what": "+{n}% of your pages"
+    },
+    "time": {
+      "seconds": "{n} seconds",
+      "minute": "1 minute",
+      "minutes": "{n} minutes",
+      "minuteSeconds": "{m} min {s} s"
+    }
+  }
 }

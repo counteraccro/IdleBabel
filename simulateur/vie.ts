@@ -88,7 +88,7 @@ export const spendEther = (life: Life): string[] => {
 
 /** Étoiles allumées sur chaque page. */
 export const litPerPage = (life: Life): string =>
-  (['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'ages'] as PageId[])
+  (['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'quill', 'ages'] as PageId[])
     .map(
       (page) =>
         `${page} ${STARS.filter((s) => s.page === page && life.stars.has(s.id)).length}/${STARS.filter((s) => s.page === page).length}`,

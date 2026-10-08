@@ -182,6 +182,8 @@
     "hintEmptyEtherium": "Un jour, / j'ai refermé l'Etherium / sans y toucher.",
     "hintNoHands": "Toute une vie / sans tourner / une page de ma main.",
     "hintExactly410": "Rien ne lit pour toi. / Quelque part dans tes pages, / 410.",
+    "hintLastInstant": "Une lettre / n’est pas perdue / tant qu’elle brille encore.",
+    "hintBabelWord": "Parfois, / les lettres se suivent / et disent un nom.",
     "hintTrueCatalogue": "Un catalogue. / Je le feuillette / comme un enfant / en décembre."
   },
   "guess": "deviner · {n} de Connaissance",
@@ -271,6 +273,31 @@
       "effect": "prix des méthodes",
       "notes": [
         "Je n'ai plus besoin de tout relire pour apprendre."
+      ]
+    },
+    "watch": {
+      "name": "Le Guet",
+      "description": "Je guette le livre : les lettres s’en échappent plus souvent.",
+      "effect": "attente entre deux lettres",
+      "notes": [
+        "Elles sortent quand je ne regarde pas. Alors je regarde."
+      ],
+      "between": "{min} à {max}"
+    },
+    "heldBreath": {
+      "name": "Le Souffle retenu",
+      "description": "Je retiens mon souffle : la lettre reste un peu plus longtemps.",
+      "effect": "temps où la lettre reste",
+      "notes": [
+        "Si je ne respire plus, elle hésite."
+      ]
+    },
+    "letterUnderstood": {
+      "name": "La Lettre comprise",
+      "description": "Ce que donne une lettre dure un peu plus longtemps.",
+      "effect": "durée des bonus de la lettre",
+      "notes": [
+        "Chaque lettre attrapée me laisse un peu de ce qu’elle disait."
       ]
     },
     "armful": {

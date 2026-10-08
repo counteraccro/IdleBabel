@@ -8,6 +8,7 @@ import { tellLore } from './lore';
 import { duplicateShare, filterMultiplier, maxAwaySeconds, targetShare, turnsPerSecond } from './technologies';
 import { sealFindMultiplier } from './seals';
 import { findsMultiplier, knowledgePerFind } from './etherium';
+import { findsBoon, knowledgeBoon } from './boons';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -27,10 +28,11 @@ export const maxTurnsPerSecond = (state: GameState): number => turnCap ?? turnsP
 
 /**
  * Chance qu'une page tournée cache une trouvaille : la base, × le filtre sémantique, × les sceaux obtenus
- * (+1 % chacun), × les Trouvailles de l'Etherium. Détail : dans le chapitre « Révélations » du Grand Livre.
+ * (+1 % chacun), × les Trouvailles de l'Etherium, × l'Œil vif de la lettre (en cours). Détail : dans le chapitre
+ * « Révélations » du Grand Livre.
  */
 export const findChance = (state: GameState): number =>
-  forced ? 1 : BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state) * findsMultiplier(state);
+  forced ? 1 : BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state) * findsMultiplier(state) * findsBoon();
 
 /** Pages tournées dans le livre en main depuis le début de la partie. */
 const pagesTurned = (state: GameState): number => state.booksFinished * PAGES_PER_BOOK + state.bookPage;
@@ -173,9 +175,12 @@ export const findText = (find: Find): string => {
   return texts[find.segment]?.replace(/[\s,;:.]+$/, '') ?? '';
 };
 
-/** Une trouvaille lue : 1 point de Connaissance (plus, avec l'Etherium), et elle s'écrit dans le livre blanc. */
+/**
+ * Une trouvaille lue : 1 point de Connaissance (plus, avec l'Etherium et la Mémoire vive de la lettre), et elle s'écrit
+ * dans le livre blanc.
+ */
 export const gainFind = (state: GameState, find: Find): void => {
-  const gained = knowledgePerFind(state);
+  const gained = knowledgePerFind(state) * knowledgeBoon();
   state.knowledge += gained;
   state.cycleKnowledge += gained;
   state.lifetimeKnowledge += gained;

@@ -21,6 +21,8 @@ import {
   turnsPerSecond,
 } from '../../systems/technologies';
 import { reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
+import { boonLength, letterStays, letterWait } from '../../systems/letter';
+import { durationText } from '../letter/duration';
 import { nextRareChance } from '../../systems/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
 import { babelize, seedOf } from './babelMask';
@@ -82,6 +84,14 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
       return `1 / ${plain(Math.round(1 / nextRareChance(Object.keys(state.rareBooks).length, rareChance(state, level))))}`;
     case 'bargain':
       return percent(toolPriceFactor(state, level));
+    case 'watch': {
+      const wait = letterWait(state, level);
+      return t('whiteBook.intuitions.watch.between').replace('{min}', durationText(wait.min)).replace('{max}', durationText(wait.max));
+    }
+    case 'heldBreath':
+      return durationText(letterStays(state, level));
+    case 'letterUnderstood':
+      return `×${plain(Math.round(boonLength(state, level) * 100) / 100)}`;
     case 'reminiscence':
       return t(level > 0 ? 'whiteBook.intuitions.reminiscence.alone' : 'whiteBook.intuitions.reminiscence.byHand');
     case 'armful': {

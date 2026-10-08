@@ -79,6 +79,16 @@ export const awayFindsShare = (state: GameState, share: number): number => (star
 /** L'étoile près de la lune : feuilles comptées pour les trouvailles de l'absence, au-delà du plafond (×1 sans elle). */
 export const awayTurnsMultiplier = (state: GameState): number => (starLit(state, S.awayTurns) ? SIMPLE.awayTurns : 1);
 
+/** La Plume (bec, tige) : ce qu'elle fait à l'attente entre deux lettres. */
+export const letterWaitFactor = (state: GameState): number => product(state, EFFECT.letterWait);
+/** La Plume (barbes de gauche) : ce qu'elle fait à la durée des bonus de la lettre. */
+export const boonLengthFactor = (state: GameState): number => product(state, EFFECT.boonLength);
+/** La Plume (haut des barbes de gauche) : secondes en plus où la lettre reste à l'écran. */
+export const letterStaysBonus = (state: GameState): number => (starLit(state, S.letterStays) ? SIMPLE.letterStays : 0);
+/** La Plume (la pointe) : la lecture de la Transe, la plus haute allumée ; `base` sans elle. */
+export const tranceFactor = (state: GameState, base: number): number =>
+  Math.max(base, ...Object.entries(EFFECT.trance).map(([id, value]) => (starLit(state, id) ? value : 0)));
+
 /** La partie qui s'achève au prestige : ce dont la Porte se souvient. */
 export interface PreviousRun {
   tools: GameState['tools'];

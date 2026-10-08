@@ -4,6 +4,7 @@ import { TOOLS } from '../data/tools';
 import { recordOnce } from '../core/history';
 import { forgetIntuitions } from './reminiscence';
 import { forgetPagesRest } from './production';
+import { forgetBoons } from './boons';
 import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor } from './etherium';
 import { levelOf, maxLevel } from './technologies';
 import { sealEvent } from './seals';
@@ -51,6 +52,8 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   const levels = { ...state.technologies };
   state.pages = 0;
   forgetPagesRest();
+  // Les bonus de la lettre en cours s'éteignent avec la partie.
+  forgetBoons();
   state.tools = Object.fromEntries(TOOLS.map((tool) => [tool.id, 0])) as GameState['tools'];
   state.methodPages = {};
   state.knowledge = 0;

@@ -182,6 +182,8 @@
     "hintEmptyEtherium": "One day, / I closed the Etherium / without touching it.",
     "hintNoHands": "A whole life / without turning / a page by hand.",
     "hintExactly410": "Nothing reads for you. / Somewhere in your pages, / 410.",
+    "hintLastInstant": "A letter / is not lost / while it still shines.",
+    "hintBabelWord": "Sometimes / the letters follow one another / and spell a name.",
     "hintTrueCatalogue": "A catalogue. / I leaf through it / like a child / in December."
   },
   "guess": "guess · {n} Knowledge",
@@ -271,6 +273,31 @@
       "effect": "price of methods",
       "notes": [
         "I no longer need to reread everything to learn."
+      ]
+    },
+    "watch": {
+      "name": "The Watch",
+      "description": "I watch the book: letters escape it more often.",
+      "effect": "wait between two letters",
+      "notes": [
+        "They come out when I am not looking. So I look."
+      ],
+      "between": "{min} to {max}"
+    },
+    "heldBreath": {
+      "name": "The Held Breath",
+      "description": "I hold my breath: the letter stays a little longer.",
+      "effect": "time the letter stays",
+      "notes": [
+        "If I stop breathing, it hesitates."
+      ]
+    },
+    "letterUnderstood": {
+      "name": "The Letter Understood",
+      "description": "What a letter gives lasts a little longer.",
+      "effect": "length of the letter’s boons",
+      "notes": [
+        "Each letter I catch leaves me a little of what it said."
       ]
     },
     "armful": {

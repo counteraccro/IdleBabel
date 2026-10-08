@@ -7,6 +7,7 @@
  *   npm run simule -- --pages=reading,hands    le bot n'allume que les étoiles de ces pages (et l'Âge Automatique)
  *   npm run simule -- --sceaux=30 --sans-ether-lecture   sceaux fixes, sans la lecture de l'Éther reçu (comme avant le 07/10)
  *   npm run simule -- --partie-max=240         parties de 10 jours au plus (absences comprises), pour un rythme lent
+ *   npm run simule -- --lettres=0              sans la lettre qui s'échappe (0,5 : le bot en attrape une sur deux)
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
@@ -28,6 +29,7 @@ if (option('sans-cornee') !== undefined) PLAYER.cornee = false;
 if (option('partie-max')) PLAYER.maxRunHours = Number(option('partie-max'));
 if (option('sceaux')) PLAYER.seals = Number(option('sceaux'));
 if (option('sans-ether-lecture') !== undefined) PLAYER.etherReading = false;
+if (option('lettres') !== undefined) PLAYER.letters = Number(option('lettres'));
 // L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
 if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
 
@@ -121,7 +123,7 @@ const header = [
 const widths = header.map((title, i) => Math.max(title.length, ...rows.map((row) => row[i].length)));
 const line = (cells: string[]): string => cells.map((cell, i) => cell.padEnd(widths[i])).join('  ');
 console.log(
-  `${days} jours · rythme ${PLAYER.rhythm.join(' h de jeu / ')} h fermé · porte de l'Âge Automatique : ${PLAYER.automaticGate} · prestige : ${PLAYER.prestige} · sceaux : ${PLAYER.seals} · lecture de l'Éther : ${PLAYER.etherReading ? 'oui' : 'non'}`,
+  `${days} jours · rythme ${PLAYER.rhythm.join(' h de jeu / ')} h fermé · porte de l'Âge Automatique : ${PLAYER.automaticGate} · prestige : ${PLAYER.prestige} · sceaux : ${PLAYER.seals} · lecture de l'Éther : ${PLAYER.etherReading ? 'oui' : 'non'} · lettres attrapées : ${PLAYER.letters}`,
 );
 console.log(line(header));
 rows.forEach((row) => console.log(line(row)));

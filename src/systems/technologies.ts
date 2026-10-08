@@ -128,11 +128,12 @@ export const gestureMultiplier = (state: GameState, tool: ToolId, level = levelO
 
 /**
  * Elle a sa page dans le livre blanc : celles d'après l'Exil, seulement une fois le premier fait ; celle d'une
- * méthode secrète, une fois son souvenir revenu.
+ * méthode secrète, une fois son souvenir revenu ; celles de la lettre, une fois la première attrapée.
  */
 export const intuitionVisible = (state: GameState, id: TechnologyId): boolean => {
   const tech = technology(id);
   if (tech.tool && !sentenceShown(state, tech.tool)) return false;
+  if (tech.afterLetter && state.letters === 0) return false;
   return !tech.afterExile || state.exiles > 0;
 };
 

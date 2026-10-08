@@ -2,14 +2,15 @@ import { BUY_LOTS, COST_GROWTH, TOOLS, type BuyLot, type ToolId } from '../data/
 import type { GameState } from '../core/state';
 import { recordOnce } from '../core/history';
 import { armfulLots, toolPriceFactor } from './technologies';
+import { priceBoon } from './boons';
 
 /** Prix(n) = PrixBase × 1,15^n */
 export const toolCost = (baseCost: number, owned: number): number => baseCost * COST_GROWTH ** owned;
 
-/** Prix de la prochaine, Économie du geste comprise. */
+/** Prix de la prochaine, Économie du geste et Aubaine de la lettre (en cours) comprises. */
 export const nextToolCost = (state: GameState, id: ToolId): number => {
   const tool = TOOLS.find((t) => t.id === id)!;
-  return toolCost(tool.baseCost, state.tools[id]) * toolPriceFactor(state);
+  return toolCost(tool.baseCost, state.tools[id]) * toolPriceFactor(state) * priceBoon();
 };
 
 /** Prix de `count` méthodes d'un coup : chacune 15 % plus chère que la précédente (suite géométrique). */

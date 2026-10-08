@@ -126,7 +126,8 @@ export const STORY: StoryChapter[] = [
       { key: 'thisBook' },
     ],
   },
-  { key: 'alpha' },
+  // Après l'Alpha 1 : ce qui vient avec l'Alpha 1.1.
+  { key: 'alpha', sections: [{ key: 'letter' }] },
 ];
 
 /** Les couvertures retenues montrées en planche, dans l'ordre du livre. */

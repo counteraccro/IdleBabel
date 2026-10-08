@@ -121,6 +121,8 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintEmptyEtherium',
     'hintNoHands',
     'hintExactly410',
+    'hintLastInstant',
+    'hintBabelWord',
   ],
 };
 

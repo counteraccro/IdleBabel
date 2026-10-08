@@ -158,6 +158,9 @@
     "intuition-deepSleep": "Sleep ten hours longer without waking",
     "intuition-flair": "Sense every book that is not like the others",
     "intuition-bargain": "Spare your gesture ten times",
+    "intuition-watch": "Keep watch to the end",
+    "intuition-heldBreath": "Hold your breath as long as it does",
+    "intuition-letterUnderstood": "Understand what the letters say",
     "intuition-armful": "Take it all by the armful",
     "intuition-reminiscence": "Let back what you knew",
     "intuitionGesture": "Master the gesture: {title}",
@@ -189,6 +192,14 @@
     "strangeBookRead": "Read me whole",
     "firstSentence": "Write your first whole sentence",
     "whiteBookFull": "Fill the white book",
+    "letters": [
+      "A letter, caught in flight",
+      "{n} letters. They spell no word",
+      "{n} letters. You keep them deep in your pocket",
+      "{n} letters. They rustle when you walk",
+      "{n} letters. Enough to write your name, if you remembered it"
+    ],
+    "threeLights": "Hold three lights at once",
     "daysSinceArrival": "Come back to the Library for {n} days",
     "fullNight": "Sleep a whole night in the Library",
     "knowledgeFound": "Understand {n} things",
@@ -203,9 +214,12 @@
     "constellation-away": "Sleep through all its phases",
     "constellation-start": "Cross the threshold with full hands",
     "constellation-memory": "Fill every cell",
+    "constellation-quill": "Trim the quill to its tip",
     "automaticAge": "Enter the Automatic Age",
     "emptyEtherium": "I closed the Etherium without lighting anything.",
     "noHands": "A whole life without turning a page by hand.",
-    "exactly410": "410, hidden in my pages."
+    "exactly410": "410, hidden in my pages.",
+    "lastInstant": "I caught it just as it went out.",
+    "babelWord": "I read the Library’s name, letter by letter."
   }
 }

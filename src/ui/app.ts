@@ -3,6 +3,7 @@ import { createHeader } from './header';
 import { createCounter } from './counter';
 import { createMethodHive } from './methods/methodHive';
 import { createFooter } from './footer';
+import { createLetter } from './letter/letter';
 import { createOptionsPage } from './options/optionsPage';
 import { BIG_BOOK_REWRITE } from './book3d/book3dBook';
 import { createBook3dPage } from './book3d/book3dPage';
@@ -176,6 +177,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     counter,
     createMethodHive(state),
     createHandReading3d(state),
+    // La lettre qui s'échappe du livre en main (Alpha 1.1).
+    createLetter(state),
     createFooter(state.settings, open(NOTES_HASH)),
   ];
 

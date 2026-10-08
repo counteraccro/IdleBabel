@@ -6,7 +6,7 @@
  * (simulateur/vie.ts). Textes : etherium.pages.<page> et etherium.stars.<page>.<étoile>.
  */
 /** L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10). */
-export const ETHERIUM_PAGES = ['ages', 'reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory'] as const;
+export const ETHERIUM_PAGES = ['ages', 'reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'quill'] as const;
 export type PageId = (typeof ETHERIUM_PAGES)[number];
 
 export interface Star {
@@ -98,6 +98,22 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['ages', 'quantum', 'auto', 10],
   ['ages', 'dim', 'quantum', 100],
   ['ages', 'inf', 'dim', 1000],
+  // La Plume (Alpha 1.1, 08/10) : le bec, puis la tige (la lettre vient plus souvent) jusqu'à la pointe (la Transe plus
+  // forte) ; les barbes de gauche (durées, temps à l'écran), celles de droite (un bonus de plus chacune).
+  ['quill', 'nib', null, 3],
+  ['quill', 't1', 'nib', 10],
+  ['quill', 't2', 't1', 30],
+  ['quill', 'p1', 't2', 60],
+  ['quill', 'p2', 'p1', 200],
+  ['quill', 'l1', 'nib', 15],
+  ['quill', 'l2', 'l1', 45],
+  ['quill', 'l3', 'l2', 75],
+  ['quill', 'r1', 'nib', 15],
+  ['quill', 'r2', 'r1', 25],
+  ['quill', 'r3', 'r2', 45],
+  ['quill', 'r4', 'r3', 75],
+  ['quill', 'r5', 'r4', 120],
+  ['quill', 'r6', 'r5', 250],
 ];
 
 export const STARS: readonly Star[] = RAW.map(([page, id, after, cost]) => ({
@@ -163,6 +179,12 @@ export const EFFECT = {
   diagonals: { 'start.sill': 5, 'start.l1': 5, 'start.l2': 5 },
   /** Part des pages de la partie d'avant, au réveil (la plus haute compte). */
   previousPages: { 'start.r1': 0.001, 'start.r2': 0.01 },
+  /** ×attente entre deux lettres (la Plume : le bec et la tige). */
+  letterWait: { 'quill.nib': 0.8, 'quill.t1': 0.8, 'quill.t2': 0.75 },
+  /** ×durée des bonus de la lettre (barbes de gauche). */
+  boonLength: { 'quill.l1': 1.5, 'quill.l2': 2 },
+  /** ×lecture de la Transe (la pointe ; la plus haute compte). */
+  trance: { 'quill.p1': 3, 'quill.p2': 4 },
 } as const satisfies Record<string, Record<string, number>>;
 
 /** Ce que font les étoiles à effet simple (S). */
@@ -183,6 +205,8 @@ export const SIMPLE = {
   previousKnowledge: 0.1,
   /** Poignée : ×chance d'être rare du premier livre pris au réveil. */
   handleRare: 10,
+  /** Haut des barbes de gauche de la Plume : secondes en plus où la lettre reste à l'écran. */
+  letterStays: 4,
 } as const;
 
 /**
@@ -206,6 +230,7 @@ export const S = {
   handle: 'start.k',
   cornee: 'memory.m0',
   age: 'ages.auto',
+  letterStays: 'quill.l3',
 } as const;
 
 /** Mémoire des méthodes : l'étoile qui garde la phrase de chaque méthode (Manuel, puis Automatique). */

@@ -18,6 +18,8 @@ export interface TechnologyDef {
   permanent?: boolean;
   /** N'apparaît qu'après le premier Exil (elle ne servirait à rien avant). */
   afterExile?: boolean;
+  /** N'apparaît qu'une fois la première lettre attrapée (systems/letter.ts) : avant, le joueur ne la connaît pas. */
+  afterLetter?: boolean;
 }
 
 /** Filtre sémantique : chaque niveau multiplie la chance qu'une page cache une trouvaille. */
@@ -54,6 +56,10 @@ export const TECHNOLOGIES = [
   { id: 'deepSleep', prices: [2_500], growth: 2 },
   { id: 'flair', prices: [500, 2_000, 8_000, 32_000] },
   { id: 'bargain', prices: [1_000], growth: 2 },
+  // La lettre qui s'échappe (Alpha 1.1, 08/10) : prix montés par l'auteur (« un bonus très fort à terme »).
+  { id: 'watch', prices: [1_000, 5_000, 25_000, 125_000, 625_000], afterLetter: true },
+  { id: 'heldBreath', prices: [5_000, 50_000, 500_000], afterLetter: true },
+  { id: 'letterUnderstood', prices: [2_500, 12_500, 62_500, 312_500, 1_562_500], afterLetter: true },
   // La Brassée : un niveau par lot de la marque sous la ruche (×10, ×100, max).
   { id: 'armful', prices: [100, 1_000, 5_000], permanent: true },
   // La Réminiscence : les intuitions oubliées à l'Exil reviennent seules (systems/reminiscence.ts).

@@ -48,5 +48,52 @@
   "shelveBook": "Ranger le livre",
   "firstBook": "Mon premier livre",
   "debugBookError": "Erreur fatale",
-  "debugBookErrorClose": "Fermer"
+  "debugBookErrorClose": "Fermer",
+  "letter": {
+    "boons": {
+      "trance": {
+        "name": "Transe",
+        "what": "Lecture ×{x} pendant {d}",
+        "short": "Transe · lecture ×{x}"
+      },
+      "eye": {
+        "name": "Œil vif",
+        "what": "Trouvailles +200 % pendant {d}",
+        "short": "Œil vif · trouvailles +200 %"
+      },
+      "hand": {
+        "name": "Main légère",
+        "what": "Clics ×10 pendant {d}",
+        "short": "Main légère · clics ×10"
+      },
+      "mind": {
+        "name": "Mémoire vive",
+        "what": "Connaissance ×3 pendant {d}",
+        "short": "Mémoire vive · Connaissance ×3"
+      },
+      "deal": {
+        "name": "Aubaine",
+        "what": "Méthodes à moitié prix pendant {d}",
+        "short": "Aubaine · méthodes −50 %"
+      },
+      "flash": {
+        "name": "Éclair",
+        "what": "Trois minutes de lecture, d’un coup"
+      },
+      "find": {
+        "name": "Trouvaille",
+        "what": "Une trouvaille, tout de suite"
+      }
+    },
+    "word": {
+      "name": "Babel",
+      "what": "+{n} % de tes pages"
+    },
+    "time": {
+      "seconds": "{n} secondes",
+      "minute": "1 minute",
+      "minutes": "{n} minutes",
+      "minuteSeconds": "{m} min {s}"
+    }
+  }
 }
