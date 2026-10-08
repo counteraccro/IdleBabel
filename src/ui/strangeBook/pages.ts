@@ -387,17 +387,22 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
     ...(sealsPage > afterChapters ? [blankPage(afterChapters)] : []),
     createLeafPage(() => completionItems(state, plates, sealsPage + 1), goTo, { onShown: () => markPartRead(state, 'seals') }),
     ...plates.map((plate) =>
-      createLeafPage(({ hovered }) => plateItems(state, plate, sealLegend(state, hovered ?? focus ?? null), isFresh, focus), goTo, {
-        onShown: () =>
-          markSealsSeen(
-            state,
-            plate.seals.map((seal) => seal.id),
-          ),
-        onHover: (id) => {
-          fresh.delete(id);
-          markSealsSeen(state, [id]);
+      // Le sceau survolé, sinon celui qu'on est venu voir : sa légende, et son or plus vif.
+      createLeafPage(
+        ({ hovered }) => plateItems(state, plate, sealLegend(state, hovered ?? focus ?? null), isFresh, hovered ?? focus),
+        goTo,
+        {
+          onShown: () =>
+            markSealsSeen(
+              state,
+              plate.seals.map((seal) => seal.id),
+            ),
+          onHover: (id) => {
+            fresh.delete(id);
+            markSealsSeen(state, [id]);
+          },
         },
-      }),
+      ),
     ),
   ];
 };

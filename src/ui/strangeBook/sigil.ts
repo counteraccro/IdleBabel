@@ -55,6 +55,12 @@ const GOLD: readonly [number, string][] = [
   [0.45, '#b8913a'],
   [1, '#8a6a26'],
 ];
+/** Le sceau qu'on est venu voir (une vision cliquée) : le même or, plus vif. */
+const BRIGHT_GOLD: readonly [number, string][] = [
+  [0, '#ffd24a'],
+  [0.45, '#e8a317'],
+  [1, '#b0700c'],
+];
 
 const svgShape = (shape: Shape, color: string): string =>
   shape.kind === 'path'
@@ -78,7 +84,10 @@ export const sealSvg = (shapes: Shape[], look: Look, uid: string): string => {
   return `${open}<defs><linearGradient id="${uid}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100">${stops}</linearGradient></defs>${group(`url(#${uid})`)}</svg>`;
 };
 
-/** Même sceau sur la texture : `x`, `y` coin haut gauche, `size` côté du carré ; `weight`, traits plus épais (petit sceau). */
+/**
+ * Même sceau sur la texture : `x`, `y` coin haut gauche, `size` côté du carré ; `weight`, traits plus épais (petit
+ * sceau) ; `bright`, un or plus brillant (le sceau qu'on est venu voir).
+ */
 export const drawSeal = (
   context: CanvasRenderingContext2D,
   shapes: Shape[],
@@ -87,6 +96,7 @@ export const drawSeal = (
   y: number,
   size: number,
   weight = 1,
+  bright = false,
 ): void => {
   context.save();
   context.translate(x, y);
@@ -120,7 +130,7 @@ export const drawSeal = (
     }
   } else {
     const gradient = context.createLinearGradient(0, 0, 100, 100);
-    for (const [at, color] of GOLD) gradient.addColorStop(at, color);
+    for (const [at, color] of bright ? BRIGHT_GOLD : GOLD) gradient.addColorStop(at, color);
     trace(shapes, gradient);
   }
   context.restore();
