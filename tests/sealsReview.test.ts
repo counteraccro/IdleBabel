@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { passTime } from '../src/core/absence';
 import { SEALS } from '../src/data/seals';
+import { ANOMALIES, hintSeal } from '../src/data/anomalies';
 import { STARS } from '../src/data/etheriumStars';
 import { checkSeals } from '../src/systems/seals';
 import { closeEtherium, prestige } from '../src/systems/prestige';
@@ -99,5 +100,12 @@ describe('revue des sceaux (08/10)', () => {
     state.tools.diagonal = 0;
     checkSeals(state, 2);
     expect(state.seals['exactly410']).toBe(2);
+  });
+});
+
+describe('indices résolus', () => {
+  it('chaque indice mène à un sceau secret', () => {
+    const secrets = SEALS.filter((seal) => seal.plate === 'secrets').map((seal) => seal.id);
+    for (const hint of ANOMALIES.filter((anomaly) => anomaly.family === 'hints')) expect(secrets, hint.id).toContain(hintSeal(hint.id));
   });
 });

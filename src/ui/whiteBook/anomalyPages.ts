@@ -1,7 +1,8 @@
 import { getLocale, t } from '../../i18n';
 import { currentNotation, writeDigits } from '../../core/format';
 import { SENTENCES, type SentenceDef } from '../../data/sentences';
-import { ANOMALY_FAMILIES, type AnomalyFamily } from '../../data/anomalies';
+import { ANOMALY_FAMILIES, hintSeal, type AnomalyFamily } from '../../data/anomalies';
+import { SEALS, sealSeries } from '../../data/seals';
 import { isComplete, segments, sentenceSource, written } from '../../systems/sentences';
 import { babelize, seedOf } from './babelMask';
 import { sentenceWords, sourceItem } from './sentencePage';
@@ -141,6 +142,34 @@ export const anomalyPages = (state: GameState, first: number, freshOf: FreshOf):
   return { pages: [intro, ...pages], familyPage };
 };
 
+/** Taille du sceau gagné, en marge de son indice. */
+const HINT_SEAL_SIZE = 38;
+/** Ses traits, épaissis : à cette taille, ceux du Grand Livre s'effaceraient. */
+const HINT_SEAL_WEIGHT = 2.6;
+
+/**
+ * Un indice résolu, son sceau secret obtenu (demande de l'auteur, 08/10) : le sceau, en or, dans la marge, à
+ * hauteur de la première ligne de la phrase. Rien à survoler : la légende est dans le Grand Livre.
+ */
+const solvedMark = (state: GameState, sentence: SentenceDef, top: number): Item[] => {
+  const seal = SEALS.find((candidate) => candidate.id === hintSeal(sentence.id));
+  if (!seal || !(seal.id in state.seals)) return [];
+  return [
+    {
+      kind: 'seal',
+      id: seal.id,
+      series: sealSeries(seal),
+      tier: 0,
+      look: 'gold',
+      x: COLUMN.left - HINT_SEAL_SIZE / 2 - 6,
+      y: top + COLUMN.line / 2,
+      size: HINT_SEAL_SIZE,
+      inert: true,
+      weight: HINT_SEAL_WEIGHT,
+    },
+  ];
+};
+
 /** Une page d'une famille : son nom, puis ses phrases. */
 const familyItems = (state: GameState, family: AnomalyFamily, sentences: SentenceDef[], number: number, freshOf: FreshOf): Item[] => {
   let y = TOP;
@@ -149,8 +178,9 @@ const familyItems = (state: GameState, family: AnomalyFamily, sentences: Sentenc
     ...sentences.flatMap((sentence) => {
       const text = wordsParagraph(sentenceWords(sentence, written(state, sentence.id), freshOf(sentence)), y, COLUMN);
       const source = isComplete(state, sentence.id) ? sentenceSource(sentence.id) : undefined;
+      const mark = solvedMark(state, sentence, y);
       y += sentenceHeight(sentence);
-      return [...text.items, ...(source ? [sourceItem(source, text.bottom, 16)] : [])];
+      return [...text.items, ...(source ? [sourceItem(source, text.bottom, 16)] : []), ...mark];
     }),
     folio(number),
   ];

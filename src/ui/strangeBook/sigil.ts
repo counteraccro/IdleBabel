@@ -78,8 +78,16 @@ export const sealSvg = (shapes: Shape[], look: Look, uid: string): string => {
   return `${open}<defs><linearGradient id="${uid}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100">${stops}</linearGradient></defs>${group(`url(#${uid})`)}</svg>`;
 };
 
-/** Même sceau sur la texture : `x`, `y` coin haut gauche, `size` côté du carré. */
-export const drawSeal = (context: CanvasRenderingContext2D, shapes: Shape[], look: Look, x: number, y: number, size: number): void => {
+/** Même sceau sur la texture : `x`, `y` coin haut gauche, `size` côté du carré ; `weight`, traits plus épais (petit sceau). */
+export const drawSeal = (
+  context: CanvasRenderingContext2D,
+  shapes: Shape[],
+  look: Look,
+  x: number,
+  y: number,
+  size: number,
+  weight = 1,
+): void => {
   context.save();
   context.translate(x, y);
   context.scale(size / 100, size / 100);
@@ -98,7 +106,7 @@ export const drawSeal = (context: CanvasRenderingContext2D, shapes: Shape[], loo
       }
     }
   };
-  context.lineWidth = 2;
+  context.lineWidth = 2 * weight;
   if (look === 'hidden') {
     context.lineWidth = 0.8;
     context.setLineDash([1, 4]);

@@ -145,5 +145,8 @@ export const HINT_BOOKS: Readonly<Record<string, readonly string[]>> = {
   hintFoundTypo: ['bigX'],
 };
 
+/** Le sceau secret d'un indice : « hintNoHands » mène à « noHands ». */
+export const hintSeal = (id: string): string | undefined => (id.startsWith('hint') ? id[4].toLowerCase() + id.slice(5) : undefined);
+
 /** Les indices des secrets de l'Etherium ne tombent qu'après un premier prestige : avant, ils ne voudraient rien dire. */
 export const HINTS_AFTER_PRESTIGE: readonly string[] = ['hintEmptyEtherium', 'hintNoHands'];

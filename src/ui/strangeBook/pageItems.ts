@@ -57,7 +57,21 @@ export type Item =
    */
   | { kind: 'action'; id: string; y: number; height: number; x?: number; width?: number }
   /** Sceau : carré de côté `size` centré en `x`, `y` ; survolé, il écrit sa légende (`hover`). */
-  | { kind: 'seal'; id: string; series: string; tier: number; look: Look; x: number; y: number; size: number; fresh?: boolean }
+  | {
+      kind: 'seal';
+      id: string;
+      series: string;
+      tier: number;
+      look: Look;
+      x: number;
+      y: number;
+      size: number;
+      fresh?: boolean;
+      /** Rien à survoler ni à cliquer (le sceau d'un indice résolu, livre blanc). */
+      inert?: boolean;
+      /** Traits plus épais, pour un petit sceau. */
+      weight?: number;
+    }
   /** Bâtons au crayon, comptés par cinq (tally.ts). */
   | TallyItem;
 
@@ -300,7 +314,7 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
 export const itemAt = (items: Item[], x: number, y: number): Item | undefined =>
   [...items].reverse().find((item) => {
     if (item.kind === 'seal')
-      return item.look !== 'hidden' && Math.abs(x - item.x) <= item.size / 2 && Math.abs(y - item.y) <= item.size / 2;
+      return item.look !== 'hidden' && !item.inert && Math.abs(x - item.x) <= item.size / 2 && Math.abs(y - item.y) <= item.size / 2;
     if (item.kind !== 'link' && item.kind !== 'action') return false;
     const margin = PAGE_TEXTURE.width * (item.kind === 'action' && item.id === 'pay' ? 0.25 : 0.1);
     const [left, right] =
@@ -460,7 +474,7 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
         context.stroke();
       }
     } else if (item.kind === 'seal') {
-      drawSeal(context, sigil(item.series, item.tier), item.look, item.x - item.size / 2, item.y - item.size / 2, item.size);
+      drawSeal(context, sigil(item.series, item.tier), item.look, item.x - item.size / 2, item.y - item.size / 2, item.size, item.weight);
     }
   }
   context.letterSpacing = '0px';
