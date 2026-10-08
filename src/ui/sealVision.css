@@ -102,6 +102,11 @@
   letter-spacing: 0.04em;
   color: var(--muted);
 }
+/* « Touche le sceau… » : les premières visions cliquables le disent, en or. */
+.seal-vision-note.touch {
+  margin-top: 6px;
+  color: #c9a45a;
+}
 
 @keyframes seal-vision {
   0% {

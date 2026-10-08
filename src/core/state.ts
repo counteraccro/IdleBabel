@@ -129,6 +129,8 @@ export interface GameState {
   etherium: string[];
   /** Au réveil d'un prestige, l'Etherium est en main ; refermé, il disparaît (jusqu'au prochain). */
   etheriumInHand: boolean;
+  /** Visions de sceau cliquables qui ont dit qu'on peut les toucher (ui/sealVision.ts) : trois, ou une fois cliquée. */
+  visionHints: number;
   /**
    * Le dernier réveil (systems/prestige.ts) : les pages lues à vie à ce moment (la partie d'après se compte de là,
    * pour la Porte), et le numéro du premier livre pris ensuite (la Poignée) ; -1 : jamais réveillé.
@@ -180,6 +182,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   etherReceived: 0,
   etherium: [],
   etheriumInHand: false,
+  visionHints: 0,
   wake: { pages: 0, book: -1, clicks: 0, stars: 0 },
   lastTick: now,
   seed,

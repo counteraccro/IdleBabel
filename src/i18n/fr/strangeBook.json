@@ -70,7 +70,9 @@
   "sealVision": {
     "more": "et {n} autres sceaux",
     "moreOne": "et un autre sceau",
-    "unread": "Tu ne sais pas encore le lire."
+    "unread": "Tu ne sais pas encore le lire.",
+    "touch": "Touche le sceau pour le retrouver dans le Grand Livre.",
+    "touchMany": "Touche le sceau pour les retrouver dans le Grand Livre."
   },
   "sealsOne": {
     "pagesRead": "Traverse une page",

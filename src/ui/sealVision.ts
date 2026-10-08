@@ -12,6 +12,11 @@ import { openStrangeBookAt } from './strangeBook/openAt';
 import type { GameState } from '../core/state';
 
 const STRANGE_BOOK_HASH = '#livre';
+/**
+ * Les premières visions cliquables le disent (les tout premiers sceaux tombent avant le Grand Livre, et ne se cliquent
+ * pas) : trois fois, ou jusqu'au premier clic.
+ */
+const VISION_HINTS = 3;
 
 /**
  * Un sceau vient d'être apposé : il apparaît dans l'obscurité, à droite de l'écran — d'abord en relief, puis doré —
@@ -48,7 +53,12 @@ export const mountSealVisions = (state: GameState): void => {
     // Cliquable une fois le Grand Livre en main, et s'il n'est pas déjà ouvert (le sceau y luit déjà).
     if (strangeBookFound(state) && window.location.hash !== STRANGE_BOOK_HASH) {
       vision.classList.add('clickable');
+      if (state.visionHints < VISION_HINTS) {
+        state.visionHints += 1;
+        text.append(el('div', 'seal-vision-note touch', t(`strangeBook.sealVision.${others > 0 ? 'touchMany' : 'touch'}`)));
+      }
       vision.addEventListener('click', () => {
+        state.visionHints = VISION_HINTS;
         vision.remove();
         // Le Grand Livre ouvert entre-temps (une vision encore à l'écran) : rien à rouvrir.
         if (window.location.hash === STRANGE_BOOK_HASH) return;

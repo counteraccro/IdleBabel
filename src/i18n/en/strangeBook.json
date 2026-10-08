@@ -70,7 +70,9 @@
   "sealVision": {
     "more": "and {n} other seals",
     "moreOne": "and one other seal",
-    "unread": "You cannot read it yet."
+    "unread": "You cannot read it yet.",
+    "touch": "Touch the seal to find it in the Great Book.",
+    "touchMany": "Touch the seal to find them in the Great Book."
   },
   "sealsOne": {
     "pagesRead": "Cross one page",
