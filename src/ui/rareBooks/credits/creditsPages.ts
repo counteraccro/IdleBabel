@@ -176,25 +176,53 @@ const fontsPage = (context: CanvasRenderingContext2D): void => {
   folio(context, FONTS_PAGE);
 };
 
+/** Les notes de mise à jour : où elles commencent (sous le titre de la partie), et sur les pages suivantes. */
+const NOTES_TOP = 230;
+const NOTES_NEXT_TOP = 110;
+/** Elles s'arrêtent au-dessus du folio. */
+const NOTES_BOTTOM = HEIGHT - 90;
+
+type Note = ReturnType<typeof text>['notes'][number];
+
+/** La hauteur d'une version : son nom, sa date, ses lignes (une ligne vide fait un blanc). */
+const noteHeight = (note: Note): number => 80 + note.lines.reduce((height, line) => height + (line ? 30 : 16), 0);
+
+/**
+ * Les versions, page par page, la plus récente en haut : une page pleine, la suite passe à la page blanche d'après
+ * (jamais une version coupée en deux).
+ */
+const notesSheets = (): { note: Note; y: number }[][] => {
+  const sheets: { note: Note; y: number }[][] = [[]];
+  let y = NOTES_TOP;
+  for (const note of text().notes) {
+    if (y + noteHeight(note) > NOTES_BOTTOM && sheets[sheets.length - 1].length > 0) {
+      sheets.push([]);
+      y = NOTES_NEXT_TOP;
+    }
+    sheets[sheets.length - 1].push({ note, y });
+    y += noteHeight(note) + 40;
+  }
+  return sheets;
+};
+
 /**
  * Les notes de mise à jour, la plus récente en haut : le nom de la version, sa date, puis ses lignes (coupées dans les
- * textes, comme l'avant-propos ; une ligne vide fait un blanc).
+ * textes, comme l'avant-propos ; une ligne vide fait un blanc). Trop longues pour une page, elles continuent sur la suivante.
  */
-const notesPage = (context: CanvasRenderingContext2D): void => {
-  const { parts, notes } = text();
-  heading(context, parts[4]);
-  let y = 230;
-  for (const { title, date, lines } of notes) {
-    write(context, title.toLocaleUpperCase(), CENTER, y, { font: `600 20px ${TITLE}`, color: INK, spacing: 4 });
-    write(context, date, CENTER, y + 30, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-    y += 80;
-    for (const line of lines) {
+const notesPage = (context: CanvasRenderingContext2D, page: number): void => {
+  const sheet = notesSheets()[page - NOTES_PAGE];
+  if (!sheet) return;
+  if (page === NOTES_PAGE) heading(context, text().parts[4]);
+  for (const { note, y: top } of sheet) {
+    write(context, note.title.toLocaleUpperCase(), CENTER, top, { font: `600 20px ${TITLE}`, color: INK, spacing: 4 });
+    write(context, note.date, CENTER, top + 30, { font: `italic 18px ${GARAMOND}`, color: SOFT });
+    let y = top + 80;
+    for (const line of note.lines) {
       if (line) write(context, line, CENTER, y, { font: `20px ${GARAMOND}`, color: INK });
       y += line ? 30 : 16;
     }
-    y += 40;
   }
-  folio(context, NOTES_PAGE);
+  folio(context, page);
 };
 
 const colophonPage = (context: CanvasRenderingContext2D): void => {
@@ -224,8 +252,9 @@ const PAGES: Record<number, (context: CanvasRenderingContext2D, page: number) =>
   [COLOPHON_PAGE]: colophonPage,
 };
 
-/** Dessine la page `page` sur son papier ; les autres restent blanches. */
-export const paintCreditsPage = (context: CanvasRenderingContext2D, page: number): void => PAGES[page]?.(context, page);
+/** Dessine la page `page` sur son papier (les notes peuvent continuer après la leur) ; les autres restent blanches. */
+export const paintCreditsPage = (context: CanvasRenderingContext2D, page: number): void =>
+  (PAGES[page] ?? (page > NOTES_PAGE && page < COLOPHON_PAGE ? notesPage : undefined))?.(context, page);
 
 /** Les lignes du sommaire mènent à leur partie ; les liens de l'avant-propos ouvrent GitHub (l'auteur, le dépôt). */
 export const creditsLinks = (page: number): PageLink[] => {

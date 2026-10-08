@@ -1004,7 +1004,7 @@
           ["The Encyclopédie", "Diderot and d’Alembert, volume I", "Paris, 1751 · Wikisource"]
         ],
         "fontsIntro": "Under a free licence (SIL Open Font License).",
-        "notes": [{"title": "Alpha 1", "date": "October 8, 2026", "lines": ["The loop is complete.", "Two Ages of methods,", "the Manual and the Automatic.", "The Etherium and its eight constellations.", "Over three hundred seals, rare books,", "a library to shelve them.", "", "Your game is kept from one version to the next.", "More Ages will come."]}],
+        "notes": [{"title": "Alpha 1.1", "date": "October 8, 2026", "lines": ["A letter sometimes escapes the book.", "Catch it: it gives a boon,", "for a few seconds.", "A ninth constellation, the Quill,", "teaches it six other boons.", "Three intuitions, new seals.", "", "And sometimes, something else."]}, {"title": "Alpha 1", "date": "October 8, 2026", "lines": ["The loop is complete.", "Two Ages of methods,", "the Manual and the Automatic.", "The Etherium and its eight constellations.", "Over three hundred seals, rare books,", "a library to shelve them.", "", "Your game is kept from one version to the next.", "More Ages will come."]}],
         "colophon": ["Printed", "in the Library of Babel,", "on the presses of the hexagon", "where you stand.", "", "Print run: one copy.", "There are infinitely many others."]
     }
   },
