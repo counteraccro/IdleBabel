@@ -350,7 +350,8 @@ export const sealPage = (state: GameState, id: string | null, offset = 1): numbe
   return plates.find((plate) => plate.seals.some((seal) => seal.id === id))?.page ?? sealsPage;
 };
 
-export const createPages = (state: GameState, goTo: (page: number) => void, offset = 0): LeafPage[] => {
+/** `focus` : le sceau qu'on vient voir (une vision cliquée), en évidence sur sa planche, sa légende écrite d'office. */
+export const createPages = (state: GameState, goTo: (page: number) => void, offset = 0, focus?: string): LeafPage[] => {
   const { chapters, listPages, chapterStart, afterChapters, sealsPage, plates } = layout(state, offset);
   const blankPage = (page: number): LeafPage => createLeafPage(() => [folio(page + 1)], goTo);
   const entries: Entry[] = [
@@ -386,7 +387,7 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
     ...(sealsPage > afterChapters ? [blankPage(afterChapters)] : []),
     createLeafPage(() => completionItems(state, plates, sealsPage + 1), goTo, { onShown: () => markPartRead(state, 'seals') }),
     ...plates.map((plate) =>
-      createLeafPage(({ hovered }) => plateItems(state, plate, sealLegend(state, hovered), isFresh), goTo, {
+      createLeafPage(({ hovered }) => plateItems(state, plate, sealLegend(state, hovered ?? focus ?? null), isFresh, focus), goTo, {
         onShown: () =>
           markSealsSeen(
             state,

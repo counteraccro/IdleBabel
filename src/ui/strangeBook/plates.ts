@@ -224,6 +224,7 @@ export const plateItems = (
   page: PlatePage,
   legend: { name: string; text: string },
   fresh: (id: string) => boolean,
+  focus?: string,
 ): Item[] => {
   let index = 0;
   const seals = ROWS.flatMap((count, row): Item[] => {
@@ -245,6 +246,7 @@ export const plateItems = (
         y: FIRST_ROW + (page.method ? METHOD_SHIFT : 0) + row * STEP_Y,
         size: SEAL_SIZE,
         fresh: obtained && fresh(seal.id),
+        focus: seal.id === focus,
       };
     });
   });

@@ -9,19 +9,20 @@ import { edgeTexture } from './textures';
 import { leafPagesBook } from './leafPages';
 import type { Book3d } from './book3dBook';
 import type { GameState } from '../../core/state';
+import type { StrangeBookTarget } from '../strangeBook/openAt';
 
 /**
  * Le livre étrange : les statistiques, en cuir noir, sur papier gris. La garde est la première page de
  * droite (à gauche, l'intérieur de la couverture) : les pages de la liste (createPages) décalées d'une place.
- * `openAt` : la page de la liste où l'ouvrir dès qu'il est posé (une vision de sceau cliquée).
+ * `target` : la page de la liste où l'ouvrir dès qu'il est posé, et le sceau à y montrer (une vision de sceau cliquée).
  */
-export const strangeBook3d = (state: GameState, openAt?: number): Book3d => {
+export const strangeBook3d = (state: GameState, target?: StrangeBookTarget): Book3d => {
   const book: Book3d = {
     // 410 pages, comme le livre blanc : un livre épais.
     // Plats qui débordent nettement des pages : fermé, on distingue bien la couverture du bloc.
     shape: { width: 0.8, height: 1, thickness: 0.16, board: 0.018, overhang: 0.02, corner: 0.035 },
     // Les pages de la liste désignent les pages par leur place dans la liste : une de moins qu'en 3D.
-    ...leafPagesBook(() => createPages(state, (page) => book.navigate?.(page + 1), 1), 1, STRANGE_PAPER),
+    ...leafPagesBook(() => createPages(state, (page) => book.navigate?.(page + 1), 1, target?.seal), 1, STRANGE_PAPER),
     look: async () => {
       const { front, back, plain } = await leatherCover(coverDesign(STRANGE_BOOK_INDEX), STRANGE_BINDING);
       return {
@@ -39,7 +40,7 @@ export const strangeBook3d = (state: GameState, openAt?: number): Book3d => {
     live: true,
     // Le sommaire : la page de gauche de la deuxième double page.
     bookmark: 2,
-    openAt: openAt === undefined ? undefined : openAt + 1,
+    openAt: target === undefined ? undefined : target.page + 1,
   };
   return book;
 };

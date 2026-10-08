@@ -71,6 +71,8 @@ export type Item =
       inert?: boolean;
       /** Traits plus épais, pour un petit sceau. */
       weight?: number;
+      /** Le sceau qu'on est venu voir (vision cliquée) : un halo doré derrière lui. */
+      focus?: boolean;
     }
   /** Bâtons au crayon, comptés par cinq (tally.ts). */
   | TallyItem;
@@ -306,6 +308,34 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
   return node;
 };
 
+/** Hexagone (pointe en haut, comme les sceaux) de centre (x, y) et de rayon `r`. */
+const hexagonPath = (context: CanvasRenderingContext2D, x: number, y: number, r: number): void => {
+  context.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i - Math.PI / 2;
+    context.lineTo(x + r * Math.cos(angle), y + r * Math.sin(angle));
+  }
+  context.closePath();
+};
+
+/**
+ * Le sceau qu'on est venu voir (une vision cliquée) : une alvéole dorée derrière lui, cernée d'un liseré qui luit.
+ * Il se repère au premier regard parmi les autres.
+ */
+const drawFocus = (context: CanvasRenderingContext2D, x: number, y: number, size: number): void => {
+  context.save();
+  hexagonPath(context, x, y, size * 0.5);
+  context.fillStyle = 'rgba(232, 199, 118, 0.38)';
+  context.fill();
+  context.shadowColor = 'rgba(232, 199, 118, 0.9)';
+  context.shadowBlur = size * 0.18;
+  context.lineWidth = size * 0.035;
+  context.strokeStyle = '#c9a045';
+  hexagonPath(context, x, y, size * 0.56);
+  context.stroke();
+  context.restore();
+};
+
 /**
  * Élément cliquable sous le point (x, y) de la page (repère de la texture), comme les boutons de la
  * page HTML : entrées du sommaire et actions sur 80 % de la largeur (la note au crayon, sur la moitié),
@@ -474,6 +504,7 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
         context.stroke();
       }
     } else if (item.kind === 'seal') {
+      if (item.focus) drawFocus(context, item.x, item.y, item.size);
       drawSeal(context, sigil(item.series, item.tier), item.look, item.x - item.size / 2, item.y - item.size / 2, item.size, item.weight);
     }
   }

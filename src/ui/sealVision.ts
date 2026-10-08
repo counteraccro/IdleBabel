@@ -52,7 +52,8 @@ export const mountSealVisions = (state: GameState): void => {
         vision.remove();
         // Le Grand Livre ouvert entre-temps (une vision encore à l'écran) : rien à rouvrir.
         if (window.location.hash === STRANGE_BOOK_HASH) return;
-        openStrangeBookAt(sealPage(state, others > 0 ? null : seal.id));
+        const focus = others > 0 ? undefined : seal.id;
+        openStrangeBookAt({ page: sealPage(state, focus ?? null), seal: focus });
         window.location.hash = STRANGE_BOOK_HASH;
       });
     } else vision.setAttribute('aria-hidden', 'true');
