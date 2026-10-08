@@ -310,7 +310,7 @@ export const createBookMesh = (shape: BookShape, look: BookLook): BookMesh => {
   // fermé, ils sont cachés entre les pages ; ils apparaissent au fond du pli quand il s'ouvre.
   const band = createHeadbandGeometry();
   // Soie : un peu de lustre.
-  const bandMaterial = new THREE.MeshStandardMaterial({ map: look.headband, roughness: 0.45 });
+  const bandMaterial = new THREE.MeshStandardMaterial({ map: look.headband ?? null, roughness: 0.45 });
   const tall = height - 2 * shape.overhang;
   const headbands = (look.headband ? [tall / 2 + 0.004, -tall / 2 - 0.004] : []).map((y) => {
     const mesh = new THREE.Mesh(band, bandMaterial);

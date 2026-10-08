@@ -95,7 +95,7 @@ export const shrinkTexture = (texture: THREE.Texture, size: { width: number; hei
   context.imageSmoothingQuality = 'high';
   context.drawImage(image, 0, 0, canvas.width, canvas.height);
   const small = texture.clone();
-  small.source = new THREE.Source(canvas);
+  small.source = new THREE.TextureSource(canvas);
   small.needsUpdate = true;
   return small;
 };

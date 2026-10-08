@@ -81,7 +81,7 @@ export const stackGeometry = (
   // Le profil (x, z du livre) est dans le plan de la forme ; l'extrusion devient la hauteur (y).
   extruded.rotateX(Math.PI / 2);
   extruded.translate(0, tall / 2, 0);
-  const source = extruded.toNonIndexed();
+  const source = extruded.index ? extruded.toNonIndexed() : extruded;
   source.computeVertexNormals();
   const position = source.attributes.position;
   const uv = source.attributes.uv;
