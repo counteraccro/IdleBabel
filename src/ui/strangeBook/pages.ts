@@ -387,7 +387,7 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
     ...(sealsPage > afterChapters ? [blankPage(afterChapters)] : []),
     createLeafPage(() => completionItems(state, plates, sealsPage + 1), goTo, { onShown: () => markPartRead(state, 'seals') }),
     ...plates.map((plate) =>
-      // Le sceau survolé, sinon celui qu'on est venu voir : sa légende, et son or plus vif.
+      // Le sceau survolé, sinon celui qu'on est venu voir : sa légende, et son or plus sombre.
       createLeafPage(
         ({ hovered }) => plateItems(state, plate, sealLegend(state, hovered ?? focus ?? null), isFresh, hovered ?? focus),
         goTo,

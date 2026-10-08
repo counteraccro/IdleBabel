@@ -71,7 +71,7 @@ export type Item =
       inert?: boolean;
       /** Traits plus épais, pour un petit sceau. */
       weight?: number;
-      /** Le sceau survolé, ou celui qu'on est venu voir (vision cliquée) : un or plus vif. */
+      /** Le sceau survolé, ou celui qu'on est venu voir (vision cliquée) : un or plus sombre. */
       focus?: boolean;
     }
   /** Bâtons au crayon, comptés par cinq (tally.ts). */
