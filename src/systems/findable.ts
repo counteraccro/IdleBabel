@@ -1,5 +1,5 @@
 import { METHOD_GATE } from '../data/knowledge';
-import { HINT_BOOKS } from '../data/anomalies';
+import { HINT_BOOKS, HINTS_AFTER_PRESTIGE } from '../data/anomalies';
 import { SENTENCES } from '../data/sentences';
 import { METHOD_CHAIN, type ToolId } from '../data/tools';
 import { currentTarget } from './sentences';
@@ -27,8 +27,12 @@ export const waitingFor = (state: GameState, id: string): ToolId | undefined => 
   return METHOD_CHAIN[METHOD_CHAIN.findIndex((candidate) => candidate.id === tool) - 1]?.id;
 };
 
-/** Un indice qui mène à un livre rare attend que ce livre soit trouvé (data/anomalies.ts, HINT_BOOKS). */
+/**
+ * Un indice qui mène à un livre rare attend que ce livre soit trouvé (data/anomalies.ts, HINT_BOOKS) ; celui d'un
+ * secret de l'Etherium, un premier prestige.
+ */
 export const hintFindable = (state: GameState, id: string): boolean => {
+  if (HINTS_AFTER_PRESTIGE.includes(id) && state.etherReceived === 0) return false;
   const books = HINT_BOOKS[id];
   return !books || books.some((book) => book in state.rareBooks);
 };

@@ -337,7 +337,7 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
   const afterChapters = first + chapterPages.reduce((total, count) => total + count, 0);
   const sealsPage = onLeft(afterChapters);
   const blankPage = (page: number): LeafPage => createLeafPage(() => [folio(page + 1)], goTo);
-  const plates: PlatePage[] = platePages(sealsPage + 1);
+  const plates: PlatePage[] = platePages(state, sealsPage + 1);
   const entries: Entry[] = [
     ...chapters.map((chapter, index) => ({
       title: () => chapterTitle(state, chapter),

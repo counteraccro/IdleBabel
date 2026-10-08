@@ -11,6 +11,7 @@ const PLATE_NAMES: Record<PlateId, string> = {
   time: 'Temps',
   methods: 'Méthodes',
   intuitions: 'Intuitions',
+  etherium: 'Etherium',
   rare: 'Livres rares',
   secrets: 'Secrets',
 };

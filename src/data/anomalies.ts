@@ -118,6 +118,9 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintTrueCatalogue',
     'hintSandLastPage',
     'hintFoundTypo',
+    'hintEmptyEtherium',
+    'hintNoHands',
+    'hintExactly410',
   ],
 };
 
@@ -141,3 +144,6 @@ export const HINT_BOOKS: Readonly<Record<string, readonly string[]>> = {
   hintSandLastPage: ['sand'],
   hintFoundTypo: ['bigX'],
 };
+
+/** Les indices des secrets de l'Etherium ne tombent qu'après un premier prestige : avant, ils ne voudraient rien dire. */
+export const HINTS_AFTER_PRESTIGE: readonly string[] = ['hintEmptyEtherium', 'hintNoHands'];

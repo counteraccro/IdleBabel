@@ -52,6 +52,7 @@
     "methods": "Méthodes",
     "intuitions": "Intuitions",
     "rare": "Livres rares",
+    "etherium": "Etherium",
     "secrets": "Secrets"
   },
   "allMethods": "Toutes les méthodes",
@@ -66,9 +67,21 @@
     "8": "huit volumes",
     "9": "neuf volumes"
   },
+  "sealsOne": {
+    "pagesRead": "Traverse une page",
+    "speed": "Lis une page en une seule seconde",
+    "booksFinished": "Referme un volume",
+    "meaningfulCovers": "Reconnais une couverture qui a un sens",
+    "fragments": "Arrache une phrase au hasard",
+    "playTime": "Demeure une heure dans la Bibliothèque",
+    "knowledgeFound": "Comprends une chose",
+    "prestiges": "Rouvre les yeux une première fois",
+    "etherReceived": "Recueille ton premier Éther",
+    "starsLit": "Allume une étoile"
+  },
   "seals": {
     "pagesRead": "Traverse {n} pages",
-    "clicks": "Tourne {n} pages de ta main",
+    "clicks": "Tourne {n} fois la page de ta main",
     "stock": "Retiens {n} pages en mémoire",
     "speed": "Lis {n} pages en une seule seconde",
     "pagesByMethods": [
@@ -90,7 +103,16 @@
       "{n} pages. Tu ne comptes plus",
       "{n} pages. Le bout de tes doigts a pris la couleur du papier",
       "{n} pages. Ton poignet connaît le chemin",
-      "{n} pages, de ta main. Elle ne t'appartient plus tout à fait"
+      "{n} pages, de ta main. Elle ne t'appartient plus tout à fait",
+      "{n} pages. Tes doigts tournent encore dans ton sommeil",
+      "{n} pages. On lirait tes lignes de la main comme un livre",
+      "{n} pages. Tes empreintes sont restées sur chacune d'elles",
+      "{n} pages. Chaque geste tourne un rayon entier",
+      "{n} pages. Une galerie entière garde la forme de ta main",
+      "{n} pages : plus que de grains de sable sur toutes les plages",
+      "{n} pages. Les bibliothécaires parlent d'une main qui tourne seule",
+      "{n} pages. La Bibliothèque tourne sous ta main",
+      "{n} pages. Tu ouvres la main : elle est vide, comme au premier jour"
     ],
     "booksFinished": "Referme {n} volumes",
     "meaningfulCovers": "Reconnais {n} couvertures qui ont un sens",
@@ -147,7 +169,7 @@
     "rareBook": "Trouver : {title}",
     "deathBook": "Mon nom est inscrit dans le Death Book ? Est-ce alors la destinée ?",
     "directory": "Est-ce mon numéro de téléphone ?",
-    "colleagues": "Collègues",
+    "colleagues": "Ils travaillent ensemble, jusque dans leurs livres.",
     "reread": "Je l'ai relu jusqu'au bout. Il n'avait pas changé.",
     "babelDefinition": "La Bibliothèque a un nom. Il veut dire confusion.",
     "greatScott": "Quelqu'un est passé par ici avant moi. Ou après.",
@@ -155,6 +177,27 @@
     "oneWord": "Un seul mot. Je crois l'avoir déjà lu.",
     "trueCatalogue": "Non, je n'ai pas trouvé mon cadeau de Noël dedans.",
     "sandLastPage": "Tiens, une dernière page ?",
-    "foundTypo": "J'ai trouvé une faute de frappe."
+    "foundTypo": "J'ai trouvé une faute de frappe.",
+    "strangeBookRead": "Lis-moi en entier",
+    "firstSentence": "Écris ta première phrase entière",
+    "whiteBookFull": "Remplis le livre blanc",
+    "daysSinceArrival": "Reviens à la Bibliothèque depuis {n} jours",
+    "fullNight": "Dors une nuit entière dans la Bibliothèque",
+    "knowledgeFound": "Comprends {n} choses",
+    "prestiges": "Rouvre les yeux {n} fois",
+    "etherReceived": "Recueille {n} Éther",
+    "starsLit": "Allume {n} étoiles",
+    "constellation-ages": "Monte jusqu'à la dernière marche",
+    "constellation-reading": "Lis le ciel d'un bout à l'autre",
+    "constellation-hands": "Ouvre la main tout entière",
+    "constellation-knowledge": "Vois clair dans la nuit",
+    "constellation-finds": "Ne laisse rien t'échapper",
+    "constellation-away": "Dors sous toutes ses phases",
+    "constellation-start": "Franchis le seuil les mains pleines",
+    "constellation-memory": "Remplis chaque alvéole",
+    "automaticAge": "Entre dans l'Âge Automatique",
+    "emptyEtherium": "J'ai refermé l'Etherium sans rien y allumer.",
+    "noHands": "Toute une vie sans tourner une page de ma main.",
+    "exactly410": "410 pages. Pas une de plus."
   }
 }

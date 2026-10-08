@@ -121,6 +121,7 @@ export const STORY: StoryChapter[] = [
       { key: 'constellations', drafts: ['etheriumTrees', 'etheriumInk'] },
       { key: 'cornee' },
       { key: 'automaticAge' },
+      { key: 'sealsReview' },
       { key: 'thisBook' },
     ],
   },

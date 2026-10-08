@@ -2,18 +2,22 @@ import type { GameState } from '../core/state';
 import { STRANGE_BOOK_INDEX } from '../systems/strangeBook';
 import { meaningfulCovers } from '../systems/stats';
 import { isComplete } from '../systems/sentences';
+import { fullyDeciphered } from '../systems/decipher';
+import { pagesPerSecond } from '../systems/production';
+import { SENTENCES } from './sentences';
+import { ETHERIUM_PAGES, STARS } from './etheriumStars';
 import { ANOMALIES, ANOMALY_FAMILIES } from './anomalies';
 import { RARE_BOOKS } from './rareBooks';
 import { TECHNOLOGIES } from './technologies';
 import { levelOf, lockOf, maxLevel } from '../systems/technologies';
-import { TOOLS, type ToolId } from './tools';
+import { AUTOMATIC_AGE, TOOLS, type ToolId } from './tools';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
  * une ligne ici, et son texte dans i18n (strangeBook.seals.<texte>) — le sigle, la place sur la
  * planche et la légende sont générés.
  */
-export const PLATES = ['pages', 'books', 'fragments', 'time', 'methods', 'intuitions', 'rare', 'secrets'] as const;
+export const PLATES = ['pages', 'books', 'fragments', 'time', 'methods', 'intuitions', 'etherium', 'rare', 'secrets'] as const;
 export type PlateId = (typeof PLATES)[number];
 
 export interface SealDef {
@@ -44,8 +48,11 @@ const series = (id: string, plate: PlateId, value: (state: GameState) => number,
 /** Un sceau seul. */
 const seal = (id: string, plate: PlateId, reached: (state: GameState) => boolean): SealDef => ({ id, plate, text: id, reached });
 
-/** Un secret qui tient à un geste, pas à l'état de la partie : apposé par sealEvent (systems/seals.ts). */
-const secret = (id: string): SealDef => seal(id, 'secrets', () => false);
+/** Un sceau qui tient à un moment, pas à l'état de la partie : apposé par sealEvent (systems/seals.ts). */
+const event = (id: string, plate: PlateId): SealDef => seal(id, plate, () => false);
+
+/** Un secret qui tient à un geste : apposé par sealEvent. */
+const secret = (id: string): SealDef => event(id, 'secrets');
 
 /** Niveau d'une intuition sans fin qui lui vaut son sceau (elle n'a pas de 100 %). */
 const ENDLESS_SEAL_LEVEL = 10;
@@ -71,6 +78,12 @@ const K = 1_000;
 const M = 1_000_000;
 const G = 1_000_000_000;
 const HOUR = 3600;
+const DAY = 24 * HOUR * 1000;
+/** Jours depuis l'arrivée dans la Bibliothèque (le début de la partie), absences comprises. */
+const daysSinceArrival = (state: GameState): number => {
+  const started = state.history.find((entry) => entry.type === 'gameStarted')?.at;
+  return started === undefined ? 0 : (Date.now() - started) / DAY;
+};
 /** Paliers des pages lues par une méthode, en multiples de son prix de base (même difficulté pour toutes). */
 const METHOD_PAGES_STEPS = [10, 1e3, 1e5, 1e7, 1e9, 1e12];
 /** Les volumes de méthodes : un à neuf livres de 410 achats. */
@@ -86,22 +99,27 @@ const powers = (step: number, from: number, to: number): number[] =>
 const SPEED_STEPS = [...powers(1, 0, 8), ...powers(2, 10, 30)];
 
 export const SEALS: readonly SealDef[] = [
-  ...series('pagesRead', 'pages', (s) => s.totalPagesRead, [1, 100, 10 * K, M, G, K * G]),
+  // Pages lues et pages en réserve, prolongées le 08/10 (revue des sceaux) : jusqu'à 10³⁰ comme la vitesse, et 10³⁶
+  // comme le prix des dernières méthodes.
+  ...series('pagesRead', 'pages', (s) => s.totalPagesRead, [1, 100, 10 * K, M, G, K * G, ...powers(3, 15, 30)]),
   ...series('clicks', 'pages', (s) => s.stats.clicks, [100, K, 10 * K, 100 * K]),
-  ...series('stock', 'pages', (s) => s.pages, [K, M, G]),
+  ...series('stock', 'pages', (s) => s.pages, [K, M, G, ...powers(3, 12, 36)]),
   // Pages lues depuis toujours, que le prestige ne reprend pas (idée de l'auteur, 05/10), une phrase par palier :
-  // par les méthodes, de mille en mille jusqu'à 10³⁰ ; à la main, de dix en dix jusqu'à 10⁵.
+  // par les méthodes, de mille en mille jusqu'à 10³⁰ ; à la main, de dix en dix jusqu'à 10⁵, puis de mille en mille
+  // jusqu'à 10³⁰ (08/10 : un clic rapporte aussi une part de la production).
   ...[
     ...series('pagesByMethods', 'pages', (s) => s.pagesByMethods, powers(3, 0, 30)),
-    ...series('pagesByHand', 'pages', (s) => s.pagesByHand, powers(1, 0, 5)),
+    ...series('pagesByHand', 'pages', (s) => s.pagesByHand, [...powers(1, 0, 5), ...powers(3, 6, 30)]),
   ].map((seal): SealDef => ({ ...seal, phrases: true })),
   // La meilleure vitesse de la vie (idée de l'auteur, 05/10) : de dix en dix jusqu'à 10⁸, puis de cent en cent jusqu'à 10³⁰.
   ...series('speed', 'pages', (s) => s.stats.bestPagesPerSecond, SPEED_STEPS),
 
-  ...series('booksFinished', 'books', (s) => s.booksFinished, [1, 10, 100, K, 10 * K]),
+  ...series('booksFinished', 'books', (s) => s.booksFinished, [1, 10, 100, K, 10 * K, 50 * K]),
   ...series('meaningfulCovers', 'books', meaningfulCovers, [1, 10, 100]),
   // La découverte du livre étrange (pas un secret : il arrive à son numéro de livre).
   seal('strangeBook', 'books', (s) => s.booksFinished >= STRANGE_BOOK_INDEX),
+  // Le Grand Livre lu en entier : toutes ses parties déchiffrées, chapitre Éther compris.
+  seal('strangeBookRead', 'books', fullyDeciphered),
 
   ...series('fragments', 'fragments', (s) => s.stats.fragments, [1, 10, 100, K]),
   // Une famille d'anomalies complète (data/anomalies.ts).
@@ -110,8 +128,14 @@ export const SEALS: readonly SealDef[] = [
       ANOMALIES.filter((anomaly) => anomaly.family === family).every((anomaly) => isComplete(s, anomaly.id)),
     ),
   ),
+  // Le livre blanc : une première phrase entière, puis toutes à la fois (les phrases des méthodes s'oublient au prestige).
+  seal('firstSentence', 'fragments', (s) => SENTENCES.some((sentence) => isComplete(s, sentence.id))),
+  seal('whiteBookFull', 'fragments', (s) => SENTENCES.every((sentence) => isComplete(s, sentence.id))),
 
-  ...series('playTime', 'time', (s) => s.stats.playSeconds / HOUR, [1, 10, 100]),
+  ...series('playTime', 'time', (s) => s.stats.playSeconds / HOUR, [1, 10, 100, K]),
+  ...series('daysSinceArrival', 'time', daysSinceArrival, [7, 30, 365]),
+  // Une absence d'au moins huit heures (core/absence.ts).
+  event('fullNight', 'time'),
 
   // Exemplaires possédés dans une même partie (le prestige les remet à zéro), les mêmes paliers pour chaque méthode
   // (décision de l'auteur, 05/10) : 25, le moment où elle ouvre la suivante ; 500 coûte de 10³² pages (Diagonale)
@@ -138,6 +162,18 @@ export const SEALS: readonly SealDef[] = [
   ).map((seal): SealDef => ({ ...seal, method: 'all' })),
 
   ...TECHNOLOGIES.map(intuitionSeal),
+  ...series('knowledgeFound', 'intuitions', (s) => s.lifetimeKnowledge, [1, 100, 10 * K, M]),
+
+  // L'Etherium (revue des sceaux, 08/10) : prestiges, Éther reçu, étoiles, chaque constellation entière, les Âges.
+  ...series('prestiges', 'etherium', (s) => s.exiles, [1, 5, 10, 25, 100]),
+  ...series('etherReceived', 'etherium', (s) => s.etherReceived, [1, 10, 100, K, 10 * K, 100 * K, M]),
+  ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, STARS.length]),
+  ...ETHERIUM_PAGES.map((page) =>
+    seal(`constellation-${page}`, 'etherium', (s) =>
+      STARS.filter((star) => star.page === page).every((star) => s.etherium.includes(star.id)),
+    ),
+  ),
+  seal('automaticAge', 'etherium', (s) => s.etherium.includes(AUTOMATIC_AGE)),
 
   // Un sceau par livre rare, apposé quand il arrive en main.
   ...RARE_BOOKS.map((book): SealDef => ({
@@ -177,4 +213,10 @@ export const SEALS: readonly SealDef[] = [
   secret('foundTypo'),
   // Les deux collègues, AlexH et Oriana, trouvés tous les deux (ils travaillent ensemble, jusque dans leurs livres).
   seal('colleagues', 'secrets', (s) => 'alexH' in s.rareBooks && 'oriana' in s.rareBooks),
+  // L'Etherium refermé sans y allumer une étoile (systems/prestige.ts, closeEtherium).
+  secret('emptyEtherium'),
+  // Toute une partie, d'un réveil au prestige suivant, sans tourner une page à la main (systems/prestige.ts).
+  secret('noHands'),
+  // Exactement 410 pages en réserve, sans rien qui lise : il a fallu s'arrêter de tourner.
+  seal('exactly410', 'secrets', (s) => Math.floor(s.pages) === BOOK_PAGES && pagesPerSecond(s) === 0),
 ];

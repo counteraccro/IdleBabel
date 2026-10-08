@@ -93,7 +93,7 @@ describe('Au réveil', () => {
     expect(state.tools.voice).toBe(10);
     expect(state.pages).toBeCloseTo(9e7);
     expect(state.knowledge).toBeCloseTo(30);
-    expect(state.wake).toEqual({ pages: 1e10, book: 41 });
+    expect(state.wake).toEqual({ pages: 1e10, book: 41, clicks: 0, stars: 8 });
   });
 
   it('sans étoile, rien ne reste', () => {

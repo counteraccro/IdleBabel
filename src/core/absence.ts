@@ -1,7 +1,7 @@
 import { findWhileAway, pagesTurnedAway } from '../systems/knowledge';
 import { readWhileAway } from '../systems/awayReading';
 import { creditMethods, gainPages, pagesPerSecond } from '../systems/production';
-import { checkSeals } from '../systems/seals';
+import { checkSeals, sealEvent } from '../systems/seals';
 import { tellLore } from '../systems/lore';
 import { meetStrangeBook } from '../systems/decipher';
 import { awayShare, maxAwaySeconds } from '../systems/technologies';
@@ -15,6 +15,8 @@ import type { GameState } from './state';
 const TOLD_ABSENCE = 15 * 60;
 /** Une absence d'au moins tant (en secondes) : au retour, le chercheur croit sortir d'un rêve (ui/awayNotice.ts). */
 const NOTICED_ABSENCE = 10 * 60;
+/** Une absence d'au moins tant (en secondes) : une nuit entière, un sceau. */
+const FULL_NIGHT = 8 * 3600;
 
 /** Le livre en main a avancé sans être à l'écran : il doit se redessiner (ui/book3d/handReading3d.ts). */
 export const BOOK_MOVED_EVENT = 'idle-babel:book-moved';
@@ -63,6 +65,7 @@ export const passTime = (state: GameState, seconds: number, mode: 'away' | 'paus
   // Les récits des livres refermés sans être vus : le premier gardé, le Grand Livre arrivé en main.
   if (state.booksFinished > 0) tellLore(state, 'firstBookKept');
   meetStrangeBook(state);
+  if (mode === 'away' && seconds >= FULL_NIGHT) sealEvent(state, 'fullNight');
   checkSeals(state);
   if (state.settings.autoTurn && seconds >= TOLD_ABSENCE) recordOnce(state, 'firstAbsence');
   if (state.booksFinished !== book.index || state.bookPage !== book.page) window.dispatchEvent(new Event(BOOK_MOVED_EVENT));

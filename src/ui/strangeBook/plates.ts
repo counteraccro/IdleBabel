@@ -32,10 +32,13 @@ export interface PlatePage {
   page: number;
 }
 
+/** La planche de l'Etherium n'existe qu'après un premier prestige, comme le chapitre Éther : avant, rien ne le laisse deviner. */
+const plateShown = (state: GameState, plate: PlateId): boolean => plate !== 'etherium' || state.etherReceived > 0 || statsRevealed();
+
 /** Les pages des planches, à partir de la page `first`. */
-export const platePages = (first: number): PlatePage[] => {
+export const platePages = (state: GameState, first: number): PlatePage[] => {
   const pages: PlatePage[] = [];
-  for (const plate of PLATES) {
+  for (const plate of PLATES.filter((candidate) => plateShown(state, candidate))) {
     const seals = plateSeals(plate);
     // Une page par méthode, ses sceaux seulement (l'auteur a d'autres idées de sceaux pour chacune), puis
     // celle de toutes les méthodes à la fois.
@@ -64,7 +67,10 @@ const sealText = (seal: SealDef): string => {
   const title = seal.rareBook ? t(`rareBooks.${seal.rareBook}.name`) : seal.tool ? t(`tools.${seal.tool}.name`) : '';
   // Une phrase à lui, à son palier ; le nombre, dans la notation choisie au cahier d'options comme les autres.
   const key = seal.phrases && seal.tier ? `${seal.text}.${seal.tier.index}` : seal.text;
-  const text = t(`strangeBook.seals.${key}`).replace('{title}', title);
+  // Au palier 1, une série peut avoir son texte au singulier (« Allume une étoile ») : strangeBook.sealsOne.<texte>.
+  const one = `strangeBook.sealsOne.${seal.text}`;
+  const singular = seal.tier?.n === 1 && !seal.phrases && t(one) !== one;
+  const text = t(singular ? one : `strangeBook.seals.${key}`).replace('{title}', title);
   if (!seal.tier) return text;
   // Les volumes de méthodes : « un volume », « deux volumes »… (410 achats chacun).
   return text

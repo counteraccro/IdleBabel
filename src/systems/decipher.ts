@@ -11,6 +11,9 @@ const exists = (state: GameState, part: PartId): boolean =>
 const readable = (state: GameState, part: PartId): boolean =>
   exists(state, part) && (state.deciphered.includes(part) || state.lifetimeKnowledge >= READABLE_AT[part]);
 
+/** Tout le Grand Livre se lit en clair, chapitre Éther compris (un sceau). */
+export const fullyDeciphered = (state: GameState): boolean => PARTS.every((part) => readable(state, part));
+
 /** La partie se lit-elle en clair ? (débogage : tout.) */
 export const isDeciphered = (state: GameState, part: PartId): boolean => statsRevealed() || readable(state, part);
 

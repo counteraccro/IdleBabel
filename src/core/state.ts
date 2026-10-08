@@ -133,7 +133,7 @@ export interface GameState {
    * Le dernier réveil (systems/prestige.ts) : les pages lues à vie à ce moment (la partie d'après se compte de là,
    * pour la Porte), et le numéro du premier livre pris ensuite (la Poignée) ; -1 : jamais réveillé.
    */
-  wake: { pages: number; book: number };
+  wake: { pages: number; book: number; clicks: number; stars: number };
   lastTick: number;
   /**
    * La graine de la partie (core/random.ts, gameRandom) : les couvertures, le texte des pages, les livres rares
@@ -180,7 +180,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   etherReceived: 0,
   etherium: [],
   etheriumInHand: false,
-  wake: { pages: 0, book: -1 },
+  wake: { pages: 0, book: -1, clicks: 0, stars: 0 },
   lastTick: now,
   seed,
 });

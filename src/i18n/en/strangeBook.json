@@ -52,6 +52,7 @@
     "methods": "Methods",
     "intuitions": "Intuitions",
     "rare": "Rare books",
+    "etherium": "Etherium",
     "secrets": "Secrets"
   },
   "allMethods": "All methods",
@@ -66,9 +67,21 @@
     "8": "eight volumes",
     "9": "nine volumes"
   },
+  "sealsOne": {
+    "pagesRead": "Cross one page",
+    "speed": "Read one page in a single second",
+    "booksFinished": "Close one volume",
+    "meaningfulCovers": "Recognize one cover that makes sense",
+    "fragments": "Tear one sentence from chance",
+    "playTime": "Dwell one hour in the Library",
+    "knowledgeFound": "Understand one thing",
+    "prestiges": "Open your eyes again for the first time",
+    "etherReceived": "Gather your first Ether",
+    "starsLit": "Light one star"
+  },
   "seals": {
     "pagesRead": "Cross {n} pages",
-    "clicks": "Turn {n} pages with your hand",
+    "clicks": "Turn the page by hand {n} times",
     "stock": "Hold {n} pages in memory",
     "speed": "Read {n} pages in a single second",
     "pagesByMethods": [
@@ -90,7 +103,16 @@
       "{n} pages. You stopped counting",
       "{n} pages. Your fingertips have taken the colour of paper",
       "{n} pages. Your wrist knows the way",
-      "{n} pages, by your hand. It is not quite yours anymore"
+      "{n} pages, by your hand. It is not quite yours anymore",
+      "{n} pages. Your fingers still turn them in your sleep",
+      "{n} pages. The lines of your palm read like a book",
+      "{n} pages. Your fingerprints are left on every one",
+      "{n} pages. Each gesture turns a whole shelf",
+      "{n} pages. A whole gallery keeps the shape of your hand",
+      "{n} pages: more than the grains of sand on every beach",
+      "{n} pages. The librarians speak of a hand that turns on its own",
+      "{n} pages. The Library turns beneath your hand",
+      "{n} pages. You open your hand: it is empty, as on the first day"
     ],
     "booksFinished": "Close {n} volumes",
     "meaningfulCovers": "Recognize {n} covers that make sense",
@@ -147,7 +169,7 @@
     "rareBook": "Found: {title}",
     "deathBook": "My name is written in the Death Book? Is this, then, destiny?",
     "directory": "Is that my phone number?",
-    "colleagues": "Colleagues",
+    "colleagues": "They work together, even in their books.",
     "reread": "I read it again to the end. It hadn't changed.",
     "babelDefinition": "The Library has a name. It means confusion.",
     "greatScott": "Someone came through here before me. Or after.",
@@ -155,6 +177,27 @@
     "oneWord": "One word. I think I have read it before.",
     "trueCatalogue": "No, my Christmas present isn't in there.",
     "sandLastPage": "Oh, a last page?",
-    "foundTypo": "I found a typo."
+    "foundTypo": "I found a typo.",
+    "strangeBookRead": "Read me whole",
+    "firstSentence": "Write your first whole sentence",
+    "whiteBookFull": "Fill the white book",
+    "daysSinceArrival": "Come back to the Library for {n} days",
+    "fullNight": "Sleep a whole night in the Library",
+    "knowledgeFound": "Understand {n} things",
+    "prestiges": "Open your eyes again {n} times",
+    "etherReceived": "Gather {n} Ether",
+    "starsLit": "Light {n} stars",
+    "constellation-ages": "Climb to the last step",
+    "constellation-reading": "Read the sky from end to end",
+    "constellation-hands": "Open your whole hand",
+    "constellation-knowledge": "See clearly in the dark",
+    "constellation-finds": "Let nothing slip past you",
+    "constellation-away": "Sleep through all its phases",
+    "constellation-start": "Cross the threshold with full hands",
+    "constellation-memory": "Fill every cell",
+    "automaticAge": "Enter the Automatic Age",
+    "emptyEtherium": "I closed the Etherium without lighting anything.",
+    "noHands": "A whole life without turning a page by hand.",
+    "exactly410": "410 pages. Not one more."
   }
 }

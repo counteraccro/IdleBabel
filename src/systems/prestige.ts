@@ -6,6 +6,7 @@ import { forgetIntuitions } from './reminiscence';
 import { forgetPagesRest } from './production';
 import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor } from './etherium';
 import { levelOf, maxLevel } from './technologies';
+import { sealEvent } from './seals';
 import type { GameState } from '../core/state';
 
 /**
@@ -41,6 +42,8 @@ export const nextEtherProgress = (state: GameState): number => {
 export const prestige = (state: GameState, now = Date.now()): number => {
   const gain = prestigeGain(state);
   if (gain < 1) return 0;
+  // Toute une partie, depuis le dernier réveil, sans tourner une page à la main : un sceau secret.
+  if (state.wake.book >= 0 && state.stats.clicks === state.wake.clicks) sealEvent(state, 'noHands', now);
   state.etherReceived += gain;
   state.ether += gain;
   state.exiles += 1;
@@ -61,7 +64,7 @@ export const prestige = (state: GameState, now = Date.now()): number => {
     state.technologies.semanticFilter = Math.min(maxLevel('semanticFilter'), levelOf(state, 'semanticFilter') + 1);
     state.technologiesBest.semanticFilter = Math.max(state.technologiesBest.semanticFilter ?? 0, state.technologies.semanticFilter);
   }
-  state.wake = { pages: state.totalPagesRead, book: state.booksFinished + 1 };
+  state.wake = { pages: state.totalPagesRead, book: state.booksFinished + 1, clicks: state.stats.clicks, stars: state.etherium.length };
   const kept = keptMethodSentences(state);
   // Une méthode secrète, elle, ne s'oublie jamais.
   for (const sentence of SENTENCES)
@@ -73,5 +76,7 @@ export const prestige = (state: GameState, now = Date.now()): number => {
 
 /** L'Etherium refermé : il retourne sur la pile, et ne se rouvre plus avant le prochain prestige. */
 export const closeEtherium = (state: GameState): void => {
+  // Refermé sans y avoir allumé une étoile depuis le réveil : un sceau secret.
+  if (state.etheriumInHand && state.etherium.length === state.wake.stars) sealEvent(state, 'emptyEtherium');
   state.etheriumInHand = false;
 };
