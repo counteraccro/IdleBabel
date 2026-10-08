@@ -221,6 +221,10 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   const arrive = (): void => {
     const page = spec.openAt;
     if (page === undefined || !turner || flight) return;
+    // Le recul de la vue de lecture dépend de la forme du cadre : pas encore à l'écran (sceau cliqué, sans vol
+    // depuis la pile), la caméra le croirait carré, et le livre ouvert serait plus petit que d'habitude.
+    if (!canvas.clientWidth || !canvas.clientHeight) return void requestAnimationFrame(() => !signal.aborted && arrive());
+    resize();
     spec.openAt = undefined;
     swing('front', 1, undefined, () => turner?.go(Math.floor(page / 2)));
   };
