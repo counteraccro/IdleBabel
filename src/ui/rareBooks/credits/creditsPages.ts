@@ -31,6 +31,8 @@ export const FOREWORD_PAGE = 3;
 export const CONTENTS_PAGE = 5;
 const PARTS = [FOREWORD_PAGE, 7, 9, 11, 13, PAGES_PER_BOOK];
 const [, ROLL_PAGE, TEXTS_PAGE, FONTS_PAGE, NOTES_PAGE, COLOPHON_PAGE] = PARTS;
+/** Les notes de mise à jour : le lien de la version, au pied de l’écran, y ouvre le livre. */
+export { NOTES_PAGE };
 
 /** Les polices du jeu et qui les a dessinées (toutes sous SIL Open Font License). */
 const FONTS: [string, string][] = [
@@ -213,8 +215,7 @@ export const paintCreditsPage = (context: CanvasRenderingContext2D, page: number
 
 /** Les lignes du sommaire mènent à leur partie ; les liens de l'avant-propos ouvrent GitHub (l'auteur, le dépôt). */
 export const creditsLinks = (page: number): PageLink[] => {
-  if (page === CONTENTS_PAGE)
-    return PARTS.map((target, i) => ({ y: CONTENTS_TOP + i * CONTENTS_STEP - 32, height: 44, target }));
+  if (page === CONTENTS_PAGE) return PARTS.map((target, i) => ({ y: CONTENTS_TOP + i * CONTENTS_STEP - 32, height: 44, target }));
   if (page === FOREWORD_PAGE)
     return [PROFILE_Y, REPOSITORY_Y].map((y, i) => ({ y: y - 28, height: 40, target: page, href: `https://${[PROFILE, REPOSITORY][i]}` }));
   return [];

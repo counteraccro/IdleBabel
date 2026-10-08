@@ -29,7 +29,7 @@ export interface HeaderHandlers {
   /** Des sceaux obtenus ou une partie devenue lisible attendent d'être vus : le contour du Grand Livre luit. */
   strangeBookNews: () => boolean;
   /** Le livre ouvert en ce moment (sa page à l'écran), absent de la pile ; null : le jeu. */
-  openBook: () => 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | null;
+  openBook: () => 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'notes' | null;
   /** Entrer dans la bibliothèque personnelle (la clé). */
   onLibrary: () => void;
   /** La clé est posée près de la pile : un livre rare a été trouvé (ou débogage). */

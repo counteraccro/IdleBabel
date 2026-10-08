@@ -39,12 +39,15 @@ import { isRareBookFound } from '../systems/rareBooks';
 import { etherium3d } from './etherium/etherium3d';
 import { ETHERIUM_HASH, openEtherium } from './etherium/prestigeStory';
 import { takeStrangeBookPage } from './strangeBook/openAt';
+import { NOTES_PAGE } from './rareBooks/credits/creditsPages';
 import { closeEtherium, prestigeReady } from '../systems/prestige';
 import { ETHERIUM_NAMED_PAGES } from '../data/etherium';
 import type { Component } from './dom';
 
 const OPTIONS_HASH = '#options';
 const STRANGE_BOOK_HASH = '#livre';
+/** Le livre des crédits, ouvert sur ses notes de mise à jour (le lien de la version, au pied de l'écran). */
+const NOTES_HASH = '#notes';
 const WHITE_BOOK_HASH = '#blanc';
 /** La bibliothèque personnelle, et un de ses livres ouvert en grand (#bibliotheque:<id>). */
 const LIBRARY_HASH = '#bibliotheque';
@@ -126,13 +129,14 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const inLibrary = (): boolean => window.location.hash === LIBRARY_HASH || window.location.hash.startsWith(LIBRARY_BOOK_HASH);
 
   /** Le livre dont la page est ouverte (null : le jeu). */
-  const openBook = (): 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | null => {
+  const openBook = (): 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'notes' | null => {
     const hash = window.location.hash;
     if (hash === OPTIONS_HASH) return 'options';
     if (hash === ETHERIUM_HASH) return 'etherium';
     if (inLibrary()) return 'library';
     if ((hash === DEBUG_BOOK_HASH || hash.startsWith(RARE_BOOK_HASH)) && debugging) return 'debug';
     if (hash === WHITE_BOOK_HASH) return 'white';
+    if (hash === NOTES_HASH) return 'notes';
     return hash === STRANGE_BOOK_HASH && strangeBookFound(state) ? 'strange' : null;
   };
   // L'en-tête reste à l'écran d'une page à l'autre : la pile ne se recharge pas, le livre ouvert y laisse
@@ -167,7 +171,13 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const counter = createCounter(state);
   const lasting: Component[] = [header, counter];
 
-  const game = (): Component[] => [header, counter, createMethodHive(state), createHandReading3d(state), createFooter(state.settings)];
+  const game = (): Component[] => [
+    header,
+    counter,
+    createMethodHive(state),
+    createHandReading3d(state),
+    createFooter(state.settings, open(NOTES_HASH)),
+  ];
 
   const options = (): Component[] =>
     pileBook(
@@ -286,6 +296,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
           );
       return pileBook(createBook3dPage(spec, back, state.etheriumInHand ? t('etherium.close') : backLabel()));
     }
+    // Les notes de mise à jour : le livre des crédits seul, sans la vitrine (la bibliothèque peut n'être pas encore là).
+    if (window.location.hash === NOTES_HASH)
+      return pileBook(createBook3dPage({ ...rareBook3d(state, LIBRARY_CREDITS_BOOK), openAt: NOTES_PAGE }, back, backLabel()));
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state))
       return pileBook(createBook3dPage(strangeBook3d(state, takeStrangeBookPage()), back, backLabel()));
     return game();

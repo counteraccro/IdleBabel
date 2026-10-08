@@ -14,6 +14,7 @@
   "lotMaxNone": "max (0) — prochaine : {n} pages",
   "reset": "Effacer la sauvegarde",
   "build": "Version du",
+  "version": "Version {name}",
   "options": "Options",
   "back": "Retour au jeu",
   "backToLibrary": "Retour à la bibliothèque",

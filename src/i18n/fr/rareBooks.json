@@ -1600,7 +1600,7 @@
         "credits": {
           "head": "Les crédits",
           "text": [
-            "Les crédits ont été écrits : qui a fait le jeu, avec quoi, d’après quoi."
+            "Les crédits ont été écrits : qui a fait le jeu, avec quoi, d’après quoi. Plus tard, au pied de l’écran, la date de la version a laissé place à son nom, « Version Alpha 1 » : un clic ouvre les crédits sur leurs notes de mise à jour."
           ]
         },
         "seed": {

@@ -1587,7 +1587,7 @@
         "credits": {
           "head": "The credits",
           "text": [
-            "The credits were written: who made the game, with what, after what."
+            "The credits were written: who made the game, with what, after what. Later, at the foot of the screen, the build date gave way to the version’s name, “Version Alpha 1”: a click opens the credits on their update notes."
           ]
         },
         "seed": {
