@@ -170,8 +170,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   });
 
   // Le compteur aussi : au-dessus du jeu comme des livres ouverts, il ne clignote pas d'un écran à l'autre.
-  // L'Etherium ouvert, il compte l'Éther à dépenser.
-  const counter = createCounter(state, () => openBook() === 'etherium');
+  /** La page de l'Etherium, tant qu'il est en main. */
+  let etheriumPage: ReturnType<typeof createBook3dPage> | null = null;
+  // L'Etherium ouvert (sa couverture soulevée, pas seulement regardé), il compte l'Éther à dépenser.
+  const counter = createCounter(state, () => openBook() === 'etherium' && etheriumPage?.opened() === true);
   const lasting: Component[] = [header, counter];
 
   const game = (): Component[] => [
@@ -299,7 +301,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
             },
             cover.nudge,
           );
-      return pileBook(createBook3dPage(spec, back, state.etheriumInHand ? t('etherium.close') : backLabel()));
+      etheriumPage = createBook3dPage(spec, back, state.etheriumInHand ? t('etherium.close') : backLabel());
+      return pileBook(etheriumPage);
     }
     // Les notes de mise à jour : le livre des crédits seul, sans la vitrine (la bibliothèque peut n'être pas encore là).
     if (window.location.hash === NOTES_HASH)

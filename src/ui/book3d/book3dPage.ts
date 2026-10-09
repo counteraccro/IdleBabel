@@ -33,7 +33,7 @@ const LIVE_MS = 1000;
  * Un grand livre en vraie 3D (Three.js) : le livre étrange (#livre), le livre blanc (#blanc).
  * Fermé, on le fait tourner à la souris ; ouvert, on le lit, caméra bloquée, en tournant ses pages à la main.
  */
-export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t('ui.back')): Component => {
+export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t('ui.back')): Component & { opened: () => boolean } => {
   const root = el('main', 'book3d-page');
   const back = el('button', 'options-back', `← ${backLabel}`);
   back.addEventListener('click', () => leave());
@@ -446,5 +446,6 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
-  return { root, update: () => {} };
+  // Couverture soulevée (plus qu'un livre scellé qui résiste) : le livre s'ouvre, on ne le regarde plus seulement.
+  return { root, update: () => {}, opened: () => Number(open.value) > NUDGE };
 };
