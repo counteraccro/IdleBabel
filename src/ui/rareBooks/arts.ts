@@ -8,6 +8,7 @@ import { catalogueArt } from './catalogue/catalogue';
 import { blankPageArt } from './blankPage/blankPage';
 import { creditsArt } from './credits/credits';
 import { dadJokesArt } from './dadJokes/dadJokes';
+import { darkPatternsArt } from './darkPatterns/darkPatterns';
 import { deathBookArt } from './deathBook/deathBook';
 import { divineComedyArt } from './divineComedy/divineComedy';
 import { encyclopediaArt } from './encyclopedia/encyclopedia';
@@ -37,6 +38,7 @@ const ARTS: Record<string, RareBookArt> = {
   catalogue: catalogueArt,
   credits: creditsArt,
   dadJokes: dadJokesArt,
+  darkPatterns: darkPatternsArt,
   deathBook: deathBookArt,
   divineComedy: divineComedyArt,
   directory: directoryArt,

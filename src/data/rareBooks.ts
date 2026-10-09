@@ -40,6 +40,8 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   { id: 'directory' },
   // Les Jokes de Papa (remplace « Le Livre des morts », 03/10 ; core/renamedRareBooks.ts).
   { id: 'dadJokes' },
+  // Un manuel d'interfaces dont les cinq premiers exemples sont des pièges à déjouer, dans la bibliothèque (09/10).
+  { id: 'darkPatterns' },
   // L'autobiographie du jeu (décidée le 03/10) : la Bibliothèque contient le livre de sa propre création.
   { id: 'idleBabel' },
   // Le livre de débogage (décidé le 01/10) : dix fois plus rare ; du charabia qui bugue, et il ne s'ouvre

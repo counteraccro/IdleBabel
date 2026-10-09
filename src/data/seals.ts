@@ -210,6 +210,8 @@ export const SEALS: readonly SealDef[] = [
   secret('greatScott'),
   // Un « ha ! » au crayon, barré, page 25 des Jokes de Papa (ui/rareBooks/dadJokes/dadJokes.ts).
   secret('neverLaughed'),
+  // Les cinq pièges des « Dark patterns par l'exemple » déjoués par leur vraie sortie (systems/darkPatterns.ts).
+  secret('escaped'),
   // Un mot entouré au crayon, à la dernière page du Manuscrit de Voynich (ui/rareBooks/voynich/voynich.ts).
   secret('oneWord'),
   // Vingt pages du Catalogue des catalogues lues dans la bibliothèque, à la recherche d'un cadeau de Noël

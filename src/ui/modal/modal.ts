@@ -49,9 +49,10 @@ export interface Modal {
 
 /**
  * Une modale est-elle ouverte (récit, question…) ? Le décor derrière se fige (ui/animationClock.ts), le jeu
- * continue : pas de page qui tourne à l'écran, ses trouvailles sont comptées comme pendant une absence.
+ * continue : pas de page qui tourne à l'écran, ses trouvailles sont comptées comme pendant une absence. Un piège
+ * des « Dark patterns par l'exemple » ouvert compte aussi (ui/rareBooks/darkPatterns/traps/trapStage.ts).
  */
-export const modalOpen = (): boolean => document.querySelector('.modal-backdrop') !== null;
+export const modalOpen = (): boolean => document.querySelector('.modal-backdrop, .dp-trap') !== null;
 
 /** Modales ouvertes : les animations reprennent quand la dernière se ferme. */
 let opened = 0;

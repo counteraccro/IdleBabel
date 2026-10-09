@@ -53,6 +53,7 @@ export const BOOK_DRAFTS: Record<string, string[]> = {
   catalogue: ['catalogue-a', 'catalogue-b'],
   sand: ['sand-a', 'sand-c'],
   bigX: ['bigX-b', 'bigX-c'],
+  darkPatterns: ['darkPatterns-a', 'darkPatterns-c'],
 };
 
 /** Les pistes écartées hors livres : les fenêtres, les méthodes, la vitrine… */
@@ -104,6 +105,7 @@ export const STORY: StoryChapter[] = [
           'catalogue',
           'sand',
           'bigX',
+          'darkPatterns',
         ],
       },
       {

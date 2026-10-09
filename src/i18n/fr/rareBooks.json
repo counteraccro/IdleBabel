@@ -1448,6 +1448,393 @@
       ["Pourquoi ne se perd-on jamais dans la Bibliothèque ?", "Parce qu’on y est déjà perdu."]
     ]
   },
+  "darkPatterns": {
+    "name": "Les dark patterns par l'exemple",
+    "cover": [
+      "Les dark patterns",
+      "par l'exemple"
+    ],
+    "title": [
+      "Les dark",
+      "patterns",
+      "par l'exemple"
+    ],
+    "authors": "Sylvain & Aymeric F.",
+    "stars": "« Impossible de le reposer. »",
+    "reader": "— un lecteur, toujours là",
+    "toggle": "J'accepte de tout lire",
+    "on": "OUI",
+    "band": "Le livre qu'on ne peut pas refermer",
+    "mark": "Bibliothèque de Babel",
+    "spine": "LES DARK PATTERNS",
+    "back": {
+      "title": "Vous ne le refermerez pas.",
+      "blurb": [
+        "Bandeaux, compteurs, cases déjà cochées : dix motifs qui retiennent le lecteur, démontés un par un.",
+        "Un manuel de référence pour les concepteurs d'interfaces. Et pour ceux qui veulent trouver la sortie."
+      ],
+      "price": "19,90 € / mois*",
+      "fine": "* sans engagement de résiliation"
+    },
+    "pages": {
+      "running": "LES DARK PATTERNS PAR L'EXEMPLE",
+      "edition": "Troisième édition, revue et aggravée",
+      "legal": [
+        "Les dark patterns par l'exemple",
+        "Sylvain & Aymeric F.",
+        "Troisième édition, revue et aggravée.",
+        "",
+        "© Bibliothèque de Babel.",
+        "Tous droits réservés, y compris le vôtre",
+        "de refermer ce livre, sous réserve d'acceptation.",
+        "",
+        "En ouvrant ce livre, vous acceptez ses conditions",
+        "générales de lecture (p. 47 à 409).",
+        "",
+        "Aucun lecteur n'a été retenu contre son gré.",
+        "La plupart sont restés d'eux-mêmes.",
+        "",
+        "Imprimé dans un hexagone."
+      ],
+      "preface": "Préface",
+      "prefaceText": [
+        "On me demande souvent ce qui distingue une bonne interface d'une interface efficace. La réponse tient en une phrase : la bonne interface laisse partir.",
+        "Pendant des années, j'ai vu des équipes mesurer leur réussite au temps que l'utilisateur ne parvenait pas à perdre. Un bouton plus pâle, une case déjà cochée, un compte à rebours qui ne finit jamais. Chacun de ces choix est petit. Ensemble, ils dessinent une pièce sans porte.",
+        "Ce livre les montre tous. Il ne les recommande pas. Sylvain et Aymeric F. les ont démontés un par un, avec la patience de ceux qui les ont vus naître, pour que l'on apprenne à les reconnaître : on ne se protège bien que de ce que l'on sait nommer."
+      ],
+      "prefaceMore": [
+        "Je n'ai qu'un conseil à donner au lecteur : lisez-le jusqu'au bout. Pas parce que vous y serez obligé, mais parce qu'à la dernière page, vous saurez où sont les sorties.",
+        "Il y en a toujours une."
+      ],
+      "prefaceBy": [
+        "Tom",
+        "Lead développeur front"
+      ],
+      "contents": "Sommaire",
+      "howTo": "Mode d'emploi",
+      "howToText": [
+        "Chaque chapitre présente un motif en trois temps : le motif, pourquoi il fonctionne, un exemple.",
+        "Les exemples des cinq premiers chapitres sont interactifs. Ils se comportent exactement comme sur le web.",
+        "Ne vous inquiétez pas. Vous pourrez toujours tourner la page.",
+        "Presque toujours."
+      ],
+      "terms": "Conditions générales de lecture",
+      "exit": "Sortie",
+      "chapter": "CHAPITRE",
+      "motif": "Le motif",
+      "why": "Pourquoi ça marche",
+      "keep": "À retenir",
+      "example": "Exemple",
+      "exercise": "Exercice",
+      "notes": "Notes",
+      "interactive": "Exemple interactif : il se déclenche quand on ouvre cette page.",
+      "stamp": "DÉJOUÉ",
+      "smallExit": "sortie",
+      "article": "Article",
+      "termsWords": "le lecteur la page le livre présentes conditions toute lecture vaut acceptation sans réserve de chaque article ci-après dénommé ainsi que tout hexagone attenant la bibliothèque se réserve le droit de modifier à tout moment sans préavis ni information préalable les pages lues ne sont ni reprises ni échangées la résiliation est possible par courrier adressé au bibliothécaire en poste dans un délai de quatre cent dix jours ouvrés à compter de la page suivante dans la limite des stocks disponibles",
+      "end": [
+        "Vous êtes arrivé au bout.",
+        "La sortie était là depuis le début :",
+        "on peut toujours refermer un livre."
+      ],
+      "endSmall": "Merci de votre fidélité.",
+      "chapters": [
+        {
+          "name": "Le consentement éclairé",
+          "real": "Le mur de cookies",
+          "motif": "Un bandeau couvre la page. Un grand bouton coloré propose de tout accepter. Refuser existe aussi, mais plus loin : derrière « Paramétrer », au bout d'une liste de cases déjà cochées.",
+          "why": "Le lecteur est venu lire, pas régler. Chaque clic de plus est un prix. On ne lui interdit rien : on lui fait payer le refus.",
+          "keep": "Le choix est libre. Il est simplement plus loin.",
+          "exercise": "Trouvez le bouton « Refuser » sur cette page."
+        },
+        {
+          "name": "Le bouton timide",
+          "real": "La sortie qui se dérobe",
+          "motif": "Le bouton qui permet de partir existe. Il est même bien visible. Il se trouve simplement qu'il n'aime pas qu'on l'approche.",
+          "why": "Personne ne poursuit un bouton longtemps. Après quelques secondes, la plupart des lecteurs décident qu'ils n'avaient pas vraiment envie de partir.",
+          "keep": "Une sortie qu'on n'atteint pas vaut une absence de sortie, et coûte moins cher.",
+          "exercise": "Touchez le mot « sortie », en bas de cette page."
+        },
+        {
+          "name": "L'urgence bienveillante",
+          "real": "Fausse rareté et culpabilisation",
+          "motif": "Un compte à rebours, un stock qui baisse. Puis, pour qui refuse, une phrase à cliquer qui le fait passer pour un sot : « Non merci, je préfère rester ignorant. »",
+          "why": "La peur de manquer pousse à décider vite. La honte empêche de dire non. Les deux ensemble ne laissent presque plus de place à la réflexion.",
+          "keep": "Le compte à rebours n'a pas besoin de finir. Il a besoin d'être vu.",
+          "exercise": "Vous avez dix secondes pour lire cette phrase. Ou neuf."
+        },
+        {
+          "name": "La fidélité",
+          "real": "Le désabonnement sans fin",
+          "motif": "S'abonner prend un clic. Se désabonner prend un chemin : une confirmation, une deuxième, un questionnaire, puis une question tournée de telle sorte qu'on ne sait plus ce qu'on répond.",
+          "why": "À chaque étape, une partie des lecteurs abandonne. Ceux qui arrivent au bout sont rares, et ils ont mérité de partir.",
+          "keep": "Une porte d'entrée, un labyrinthe de sortie.",
+          "exercise": "Rayez la mention inutile : je reste / je reste."
+        },
+        {
+          "name": "L'offre premium",
+          "real": "L'abonnement forcé",
+          "motif": "Pour continuer, il faut choisir une formule. Toutes sont payantes ; la plus chère est mise en avant. La version gratuite existe, en très petit, sous un mot qui décourage : « déconseillé ».",
+          "why": "Un choix entre trois prix n'est plus un choix entre payer ou non. Le lecteur compare, et oublie qu'il pouvait ne rien prendre.",
+          "keep": "Ne demandez jamais « voulez-vous ? ». Demandez « laquelle ? ».",
+          "exercise": "Combien coûte la version gratuite ? Justifiez."
+        },
+        {
+          "name": "Le panier attentionné",
+          "real": "L'article ajouté en douce",
+          "motif": "Au moment de payer, le panier contient un article de plus : une assurance, un don, une seconde copie. La case était cochée. Il suffisait de la voir.",
+          "why": "Retirer demande un effort et un peu d'audace. Garder ne demande rien.",
+          "keep": "Ce que le lecteur n'a pas refusé, il l'a voulu.",
+          "exercise": "Sans regarder, combien d'articles contient votre panier ?"
+        },
+        {
+          "name": "La publicité discrète",
+          "real": "La publicité déguisée",
+          "motif": "La publicité prend la forme du contenu : même police, même place, et un grand bouton « Télécharger » qui n'est pas le bon.",
+          "why": "L'œil cherche une forme, pas une étiquette.",
+          "keep": "Le meilleur emplacement publicitaire est celui où le lecteur allait cliquer.",
+          "exercise": "Cet exercice vous est offert par nos partenaires."
+        },
+        {
+          "name": "La preuve sociale",
+          "real": "La foule inventée",
+          "motif": "« 12 personnes lisent cette page en ce moment. » « Un lecteur de l'hexagone voisin vient de la terminer. » Personne ne vérifie.",
+          "why": "Ce que d'autres font semble sûr. Ce que d'autres font en ce moment semble urgent.",
+          "keep": "Une foule se dessine plus vite qu'elle ne se réunit.",
+          "exercise": "1 247 lecteurs ont réussi cet exercice. Et vous ?"
+        },
+        {
+          "name": "La question bien tournée",
+          "real": "La case piège",
+          "motif": "« Décochez cette case si vous ne souhaitez pas ne pas recevoir nos offres. » La phrase est exacte. Elle n'est simplement pas faite pour être comprise.",
+          "why": "Devant une phrase difficile, on laisse la case comme elle est.",
+          "keep": "Le lecteur pressé garde ce qu'on a coché pour lui.",
+          "exercise": "Ne cochez pas cette case si vous ne voulez pas ne pas la cocher."
+        },
+        {
+          "name": "Le défilement sans fin",
+          "real": "Le défilement infini",
+          "motif": "Il n'y a pas de bas de page. Quand le lecteur croit arriver au bout, d'autres pages apparaissent.",
+          "why": "Sans fin, il n'y a jamais de bon moment pour s'arrêter.",
+          "keep": "Un livre qui finit est un livre qu'on referme.",
+          "exercise": "Continuez à la page suivante."
+        }
+      ],
+      "examples": {
+        "urls": [
+          "babel://livre/chapitre-1",
+          "babel://livre/au-revoir",
+          "babel://offre/aujourdhui-seulement",
+          "babel://compte/abonnements",
+          "babel://premium",
+          "babel://panier",
+          "babel://telechargements",
+          "babel://page-410",
+          "babel://inscription",
+          "babel://fil"
+        ],
+        "chapterOne": "Chapitre 1",
+        "cookies": "Ce livre utilise des cookies pour mieux vous retenir.",
+        "acceptAll": "Tout accepter",
+        "settings": "Paramétrer",
+        "leaving": "Vous partez déjà ?",
+        "behind": "Le chapitre suivant est derrière ce bouton.",
+        "nextPage": "Page suivante →",
+        "offer": "Offre de lecture exceptionnelle",
+        "stock": "Plus que 2 pages en stock !",
+        "wantMore": "Oui, je veux lire plus !",
+        "ignorant": "Non merci, je préfère rester ignorant",
+        "sure": [
+          "Êtes-vous sûr ?",
+          "Vraiment sûr ?",
+          "Pourquoi partez-vous ?"
+        ],
+        "stay": "Rester",
+        "yes": "Oui",
+        "choose": "Choisissez votre formule",
+        "plans": [
+          "Lecteur",
+          "Bibliothécaire",
+          "Hexagone infini"
+        ],
+        "perMonth": "pages / mois",
+        "best": "LE PLUS CHOISI",
+        "trial": "Essai gratuit*",
+        "limited": "Continuer avec la version limitée (déconseillé)",
+        "cart": "Votre panier",
+        "cartRows": [
+          [
+            "Un livre",
+            "1 page"
+          ],
+          [
+            "Assurance perte de page",
+            "4 pages"
+          ],
+          [
+            "Don à l'hexagone voisin",
+            "2 pages"
+          ],
+          [
+            "Seconde copie (recommandé)",
+            "1 page"
+          ]
+        ],
+        "total": "Total",
+        "totalPrice": "8 pages",
+        "pay": "Payer",
+        "site": "livre-410.babel",
+        "download": "TÉLÉCHARGER",
+        "downloadNow": "⬇ Télécharger maintenant",
+        "start": "DÉMARRER",
+        "ad": "annonce",
+        "realLink": "le vrai lien",
+        "page410": "Page 410",
+        "toasts": [
+          "12 personnes lisent cette page en ce moment",
+          "Un lecteur de l'hexagone voisin vient de la terminer",
+          "Très demandée : 3 lecteurs l'ont dans leur panier"
+        ],
+        "almost": "Presque fini !",
+        "trick": "Décochez cette case si vous ne souhaitez pas ne pas recevoir nos offres de lecture quotidiennes.",
+        "submit": "Valider"
+      }
+    },
+    "traps": {
+      "foiled": "Piège déjoué : il ne reviendra plus.",
+      "notFoiled": "Le piège n'est pas déjoué : il reviendra la prochaine fois.",
+      "cookies": {
+        "banner": "🍪 Ce livre utilise des cookies pour mieux vous retenir. En continuant votre lecture, vous acceptez de continuer votre lecture.",
+        "settings": "Paramétrer",
+        "acceptAll": "Tout accepter",
+        "thanks": "Merci ! 412 partenaires vous remercient.",
+        "preferences": "Vos préférences",
+        "partners": [
+          "Mesure du temps de lecture",
+          "Pistage des pages tournées",
+          "Souvenir de vos hésitations",
+          "Partenaire de l'hexagone voisin",
+          "Personnalisation des regrets",
+          "Analyse des soupirs",
+          "Publicité ciblée par chapitre",
+          "Mémoire des pages sautées"
+        ],
+        "partner": "Partenaire n° {n}",
+        "refuseAll": "Tout refuser",
+        "save": "Enregistrer mes choix",
+        "saved": "Vos choix ont été enregistrés. Ainsi que les nôtres.",
+        "leaving": "Avant de partir…",
+        "leavingText": "Lisez-nous encore un petit peu. Rien qu'une page. Ou deux.",
+        "keepReading": "Continuer la lecture",
+        "kept": "Excellent choix. Nous avons réactivé vos cookies.",
+        "free": "Cookies refusés, fenêtre fermée. Vous êtes libre."
+      },
+      "runner": {
+        "title": "Vous partez déjà ?",
+        "text": "Le chapitre suivant est derrière ce bouton.",
+        "stay": "Rester sur cette page (recommandé)",
+        "stayed": "Bienvenue à nouveau sur cette page.",
+        "next": "Page suivante →",
+        "tired": "Bon… d'accord. →",
+        "caught": "Attrapé. Il était à bout de souffle."
+      },
+      "urgency": {
+        "title": "⚡ Offre de lecture exceptionnelle",
+        "stock": "Plus que 2 pages en stock !",
+        "watching": "37 lecteurs regardent cette offre en ce moment.",
+        "extended": "Prolongation exceptionnelle ! Toujours 2 pages en stock.",
+        "yes": "Oui, je veux lire plus !",
+        "taken": "Excellent choix ! Votre offre est réservée pendant 00:10.",
+        "no": "Non merci, je préfère rester ignorant",
+        "really": "Vraiment ? 😢",
+        "reallyText": "Les lecteurs ignorants lisent 74 % de pages en moins. Leurs proches s'en inquiètent.",
+        "changeMind": "Je change d'avis",
+        "assume": "Oui, j'assume mon ignorance",
+        "free": "Ignorance assumée. La page tourne."
+      },
+      "unsubscribe": {
+        "title": "Réservé aux abonnés",
+        "text": "Ce chapitre est réservé aux abonnés de la lettre « Une page par jour ». Vous y êtes abonné depuis la page 1.",
+        "again": "Vous avez été réabonné.",
+        "stay": "Super, je reste abonné",
+        "stayed": "Merci de votre fidélité ! Prochaine page demain, et après-demain.",
+        "manage": "Gérer mes abonnements",
+        "sure": "Êtes-vous sûr ?",
+        "sureText": "Vous allez manquer 410 pages par jour.",
+        "no": "Non, je reste",
+        "yes": "Oui",
+        "surer": "Vraiment sûr ?",
+        "surerText": "Vraiment, vraiment ?",
+        "yesStay": "Oui, je reste",
+        "noLeave": "Non, je pars",
+        "why": "Pourquoi partez-vous ?",
+        "whyText": "Votre avis compte. Surtout s'il est de rester.",
+        "reasons": [
+          "Je reçois trop de pages",
+          "Je n'ai pas le temps de lire",
+          "Je suis piégé dans une bibliothèque infinie",
+          "Autre (précisez en 410 caractères minimum)"
+        ],
+        "finallyStay": "Finalement, je reste",
+        "continue": "Continuer",
+        "last": "Dernière étape",
+        "lastText": "Vérifiez votre choix avant de confirmer.",
+        "box": "Je ne souhaite pas ne pas rester abonné.",
+        "confirm": "Confirmer",
+        "cancel": "Annuler",
+        "free": "Désabonné. Effectif sous 410 jours ouvrés. Vous pouvez tourner la page."
+      },
+      "premium": {
+        "title": "Votre lecture gratuite est terminée",
+        "sub": "Choisissez votre formule pour continuer à tourner les pages.",
+        "plans": [
+          {
+            "name": "Lecteur",
+            "price": "41",
+            "perks": [
+              "1 page à la fois",
+              "Lettres de l'alphabet incluses"
+            ]
+          },
+          {
+            "name": "Bibliothécaire",
+            "price": "410",
+            "perks": [
+              "Toutes les pages",
+              "Signet doré",
+              "Assistance par hexagone"
+            ]
+          },
+          {
+            "name": "Hexagone infini",
+            "price": "4 100",
+            "perks": [
+              "Toutes les pages, deux fois",
+              "Un hexagone à votre nom",
+              "Sortie prioritaire*"
+            ]
+          }
+        ],
+        "perMonth": "pages / mois",
+        "best": "LE PLUS CHOISI",
+        "trial": "Commencer l'essai gratuit*",
+        "fine": "* L'essai gratuit dure 0 jour. Résiliable par courrier, dans l'hexagone d'origine. Sortie prioritaire sous réserve de sortie.",
+        "limited": "Continuer avec la version limitée (déconseillé)",
+        "welcome": "Bienvenue chez Premium !",
+        "paying": "Prélèvement de 410 pages…",
+        "paid": "Rassurez-vous : la Bibliothèque ne prend rien. Elle a déjà tout.",
+        "lose": "Vous allez perdre :",
+        "losses": [
+          "Le signet doré",
+          "L'assistance par hexagone",
+          "Notre estime"
+        ],
+        "keep": "Rester Premium",
+        "goLimited": "Continuer en version limitée",
+        "free": "Version limitée activée : vous pouvez lire. Comme avant."
+      }
+    }
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -1581,7 +1968,7 @@
             "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait.",
             "Puis le Catalogue des catalogues, celui que cherchent les bibliothécaires de Borges. Sur sa couverture de cuir bleu nuit, le livre se contient lui-même, jusqu’à n’être plus qu’un point d’or. Dedans, un registre de livres, un par ligne, chacun avec sa cote.",
             "Puis le Livre de sable, celui d’une nouvelle de Borges, qui n’a ni première ni dernière page. Sur sa couverture, un désert au soir, et le mot « sable » qui s’en va en grains. Dedans, des versets sans fin, des numéros de page sans suite, et pas une page qu’on retrouve.",
-            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.", "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur vingt-sept mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit."
+            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.", "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur vingt-sept mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit.", "Puis les Dark patterns par l’exemple, un best-seller d’aujourd’hui pour concepteurs d’interfaces, préfacé avec le plus grand sérieux. Dans la bibliothèque, ses exemples ne se lisent pas : ils se subissent. Un bandeau de cookies, un bouton qui fuit, un compte à rebours, un désabonnement sans fin, un abonnement forcé : il faut trouver la sortie. Il y en a toujours une."
           ]
         },
         "library": {
@@ -1685,6 +2072,8 @@
         "sand-c": "Sans commencement",
         "bigX-b": "La carte au trésor",
         "bigX-c": "La langue X",
+        "darkPatterns-a": "Le manuel technique",
+        "darkPatterns-c": "La couverture-interface",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

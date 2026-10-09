@@ -34,6 +34,11 @@ export interface RareBookArt {
    * lisant le livre dans la bibliothèque, jamais dans le livre en main (rareBook3d.ts).
    */
   passed?: (page: number, state: GameState) => void;
+  /**
+   * La page `page` est sous les yeux, livre posé (un piège qui se déclenche) ; seulement dans la bibliothèque,
+   * comme `passed`.
+   */
+  shown?: (page: number, state: GameState) => void;
 }
 
 /** L'habillage d'un livre rare ; `tick` : couverture qui vit (le livre de débogage), propre à cet habillage. */

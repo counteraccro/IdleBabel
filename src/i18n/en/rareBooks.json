@@ -1435,6 +1435,393 @@
       ["Why does nobody ever get lost in the Library?", "Because everyone in it is lost already."]
     ]
   },
+  "darkPatterns": {
+    "name": "Dark Patterns by Example",
+    "cover": [
+      "Dark Patterns",
+      "by Example"
+    ],
+    "title": [
+      "Dark",
+      "Patterns",
+      "by Example"
+    ],
+    "authors": "Sylvain & Aymeric F.",
+    "stars": "“Impossible to put down.”",
+    "reader": "— a reader, still here",
+    "toggle": "I agree to read it all",
+    "on": "YES",
+    "band": "The book you can't put down. Literally.",
+    "mark": "Library of Babel",
+    "spine": "DARK PATTERNS",
+    "back": {
+      "title": "You won't close it.",
+      "blurb": [
+        "Banners, countdowns, pre-ticked boxes: ten patterns that keep the reader in, taken apart one by one.",
+        "A reference manual for interface designers. And for anyone looking for the way out."
+      ],
+      "price": "$19.90 / month*",
+      "fine": "* no cancellation commitment"
+    },
+    "pages": {
+      "running": "DARK PATTERNS BY EXAMPLE",
+      "edition": "Third edition, revised and worsened",
+      "legal": [
+        "Dark Patterns by Example",
+        "Sylvain & Aymeric F.",
+        "Third edition, revised and worsened.",
+        "",
+        "© Library of Babel.",
+        "All rights reserved, including yours",
+        "to close this book, subject to acceptance.",
+        "",
+        "By opening this book, you accept its general",
+        "terms of reading (p. 47 to 409).",
+        "",
+        "No reader was kept against their will.",
+        "Most of them stayed on their own.",
+        "",
+        "Printed in a hexagon."
+      ],
+      "preface": "Foreword",
+      "prefaceText": [
+        "People often ask me what separates a good interface from an effective one. The answer fits in one sentence: a good interface lets you leave.",
+        "For years, I watched teams measure their success by the time users could not manage to lose. A paler button, a box already ticked, a countdown that never ends. Each of these choices is small. Together, they draw a room with no door.",
+        "This book shows them all. It does not recommend them. Sylvain and Aymeric F. took them apart one by one, with the patience of those who watched them being born, so that we learn to recognise them: we only protect ourselves well from what we can name."
+      ],
+      "prefaceMore": [
+        "I have only one piece of advice for the reader: read it to the end. Not because you will be forced to, but because on the last page, you will know where the exits are.",
+        "There is always one."
+      ],
+      "prefaceBy": [
+        "Tom",
+        "Lead front-end developer"
+      ],
+      "contents": "Contents",
+      "howTo": "How to use this book",
+      "howToText": [
+        "Each chapter presents a pattern in three steps: the pattern, why it works, an example.",
+        "The examples in the first five chapters are interactive. They behave exactly as they do on the web.",
+        "Don't worry. You will always be able to turn the page.",
+        "Almost always."
+      ],
+      "terms": "General terms of reading",
+      "exit": "Exit",
+      "chapter": "CHAPTER",
+      "motif": "The pattern",
+      "why": "Why it works",
+      "keep": "Remember",
+      "example": "Example",
+      "exercise": "Exercise",
+      "notes": "Notes",
+      "interactive": "Interactive example: it starts when this page is opened.",
+      "stamp": "FOILED",
+      "smallExit": "exit",
+      "article": "Article",
+      "termsWords": "the reader the page the book these terms any reading constitutes acceptance without reservation of each article hereinafter referred to as well as any adjoining hexagon the library reserves the right to modify at any time without notice or prior information pages read are neither returned nor exchanged cancellation is possible by letter addressed to the librarian on duty within four hundred and ten working days from the following page while stocks last",
+      "end": [
+        "You have reached the end.",
+        "The exit was there from the start:",
+        "you can always close a book."
+      ],
+      "endSmall": "Thank you for your loyalty.",
+      "chapters": [
+        {
+          "name": "Informed consent",
+          "real": "The cookie wall",
+          "motif": "A banner covers the page. A big coloured button offers to accept everything. Refusing exists too, but further away: behind “Settings”, at the end of a list of boxes already ticked.",
+          "why": "The reader came to read, not to configure. Every extra click is a price. Nothing is forbidden: refusing simply costs more.",
+          "keep": "The choice is free. It is just further away.",
+          "exercise": "Find the “Reject” button on this page."
+        },
+        {
+          "name": "The shy button",
+          "real": "The exit that slips away",
+          "motif": "The button that lets you leave exists. It is even clearly visible. It just happens not to like being approached.",
+          "why": "Nobody chases a button for long. After a few seconds, most readers decide they did not really want to leave.",
+          "keep": "An exit you cannot reach is as good as no exit, and costs less.",
+          "exercise": "Touch the word “exit” at the bottom of this page."
+        },
+        {
+          "name": "Caring urgency",
+          "real": "Fake scarcity and confirmshaming",
+          "motif": "A countdown, a dwindling stock. Then, for whoever refuses, a sentence to click that makes them look foolish: “No thanks, I'd rather stay ignorant.”",
+          "why": "Fear of missing out pushes people to decide fast. Shame stops them from saying no. Together, they leave almost no room for thought.",
+          "keep": "The countdown does not need to end. It needs to be seen.",
+          "exercise": "You have ten seconds to read this sentence. Or nine."
+        },
+        {
+          "name": "Loyalty",
+          "real": "The endless unsubscribe",
+          "motif": "Subscribing takes one click. Unsubscribing takes a journey: a confirmation, a second one, a survey, then a question phrased so that you no longer know what you are answering.",
+          "why": "At each step, some readers give up. Those who reach the end are rare, and they have earned the right to leave.",
+          "keep": "A front door, a maze for an exit.",
+          "exercise": "Cross out whichever does not apply: I stay / I stay."
+        },
+        {
+          "name": "The premium offer",
+          "real": "The forced subscription",
+          "motif": "To continue, you must choose a plan. All of them cost something; the most expensive one is highlighted. The free version exists, in very small print, under a discouraging word: “not recommended”.",
+          "why": "A choice between three prices is no longer a choice between paying or not. The reader compares, and forgets they could take nothing.",
+          "keep": "Never ask “do you want one?”. Ask “which one?”.",
+          "exercise": "How much does the free version cost? Explain."
+        },
+        {
+          "name": "The thoughtful basket",
+          "real": "The sneaked-in item",
+          "motif": "At checkout, the basket holds one more item: insurance, a donation, a second copy. The box was ticked. You only had to see it.",
+          "why": "Removing takes effort and a little nerve. Keeping takes nothing.",
+          "keep": "What the reader did not refuse, they wanted.",
+          "exercise": "Without looking: how many items are in your basket?"
+        },
+        {
+          "name": "Discreet advertising",
+          "real": "The disguised ad",
+          "motif": "The ad takes the shape of the content: same font, same place, and a big “Download” button that is not the right one.",
+          "why": "The eye looks for a shape, not a label.",
+          "keep": "The best ad placement is wherever the reader was about to click.",
+          "exercise": "This exercise is brought to you by our partners."
+        },
+        {
+          "name": "Social proof",
+          "real": "The invented crowd",
+          "motif": "“12 people are reading this page right now.” “A reader from the next hexagon has just finished it.” Nobody checks.",
+          "why": "What others do seems safe. What others are doing right now seems urgent.",
+          "keep": "A crowd is drawn faster than it gathers.",
+          "exercise": "1,247 readers passed this exercise. Will you?"
+        },
+        {
+          "name": "The well-phrased question",
+          "real": "The trick checkbox",
+          "motif": "“Untick this box if you do not wish not to receive our offers.” The sentence is correct. It is simply not meant to be understood.",
+          "why": "Faced with a difficult sentence, people leave the box as it is.",
+          "keep": "A reader in a hurry keeps what was ticked for them.",
+          "exercise": "Do not tick this box if you do not want not to tick it."
+        },
+        {
+          "name": "The endless scroll",
+          "real": "Infinite scrolling",
+          "motif": "There is no bottom of the page. When readers think they have reached the end, more pages appear.",
+          "why": "Without an end, there is never a good moment to stop.",
+          "keep": "A book that ends is a book you close.",
+          "exercise": "Continue on the next page."
+        }
+      ],
+      "examples": {
+        "urls": [
+          "babel://book/chapter-1",
+          "babel://book/goodbye",
+          "babel://offer/today-only",
+          "babel://account/subscriptions",
+          "babel://premium",
+          "babel://basket",
+          "babel://downloads",
+          "babel://page-410",
+          "babel://sign-up",
+          "babel://feed"
+        ],
+        "chapterOne": "Chapter 1",
+        "cookies": "This book uses cookies to keep you better.",
+        "acceptAll": "Accept all",
+        "settings": "Settings",
+        "leaving": "Leaving already?",
+        "behind": "The next chapter is behind this button.",
+        "nextPage": "Next page →",
+        "offer": "Exceptional reading offer",
+        "stock": "Only 2 pages left in stock!",
+        "wantMore": "Yes, I want to read more!",
+        "ignorant": "No thanks, I'd rather stay ignorant",
+        "sure": [
+          "Are you sure?",
+          "Really sure?",
+          "Why are you leaving?"
+        ],
+        "stay": "Stay",
+        "yes": "Yes",
+        "choose": "Choose your plan",
+        "plans": [
+          "Reader",
+          "Librarian",
+          "Infinite hexagon"
+        ],
+        "perMonth": "pages / month",
+        "best": "MOST POPULAR",
+        "trial": "Free trial*",
+        "limited": "Continue with the limited version (not recommended)",
+        "cart": "Your basket",
+        "cartRows": [
+          [
+            "A book",
+            "1 page"
+          ],
+          [
+            "Lost page insurance",
+            "4 pages"
+          ],
+          [
+            "Donation to the next hexagon",
+            "2 pages"
+          ],
+          [
+            "Second copy (recommended)",
+            "1 page"
+          ]
+        ],
+        "total": "Total",
+        "totalPrice": "8 pages",
+        "pay": "Pay",
+        "site": "book-410.babel",
+        "download": "DOWNLOAD",
+        "downloadNow": "⬇ Download now",
+        "start": "START",
+        "ad": "ad",
+        "realLink": "the real link",
+        "page410": "Page 410",
+        "toasts": [
+          "12 people are reading this page right now",
+          "A reader from the next hexagon has just finished it",
+          "In demand: 3 readers have it in their basket"
+        ],
+        "almost": "Almost done!",
+        "trick": "Untick this box if you do not wish not to receive our daily reading offers.",
+        "submit": "Submit"
+      }
+    },
+    "traps": {
+      "foiled": "Trap foiled: it won't come back.",
+      "notFoiled": "The trap is not foiled: it will come back next time.",
+      "cookies": {
+        "banner": "🍪 This book uses cookies to keep you better. By continuing to read, you agree to continue reading.",
+        "settings": "Settings",
+        "acceptAll": "Accept all",
+        "thanks": "Thank you! 412 partners thank you.",
+        "preferences": "Your preferences",
+        "partners": [
+          "Reading time measurement",
+          "Turned-page tracking",
+          "Memory of your hesitations",
+          "Partner from the next hexagon",
+          "Regret personalisation",
+          "Sigh analysis",
+          "Chapter-targeted advertising",
+          "Memory of skipped pages"
+        ],
+        "partner": "Partner no. {n}",
+        "refuseAll": "Reject all",
+        "save": "Save my choices",
+        "saved": "Your choices have been saved. And so have ours.",
+        "leaving": "Before you go…",
+        "leavingText": "Read us a little longer. Just one page. Or two.",
+        "keepReading": "Keep reading",
+        "kept": "Excellent choice. We have turned your cookies back on.",
+        "free": "Cookies rejected, window closed. You are free."
+      },
+      "runner": {
+        "title": "Leaving already?",
+        "text": "The next chapter is behind this button.",
+        "stay": "Stay on this page (recommended)",
+        "stayed": "Welcome back to this page.",
+        "next": "Next page →",
+        "tired": "Fine… all right. →",
+        "caught": "Caught. It was out of breath."
+      },
+      "urgency": {
+        "title": "⚡ Exceptional reading offer",
+        "stock": "Only 2 pages left in stock!",
+        "watching": "37 readers are looking at this offer right now.",
+        "extended": "Exceptional extension! Still 2 pages in stock.",
+        "yes": "Yes, I want to read more!",
+        "taken": "Excellent choice! Your offer is reserved for 00:10.",
+        "no": "No thanks, I'd rather stay ignorant",
+        "really": "Really? 😢",
+        "reallyText": "Ignorant readers read 74% fewer pages. Their loved ones are worried.",
+        "changeMind": "I changed my mind",
+        "assume": "Yes, I own my ignorance",
+        "free": "Ignorance owned. The page turns."
+      },
+      "unsubscribe": {
+        "title": "Subscribers only",
+        "text": "This chapter is reserved for subscribers of the “One page a day” letter. You have been subscribed since page 1.",
+        "again": "You have been resubscribed.",
+        "stay": "Great, I'll stay subscribed",
+        "stayed": "Thank you for your loyalty! Next page tomorrow, and the day after.",
+        "manage": "Manage my subscriptions",
+        "sure": "Are you sure?",
+        "sureText": "You will miss 410 pages a day.",
+        "no": "No, I'll stay",
+        "yes": "Yes",
+        "surer": "Really sure?",
+        "surerText": "Really, really?",
+        "yesStay": "Yes, I'll stay",
+        "noLeave": "No, I'm leaving",
+        "why": "Why are you leaving?",
+        "whyText": "Your opinion matters. Especially if it is to stay.",
+        "reasons": [
+          "I get too many pages",
+          "I don't have time to read",
+          "I am trapped in an infinite library",
+          "Other (please specify, 410 characters minimum)"
+        ],
+        "finallyStay": "Actually, I'll stay",
+        "continue": "Continue",
+        "last": "Last step",
+        "lastText": "Check your choice before confirming.",
+        "box": "I do not wish not to stay subscribed.",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "free": "Unsubscribed. Effective within 410 working days. You may turn the page."
+      },
+      "premium": {
+        "title": "Your free reading is over",
+        "sub": "Choose your plan to keep turning the pages.",
+        "plans": [
+          {
+            "name": "Reader",
+            "price": "41",
+            "perks": [
+              "1 page at a time",
+              "Letters of the alphabet included"
+            ]
+          },
+          {
+            "name": "Librarian",
+            "price": "410",
+            "perks": [
+              "Every page",
+              "Golden bookmark",
+              "Hexagon support"
+            ]
+          },
+          {
+            "name": "Infinite hexagon",
+            "price": "4,100",
+            "perks": [
+              "Every page, twice",
+              "A hexagon in your name",
+              "Priority exit*"
+            ]
+          }
+        ],
+        "perMonth": "pages / month",
+        "best": "MOST POPULAR",
+        "trial": "Start the free trial*",
+        "fine": "* The free trial lasts 0 days. Cancel by letter, in your hexagon of origin. Priority exit subject to exit.",
+        "limited": "Continue with the limited version (not recommended)",
+        "welcome": "Welcome to Premium!",
+        "paying": "Charging 410 pages…",
+        "paid": "Don't worry: the Library takes nothing. It already has everything.",
+        "lose": "You will lose:",
+        "losses": [
+          "The golden bookmark",
+          "Hexagon support",
+          "Our esteem"
+        ],
+        "keep": "Stay Premium",
+        "goLimited": "Continue with the limited version",
+        "free": "Limited version enabled: you can read. As before."
+      }
+    }
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -1568,7 +1955,7 @@
             "Then the Voynich Manuscript, the one book no one has ever been able to read. On its vellum cover grows a plant that does not exist. Inside, more plants, circles of stars, pools, apothecary jars, and an unknown script, drawn stroke by stroke.",
             "Then the Catalogue of Catalogues, the one Borges’s librarians search for. On its midnight-blue leather cover, the book contains itself, until it is nothing but a point of gold. Inside, a register of books, one per line, each with its shelf mark.",
             "Then the Book of Sand, from a story by Borges, with neither a first page nor a last. On its cover, a desert at dusk, and the word “Sand” blowing away grain by grain. Inside, endless verses, page numbers that follow no order, and not one page you can find again.",
-            "Then the Big Book of X, which tells the story of the letter X, from the caves to the Library. On its cream cover, a huge black X, like a type specimen. Inside, each chapter begins with a short story, and the rest is written in the X language.", "Then they became harder to find: all of them could be had in a few hours. Each rare book found makes the next one a quarter rarer. The first comes quickly; the last, one book in twenty-seven thousand, takes hundreds of hours. They belong to no age: a very long-term reward. The Ledger gave them a chapter, “Rarities”: how many have been found, and, as a percentage, the chance that the next book is one. How many are left, it does not say; when none are left, a line says so."
+            "Then the Big Book of X, which tells the story of the letter X, from the caves to the Library. On its cream cover, a huge black X, like a type specimen. Inside, each chapter begins with a short story, and the rest is written in the X language.", "Then they became harder to find: all of them could be had in a few hours. Each rare book found makes the next one a quarter rarer. The first comes quickly; the last, one book in twenty-seven thousand, takes hundreds of hours. They belong to no age: a very long-term reward. The Ledger gave them a chapter, “Rarities”: how many have been found, and, as a percentage, the chance that the next book is one. How many are left, it does not say; when none are left, a line says so.", "Then Dark Patterns by Example, a bestseller of today for interface designers, with a foreword of the utmost seriousness. In the library, its examples are not read: they are endured. A cookie banner, a button that runs away, a countdown, an endless unsubscribe, a forced subscription: you have to find the way out. There is always one."
           ]
         },
         "library": {
@@ -1672,6 +2059,8 @@
         "sand-c": "Without beginning",
         "bigX-b": "The treasure map",
         "bigX-c": "The X language",
+        "darkPatterns-a": "The technical manual",
+        "darkPatterns-c": "The interface cover",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

@@ -45,7 +45,8 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
   let tick: ((now: number) => boolean) | null = null;
   // Les secrets d'un livre rare se trouvent en le lisant soi-même, dans la bibliothèque : jamais dans le livre
   // en main, dont les pages tournent seules.
-  const found = art.passed && shape === READING_SHAPE ? (page: number) => art.passed?.(page, state) : undefined;
+  const reading = shape === READING_SHAPE;
+  const found = art.passed && reading ? (page: number) => art.passed?.(page, state) : undefined;
   const book: Book3d = {
     shape: { ...shape, thickness: art.thickness ?? shape.thickness },
     source: {
@@ -61,7 +62,13 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
     // Une page tournée en avançant, même vite ; ou celle où le livre est ouvert, quel que soit le chemin (revenu en
     // arrière, rouvert là, sommaire) : avant, une page atteinte en reculant ne comptait pas.
     passed: found,
-    shown: found,
+    shown:
+      found || (art.shown && reading)
+        ? (page) => {
+            found?.(page);
+            if (reading) art.shown?.(page, state);
+          }
+        : undefined,
     tick: (now) => tick?.(now) ?? false,
     // Le signet : de n'importe où dans le livre, on revient au sommaire (ou au titre), puis on le referme.
     bookmark: art.bookmark ?? 1,

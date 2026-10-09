@@ -101,6 +101,8 @@ export interface GameState {
    * Pages du Catalogue des catalogues lues dans la bibliothèque (systems/catalogue.ts) : à vingt, un sceau secret.
    */
   catalogueRead: number[];
+  /** Pièges des « Dark patterns par l'exemple » déjoués (systems/darkPatterns.ts) : les cinq, un sceau secret. */
+  darkPatternsFoiled: number[];
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
@@ -174,6 +176,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   seals: {},
   rareBooks: {},
   catalogueRead: [],
+  darkPatternsFoiled: [],
   newSeals: [],
   libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],
