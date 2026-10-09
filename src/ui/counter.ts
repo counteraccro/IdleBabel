@@ -7,7 +7,11 @@ import { createBoonMedals } from './letter/boonMedals';
 import { boonOn } from '../systems/boons';
 import type { GameState } from '../core/state';
 
-export const createCounter = (state: GameState): Component => {
+/**
+ * Le compteur du haut : les pages en réserve, la vitesse, la Connaissance. L'Etherium ouvert (`showEther`),
+ * l'Éther à dépenser à leur place (demande de l'auteur, 09/10) : on ne savait pas combien il en restait.
+ */
+export const createCounter = (state: GameState, showEther: () => boolean = () => false): Component => {
   const root = el('section', 'counter');
   const value = el('div', 'value');
   const rate = el('div', 'label');
@@ -29,11 +33,19 @@ export const createCounter = (state: GameState): Component => {
   };
 
   const update = (): void => {
-    setNumberText(pages, formatNumber(Math.floor(state.pages), getLocale()), 42);
-    set(pagesLabel, `${t('ui.pages')} · `);
-    setNumberText(speed, formatNumber(pagesPerSecond(state), getLocale()), 14);
-    set(perSecond, t('ui.perSecond'));
-    knowledge.hidden = state.lifetimeKnowledge === 0;
+    const ether = showEther();
+    root.classList.toggle('ether', ether);
+    if (ether) {
+      setNumberText(pages, formatNumber(Math.floor(state.ether), getLocale()), 42);
+      set(pagesLabel, t('etherium.ether'));
+    } else {
+      setNumberText(pages, formatNumber(Math.floor(state.pages), getLocale()), 42);
+      set(pagesLabel, `${t('ui.pages')} · `);
+    }
+    speed.hidden = ether;
+    set(perSecond, ether ? '' : t('ui.perSecond'));
+    if (!ether) setNumberText(speed, formatNumber(pagesPerSecond(state), getLocale()), 14);
+    knowledge.hidden = ether || state.lifetimeKnowledge === 0;
     set(knowledgeLabel, `${t('ui.knowledge')} `);
     setNumberText(carried, formatNumber(state.knowledge, getLocale()), 13);
     // Ce que porte un bonus en cours luit : la lecture pendant la Transe, la Connaissance pendant la Mémoire vive.

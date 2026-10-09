@@ -170,7 +170,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   });
 
   // Le compteur aussi : au-dessus du jeu comme des livres ouverts, il ne clignote pas d'un écran à l'autre.
-  const counter = createCounter(state);
+  // L'Etherium ouvert, il compte l'Éther à dépenser.
+  const counter = createCounter(state, () => openBook() === 'etherium');
   const lasting: Component[] = [header, counter];
 
   const game = (): Component[] => [
@@ -357,6 +358,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     // Page d'un livre : le titre du jeu laisse sa place au bouton de retour.
     root.classList.toggle('book-open', openBook() !== null);
     header.update();
+    counter.update();
   };
 
   window.addEventListener('hashchange', render);
