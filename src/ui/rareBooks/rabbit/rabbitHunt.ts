@@ -12,7 +12,8 @@ import type { GameState } from '../../../core/state';
  * bibliothèque, à chaque double page qui s'ouvre, une chance sur quatre qu'il la traverse en bondissant, par-dessus
  * le livre (un élément de la page web posé sur la double page, openSpread.ts). Cliqué, il s'échappe en criant la
  * phrase d'Alice et reviendra plus vite ; manqué, il reviendra à la même vitesse. La troisième fois, il rentre dans
- * ses planches. Une page tournée, le livre refermé, la bibliothèque quittée : il disparaît.
+ * ses planches. Un clic qui le manque ne tourne pas la page ; une page tournée (flèches, clavier), le livre refermé,
+ * la bibliothèque quittée : il disparaît.
  */
 
 interface Speed {
@@ -76,8 +77,18 @@ const run = (state: GameState): void => {
   const start = performance.now();
   let frame = 0;
   let at = { x: 0, y: 0, width: 0 };
+  // Manqué, le clic ne tourne pas la page non plus : elle l'emporterait avec elle (avant le livre, en capture).
+  const missed = (event: PointerEvent): void => {
+    const rect = openSpreadRect();
+    if (node.contains(event.target as Node) || !rect) return;
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return;
+    event.preventDefault();
+    event.stopPropagation();
+  };
+  window.addEventListener('pointerdown', missed, { capture: true });
   const stop = (): void => {
     cancelAnimationFrame(frame);
+    window.removeEventListener('pointerdown', missed, { capture: true });
     node.remove();
     if (current?.stop === stop) current = null;
   };
@@ -131,6 +142,7 @@ const run = (state: GameState): void => {
     event.preventDefault();
     event.stopPropagation();
     cancelAnimationFrame(frame);
+    window.removeEventListener('pointerdown', missed, { capture: true });
     if (current?.stop === stop) current = null;
     catchRabbit(state);
     if (!rabbitHome(state)) {
