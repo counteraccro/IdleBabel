@@ -1966,6 +1966,264 @@
       }
     }
   },
+  "rabbit": {
+    "name": "Le Lapin de garenne",
+    "cover": [
+      "Le Lapin",
+      "de garenne"
+    ],
+    "title": [
+      "LE LAPIN",
+      "DE GARENNE"
+    ],
+    "spine": "LE LAPIN DE GARENNE",
+    "sub": "Mœurs, terriers et habitudes",
+    "by": "PAR",
+    "author": "H. CLAPIER",
+    "role": "Naturaliste",
+    "platesLine": "Ouvrage orné de douze planches gravées d’après nature",
+    "year": "MDCCCLXXIV",
+    "mark": "BIBLIOTHÈQUE DE BABEL",
+    "pages": {
+      "running": "LE LAPIN DE GARENNE",
+      "legal": [
+        "Le Lapin de garenne.",
+        "Mœurs, terriers et habitudes.",
+        "",
+        "Par H. Clapier, naturaliste.",
+        "Douze planches gravées d’après nature.",
+        "",
+        "Bibliothèque de Babel, MDCCCLXXIV.",
+        "Tous droits réservés.",
+        "",
+        "Aucun lapin n’a été retenu pour la confection",
+        "de cet ouvrage. L’un d’eux s’y est caché",
+        "de lui-même."
+      ],
+      "noticeTitle": "AVERTISSEMENT",
+      "notice": [
+        "Le lapin de garenne est, de tous nos animaux sauvages, le plus commun, et peut-être le plus mal connu. Chacun croit l’avoir vu ; bien peu l’ont regardé.",
+        "J’ai passé onze années à l’observer, dans les garennes de mon département, à toute heure et par tous les temps. Le présent ouvrage rassemble ces observations, sans autre prétention que d’être exact.",
+        "Les planches qui l’accompagnent ont été gravées d’après nature. Le lecteur voudra bien excuser le graveur : le modèle ne tenait pas en place."
+      ],
+      "noticeMore": [
+        "Je dois enfin un mot sur une observation que je n’ai pas osé faire entrer dans le corps de l’ouvrage. Un soir de juin, au bord d’une haie, j’ai vu passer un lapin blanc qui semblait consulter une montre.",
+        "Je n’ai pu le suivre : il était fort pressé, et le trou où il disparut était trop étroit pour un homme de mon âge.",
+        "Je le signale ici par honnêteté. Les naturalistes qui viendront après moi seront peut-être plus prompts."
+      ],
+      "noticeBy": "H. C.",
+      "contents": "TABLE DES MATIÈRES",
+      "contentsNotice": "Avertissement",
+      "contentsPlates": "Liste des planches",
+      "contentsIndex": "Table alphabétique",
+      "platesList": "LISTE DES PLANCHES",
+      "index": "TABLE ALPHABÉTIQUE",
+      "chapter": "CHAPITRE",
+      "ordinals": [
+        "PREMIER",
+        "II",
+        "III",
+        "IV",
+        "V",
+        "VI",
+        "VII",
+        "VIII",
+        "IX",
+        "X",
+        "XI",
+        "XII"
+      ],
+      "chapters": [
+        {
+          "name": "Du lapin en général",
+          "text": "Le lapin de garenne est un petit quadrupède de l’ordre des rongeurs, plus court et plus ramassé que le lièvre, dont il se distingue au premier coup d’œil par ses oreilles moins longues et sa course moins soutenue. Il vit en troupe, sous terre, et ne s’éloigne guère du lieu où il est né. Son pelage est gris roussâtre sur le dos, blanc sous le ventre et sous la queue : c’est ce blanc qu’on aperçoit d’abord, et souvent seulement, lorsqu’il s’enfuit."
+        },
+        {
+          "name": "Du gîte et du terrier",
+          "text": "À la différence du lièvre, qui se contente d’un creux dans l’herbe, le lapin creuse. Son terrier compte plusieurs galeries, plusieurs chambres, et toujours plus d’une sortie : il ne s’enferme jamais dans un lieu dont il ne pourrait s’échapper. L’observateur qui guette une entrée doit savoir que l’animal, dans le même temps, en surveille une autre."
+        },
+        {
+          "name": "De la nourriture",
+          "text": "Le lapin se nourrit d’herbes, de racines, d’écorces et de grains. Il préfère le serpolet, le trèfle et le jeune blé, et ne dédaigne pas, à l’occasion, le papier. On a vu des bibliothèques de campagne visitées la nuit par des lapins, et des ouvrages entiers rongés en marge, sans que le texte en souffrît."
+        },
+        {
+          "name": "Des mœurs et du caractère",
+          "text": "Le lapin est timide, mais curieux. Il fuit l’homme, et revient pourtant le regarder, de loin, assis sur son train de derrière, les oreilles droites. Il paraît toujours pressé, sans qu’on sache bien de quoi. Les anciens auteurs le disent sans mémoire ; l’expérience prouve qu’il se souvient fort bien de ceux qui l’ont manqué."
+        },
+        {
+          "name": "De la course et du saut",
+          "text": "Le lapin ne court pas : il bondit. Sa course est faite d’une suite de sauts, brefs d’abord, puis de plus en plus longs à mesure qu’il prend peur. Il s’arrête souvent, net, pour écouter, et repart dans une direction nouvelle. Poursuivi une première fois, il se méfie ; une deuxième, il redouble de vitesse ; à la troisième, il est rare qu’un homme le rattrape."
+        },
+        {
+          "name": "Des sens",
+          "text": "L’oreille est le premier sens du lapin. Elle tourne seule, de côté et d’autre, sans que la tête bouge, et saisit le moindre froissement de feuille et, dit-on, le bruit d’une page qu’on tourne. L’œil, placé haut et sur le côté, voit presque tout autour de lui, excepté droit devant son nez."
+        },
+        {
+          "name": "De la famille et des petits",
+          "text": "La lapine met bas dans une chambre à part, qu’elle garnit de foin et du duvet de son propre ventre, et dont elle bouche l’entrée chaque fois qu’elle en sort. Les petits naissent nus et aveugles ; au bout de trois semaines ils sortent, et ne rentrent plus qu’à l’heure."
+        },
+        {
+          "name": "Des ennemis du lapin",
+          "text": "Le renard, la belette, le furet, la buse, le hibou et l’homme. Le lapin ne se défend contre aucun ; il les fuit tous, et la fuite lui réussit plus souvent qu’on ne croit. Le chasseur patient en prend quelques-uns. Le chasseur pressé n’en prend aucun."
+        },
+        {
+          "name": "Des saisons",
+          "text": "Au printemps, le lapin est partout ; en été, il sort au crépuscule ; en automne, il engraisse ; l’hiver, il ronge l’écorce des jeunes arbres et laisse dans la neige des traces que l’on peut suivre longtemps, jusqu’à l’endroit où elles s’arrêtent sans raison apparente."
+        },
+        {
+          "name": "Du lapin domestique",
+          "text": "Le lapin s’élève aisément en clapier. Il y perd sa vivacité, gagne en poids, et prend des couleurs que la garenne ne connaît pas : le noir, le fauve, le pie, et le blanc. Le lapin blanc aux yeux roses est un produit de la domestication ; on n’en rencontre jamais à l’état sauvage. Presque jamais."
+        },
+        {
+          "name": "De quelques observations singulières",
+          "text": "Il arrive à tout naturaliste de voir ce qu’il ne peut expliquer. Je rapporte ici, sans les commenter, quelques faits que l’on m’a signalés : un lapin vu sur la même haie à deux heures d’intervalle, à quarante lieues de distance ; un terrier dont on n’a jamais trouvé le fond ; un lapin blanc, enfin, que plusieurs témoins ont vu tirer une montre de son gousset, la regarder, et se mettre à courir de plus belle."
+        },
+        {
+          "name": "De la manière d’observer le lapin",
+          "text": "Il faut de la patience, du silence, et la main prompte. Le lapin se montre toujours au moment où l’on a cessé de l’attendre. Lorsqu’il paraît, il ne faut ni crier ni se lever : il suffit de poser la main sur lui, sans hésiter. Celui qui hésite le reverra plus loin, et plus vite."
+        }
+      ],
+      "pool": [
+        "On a beaucoup écrit sur la fécondité du lapin ; on a moins écrit sur sa prudence, qui est pourtant la première de ses qualités. Avant de sortir, il s’arrête au bord du trou, la tête seule dehors, et reste ainsi un long moment, immobile, à écouter.",
+        "Les gardes de la forêt de *** m’ont assuré que les lapins reconnaissent le pas de chaque homme. Je n’ai pu le vérifier qu’en partie : ceux de ma garenne ne fuyaient plus devant moi la troisième année, mais ils fuyaient devant mon chapeau.",
+        "La couleur du pelage varie avec le sol. Sur les terres sablonneuses il est plus clair, sur les terres fortes plus foncé, de sorte que l’animal immobile se confond avec le terrain, et qu’on ne le découvre souvent qu’au moment où il part.",
+        "Le lapin frappe le sol de ses pattes de derrière pour avertir ses semblables d’un danger. Ce bruit sourd, que l’on entend de fort loin les soirs calmes, fait aussitôt rentrer toute la garenne, et l’observateur reste seul devant des trous vides.",
+        "J’ai mesuré, sur un sol meuble, des sauts de plus de deux mètres. L’animal qui fuit allonge ses bonds à mesure qu’il s’éloigne, et l’intervalle entre les empreintes permet de dire, mieux qu’aucun témoin, s’il avait peur ou s’il jouait.",
+        "Les petits jouent entre eux au crépuscule, à l’entrée des terriers : ils se poursuivent, sautent les uns par-dessus les autres et se cachent derrière la moindre touffe d’herbe, avec une agilité qui décourage le dessinateur.",
+        "On ne saurait trop recommander à l’observateur de noter l’heure de chaque apparition. Le lapin a ses habitudes, et celui qui les connaît sait, à quelques minutes près, où il le verra passer.",
+        "Il ne faut pas se fier à l’immobilité du lapin. L’animal qui paraît dormir, les yeux mi-clos, au soleil, a déjà compté vos pas, et choisi le trou par lequel il disparaîtra."
+      ],
+      "plates": [
+        "Le Lapin de garenne, au gîte.",
+        "Coupe d’un terrier.",
+        "Au repas : le trèfle.",
+        "Assis, aux écoutes.",
+        "La course.",
+        "Tête, de profil.",
+        "La lapine et ses petits.",
+        "Le renard à l’affût.",
+        "Traces dans la neige.",
+        "Le clapier.",
+        "Un lapin blanc.",
+        "L’observateur."
+      ],
+      "plate": "PLANCHE",
+      "latin": "(Lepus cuniculus, Linn.)",
+      "engraver": "H. C. del. et sculp.",
+      "indexEntries": [
+        [
+          "Aboiement (absence d’)",
+          214
+        ],
+        [
+          "Belette",
+          263
+        ],
+        [
+          "Blanc (lapin), voir Montre",
+          0
+        ],
+        [
+          "Blé (jeune)",
+          73
+        ],
+        [
+          "Chapeau de l’auteur",
+          141
+        ],
+        [
+          "Clapier",
+          295
+        ],
+        [
+          "Course",
+          135
+        ],
+        [
+          "Crépuscule",
+          281
+        ],
+        [
+          "Écorce",
+          284
+        ],
+        [
+          "Fuite",
+          137
+        ],
+        [
+          "Furet",
+          264
+        ],
+        [
+          "Garenne",
+          8
+        ],
+        [
+          "Gîte",
+          41
+        ],
+        [
+          "Haie",
+          4
+        ],
+        [
+          "Lièvre (différences avec le)",
+          9
+        ],
+        [
+          "Montre, voir Blanc (lapin)",
+          0
+        ],
+        [
+          "Neige",
+          287
+        ],
+        [
+          "Oreille",
+          169
+        ],
+        [
+          "Papier (goût pour le)",
+          75
+        ],
+        [
+          "Renard",
+          262
+        ],
+        [
+          "Retard",
+          0
+        ],
+        [
+          "Saut",
+          136
+        ],
+        [
+          "Serpolet",
+          73
+        ],
+        [
+          "Terrier",
+          40
+        ],
+        [
+          "Trèfle",
+          74
+        ],
+        [
+          "Trou (trop étroit)",
+          4
+        ]
+      ],
+      "end": "FIN",
+      "endSmall": "Achevé d’imprimer dans un hexagone."
+    },
+    "hunt": {
+      "say": "« Ah ! j’arriverai trop tard ! »",
+      "home": "Le lapin regagne ses planches."
+    }
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -2099,7 +2357,7 @@
             "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait.",
             "Puis le Catalogue des catalogues, celui que cherchent les bibliothécaires de Borges. Sur sa couverture de cuir bleu nuit, le livre se contient lui-même, jusqu’à n’être plus qu’un point d’or. Dedans, un registre de livres, un par ligne, chacun avec sa cote.",
             "Puis le Livre de sable, celui d’une nouvelle de Borges, qui n’a ni première ni dernière page. Sur sa couverture, un désert au soir, et le mot « sable » qui s’en va en grains. Dedans, des versets sans fin, des numéros de page sans suite, et pas une page qu’on retrouve.",
-            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.", "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur vingt-sept mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit.", "Puis les Dark patterns par l’exemple, un best-seller d’aujourd’hui pour concepteurs d’interfaces, préfacé avec le plus grand sérieux. Dans la bibliothèque, ses exemples ne se lisent pas : ils se subissent. Un bandeau de cookies, un bouton qui fuit, un compte à rebours, un désabonnement sans fin, un abonnement forcé, un panier qui se remplit tout seul, des publicités déguisées, une foule inventée, des cases à double négation, un fil qui ne finit jamais : il faut trouver la sortie. Il y en a toujours une."
+            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.", "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur vingt-sept mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit.", "Puis les Dark patterns par l’exemple, un best-seller d’aujourd’hui pour concepteurs d’interfaces, préfacé avec le plus grand sérieux. Dans la bibliothèque, ses exemples ne se lisent pas : ils se subissent. Un bandeau de cookies, un bouton qui fuit, un compte à rebours, un désabonnement sans fin, un abonnement forcé, un panier qui se remplit tout seul, des publicités déguisées, une foule inventée, des cases à double négation, un fil qui ne finit jamais : il faut trouver la sortie. Il y en a toujours une.", "Puis le Lapin de garenne, un traité d’histoire naturelle du siècle d’avant, toile verte et or. Sur sa couverture, un médaillon gravé : l’herbe, la haie, le terrier, et la place du lapin, vide. Dedans, douze planches où il manque toujours. C’est qu’il court : dans la bibliothèque, le Lapin blanc d’Alice traverse parfois les pages en bondissant. Il faut l’attraper trois fois ; à chaque fois, il revient plus vite."
           ]
         },
         "library": {
@@ -2205,6 +2463,8 @@
         "bigX-c": "La langue X",
         "darkPatterns-a": "Le manuel technique",
         "darkPatterns-c": "La couverture-interface",
+        "rabbit-a2": "La planche",
+        "rabbit-a3": "Les traces",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

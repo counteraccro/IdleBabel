@@ -19,6 +19,8 @@ import { createFlight, takeFlight, type Flight } from './bookFlight';
 import { modalOpen } from '../modal/modal';
 import { screenDown } from './ribbonTail';
 import { animationNow } from '../animationClock';
+import { setOpenSpread } from './openSpread';
+import { visibleBox } from './visibleBox';
 
 /** Durée de l'ouverture de la couverture. */
 const OPEN_MS = 1100;
@@ -368,6 +370,29 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     // Une planche vue éteint ses étoiles de nouveauté : la double page est redessinée.
     refresh();
   };
+  // La double page à l'écran, pour ce qui se pose dessus (openSpread.ts) : la boîte du livre ouvert, projetée. Livre
+  // posé, la caméra ne bouge pas : la boîte est gardée un quart de seconde (la taille de la fenêtre peut changer).
+  const corner = new THREE.Vector3();
+  let measured: { at: number; rect: DOMRect | null } = { at: -Infinity, rect: null };
+  const whereSpread = (): DOMRect | null => {
+    const settled = root.isConnected && book && turner?.idle && !swinging && !flight && shut === 0 && Number(open.value) === 1;
+    if (!settled || !book) return null;
+    const now = performance.now();
+    if (now - measured.at < 250) return measured.rect;
+    const box = visibleBox(book.root);
+    const bounds = canvas.getBoundingClientRect();
+    let [left, top, right, bottom] = [Infinity, Infinity, -Infinity, -Infinity];
+    for (let k = 0; k < 8; k++) {
+      corner.set(k & 1 ? box.max.x : box.min.x, k & 2 ? box.max.y : box.min.y, k & 4 ? box.max.z : box.min.z).project(camera);
+      const x = bounds.left + ((corner.x + 1) / 2) * bounds.width;
+      const y = bounds.top + ((1 - corner.y) / 2) * bounds.height;
+      [left, top, right, bottom] = [Math.min(left, x), Math.min(top, y), Math.max(right, x), Math.max(bottom, y)];
+    }
+    measured = { at: now, rect: new DOMRect(left, top, right - left, bottom - top) };
+    return measured.rect;
+  };
+  setOpenSpread(whereSpread);
+  signal.addEventListener('abort', () => setOpenSpread(null, whereSpread));
   /** Le dos du livre fermé a déjà été vu (backSeen). */
   let backSeen = false;
   /** Point de vue par rapport au livre (de la cible vers la caméra), pour savoir quelle face on regarde. */

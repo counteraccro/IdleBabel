@@ -1953,6 +1953,264 @@
       }
     }
   },
+  "rabbit": {
+    "name": "The Wild Rabbit",
+    "cover": [
+      "The Wild",
+      "Rabbit"
+    ],
+    "title": [
+      "THE WILD",
+      "RABBIT"
+    ],
+    "spine": "THE WILD RABBIT",
+    "sub": "Its Habits, Burrows and Ways",
+    "by": "BY",
+    "author": "H. HUTCHLEY",
+    "role": "Naturalist",
+    "platesLine": "Illustrated with twelve plates engraved from nature",
+    "year": "MDCCCLXXIV",
+    "mark": "LIBRARY OF BABEL",
+    "pages": {
+      "running": "THE WILD RABBIT",
+      "legal": [
+        "The Wild Rabbit.",
+        "Its Habits, Burrows and Ways.",
+        "",
+        "By H. Hutchley, naturalist.",
+        "Twelve plates engraved from nature.",
+        "",
+        "Library of Babel, MDCCCLXXIV.",
+        "All rights reserved.",
+        "",
+        "No rabbit was detained in the making",
+        "of this work. One of them hid in it",
+        "of its own accord."
+      ],
+      "noticeTitle": "NOTICE",
+      "notice": [
+        "Of all our wild animals, the wild rabbit is the most common, and perhaps the least understood. Everyone believes they have seen one; very few have looked.",
+        "I spent eleven years observing it, in the warrens of my county, at every hour and in all weathers. The present work gathers these observations, with no other ambition than to be accurate.",
+        "The plates that accompany it were engraved from nature. The reader will kindly forgive the engraver: the model would not keep still."
+      ],
+      "noticeMore": [
+        "I owe, lastly, a word on an observation I did not dare include in the body of the work. One June evening, by a hedge, I saw a white rabbit go by that seemed to be consulting a watch.",
+        "I could not follow it: it was in a great hurry, and the hole into which it vanished was too narrow for a man of my age.",
+        "I mention it here out of honesty. The naturalists who come after me may be quicker."
+      ],
+      "noticeBy": "H. H.",
+      "contents": "CONTENTS",
+      "contentsNotice": "Notice",
+      "contentsPlates": "List of plates",
+      "contentsIndex": "Index",
+      "platesList": "LIST OF PLATES",
+      "index": "INDEX",
+      "chapter": "CHAPTER",
+      "ordinals": [
+        "I",
+        "II",
+        "III",
+        "IV",
+        "V",
+        "VI",
+        "VII",
+        "VIII",
+        "IX",
+        "X",
+        "XI",
+        "XII"
+      ],
+      "chapters": [
+        {
+          "name": "Of the rabbit in general",
+          "text": "The wild rabbit is a small quadruped of the order of rodents, shorter and stockier than the hare, from which it is told at first glance by its shorter ears and its less sustained running. It lives in colonies, underground, and seldom strays far from where it was born. Its coat is reddish grey on the back, white under the belly and under the tail: it is this white that one sees first, and often only, when it flees."
+        },
+        {
+          "name": "Of the form and the burrow",
+          "text": "Unlike the hare, which is content with a hollow in the grass, the rabbit digs. Its burrow has several galleries, several chambers, and always more than one way out: it never shuts itself in a place from which it could not escape. The observer watching one entrance should know that the animal, at the same moment, is watching another."
+        },
+        {
+          "name": "Of food",
+          "text": "The rabbit feeds on grasses, roots, bark and grain. It prefers wild thyme, clover and young wheat, and does not disdain, on occasion, paper. Country libraries have been visited at night by rabbits, and whole volumes gnawed in the margins, without the text suffering for it."
+        },
+        {
+          "name": "Of habits and character",
+          "text": "The rabbit is timid, but curious. It flees from man, and yet comes back to look at him, from afar, sitting on its haunches, ears upright. It always seems in a hurry, though no one quite knows for what. The old authors call it forgetful; experience proves it remembers very well those who missed it."
+        },
+        {
+          "name": "Of running and leaping",
+          "text": "The rabbit does not run: it bounds. Its flight is a series of leaps, short at first, then longer and longer as it takes fright. It often stops, dead, to listen, and sets off again in a new direction. Chased once, it grows wary; a second time, it doubles its speed; the third time, it is rare that a man catches it."
+        },
+        {
+          "name": "Of the senses",
+          "text": "The ear is the rabbit’s first sense. It turns by itself, this way and that, without the head moving, and catches the slightest rustle of a leaf and, it is said, the sound of a page being turned. The eye, set high and to the side, sees almost all around it, except straight ahead of its nose."
+        },
+        {
+          "name": "Of the family and the young",
+          "text": "The doe gives birth in a separate chamber, which she lines with hay and with the down of her own belly, and whose entrance she stops up each time she leaves. The young are born naked and blind; after three weeks they come out, and from then on come home only on time."
+        },
+        {
+          "name": "Of the rabbit’s enemies",
+          "text": "The fox, the weasel, the ferret, the buzzard, the owl, and man. The rabbit defends itself against none of them; it flees them all, and flight succeeds more often than one would think. The patient hunter takes a few. The hurried hunter takes none."
+        },
+        {
+          "name": "Of the seasons",
+          "text": "In spring, the rabbit is everywhere; in summer, it comes out at dusk; in autumn, it fattens; in winter, it gnaws the bark of young trees and leaves in the snow tracks that one can follow for a long way, up to the spot where they stop for no apparent reason."
+        },
+        {
+          "name": "Of the tame rabbit",
+          "text": "The rabbit is easily raised in a hutch. There it loses its liveliness, gains weight, and takes on colours the warren does not know: black, fawn, pied, and white. The white rabbit with pink eyes is a product of domestication; it is never met with in the wild. Almost never."
+        },
+        {
+          "name": "Of some singular observations",
+          "text": "Every naturalist happens to see what he cannot explain. I report here, without comment, a few facts that have been brought to my attention: a rabbit seen on the same hedge two hours apart, forty leagues away; a burrow whose bottom has never been found; a white rabbit, lastly, which several witnesses saw take a watch out of its waistcoat-pocket, look at it, and hurry on."
+        },
+        {
+          "name": "Of the manner of observing the rabbit",
+          "text": "It requires patience, silence, and a quick hand. The rabbit always shows itself just when one has stopped expecting it. When it appears, one must neither shout nor rise: it is enough to lay a hand on it, without hesitating. He who hesitates will see it again further on, and faster."
+        }
+      ],
+      "pool": [
+        "Much has been written on the fertility of the rabbit; less has been written on its prudence, which is nevertheless the first of its qualities. Before coming out, it stops at the edge of the hole, its head alone outside, and stays so for a long while, motionless, listening.",
+        "The keepers of the forest of *** assured me that rabbits know the step of every man. I could only partly verify it: those of my warren no longer fled from me in the third year, but they fled from my hat.",
+        "The colour of the coat varies with the soil. On sandy ground it is paler, on heavy ground darker, so that the motionless animal blends with the earth, and is often discovered only at the moment it bolts.",
+        "The rabbit strikes the ground with its hind feet to warn its fellows of danger. This dull sound, heard from very far on calm evenings, at once sends the whole warren home, and the observer is left alone before empty holes.",
+        "I have measured, on loose soil, leaps of more than two metres. The fleeing animal lengthens its bounds as it gets further away, and the gap between the prints tells, better than any witness, whether it was afraid or playing.",
+        "The young play together at dusk, at the mouth of the burrows: they chase one another, leap over each other and hide behind the smallest tuft of grass, with an agility that discourages the draughtsman.",
+        "One cannot recommend too strongly that the observer note the hour of each appearance. The rabbit has its habits, and whoever knows them can tell, to within a few minutes, where he will see it pass.",
+        "One must not trust the rabbit’s stillness. The animal that seems asleep, eyes half closed, in the sun, has already counted your steps, and chosen the hole through which it will disappear."
+      ],
+      "plates": [
+        "The Wild Rabbit, at rest.",
+        "Section of a burrow.",
+        "At table: the clover.",
+        "Sitting, listening.",
+        "The run.",
+        "Head, in profile.",
+        "The doe and her young.",
+        "The fox lying in wait.",
+        "Tracks in the snow.",
+        "The hutch.",
+        "A white rabbit.",
+        "The observer."
+      ],
+      "plate": "PLATE",
+      "latin": "(Lepus cuniculus, Linn.)",
+      "engraver": "H. H. del. et sculp.",
+      "indexEntries": [
+        [
+          "Bark",
+          284
+        ],
+        [
+          "Barking (absence of)",
+          214
+        ],
+        [
+          "Burrow",
+          40
+        ],
+        [
+          "Clover",
+          74
+        ],
+        [
+          "Dusk",
+          281
+        ],
+        [
+          "Ear",
+          169
+        ],
+        [
+          "Ferret",
+          264
+        ],
+        [
+          "Flight",
+          137
+        ],
+        [
+          "Form",
+          41
+        ],
+        [
+          "Fox",
+          262
+        ],
+        [
+          "Hare (differences from the)",
+          9
+        ],
+        [
+          "Hat, the author’s",
+          141
+        ],
+        [
+          "Hedge",
+          4
+        ],
+        [
+          "Hole (too narrow)",
+          4
+        ],
+        [
+          "Hutch",
+          295
+        ],
+        [
+          "Late",
+          0
+        ],
+        [
+          "Leap",
+          136
+        ],
+        [
+          "Paper (taste for)",
+          75
+        ],
+        [
+          "Running",
+          135
+        ],
+        [
+          "Snow",
+          287
+        ],
+        [
+          "Warren",
+          8
+        ],
+        [
+          "Watch, see White (rabbit)",
+          0
+        ],
+        [
+          "Weasel",
+          263
+        ],
+        [
+          "Wheat (young)",
+          73
+        ],
+        [
+          "White (rabbit), see Watch",
+          0
+        ],
+        [
+          "Wild thyme",
+          73
+        ]
+      ],
+      "end": "THE END",
+      "endSmall": "Printed in a hexagon."
+    },
+    "hunt": {
+      "say": "“Oh dear! Oh dear! I shall be too late!”",
+      "home": "The rabbit goes back to his plates."
+    }
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -2086,7 +2344,7 @@
             "Then the Voynich Manuscript, the one book no one has ever been able to read. On its vellum cover grows a plant that does not exist. Inside, more plants, circles of stars, pools, apothecary jars, and an unknown script, drawn stroke by stroke.",
             "Then the Catalogue of Catalogues, the one Borges’s librarians search for. On its midnight-blue leather cover, the book contains itself, until it is nothing but a point of gold. Inside, a register of books, one per line, each with its shelf mark.",
             "Then the Book of Sand, from a story by Borges, with neither a first page nor a last. On its cover, a desert at dusk, and the word “Sand” blowing away grain by grain. Inside, endless verses, page numbers that follow no order, and not one page you can find again.",
-            "Then the Big Book of X, which tells the story of the letter X, from the caves to the Library. On its cream cover, a huge black X, like a type specimen. Inside, each chapter begins with a short story, and the rest is written in the X language.", "Then they became harder to find: all of them could be had in a few hours. Each rare book found makes the next one a quarter rarer. The first comes quickly; the last, one book in twenty-seven thousand, takes hundreds of hours. They belong to no age: a very long-term reward. The Ledger gave them a chapter, “Rarities”: how many have been found, and, as a percentage, the chance that the next book is one. How many are left, it does not say; when none are left, a line says so.", "Then Dark Patterns by Example, a bestseller of today for interface designers, with a foreword of the utmost seriousness. In the library, its examples are not read: they are endured. A cookie banner, a button that runs away, a countdown, an endless unsubscribe, a forced subscription, a basket that fills itself, disguised ads, an invented crowd, double-negative boxes, a feed that never ends: you have to find the way out. There is always one."
+            "Then the Big Book of X, which tells the story of the letter X, from the caves to the Library. On its cream cover, a huge black X, like a type specimen. Inside, each chapter begins with a short story, and the rest is written in the X language.", "Then they became harder to find: all of them could be had in a few hours. Each rare book found makes the next one a quarter rarer. The first comes quickly; the last, one book in twenty-seven thousand, takes hundreds of hours. They belong to no age: a very long-term reward. The Ledger gave them a chapter, “Rarities”: how many have been found, and, as a percentage, the chance that the next book is one. How many are left, it does not say; when none are left, a line says so.", "Then Dark Patterns by Example, a bestseller of today for interface designers, with a foreword of the utmost seriousness. In the library, its examples are not read: they are endured. A cookie banner, a button that runs away, a countdown, an endless unsubscribe, a forced subscription, a basket that fills itself, disguised ads, an invented crowd, double-negative boxes, a feed that never ends: you have to find the way out. There is always one.", "Then The Wild Rabbit, a natural history treatise from the century before, in green cloth and gold. On its cover, an engraved medallion: the grass, the hedge, the burrow, and the rabbit’s place, empty. Inside, twelve plates he is always missing from. That is because he runs: in the library, Alice’s White Rabbit sometimes bounds across the pages. He has to be caught three times; each time, he comes back faster."
           ]
         },
         "library": {
@@ -2192,6 +2450,8 @@
         "bigX-c": "The X language",
         "darkPatterns-a": "The technical manual",
         "darkPatterns-c": "The interface cover",
+        "rabbit-a2": "The plate",
+        "rabbit-a3": "The tracks",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

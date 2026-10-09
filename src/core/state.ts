@@ -103,6 +103,8 @@ export interface GameState {
   catalogueRead: number[];
   /** Pièges des « Dark patterns par l'exemple » déjoués (systems/darkPatterns.ts) : les cinq, un sceau secret. */
   darkPatternsFoiled: number[];
+  /** Prises du Lapin blanc dans « Le Lapin de garenne » (systems/rabbit.ts) : à trois, il rentre (un sceau secret). */
+  rabbitCaught: number;
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
@@ -177,6 +179,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   rareBooks: {},
   catalogueRead: [],
   darkPatternsFoiled: [],
+  rabbitCaught: 0,
   newSeals: [],
   libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],

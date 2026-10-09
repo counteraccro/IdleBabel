@@ -212,6 +212,8 @@ export const SEALS: readonly SealDef[] = [
   secret('neverLaughed'),
   // Les cinq pièges des « Dark patterns par l'exemple » déjoués par leur vraie sortie (systems/darkPatterns.ts).
   secret('escaped'),
+  // Le Lapin blanc attrapé trois fois dans « Le Lapin de garenne », lu dans la bibliothèque (systems/rabbit.ts).
+  secret('rabbitHome'),
   // Un mot entouré au crayon, à la dernière page du Manuscrit de Voynich (ui/rareBooks/voynich/voynich.ts).
   secret('oneWord'),
   // Vingt pages du Catalogue des catalogues lues dans la bibliothèque, à la recherche d'un cadeau de Noël

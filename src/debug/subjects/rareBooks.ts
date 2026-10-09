@@ -5,6 +5,9 @@ import { forceRareBook, isRareBookFound, rareBookAt } from '../../systems/rareBo
 import { refreshBook, refreshLibrary } from '../refresh';
 import { RARE_BOOK_HASH } from '../enabled';
 import { remember } from '../remember';
+import { CATCHES } from '../../systems/rabbit';
+import { rabbitCrossNow } from '../../ui/rareBooks/rabbit/rabbitHunt';
+import { BIG_BOOK_REWRITE } from '../../ui/book3d/book3dBook';
 import type { DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
@@ -78,6 +81,19 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
           refreshLibrary();
         },
         { danger: true, title: 'Livres trouvés et leurs sceaux' },
+      ],
+    );
+    kit.info('Lapin blanc', () => `${state.rabbitCaught} / ${CATCHES} prises`);
+    kit.actions(
+      ['Faire passer le Lapin blanc', () => rabbitCrossNow(state), { title: 'Le Lapin de garenne ouvert en grand : il traverse la double page.' }],
+      [
+        'Lapin : prises à zéro',
+        () => {
+          state.rabbitCaught = 0;
+          delete state.seals.rabbitHome;
+          window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
+        },
+        { title: 'Il ressort de ses planches (et le sceau secret est repris).' },
       ],
     );
   },

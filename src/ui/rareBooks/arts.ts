@@ -19,6 +19,7 @@ import { necronomiconArt } from './necronomicon/necronomicon';
 import { odysseyArt } from './odyssey/odyssey';
 import { orianaArt } from './oriana/oriana';
 import { quixoteArt } from './quixote/quixote';
+import { rabbitArt } from './rabbit/rabbit';
 import { saragossaArt } from './saragossa/saragossa';
 import { sandArt } from './sand/sand';
 import { voynichArt } from './voynich/voynich';
@@ -49,6 +50,7 @@ const ARTS: Record<string, RareBookArt> = {
   odyssey: odysseyArt,
   oriana: orianaArt,
   quixote: quixoteArt,
+  rabbit: rabbitArt,
   saragossa: saragossaArt,
   sand: sandArt,
   voynich: voynichArt,

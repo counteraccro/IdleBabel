@@ -1,0 +1,54 @@
+/* Le Lapin blanc qui traverse la double page (rabbitHunt.ts) : posé sur le livre, au-dessus de la scène 3D. */
+.rabbit-runner {
+  position: fixed;
+  z-index: 30;
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  will-change: transform, left, top;
+  touch-action: none;
+}
+
+.rabbit-runner canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* Attrapé : il s'échappe d'un grand bond, hors de la page. */
+.rabbit-runner.escaping {
+  transition:
+    left 0.35s ease-in,
+    top 0.35s ease-out;
+}
+
+/* La troisième fois : il s'efface, rentré dans ses planches. */
+.rabbit-runner.going-home {
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 1.4s 0.8s,
+    transform 1.4s 0.8s;
+}
+
+/* Ce qu'il crie en s'échappant, à l'encre du livre ; ça monte un peu et s'efface. */
+.rabbit-say {
+  position: fixed;
+  z-index: 31;
+  transform: translate(-50%, 0);
+  font:
+    italic 22px 'IM Fell English',
+    Georgia,
+    serif;
+  color: #3b2a1a;
+  white-space: nowrap;
+  pointer-events: none;
+  transition:
+    opacity 1.2s,
+    transform 1.6s;
+}
+
+.rabbit-say.gone {
+  opacity: 0;
+  transform: translate(-50%, -30px);
+}
