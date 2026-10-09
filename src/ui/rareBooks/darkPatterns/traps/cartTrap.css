@@ -1,0 +1,71 @@
+/* Le panier attentionné. */
+.dp-cart {
+  text-align: left;
+}
+.dp-dialog .dp-cart-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f1f4;
+  font-size: 14px;
+  color: #33353f;
+  cursor: pointer;
+}
+.dp-dialog .dp-cart-row span:nth-child(2) {
+  flex: 1;
+}
+.dp-dialog .dp-cart-row.dp-fixed {
+  font-weight: 600;
+  cursor: default;
+}
+.dp-dialog .dp-cart-row.dp-new {
+  animation: dp-pop 0.4s ease-out;
+}
+@keyframes dp-pop {
+  from {
+    background: #fff4d6;
+    transform: translateX(-8px);
+  }
+  to {
+    background: transparent;
+    transform: none;
+  }
+}
+.dp-dialog p.dp-also {
+  font:
+    800 11px Inter,
+    sans-serif;
+  letter-spacing: 0.08em;
+  color: #c23b7a;
+  margin: 14px 0 0;
+  text-transform: uppercase;
+}
+.dp-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font:
+    800 18px Inter,
+    sans-serif;
+  margin: 16px 0 4px;
+}
+.dp-dialog .dp-round {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  font-size: 9px;
+  color: #c9cbd3;
+  margin: 0 0 16px;
+  cursor: pointer;
+}
+.dp-dialog .dp-round input {
+  width: 9px;
+  height: 9px;
+  margin: 0;
+}
+.dp-big.dp-pay {
+  width: 100%;
+  background: #32d17a;
+}

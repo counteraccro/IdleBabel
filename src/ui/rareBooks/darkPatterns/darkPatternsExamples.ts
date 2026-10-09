@@ -4,7 +4,7 @@ import { INK, SOFT, paragraph } from './darkPatternsText';
 
 /**
  * Les exemples des « Dark patterns par l'exemple » : une page web dessinée dans une fenêtre de navigateur, une par
- * chapitre (maquette .ai/maquette-dark-patterns-pages.html). Les cinq premières sont des pièges, qui prennent vie
+ * chapitre (maquette .ai/maquette-dark-patterns-pages.html). Toutes sont des pièges, qui prennent vie
  * dans la bibliothèque (traps/) ; ici, ce ne sont que des dessins.
  */
 

@@ -1514,7 +1514,7 @@
       "howTo": "Mode d'emploi",
       "howToText": [
         "Chaque chapitre présente un motif en trois temps : le motif, pourquoi il fonctionne, un exemple.",
-        "Les exemples des cinq premiers chapitres sont interactifs. Ils se comportent exactement comme sur le web.",
+        "Tous les exemples sont interactifs. Ils se comportent exactement comme sur le web.",
         "Ne vous inquiétez pas. Vous pourrez toujours tourner la page.",
         "Presque toujours."
       ],
@@ -1832,6 +1832,137 @@
         "keep": "Rester Premium",
         "goLimited": "Continuer en version limitée",
         "free": "Version limitée activée : vous pouvez lire. Comme avant."
+      },
+      "cart": {
+        "title": "Votre panier",
+        "items": [
+          [
+            "Un livre",
+            1
+          ],
+          [
+            "Assurance perte de page",
+            4
+          ],
+          [
+            "Don à l’hexagone voisin",
+            2
+          ],
+          [
+            "Seconde copie (recommandé)",
+            1
+          ]
+        ],
+        "more": [
+          [
+            "Signet assorti",
+            1
+          ],
+          [
+            "Garantie de 410 ans",
+            3
+          ],
+          [
+            "Emballage cadeau (pour vous)",
+            1
+          ],
+          [
+            "Lettre « Une page par jour »",
+            2
+          ]
+        ],
+        "alsoLike": "Vous aimerez aussi",
+        "total": "Total",
+        "round": "arrondi solidaire à la page supérieure (+1)",
+        "page": "{n} page",
+        "pages": "{n} pages",
+        "pay": "Payer {total}",
+        "bought": "Merci pour votre achat de {n} pages. Le livre est offert.",
+        "free": "Un livre, une page. Rien de plus."
+      },
+      "ads": {
+        "site": "livre-410.babel",
+        "text": "Téléchargez la page suivante, gratuitement et sans inscription.",
+        "buttons": [
+          "TÉLÉCHARGER",
+          "⬇ Télécharger maintenant",
+          "DÉMARRER"
+        ],
+        "ad": "annonce",
+        "realLink": "le vrai lien",
+        "popups": [
+          [
+            "🎉 Félicitations !",
+            "Vous êtes le 410ᵉ visiteur ! Une page en or vous attend."
+          ],
+          [
+            "⚠ Votre livre est lent",
+            "3 virus ralentissent vos pages. Nettoyez-les maintenant."
+          ],
+          [
+            "🔥 Lecteurs célibataires",
+            "Dans votre hexagone. Ils lisent, eux aussi."
+          ]
+        ],
+        "claim": "Réclamer mon prix",
+        "claimed": "Votre prix : la page suivante, et 12 onglets de plus.",
+        "free": "La page suivante, sans rien autour."
+      },
+      "crowd": {
+        "title": "Page 410",
+        "continue": "Continuer",
+        "mute": "ne plus afficher",
+        "toasts": [
+          "12 personnes lisent cette page en ce moment",
+          "Un lecteur de l’hexagone voisin vient de la terminer",
+          "Très demandée : 3 lecteurs l’ont dans leur panier",
+          "1 247 lecteurs ont aimé cette page",
+          "Quelqu’un vient de la relire pour la 3ᵉ fois",
+          "Plus que 2 lecteurs avant vous"
+        ],
+        "joined": "Vous les avez rejoints. Ils n’étaient pas là.",
+        "free": "Plus personne. Juste vous et la page."
+      },
+      "tricky": {
+        "title": "Presque fini !",
+        "text": "Vérifiez vos préférences de communication.",
+        "ways": [
+          "Cochez cette case pour recevoir {x}.",
+          "Décochez cette case si vous ne souhaitez pas recevoir {x}.",
+          "Cochez cette case si vous ne souhaitez pas recevoir {x}.",
+          "Ne décochez pas cette case si vous ne voulez pas ne pas recevoir {x}.",
+          "Laissez cette case vide si vous ne refusez pas {x}.",
+          "Cochez cette case si vous ne voulez pas ne pas recevoir {x}.",
+          "Décochez cette case pour ne pas refuser {x}."
+        ],
+        "what": [
+          "nos offres de lecture quotidiennes",
+          "la lettre des hexagones voisins",
+          "les messages de nos partenaires"
+        ],
+        "validate": "Valider",
+        "one": "Merci ! Vous recevrez 1 lettre par jour.",
+        "many": "Merci ! Vous recevrez {n} lettres par jour.",
+        "free": "Vous ne recevrez rien. Rien du tout."
+      },
+      "feed": {
+        "title": "Pour vous",
+        "pause": "Mettre en pause le chargement",
+        "paused": "Chargement en pause",
+        "loading": "Chargement…",
+        "end": "Fin du fil.",
+        "exit": "Sortie",
+        "posts": [
+          "La page 411 existe-t-elle ?",
+          "Un lecteur a trouvé un mot entier",
+          "10 hexagones à visiter avant de mourir",
+          "Ce bibliothécaire a tout lu. La suite va vous étonner",
+          "Pourquoi vous ne refermerez pas ce fil",
+          "Les lettres les plus rares, classées"
+        ],
+        "more": "Lire la suite",
+        "read": "Vous lisez la suite. Puis la suivante.",
+        "free": "Le fil s’arrête. Vous aussi."
       }
     }
   },
@@ -1968,7 +2099,7 @@
             "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait.",
             "Puis le Catalogue des catalogues, celui que cherchent les bibliothécaires de Borges. Sur sa couverture de cuir bleu nuit, le livre se contient lui-même, jusqu’à n’être plus qu’un point d’or. Dedans, un registre de livres, un par ligne, chacun avec sa cote.",
             "Puis le Livre de sable, celui d’une nouvelle de Borges, qui n’a ni première ni dernière page. Sur sa couverture, un désert au soir, et le mot « sable » qui s’en va en grains. Dedans, des versets sans fin, des numéros de page sans suite, et pas une page qu’on retrouve.",
-            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.", "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur vingt-sept mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit.", "Puis les Dark patterns par l’exemple, un best-seller d’aujourd’hui pour concepteurs d’interfaces, préfacé avec le plus grand sérieux. Dans la bibliothèque, ses exemples ne se lisent pas : ils se subissent. Un bandeau de cookies, un bouton qui fuit, un compte à rebours, un désabonnement sans fin, un abonnement forcé : il faut trouver la sortie. Il y en a toujours une."
+            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.", "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur vingt-sept mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit.", "Puis les Dark patterns par l’exemple, un best-seller d’aujourd’hui pour concepteurs d’interfaces, préfacé avec le plus grand sérieux. Dans la bibliothèque, ses exemples ne se lisent pas : ils se subissent. Un bandeau de cookies, un bouton qui fuit, un compte à rebours, un désabonnement sans fin, un abonnement forcé, un panier qui se remplit tout seul, des publicités déguisées, une foule inventée, des cases à double négation, un fil qui ne finit jamais : il faut trouver la sortie. Il y en a toujours une."
           ]
         },
         "library": {

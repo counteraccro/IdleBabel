@@ -378,3 +378,34 @@
   background: linear-gradient(90deg, #c23b7a, #ff8a3c);
   transition: width 2.4s linear;
 }
+
+/* Une page web (la publicité déguisée, la foule inventée). */
+.dp-site {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(560px, calc(100vw - 32px));
+  height: min(560px, 82vh);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  padding: 26px 28px;
+  overflow: hidden;
+}
+.dp-site h3 {
+  margin: 0 0 6px;
+  font:
+    800 24px Inter,
+    sans-serif;
+}
+.dp-site p {
+  margin: 0 0 10px;
+  color: #5d606c;
+}
+.dp-lines {
+  height: 7px;
+  border-radius: 4px;
+  background: #ececf1;
+  margin: 8px 0;
+}

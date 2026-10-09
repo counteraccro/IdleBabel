@@ -1,0 +1,55 @@
+/* La publicité déguisée. */
+.dp-big.dp-download {
+  position: absolute;
+  transition:
+    left 0.35s,
+    top 0.35s;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.dp-big.dp-download small {
+  position: absolute;
+  right: 6px;
+  top: -14px;
+  font:
+    400 8px Inter,
+    sans-serif;
+  letter-spacing: 0;
+  color: #b9b5c0;
+}
+.dp-real {
+  position: absolute;
+  left: 28px;
+  bottom: 16px;
+  font-size: 9px;
+  color: #3a5cf0;
+  text-decoration: none;
+}
+.dp-ad {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-2deg);
+  width: min(400px, calc(100vw - 40px));
+  background: linear-gradient(135deg, #ffd23f, #ff8a3c);
+  border: 6px dashed #e8392c;
+  border-radius: 6px;
+  padding: 26px 22px 20px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.dp-ad h3 {
+  margin: 0 0 8px;
+  font:
+    800 26px Inter,
+    sans-serif;
+  color: #3a1670;
+}
+.dp-ad p {
+  margin: 0 0 16px;
+  color: #3a1670;
+}
+.dp-ad .dp-close {
+  color: #b86a2a;
+}

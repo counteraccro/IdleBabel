@@ -1,0 +1,60 @@
+/* Le défilement sans fin. */
+.dp-feed {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(460px, calc(100vw - 32px));
+  height: min(600px, 84vh);
+  background: #f6f5fb;
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.dp-feed-head {
+  background: #fff;
+  padding: 6px 16px 12px;
+  border-bottom: 1px solid #ececf1;
+}
+.dp-feed-head b {
+  font-size: 18px;
+}
+.dp-feed-head .dp-link {
+  display: block;
+  font-size: 8px;
+  padding: 0;
+  margin-bottom: 4px;
+}
+.dp-scroll {
+  overflow-y: auto;
+  flex: 1;
+  padding: 14px 16px;
+}
+.dp-post {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(30, 20, 60, 0.06);
+}
+.dp-post b {
+  display: block;
+  margin-bottom: 4px;
+}
+.dp-post .dp-big {
+  font-size: 13px;
+  padding: 8px 16px;
+  margin-top: 8px;
+}
+.dp-loading {
+  text-align: center;
+  color: #a3a6b1;
+  font-size: 13px;
+  padding: 10px 0;
+}
+.dp-exit {
+  text-align: center;
+  padding: 6px 0 40px;
+}

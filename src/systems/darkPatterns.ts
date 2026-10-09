@@ -3,9 +3,8 @@ import type { GameState } from '../core/state';
 
 /**
  * « Les dark patterns par l'exemple » (livre rare, décidé avec l'auteur le 09/10/2026) : un manuel sérieux dont
- * les cinq premiers exemples sont des pièges. Lu dans la bibliothèque, l'exemple ouvert, le piège passe
- * par-dessus l'écran ; il a toujours deux sorties : la grande porte (il reviendra) et la vraie, cachée, qui le
- * déjoue pour de bon. Les cinq déjoués, même en plusieurs lectures : le sceau secret « escaped ».
+ * les dix exemples sont des pièges. Lu dans la bibliothèque, l'exemple ouvert, le piège passe par-dessus l'écran ;
+ * il a toujours deux sorties : la grande porte (il reviendra) et la vraie, cachée, qui le déjoue pour de bon. Les dix déjoués, même en plusieurs lectures : le sceau secret « escaped ».
  */
 
 export const DARK_PATTERNS_ID = 'darkPatterns';
@@ -13,8 +12,8 @@ export const DARK_PATTERNS_ID = 'darkPatterns';
 export const CHAPTER_FIRST = 7;
 export const CHAPTER_PAGES = 4;
 export const CHAPTERS = 10;
-/** Les chapitres dont l'exemple est un piège (les cinq premiers). */
-export const TRAPS = 5;
+/** Les chapitres dont l'exemple est un piège : tous. */
+export const TRAPS = CHAPTERS;
 /** Les conditions générales de lecture, jusqu'à l'avant-dernière page. */
 export const TERMS_FIRST = CHAPTER_FIRST + CHAPTERS * CHAPTER_PAGES;
 
@@ -30,7 +29,7 @@ export const trapAt = (page: number): number | undefined => {
 
 export const isTrapFoiled = (state: GameState, trap: number): boolean => state.darkPatternsFoiled.includes(trap);
 
-/** Le piège `trap` déjoué par sa vraie sortie ; les cinq : le sceau secret. */
+/** Le piège `trap` déjoué par sa vraie sortie ; les dix : le sceau secret. */
 export const foilTrap = (state: GameState, trap: number): void => {
   if (!isTrapFoiled(state, trap)) state.darkPatternsFoiled.push(trap);
   if (state.darkPatternsFoiled.length >= TRAPS) sealEvent(state, 'escaped');

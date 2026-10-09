@@ -4,9 +4,10 @@ import { PAGES_PER_BOOK } from '../src/systems/books';
 import { CHAPTERS, TERMS_FIRST, TRAPS, examplePage, foilTrap, isTrapFoiled, trapAt } from '../src/systems/darkPatterns';
 import fr from '../src/i18n/fr/rareBooks.json';
 import en from '../src/i18n/en/rareBooks.json';
+import { TRICKY_RECEIVES } from '../src/ui/rareBooks/darkPatterns/traps/trickyTrap';
 
 describe('les dark patterns par l’exemple', () => {
-  it('a un piège sur l’exemple de chacun des cinq premiers chapitres, à droite, et nulle part ailleurs', () => {
+  it('a un piège sur l’exemple de chacun des dix chapitres, à droite, et nulle part ailleurs', () => {
     const traps = [];
     for (let page = 1; page <= PAGES_PER_BOOK; page++) {
       const trap = trapAt(page);
@@ -15,14 +16,14 @@ describe('les dark patterns par l’exemple', () => {
       expect(page % 2).toBe(1);
       traps.push(trap);
     }
-    expect(traps).toEqual([0, 1, 2, 3, 4]);
+    expect(traps).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     expect(TERMS_FIRST).toBeLessThan(PAGES_PER_BOOK);
   });
 
-  it('donne le sceau secret au cinquième piège déjoué, pas avant, même en plusieurs fois', () => {
+  it('donne le sceau secret au dixième piège déjoué, pas avant, même en plusieurs fois', () => {
     const state = createInitialState('fr', 0, 12345);
-    for (const trap of [3, 0, 3, 1, 4]) foilTrap(state, trap);
-    expect(state.darkPatternsFoiled).toHaveLength(4);
+    for (const trap of [3, 0, 3, 1, 4, 9, 5, 8, 6, 9, 7]) foilTrap(state, trap);
+    expect(state.darkPatternsFoiled).toHaveLength(9);
     expect('escaped' in state.seals).toBe(false);
     foilTrap(state, 2);
     expect(isTrapFoiled(state, 2)).toBe(true);
@@ -39,6 +40,15 @@ describe('les dark patterns par l’exemple', () => {
     expect(b.pages.prefaceText).toHaveLength(a.pages.prefaceText.length);
     expect(b.traps.cookies.partners).toHaveLength(a.traps.cookies.partners.length);
     expect(b.traps.unsubscribe.reasons).toHaveLength(a.traps.unsubscribe.reasons.length);
+    expect(b.traps.cart.items).toHaveLength(a.traps.cart.items.length);
+    expect(b.traps.cart.more).toHaveLength(a.traps.cart.more.length);
+    expect(b.traps.ads.buttons).toHaveLength(a.traps.ads.buttons.length);
+    expect(b.traps.ads.popups).toHaveLength(a.traps.ads.popups.length);
+    expect(b.traps.crowd.toasts).toHaveLength(a.traps.crowd.toasts.length);
+    expect(b.traps.feed.posts).toHaveLength(a.traps.feed.posts.length);
+    expect(b.traps.tricky.what).toHaveLength(a.traps.tricky.what.length);
+    expect(a.traps.tricky.ways).toHaveLength(TRICKY_RECEIVES.length);
+    expect(b.traps.tricky.ways).toHaveLength(TRICKY_RECEIVES.length);
     expect(b.traps.premium.plans.map((plan) => plan.perks.length)).toEqual(a.traps.premium.plans.map((plan) => plan.perks.length));
   });
 });

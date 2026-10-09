@@ -108,3 +108,12 @@ export const openTrap = (trap: Trap, onExit: (foiled: boolean) => void): void =>
 
 /** Le piège ouvert, refermé sans être déjoué (la page du livre quittée). */
 export const closeTrap = (): void => current?.();
+
+/** Une page web : son titre, une phrase, puis `lines` lignes de texte grisées. */
+export const site = (title: string, body: string | undefined, lines: number): HTMLElement => {
+  const page = el('div', 'dp-site');
+  page.append(el('h3', undefined, title));
+  if (body) page.append(el('p', undefined, body));
+  for (let line = 0; line < lines; line++) page.append(el('div', 'dp-lines'));
+  return page;
+};

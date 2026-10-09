@@ -14,6 +14,11 @@ import { runnerTrap } from './traps/runnerTrap';
 import { urgencyTrap } from './traps/urgencyTrap';
 import { unsubscribeTrap } from './traps/unsubscribeTrap';
 import { premiumTrap } from './traps/premiumTrap';
+import { cartTrap } from './traps/cartTrap';
+import { adsTrap } from './traps/adsTrap';
+import { crowdTrap } from './traps/crowdTrap';
+import { trickyTrap } from './traps/trickyTrap';
+import { feedTrap } from './traps/feedTrap';
 import type { RareBookArt } from '../rareBookArt';
 
 /** Le dos de la maquette à ses vraies proportions (le dos d'un livre fait 1,4 fois son épaisseur). */
@@ -23,13 +28,24 @@ const THICKNESS = SPINE_WIDTH / (1.4 * HEIGHT);
 const WHITE_PAPER: Paper = [PAPER, PAPER, '#f4f2ec'];
 
 /** Les pièges, dans l'ordre des chapitres. */
-const TRAP_SCENES: Trap[] = [cookieTrap, runnerTrap, urgencyTrap, unsubscribeTrap, premiumTrap];
+const TRAP_SCENES: Trap[] = [
+  cookieTrap,
+  runnerTrap,
+  urgencyTrap,
+  unsubscribeTrap,
+  premiumTrap,
+  cartTrap,
+  adsTrap,
+  crowdTrap,
+  trickyTrap,
+  feedTrap,
+];
 
 /**
  * « Les dark patterns par l'exemple » (maquettes .ai/maquette-dark-patterns.html et .ai/maquette-dark-patterns-pages.html) :
  * un best-seller d'aujourd'hui, un manuel sérieux pour concepteurs d'interfaces. Lu dans la bibliothèque, les
- * exemples des cinq premiers chapitres sont des pièges dont il faut sortir (traps/) ; déjoué, l'exemple garde un
- * tampon. Les cinq déjoués : un sceau secret (systems/darkPatterns.ts).
+ * exemples des dix chapitres sont des pièges dont il faut sortir (traps/) ; déjoué, l'exemple garde un tampon.
+ * Les dix déjoués : un sceau secret (systems/darkPatterns.ts).
  */
 export const darkPatternsArt: RareBookArt = {
   thickness: THICKNESS,
