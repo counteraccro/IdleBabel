@@ -1,3 +1,4 @@
+import { TICK_MS } from '../../core/loop';
 import type { Turner } from './turner';
 
 /** D'où viennent les pages qui tournent seules. */
@@ -10,8 +11,8 @@ export interface AutoTurnSource {
 
 /**
  * Pages qui tournent seules au rythme de la production : une page part chaque fois que le compteur de
- * pages passe à l'entier suivant, pour que les deux avancent ensemble. Au plus une page en attente, au
- * plus `max` par seconde, et rien n'est rattrapé tant que le lecteur a la main ou que le livre n'est pas
+ * pages passe à l'entier suivant, pour que les deux avancent ensemble. En attente, au plus ce que `max`
+ * permet de tourner d'un pas de la partie à l'autre (core/loop.ts), une page au moins ; au plus `max` par seconde, et rien n'est rattrapé tant que le lecteur a la main ou que le livre n'est pas
  * ouvert. Des pages demandées vite s'enchaînent en feuilletage (turner). Renvoie la fonction à appeler à
  * chaque image.
  */
@@ -31,7 +32,9 @@ export const createAutoTurn3d = ({ produced, max }: AutoTurnSource) => {
       return;
     }
     wait = Math.max(-1 / cap, wait - dt);
-    pending = Math.min(1, pending + fresh);
+    // Le compteur n'avance que tous les 100 ms : une seule page en attente, c'était 10 par seconde au plus,
+    // quel que soit le plafond (bug trouvé le 09/10 : 24 feuilles par seconde promises, 10 tournées).
+    pending = Math.min(Math.max(1, Math.ceil((cap * TICK_MS) / 1000)), pending + fresh);
     if (pending < 1 || wait > 0) return;
     pending -= 1;
     wait += 1 / cap;

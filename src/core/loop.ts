@@ -5,7 +5,8 @@ import { checkSeals } from '../systems/seals';
 import { chronicle } from '../systems/chronicle';
 import { remember } from '../systems/reminiscence';
 
-const TICK_MS = 100;
+/** La partie avance par pas de tant (le compteur aussi : les pages qui tournent seules, ui/book3d/autoTurn3d.ts). */
+export const TICK_MS = 100;
 
 /**
  * Boucle de jeu : avance la simulation selon le temps réellement écoulé. Onglet caché, elle ne produit

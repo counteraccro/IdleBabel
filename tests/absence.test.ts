@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../src/core/state';
-import { passTime } from '../src/core/absence';
+import { gameBack, gameLeft, passTime } from '../src/core/absence';
 import { readWhileAway } from '../src/systems/awayReading';
 import { forceRareBook, isRareBookFound } from '../src/systems/rareBooks';
 import { PAGES_PER_BOOK } from '../src/systems/books';
@@ -97,5 +97,21 @@ describe('absence', () => {
     // 410 pages : le premier livre, tout entier.
     expect(report.books).toBe(1);
     expect(state.bookPage).toBe(0);
+  });
+
+  it('un livre ouvert à la place du jeu : au retour, le livre en main a avancé', () => {
+    vi.useFakeTimers();
+    const state = reading(10);
+    gameLeft();
+    vi.advanceTimersByTime(20_000);
+    // Un autre livre, ouvert de celui-ci : le temps compte depuis le premier.
+    gameLeft();
+    vi.advanceTimersByTime(21_000);
+    gameBack(state);
+    expect(state.booksFinished).toBe(1);
+    // Déjà compté : un second retour ne rapporte rien.
+    gameBack(state);
+    expect(state.booksFinished).toBe(1);
+    vi.useRealTimers();
   });
 });

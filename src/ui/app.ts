@@ -14,6 +14,7 @@ import { notebook3d } from './options/notebook3d';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { anyPartNews, meetStrangeBook } from '../systems/decipher';
 import { mountAwayNotice } from './awayNotice/awayNotice';
+import { gameBack, gameLeft } from '../core/absence';
 import { setLocale, t } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
 import { createInitialState, type GameState } from '../core/state';
@@ -321,6 +322,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     // Plus de livre de la pile ouvert (retour du navigateur…) : il ne l'est plus par-dessus la vitrine.
     const book = openBook();
     if (book === null || book === 'library') overLibrary = false;
+    // Hors de l'écran du jeu, le livre en main ne tourne plus : au retour, ses pages, ses trouvailles, avant de le refaire.
+    if (book === null) gameBack(state);
+    else gameLeft();
     const next = screen();
     // Ce qui reste d'un écran à l'autre (en-tête, compteur, vitrine sous un livre ouvert) ne bouge pas.
     const leaving = components.filter((c) => !lasting.includes(c) && !next.includes(c));

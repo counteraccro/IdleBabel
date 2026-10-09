@@ -125,3 +125,22 @@ export const watchAbsence = (state: GameState): void => {
 
 /** Une modale vient de se fermer après `seconds` : les pages n'ont pas tourné à l'écran, le jeu a continué. */
 export const pauseEnded = (state: GameState, seconds: number): void => awaySince(state, Date.now() - seconds * 1000, 'pause');
+
+/** L'écran du jeu quitté (livre blanc, bibliothèque, un livre de la pile) : depuis quand. */
+let leftGameAt: number | null = null;
+
+/**
+ * Un livre ouvert à la place de l'écran du jeu : le livre en main n'est plus là, plus une page n'y tourne. Le
+ * compteur, lui, continue (la boucle produit) ; les trouvailles et les livres refermés attendent le retour.
+ */
+export const gameLeft = (): void => {
+  leftGameAt ??= Date.now();
+};
+
+/** De retour à l'écran du jeu : le temps passé ailleurs compte comme une modale (bug signalé par l'auteur, 09/10). */
+export const gameBack = (state: GameState): void => {
+  if (leftGameAt === null) return;
+  const from = leftGameAt;
+  leftGameAt = null;
+  awaySince(state, from, 'pause');
+};

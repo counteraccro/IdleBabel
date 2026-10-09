@@ -66,6 +66,19 @@ describe('pages qui tournent seules', () => {
     expect(turner.target).toBeLessThanOrEqual(9);
   });
 
+  it('tient un plafond plus haut que le pas de la partie (10 par seconde)', () => {
+    let produced = 0;
+    const auto = createAutoTurn3d({ produced: () => produced, max: () => 24 });
+    const turner = fakeTurner();
+    // 100 images par seconde ; le compteur n'avance que toutes les 10 images (core/loop.ts).
+    for (let frame = 0; frame < 1000; frame++) {
+      if (frame % 10 === 0) produced += 1000;
+      auto(1 / 100, turner, 10_000, true);
+    }
+    expect(turner.target).toBeGreaterThanOrEqual(230);
+    expect(turner.target).toBeLessThanOrEqual(241);
+  });
+
   it('ne rattrape rien tant que le livre n’est pas prêt, ni quand l’option est coupée', () => {
     let produced = 0;
     let max = 8;
