@@ -137,7 +137,7 @@ export const CONTENTS_ROW = 36;
 /** Les pages des lignes de la table des matières, dans l'ordre. */
 export const contentsTargets = (): number[] => [
   3,
-  6,
+  PLATES_PAGE,
   ...Array.from({ length: CHAPTERS }, (_, chapter) => chapterStart(chapter)),
   INDEX_FIRST,
 ];
@@ -161,17 +161,22 @@ const contentsPage = (context: CanvasRenderingContext2D): void => {
   folio(context, CONTENTS_PAGE);
 };
 
+/** La liste des planches : chaque ligne mène à sa planche. */
+export const PLATES_PAGE = 6;
+export const PLATES_TOP = 200;
+export const PLATES_ROW = 38;
+
 const platesListPage = (context: CanvasRenderingContext2D): void => {
   const pages = texts().pages;
   text(context, pages.platesList, W / 2, 110, `22px ${FELL_SC}`, INK, 'center', 4);
   rule(context, W / 2, 130, 60);
   pages.plates.forEach((name, chapter) => {
-    const y = 200 + chapter * 38;
+    const y = PLATES_TOP + chapter * PLATES_ROW;
     text(context, `${romanNumeral(chapter)}.`, LEFT + 40, y, `17px ${FELL}`, INK, 'right');
     text(context, name, LEFT + 54, y, `italic 18px ${FELL}`, INK, 'left');
     text(context, `p. ${platePage(chapter)}`, W - LEFT, y, `16px ${FELL}`, SOFT, 'right');
   });
-  folio(context, 6);
+  folio(context, PLATES_PAGE);
 };
 
 /** L'ouverture d'un chapitre : son numéro, son titre, un fleuron, la lettrine, son texte puis la suite. */
@@ -264,7 +269,7 @@ export const paintRabbitPage = (context: CanvasRenderingContext2D, page: number,
   if (page === 2) return legalPage(context);
   if (page === 3 || page === 4) return noticePage(context, page);
   if (page === CONTENTS_PAGE) return contentsPage(context);
-  if (page === 6) return platesListPage(context);
+  if (page === PLATES_PAGE) return platesListPage(context);
   if (page < INDEX_FIRST) {
     const chapter = chapterOf(page);
     const step = (page - CHAPTER_FIRST) % CHAPTER_PAGES;

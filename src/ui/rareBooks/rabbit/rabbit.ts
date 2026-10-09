@@ -2,10 +2,10 @@ import { HEIGHT } from '../draw';
 import { preparePageTexture, type Paper } from '../../book/pageRender';
 import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
-import { rabbitHome } from '../../../systems/rabbit';
+import { CHAPTERS, platePage, rabbitHome } from '../../../systems/rabbit';
 import { GREEN, GREEN_EDGE, loadRabbitFonts } from './rabbitDraw';
 import { SPINE_WIDTH, rabbitBack, rabbitFront, rabbitInside, rabbitSpine } from './rabbitCover';
-import { CONTENTS_PAGE, CONTENTS_ROW, CONTENTS_TOP, contentsTargets, paintRabbitPage } from './rabbitPages';
+import { CONTENTS_PAGE, CONTENTS_ROW, CONTENTS_TOP, PLATES_PAGE, PLATES_ROW, PLATES_TOP, contentsTargets, paintRabbitPage } from './rabbitPages';
 import { rabbitMayCross } from './rabbitHunt';
 import type { RareBookArt } from '../rareBookArt';
 
@@ -46,11 +46,18 @@ export const rabbitArt: RareBookArt = {
     return true;
   },
   bookmark: CONTENTS_PAGE,
-  // Chaque ligne de la table des matières mène à sa page.
-  links: (page) =>
-    page === CONTENTS_PAGE
-      ? contentsTargets().map((target, row) => ({ y: CONTENTS_TOP + row * CONTENTS_ROW - 25, height: CONTENTS_ROW - 2, target }))
-      : [],
+  // Chaque ligne de la table des matières mène à sa page, chaque ligne de la liste des planches à sa planche.
+  links: (page) => {
+    if (page === CONTENTS_PAGE)
+      return contentsTargets().map((target, row) => ({ y: CONTENTS_TOP + row * CONTENTS_ROW - 25, height: CONTENTS_ROW - 2, target }));
+    if (page === PLATES_PAGE)
+      return Array.from({ length: CHAPTERS }, (_, chapter) => ({
+        y: PLATES_TOP + chapter * PLATES_ROW - 26,
+        height: PLATES_ROW - 2,
+        target: platePage(chapter),
+      }));
+    return [];
+  },
   // Une double page posée sous les yeux, dans la bibliothèque : peut-être qu'il la traverse (une fois par double page :
   // sa page de droite).
   shown: (page, state) => {
