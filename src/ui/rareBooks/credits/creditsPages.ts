@@ -184,44 +184,89 @@ const NOTES_BOTTOM = HEIGHT - 90;
 
 type Note = ReturnType<typeof text>['notes'][number];
 
-/** La hauteur d'une version : son nom, sa date, ses lignes (une ligne vide fait un blanc). */
-const noteHeight = (note: Note): number => 80 + note.lines.reduce((height, line) => height + (line ? 30 : 16), 0);
+/** Un journal des modifications : les puces au fer à gauche, leur texte en retrait, coupé à la largeur. */
+const NOTES_LEFT = 96;
+const NOTES_INDENT = 22;
+const NOTES_WIDTH = WIDTH - 2 * NOTES_LEFT - NOTES_INDENT;
+const NOTES_FONT = `19px ${GARAMOND}`;
+const NOTES_LINE = 26;
+/** Sous le nom et la date ; entre deux intertitres ; entre deux puces. */
+const NOTES_HEAD = 72;
+const NOTES_SECTION = 40;
+const NOTES_ITEM = 6;
+
+/** Les lignes d'une puce, coupées à la largeur du texte. */
+const wrapItem = (context: CanvasRenderingContext2D, item: string): string[] => {
+  context.font = NOTES_FONT;
+  const lines: string[] = [];
+  let line = '';
+  for (const word of item.split(' ')) {
+    const tried = line ? `${line} ${word}` : word;
+    if (line && context.measureText(tried).width > NOTES_WIDTH) {
+      lines.push(line);
+      line = word;
+    } else line = tried;
+  }
+  return [...lines, line];
+};
+
+/**
+ * Une version posée à partir de `top` : son nom et sa date au milieu, puis ses parties (« Nouveautés »,
+ * « Corrections »… ; sans intertitre, la liste seule) et leurs puces. Sans `draw`, elle est seulement mesurée.
+ * Rend sa hauteur.
+ */
+const placeNote = (context: CanvasRenderingContext2D, note: Note, top: number, draw: boolean): number => {
+  if (draw) {
+    write(context, note.title.toLocaleUpperCase(), CENTER, top, { font: `600 20px ${TITLE}`, color: INK, spacing: 4 });
+    write(context, note.date, CENTER, top + 30, { font: `italic 18px ${GARAMOND}`, color: SOFT });
+  }
+  let y = top + NOTES_HEAD;
+  note.sections.forEach((section, index) => {
+    if (index > 0) y += NOTES_SECTION - NOTES_LINE;
+    if (section.heading) {
+      if (draw) write(context, section.heading, NOTES_LEFT, y, { font: `italic 19px ${GARAMOND}`, color: SOFT, align: 'left' });
+      y += NOTES_LINE + 2;
+    }
+    for (const item of section.items) {
+      if (draw) write(context, '•', NOTES_LEFT + 4, y, { font: NOTES_FONT, color: INK, align: 'left' });
+      for (const line of wrapItem(context, item)) {
+        if (draw) write(context, line, NOTES_LEFT + NOTES_INDENT, y, { font: NOTES_FONT, color: INK, align: 'left' });
+        y += NOTES_LINE;
+      }
+      y += NOTES_ITEM;
+    }
+  });
+  return y - NOTES_LINE - NOTES_ITEM - top + 10;
+};
 
 /**
  * Les versions, page par page, la plus récente en haut : une page pleine, la suite passe à la page blanche d'après
  * (jamais une version coupée en deux).
  */
-const notesSheets = (): { note: Note; y: number }[][] => {
+const notesSheets = (context: CanvasRenderingContext2D): { note: Note; y: number }[][] => {
   const sheets: { note: Note; y: number }[][] = [[]];
   let y = NOTES_TOP;
   for (const note of text().notes) {
-    if (y + noteHeight(note) > NOTES_BOTTOM && sheets[sheets.length - 1].length > 0) {
+    const height = placeNote(context, note, 0, false);
+    if (y + height > NOTES_BOTTOM && sheets[sheets.length - 1].length > 0) {
       sheets.push([]);
       y = NOTES_NEXT_TOP;
     }
     sheets[sheets.length - 1].push({ note, y });
-    y += noteHeight(note) + 40;
+    y += height + 50;
   }
   return sheets;
 };
 
 /**
- * Les notes de mise à jour, la plus récente en haut : le nom de la version, sa date, puis ses lignes (coupées dans les
- * textes, comme l'avant-propos ; une ligne vide fait un blanc). Trop longues pour une page, elles continuent sur la suivante.
+ * Les notes de mise à jour, la plus récente en haut, en journal des modifications (demande de l'auteur, 09/10 : « plus
+ * mise à jour et moins lyrique »). Trop longues pour une page, elles continuent sur la suivante.
  */
 const notesPage = (context: CanvasRenderingContext2D, page: number): void => {
-  const sheet = notesSheets()[page - NOTES_PAGE];
+  const sheet = notesSheets(context)[page - NOTES_PAGE];
   if (!sheet) return;
   if (page === NOTES_PAGE) heading(context, text().parts[4]);
-  for (const { note, y: top } of sheet) {
-    write(context, note.title.toLocaleUpperCase(), CENTER, top, { font: `600 20px ${TITLE}`, color: INK, spacing: 4 });
-    write(context, note.date, CENTER, top + 30, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-    let y = top + 80;
-    for (const line of note.lines) {
-      if (line) write(context, line, CENTER, y, { font: `20px ${GARAMOND}`, color: INK });
-      y += line ? 30 : 16;
-    }
-  }
+  for (const { note, y } of sheet) placeNote(context, note, y, true);
   folio(context, page);
 };
 
