@@ -213,14 +213,14 @@ const wrapItem = (context: CanvasRenderingContext2D, item: string): string[] => 
 /**
  * Une version posée à partir de `top` : son nom et sa date au milieu, puis ses parties (« Nouveautés »,
  * « Corrections »… ; sans intertitre, la liste seule) et leurs puces. Sans `draw`, elle est seulement mesurée.
- * Rend sa hauteur.
+ * `continued` : la suite d'une version commencée à la page d'avant, sans son nom ni sa date. Rend sa hauteur.
  */
-const placeNote = (context: CanvasRenderingContext2D, note: Note, top: number, draw: boolean): number => {
-  if (draw) {
+const placeNote = (context: CanvasRenderingContext2D, note: Note, top: number, draw: boolean, continued = false): number => {
+  if (draw && !continued) {
     write(context, note.title.toLocaleUpperCase(), CENTER, top, { font: `600 20px ${TITLE}`, color: INK, spacing: 4 });
     write(context, note.date, CENTER, top + 30, { font: `italic 18px ${GARAMOND}`, color: SOFT });
   }
-  let y = top + NOTES_HEAD;
+  let y = continued ? top + NOTES_LINE - 6 : top + NOTES_HEAD;
   note.sections.forEach((section, index) => {
     if (index > 0) y += NOTES_SECTION - NOTES_LINE;
     if (section.heading) {
@@ -239,21 +239,59 @@ const placeNote = (context: CanvasRenderingContext2D, note: Note, top: number, d
   return y - NOTES_LINE - NOTES_ITEM - top + 10;
 };
 
+type Placed = { note: Note; y: number; continued: boolean };
+
+/** Les premières puces d'une version, `count` en tout, parties comprises (une partie coupée garde son intertitre). */
+const firstItems = (note: Note, count: number): Note => {
+  let left = count;
+  const sections = note.sections.flatMap((section) => {
+    const items = section.items.slice(0, Math.max(0, left));
+    left -= items.length;
+    return items.length > 0 ? [{ ...section, items }] : [];
+  });
+  return { ...note, sections };
+};
+const afterItems = (note: Note, count: number): Note => {
+  let skip = count;
+  const sections = note.sections.flatMap((section) => {
+    const items = section.items.slice(Math.min(skip, section.items.length));
+    skip -= section.items.length - items.length;
+    return items.length > 0 ? [{ ...section, items }] : [];
+  });
+  return { ...note, sections };
+};
+const itemCount = (note: Note): number => note.sections.reduce((total, section) => total + section.items.length, 0);
+
 /**
- * Les versions, page par page, la plus récente en haut : une page pleine, la suite passe à la page blanche d'après
- * (jamais une version coupée en deux).
+ * Les versions, page par page, la plus récente en haut : une page pleine, la suite passe à la page blanche d'après.
+ * Une version coupée en deux seulement si elle ne tient pas sur une page entière : ses puces continuent sur la
+ * suivante (jamais sur le folio).
  */
-const notesSheets = (context: CanvasRenderingContext2D): { note: Note; y: number }[][] => {
-  const sheets: { note: Note; y: number }[][] = [[]];
+const notesSheets = (context: CanvasRenderingContext2D): Placed[][] => {
+  const sheets: Placed[][] = [[]];
   let y = NOTES_TOP;
-  for (const note of text().notes) {
-    const height = placeNote(context, note, 0, false);
-    if (y + height > NOTES_BOTTOM && sheets[sheets.length - 1].length > 0) {
-      sheets.push([]);
-      y = NOTES_NEXT_TOP;
+  const newSheet = (): void => {
+    sheets.push([]);
+    y = NOTES_NEXT_TOP;
+  };
+  for (const whole of text().notes) {
+    let note = whole;
+    let continued = false;
+    while (itemCount(note) > 0) {
+      const fits = (part: Note): boolean => y + placeNote(context, part, 0, false, continued) <= NOTES_BOTTOM;
+      if (!fits(note) && sheets[sheets.length - 1].length > 0 && !continued) {
+        newSheet();
+        continue;
+      }
+      let count = itemCount(note);
+      while (count > 1 && !fits(firstItems(note, count))) count--;
+      const part = firstItems(note, count);
+      sheets[sheets.length - 1].push({ note: part, y, continued });
+      y += placeNote(context, part, 0, false, continued) + 50;
+      note = afterItems(note, count);
+      continued = true;
+      if (itemCount(note) > 0) newSheet();
     }
-    sheets[sheets.length - 1].push({ note, y });
-    y += height + 50;
   }
   return sheets;
 };
@@ -266,7 +304,7 @@ const notesPage = (context: CanvasRenderingContext2D, page: number): void => {
   const sheet = notesSheets(context)[page - NOTES_PAGE];
   if (!sheet) return;
   if (page === NOTES_PAGE) heading(context, text().parts[4]);
-  for (const { note, y } of sheet) placeNote(context, note, y, true);
+  for (const { note, y, continued } of sheet) placeNote(context, note, y, true, continued);
   folio(context, page);
 };
 
