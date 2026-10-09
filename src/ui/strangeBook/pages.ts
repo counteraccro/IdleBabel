@@ -146,19 +146,18 @@ const babelGold = (item: TextItem): TextItem => (currentNotation() === 'babel' &
 /** Une ligne d'une décomposition sous la légende (la vitesse de lecture). */
 const DETAIL_LINE = 28;
 
-/** Les grands chiffres d'un chapitre, chacun sous le précédent ; une décomposition en plusieurs lignes repousse les suivants. */
+/** Les grands chiffres d'un chapitre, chacun sous le précédent ; les lignes d'une décomposition repoussent les suivants. */
 const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[] => {
   const figures = chapter.figures.filter((figure) => !figure.row && figureShown(state, figure));
   const readable = isDeciphered(state, chapter.id);
-  const details = figures.map((figure) => figure.detail?.(state, readable));
-  const lines = details.map((detail) => (Array.isArray(detail) ? detail : []));
+  // Sous la légende, jamais entre le chiffre et elle : sinon on ne sait plus à quel chiffre une légende appartient.
+  const lines = figures.map((figure) => [figure.detail?.(state, readable) ?? []].flat());
   const tops = figures.map(
     (_, index) => FIGURE_TOP + index * FIGURE_STEP + lines.slice(0, index).reduce((total, list) => total + list.length * DETAIL_LINE, 0),
   );
   return [
     ...heading(chapterTitle(state, chapter), CHAPTERS.indexOf(chapter) + 1),
     ...figures.flatMap((figure, index): Item[] => {
-      const detail = details[index];
       const value = babelGold({ kind: 'text', text: figure.value(state), x: 320, y: tops[index], size: 52, align: 'center', spacing: 2 });
       const caption = fitCaption({
         kind: 'text',
@@ -173,7 +172,6 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
       });
       const small = (text: string, y: number): TextItem =>
         fitCaption({ kind: 'text', text, x: 320, y, size: 19, align: 'center', spacing: 2 });
-      if (typeof detail === 'string') return [value, small(detail, tops[index] + 60), { ...caption, y: caption.y + 28 }];
       return [value, caption, ...lines[index].map((line, i) => small(line, caption.y + 34 + i * DETAIL_LINE))];
     }),
     folio(number),

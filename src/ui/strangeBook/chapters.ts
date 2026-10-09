@@ -113,10 +113,6 @@ const etherSpentParts = (state: GameState, readable: boolean): string => {
   const spent = number(state.etherReceived - state.ether);
   return readable ? t('strangeBook.figures.etherSpent').replace('{n}', spent) : spent;
 };
-const prestigesParts = (state: GameState, readable: boolean): string => {
-  const count = number(state.exiles);
-  return readable ? t(`strangeBook.figures.${state.exiles === 1 ? 'onePrestige' : 'prestiges'}`).replace('{n}', count) : count;
-};
 /** Où en est le prochain Éther, en pour cent des pages qui le séparent du dernier. */
 const nextEtherParts = (state: GameState): string => percent(Math.floor(nextEtherProgress(state) * 100) / 100);
 
@@ -175,6 +171,8 @@ export const CHAPTERS: readonly Chapter[] = [
           writeDigits(new Date(startedAt(s)).toLocaleDateString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' })),
       },
       { id: 'days', caption: 'ruma teo', value: (s) => number((Date.now() - startedAt(s)) / DAY_MS) },
+      // Les réveils (prestiges), une fois le premier fait (demande de l'auteur, 09/10).
+      { id: 'reawakenings', caption: 'vi ruma osel', value: (s) => number(s.exiles), shown: (s) => s.exiles > 0 },
     ],
   },
   {
@@ -244,7 +242,7 @@ export const CHAPTERS: readonly Chapter[] = [
     shown: (s) => s.etherReceived > 0,
     figures: [
       { id: 'ether', caption: 'etra dulmo', value: (s) => number(s.ether), detail: etherSpentParts },
-      { id: 'etherReceived', caption: 'etra vunel', value: (s) => number(s.etherReceived), detail: prestigesParts },
+      { id: 'etherReceived', caption: 'etra vunel', value: (s) => number(s.etherReceived) },
       { id: 'prestigeGain', caption: 'etra sopi nar', value: (s) => number(prestigeGain(s)) },
       {
         id: 'nextEther',

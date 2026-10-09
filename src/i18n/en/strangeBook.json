@@ -24,6 +24,7 @@
     "playTime": "the time the Library has taken from you",
     "startDate": "the day you arrived",
     "days": "days since you arrived",
+    "reawakenings": "prestiges: times you have opened your eyes again",
     "pagesPerSecond": "pages passing before your eyes each second",
     "pagesPerSecondParts": "your methods {methods} · your intuitions {intuitions}",
     "pagesPerSecondEther": "the Etherium {stars} · your Ether {ether}",
@@ -37,8 +38,6 @@
     "ether": "Ether waiting to be spent",
     "etherSpent": "{n} already poured into the Etherium",
     "etherReceived": "Ether the prestiges have brought",
-    "onePrestige": "over one prestige",
-    "prestiges": "over {n} prestiges",
     "prestigeGain": "Ether a prestige would bring right now",
     "nextEther": "pages to read before the next Ether"
   },
