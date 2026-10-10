@@ -45,6 +45,7 @@ const FONTS: [string, string][] = [
   ['Playfair Display', 'Claus Eggers Sørensen'],
   ['Old Standard TT', 'Alexey Kryukov'],
   ['Bodoni Moda', 'Owen Earl'],
+  ['Noto Sans Runic', 'Google'],
   ['UnifrakturMaguntia', 'J. « Mach » Wust'],
   ['Oswald', 'Vernon Adams'],
   ['Inter', 'Rasmus Andersson'],
@@ -172,7 +173,8 @@ const fontsPage = (context: CanvasRenderingContext2D): void => {
   const { parts, fontsIntro } = text();
   heading(context, parts[3]);
   write(context, fontsIntro, CENTER, 205, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 28));
+  // Dix-huit polices : resserrées pour finir au-dessus du folio.
+  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 26));
   folio(context, FONTS_PAGE);
 };
 

@@ -22,6 +22,8 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   { id: 'saragossa' },
   { id: 'alice' },
   { id: 'mobyDick' },
+  // Le cartonnage rouge de Hetzel, et dedans tout le texte, runes comprises (10/10).
+  { id: 'centerEarth' },
   { id: 'encyclopedia' },
   { id: 'catalogue' },
   { id: 'sand' },

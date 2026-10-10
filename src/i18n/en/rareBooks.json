@@ -273,6 +273,39 @@
       [682, "year", "1851."]
     ]
   },
+  "centerEarth": {
+    "name": "A Journey into the Interior of the Earth",
+    "cover": ["A Journey into the", "Interior of the Earth"],
+    "contents": "Contents",
+    "chapter": "Chapter",
+    "running": "A JOURNEY INTO THE INTERIOR OF THE EARTH",
+    "front": {
+      "banner": "EXTRAORDINARY VOYAGES",
+      "author": "JULES VERNE",
+      "title": ["A JOURNEY", "INTO THE INTERIOR", "OF THE EARTH"],
+      "publisher": "J. HETZEL & Cie"
+    },
+    "spine": ["A JOURNEY", "INTO THE", "INTERIOR OF", "THE EARTH"],
+    "spineAuthor": "JULES VERNE",
+    "spinePublisher": "J. HETZEL",
+    "monogram": "JH",
+    "titlePage": [
+      [170, "bigEn", "A JOURNEY"],
+      [214, "into", "INTO THE"],
+      [264, "titleEn", "INTERIOR OF THE EARTH."],
+      [300, "rule", "40"],
+      [346, "from", "FROM THE FRENCH OF"],
+      [384, "author", "JULES VERNE."],
+      [448, "translated", "TRANSLATED BY"],
+      [476, "translator", "FREDERICK AMADEUS MALLESON, M.A.,"],
+      [502, "vicar", "Vicar of Broughton-in-Furness."],
+      [576, "rule", "26"],
+      [640, "cityEn", "LONDON:"],
+      [672, "address", "WARD, LOCK, & CO., WARWICK HOUSE,"],
+      [696, "address", "SALISBURY SQUARE, E.C."],
+      [730, "year", "1877."]
+    ]
+  },
   "encyclopedia": {
     "name": "The Encyclopédie",
     "cover": ["Encyclopédie"],
@@ -957,6 +990,7 @@
       ["DON QUIXOTE", "LOUIS VIARDOT"],
       ["THE DIVINE COMEDY", "LAMENNAIS"],
       ["SARAGOSSA", "JAN POTOCKI"],
+      ["A JOURNEY INTO THE EARTH", "F. A. MALLESON"],
       ["THE ENCYCLOPÉDIE", "DIDEROT · D’ALEMBERT"]
     ],
     "back": {
@@ -998,13 +1032,14 @@
           ["The Arabian Nights Entertainments", "edited by Walter Scott", "1811 · Project Gutenberg"],
           ["Alice’s Adventures in Wonderland", "Lewis Carroll", "1865 · Project Gutenberg"],
           ["Moby-Dick", "Herman Melville", "Harper, 1851 · Project Gutenberg"],
+          ["A Journey into the Interior of the Earth", "Jules Verne, translated by F. A. Malleson", "Ward, Lock & Co., 1877 · Project Gutenberg"],
           ["Don Quixote", "Cervantes, French translation by Louis Viardot", "Hachette, 1863 · Wikisource"],
           ["The Divine Comedy", "Dante, French translation by Lamennais", "Didier, 1863 · Wikisource"],
           ["The Manuscript Found in Saragossa", "Jan Potocki, written in French", "Gide fils, 1814 · Wikisource"],
           ["The Encyclopédie", "Diderot and d’Alembert, volume I", "Paris, 1751 · Wikisource"]
         ],
         "fontsIntro": "Under a free licence (SIL Open Font License).",
-        "notes": [{"title": "Alpha 1.3", "date": "October 10, 2026", "sections": [{"heading": "New", "items": ["The game tells you when a new version is out, and offers to reload."]}]}, {"title": "Alpha 1.2", "date": "October 9, 2026", "sections": [{"heading": "New", "items": ["Two interactive rare books, to read in the library.", "New seals, two of them secret.", "Open Etherium: the counter shows the Ether left to spend.", "White book: general intuitions have their own part.", "Great Book: the number of prestiges, in the “Hours” chapter."]}, {"heading": "Fixes", "items": ["An open book no longer stops finds.", "Automatic reading is no longer capped at 10 leaves per second.", "A book opened from a seal has its proper size again.", "White book: the Watch’s effect no longer overflows the page.", "Great Book: each caption sits under its figure.", "The Wild Rabbit: a click that misses the rabbit no longer turns the page."]}]}, {"title": "Alpha 1.1", "date": "October 8, 2026", "sections": [{"heading": "New", "items": ["A letter sometimes escapes the book: catch it for a boon lasting a few seconds.", "The Quill, ninth constellation: six more boons.", "Three intuitions, new seals."]}]}, {"title": "Alpha 1", "date": "October 8, 2026", "sections": [{"heading": "", "items": ["The complete game loop: the Manual Age and the Automatic Age.", "The Etherium and its eight constellations.", "Over 300 seals, rare books and the library.", "Your game is kept from one version to the next."]}]}],
+        "notes": [{"title": "Alpha 1.3", "date": "October 10, 2026", "sections": [{"heading": "New", "items": ["The game tells you when a new version is out, and offers to reload.", "A new rare book: A Journey into the Interior of the Earth, by Jules Verne."]}]}, {"title": "Alpha 1.2", "date": "October 9, 2026", "sections": [{"heading": "New", "items": ["Two interactive rare books, to read in the library.", "New seals, two of them secret.", "Open Etherium: the counter shows the Ether left to spend.", "White book: general intuitions have their own part.", "Great Book: the number of prestiges, in the “Hours” chapter."]}, {"heading": "Fixes", "items": ["An open book no longer stops finds.", "Automatic reading is no longer capped at 10 leaves per second.", "A book opened from a seal has its proper size again.", "White book: the Watch’s effect no longer overflows the page.", "Great Book: each caption sits under its figure.", "The Wild Rabbit: a click that misses the rabbit no longer turns the page."]}]}, {"title": "Alpha 1.1", "date": "October 8, 2026", "sections": [{"heading": "New", "items": ["A letter sometimes escapes the book: catch it for a boon lasting a few seconds.", "The Quill, ninth constellation: six more boons.", "Three intuitions, new seals."]}]}, {"title": "Alpha 1", "date": "October 8, 2026", "sections": [{"heading": "", "items": ["The complete game loop: the Manual Age and the Automatic Age.", "The Etherium and its eight constellations.", "Over 300 seals, rare books and the library.", "Your game is kept from one version to the next."]}]}],
         "colophon": ["Printed", "in the Library of Babel,", "on the presses of the hexagon", "where you stand.", "", "Print run: one copy.", "There are infinitely many others."]
     }
   },
@@ -2356,7 +2391,7 @@
         "classics": {
           "head": "The classics",
           "text": [
-            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper, Don Quixote in the red cloth of the great Doré edition, with the title page of Madrid, 1605, as a flyleaf, the Divine Comedy in midnight-blue morocco with the whole universe of the poem tooled in gold, Hell, Purgatory and the nine heavens, the Manuscript Found in Saragossa in the tree calf of its 1814 edition, which ends on the promise of a sequel that never came, and blank pages, the Encyclopédie of Diderot and d’Alembert in the mottled calf of its subscribers, the Preliminary Discourse, then, in two columns, the articles that speak of the Library: Babel, Library, Book. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
+            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper, Don Quixote in the red cloth of the great Doré edition, with the title page of Madrid, 1605, as a flyleaf, the Divine Comedy in midnight-blue morocco with the whole universe of the poem tooled in gold, Hell, Purgatory and the nine heavens, the Manuscript Found in Saragossa in the tree calf of its 1814 edition, which ends on the promise of a sequel that never came, and blank pages, A Journey into the Interior of the Earth in Hetzel’s red and gold boards, with Saknussemm’s parchment in real runes, the Encyclopédie of Diderot and d’Alembert in the mottled calf of its subscribers, the Preliminary Discourse, then, in two columns, the articles that speak of the Library: Babel, Library, Book. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
             "Every book was given a silk ribbon that hangs and sways. The first one cracked like a whip. The second was calmer."
           ]
         },
@@ -2423,6 +2458,8 @@
         "alice-b": "Bué’s title page",
         "alice-c": "The playing card",
         "mobyDick-b": "Richard Bentley, London",
+        "centerEarth-b": "The first edition in paper wrappers, 1864",
+        "centerEarth-c": "Saknussemm’s cryptogram",
         "bible-a": "Gutenberg, Mainz, 1455",
         "arabianNights-a": "Galland, Paris, 1704",
         "arabianNights-b": "Le Normant, Paris, 1806",

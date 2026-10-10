@@ -46,6 +46,8 @@ export interface ClassicStyle {
   inlineHeading?: { font: string; spacing: number };
   /** Les premiers mots d'un chapitre en capitales (« LE COMTE d’Olavidez »), quand il n'a pas de lettrine. */
   openingCaps?: number;
+  /** Les strophes centrées, ligne à ligne (des figures : les runes, les lettres d'un cryptogramme) ; sans : en retrait. */
+  centerVerses?: boolean;
   /** Une ligne seule en capitales plus courte que ça est centrée (« FIN. ») ; sans : 30 caractères. */
   centeredUpTo?: number;
   /** Des placements propres au livre, repris de sa maquette (sans : ceux du moteur). */
@@ -203,7 +205,8 @@ function* layoutSteps(context: CanvasRenderingContext2D, text: ClassicText, styl
       y += style.line / 2;
       for (const verse of para.split('\n'))
         for (const [row, line] of wrapVarying(context, verse, (n) => RIGHT - LEFT - VERSE_INDENT - (n ? 24 : 0)).entries())
-          if (!place(chapter, line, LEFT + VERSE_INDENT + (row ? 24 : 0))) return false;
+          if (!(style.centerVerses ? place(chapter, line, WIDTH / 2, true) : place(chapter, line, LEFT + VERSE_INDENT + (row ? 24 : 0))))
+            return false;
       y += style.line / 2;
       return true;
     }
