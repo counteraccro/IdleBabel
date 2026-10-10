@@ -95,5 +95,11 @@
       "minutes": "{n} minutes",
       "minuteSeconds": "{m} min {s} s"
     }
+  },
+  "update": {
+    "title": "New version",
+    "text": ["Version {name} of Idle Babel is out.", "Reload the game to discover it. Your reading is saved just before."],
+    "reload": "Reload",
+    "later": "Later"
   }
 }

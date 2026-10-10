@@ -68,6 +68,7 @@ export const DRAFT_GROUPS = {
   etheriumTrees: ['etherium-trees-a', 'etherium-trees-b', 'etherium-trees-c'],
   etheriumInk: ['etherium-ink-d1', 'etherium-ink-d3', 'etherium-ink-d4'],
   sealVision: ['seal-vision-a', 'seal-vision-c'],
+  newVersion: ['new-version-a'],
 };
 
 export const STORY: StoryChapter[] = [
@@ -131,7 +132,7 @@ export const STORY: StoryChapter[] = [
     ],
   },
   // Après l'Alpha 1 : ce qui vient avec l'Alpha 1.1.
-  { key: 'alpha', sections: [{ key: 'letter' }] },
+  { key: 'alpha', sections: [{ key: 'letter' }, { key: 'newVersion', drafts: ['newVersion'] }] },
 ];
 
 /** Les couvertures retenues montrées en planche, dans l'ordre du livre. */

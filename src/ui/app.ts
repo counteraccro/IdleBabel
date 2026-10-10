@@ -14,6 +14,7 @@ import { notebook3d } from './options/notebook3d';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { anyPartNews, meetStrangeBook } from '../systems/decipher';
 import { mountAwayNotice } from './awayNotice/awayNotice';
+import { mountUpdateNotice } from './updateNotice/updateNotice';
 import { gameBack, gameLeft } from '../core/absence';
 import { setLocale, t } from '../i18n';
 import { deleteSave, saveGame } from '../core/save';
@@ -379,6 +380,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   meetStrangeBook(state);
   // Retour d'une longue absence : avant les récits en attente, qui le suivent.
   mountAwayNotice(state);
+  // Une nouvelle version en ligne : proposer de recharger.
+  mountUpdateNotice(state);
   const tellPendingLore = mountLore(state);
   // Nouvelle partie (ou partie d'avant le nom) : le joueur se présente et choisit sa langue.
   if (!state.playerName)

@@ -95,5 +95,14 @@
       "minutes": "{n} minutes",
       "minuteSeconds": "{m} min {s}"
     }
+  },
+  "update": {
+    "title": "Nouvelle version",
+    "text": [
+      "La version {name} d’Idle Babel est en ligne.",
+      "Rechargez le jeu pour la découvrir. Votre lecture est sauvegardée juste avant."
+    ],
+    "reload": "Recharger",
+    "later": "Plus tard"
   }
 }
