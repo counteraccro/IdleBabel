@@ -214,6 +214,10 @@ export const SEALS: readonly SealDef[] = [
   secret('escaped'),
   // Le Lapin blanc attrapé trois fois dans « Le Lapin de garenne », lu dans la bibliothèque (systems/rabbit.ts).
   secret('rabbitHome'),
+  // La seule fin du « Livre sans fin… sauf une ? », le 100, par le lien du 72 ouvert depuis le palier (systems/endlessBook.ts).
+  secret('endlessEnding'),
+  // Le 66 du « Livre sans fin », où aucun choix n'envoie, trouvé en feuilletant (systems/endlessBook.ts).
+  secret('endlessCheat'),
   // Un mot entouré au crayon, à la dernière page du Manuscrit de Voynich (ui/rareBooks/voynich/voynich.ts).
   secret('oneWord'),
   // Vingt pages du Catalogue des catalogues lues dans la bibliothèque, à la recherche d'un cadeau de Noël

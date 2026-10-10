@@ -1052,7 +1052,7 @@
           ["L’Encyclopédie", "Diderot et d’Alembert, tome I", "Paris, 1751 · Wikisource"]
         ],
         "fontsIntro": "Sous licence libre (SIL Open Font License).",
-        "notes": [{"title": "Alpha 1.3", "date": "10 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Le jeu prévient quand une nouvelle version est en ligne, et propose de recharger.", "Un nouveau livre rare : Voyage au centre de la Terre, de Jules Verne."]}]}, {"title": "Alpha 1.2", "date": "9 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Deux livres rares interactifs, à lire dans la bibliothèque.", "De nouveaux sceaux, dont deux secrets.", "Etherium ouvert : le compteur affiche l’Éther à dépenser.", "Livre blanc : les intuitions générales ont leur propre partie.", "Grand Livre : le nombre de prestiges, au chapitre « Heures »."]}, {"heading": "Corrections", "items": ["Un livre ouvert n’arrête plus les trouvailles.", "La lecture automatique n’est plus bridée à 10 feuilles par seconde.", "Un livre ouvert depuis un sceau a de nouveau sa taille.", "Livre blanc : l’effet du Guet ne déborde plus de la page.", "Grand Livre : chaque légende est sous son chiffre.", "Lapin de garenne : un clic qui manque le lapin ne tourne plus la page."]}]}, {"title": "Alpha 1.1", "date": "8 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Une lettre s’échappe parfois du livre : attrape-la pour un bonus de quelques secondes.", "La Plume, neuvième constellation : six bonus de plus.", "Trois intuitions, de nouveaux sceaux."]}]}, {"title": "Alpha 1", "date": "8 octobre 2026", "sections": [{"heading": "", "items": ["La boucle de jeu complète : l’Âge Manuel et l’Âge Automatique.", "L’Etherium et ses huit constellations.", "Plus de 300 sceaux, des livres rares et la bibliothèque.", "Ta partie est gardée d’une version à l’autre."]}]}],
+        "notes": [{"title": "Alpha 1.3", "date": "10 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Le jeu prévient quand une nouvelle version est en ligne, et propose de recharger.", "Un nouveau livre rare : Voyage au centre de la Terre, de Jules Verne.", "Un nouveau livre rare interactif, à lire dans la bibliothèque : Le Livre sans fin… sauf une ?, un livre-jeu.", "Deux nouveaux sceaux secrets."]}]}, {"title": "Alpha 1.2", "date": "9 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Deux livres rares interactifs, à lire dans la bibliothèque.", "De nouveaux sceaux, dont deux secrets.", "Etherium ouvert : le compteur affiche l’Éther à dépenser.", "Livre blanc : les intuitions générales ont leur propre partie.", "Grand Livre : le nombre de prestiges, au chapitre « Heures »."]}, {"heading": "Corrections", "items": ["Un livre ouvert n’arrête plus les trouvailles.", "La lecture automatique n’est plus bridée à 10 feuilles par seconde.", "Un livre ouvert depuis un sceau a de nouveau sa taille.", "Livre blanc : l’effet du Guet ne déborde plus de la page.", "Grand Livre : chaque légende est sous son chiffre.", "Lapin de garenne : un clic qui manque le lapin ne tourne plus la page."]}]}, {"title": "Alpha 1.1", "date": "8 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Une lettre s’échappe parfois du livre : attrape-la pour un bonus de quelques secondes.", "La Plume, neuvième constellation : six bonus de plus.", "Trois intuitions, de nouveaux sceaux."]}]}, {"title": "Alpha 1", "date": "8 octobre 2026", "sections": [{"heading": "", "items": ["La boucle de jeu complète : l’Âge Manuel et l’Âge Automatique.", "L’Etherium et ses huit constellations.", "Plus de 300 sceaux, des livres rares et la bibliothèque.", "Ta partie est gardée d’une version à l’autre."]}]}],
         "colophon": ["Achevé d’imprimer", "dans la Bibliothèque de Babel,", "sur les presses de l’hexagone", "où vous vous trouvez.", "", "Tirage : un exemplaire.", "Il y en a une infinité d’autres."]
     }
   },
@@ -2259,6 +2259,65 @@
       "home": "Le lapin regagne ses planches."
     }
   },
+  "endlessBook": {
+    "name": "Le Livre sans fin… sauf une ?",
+    "cover": [
+      "Le Livre sans fin",
+      "… sauf une ?"
+    ],
+    "collection": "LES SENTIERS QUI BIFURQUENT",
+    "number": "7",
+    "title": [
+      "LE LIVRE",
+      "SANS FIN"
+    ],
+    "tail": "… sauf une ?",
+    "author": "ARIANE DELAFIL",
+    "tagline": "Un livre-jeu · C’est vous qui choisissez votre chemin",
+    "spine": "LE LIVRE SANS FIN",
+    "hook": "Personne n’a jamais vu le sommet.",
+    "blurb": "La tour se dresse au milieu de nulle part, et elle monte, monte, jusqu’à entrer dans les nuages. On dit que là-haut, une porte s’ouvre sur le ciel. On dit aussi que tous ceux qui l’ont cherchée sont revenus au point de départ. Ogresse, sphinx, miroirs, escalier qui ne finit pas : à chaque page, c’est vous qui décidez où aller.",
+    "stats": [
+      [
+        "100",
+        "paragraphes"
+      ],
+      [
+        "27",
+        "façons de mourir"
+      ],
+      [
+        "1",
+        "seule fin"
+      ]
+    ],
+    "memory": "Pas de dés, pas de crayon : seulement votre mémoire.",
+    "age": "Dès 10 ans",
+    "pages": {
+      "author": "ARIANE DELAFIL",
+      "genre": "un livre-jeu",
+      "collection": "Les Sentiers qui bifurquent",
+      "legal": [
+        "Le Livre sans fin… sauf une ?",
+        "Les Sentiers qui bifurquent, n° 7.",
+        "",
+        "Texte d’Ariane Delafil.",
+        "Bibliothèque de Babel.",
+        "Tous droits réservés.",
+        "",
+        "Toute ressemblance avec une tour existante",
+        "serait une coïncidence. Il n’en existe qu’une."
+      ],
+      "rulesTitle": "COMMENT LIRE CE LIVRE",
+      "rules": [
+        "Ce livre ne se lit pas dans l’ordre. Il est fait de cent paragraphes numérotés. Au bas de chacun, vous choisissez ce que vous faites, et le numéro vous indique où continuer.",
+        "Vous mourrez souvent. Ce n’est pas grave : retournez au {}, et recommencez. Ce que vous avez appris en route, gardez-le en mémoire ; personne ne le notera pour vous.",
+        "Ce livre n’a qu’une fin."
+      ],
+      "warning": "Ne le feuilletez pas pour la chercher. Il le saurait.",
+      "babelChoice": "ql vxo, rendez-vous au {}."
+    }
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -2392,7 +2451,8 @@
             "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait.",
             "Puis le Catalogue des catalogues, celui que cherchent les bibliothécaires de Borges. Sur sa couverture de cuir bleu nuit, le livre se contient lui-même, jusqu’à n’être plus qu’un point d’or. Dedans, un registre de livres, un par ligne, chacun avec sa cote.",
             "Puis le Livre de sable, celui d’une nouvelle de Borges, qui n’a ni première ni dernière page. Sur sa couverture, un désert au soir, et le mot « sable » qui s’en va en grains. Dedans, des versets sans fin, des numéros de page sans suite, et pas une page qu’on retrouve.",
-            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.", "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur quarante-deux mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit.", "Puis les Dark patterns par l’exemple, un best-seller d’aujourd’hui pour concepteurs d’interfaces, préfacé avec le plus grand sérieux. Dans la bibliothèque, ses exemples ne se lisent pas : ils se subissent. Un bandeau de cookies, un bouton qui fuit, un compte à rebours, un désabonnement sans fin, un abonnement forcé, un panier qui se remplit tout seul, des publicités déguisées, une foule inventée, des cases à double négation, un fil qui ne finit jamais : il faut trouver la sortie. Il y en a toujours une.", "Puis le Lapin de garenne, un traité d’histoire naturelle du siècle d’avant, toile verte et or. Sur sa couverture, un médaillon gravé : l’herbe, la haie, le terrier, et la place du lapin, vide. Dedans, douze planches où il manque toujours. C’est qu’il court : dans la bibliothèque, le Lapin blanc d’Alice traverse parfois les pages en bondissant. Il faut l’attraper trois fois ; à chaque fois, il revient plus vite."
+            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.", "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur quarante-deux mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit.", "Puis les Dark patterns par l’exemple, un best-seller d’aujourd’hui pour concepteurs d’interfaces, préfacé avec le plus grand sérieux. Dans la bibliothèque, ses exemples ne se lisent pas : ils se subissent. Un bandeau de cookies, un bouton qui fuit, un compte à rebours, un désabonnement sans fin, un abonnement forcé, un panier qui se remplit tout seul, des publicités déguisées, une foule inventée, des cases à double négation, un fil qui ne finit jamais : il faut trouver la sortie. Il y en a toujours une.", "Puis le Lapin de garenne, un traité d’histoire naturelle du siècle d’avant, toile verte et or. Sur sa couverture, un médaillon gravé : l’herbe, la haie, le terrier, et la place du lapin, vide. Dedans, douze planches où il manque toujours. C’est qu’il court : dans la bibliothèque, le Lapin blanc d’Alice traverse parfois les pages en bondissant. Il faut l’attraper trois fois ; à chaque fois, il revient plus vite.",
+            "Puis le Livre sans fin… sauf une ?, un livre-jeu de poche des années 80, dans une collection inventée, « Les Sentiers qui bifurquent ». Sur sa couverture noire, une tour qui entre dans les nuages : personne n’en a jamais vu le sommet. Dedans, cent paragraphes ; au bas de chacun, des choix, et le numéro où continuer. On y meurt souvent, et presque tous les chemins ramènent au 1. Il n’a qu’une fin : pour l’ouvrir, il faut se souvenir de trois nombres appris en route, d’une mort à l’autre. Après elle, le livre continue quand même, en charabia, jusqu’à sa dernière page."
           ]
         },
         "library": {
@@ -2503,6 +2563,8 @@
         "darkPatterns-c": "La couverture-interface",
         "rabbit-a2": "La planche",
         "rabbit-a3": "Les traces",
+        "endlessBook-b": "Le grimoire",
+        "endlessBook-c": "Le labyrinthe de numéros",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",

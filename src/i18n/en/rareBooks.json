@@ -1039,7 +1039,7 @@
           ["The Encyclopédie", "Diderot and d’Alembert, volume I", "Paris, 1751 · Wikisource"]
         ],
         "fontsIntro": "Under a free licence (SIL Open Font License).",
-        "notes": [{"title": "Alpha 1.3", "date": "October 10, 2026", "sections": [{"heading": "New", "items": ["The game tells you when a new version is out, and offers to reload.", "A new rare book: A Journey into the Interior of the Earth, by Jules Verne."]}]}, {"title": "Alpha 1.2", "date": "October 9, 2026", "sections": [{"heading": "New", "items": ["Two interactive rare books, to read in the library.", "New seals, two of them secret.", "Open Etherium: the counter shows the Ether left to spend.", "White book: general intuitions have their own part.", "Great Book: the number of prestiges, in the “Hours” chapter."]}, {"heading": "Fixes", "items": ["An open book no longer stops finds.", "Automatic reading is no longer capped at 10 leaves per second.", "A book opened from a seal has its proper size again.", "White book: the Watch’s effect no longer overflows the page.", "Great Book: each caption sits under its figure.", "The Wild Rabbit: a click that misses the rabbit no longer turns the page."]}]}, {"title": "Alpha 1.1", "date": "October 8, 2026", "sections": [{"heading": "New", "items": ["A letter sometimes escapes the book: catch it for a boon lasting a few seconds.", "The Quill, ninth constellation: six more boons.", "Three intuitions, new seals."]}]}, {"title": "Alpha 1", "date": "October 8, 2026", "sections": [{"heading": "", "items": ["The complete game loop: the Manual Age and the Automatic Age.", "The Etherium and its eight constellations.", "Over 300 seals, rare books and the library.", "Your game is kept from one version to the next."]}]}],
+        "notes": [{"title": "Alpha 1.3", "date": "October 10, 2026", "sections": [{"heading": "New", "items": ["The game tells you when a new version is out, and offers to reload.", "A new rare book: A Journey into the Interior of the Earth, by Jules Verne.", "A new interactive rare book, to read in the library: The Book with No Ending… except one?, a gamebook.", "Two new secret seals."]}]}, {"title": "Alpha 1.2", "date": "October 9, 2026", "sections": [{"heading": "New", "items": ["Two interactive rare books, to read in the library.", "New seals, two of them secret.", "Open Etherium: the counter shows the Ether left to spend.", "White book: general intuitions have their own part.", "Great Book: the number of prestiges, in the “Hours” chapter."]}, {"heading": "Fixes", "items": ["An open book no longer stops finds.", "Automatic reading is no longer capped at 10 leaves per second.", "A book opened from a seal has its proper size again.", "White book: the Watch’s effect no longer overflows the page.", "Great Book: each caption sits under its figure.", "The Wild Rabbit: a click that misses the rabbit no longer turns the page."]}]}, {"title": "Alpha 1.1", "date": "October 8, 2026", "sections": [{"heading": "New", "items": ["A letter sometimes escapes the book: catch it for a boon lasting a few seconds.", "The Quill, ninth constellation: six more boons.", "Three intuitions, new seals."]}]}, {"title": "Alpha 1", "date": "October 8, 2026", "sections": [{"heading": "", "items": ["The complete game loop: the Manual Age and the Automatic Age.", "The Etherium and its eight constellations.", "Over 300 seals, rare books and the library.", "Your game is kept from one version to the next."]}]}],
         "colophon": ["Printed", "in the Library of Babel,", "on the presses of the hexagon", "where you stand.", "", "Print run: one copy.", "There are infinitely many others."]
     }
   },
@@ -2246,6 +2246,65 @@
       "home": "The rabbit goes back to his plates."
     }
   },
+  "endlessBook": {
+    "name": "The Book with No Ending… except one?",
+    "cover": [
+      "The Book with No Ending",
+      "… except one?"
+    ],
+    "collection": "FORKING PATHS",
+    "number": "7",
+    "title": [
+      "THE BOOK",
+      "WITH NO ENDING"
+    ],
+    "tail": "… except one?",
+    "author": "ARIADNE THREADWELL",
+    "tagline": "A gamebook · You choose your own path",
+    "spine": "THE BOOK WITH NO ENDING",
+    "hook": "Nobody has ever seen the top.",
+    "blurb": "The tower rises in the middle of nowhere, and it climbs and climbs until it disappears into the clouds. They say that up there, a door opens onto the sky. They also say that everyone who went looking for it ended up back where they started. An ogress, a sphinx, mirrors, a staircase that never ends: on every page, you decide where to go.",
+    "stats": [
+      [
+        "100",
+        "paragraphs"
+      ],
+      [
+        "27",
+        "ways to die"
+      ],
+      [
+        "1",
+        "ending"
+      ]
+    ],
+    "memory": "No dice, no pencil: only your memory.",
+    "age": "Ages 10 and up",
+    "pages": {
+      "author": "ARIADNE THREADWELL",
+      "genre": "a gamebook",
+      "collection": "Forking Paths",
+      "legal": [
+        "The Book with No Ending… except one?",
+        "Forking Paths, no. 7.",
+        "",
+        "Written by Ariadne Threadwell.",
+        "Library of Babel.",
+        "All rights reserved.",
+        "",
+        "Any resemblance to an existing tower",
+        "is purely coincidental. There is only one."
+      ],
+      "rulesTitle": "HOW TO READ THIS BOOK",
+      "rules": [
+        "This book is not read in order. It is made of a hundred numbered paragraphs. At the end of each one, you choose what to do, and the number tells you where to go next.",
+        "You will die often. It does not matter: turn back to {}, and start again. Whatever you learned on the way, keep it in your memory; nobody will write it down for you.",
+        "This book has only one ending."
+      ],
+      "warning": "Do not leaf through it looking for it. It would know.",
+      "babelChoice": "ql vxo, turn to {}."
+    }
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -2379,7 +2438,8 @@
             "Then the Voynich Manuscript, the one book no one has ever been able to read. On its vellum cover grows a plant that does not exist. Inside, more plants, circles of stars, pools, apothecary jars, and an unknown script, drawn stroke by stroke.",
             "Then the Catalogue of Catalogues, the one Borges’s librarians search for. On its midnight-blue leather cover, the book contains itself, until it is nothing but a point of gold. Inside, a register of books, one per line, each with its shelf mark.",
             "Then the Book of Sand, from a story by Borges, with neither a first page nor a last. On its cover, a desert at dusk, and the word “Sand” blowing away grain by grain. Inside, endless verses, page numbers that follow no order, and not one page you can find again.",
-            "Then the Big Book of X, which tells the story of the letter X, from the caves to the Library. On its cream cover, a huge black X, like a type specimen. Inside, each chapter begins with a short story, and the rest is written in the X language.", "Then they became harder to find: all of them could be had in a few hours. Each rare book found makes the next one a quarter rarer. The first comes quickly; the last, one book in forty-two thousand, takes hundreds of hours. They belong to no age: a very long-term reward. The Ledger gave them a chapter, “Rarities”: how many have been found, and, as a percentage, the chance that the next book is one. How many are left, it does not say; when none are left, a line says so.", "Then Dark Patterns by Example, a bestseller of today for interface designers, with a foreword of the utmost seriousness. In the library, its examples are not read: they are endured. A cookie banner, a button that runs away, a countdown, an endless unsubscribe, a forced subscription, a basket that fills itself, disguised ads, an invented crowd, double-negative boxes, a feed that never ends: you have to find the way out. There is always one.", "Then The Wild Rabbit, a natural history treatise from the century before, in green cloth and gold. On its cover, an engraved medallion: the grass, the hedge, the burrow, and the rabbit’s place, empty. Inside, twelve plates he is always missing from. That is because he runs: in the library, Alice’s White Rabbit sometimes bounds across the pages. He has to be caught three times; each time, he comes back faster."
+            "Then the Big Book of X, which tells the story of the letter X, from the caves to the Library. On its cream cover, a huge black X, like a type specimen. Inside, each chapter begins with a short story, and the rest is written in the X language.", "Then they became harder to find: all of them could be had in a few hours. Each rare book found makes the next one a quarter rarer. The first comes quickly; the last, one book in forty-two thousand, takes hundreds of hours. They belong to no age: a very long-term reward. The Ledger gave them a chapter, “Rarities”: how many have been found, and, as a percentage, the chance that the next book is one. How many are left, it does not say; when none are left, a line says so.", "Then Dark Patterns by Example, a bestseller of today for interface designers, with a foreword of the utmost seriousness. In the library, its examples are not read: they are endured. A cookie banner, a button that runs away, a countdown, an endless unsubscribe, a forced subscription, a basket that fills itself, disguised ads, an invented crowd, double-negative boxes, a feed that never ends: you have to find the way out. There is always one.", "Then The Wild Rabbit, a natural history treatise from the century before, in green cloth and gold. On its cover, an engraved medallion: the grass, the hedge, the burrow, and the rabbit’s place, empty. Inside, twelve plates he is always missing from. That is because he runs: in the library, Alice’s White Rabbit sometimes bounds across the pages. He has to be caught three times; each time, he comes back faster.",
+            "Then The Book with No Ending… except one?, an 80s paperback gamebook from an invented series, “Forking Paths”. On its black cover, a tower that disappears into the clouds: nobody has ever seen the top. Inside, a hundred paragraphs; at the end of each, choices, and the number where to go next. You die often there, and almost every path leads back to 1. It has only one ending: to open it, you have to remember three numbers learned along the way, from one death to the next. After it, the book goes on all the same, in gibberish, to its very last page."
           ]
         },
         "library": {
@@ -2490,6 +2550,8 @@
         "darkPatterns-c": "The interface cover",
         "rabbit-a2": "The plate",
         "rabbit-a3": "The tracks",
+        "endlessBook-b": "The grimoire",
+        "endlessBook-c": "The maze of numbers",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

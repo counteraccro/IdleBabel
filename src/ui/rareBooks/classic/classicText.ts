@@ -25,17 +25,20 @@ export interface ClassicText {
   chapters: ClassicChapter[];
 }
 
-/** Les textes en cours de chargement (une fois là, c'est classicArt.ts qui les garde, avec leur mise en page). */
-const loading = new Map<string, Promise<ClassicText>>();
+/** Les textes en cours de chargement (une fois là, c'est le livre qui les garde, avec leur mise en page). */
+const loading = new Map<string, Promise<unknown>>();
 
-/** Le texte du livre `id` dans la langue du jeu (un seul chargement à la fois par livre et par langue). */
-export const loadClassicText = (id: string, locale: string = getLocale()): Promise<ClassicText> => {
+/**
+ * Le texte du livre `id` dans la langue du jeu, rangé dans public/texts/<id>.<langue>.json (un classique, le
+ * livre-jeu) ; un seul chargement à la fois par livre et par langue.
+ */
+export const loadBookText = <Text>(id: string, locale: string = getLocale()): Promise<Text> => {
   const key = `${id}.${locale}`;
-  let text = loading.get(key);
+  let text = loading.get(key) as Promise<Text> | undefined;
   if (!text) {
     text = fetch(`${import.meta.env.BASE_URL}texts/${key}.json`).then((response) => {
       if (!response.ok) throw new Error(`texte introuvable : ${key}`);
-      return response.json() as Promise<ClassicText>;
+      return response.json() as Promise<Text>;
     });
     // Gardé seulement le temps du chargement : sinon chaque texte lu resterait deux fois en mémoire, et
     // celui de l'autre langue pour toujours. Un échec (hors ligne…) sera retenté à la prochaine ouverture.
@@ -45,3 +48,6 @@ export const loadClassicText = (id: string, locale: string = getLocale()): Promi
   }
   return text;
 };
+
+/** Le texte d'un classique. */
+export const loadClassicText = (id: string, locale?: string): Promise<ClassicText> => loadBookText<ClassicText>(id, locale);

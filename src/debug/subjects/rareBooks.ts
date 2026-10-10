@@ -6,6 +6,7 @@ import { refreshBook, refreshLibrary } from '../refresh';
 import { RARE_BOOK_HASH } from '../enabled';
 import { remember } from '../remember';
 import { CATCHES } from '../../systems/rabbit';
+import { resetEndlessTrail } from '../../systems/endlessBook';
 import { rabbitCrossNow } from '../../ui/rareBooks/rabbit/rabbitHunt';
 import { BIG_BOOK_REWRITE } from '../../ui/book3d/book3dBook';
 import type { DebugSubject } from './subject';
@@ -85,7 +86,11 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
     );
     kit.info('Lapin blanc', () => `${state.rabbitCaught} / ${CATCHES} prises`);
     kit.actions(
-      ['Faire passer le Lapin blanc', () => rabbitCrossNow(state), { title: 'Le Lapin de garenne ouvert en grand : il traverse la double page.' }],
+      [
+        'Faire passer le Lapin blanc',
+        () => rabbitCrossNow(state),
+        { title: 'Le Lapin de garenne ouvert en grand : il traverse la double page.' },
+      ],
       [
         'Lapin : prises à zéro',
         () => {
@@ -96,5 +101,15 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
         { title: 'Il ressort de ses planches (et le sceau secret est repris).' },
       ],
     );
+    kit.info('Livre sans fin', () => `${['endlessEnding', 'endlessCheat'].filter((id) => id in state.seals).length} / 2 sceaux`);
+    kit.actions([
+      'Livre sans fin : sceaux repris',
+      () => {
+        delete state.seals.endlessEnding;
+        delete state.seals.endlessCheat;
+        resetEndlessTrail();
+      },
+      { title: 'La seule fin et le tricheur, à retrouver ; le chemin suivi est oublié.' },
+    ]);
   },
 };

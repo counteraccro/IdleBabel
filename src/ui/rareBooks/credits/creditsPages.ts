@@ -37,6 +37,7 @@ export { NOTES_PAGE };
 /** Les polices du jeu et qui les a dessinées (toutes sous SIL Open Font License). */
 const FONTS: [string, string][] = [
   ['Cinzel', 'Natanael Gama'],
+  ['Cinzel Decorative', 'Natanael Gama'],
   ['EB Garamond', 'Georg Duffner'],
   ['Libre Caslon Text', 'Impallari Type'],
   ['IM Fell', 'Igino Marini'],
@@ -49,6 +50,7 @@ const FONTS: [string, string][] = [
   ['UnifrakturMaguntia', 'J. « Mach » Wust'],
   ['Oswald', 'Vernon Adams'],
   ['Inter', 'Rasmus Andersson'],
+  ['Libre Franklin', 'Impallari Type'],
   ['JetBrains Mono', 'JetBrains'],
   ['Space Mono', 'Colophon Foundry'],
   ['DM Serif Display', 'Colophon Foundry'],
@@ -173,8 +175,8 @@ const fontsPage = (context: CanvasRenderingContext2D): void => {
   const { parts, fontsIntro } = text();
   heading(context, parts[3]);
   write(context, fontsIntro, CENTER, 205, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-  // Dix-huit polices : resserrées pour finir au-dessus du folio.
-  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 26));
+  // Vingt polices : resserrées pour finir au-dessus du folio.
+  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 23));
   folio(context, FONTS_PAGE);
 };
 

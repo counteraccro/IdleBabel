@@ -13,6 +13,7 @@ import { darkPatternsArt } from './darkPatterns/darkPatterns';
 import { deathBookArt } from './deathBook/deathBook';
 import { divineComedyArt } from './divineComedy/divineComedy';
 import { encyclopediaArt } from './encyclopedia/encyclopedia';
+import { endlessBookArt } from './endlessBook/endlessBook';
 import { directoryArt } from './directory/directory';
 import { idleBabelArt } from './idleBabel/idleBabel';
 import { mobyDickArt } from './mobyDick/mobyDick';
@@ -46,6 +47,7 @@ const ARTS: Record<string, RareBookArt> = {
   divineComedy: divineComedyArt,
   directory: directoryArt,
   encyclopedia: encyclopediaArt,
+  endlessBook: endlessBookArt,
   idleBabel: idleBabelArt,
   mobyDick: mobyDickArt,
   necronomicon: necronomiconArt,

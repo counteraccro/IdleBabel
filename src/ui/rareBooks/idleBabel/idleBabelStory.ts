@@ -56,6 +56,7 @@ export const BOOK_DRAFTS: Record<string, string[]> = {
   bigX: ['bigX-b', 'bigX-c'],
   darkPatterns: ['darkPatterns-a', 'darkPatterns-c'],
   rabbit: ['rabbit-a2', 'rabbit-a3'],
+  endlessBook: ['endlessBook-b', 'endlessBook-c'],
 };
 
 /** Les pistes écartées hors livres : les fenêtres, les méthodes, la vitrine… */
@@ -110,6 +111,7 @@ export const STORY: StoryChapter[] = [
           'bigX',
           'darkPatterns',
           'rabbit',
+          'endlessBook',
         ],
       },
       {

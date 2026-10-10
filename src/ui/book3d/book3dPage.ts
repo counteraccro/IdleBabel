@@ -27,6 +27,10 @@ const OPEN_MS = 1100;
 /** Un livre scellé qui résiste : sa couverture se soulève de si peu (0 : fermé, 1 : ouvert). */
 const NUDGE = 0.1;
 const NUDGE_MS = 280;
+/** Le livre qui tremble (un lien vers la page qu'on lit) : sa durée, l'angle de ses secousses (radians), leur nombre. */
+const TREMBLE_MS = 420;
+const TREMBLE = 0.012;
+const TREMBLES = 4;
 
 /** Pages qui suivent la partie : redessinées à ce rythme, livre posé. */
 const LIVE_MS = 1000;
@@ -169,6 +173,19 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     });
     // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée.
     spec.navigate = (index) => turner?.go(Math.floor(index / 2));
+    // Un lien vers la page qu'on lit : le livre tremble sur place, de moins en moins.
+    spec.tremble = () => {
+      const root = book?.root;
+      if (!root) return;
+      const start = animationNow();
+      const step = (frameTime: number): void => {
+        const t = Math.min(1, (animationNow(frameTime) - start) / TREMBLE_MS);
+        root.rotation.z = t < 1 ? Math.sin(t * Math.PI * 2 * TREMBLES) * TREMBLE * (1 - t) : 0;
+        invalidate();
+        if (t < 1 && !signal.aborted) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
     if (spec.bookmark !== undefined)
       book.setRibbon(spreads > 1 ? Math.floor(spec.bookmark / 2) / (spreads - 1) : 0, spreads > 1 ? 1 / (spreads - 1) : 1);
     // Débogage : accès au livre depuis la console (?debug seulement).

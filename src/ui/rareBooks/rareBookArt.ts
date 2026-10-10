@@ -29,6 +29,8 @@ export interface RareBookArt {
   bookmark?: number;
   /** Les entrées cliquables de la page `page` (un sommaire) : chacune mène à sa page. */
   links?: (page: number) => PageLink[];
+  /** Le lien `link` de la page `page` vient d'être suivi (un livre-jeu : le chemin du lecteur) ; dans la bibliothèque seulement. */
+  followed?: (page: number, link: PageLink, state: GameState) => void;
   /**
    * La page `page` a été découverte en tournant les pages, même vite (un secret à apposer…) ; seulement en
    * lisant le livre dans la bibliothèque, jamais dans le livre en main (rareBook3d.ts).

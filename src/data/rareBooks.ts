@@ -46,6 +46,8 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   { id: 'darkPatterns' },
   // Un traité d'histoire naturelle dont le lapin s'est échappé : le Lapin blanc, à attraper trois fois, dans la bibliothèque (09/10).
   { id: 'rabbit' },
+  // Un livre-jeu des années 80 : cent paragraphes, « rendez-vous au 47 », une seule fin (10/10).
+  { id: 'endlessBook' },
   // L'autobiographie du jeu (décidée le 03/10) : la Bibliothèque contient le livre de sa propre création.
   { id: 'idleBabel' },
   // Le livre de débogage (décidé le 01/10) : dix fois plus rare ; du charabia qui bugue, et il ne s'ouvre

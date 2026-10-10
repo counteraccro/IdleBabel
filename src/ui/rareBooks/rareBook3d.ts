@@ -75,7 +75,12 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
     press: (page, x, y) => {
       const link = linkAt(page, x, y);
       if (link?.href) window.open(link.href, '_blank', 'noopener');
-      else if (link) book.navigate?.(link.target);
+      else if (link) {
+        if (reading) art.followed?.(page, link, state);
+        // Un lien vers la double page ouverte (le 81 du livre-jeu, qui renvoie au 81) : le livre tremble, il y est déjà.
+        if (Math.floor(link.target / 2) === Math.floor(page / 2)) book.tremble?.();
+        else book.navigate?.(link.target);
+      }
       return link !== undefined;
     },
     pointable: (page, x, y) => linkAt(page, x, y) !== undefined,
