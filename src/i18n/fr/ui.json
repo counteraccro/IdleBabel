@@ -38,6 +38,14 @@
   "reduceBlur": "Réduire les effets de flou",
   "reduceBlurHint": "Les chiffres du Grand Livre changent sans se brouiller un instant.",
   "numbers": "Nombres",
+  "scene": "Le décor",
+  "followAge": "Suivre l'Âge",
+  "followAgeHint": "La salle change avec l'Âge atteint.",
+  "scenes": {
+    "desert": "Le désert",
+    "nuit": "La nuit",
+    "verriere": "La verrière"
+  },
   "fps": "FPS",
   "whiteBook": "Le livre blanc",
   "strangeBook": "Le Grand Livre",

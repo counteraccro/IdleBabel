@@ -314,6 +314,49 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
       context.fillText(text, 0, 0);
       context.restore();
     },
+    /**
+     * Les salles dessinées, deux par ligne (maquette .ai/maquette-cahier-decor.html, piste B) : chaque croquis dans
+     * son cadre, son nom au stylo dessous, la choisie entourée. Une salle pas encore vue : un cadre vide et un « ? ».
+     */
+    rooms: (rooms: { sketch?: CanvasImageSource; name: string; chosen: boolean; act?: () => void }[]): void => {
+      const [width, height, gap] = [210, (210 * 1536) / 2688, 2 * GRID];
+      rooms.forEach((room, i) => {
+        const [x, y] = [TEXT_LEFT + (i % 2) * (width + gap), top + Math.floor(i / 2) * (height + 4 * GRID)];
+        item++;
+        context.save();
+        context.translate(x + width / 2, y + height / 2);
+        context.rotate((i % 2 ? 1 : -1) * 0.012);
+        context.translate(-width / 2, -height / 2);
+        if (room.sketch) context.drawImage(room.sketch, 0, 0, width, height);
+        else write('?', width / 2 - 8, height / 2 - 24, pen(36), PENCIL, PEN_LINE);
+        context.restore();
+        stroke(
+          [
+            [x, y],
+            [x + width, y + 1],
+            [x + width - 1, y + height],
+            [x + 1, y + height + 1],
+            [x, y - 1],
+          ],
+          PENCIL,
+          1.2,
+          0.6,
+        );
+        item++;
+        write(room.name, x + 8, y + height + 2, pen(22), room.sketch ? PEN : PENCIL, PEN_LINE);
+        if (room.chosen) {
+          // Entourée comme la langue choisie : un trait qui fait un peu plus d'un tour.
+          const [cx, cy, rx, ry] = [x + width / 2, y + height / 2 + 8, width / 2 + 12, height / 2 + 26];
+          const points: Point[] = [];
+          for (let a = -2.4; a < -2.4 + Math.PI * 2.25; a += 0.15)
+            points.push([cx + rx * Math.cos(a) * (1 + a * 0.012), cy + ry * Math.sin(a)]);
+          item++;
+          stroke(points, PEN, 1.6, 1.2);
+        }
+        if (room.act) zones.push({ x, y, width, height: height + 40, act: room.act });
+      });
+      top += Math.ceil(rooms.length / 2) * (height + 4 * GRID);
+    },
     /** Croquis (image déjà tracée) de côté `size`, centré en (x, y), un peu tourné. */
     sketch: (image: CanvasImageSource, x: number, y: number, size: number): void => {
       item++;

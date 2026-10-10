@@ -38,6 +38,14 @@
   "reduceBlur": "Reduce blur effects",
   "reduceBlurHint": "The Ledger's figures change without blurring for a moment.",
   "numbers": "Numbers",
+  "scene": "The setting",
+  "followAge": "Follow the Age",
+  "followAgeHint": "The room changes with the Age reached.",
+  "scenes": {
+    "desert": "The desert",
+    "nuit": "The night",
+    "verriere": "The glass roof"
+  },
   "fps": "FPS",
   "whiteBook": "The white book",
   "strangeBook": "The Ledger",

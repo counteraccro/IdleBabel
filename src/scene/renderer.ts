@@ -7,12 +7,8 @@ export interface SceneOptions {
   depth: TexImageSource;
   /** Point de fuite de la pièce (centre de la fenêtre), en coordonnées d'image de 0 à 1. */
   vanishing: { x: number; y: number };
-  /** De 0 à 1 : jusqu'où le chercheur voit à travers la brume. */
-  clarity: () => number;
   /** De 0 à 1 : ce qu'il devine derrière la vitre. */
   beyond: () => number;
-  /** Couleur de ce qu'il ne comprend pas encore : obscurité (Âge Manuel) ou brume (Âges suivants). */
-  fogColor: [number, number, number];
 }
 
 const compile = (gl: WebGL2RenderingContext, type: number, source: string): WebGLShader => {
@@ -23,19 +19,24 @@ const compile = (gl: WebGL2RenderingContext, type: number, source: string): WebG
   return shader;
 };
 
-const createTexture = (gl: WebGL2RenderingContext, unit: number, source: TexImageSource): void => {
+const createTexture = (gl: WebGL2RenderingContext, unit: number, source: TexImageSource): WebGLTexture => {
+  const texture = gl.createTexture()!;
   gl.activeTexture(gl.TEXTURE0 + unit);
-  gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+  gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return texture;
 };
 
-/** Affiche la scène en plein écran derrière l'interface. Renvoie false si WebGL2 est indisponible. */
-export const startScene = (canvas: HTMLCanvasElement, options: SceneOptions): boolean => {
+/** Remplace l'image, sa profondeur et son point de fuite (changer de fond). */
+export type SceneSwap = (scene: Pick<SceneOptions, 'image' | 'depth' | 'vanishing'>) => void;
+
+/** Affiche la scène en plein écran derrière l'interface. Renvoie de quoi changer de fond, ou undefined sans WebGL2. */
+export const startScene = (canvas: HTMLCanvasElement, options: SceneOptions): SceneSwap | undefined => {
   const gl = canvas.getContext('webgl2');
-  if (!gl) return false;
+  if (!gl) return undefined;
 
   const program = gl.createProgram()!;
   gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, VERTEX_SHADER));
@@ -49,13 +50,18 @@ export const startScene = (canvas: HTMLCanvasElement, options: SceneOptions): bo
   gl.enableVertexAttribArray(position);
   gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
 
-  createTexture(gl, 0, options.image);
-  createTexture(gl, 1, options.depth);
   const uniform = (name: string) => gl.getUniformLocation(program, name);
   gl.uniform1i(uniform('uImage'), 0);
   gl.uniform1i(uniform('uDepth'), 1);
-  gl.uniform2f(uniform('uVanishing'), options.vanishing.x, options.vanishing.y);
-  gl.uniform3fv(uniform('uFogColor'), options.fogColor);
+  let image = options.image;
+  let textures: WebGLTexture[] = [];
+  const show = (scene: Parameters<SceneSwap>[0]): void => {
+    textures.forEach((texture) => gl.deleteTexture(texture));
+    textures = [createTexture(gl, 0, scene.image), createTexture(gl, 1, scene.depth)];
+    gl.uniform2f(uniform('uVanishing'), scene.vanishing.x, scene.vanishing.y);
+    image = scene.image;
+  };
+  show(options);
 
   const resize = (): void => {
     const ratio = Math.min(window.devicePixelRatio, 2);
@@ -64,7 +70,7 @@ export const startScene = (canvas: HTMLCanvasElement, options: SceneOptions): bo
     gl.viewport(0, 0, canvas.width, canvas.height);
     // Recadrage « cover » : l'image remplit l'écran sans être déformée.
     const screenRatio = canvas.width / canvas.height;
-    const imageRatio = options.image.width / options.image.height;
+    const imageRatio = image.width / image.height;
     const scale = screenRatio > imageRatio ? [1, imageRatio / screenRatio] : [screenRatio / imageRatio, 1];
     const [sx, sy] = scale;
     gl.uniform2f(uniform('uUvScale'), sx, sy);
@@ -75,17 +81,19 @@ export const startScene = (canvas: HTMLCanvasElement, options: SceneOptions): bo
 
   const pointer = createPointer();
   // Cherchés une fois : ils changent à chaque image.
-  const [uPointer, uClarity, uBeyond, uTime] = ['uPointer', 'uClarity', 'uBeyond', 'uTime'].map(uniform);
+  const [uPointer, uBeyond, uTime] = ['uPointer', 'uBeyond', 'uTime'].map(uniform);
   const frame = (frameTime: number): void => {
     const time = animationNow(frameTime);
     pointer.step();
     gl.uniform2f(uPointer, pointer.current.x, pointer.current.y);
-    gl.uniform1f(uClarity, options.clarity());
     gl.uniform1f(uBeyond, options.beyond());
     gl.uniform1f(uTime, time / 1000);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
-  return true;
+  return (scene) => {
+    show(scene);
+    resize();
+  };
 };

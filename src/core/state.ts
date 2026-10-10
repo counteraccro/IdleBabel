@@ -6,6 +6,7 @@ import type { Locale } from '../i18n';
 import { noFinds, type FindCounts } from './countedFinds';
 import type { PartId } from '../data/decipher';
 import { newGameSeed } from './random';
+import type { SceneId } from '../scene/scenes';
 
 export const SAVE_VERSION = 1;
 
@@ -25,6 +26,8 @@ export interface Settings {
   notation: Notation;
   /** Combien de méthodes un clic achète (choisi sous la ruche). */
   buyLot: BuyLot;
+  /** Le fond gardé quel que soit l'Âge (cahier, page du décor), ou null : le fond suit l'Âge. */
+  scene: SceneId | null;
 }
 
 /** Chiffres de la partie, relevés en silence : le joueur ne les découvre que plus tard. */
@@ -49,6 +52,7 @@ export const DEFAULT_SETTINGS: Settings = {
   pageArrows: false,
   notation: 'full',
   buyLot: 1,
+  scene: null,
 };
 
 export interface GameState {

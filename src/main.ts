@@ -7,7 +7,8 @@ import { onResume } from './ui/animationClock';
 import { mountApp } from './ui/app';
 import { mountSealVisions } from './ui/sealVision';
 import { mountScene } from './scene';
-import { beyond, clarity } from './systems/perception';
+import { sceneShown } from './scene/scenes';
+import { beyond } from './systems/perception';
 import { mountDebugPanel } from './debug/debugPanel';
 import { isDebugEnabled } from './debug/enabled';
 import { readStrangeTitleWith } from './systems/coverTitle';
@@ -32,7 +33,7 @@ readReaderNameWith(() => state.playerName);
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);
 mountSealVisions(state);
 startLoop(state, update);
-void mountScene({ clarity: () => clarity(state), beyond: () => beyond(state) });
+void mountScene({ beyond: () => beyond(state), wanted: () => sceneShown(state) });
 if (isDebugEnabled()) mountDebugPanel(state);
 
 setInterval(() => saveGame(state), AUTOSAVE_MS);

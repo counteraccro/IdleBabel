@@ -1,14 +1,6 @@
 import { loadDepth } from './depthMap';
-import { startScene } from './renderer';
-
-/** Décor de l'Âge Manuel : la pièce à une fenêtre. */
-const SCENE = {
-  image: 'scenes/age1.jpg',
-  depth: 'scenes/age1-depth.png',
-  vanishing: { x: 0.56, y: 0.45 },
-  /** Âge Manuel : une obscurité presque totale, pas de brume. */
-  fogColor: [0.012, 0.009, 0.007] as [number, number, number],
-};
+import { startScene, type SceneSwap } from './renderer';
+import { SCENES, type SceneDefinition, type SceneId } from './scenes';
 
 const loadImage = (src: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
@@ -18,24 +10,54 @@ const loadImage = (src: string): Promise<HTMLImageElement> =>
     image.src = src;
   });
 
-export const mountScene = async (perception: { clarity: () => number; beyond: () => number }): Promise<void> => {
-  const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL;
+const sceneOf = (id: SceneId): SceneDefinition => SCENES.find((scene) => scene.id === id)!;
+const load = async (scene: SceneDefinition) => {
+  const image = await loadImage(base + scene.image);
+  return { image, depth: await loadDepth(base + scene.depth, image, scene.vanishing), vanishing: scene.vanishing };
+};
+
+/** Le fond voulu est relu chaque seconde : un nouvel Âge, un fond coché dans le cahier. */
+const FOLLOW_MS = 1000;
+
+let current: SceneId;
+let forced: SceneId | undefined;
+let swap: SceneSwap | undefined;
+
+/** Le fond affiché. */
+export const shownScene = (): SceneId => current;
+
+/** Débogage : montre ce fond, même pas encore vu, ou undefined pour rendre la main au jeu. */
+export const forceScene = (id: SceneId | undefined): void => {
+  forced = id;
+};
+
+const showScene = async (id: SceneId): Promise<void> => {
+  current = id;
+  if (swap) swap(await load(sceneOf(id)));
+  else document.body.style.backgroundImage = `url(${base + sceneOf(id).image})`;
+};
+
+export const mountScene = async (options: { beyond: () => number; wanted: () => SceneId }): Promise<void> => {
+  current = options.wanted();
+  setInterval(() => {
+    const wanted = forced ?? options.wanted();
+    if (wanted !== current) void showScene(wanted);
+  }, FOLLOW_MS);
+
   const canvas = document.createElement('canvas');
   canvas.className = 'scene';
   canvas.setAttribute('aria-hidden', 'true');
   document.body.prepend(canvas);
 
-  let started = false;
   try {
-    const image = await loadImage(base + SCENE.image);
-    const depth = await loadDepth(base + SCENE.depth, image, SCENE.vanishing);
-    started = startScene(canvas, { image, depth, vanishing: SCENE.vanishing, fogColor: SCENE.fogColor, ...perception });
+    swap = startScene(canvas, { ...(await load(sceneOf(current))), beyond: options.beyond });
   } catch (error) {
     // Image introuvable ou WebGL2 en panne : le fond reste sombre, ou l'image fixe si elle se charge.
     console.error('Scène animée indisponible, image fixe affichée à la place.', error);
   }
-  if (!started) {
+  if (!swap) {
     canvas.remove();
-    document.body.style.background = `#0b0806 url(${base + SCENE.image}) center / cover`;
+    document.body.style.background = `#0b0806 url(${base + sceneOf(current).image}) center / cover`;
   }
 };

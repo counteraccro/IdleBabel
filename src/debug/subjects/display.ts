@@ -1,21 +1,24 @@
-import { beyond, clarity } from '../../systems/perception';
-import { compact, format, type DebugSubject } from './subject';
+import { forceScene, shownScene } from '../../scene';
+import { SCENES } from '../../scene/scenes';
+import { beyond } from '../../systems/perception';
+import { format, type DebugSubject } from './subject';
+
+const SCENE_NAMES: Record<string, string> = { nuit: 'La salle étoilée', desert: 'L’hexagone au désert', verriere: 'La verrière' };
 
 export const DISPLAY_SUBJECTS: DebugSubject[] = [
   {
     id: 'scene',
     chapter: 'display',
     name: 'Le décor',
-    description: 'La pièce qui s’éclaire avec les pages traversées.',
-    peek: (state) => `${compact(state.totalPagesRead)} traversées`,
+    description: 'La salle peinte derrière le livre, un fond par Âge.',
+    peek: () => SCENE_NAMES[shownScene()],
     build: (kit, state) => {
-      kit.number(
-        'Pages traversées',
-        () => state.totalPagesRead,
-        (v) => (state.totalPagesRead = v),
-        { hint: 'La pièce est révélée vers 2 500.' },
+      kit.info('Fond affiché', () => SCENE_NAMES[shownScene()]);
+      kit.actions(
+        // Montré même s'il n'est pas encore vu (le 3e Âge n'existe pas), sans toucher au choix du cahier.
+        ...SCENES.map(({ id, age }): [string, () => void] => [`${SCENE_NAMES[id]} (Âge ${age})`, () => forceScene(id)]),
+        ['Rendre la main au jeu', () => forceScene(undefined)],
       );
-      kit.info('Découverte', () => format(clarity(state)));
       kit.info('Au-delà', () => format(beyond(state)));
     },
   },

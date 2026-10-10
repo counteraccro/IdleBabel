@@ -1,6 +1,6 @@
 import { t } from '../../i18n';
 import { edgeTexture, rasterizeSvg } from '../book3d/textures';
-import { doodleSvg } from './doodles';
+import { doodleSvg, type DoodleKind } from './doodles';
 import { createWriter, PEN_FONT, zoneAt, type Zone } from './notebookInk';
 import { loadPaperWear, NOTEBOOK_PAPER, paintNotebookPaper } from './notebookPaper';
 import { createNotebookPages, NOTEBOOK_PAGES, type NotebookActions, type Sketches } from './notebookPages';
@@ -9,8 +9,10 @@ import { HAND } from '../strangeBook/pageItems';
 import { sealEvent } from '../../systems/seals';
 import type { Book3d } from '../book3d/book3dBook';
 import type { GameState } from '../../core/state';
+import { SCENES, type SceneId } from '../../scene/scenes';
+import { roomSketch } from './roomSketch';
 
-const sketchImage = (kind: keyof Sketches, seed: number, color: string): Promise<HTMLCanvasElement> =>
+const sketchImage = (kind: DoodleKind, seed: number, color: string): Promise<HTMLCanvasElement> =>
   rasterizeSvg(doodleSvg(kind, seed, color), 300, 300);
 
 /**
@@ -52,15 +54,21 @@ export const notebook3d = (state: GameState, actions: NotebookActions): Book3d =
       // Les pages s'écrivent avec ces polices : chargées avant le premier dessin.
       await Promise.all([document.fonts.load(`24px ${PEN_FONT}`), document.fonts.load(`20px ${HAND}`)]);
       const pencil = '#4a463f';
-      const [wear, hexagon, books, spiral, scratch] = await Promise.all([
+      const [wear, hexagon, books, spiral, scratch, ...rooms] = await Promise.all([
         loadPaperWear(),
         sketchImage('hexagon', 7, pencil),
         sketchImage('books', 3, pencil),
         sketchImage('spiral', 11, pencil),
         sketchImage('spiral', 11, '#d9e2de'),
+        ...SCENES.map((scene) => roomSketch(import.meta.env.BASE_URL + scene.image)),
       ]);
       wears = wear;
-      sketches = { hexagon, books, spiral };
+      sketches = {
+        hexagon,
+        books,
+        spiral,
+        rooms: Object.fromEntries(SCENES.map(({ id }, i) => [id, rooms[i]])) as Record<SceneId, HTMLCanvasElement>,
+      };
       const cover = await notebookCover(t('ui.options'), state.playerName, scratch);
       return {
         cover: cover.front,

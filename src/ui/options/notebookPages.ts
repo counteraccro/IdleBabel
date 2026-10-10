@@ -5,6 +5,7 @@ import { GRID } from './notebookPaper';
 import type { DoodleKind } from './doodles';
 import type { Writer } from './notebookInk';
 import type { GameState } from '../../core/state';
+import { SCENES, sceneSeen, type SceneId } from '../../scene/scenes';
 
 /** Ce que les réglages du cahier déclenchent dans la partie. */
 export interface NotebookActions {
@@ -20,8 +21,8 @@ export interface NotebookActions {
  */
 export const NOTEBOOK_PAGES = 25;
 
-/** Ce qu'une page peut dessiner d'autre que l'écriture : les croquis, déjà tracés. */
-export type Sketches = Record<DoodleKind, CanvasImageSource>;
+/** Ce qu'une page peut dessiner d'autre que l'écriture : les croquis, déjà tracés, et les salles dessinées. */
+export type Sketches = Record<DoodleKind, CanvasImageSource> & { rooms: Record<SceneId, CanvasImageSource> };
 
 /** Nombre écrit de chaque façon dans le choix des notations. */
 const NOTATION_SAMPLE = 12_345_678;
@@ -115,7 +116,33 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
       );
     },
     6: (w, sketches) => w.sketch(sketches.spiral, 360, 420, 280),
-    7: (w) => {
+    7: (w, sketches) => {
+      // Le fond : celui de l'Âge, ou une salle déjà vue gardée pour toujours (maquette .ai/maquette-cahier-decor.html).
+      const kept = state.settings.scene && sceneSeen(state, state.settings.scene) ? state.settings.scene : null;
+      w.heading(t('ui.scene'));
+      w.toggle(t('ui.followAge'), t('ui.followAgeHint'), kept === null, () => {
+        // Décoché : il garde la salle qu'il a sous les yeux.
+        state.settings.scene = kept ? null : SCENES.filter(({ id }) => sceneSeen(state, id)).at(-1)!.id;
+        actions.onSettings();
+      });
+      w.skip(1);
+      w.rooms(
+        SCENES.map(({ id }) =>
+          sceneSeen(state, id)
+            ? {
+                sketch: sketches.rooms[id],
+                name: t(`ui.scenes.${id}`),
+                chosen: kept === id,
+                act: () => {
+                  state.settings.scene = id;
+                  actions.onSettings();
+                },
+              }
+            : { name: '…', chosen: false },
+        ),
+      );
+    },
+    9: (w) => {
       w.heading(t('ui.save'));
       // La graine de la partie, cachée partout ailleurs : à nous donner si quelque chose cloche.
       w.note(t('ui.seed').replace('{seed}', seedLabel(state.seed)));
@@ -142,7 +169,7 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
   return (index: number, w: Writer, sketches: Sketches, spineOnLeft: boolean): void => {
     content[index]?.(w, sketches);
     // Il a numéroté les premières pages, puis a cessé.
-    if (index >= 1 && index <= 7) w.folio(index, spineOnLeft);
+    if (index >= 1 && index <= 9) w.folio(index, spineOnLeft);
     const margin = margins.get(index);
     if (margin?.note !== undefined) w.margin(messages().notebook.notes[margin.note], margin.at);
     if (margin?.scribble) w.scribble(margin.scribble, margin.at);
