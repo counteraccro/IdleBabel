@@ -306,8 +306,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       return pileBook(etheriumPage);
     }
     // Les notes de mise à jour : le livre des crédits seul, sans la vitrine (la bibliothèque peut n'être pas encore là).
+    // Le livre lui-même, pas une copie : la page 3D y branche `navigate`, que son sommaire appelle.
     if (window.location.hash === NOTES_HASH)
-      return pileBook(createBook3dPage({ ...rareBook3d(state, LIBRARY_CREDITS_BOOK), openAt: NOTES_PAGE }, back, backLabel()));
+      return pileBook(createBook3dPage(Object.assign(rareBook3d(state, LIBRARY_CREDITS_BOOK), { openAt: NOTES_PAGE }), back, backLabel()));
     if (window.location.hash === STRANGE_BOOK_HASH && strangeBookFound(state))
       return pileBook(createBook3dPage(strangeBook3d(state, takeStrangeBookPage()), back, backLabel()));
     return game();

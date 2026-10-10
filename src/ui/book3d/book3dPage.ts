@@ -173,18 +173,21 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     });
     // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée.
     spec.navigate = (index) => turner?.go(Math.floor(index / 2));
-    // Un lien vers la page qu'on lit : le livre tremble sur place, de moins en moins.
+    // Un lien vers la page qu'on lit : le livre tremble sur place, de moins en moins. Recliqué pendant qu'il
+    // tremble, il repart du début (une seule secousse à la fois).
+    let trembling = 0;
     spec.tremble = () => {
       const root = book?.root;
       if (!root) return;
+      cancelAnimationFrame(trembling);
       const start = animationNow();
       const step = (frameTime: number): void => {
         const t = Math.min(1, (animationNow(frameTime) - start) / TREMBLE_MS);
         root.rotation.z = t < 1 ? Math.sin(t * Math.PI * 2 * TREMBLES) * TREMBLE * (1 - t) : 0;
         invalidate();
-        if (t < 1 && !signal.aborted) requestAnimationFrame(step);
+        if (t < 1 && !signal.aborted) trembling = requestAnimationFrame(step);
       };
-      requestAnimationFrame(step);
+      trembling = requestAnimationFrame(step);
     };
     if (spec.bookmark !== undefined)
       book.setRibbon(spreads > 1 ? Math.floor(spec.bookmark / 2) / (spreads - 1) : 0, spreads > 1 ? 1 / (spreads - 1) : 1);
