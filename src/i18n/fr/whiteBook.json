@@ -341,6 +341,16 @@
         "automaton": "Il lit plus vite que moi. Je ne lui en veux pas.",
         "clock": "Les heures sont plus courtes. Les pages, plus nombreuses."
       }
+    },
+    "lightSleep": {
+      "name": "Le Sommeil léger",
+      "description": "Un livre qui dort ne respire pas. Celui-là respire.",
+      "effect": "au-dessus de la Mimic, quand elle dort",
+      "notes": [
+        "Je l’entends ronfler, maintenant."
+      ],
+      "silent": "rien",
+      "heard": "« z z z »"
     }
   },
   "reminiscence": {

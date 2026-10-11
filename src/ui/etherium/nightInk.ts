@@ -43,6 +43,8 @@ export const C = {
   star: 'rgba(225,212,245,0.85)',
   far: 'rgba(200,185,230,0.35)',
   ring: 'rgba(232,199,118,0.7)',
+  /** Le dessin d'une figure, sous ses étoiles (la Rose des vents, la Mimic). */
+  sketch: 'rgba(200,185,230,0.34)',
 } as const;
 
 /** Hasard reproductible (Park-Miller) : la poussière est toujours la même. */

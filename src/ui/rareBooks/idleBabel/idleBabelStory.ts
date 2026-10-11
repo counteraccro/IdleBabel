@@ -73,6 +73,7 @@ export const DRAFT_GROUPS = {
   newVersion: ['new-version-a'],
   scenes: ['scenes-balcony', 'scenes-nave'],
   sceneNotebook: ['scene-notebook-a', 'scene-notebook-c'],
+  mimic: ['mimic-eyes-a', 'mimic-eyes-b', 'mimic-side-b'],
 };
 
 export const STORY: StoryChapter[] = [
@@ -150,7 +151,12 @@ export const STORY: StoryChapter[] = [
   // Après l'Alpha 1 : ce qui vient avec l'Alpha 1.1.
   {
     key: 'alpha',
-    sections: [{ key: 'letter' }, { key: 'newVersion', drafts: ['newVersion'] }, { key: 'scenes', drafts: ['scenes', 'sceneNotebook'] }],
+    sections: [
+      { key: 'letter' },
+      { key: 'newVersion', drafts: ['newVersion'] },
+      { key: 'scenes', drafts: ['scenes', 'sceneNotebook'] },
+      { key: 'mimic', drafts: ['mimic'] },
+    ],
   },
 ];
 

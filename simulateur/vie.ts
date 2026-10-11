@@ -1,4 +1,4 @@
-import { afterLit, CLOSED, NEEDS_AGE, S, STARS, type PageId } from '../src/data/etheriumStars';
+import { afterLit, CLOSED, S, STARS, neededFor, type PageId } from '../src/data/etheriumStars';
 import { PLAYER } from './config';
 
 /** Ce qui survit au prestige : les pages à vie, l'Éther, les étoiles allumées, la Page Cornée une fois retrouvée. */
@@ -60,7 +60,7 @@ export const sum = (life: Life, effect: Record<string, number>): number =>
 
 /**
  * Les étoiles qu'on peut allumer maintenant, comme en jeu : pas fermées, leur étoile d'avant est allumée (et l'Âge, pour
- * l'alvéole Automatique).
+ * l'alvéole Automatique ; l'Est de l'Exploration, pour la Mimic).
  */
 const open = (life: Life) =>
   STARS.filter(
@@ -69,7 +69,7 @@ const open = (life: Life) =>
       PLAYER.pages.includes(star.page) &&
       !CLOSED.has(star.id) &&
       afterLit(star, (id) => life.stars.has(id)) &&
-      (!NEEDS_AGE.has(star.id) || life.stars.has(S.age)) &&
+      (!neededFor(star.id) || life.stars.has(neededFor(star.id)!)) &&
       (PLAYER.cornee || star.id !== S.cornee),
   );
 
@@ -88,7 +88,7 @@ export const spendEther = (life: Life): string[] => {
 
 /** Étoiles allumées sur chaque page. */
 export const litPerPage = (life: Life): string =>
-  (['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'quill', 'ages'] as PageId[])
+  (['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'quill', 'ages', 'explore', 'mimic'] as PageId[])
     .map(
       (page) =>
         `${page} ${STARS.filter((s) => s.page === page && life.stars.has(s.id)).length}/${STARS.filter((s) => s.page === page).length}`,

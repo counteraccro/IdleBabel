@@ -1,4 +1,4 @@
-import { afterLit, CLOSED, EFFECT, KEEPS, NEEDS_AGE, S, SIMPLE, starById } from '../data/etheriumStars';
+import { afterLit, CLOSED, EFFECT, KEEPS, S, SIMPLE, neededFor, starById } from '../data/etheriumStars';
 import { ETHER_READING } from '../data/etherium';
 import { SENTENCES } from '../data/sentences';
 import type { GameState } from '../core/state';
@@ -12,12 +12,13 @@ export const starLit = (state: GameState, id: string): boolean => state.etherium
 
 /**
  * L'étoile peut s'allumer : pas encore allumée ni fermée (CLOSED), son étoile d'avant l'est (et l'Âge Automatique, pour
- * son alvéole).
+ * son alvéole ; l'Est de l'Exploration, pour la page de la Mimic).
  */
 export const starOpen = (state: GameState, id: string): boolean => {
   const star = starById(id);
   if (!star || starLit(state, id) || CLOSED.has(id)) return false;
-  return afterLit(star, (before) => starLit(state, before)) && (!NEEDS_AGE.has(id) || starLit(state, S.age));
+  const needed = neededFor(id);
+  return afterLit(star, (before) => starLit(state, before)) && (!needed || starLit(state, needed));
 };
 
 /** Allume une étoile ouverte, s'il y a assez d'Éther. Renvoie true si elle s'allume. */
@@ -88,6 +89,17 @@ export const letterStaysBonus = (state: GameState): number => (starLit(state, S.
 /** La Plume (la pointe) : la lecture de la Transe, la plus haute allumée ; `base` sans elle. */
 export const tranceFactor = (state: GameState, base: number): number =>
   Math.max(base, ...Object.entries(EFFECT.trance).map(([id, value]) => (starLit(state, id) ? value : 0)));
+
+/** L'Est de l'Exploration : la Mimic vient dans les salles. */
+export const mimicUnlocked = (state: GameState): boolean => starLit(state, S.mimic);
+/** L'œil de la Mimic : on voit combien elle a englouti. */
+export const mimicEyeLit = (state: GameState): boolean => starLit(state, S.mimicEye);
+/** Les dents du haut : ce qu'elles font à la fréquence de la Mimic (la plus haute allumée ; ×1 sans elles). */
+export const mimicComesFactor = (state: GameState): number =>
+  Math.max(1, ...Object.entries(EFFECT.mimicComes).map(([id, value]) => (starLit(state, id) ? value : 0)));
+/** Les dents du bas : part rendue en plus des 10 % (la plus haute allumée ; 0 sans elles). */
+export const mimicGivesBonus = (state: GameState): number =>
+  Math.max(0, ...Object.entries(EFFECT.mimicGives).map(([id, value]) => (starLit(state, id) ? value : 0)));
 
 /** La partie qui s'achève au prestige : ce dont la Porte se souvient. */
 export interface PreviousRun {

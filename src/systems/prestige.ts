@@ -8,6 +8,7 @@ import { forgetBoons } from './boons';
 import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor } from './etherium';
 import { levelOf, maxLevel } from './technologies';
 import { sealEvent } from './seals';
+import { catchMimic } from './mimic';
 import type { GameState } from '../core/state';
 
 /**
@@ -45,6 +46,9 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   if (gain < 1) return 0;
   // Toute une partie, depuis le dernier réveil, sans tourner une page à la main : un sceau secret.
   if (state.wake.book >= 0 && state.stats.clicks === state.wake.clicks) sealEvent(state, 'noHands', now);
+  // Une Mimic dans la salle est attrapée d'office : elle rend tout avant que la Connaissance reparte de zéro (décision de
+  // l'auteur, 11/10).
+  catchMimic(state, now);
   state.etherReceived += gain;
   state.ether += gain;
   state.exiles += 1;

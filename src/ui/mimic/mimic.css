@@ -1,0 +1,324 @@
+/*
+ * La Mimic (maquettes .ai/maquette-mimic.html et .ai/maquette-mimic-cote.html) : posée dans la salle, sous toute
+ * l'interface (au-dessus du fond seulement) ; ou, sans place visible, un sceau de méthode au bord droit.
+ */
+#app > .mimic-stage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  user-select: none;
+}
+.mimic-room {
+  position: absolute;
+}
+.mimic-layer,
+.mimic-body {
+  position: absolute;
+  inset: 0;
+}
+.mimic-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  backface-visibility: visible;
+}
+.mimic-face canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.mimic-shade {
+  position: absolute;
+  inset: 0;
+}
+.mimic-shadow {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.45) 60%, rgba(0, 0, 0, 0));
+}
+.mimic-eyes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  z-index: 50;
+}
+
+/* Elle dort : trois « z » qui montent l'un après l'autre et s'effacent (le Sommeil léger). */
+.mimic-zzz {
+  position: absolute;
+  z-index: 60;
+  font-family: Georgia, serif;
+  font-style: italic;
+  color: #efe3c8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  transition: opacity 0.4s;
+}
+.mimic-zzz span {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  opacity: 0;
+  animation: mimic-zzz 3.6s infinite ease-out;
+}
+.mimic-zzz span:nth-child(2) {
+  animation-delay: 1.2s;
+}
+.mimic-zzz span:nth-child(3) {
+  animation-delay: 2.4s;
+}
+@keyframes mimic-zzz {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(1.4em, -2.6em) scale(1.25);
+    opacity: 0;
+  }
+}
+/* Ce qu'elle a avalé, au-dessus d'elle (l'œil de l'Etherium). */
+.mimic-count {
+  position: absolute;
+  z-index: 60;
+  transform: translate(-50%, -130%);
+  white-space: nowrap;
+  font-family: 'Cinzel', Georgia, serif;
+  color: #e8c776;
+  text-shadow:
+    0 1px 3px #000,
+    0 0 8px rgba(0, 0, 0, 0.8);
+  transition: opacity 0.4s;
+}
+.mimic-spill {
+  position: absolute;
+  z-index: 80;
+  color: #f3dc9c;
+  font-family: Georgia, serif;
+  text-shadow: 0 0 6px rgba(255, 200, 120, 0.9);
+  pointer-events: none;
+}
+.mimic-gain {
+  position: absolute;
+  z-index: 80;
+  color: #f3dc9c;
+  font-size: 15px;
+  white-space: nowrap;
+  text-shadow:
+    0 1px 3px #000,
+    0 0 10px rgba(255, 190, 90, 0.7);
+  pointer-events: none;
+}
+
+/* ---- Au bord de l'écran : un sceau de méthode, bord rouge sombre, qui respire. ---- */
+.mimic-side {
+  position: absolute;
+  right: 12px;
+  width: 50px;
+  height: calc(50px * 1.1547);
+  pointer-events: auto;
+}
+.mimic-side .method-seal.mimic {
+  --seal: 50px;
+  left: 0;
+  top: 0;
+  filter: drop-shadow(0 0 7px rgba(220, 110, 60, 0.45));
+  animation: mimic-breathe 3.6s ease-in-out infinite;
+}
+.mimic-side .mimic .method-rim {
+  background: linear-gradient(180deg, #8a3a26, #4a1a10);
+}
+.mimic-side .mimic .method-sigil {
+  opacity: 1;
+}
+.mimic-side .mimic .method-count {
+  color: #e8c776;
+}
+.mimic-side .mimic:hover {
+  transform: scale(1.1);
+  z-index: 3;
+  animation: none;
+}
+@keyframes mimic-breathe {
+  50% {
+    transform: scale(1.045);
+  }
+}
+.mimic-side .eye-open {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.mimic-side .eye-shut {
+  transition: opacity 0.15s;
+}
+.mimic-side .mimic.awake .eye-open {
+  opacity: 1;
+}
+.mimic-side .mimic.awake .eye-shut {
+  opacity: 0;
+}
+.mimic-side .jaw {
+  transform-origin: 26px 52px;
+  transition: transform 0.12s;
+}
+.mimic-side .teeth {
+  opacity: 0;
+}
+.mimic-side .mimic.bite {
+  animation: mimic-shake 0.5s;
+}
+.mimic-side .mimic.bite .jaw {
+  animation: mimic-snap 0.5s ease-out;
+}
+.mimic-side .mimic.bite .teeth {
+  animation: mimic-teeth 0.5s ease-out;
+}
+@keyframes mimic-snap {
+  20%,
+  55% {
+    transform: rotate(-26deg);
+  }
+  38%,
+  75% {
+    transform: rotate(0);
+  }
+  62% {
+    transform: rotate(-16deg);
+  }
+}
+@keyframes mimic-teeth {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  20%,
+  70% {
+    opacity: 1;
+  }
+}
+@keyframes mimic-shake {
+  20% {
+    transform: translateX(-2px) rotate(-3deg);
+  }
+  40% {
+    transform: translateX(2px) rotate(3deg);
+  }
+  60% {
+    transform: translateX(-1px);
+  }
+}
+.mimic-side .mimic.gone {
+  animation: mimic-vanish 0.9s ease-in forwards;
+  pointer-events: none;
+}
+@keyframes mimic-vanish {
+  30% {
+    transform: scale(1.15) rotate(-6deg);
+    filter: brightness(1.6) drop-shadow(0 0 12px #e8a060);
+  }
+  100% {
+    transform: scale(0.2) rotate(18deg);
+    opacity: 0;
+  }
+}
+.mimic-side-zzz span {
+  position: absolute;
+  left: 36px;
+  top: 2.5px;
+  font-family: 'Cinzel', Georgia, serif;
+  color: #e8c776;
+  pointer-events: none;
+  opacity: 0;
+  text-shadow: 0 0 4px #000;
+  animation: mimic-zz 3s linear infinite;
+}
+.mimic-side-zzz span:nth-child(1) {
+  font-size: 10px;
+}
+.mimic-side-zzz span:nth-child(2) {
+  font-size: 12px;
+  animation-delay: 1s;
+}
+.mimic-side-zzz span:nth-child(3) {
+  font-size: 14px;
+  animation-delay: 2s;
+}
+@keyframes mimic-zz {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.7);
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(12px, -26px) scale(1.2);
+  }
+}
+.mimic-side-zzz {
+  display: none;
+}
+.mimic-side.snoring .mimic-side-zzz {
+  display: block;
+}
+.mimic-side .awake ~ .mimic-side-zzz,
+.mimic-side .gone ~ .mimic-side-zzz {
+  display: none;
+}
+.mimic-tip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 7.5px;
+  z-index: 5;
+  width: 200px;
+  padding: 7px 10px;
+  background: rgba(10, 8, 6, 0.92);
+  border-right: 1px solid #c9a45a;
+  color: #efe3cc;
+  font-size: 12.5px;
+  text-align: right;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.mimic-tip strong {
+  display: block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  letter-spacing: 0.04em;
+}
+.mimic-tip em {
+  display: block;
+  color: #b3a284;
+  margin: 3px 0;
+}
+.mimic-tip span {
+  color: #e8c776;
+}
+.mimic-side:hover .mimic-tip {
+  opacity: 1;
+}
+.mimic-side-gain {
+  right: 0;
+  font-size: 14px;
+}
+
+/* Lâchées sur la page même, au-dessus de toute l'interface. */
+body > .mimic-spill,
+body > .mimic-gain {
+  position: fixed;
+  z-index: 31;
+}
+.mimic-side:has(.gone) .mimic-tip {
+  opacity: 0;
+}

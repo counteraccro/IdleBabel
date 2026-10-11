@@ -33,6 +33,7 @@ export const loadGame = (defaultLocale: Locale): GameState => {
                 technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
                 reminiscence: { ...initial.reminiscence, ...saved.reminiscence },
                 wake: { ...initial.wake, ...saved.wake },
+                mimic: { ...initial.mimic, ...saved.mimic },
                 // Les nœuds des anciens arbres, ou les étoiles : core/etheriumTrees.ts ; les étoiles fermées : core/closedStars.ts.
                 etherium: saved.etherium ?? [],
                 findCounts: countSavedFinds(saved.findCounts, finds),

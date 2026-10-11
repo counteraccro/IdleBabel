@@ -9,6 +9,7 @@ import { duplicateShare, filterMultiplier, maxAwaySeconds, targetShare, turnsPer
 import { sealFindMultiplier } from './seals';
 import { findsMultiplier, knowledgePerFind } from './etherium';
 import { findsBoon, knowledgeBoon } from './boons';
+import { swallow } from './mimic';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -176,18 +177,21 @@ export const findText = (find: Find): string => {
 };
 
 /**
- * Une trouvaille lue : 1 point de Connaissance (plus, avec l'Etherium et la Mémoire vive de la lettre), et elle s'écrit
- * dans le livre blanc.
+ * Une trouvaille lue : 1 point de Connaissance (plus, avec l'Etherium et la Mémoire vive de la lettre ; avalé par la Mimic
+ * s'il y en a une), et elle s'écrit dans le livre blanc.
  */
 export const gainFind = (state: GameState, find: Find): void => {
   const gained = knowledgePerFind(state) * knowledgeBoon();
-  state.knowledge += gained;
-  state.cycleKnowledge += gained;
-  state.lifetimeKnowledge += gained;
+  // Une Mimic dans la salle avale la Connaissance ; la trouvaille s'écrit quand même dans le livre blanc.
+  if (!swallow(state, gained)) {
+    state.knowledge += gained;
+    state.cycleKnowledge += gained;
+    state.lifetimeKnowledge += gained;
+    // La toute première : le joueur comprend une phrase, pour la première fois.
+    if (state.lifetimeKnowledge === gained) tellLore(state, 'firstKnowledge');
+  }
   state.stats.fragments += 1;
   state.findCounts[find.kind] += 1;
-  // La toute première : le joueur comprend une phrase, pour la première fois.
-  if (state.lifetimeKnowledge === gained) tellLore(state, 'firstKnowledge');
   if (find.duplicate) return;
   write(state, find.sentence, find.segment === undefined ? segments(find.sentence).map((_, index) => index) : [find.segment]);
 };

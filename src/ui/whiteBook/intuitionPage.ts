@@ -92,6 +92,8 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
       return durationText(letterStays(state, level));
     case 'letterUnderstood':
       return `×${plain(Math.round(boonLength(state, level) * 100) / 100)}`;
+    case 'lightSleep':
+      return t(level > 0 ? 'whiteBook.intuitions.lightSleep.heard' : 'whiteBook.intuitions.lightSleep.silent');
     case 'reminiscence':
       return t(level > 0 ? 'whiteBook.intuitions.reminiscence.alone' : 'whiteBook.intuitions.reminiscence.byHand');
     case 'armful': {

@@ -4,6 +4,7 @@ import { createCounter } from './counter';
 import { createMethodHive } from './methods/methodHive';
 import { createFooter } from './footer';
 import { createLetter } from './letter/letter';
+import { createMimic } from './mimic/mimic';
 import { createOptionsPage } from './options/optionsPage';
 import { BIG_BOOK_REWRITE } from './book3d/book3dBook';
 import { createBook3dPage } from './book3d/book3dPage';
@@ -180,6 +181,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const game = (): Component[] => [
     header,
     counter,
+    // La Mimic, sous toute l'interface, posée dans la salle (11/10).
+    createMimic(state),
     createMethodHive(state),
     createHandReading3d(state),
     // La lettre qui s'échappe du livre en main (Alpha 1.1).

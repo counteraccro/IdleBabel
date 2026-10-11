@@ -71,6 +71,16 @@
       "name": "Lettres",
       "figure": "La Plume",
       "description": "Les lettres qui s’échappent, je les rattrape."
+    },
+    "explore": {
+      "name": "Exploration",
+      "figure": "La Rose des vents",
+      "description": "Chaque salle cache quelque chose."
+    },
+    "mimic": {
+      "name": "La Mimic",
+      "figure": "La Mimic",
+      "description": "Ce qu’elle avale, elle le rend."
     }
   },
   "stars": {
@@ -474,6 +484,98 @@
         "value": "La lettre apprend",
         "effect": "la Trouvaille : une trouvaille tout de suite"
       }
+    },
+    "explore": {
+      "c": {
+        "name": "Le centre",
+        "value": "L’Exploration",
+        "effect": "les salles cachent quelque chose"
+      },
+      "e": {
+        "name": "Est",
+        "value": "La Mimic",
+        "effect": "apparaît dans les salles (une fois par heure de jeu), et sa page s’ouvre"
+      },
+      "w": {
+        "name": "Ouest",
+        "note": "les reliques, une par salle (bientôt)"
+      },
+      "n": {
+        "name": "Plus tard",
+        "note": "une direction, plus tard"
+      },
+      "s": {
+        "name": "Plus tard",
+        "note": "une direction, plus tard"
+      },
+      "d0": {
+        "name": "Plus tard",
+        "note": "une direction, plus tard"
+      },
+      "d1": {
+        "name": "Plus tard",
+        "note": "une direction, plus tard"
+      },
+      "d2": {
+        "name": "Plus tard",
+        "note": "une direction, plus tard"
+      },
+      "d3": {
+        "name": "Plus tard",
+        "note": "une direction, plus tard"
+      }
+    },
+    "mimic": {
+      "hinge": {
+        "name": "La charnière",
+        "value": "La Mimic",
+        "effect": "sa page s’ouvre (elle avale, on l’attrape, elle rend tout + 10 %)"
+      },
+      "eye": {
+        "name": "L’œil",
+        "value": "Voir",
+        "effect": "combien de connaissances elle a englouties"
+      },
+      "t1": {
+        "name": "Dent du haut",
+        "value": "+25 %",
+        "effect": "d’apparitions de la Mimic"
+      },
+      "t2": {
+        "name": "Dent du haut, deuxième",
+        "value": "+50 %",
+        "effect": "d’apparitions de la Mimic"
+      },
+      "t3": {
+        "name": "Dent du haut, troisième",
+        "value": "×2",
+        "effect": "apparitions : une Mimic par demi-heure"
+      },
+      "b1": {
+        "name": "Dent du bas",
+        "value": "+20 %",
+        "effect": "de connaissances rendues par la Mimic"
+      },
+      "b2": {
+        "name": "Dent du bas, deuxième",
+        "value": "+35 %",
+        "effect": "de connaissances rendues par la Mimic"
+      },
+      "b3": {
+        "name": "Dent du bas, troisième",
+        "value": "+50 %",
+        "effect": "de connaissances rendues par la Mimic"
+      },
+      "b4": {
+        "name": "Dent du bas, quatrième",
+        "value": "+75 %",
+        "effect": "de connaissances rendues par la Mimic"
+      },
+      "b5": {
+        "name": "Dent du bas, cinquième",
+        "value": "+100 %",
+        "effect": "de connaissances rendues par la Mimic"
+      }
     }
   },
   "keep": "sa phrase reste au prestige",
@@ -490,5 +592,13 @@
   "unknown": "une marche, plus haut",
   "closed": "Pas encore.",
   "complete": "Toute la figure brille.",
-  "contentsLine": "Ce que l’Éther a éclairé."
+  "contentsLine": "Ce que l’Éther a éclairé.",
+  "offered": "offerte",
+  "locked": "Cette page attend\nque l’Exploration la trouve.",
+  "compass": {
+    "east": "E",
+    "west": "O",
+    "north": "N",
+    "south": "S"
+  }
 }

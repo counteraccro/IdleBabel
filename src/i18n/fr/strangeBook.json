@@ -51,8 +51,9 @@
     "time": "Temps",
     "methods": "Méthodes",
     "intuitions": "Intuitions",
-    "rare": "Livres rares",
     "etherium": "Etherium",
+    "mimic": "La Mimic",
+    "rare": "Livres rares",
     "secrets": "Secrets"
   },
   "allMethods": "Toutes les méthodes",
@@ -84,7 +85,9 @@
     "knowledgeFound": "Comprends une chose",
     "prestiges": "Rouvre les yeux une première fois",
     "etherReceived": "Recueille ton premier Éther",
-    "starsLit": "Allume une étoile"
+    "starsLit": "Allume une étoile",
+    "mimicsCaught": "Attrape une Mimic",
+    "mimicHours": "Laisse-la manger une heure"
   },
   "seals": {
     "pagesRead": "Traverse {n} pages",
@@ -223,6 +226,11 @@
     "noHands": "Toute une vie sans tourner une page de ma main.",
     "exactly410": "410, caché dans mes pages.",
     "lastInstant": "Je l’ai rattrapée au moment où elle s’éteignait.",
-    "babelWord": "J’ai lu le nom de la Bibliothèque, lettre par lettre."
+    "babelWord": "J’ai lu le nom de la Bibliothèque, lettre par lettre.",
+    "mimicsCaught": "Attrape {n} Mimics",
+    "mimicBonus": "Reprends-lui {n} connaissances de plus",
+    "mimicHours": "Laisse-la manger {n} heures",
+    "constellation-mimic": "Compte-lui toutes ses dents",
+    "intuition-lightSleep": "Entends dormir un livre"
   }
 }

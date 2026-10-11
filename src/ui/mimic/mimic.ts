@@ -1,0 +1,257 @@
+import './mimic.css';
+import { el, type Component } from '../dom';
+import { getLocale, t } from '../../i18n';
+import { currentNotation, formatNumber, writeDigits } from '../../core/format';
+import { modalOpen } from '../modal/modal';
+import { shownScene } from '../../scene';
+import { SCENES } from '../../scene/scenes';
+import { MIMIC_FORBIDDEN, MIMIC_LIGHT, MIMIC_SPOTS, ROOM_IMAGE } from '../../data/mimic';
+import { advanceMimic, catchMimic, mimicBonusShare, mimicHere } from '../../systems/mimic';
+import { mimicEyeLit } from '../../systems/etherium';
+import { levelOf } from '../../systems/technologies';
+import { createMimicBook, mimicSize, spill, spotBox, type MimicBook } from './mimicBook';
+import { createMimicSide, type MimicSide } from './mimicSide';
+import { mimicTextures, type MimicTextures } from './mimicTextures';
+import type { GameState } from '../../core/state';
+
+/**
+ * La Mimic à l'écran du jeu (maquettes .ai/maquette-mimic.html et .ai/maquette-mimic-cote.html) : elle vient (une fois
+ * par heure de jeu, l'onglet visible, aucune fenêtre ouverte), se pose à une place de la salle qu'on voit à l'écran, ou,
+ * s'il n'y en a pas, au bord droit en sceau. Premier clic : elle mord ; second : elle disparaît et rend tout.
+ */
+
+/** L'attente n'avance pas de plus d'une seconde d'un coup (onglet repris, machine en veille). */
+const MAX_STEP = 1;
+/** Une place n'est prise que si le livre tient à l'écran, à cette distance des bords (px). */
+const MARGIN = 8;
+
+/** Le fond « cover » : l'image remplit l'écran sans être déformée (comme src/scene/renderer.ts). */
+const cover = () => {
+  const scale = Math.max(window.innerWidth / ROOM_IMAGE.w, window.innerHeight / ROOM_IMAGE.h);
+  return {
+    scale,
+    left: (window.innerWidth - ROOM_IMAGE.w * scale) / 2,
+    top: (window.innerHeight - ROOM_IMAGE.h * scale) / 2,
+  };
+};
+
+/**
+ * La lumière du fond à ce point de l'écran (src/scene/shaders.ts) : la vignette, et le haut assombri pour le compteur.
+ * Le livre la reçoit comme la salle.
+ */
+const shaderLight = (x: number, y: number): number => {
+  const u = x / window.innerWidth;
+  // Le shader compte de bas en haut.
+  const v = 1 - y / window.innerHeight;
+  const vignette = 1 - ((u - 0.5) ** 2 + (v - 0.5) ** 2) * 0.9;
+  const s = Math.min(1, Math.max(0, (v - 0.7) / 0.3));
+  return vignette * (1 - 0.55 * s * s * (3 - 2 * s));
+};
+
+/** Débogage : la poser à cette place (« salle:numéro »), même cachée par l'interface, ou au bord (« side ») ; null : au jeu. */
+let debugPlace: string | null = null;
+export const placeMimic = (place: string | null): void => {
+  debugPlace = place;
+};
+
+export const createMimic = (state: GameState): Component => {
+  const root = el('div', 'mimic-stage');
+  const room = el('div', 'mimic-room');
+  root.append(room);
+  let last = Date.now();
+  let textures: MimicTextures | null = null;
+  let loading: number | null = null;
+  let book: MimicBook | null = null;
+  let bookSpot: string | null = null;
+  let side: MimicSide | null = null;
+  /** Clics reçus par la Mimic à l'écran : le premier mord, le second l'attrape. */
+  let struck = 0;
+  /** Elle est en train de disparaître : l'animation va jusqu'au bout. */
+  let leaving = false;
+  let size = '';
+
+  const number = (value: number): string => writeDigits(formatNumber(Math.floor(value), getLocale()));
+
+  const clear = (): void => {
+    book?.destroy();
+    side?.destroy();
+    book = null;
+    side = null;
+    bookSpot = null;
+    struck = 0;
+  };
+
+  /** Le second clic : elle rend tout, avec le bonus ; les lettres s'échappent. */
+  const strike = (at?: (text: string) => void): void => {
+    if (leaving) return;
+    struck += 1;
+    if (struck === 1) {
+      book?.bite();
+      side?.bite();
+      return;
+    }
+    leaving = true;
+    const share = mimicBonusShare(state);
+    const given = catchMimic(state);
+    const text = t('ui.mimic.gain')
+      .replace('{n}', number((given?.eaten ?? 0) + (given?.bonus ?? 0)))
+      .replace('{p}', formatNumber(Math.round(share * 100), getLocale()));
+    at?.(text);
+  };
+
+  const onRoomClick = (event: PointerEvent): void => {
+    // L'écran du jeu a été quitté : ce composant ne sert plus.
+    if (!root.isConnected && !root.classList.contains('screen-out')) {
+      window.removeEventListener('pointerdown', onRoomClick, true);
+      clear();
+      return;
+    }
+    if (!book || leaving || modalOpen() || root.classList.contains('screen-out')) return;
+    // Un bouton par-dessus garde son clic.
+    if ((event.target as Element | null)?.closest('button, a, input, select, .modal-backdrop')) return;
+    const box = room.getBoundingClientRect();
+    const x = event.clientX - box.left;
+    const y = event.clientY - box.top;
+    if (!book.hit(x, y)) return;
+    event.stopPropagation();
+    event.preventDefault();
+    const current = book;
+    strike((text) =>
+      current.vanish((cx, cy) => {
+        // Par-dessus toute l'interface (le grand livre, les compteurs) : sur la page même.
+        const box = room.getBoundingClientRect();
+        spill(document.body, box.left + cx, box.top + cy, text);
+        window.setTimeout(() => {
+          current.destroy();
+          if (book === current) book = null;
+          leaving = false;
+          struck = 0;
+        }, 2500);
+      }),
+    );
+  };
+  window.addEventListener('pointerdown', onRoomClick, true);
+
+  /** Les places de la salle affichée où le livre tient à l'écran, hors de l'interface. */
+  const visibleSpots = (scene: string, view: ReturnType<typeof cover>): number[] => {
+    const definition = SCENES.find((candidate) => candidate.id === scene);
+    if (!definition) return [];
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    return (MIMIC_SPOTS[scene] ?? []).flatMap((spot, index) => {
+      const b = spotBox(spot, definition.vanishing);
+      const [x0, y0, x1, y1] = [b.x0, b.y0, b.x1, b.y1].map((value, i) => value * view.scale + (i % 2 ? view.top : view.left));
+      if (x0 < MARGIN || y0 < MARGIN || x1 > W - MARGIN || y1 > H - MARGIN) return [];
+      const hidden = MIMIC_FORBIDDEN.some(
+        (zone) => x0 < (zone.x + zone.w) * W && x1 > zone.x * W && y0 < (zone.y + zone.h) * H && y1 > zone.y * H,
+      );
+      return hidden ? [] : [index];
+    });
+  };
+
+  const showRoom = (scene: string, index: number, view: ReturnType<typeof cover>): void => {
+    const key = `${scene}:${index}`;
+    const definition = SCENES.find((candidate) => candidate.id === scene)!;
+    const spot = MIMIC_SPOTS[scene][index];
+    if (!book || bookSpot !== key) {
+      side?.destroy();
+      side = null;
+      book?.destroy();
+      const box = spotBox(spot, definition.vanishing);
+      const light =
+        (MIMIC_LIGHT[scene] ?? 0.7) *
+        shaderLight(((box.x0 + box.x1) / 2) * view.scale + view.left, ((box.y0 + box.y1) / 2) * view.scale + view.top);
+      book = createMimicBook(textures!, spot, { vanishing: definition.vanishing, light });
+      bookSpot = key;
+      room.append(book.root);
+      size = '';
+    }
+    const now = `${window.innerWidth}×${window.innerHeight}×${mimicSize()}`;
+    if (size !== now) {
+      size = now;
+      Object.assign(room.style, {
+        width: `${ROOM_IMAGE.w * view.scale}px`,
+        height: `${ROOM_IMAGE.h * view.scale}px`,
+        left: `${view.left}px`,
+        top: `${view.top}px`,
+      });
+      book.place(view.scale);
+    }
+  };
+
+  const showSide = (): void => {
+    if (side) return;
+    book?.destroy();
+    book = null;
+    bookSpot = null;
+    side = createMimicSide(() =>
+      strike((text) => {
+        const current = side;
+        current?.vanish(text);
+        window.setTimeout(() => {
+          current?.destroy();
+          if (side === current) side = null;
+          leaving = false;
+          struck = 0;
+        }, 2600);
+      }),
+    );
+    root.append(side.root);
+  };
+
+  /** À la hauteur de la ruche des méthodes, au bord droit. */
+  const placeSide = (): void => {
+    const hive = document.querySelector('.method-hive')?.getBoundingClientRect();
+    side!.root.style.top = `${hive && hive.height > 0 ? hive.top : window.innerHeight * 0.4}px`;
+  };
+
+  const update = (): void => {
+    const now = Date.now();
+    const seconds = Math.min(MAX_STEP, (now - last) / 1000);
+    last = now;
+    // Elle ne vient qu'à l'écran du jeu, visible, sans fenêtre ouverte, et pas en train de s'en aller.
+    if (!document.hidden && !modalOpen() && root.isConnected && !root.classList.contains('screen-out')) advanceMimic(state, seconds);
+    if (leaving) return;
+    if (!mimicHere(state)) {
+      if (book || side) clear();
+      return;
+    }
+    if (!textures || loading !== state.mimic.book) {
+      if (loading !== state.mimic.book) {
+        loading = state.mimic.book;
+        textures = null;
+        const wanted = state.mimic.book;
+        void mimicTextures(wanted).then((ready) => {
+          if (loading === wanted) textures = ready;
+        });
+      }
+      if (!textures) return;
+    }
+    const view = cover();
+    const scene = shownScene();
+    const visible = visibleSpots(scene, view);
+    // Sa place, si on la voit dans la salle affichée ; sinon une autre, au hasard ; sinon le bord de l'écran.
+    const [savedScene, savedIndex] = (state.mimic.spot ?? '').split(':');
+    let index = savedScene === scene ? Number(savedIndex) : NaN;
+    const [debugScene, debugIndex] = (debugPlace ?? '').split(':');
+    if (debugPlace === 'side') index = NaN;
+    else if (debugScene === scene && MIMIC_SPOTS[scene]?.[Number(debugIndex)]) index = Number(debugIndex);
+    else if (!visible.includes(index)) {
+      index = visible.length ? visible[Math.floor(Math.random() * visible.length)] : NaN;
+      if (!Number.isNaN(index)) state.mimic.spot = `${scene}:${index}`;
+    }
+    if (Number.isNaN(index)) showSide();
+    else showRoom(scene, index, view);
+    const eye = mimicEyeLit(state);
+    const snore = levelOf(state, 'lightSleep') > 0;
+    const eaten = formatNumber(Math.floor(state.mimic.eaten), getLocale());
+    if (book) book.show({ count: eye ? eaten : null, snore });
+    if (side) {
+      placeSide();
+      // Sous l'icône, en court (« 1,2 M »), comme dans la maquette.
+      const short = formatNumber(Math.floor(state.mimic.eaten), getLocale(), currentNotation() === 'babel' ? 'babel' : 'short');
+      side.show({ count: eye ? short : null, eaten: eye ? writeDigits(eaten) : null, snore });
+    }
+  };
+  return { root, update };
+};

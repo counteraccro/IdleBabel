@@ -11,13 +11,14 @@ import { RARE_BOOKS } from './rareBooks';
 import { TECHNOLOGIES } from './technologies';
 import { levelOf, lockOf, maxLevel } from '../systems/technologies';
 import { AUTOMATIC_AGE, TOOLS, type ToolId } from './tools';
+import { mimicSeconds } from '../systems/mimic';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
  * une ligne ici, et son texte dans i18n (strangeBook.seals.<texte>) — le sigle, la place sur la
  * planche et la légende sont générés.
  */
-export const PLATES = ['pages', 'books', 'fragments', 'time', 'methods', 'intuitions', 'etherium', 'rare', 'secrets'] as const;
+export const PLATES = ['pages', 'books', 'fragments', 'time', 'methods', 'intuitions', 'etherium', 'mimic', 'rare', 'secrets'] as const;
 export type PlateId = (typeof PLATES)[number];
 
 export interface SealDef {
@@ -176,12 +177,19 @@ export const SEALS: readonly SealDef[] = [
   ...series('prestiges', 'etherium', (s) => s.exiles, [1, 5, 10, 25, 100]),
   ...series('etherReceived', 'etherium', (s) => s.etherReceived, [1, 10, 100, K, 10 * K, 100 * K, M]),
   ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, OPEN_STARS.length]),
-  ...ETHERIUM_PAGES.map((page) =>
+  // L'Exploration n'a encore qu'une pointe à allumer (la Mimic) : son sceau attendra les reliques.
+  ...ETHERIUM_PAGES.filter((page) => page !== 'explore').map((page) =>
     seal(`constellation-${page}`, 'etherium', (s) =>
       OPEN_STARS.filter((star) => star.page === page).every((star) => s.etherium.includes(star.id)),
     ),
   ),
   seal('automaticAge', 'etherium', (s) => s.etherium.includes(AUTOMATIC_AGE)),
+
+  // La Mimic (11/10, choix de l'auteur), depuis toujours, absences comprises : en attraper, le bonus seul qu'elle a rendu
+  // (pas ce qu'elle avait avalé ; le saut de 100 000 à 10 millions est voulu), le temps où elle a mangé.
+  ...series('mimicsCaught', 'mimic', (s) => s.mimic.caught, [1, 10, 50, 100, 410, K]),
+  ...series('mimicBonus', 'mimic', (s) => s.mimic.bonus, [100, K, 10 * K, 100 * K, 10 * M]),
+  ...series('mimicHours', 'mimic', (s) => mimicSeconds(s) / HOUR, [1, 10, 100, K]),
 
   // Un sceau par livre rare, apposé quand il arrive en main.
   ...RARE_BOOKS.map((book): SealDef => ({

@@ -12,8 +12,25 @@ export interface Figure {
   deco: readonly (readonly [string, string])[];
   /** Cercles (centre, rayon) sur lesquels les traits suivent un arc, pas une droite (la lune). */
   circles?: readonly (readonly [number, number, number])[];
-  /** Étoile offerte, allumée dès le début, qui n'est pas dans les données (l'Âge Manuel), et celle qu'elle ouvre. */
-  given?: { id: string; opens: string };
+  /**
+   * Étoile offerte, allumée dès le début (ou dès que sa page est débloquée), qui n'est pas dans les données (l'Âge Manuel,
+   * le centre de la Rose des vents, la charnière de la Mimic), et celles qu'elle ouvre.
+   */
+  given?: { id: string; opens: readonly string[] };
+  /** Le dessin de la figure, à peine tracé sous les étoiles (la Rose des vents, la Mimic). */
+  sketch?: Sketch;
+}
+
+/** Ce qu'une figure dessine en pointillés sous ses étoiles. */
+export interface Sketch {
+  /** Lignes brisées. */
+  lines: readonly (readonly (readonly [number, number])[])[];
+  /** Un cercle (centre, rayon). */
+  circle?: readonly [number, number, number];
+  /** Des lettres posées sur la figure (les points cardinaux) : clé de texte, place. */
+  labels?: readonly (readonly [string, readonly [number, number]])[];
+  /** Un œil en amande, la fente du chat au milieu : centre, demi-largeur, angle (degrés). */
+  eye?: readonly [number, number, number, number];
 }
 
 const ring = ([cx, cy]: readonly [number, number], r: number, deg: number): readonly [number, number] => [
@@ -24,6 +41,28 @@ const ring = ([cx, cy]: readonly [number, number], r: number, deg: number): read
 const lens = (deg: number) => ring([265, 415], 112, deg);
 const moonOut = (deg: number) => ring([330, 485], 195, deg);
 const moonIn = (deg: number) => ring([430, 485], 172.4, deg);
+/** Le point à la fraction t du segment a → b. */
+const along = (a: readonly [number, number], b: readonly [number, number], t: number): readonly [number, number] => [
+  Math.round(a[0] + (b[0] - a[0]) * t),
+  Math.round(a[1] + (b[1] - a[1]) * t),
+];
+
+// La Rose des vents : le centre, et la longueur de chaque pointe (longues pour les quatre directions).
+const ROSE = [320, 480] as const;
+const ROSE_R = 40;
+const ROSE_LEN: Record<number, number> = { 0: 250, 90: 190, 180: 250, 270: 168, 45: 130, 135: 130, 225: 130, 315: 130 };
+const tip = (deg: number, len: number) => ring(ROSE, len, deg);
+/** Une pointe de la rose : un losange, du centre à son bout. */
+const rosePoint = (deg: number, len: number) => {
+  const width = deg % 90 ? ROSE_R * 0.7 : ROSE_R;
+  return [tip(deg, len), tip(deg + 90, width), ROSE, tip(deg - 90, width), tip(deg, len)];
+};
+
+// La Mimic, de profil : la charnière (le dos), d'où partent les deux mâchoires.
+const HINGE = [140, 560] as const;
+const UPPER = [510, 360] as const;
+const LOWER = [530, 610] as const;
+
 const MANUAL_CELL = [190, 470] as const;
 const AUTO_CELL = [450, 470] as const;
 const CELL = 88;
@@ -141,7 +180,7 @@ export const FIGURES: Record<PageId, Figure> = {
   ages: {
     spots: { manual: [320, 665], auto: [440, 575], quantum: [215, 490], dim: [410, 405], inf: [280, 325] },
     deco: [],
-    given: { id: 'manual', opens: 'auto' },
+    given: { id: 'manual', opens: ['auto'] },
   },
   // La Plume, penchée : le bec en bas à gauche, la tige jusqu'à la pointe en haut à droite ; les barbes de chaque côté,
   // que deux traits referment vers la pointe (Alpha 1.1, 08/10).
@@ -166,5 +205,52 @@ export const FIGURES: Record<PageId, Figure> = {
       ['l3', 'p2'],
       ['r6', 'p2'],
     ],
+  },
+  // La Rose des vents (11/10) : le centre offert, une pointe par direction ; la figure se dessine en entier dès le début.
+  explore: {
+    spots: {
+      c: ROSE,
+      e: tip(0, ROSE_LEN[0]),
+      w: tip(180, ROSE_LEN[180]),
+      n: tip(270, ROSE_LEN[270]),
+      s: tip(90, ROSE_LEN[90]),
+      ...Object.fromEntries([315, 45, 135, 225].map((deg, i) => [`d${i}`, tip(deg, ROSE_LEN[deg])])),
+    },
+    deco: [],
+    given: { id: 'c', opens: ['e', 'w', 'n', 's', 'd0', 'd1', 'd2', 'd3'] },
+    sketch: {
+      lines: Object.entries(ROSE_LEN).map(([deg, len]) => rosePoint(Number(deg), len + 14)),
+      circle: [ROSE[0], ROSE[1], 70],
+      labels: [
+        ['east', tip(0, 286)],
+        ['west', tip(180, 286)],
+        ['north', tip(270, 202)],
+        ['south', tip(90, 224)],
+      ],
+    },
+  },
+  // La Mimic, de profil, la mâchoire ouverte : la charnière offerte, les dents du haut et du bas le long des mâchoires ;
+  // l'œil, une étoile dans son amande, sur le plat.
+  mimic: {
+    spots: {
+      hinge: HINGE,
+      eye: [336, 372],
+      ...Object.fromEntries([0.4, 0.7, 1].map((t, i) => [`t${i + 1}`, along(HINGE, UPPER, t)])),
+      ...Object.fromEntries([0.2, 0.4, 0.6, 0.8, 1].map((t, i) => [`b${i + 1}`, along(HINGE, LOWER, t)])),
+    },
+    deco: [],
+    given: { id: 'hinge', opens: ['eye', 't1', 'b1'] },
+    sketch: {
+      lines: [
+        // Le dessus du plat, épais ; le dessous du plat du dessous ; la gorge, dans les pages.
+        [HINGE, [UPPER[0] - 4, UPPER[1] - 26], [UPPER[0] + 10, UPPER[1] - 6]],
+        [HINGE, [LOWER[0] - 4, LOWER[1] + 26], [LOWER[0] + 10, LOWER[1] + 6]],
+        [
+          [UPPER[0] - 30, UPPER[1] + 36],
+          [LOWER[0] - 30, LOWER[1] - 18],
+        ],
+      ],
+      eye: [336, 372, 34, -28],
+    },
   },
 };

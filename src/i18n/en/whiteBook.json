@@ -341,6 +341,16 @@
         "automaton": "It reads faster than I do. I do not hold it against it.",
         "clock": "The hours are shorter. The pages, more numerous."
       }
+    },
+    "lightSleep": {
+      "name": "Light Sleep",
+      "description": "A sleeping book does not breathe. That one does.",
+      "effect": "above the Mimic, while it sleeps",
+      "notes": [
+        "I can hear it snore, now."
+      ],
+      "silent": "nothing",
+      "heard": "“z z z”"
     }
   },
   "reminiscence": {

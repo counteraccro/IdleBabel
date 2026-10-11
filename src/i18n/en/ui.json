@@ -109,5 +109,10 @@
     "text": ["Version {name} of Idle Babel is out.", "Reload the game to discover it. Your reading is saved just before."],
     "reload": "Reload",
     "later": "Later"
+  },
+  "mimic": {
+    "name": "The Mimic",
+    "eaten": "It has swallowed {n} knowledge.",
+    "gain": "+ {n} knowledge (+ {p}%)"
   }
 }

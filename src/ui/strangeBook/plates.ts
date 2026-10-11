@@ -3,6 +3,7 @@ import { formatCount, writeDigits } from '../../core/format';
 import { BOOK_PAGES, PLATES, SEALS, sealSeries, type PlateId, type SealDef } from '../../data/seals';
 import { babelName, completion, countObtained, plateSeals, sealFindMultiplier, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
+import { mimicUnlocked } from '../../systems/etherium';
 import { isDeciphered } from '../../systems/decipher';
 import { sentenceShown } from '../../systems/sentences';
 import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
@@ -33,8 +34,15 @@ export interface PlatePage {
   page: number;
 }
 
-/** La planche de l'Etherium n'existe qu'après un premier prestige, comme le chapitre Éther : avant, rien ne le laisse deviner. */
-const plateShown = (state: GameState, plate: PlateId): boolean => plate !== 'etherium' || state.etherReceived > 0 || statsRevealed();
+/**
+ * La planche de l'Etherium n'existe qu'après un premier prestige, comme le chapitre Éther : avant, rien ne le laisse deviner.
+ * Celle de la Mimic, une fois la Mimic débloquée dans l'Etherium.
+ */
+const plateShown = (state: GameState, plate: PlateId): boolean => {
+  if (plate === 'etherium') return state.etherReceived > 0 || statsRevealed();
+  if (plate === 'mimic') return mimicUnlocked(state) || state.mimic.caught > 0 || statsRevealed();
+  return true;
+};
 
 /**
  * Les sceaux d'une méthode (ses pages, l'intuition de son geste) n'existent qu'avec elle, comme sa page du livre blanc :

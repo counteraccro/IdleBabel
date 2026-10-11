@@ -20,6 +20,8 @@ export interface TechnologyDef {
   afterExile?: boolean;
   /** N'apparaît qu'une fois la première lettre attrapée (systems/letter.ts) : avant, le joueur ne la connaît pas. */
   afterLetter?: boolean;
+  /** N'apparaît qu'une fois la Mimic débloquée dans l'Etherium (systems/mimic.ts). */
+  afterMimic?: boolean;
 }
 
 /** Filtre sémantique : chaque niveau multiplie la chance qu'une page cache une trouvaille. */
@@ -60,6 +62,8 @@ export const TECHNOLOGIES = [
   { id: 'watch', prices: [1_000, 5_000, 25_000, 125_000, 625_000], afterLetter: true },
   { id: 'heldBreath', prices: [5_000, 50_000, 500_000], afterLetter: true },
   { id: 'letterUnderstood', prices: [2_500, 12_500, 62_500, 312_500, 1_562_500], afterLetter: true },
+  // Le Sommeil léger (11/10, choix de l'auteur) : la Mimic se trahit, « z z z » au-dessus d'elle quand elle dort. Un niveau.
+  { id: 'lightSleep', prices: [10_000], afterMimic: true },
   // La Brassée : un niveau par lot de la marque sous la ruche (×10, ×100, max).
   { id: 'armful', prices: [100, 1_000, 5_000], permanent: true },
   // La Réminiscence : les intuitions oubliées à l'Exil reviennent seules (systems/reminiscence.ts).

@@ -112,5 +112,10 @@
     ],
     "reload": "Recharger",
     "later": "Plus tard"
+  },
+  "mimic": {
+    "name": "La Mimic",
+    "eaten": "Elle a avalé {n} connaissances.",
+    "gain": "+ {n} connaissances (+ {p} %)"
   }
 }

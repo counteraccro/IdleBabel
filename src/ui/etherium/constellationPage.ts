@@ -1,8 +1,8 @@
-import { CLOSED, KEEPS, NEEDS_AGE, S, STARS, type PageId } from '../../data/etheriumStars';
+import { CLOSED, KEEPS, PAGE_NEEDS, STARS, neededFor, type PageId } from '../../data/etheriumStars';
 import { lightStar, starLit, starOpen } from '../../systems/etherium';
 import { formatNumber, writeDigits } from '../../core/format';
 import { getLocale, t } from '../../i18n';
-import { FIGURES, type Figure } from './constellations';
+import { FIGURES, type Figure, type Sketch } from './constellations';
 import { C, HAND, TITLE, line, litStar, nightFolio, starPath, write, heading, type Ctx, type Point } from './nightInk';
 import { nightLeaf, type Spot } from './nightLeaf';
 import type { LeafPage } from '../strangeBook/pages';
@@ -15,8 +15,8 @@ import type { GameState } from '../../core/state';
  */
 
 /**
- * allumée ; à prendre ; plus loin ; l'alvéole Automatique avant l'Âge ; une marche pas encore connue de l'Escalier, ou
- * une étoile fermée (CLOSED).
+ * allumée ; à prendre ; plus loin ; l'alvéole Automatique avant l'Âge (ou une page pas encore débloquée) ; une marche pas
+ * encore connue de l'Escalier, ou une étoile fermée (CLOSED).
  */
 export type StarStatus = 'done' | 'next' | 'far' | 'hidden' | 'unknown';
 
@@ -36,7 +36,8 @@ export interface StarView extends Point {
 
 const statusOf = (state: GameState, page: PageId, id: string): StarStatus => {
   const full = `${page}.${id}`;
-  if (NEEDS_AGE.has(full) && !starLit(state, S.age)) return 'hidden';
+  const needed = neededFor(full);
+  if (needed && !starLit(state, needed)) return 'hidden';
   if (starLit(state, full)) return 'done';
   // Fermée : elle ne dit pas son nom (la Goutte, les Âges d'après l'Automatique).
   if (CLOSED.has(full)) return 'unknown';
@@ -75,10 +76,16 @@ export const starViews = (state: GameState, page: PageId): StarView[] => {
       affordable: status === 'next' && state.ether >= star.cost,
       start: !figure.given && !star.after,
       given: false,
-      after: star.after?.slice(page.length + 1) ?? (figure.given?.opens === id ? figure.given.id : undefined),
+      after: star.after?.slice(page.length + 1) ?? (figure.given?.opens.includes(id) ? figure.given.id : undefined),
     };
   });
   return [...given, ...stars];
+};
+
+/** Une page qu'une autre débloque (la Mimic) : blanche jusque-là, et absente du sommaire. */
+export const pageLocked = (state: GameState, page: PageId): boolean => {
+  const needed = PAGE_NEEDS[page];
+  return !!needed && !starLit(state, needed);
 };
 
 const plain = (value: number): string => formatNumber(value, getLocale());
@@ -96,7 +103,7 @@ export const starName = (page: PageId, id: string): string => {
 
 /** Ce que dit l'en-tête d'une étoile : sa valeur et son effet (« ×1,25 » « pages par seconde »). */
 const starText = (page: PageId, star: StarView): string => {
-  if (star.given) return `${t('etherium.manual.value')} ${t('etherium.manual.effect')}`;
+  if (star.given && page === 'ages') return `${t('etherium.manual.value')} ${t('etherium.manual.effect')}`;
   if (page === 'memory') {
     const own = t(`etherium.stars.memory.${star.id}.effect`);
     return `${starName(page, star.id)} ${own === `etherium.stars.memory.${star.id}.effect` ? t('etherium.keep') : own}`;
@@ -104,8 +111,9 @@ const starText = (page: PageId, star: StarView): string => {
   return writeDigits(`${t(`etherium.stars.${page}.${star.id}.value`)} ${t(`etherium.stars.${page}.${star.id}.effect`)}`.trim());
 };
 
-const noteOf = (star: StarView): string => {
-  if (star.given) return t('etherium.given');
+const noteOf = (page: PageId, star: StarView): string => {
+  // L'Âge Manuel est là dès le début ; le centre de la Rose, la charnière de la Mimic sont offerts.
+  if (star.given) return t(page === 'ages' ? 'etherium.given' : 'etherium.offered');
   if (star.status === 'done') return t('etherium.lit');
   if (star.status === 'hidden') return t('etherium.afterAge');
   return writeDigits(t(star.affordable ? 'etherium.light' : 'etherium.cost').replace('{n}', plain(star.cost)));
@@ -144,13 +152,62 @@ const stairs = (ctx: Ctx, stars: StarView[]): void => {
   ctx.restore();
 };
 
+/** Le dessin de la figure, à peine tracé sous les étoiles : la Rose et ses points cardinaux, la Mimic et son œil. */
+const sketch = (ctx: Ctx, { lines, circle, labels, eye }: Sketch): void => {
+  ctx.save();
+  ctx.strokeStyle = C.sketch;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 5]);
+  for (const points of lines) {
+    ctx.beginPath();
+    points.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+    ctx.stroke();
+  }
+  if (eye) {
+    // Un œil en amande, la fente du chat au milieu.
+    const [x, y, r, deg] = eye;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate((deg * Math.PI) / 180);
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(-r, 0);
+    ctx.quadraticCurveTo(0, -r * 0.8, r, 0);
+    ctx.quadraticCurveTo(0, r * 0.8, -r, 0);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(232,150,80,0.12)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, r * 0.1, r * 0.34, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+  if (circle) {
+    ctx.beginPath();
+    ctx.arc(circle[0], circle[1], circle[2], 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+  for (const [key, [x, y]] of labels ?? [])
+    write(ctx, t(`etherium.compass.${key}`), x, y - 10, { size: 14, face: TITLE, color: C.faded, align: 'center' });
+};
+
+/** Une page pas encore débloquée : quelques mots au crayon, et son numéro. */
+const drawLocked = (ctx: Ctx, number: number): void => {
+  t('etherium.locked')
+    .split('\n')
+    .forEach((text, i) => write(ctx, text, 320, 360 + i * 36, { size: 30, face: HAND, align: 'center', color: C.faded }));
+  nightFolio(ctx, number);
+};
+
 const drawConstellation = (ctx: Ctx, state: GameState, page: PageId, number: number, hovered: string | null): void => {
+  if (pageLocked(state, page)) return drawLocked(ctx, number);
   const figure = FIGURES[page];
   const stars = starViews(state, page);
   const byId = Object.fromEntries(stars.map((star) => [star.id, star]));
   heading(ctx, t(`etherium.pages.${page}.name`));
   write(ctx, t(`etherium.pages.${page}.description`), 320, 168, { size: 20, italic: true, color: C.faded, align: 'center', fit: 560 });
   if (page === 'ages') stairs(ctx, stars);
+  if (figure.sketch) sketch(ctx, figure.sketch);
   // Les traits de la figure qui n'ouvrent rien.
   for (const [a, b] of figure.deco) {
     const A = byId[a];
@@ -237,8 +294,9 @@ const drawConstellation = (ctx: Ctx, state: GameState, page: PageId, number: num
     stars.find((star) => star.status === 'unknown');
   if (shown?.status === 'unknown') {
     write(ctx, '?', 320, 206, { size: 24, align: 'center', color: C.faded });
-    // L'Escalier : une marche, plus haut ; ailleurs (la Goutte) : pas encore.
-    write(ctx, t(page === 'ages' ? 'etherium.unknown' : 'etherium.closed'), 320, 240, {
+    // L'Escalier : une marche, plus haut ; une pointe de la Rose : ce qu'elle annonce ; ailleurs (la Goutte) : pas encore.
+    const note = `etherium.stars.${page}.${shown.id}.note`;
+    write(ctx, t(page === 'ages' ? 'etherium.unknown' : t(note) === note ? 'etherium.closed' : note), 320, 240, {
       size: 26,
       face: HAND,
       align: 'center',
@@ -252,7 +310,7 @@ const drawConstellation = (ctx: Ctx, state: GameState, page: PageId, number: num
       color: shown.status === 'far' || shown.status === 'hidden' ? C.faded : C.ink,
       fit: 580,
     });
-    write(ctx, noteOf(shown), 320, 240, { size: 26, face: HAND, align: 'center', color: shown.affordable ? C.gold : C.faded });
+    write(ctx, noteOf(page, shown), 320, 240, { size: 26, face: HAND, align: 'center', color: shown.affordable ? C.gold : C.faded });
   } else write(ctx, t('etherium.complete'), 320, 226, { size: 26, face: HAND, align: 'center', color: C.faded });
   nightFolio(ctx, number);
 };
@@ -261,7 +319,16 @@ export const constellationPage = (state: GameState, page: PageId, number: number
   nightLeaf({
     draw: (ctx, hovered) => drawConstellation(ctx, state, page, number, hovered),
     spots: () =>
-      starViews(state, page).map((star): Spot => ({ id: star.id, x: star.x - 26, y: star.y - 26, w: 52, h: 52, pointer: star.affordable })),
+      pageLocked(state, page)
+        ? []
+        : starViews(state, page).map((star): Spot => ({
+            id: star.id,
+            x: star.x - 26,
+            y: star.y - 26,
+            w: 52,
+            h: 52,
+            pointer: star.affordable,
+          })),
     press: (id) => {
       if (FIGURES[page].given?.id !== id) lightStar(state, `${page}.${id}`);
     },
