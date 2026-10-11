@@ -61,6 +61,8 @@ export const createMimic = (state: GameState): Component => {
   let last = Date.now();
   let textures: MimicTextures | null = null;
   let loading: number | null = null;
+  /** Ses textures n'ont pas pu être faites : elle reste au bord de l'écran, en sceau (il n'en a pas besoin). */
+  let failed = false;
   let book: MimicBook | null = null;
   let bookSpot: string | null = null;
   let side: MimicSide | null = null;
@@ -100,10 +102,12 @@ export const createMimic = (state: GameState): Component => {
   };
 
   const onRoomClick = (event: PointerEvent): void => {
-    // L'écran du jeu a été quitté : ce composant ne sert plus.
-    if (!root.isConnected && !root.classList.contains('screen-out')) {
+    // L'écran du jeu a été quitté (fondu fini) : ce composant ne sert plus, il rend son livre et ses textures. Pendant le
+    // fondu, il est encore là, mais ne se clique plus.
+    if (!root.isConnected) {
       window.removeEventListener('pointerdown', onRoomClick, true);
       clear();
+      textures = null;
       return;
     }
     if (!book || leaving || modalOpen() || root.classList.contains('screen-out')) return;
@@ -220,12 +224,19 @@ export const createMimic = (state: GameState): Component => {
       if (loading !== state.mimic.book) {
         loading = state.mimic.book;
         textures = null;
+        failed = false;
         const wanted = state.mimic.book;
-        void mimicTextures(wanted).then((ready) => {
-          if (loading === wanted) textures = ready;
-        });
+        mimicTextures(wanted).then(
+          (ready) => {
+            if (loading === wanted) textures = ready;
+          },
+          (error: unknown) => {
+            console.error('Textures de la Mimic indisponibles : elle reste au bord de l’écran.', error);
+            if (loading === wanted) failed = true;
+          },
+        );
       }
-      if (!textures) return;
+      if (!textures && !failed) return;
     }
     const view = cover();
     const scene = shownScene();
@@ -240,7 +251,7 @@ export const createMimic = (state: GameState): Component => {
       index = visible.length ? visible[Math.floor(Math.random() * visible.length)] : NaN;
       if (!Number.isNaN(index)) state.mimic.spot = `${scene}:${index}`;
     }
-    if (Number.isNaN(index)) showSide();
+    if (Number.isNaN(index) || !textures) showSide();
     else showRoom(scene, index, view);
     const eye = mimicEyeLit(state);
     const snore = levelOf(state, 'lightSleep') > 0;
