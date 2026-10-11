@@ -18,6 +18,14 @@
   position: absolute;
   inset: 0;
 }
+/* Survolée (mimic.ts) : la main partout (elle est sous l'interface), un liseré doré autour du livre. */
+html.mimic-hover,
+html.mimic-hover * {
+  cursor: pointer !important;
+}
+.mimic-room.hover .mimic-body {
+  filter: drop-shadow(0 0 1px rgba(255, 226, 160, 0.95)) drop-shadow(0 0 5px rgba(255, 200, 120, 0.5));
+}
 .mimic-face {
   position: absolute;
   left: 0;

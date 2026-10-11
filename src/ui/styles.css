@@ -447,8 +447,13 @@ footer {
   margin: 0 3px;
   text-align: center;
 }
+/* Beaucoup de boutons (les places de la Mimic, les bonus de la lettre) : ils passent à la ligne, à droite. */
 .debug-chips {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  row-gap: 3px;
+  min-width: 0;
 }
 .debug .debug-chips button {
   border-radius: 0;

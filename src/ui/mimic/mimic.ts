@@ -75,6 +75,8 @@ export const createMimic = (state: GameState): Component => {
   const number = (value: number): string => writeDigits(formatNumber(Math.floor(value), getLocale()));
 
   const clear = (): void => {
+    room.classList.remove('hover');
+    document.documentElement.classList.remove('mimic-hover');
     book?.destroy();
     side?.destroy();
     book = null;
@@ -119,6 +121,11 @@ export const createMimic = (state: GameState): Component => {
     if (!book.hit(x, y)) return;
     event.stopPropagation();
     event.preventDefault();
+    // Attrapée (2e clic) : plus de main ni de liseré pendant qu'elle disparaît.
+    if (struck >= 1) {
+      room.classList.remove('hover');
+      document.documentElement.classList.remove('mimic-hover');
+    }
     const current = book;
     strike((text) =>
       current.vanish((cx, cy) => {
@@ -135,6 +142,31 @@ export const createMimic = (state: GameState): Component => {
     );
   };
   window.addEventListener('pointerdown', onRoomClick, true);
+
+  /** Survolée : la main (comme la lettre) et un liseré doré autour du livre, pour dire qu'elle s'attrape. */
+  const hover = (on: boolean): void => {
+    room.classList.toggle('hover', on);
+    document.documentElement.classList.toggle('mimic-hover', on);
+  };
+  const onRoomMove = (event: PointerEvent): void => {
+    // Comme le clic : l'écran du jeu quitté, l'écouteur part avec lui.
+    if (!root.isConnected) {
+      window.removeEventListener('pointermove', onRoomMove);
+      hover(false);
+      return;
+    }
+    const target = event.target as Element | null;
+    const box = room.getBoundingClientRect();
+    hover(
+      book !== null &&
+        !leaving &&
+        !modalOpen() &&
+        !root.classList.contains('screen-out') &&
+        !target?.closest('button, a, input, select, .modal-backdrop') &&
+        book.hit(event.clientX - box.left, event.clientY - box.top),
+    );
+  };
+  window.addEventListener('pointermove', onRoomMove, { passive: true });
 
   /** Les places de la salle affichée où le livre tient à l'écran, hors de l'interface. */
   const visibleSpots = (scene: string, view: ReturnType<typeof cover>): number[] => {
