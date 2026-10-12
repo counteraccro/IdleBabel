@@ -16,7 +16,7 @@ import {
 } from '../src/systems/letter';
 import { pagesPerSecond, toolRate } from '../src/systems/production';
 import { nextToolCost } from '../src/systems/tools';
-import { findChance } from '../src/systems/knowledge';
+import { MAX_FINDS_PER_PAGE, findChance, findWhileAway, pagesTurnedAway, rollFinds } from '../src/systems/knowledge';
 import { nextPrice } from '../src/systems/technologies';
 import { readPage } from '../src/systems/click';
 import { prestige } from '../src/systems/prestige';
@@ -189,5 +189,27 @@ describe('La lettre qui s’échappe', () => {
     startBoon('fourTen', 30);
     expect(toolRate(state, 'diagonal')).toBeCloseTo(rate * 410);
     expect(findChance(state)).toBeCloseTo(chance * 410);
+  });
+
+  it('Quatre cent dix : un clic lit 410 fois plus, pas 410 × 410 la part de la lecture qu’il ajoute (revue, 12/10)', () => {
+    const state = game();
+    state.tools.diagonal = 50;
+    state.technologies = { muscleMemory: 3 };
+    readPage(state);
+    const before = state.pagesByHand;
+    startBoon('fourTen', 30);
+    readPage(state);
+    expect(state.pagesByHand - before).toBeCloseTo(before * 410);
+  });
+
+  it('jamais plus de 100 trouvailles par page, ni pendant l’absence (choix de l’auteur, 12/10)', () => {
+    const state = game();
+    state.technologies = { semanticFilter: 30 };
+    startBoon('fourTen', 30);
+    expect(findChance(state)).toBeGreaterThan(1000);
+    expect(rollFinds(state)).toHaveLength(MAX_FINDS_PER_PAGE);
+    // Une minute d'absence : pas plus de 100 trouvailles par page tournée (et une de plus, l'arrondi au hasard).
+    const turned = pagesTurnedAway(state, 60);
+    expect(findWhileAway(state, 60)).toBeLessThanOrEqual(Math.ceil(turned * MAX_FINDS_PER_PAGE) + 1);
   });
 });

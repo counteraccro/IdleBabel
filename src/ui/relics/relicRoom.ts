@@ -5,10 +5,11 @@ import { t } from '../../i18n';
 import { modalOpen } from '../modal/modal';
 import { shownScene } from '../../scene';
 import { SCENES, type SceneId } from '../../scene/scenes';
-import { EYE_HEIGHT, FOCAL, MIMIC_FORBIDDEN, ROOM_IMAGE } from '../../data/mimic';
+import { EYE_HEIGHT, FOCAL, ROOM_IMAGE } from '../../data/mimic';
 import { RELICS, RELIC_LIGHT, type RelicDef } from '../../data/relics';
 import { findRelic, relicWaiting } from '../../systems/relics';
-import { cover, shaderLight, type RoomView } from '../roomView';
+import { cover, hiveTop, screenBox as toScreen, shaderLight, type RoomView } from '../roomView';
+import { leaveWith, sweepLeftovers } from '../leftovers';
 import { relicEnvironment, relicModel } from './relicModels';
 import { relicIcon } from './relicIcons';
 import type { GameState } from '../../core/state';
@@ -21,8 +22,6 @@ import type { GameState } from '../../core/state';
  * salle, l'écran ou la relique changent.
  */
 
-/** Une relique n'est posée que si elle tient à l'écran, à cette distance des bords (px). */
-const MARGIN = 8;
 /** Autour de l'objet, le canvas garde de quoi dessiner son ombre (part de sa taille). */
 const PAD = 0.35;
 /** Le clic compte un peu autour de l'objet (px). */
@@ -218,17 +217,7 @@ export const createRelicRoom = (state: GameState): Component => {
   };
 
   /** Le carré à l'écran : hors des bords et de l'interface, on la voit ; sinon, null. */
-  const visibleBox = (box: Shot['box'], view: RoomView) => {
-    if (!box) return null;
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-    const [x0, y0, x1, y1] = [box.x0, box.y0, box.x1, box.y1].map((value, i) => value * view.scale + (i % 2 ? view.top : view.left));
-    if (x0 < MARGIN || y0 < MARGIN || x1 > W - MARGIN || y1 > H - MARGIN) return null;
-    const hidden = MIMIC_FORBIDDEN.some(
-      (zone) => x0 < (zone.x + zone.w) * W && x1 > zone.x * W && y0 < (zone.y + zone.h) * H && y1 > zone.y * H,
-    );
-    return hidden ? null : { x0, y0, x1, y1 };
-  };
+  const visibleBox = (box: Shot['box'], view: RoomView) => (box ? toScreen(box, view) : null);
 
   /** Trouvée : elle s'efface (ou son sceau), puis elle est dans la vitrine. */
   const take = (relic: RelicDef): void => {
@@ -264,9 +253,7 @@ export const createRelicRoom = (state: GameState): Component => {
 
   /** Au bord droit, sous le sceau de la Mimic (à la hauteur de la ruche). */
   const placeSide = (): void => {
-    const hive = document.querySelector('.method-hive')?.getBoundingClientRect();
-    const top = hive && hive.height > 0 ? hive.top : window.innerHeight * 0.4;
-    side!.root.style.top = `${top + 70}px`;
+    side!.root.style.top = `${hiveTop() + 70}px`;
   };
 
   const blocked = (event: PointerEvent): boolean =>
@@ -282,26 +269,27 @@ export const createRelicRoom = (state: GameState): Component => {
     event.clientY < screenBox.y1 + HIT;
 
   const onDown = (event: PointerEvent): void => {
-    // L'écran du jeu quitté : l'écouteur part avec lui, et le rendu aussi.
-    if (!root.isConnected) {
-      window.removeEventListener('pointerdown', onDown, true);
-      window.removeEventListener('pointermove', onMove);
-      clear();
-      return;
-    }
+    // L'écran du jeu quitté : l'écouteur part avec lui, et le rendu aussi (leftovers.ts).
+    if (!root.isConnected) return retire();
     if (!shot?.relic || blocked(event) || !hits(event)) return;
     event.stopPropagation();
     event.preventDefault();
     take(shot.relic);
   };
   const onMove = (event: PointerEvent): void => {
-    if (!root.isConnected) return;
+    if (!root.isConnected) return retire();
     document.documentElement.classList.toggle('relic-hover', !!shot?.relic && !blocked(event) && hits(event));
   };
   window.addEventListener('pointerdown', onDown, true);
   window.addEventListener('pointermove', onMove, { passive: true });
+  const retire = leaveWith(root, () => {
+    window.removeEventListener('pointerdown', onDown, true);
+    window.removeEventListener('pointermove', onMove);
+    clear();
+  });
 
   const update = (): void => {
+    sweepLeftovers();
     if (leaving) return;
     const scene = shownScene();
     const relic = RELICS.find((candidate) => candidate.room === scene && relicWaiting(state, candidate.id));

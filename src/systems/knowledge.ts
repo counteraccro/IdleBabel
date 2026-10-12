@@ -148,6 +148,12 @@ export const drawExtraFind = (state: GameState, random: () => number): Find => {
   return repeatFind(state, startedSentences(state), random);
 };
 
+/**
+ * Jamais plus de 100 trouvailles par page (choix de l'auteur, 12/10) : Quatre cent dix et l'Œil vif en feraient des
+ * milliers, chacune tirée une à une, et le jeu se figerait le temps du bonus.
+ */
+export const MAX_FINDS_PER_PAGE = 100;
+
 /** La page tournée cache-t-elle une trouvaille ? Rien n'est gagné tant qu'elle n'est pas lue (gainFind). */
 export const rollFind = (state: GameState, random: () => number = Math.random): Find | undefined => rollFinds(state, random)[0];
 
@@ -156,7 +162,7 @@ export const rollFind = (state: GameState, random: () => number = Math.random): 
  * 54 % de chances d'une sixième (idée de l'auteur). En dessous, une au plus, comme avant (mêmes tirages).
  */
 export const rollFinds = (state: GameState, random: () => number = Math.random): Find[] => {
-  const chance = chanceNow(state);
+  const chance = Math.min(MAX_FINDS_PER_PAGE, chanceNow(state));
   const count = Math.floor(chance) + (random() < chance % 1 ? 1 : 0);
   // Chacune est tirée comme si les précédentes étaient déjà écrites (rien n'est gagné avant la lecture) :
   // pas deux fois le même morceau sur une page, comme hors-ligne (findWhileAway).
@@ -224,7 +230,7 @@ export const findWhileAway = (
   if (turned <= 0) return 0;
   // Nombre attendu, arrondi au hasard : la moyenne est juste, et une courte absence peut rapporter.
   // Une par page au plus suit la règle d'avant ; au-delà de 100 %, les autres suivent leur table.
-  const chance = findChance(state);
+  const chance = Math.min(MAX_FINDS_PER_PAGE, findChance(state));
   const count = Math.floor(turned * Math.min(1, chance) + random());
   const extra = chance > 1 ? Math.floor(turned * (chance - 1) + random()) : 0;
   for (let i = 0; i < count; i++) gainFind(state, drawFind(state, random));

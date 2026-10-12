@@ -26,6 +26,8 @@ export interface LetterAverage {
   finds: number;
   /** ×pages d'un clic (la Main légère). */
   clicks: number;
+  /** ×la feuille tournée à la main (Quatre cent dix ; la part de la lecture qu'un clic ajoute l'a déjà, dans `reading`). */
+  fourTen: number;
   /** ×Connaissance par trouvaille (la Mémoire vive). */
   knowledge: number;
   /** ×prix des méthodes (l'Aubaine). */
@@ -36,7 +38,7 @@ export interface LetterAverage {
   word: number;
 }
 
-const NONE: LetterAverage = { reading: 1, finds: 1, clicks: 1, knowledge: 1, price: 1, flash: 0, word: 0 };
+const NONE: LetterAverage = { reading: 1, finds: 1, clicks: 1, fourTen: 1, knowledge: 1, price: 1, flash: 0, word: 0 };
 
 export const letterAverage = (run: Run): LetterAverage => {
   if (PLAYER.letters <= 0) return NONE;
@@ -70,7 +72,8 @@ export const letterAverage = (run: Run): LetterAverage => {
   return {
     reading: (1 + uptime('trance') * (trance - 1)) * fourTen,
     finds: (1 + uptime('eye') * (BOON.eye - 1)) * fourTen,
-    clicks: (1 + uptime('hand') * (BOON.hand - 1)) * fourTen,
+    clicks: 1 + uptime('hand') * (BOON.hand - 1),
+    fourTen,
     knowledge: 1 + uptime('mind') * (BOON.mind - 1),
     price: 1 - uptime('deal') * (1 - BOON.deal),
     flash: lettersPerSecond * (1 - 1 / BABEL_ODDS) * share('flash') * BOON.flash,

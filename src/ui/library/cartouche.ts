@@ -85,9 +85,13 @@ export const createCartouche = (onChange: () => void): Cartouche => {
     return gradient;
   };
 
+  // La vitrine quittée, sa scène est libérée (renderer3d.ts, disposeObject) : plus rien à écrire.
+  let disposed = false;
+  texture.addEventListener('dispose', () => (disposed = true));
+
   let written = '';
   const write = (text: string, force = false): void => {
-    if (text === written && !force) return;
+    if (disposed || (text === written && !force)) return;
     written = text;
     const [w, h] = [canvas.width, canvas.height];
     context.setTransform(1, 0, 0, 1, 0, 0);
@@ -150,7 +154,7 @@ export const createCartouche = (onChange: () => void): Cartouche => {
     onChange();
   };
 
-  // Cinzel peut arriver après le premier dessin : le cartouche se réécrit alors.
+  // Cinzel peut arriver après le premier dessin : le cartouche se réécrit alors (s'il est encore là).
   void document.fonts?.load(`600 40px ${TITLE}`).then(() => write(written, true));
 
   return { mesh, write };

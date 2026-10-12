@@ -206,7 +206,7 @@ export const play = (run: Run, seconds: number): void => {
   const letter = letterAverage(run);
   const clicking = run.t < PLAYER.clickMinutes * 60 ? PLAYER.clicksPerSecond : 0;
   const perClick =
-    (2 * etherReading(run) + pps * (MUSCLE_STEP * level(run, 'muscleMemory') + sum(run.life, EFFECT.clickShare))) *
+    (2 * etherReading(run) * letter.fourTen + pps * (MUSCLE_STEP * level(run, 'muscleMemory') + sum(run.life, EFFECT.clickShare))) *
     product(run.life, EFFECT.click) *
     letter.clicks;
   // La lettre : l'Éclair (des secondes de lecture d'un coup) et le mot BABEL (une part des pages en réserve).

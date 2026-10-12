@@ -49,15 +49,18 @@ export const forgetBoons = (): void => {
 
 // Ce que font les bonus en cours (×1 sans eux).
 
-/** Quatre cent dix : les pages lues (méthodes et clics) et la chance de trouvaille ×410, en plus des autres bonus. */
-const fourTen = (): number => (boonOn('fourTen') ? BOON.fourTen : 1);
+/**
+ * Quatre cent dix : les pages lues (méthodes et clics) et la chance de trouvaille ×410, en plus des autres bonus. Sur un
+ * clic, seulement la feuille tournée : la part de la production qu'il lit en plus l'a déjà (readingBoon).
+ */
+export const fourTen = (): number => (boonOn('fourTen') ? BOON.fourTen : 1);
 
 /** Transe : la lecture des méthodes (×2 ; ×3, ×4 avec la pointe de la Plume) ; Quatre cent dix. */
 export const readingBoon = (state: GameState): number => (boonOn('trance') ? tranceFactor(state, BOON.trance) : 1) * fourTen();
 /** Œil vif : la chance de trouvaille ; Quatre cent dix. */
 export const findsBoon = (): number => (boonOn('eye') ? BOON.eye : 1) * fourTen();
-/** Main légère : les pages d'un clic ; Quatre cent dix. */
-export const clickBoon = (): number => (boonOn('hand') ? BOON.hand : 1) * fourTen();
+/** Main légère : les pages d'un clic. */
+export const clickBoon = (): number => (boonOn('hand') ? BOON.hand : 1);
 /** Mémoire vive : la Connaissance d'une trouvaille. */
 export const knowledgeBoon = (): number => (boonOn('mind') ? BOON.mind : 1);
 /** Aubaine : le prix des méthodes. */

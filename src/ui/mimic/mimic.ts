@@ -5,8 +5,9 @@ import { currentNotation, formatNumber, writeDigits } from '../../core/format';
 import { modalOpen } from '../modal/modal';
 import { shownScene } from '../../scene';
 import { SCENES } from '../../scene/scenes';
-import { MIMIC_FORBIDDEN, MIMIC_LIGHT, MIMIC_SPOTS, ROOM_IMAGE } from '../../data/mimic';
-import { cover, shaderLight } from '../roomView';
+import { MIMIC_LIGHT, MIMIC_SPOTS, ROOM_IMAGE } from '../../data/mimic';
+import { cover, hiveTop, screenBox, shaderLight } from '../roomView';
+import { leaveWith, sweepLeftovers } from '../leftovers';
 import { advanceMimic, catchMimic, mimicBonusShare, mimicHere } from '../../systems/mimic';
 import { mimicEyeLit } from '../../systems/etherium';
 import { levelOf } from '../../systems/technologies';
@@ -23,8 +24,6 @@ import type { GameState } from '../../core/state';
 
 /** L'attente n'avance pas de plus d'une seconde d'un coup (onglet repris, machine en veille). */
 const MAX_STEP = 1;
-/** Une place n'est prise que si le livre tient à l'écran, à cette distance des bords (px). */
-const MARGIN = 8;
 
 /** Débogage : la poser à cette place (« salle:numéro »), même cachée par l'interface, ou au bord (« side ») ; null : au jeu. */
 let debugPlace: string | null = null;
@@ -82,14 +81,9 @@ export const createMimic = (state: GameState): Component => {
   };
 
   const onRoomClick = (event: PointerEvent): void => {
-    // L'écran du jeu a été quitté (fondu fini) : ce composant ne sert plus, il rend son livre et ses textures. Pendant le
-    // fondu, il est encore là, mais ne se clique plus.
-    if (!root.isConnected) {
-      window.removeEventListener('pointerdown', onRoomClick, true);
-      clear();
-      textures = null;
-      return;
-    }
+    // L'écran du jeu a été quitté (fondu fini) : ce composant ne sert plus (leftovers.ts). Pendant le fondu, il est encore
+    // là, mais ne se clique plus.
+    if (!root.isConnected) return retire();
     if (!book || leaving || modalOpen() || root.classList.contains('screen-out')) return;
     // Un bouton par-dessus garde son clic.
     if ((event.target as Element | null)?.closest('button, a, input, select, .modal-backdrop')) return;
@@ -128,11 +122,7 @@ export const createMimic = (state: GameState): Component => {
   };
   const onRoomMove = (event: PointerEvent): void => {
     // Comme le clic : l'écran du jeu quitté, l'écouteur part avec lui.
-    if (!root.isConnected) {
-      window.removeEventListener('pointermove', onRoomMove);
-      hover(false);
-      return;
-    }
+    if (!root.isConnected) return retire();
     const target = event.target as Element | null;
     const box = room.getBoundingClientRect();
     hover(
@@ -145,22 +135,20 @@ export const createMimic = (state: GameState): Component => {
     );
   };
   window.addEventListener('pointermove', onRoomMove, { passive: true });
+  // L'écran du jeu quitté : ses écouteurs, son livre et ses textures partent (au premier clic, ou à la mise à jour
+  // suivante de l'écran d'après).
+  const retire = leaveWith(root, () => {
+    window.removeEventListener('pointerdown', onRoomClick, true);
+    window.removeEventListener('pointermove', onRoomMove);
+    clear();
+    textures = null;
+  });
 
   /** Les places de la salle affichée où le livre tient à l'écran, hors de l'interface. */
   const visibleSpots = (scene: string, view: ReturnType<typeof cover>): number[] => {
     const definition = SCENES.find((candidate) => candidate.id === scene);
     if (!definition) return [];
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-    return (MIMIC_SPOTS[scene] ?? []).flatMap((spot, index) => {
-      const b = spotBox(spot, definition.vanishing);
-      const [x0, y0, x1, y1] = [b.x0, b.y0, b.x1, b.y1].map((value, i) => value * view.scale + (i % 2 ? view.top : view.left));
-      if (x0 < MARGIN || y0 < MARGIN || x1 > W - MARGIN || y1 > H - MARGIN) return [];
-      const hidden = MIMIC_FORBIDDEN.some(
-        (zone) => x0 < (zone.x + zone.w) * W && x1 > zone.x * W && y0 < (zone.y + zone.h) * H && y1 > zone.y * H,
-      );
-      return hidden ? [] : [index];
-    });
+    return (MIMIC_SPOTS[scene] ?? []).flatMap((spot, index) => (screenBox(spotBox(spot, definition.vanishing), view) ? [index] : []));
   };
 
   const showRoom = (scene: string, index: number, view: ReturnType<typeof cover>): void => {
@@ -215,11 +203,11 @@ export const createMimic = (state: GameState): Component => {
 
   /** À la hauteur de la ruche des méthodes, au bord droit. */
   const placeSide = (): void => {
-    const hive = document.querySelector('.method-hive')?.getBoundingClientRect();
-    side!.root.style.top = `${hive && hive.height > 0 ? hive.top : window.innerHeight * 0.4}px`;
+    side!.root.style.top = `${hiveTop()}px`;
   };
 
   const update = (): void => {
+    sweepLeftovers();
     const now = Date.now();
     const seconds = Math.min(MAX_STEP, (now - last) / 1000);
     last = now;

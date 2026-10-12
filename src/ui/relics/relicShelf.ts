@@ -110,8 +110,11 @@ export const createRelicShelf = (
           {
             label: t('ui.relics.confirm'),
             kind: 'primary',
+            // Refusé (une autre vue l'a changée pendant la question) : la vitrine montre quand même celle qui agit, et
+            // sa légende, le délai.
             onClick: () => {
-              if (setRelic(state, id)) lightCells();
+              setRelic(state, id);
+              lightCells();
             },
           },
         ],

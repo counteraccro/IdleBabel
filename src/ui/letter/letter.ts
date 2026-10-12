@@ -39,6 +39,9 @@ const path = (t: number, seed: number) => ({
   scale: 1 - 0.35 * t,
 });
 
+/** Une volée qui attend (fenêtre ouverte, onglet caché) : elle regarde de nouveau toutes les tant de millisecondes. */
+const FLOCK_WAIT = 500;
+
 /**
  * La lettre qui s'échappe du livre en main (maquette validée le 08/10, .ai/maquette-bonus-temporaires.html) : elle
  * vient quand le compte à rebours (systems/letter.ts) est fini, à l'écran du jeu seulement, aucune fenêtre ouverte.
@@ -164,7 +167,7 @@ export const createLetter = (state: GameState): Component => {
           .replace('{d}', seconds === undefined ? '' : durationText(seconds));
         gift(x, y, t(`ui.letter.boons.${given.boon}.name`), what);
         if (given.pages !== undefined) glowCounter();
-        if (flockGoesOn(state, flock)) window.setTimeout(() => (root.isConnected ? letter(flock) : (busy = false)), FLOCK_GAP * 1000);
+        if (flockGoesOn(state, flock)) window.setTimeout(() => nextInFlock(flock), FLOCK_GAP * 1000);
         else busy = false;
       },
       () => {
@@ -191,6 +194,19 @@ export const createLetter = (state: GameState): Component => {
       },
       endWord,
     );
+  };
+
+  /**
+   * La lettre suivante d'une volée : pas derrière une fenêtre ouverte ni dans un onglet caché (comme dans update) ; elle
+   * attend qu'on puisse la voir. L'écran du jeu quitté : la volée s'arrête.
+   */
+  const nextInFlock = (flock: Flock): void => {
+    if (!root.isConnected || root.classList.contains('screen-out')) {
+      busy = false;
+      return;
+    }
+    if (document.hidden || modalOpen()) window.setTimeout(() => nextInFlock(flock), FLOCK_WAIT);
+    else letter(flock);
   };
 
   const come = (coming: Coming): void => (coming === 'word' ? word() : letter());
