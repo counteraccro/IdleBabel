@@ -11,6 +11,9 @@ const PLINTH = 0.14;
 const CORNICE = 0.12;
 /** Le bord avant des cases : les livres s'y alignent, un doigt en retrait. */
 export const FRONT = DEPTH / 2;
+/** La corniche : sa face avant, le milieu de sa hauteur sous le haut du meuble (le cartouche y est fixé). */
+export const CORNICE_FRONT = 0.04 + (DEPTH + 0.12) / 2;
+export const CORNICE_MIDDLE = CORNICE / 2;
 /** Une case basse (pour des livres couchés), une case haute (pour des livres debout, même sur une pile). */
 const LOW = 0.65;
 const HIGH = 1.25;

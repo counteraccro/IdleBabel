@@ -14,12 +14,15 @@ import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { visibleBox } from '../book3d/visibleBox';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
-import { DEBUG_CELL, FILL_ORDER, FINAL_CELL, FRONT, MORE_FILL_ORDER, createBookcase } from './bookcase3d';
+import { CORNICE_FRONT, CORNICE_MIDDLE, DEBUG_CELL, FILL_ORDER, FINAL_CELL, FRONT, MORE_FILL_ORDER, createBookcase } from './bookcase3d';
 import { finalBook3d } from '../finalBook/finalBook3d';
 import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
 import { addCellLights } from './cellLights';
 import { createRelicShelf } from '../relics/relicShelf';
+import { createCartouche, cartoucheText } from './cartouche';
+import { RELICS } from '../../data/relics';
+import { relicFound } from '../../systems/relics';
 import type { RelicId } from '../../data/relics';
 import { layoutBookcase, type ShelfPlace } from './shelfLayout';
 import { shelfLook } from './shelfLook';
@@ -157,6 +160,16 @@ export const createLibraryPage = (
       .filter((id) => id !== LIBRARY_DEBUG_BOOK && isRareBookFound(state, id))
       .sort((a, b) => state.rareBooks[a] - state.rareBooks[b]),
   ];
+  // Le cartouche de la corniche : les livres rangés (le livre de débogage, s'il a été trouvé), les reliques.
+  const cartouche = createCartouche(() => (dirty = true));
+  const shelfText = (): string =>
+    cartoucheText(
+      found.length + (isRareBookFound(state, LIBRARY_DEBUG_BOOK) ? 1 : 0),
+      RELICS.filter((relic) => relicFound(state, relic.id)).length,
+    );
+  cartouche.mesh.position.set(0, bookcase.size.y - CORNICE_MIDDLE, CORNICE_FRONT);
+  bookcase.root.add(cartouche.mesh);
+  cartouche.write(shelfText());
   const debugShelf =
     debugging || isRareBookFound(state, LIBRARY_DEBUG_BOOK)
       ? layoutBookcase([{ id: LIBRARY_DEBUG_BOOK, thickness: THICKNESS }], bookcase.cells, [DEBUG_CELL])
@@ -382,6 +395,7 @@ export const createLibraryPage = (
     },
     update: () => {
       back.textContent = `← ${t('ui.back')}`;
+      cartouche.write(shelfText());
       if (hovered) caption.textContent = label(hovered);
     },
   };

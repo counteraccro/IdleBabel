@@ -53,6 +53,7 @@
   "nextPage": "Next page",
   "knowledge": "Knowledge",
   "library": "The library",
+  "shelfCount": {"books": "{n} books", "booksOne": "1 book", "relics": "{n} relics", "relicsOne": "1 relic"},
   "shelveBook": "Put the book back",
   "firstBook": "My first book",
   "debugBookError": "Fatal error",
