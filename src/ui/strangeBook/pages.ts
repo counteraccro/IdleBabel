@@ -16,6 +16,7 @@ import {
   pressItem,
   textLeft,
   textWidth,
+  CAPTION_WIDTH,
   type Item,
   type ItemActions,
   type TextItem,
@@ -143,8 +144,32 @@ export const priceNote = (state: GameState, price: number, offer: string, short:
 /** Chiffre écrit en symboles de Babel (notation choisie dans les options) : doré, comme les titres. */
 const babelGold = (item: TextItem): TextItem => (currentNotation() === 'babel' && !/\d/.test(item.text) ? { ...item, gold: true } : item);
 
+/** La taille d'un grand chiffre de chapitre, l'écart de ses lignes quand il passe à la ligne. */
+const FIGURE_SIZE = 52;
+const FIGURE_LINE = 56;
+/** La légende, sous la dernière ligne du chiffre ; la première ligne d'une décomposition, sous la légende. */
+const CAPTION_GAP = 64;
+const DETAIL_GAP = 34;
 /** Une ligne d'une décomposition sous la légende (la vitesse de lecture). */
 const DETAIL_LINE = 28;
+/** Rien ne descend plus bas : le folio est juste dessous. */
+const FIGURES_BOTTOM = 712;
+
+/**
+ * Un chiffre trop large pour la page (« mots · morceaux · phrases » en millions) passe à la ligne entre ses parties
+ * (demande de l'auteur, 12/10) ; une partie seule encore trop large rapetisse.
+ */
+const figureLines = (text: string): string[] => {
+  const width = (line: string): number =>
+    textWidth({ kind: 'text', text: line, x: 320, y: 0, size: FIGURE_SIZE, align: 'center', spacing: 2 });
+  const rows: string[] = [];
+  for (const part of text.split(' · ')) {
+    const last = rows.at(-1);
+    if (last !== undefined && width(`${last} · ${part}`) <= CAPTION_WIDTH) rows[rows.length - 1] = `${last} · ${part}`;
+    else rows.push(part);
+  }
+  return rows;
+};
 
 /** Les grands chiffres d'un chapitre, chacun sous le précédent ; les lignes d'une décomposition repoussent les suivants. */
 const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[] => {
@@ -152,18 +177,34 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
   const readable = isDeciphered(state, chapter.id);
   // Sous la légende, jamais entre le chiffre et elle : sinon on ne sait plus à quel chiffre une légende appartient.
   const lines = figures.map((figure) => [figure.detail?.(state, readable) ?? []].flat());
+  const values = figures.map((figure) => figureLines(figure.value(state)));
+  /** Ce qu'un chiffre prend de plus qu'une ligne : ses lignes en plus, sa décomposition. */
+  const extra = (index: number): number => (values[index].length - 1) * FIGURE_LINE + lines[index].length * DETAIL_LINE;
+  // Les chiffres se rapprochent si le dernier descendrait jusqu'au folio (un chiffre passé à la ligne).
+  const last = figures.length - 1;
+  const bottom = (step: number): number =>
+    FIGURE_TOP +
+    last * step +
+    Array.from({ length: last + 1 }, (_, index) => extra(index)).reduce((a, b) => a + b, 0) +
+    CAPTION_GAP +
+    (lines[last]?.length ? DETAIL_GAP - DETAIL_LINE + 19 : 24);
+  const step = last > 0 ? Math.min(FIGURE_STEP, FIGURE_STEP - (bottom(FIGURE_STEP) - FIGURES_BOTTOM) / last) : FIGURE_STEP;
   const tops = figures.map(
-    (_, index) => FIGURE_TOP + index * FIGURE_STEP + lines.slice(0, index).reduce((total, list) => total + list.length * DETAIL_LINE, 0),
+    (_, index) => FIGURE_TOP + index * step + Array.from({ length: index }, (_, before) => extra(before)).reduce((a, b) => a + b, 0),
   );
   return [
     ...heading(chapterTitle(state, chapter), CHAPTERS.indexOf(chapter) + 1),
     ...figures.flatMap((figure, index): Item[] => {
-      const value = babelGold({ kind: 'text', text: figure.value(state), x: 320, y: tops[index], size: 52, align: 'center', spacing: 2 });
+      const value = values[index].map((text, row) =>
+        babelGold(
+          fitCaption({ kind: 'text', text, x: 320, y: tops[index] + row * FIGURE_LINE, size: FIGURE_SIZE, align: 'center', spacing: 2 }),
+        ),
+      );
       const caption = fitCaption({
         kind: 'text',
         text: figureCaption(state, chapter, figure),
         x: 320,
-        y: tops[index] + 64,
+        y: tops[index] + (values[index].length - 1) * FIGURE_LINE + CAPTION_GAP,
         size: 20,
         align: 'center',
         italic: true,
@@ -172,7 +213,7 @@ const chapterItems = (state: GameState, chapter: Chapter, number: number): Item[
       });
       const small = (text: string, y: number): TextItem =>
         fitCaption({ kind: 'text', text, x: 320, y, size: 19, align: 'center', spacing: 2 });
-      return [value, caption, ...lines[index].map((line, i) => small(line, caption.y + 34 + i * DETAIL_LINE))];
+      return [...value, caption, ...lines[index].map((line, i) => small(line, caption.y + DETAIL_GAP + i * DETAIL_LINE))];
     }),
     folio(number),
   ];

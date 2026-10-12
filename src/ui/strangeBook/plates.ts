@@ -9,6 +9,7 @@ import { sentenceShown } from '../../systems/sentences';
 import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
 import type { GameState } from '../../core/state';
 import { TOOLS, type ToolId } from '../../data/tools';
+import { LINE_SIZE, LINE_TOP, plateLines } from './plateLines';
 
 /**
  * Les sceaux dans le livre étrange : une page d'avancement, puis une planche par thème, en alvéoles
@@ -132,9 +133,6 @@ const methodTitle = (state: GameState, method: ToolId | 'all'): string => {
   return `${method}-1` in state.seals ? t(`tools.${method}.name`) : babelName(`method:${method}`, 2);
 };
 
-const LINE_TOP = 400;
-const LINE_STEP = 40;
-
 /** Légende du pourcentage des sceaux (illisible tant que les sceaux ne sont pas déchiffrés). */
 const completionCaption = (state: GameState): TextItem => ({
   kind: 'text',
@@ -163,25 +161,27 @@ const bonusLine = (state: GameState): TextItem => {
 };
 
 /** Introduction : la part des sceaux obtenus, et l'avancement de chaque planche. */
-export const completionItems = (state: GameState, plates: PlatePage[], number: number): Item[] => [
-  ...heading(sealsTitle(state)),
-  { kind: 'text', text: writeDigits(`${Math.floor(completion(state) * 100)} %`), x: 320, y: 200, size: 84, align: 'center', spacing: 2 },
-  completionCaption(state),
-  bonusLine(state),
-  ...plates
-    .filter((plate) => plate.part === 0)
-    .flatMap((plate, index): Item[] => {
-      const y = LINE_TOP + index * LINE_STEP;
+export const completionItems = (state: GameState, plates: PlatePage[], number: number): Item[] => {
+  const firsts = plates.filter((plate) => plate.part === 0);
+  const { step, size } = plateLines(firsts.length);
+  return [
+    ...heading(sealsTitle(state)),
+    { kind: 'text', text: writeDigits(`${Math.floor(completion(state) * 100)} %`), x: 320, y: 200, size: 84, align: 'center', spacing: 2 },
+    completionCaption(state),
+    bonusLine(state),
+    ...firsts.flatMap((plate, index): Item[] => {
+      const y = LINE_TOP + index * step;
       return [
-        ...(plateHasNews(state, plate.plate) ? [newsMark(98, y, 22)] : []),
-        { kind: 'text', text: plateTitle(state, plate.plate), x: 110, y, size: 22, align: 'left', spacing: 2 },
-        { kind: 'dots', x1: 330, x2: 450, y: y + 17 },
-        { kind: 'text', text: tally(state, plate.plate), x: 530, y, size: 22, align: 'right' },
-        { kind: 'link', y: y - 8, height: LINE_STEP - 4, target: plate.page },
+        ...(plateHasNews(state, plate.plate) ? [newsMark(98, y, size)] : []),
+        { kind: 'text', text: plateTitle(state, plate.plate), x: 110, y, size, align: 'left', spacing: 2 },
+        { kind: 'dots', x1: 330, x2: 450, y: y + (17 * size) / LINE_SIZE },
+        { kind: 'text', text: tally(state, plate.plate), x: 530, y, size, align: 'right' },
+        { kind: 'link', y: y - 8, height: step - 4, target: plate.page },
       ];
     }),
-  folio(number),
-];
+    folio(number),
+  ];
+};
 
 /** Des sceaux de la planche n'ont pas encore été vus : une étoile le signale au sommaire. */
 export const plateHasNews = (state: GameState, plate: PlateId): boolean =>

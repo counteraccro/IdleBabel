@@ -110,7 +110,8 @@ const nextRareParts = (state: GameState, readable: boolean): string => {
 
 /** L'Éther versé dans l'Etherium, et les prestiges qui l'ont rapporté. */
 const etherSpentParts = (state: GameState, readable: boolean): string => {
-  const spent = number(state.etherReceived - state.ether);
+  // Jamais négatif : le débogage peut donner plus d'Éther que les prestiges n'en ont rapporté.
+  const spent = number(Math.max(0, state.etherReceived - state.ether));
   return readable ? t('strangeBook.figures.etherSpent').replace('{n}', spent) : spent;
 };
 /** Où en est le prochain Éther, en pour cent des pages qui le séparent du dernier. */
