@@ -1,0 +1,100 @@
+/*
+ * Les reliques (maquette validée le 12/10, .ai/maquette-reliques.html) : posées dans la salle, sous toute l'interface,
+ * comme la Mimic ; leur sceau au bord de l'écran quand on ne les voit pas ; le médaillon de celle qui agit, à gauche du
+ * compteur.
+ */
+#app > .relic-stage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  user-select: none;
+}
+.relic-canvas {
+  position: absolute;
+  display: block;
+  transition:
+    opacity 0.8s ease-in,
+    transform 0.8s ease-out;
+}
+/* Trouvée : elle se soulève un peu et s'efface. */
+.relic-canvas.found {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+/* Survolée : la main (elle est sous l'interface), rien d'autre (« tout doit rester naturel »). */
+html.relic-hover,
+html.relic-hover * {
+  cursor: pointer !important;
+}
+
+/* Sans place visible : un sceau au bord droit, sous celui de la Mimic, cerclé d'or. */
+.relic-side {
+  position: absolute;
+  right: 12px;
+  width: 50px;
+  height: calc(50px * 1.1547);
+  pointer-events: auto;
+  transition: opacity 0.8s;
+}
+.relic-side.found {
+  opacity: 0;
+  pointer-events: none;
+}
+.relic-side .method-seal.relic {
+  --seal: 50px;
+  left: 0;
+  top: 0;
+  filter: drop-shadow(0 0 6px rgba(232, 199, 118, 0.45));
+}
+.relic-side .relic .method-rim {
+  background: linear-gradient(180deg, #e8c776, #a8762c);
+}
+.relic-side .relic .method-sigil {
+  position: absolute;
+  inset: 22%;
+  width: 56%;
+  height: 56%;
+  opacity: 1;
+}
+.relic-side .relic:hover {
+  transform: scale(1.1);
+  z-index: 3;
+}
+
+/* Le médaillon de la relique qui agit : à gauche du compteur (les bonus de la lettre sont à droite), sans usure. */
+.relic-medals {
+  position: absolute;
+  right: 100%;
+  top: 0.23em;
+  margin-right: 0.47em;
+  display: flex;
+  font-size: 2.6rem;
+  pointer-events: auto;
+}
+.relic-medal {
+  position: relative;
+  width: 1.27em;
+  height: 1.27em;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+.relic-medal.on {
+  opacity: 1;
+  transform: scale(1);
+}
+/* Un filet d'or fin, plein : il ne s'use pas. */
+.relic-medal .boon-medal-ring {
+  background: rgba(201, 164, 106, 0.55);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 88%, #000 92%);
+  mask: radial-gradient(circle closest-side, transparent 88%, #000 92%);
+}
+.relic-medal:hover .boon-medal-tip {
+  opacity: 1;
+}

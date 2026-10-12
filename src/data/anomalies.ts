@@ -127,6 +127,11 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintExactly410',
     'hintLastInstant',
     'hintBabelWord',
+    // Les reliques (12/10) : chaque phrase pose sa relique dans sa salle (systems/relics.ts) ; elle ne se lit qu'avec
+    // l'Ouest de l'Exploration, et sa salle déjà vue.
+    'hintRelicLoupe',
+    'hintRelicAstrolabe',
+    'hintRelicHourglass',
   ],
 };
 

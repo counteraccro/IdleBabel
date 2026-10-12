@@ -3,6 +3,7 @@ import { HINT_BOOKS, HINTS_AFTER_PRESTIGE } from '../data/anomalies';
 import { SENTENCES } from '../data/sentences';
 import { METHOD_CHAIN, type ToolId } from '../data/tools';
 import { currentTarget } from './sentences';
+import { relicHintFindable } from './relics';
 import type { GameState } from '../core/state';
 
 /**
@@ -29,10 +30,11 @@ export const waitingFor = (state: GameState, id: string): ToolId | undefined => 
 
 /**
  * Un indice qui mène à un livre rare attend que ce livre soit trouvé (data/anomalies.ts, HINT_BOOKS) ; celui d'un
- * secret de l'Etherium, un premier prestige.
+ * secret de l'Etherium, un premier prestige ; celui d'une relique, l'Ouest de l'Exploration et sa salle déjà vue.
  */
 export const hintFindable = (state: GameState, id: string): boolean => {
   if (HINTS_AFTER_PRESTIGE.includes(id) && state.etherReceived === 0) return false;
+  if (!relicHintFindable(state, id)) return false;
   const books = HINT_BOOKS[id];
   return !books || books.some((book) => book in state.rareBooks);
 };

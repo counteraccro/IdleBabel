@@ -22,6 +22,13 @@ export const LORE = [
    * à mesure de la Connaissance. Il s'ouvre ensuite en grand (ui/lore.ts).
    */
   'strangeBook',
+  /**
+   * Une relique trouvée dans sa salle (systems/relics.ts) : un morceau du récit de celui qui a cherché avant lui
+   * (validés par l'auteur le 11/10, .ai/plan-reliques.md). Relu ensuite sur son sceau du Grand Livre.
+   */
+  'relicLoupe',
+  'relicAstrolabe',
+  'relicHourglass',
 ] as const;
 
 export type LoreId = (typeof LORE)[number];

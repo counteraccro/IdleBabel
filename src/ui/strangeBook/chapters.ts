@@ -14,6 +14,8 @@ import { sealFindMultiplier } from '../../systems/seals';
 import { isDeciphered } from '../../systems/decipher';
 import { statsRevealed } from '../../systems/strangeBook';
 import { nextEtherPages, nextEtherProgress, prestigeGain } from '../../systems/prestige';
+import { relicBonus, relicReading } from '../../systems/relics';
+import { relicName } from '../relics/relicText';
 import type { PartId } from '../../data/decipher';
 import type { GameState } from '../../core/state';
 
@@ -82,7 +84,7 @@ const findChanceParts = (state: GameState, readable: boolean): string | string[]
 /**
  * La vitesse de lecture, décomposée : ce que lisent les méthodes d'elles-mêmes, × leurs intuitions (en moyenne, pesée
  * par ce que lit chacune) ; puis, après un premier prestige, une seconde ligne : × l'Etherium (le Livre ouvert) et
- * × l'Éther reçu.
+ * × l'Éther reçu ; et une troisième quand le Sablier agit (demande de l'auteur, 12/10).
  */
 const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
   const base = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
@@ -94,10 +96,12 @@ const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
     ...(prestiged ? [factor(readingMultiplier(state)), factor(etherReading(state))] : []),
   ];
   const [methods, intuitions, stars, ether] = parts;
-  if (!readable) return prestiged ? [`${methods}  ${intuitions}`, `${stars}  ${ether}`] : [`${methods}  ${intuitions}`];
+  const hourglass = relicReading(state) > 1 ? factor(relicReading(state)) : null;
+  const relic = hourglass ? [readable ? t('strangeBook.figures.pagesPerSecondRelic').replace('{relic}', hourglass) : hourglass] : [];
+  if (!readable) return prestiged ? [`${methods}  ${intuitions}`, `${stars}  ${ether}`, ...relic] : [`${methods}  ${intuitions}`, ...relic];
   const first = t('strangeBook.figures.pagesPerSecondParts').replace('{methods}', methods).replace('{intuitions}', intuitions);
-  if (!prestiged) return [first];
-  return [first, t('strangeBook.figures.pagesPerSecondEther').replace('{stars}', stars).replace('{ether}', ether)];
+  if (!prestiged) return [first, ...relic];
+  return [first, t('strangeBook.figures.pagesPerSecondEther').replace('{stars}', stars).replace('{ether}', ether), ...relic];
 };
 
 const rareFound = (state: GameState): number => Object.keys(state.rareBooks).length;
@@ -114,6 +118,21 @@ const etherSpentParts = (state: GameState, readable: boolean): string => {
   const spent = number(Math.max(0, state.etherReceived - state.ether));
   return readable ? t('strangeBook.figures.etherSpent').replace('{n}', spent) : spent;
 };
+/**
+ * La relique qui agit (demande de l'auteur, 12/10) : ce qu'elle donne en grand (+3, +40 %), son nom et ce sur quoi elle
+ * agit en dessous. La Loupe et l'Astrolabe n'ont pas d'autre chiffre où se montrer.
+ */
+const relicValue = (state: GameState): string => {
+  const id = state.relics.active;
+  if (!id) return '';
+  const bonus = relicBonus(state, id);
+  return id === 'loupe' ? writeDigits(`+${number(bonus)}`) : `+${percent(bonus)}`;
+};
+const relicParts = (state: GameState, readable: boolean): string[] => {
+  const id = state.relics.active;
+  return id && readable ? [t(`strangeBook.figures.relicParts.${id}`).replace('{name}', relicName(id))] : [];
+};
+
 /** Où en est le prochain Éther, en pour cent des pages qui le séparent du dernier. */
 const nextEtherParts = (state: GameState): string => percent(Math.floor(nextEtherProgress(state) * 100) / 100);
 
@@ -196,6 +215,8 @@ export const CHAPTERS: readonly Chapter[] = [
         detail: pagesPerSecondParts,
       },
       { id: 'bestPagesPerSecond', caption: 'amprel duc', value: (s) => formatNumber(s.stats.bestPagesPerSecond, getLocale()) },
+      // La relique qui agit : ses instruments sont aussi des manières de lire (la page « Éther » n'avait plus la place).
+      { id: 'relic', caption: 'relva tisor', value: relicValue, detail: relicParts, shown: (s) => s.relics.active !== null },
     ],
   },
   {

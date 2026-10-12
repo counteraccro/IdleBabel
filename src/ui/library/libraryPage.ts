@@ -19,6 +19,8 @@ import { finalBook3d } from '../finalBook/finalBook3d';
 import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
 import { addCellLights } from './cellLights';
+import { createRelicShelf } from '../relics/relicShelf';
+import type { RelicId } from '../../data/relics';
 import { layoutBookcase, type ShelfPlace } from './shelfLayout';
 import { shelfLook } from './shelfLook';
 import type { GameState } from '../../core/state';
@@ -142,6 +144,8 @@ export const createLibraryPage = (
     if (object instanceof THREE.Light) object.intensity *= ROOM_DIM;
   });
   const cellLights = addCellLights(bookcase.root, bookcase.cells);
+  // Les reliques trouvées, dans leurs petites cases (12/10).
+  const relics = createRelicShelf(state, scene, bookcase.cells, cellLights, renderer, () => (dirty = true));
 
   const thickness = (id: string): number => (id === LIBRARY_FIRST_BOOK ? THICKNESS : (rareBookArt(id).thickness ?? THICKNESS));
   // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre. Le livre des
@@ -273,10 +277,47 @@ export const createLibraryPage = (
     placeCaption();
     caption.classList.toggle('shown', place !== null);
   };
-  canvas.addEventListener('pointermove', (event) => hover(placeAt(event)));
-  canvas.addEventListener('pointerleave', () => hover(null));
+  // Une relique survolée : sa légende (son nom, ce qu'elle donne, si elle agit), sur le bord de son étagère.
+  let hoveredRelic: RelicId | null = null;
+  const relicAt = (event: MouseEvent): RelicId | null => {
+    const rect = canvas.getBoundingClientRect();
+    pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
+    raycaster.setFromCamera(pointer, camera);
+    return relics.at(raycaster);
+  };
+  const relicCaption = (): void => {
+    if (!hoveredRelic) return;
+    const { name, line } = relics.caption(hoveredRelic);
+    if (caption.dataset.relic !== `${name}|${line}`) {
+      caption.dataset.relic = `${name}|${line}`;
+      caption.replaceChildren(name, Object.assign(document.createElement('i'), { textContent: line }));
+    }
+    const at = relics.anchor(hoveredRelic).project(camera);
+    caption.style.left = `${((at.x + 1) / 2) * 100}%`;
+    caption.style.top = `${((1 - at.y) / 2) * 100}%`;
+  };
+  const hoverRelic = (id: RelicId | null): void => {
+    if (id) hover(null);
+    if (hoveredRelic === id) return relicCaption();
+    hoveredRelic = id;
+    delete caption.dataset.relic;
+    canvas.style.cursor = id ? 'pointer' : '';
+    relicCaption();
+    caption.classList.toggle('shown', id !== null);
+  };
+  canvas.addEventListener('pointermove', (event) => {
+    const relic = relicAt(event);
+    hoverRelic(relic);
+    if (!relic) hover(placeAt(event));
+  });
+  canvas.addEventListener('pointerleave', () => {
+    hoverRelic(null);
+    hover(null);
+  });
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
   canvas.addEventListener('click', (event) => {
+    const relic = relicAt(event);
+    if (relic) return relics.choose(relic);
     const place = placeAt(event);
     if (!place?.holder || !place.book) return;
     // Il part de sa place dans sa case, tel qu'on le voit (sorti à moitié) : la page reprend ce départ.
@@ -315,6 +356,8 @@ export const createLibraryPage = (
       place.holder.position.z = place.pivot.z + PULL * place.pull;
       if (place.spot.pose === 'stand') place.holder.rotation.x = TIP * place.pull;
     }
+    // Le temps qui reste avant de pouvoir changer de relique avance dans sa légende.
+    relicCaption();
     if (resize()) {
       fit();
       placeCaption();

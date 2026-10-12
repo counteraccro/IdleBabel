@@ -153,7 +153,7 @@ const stairs = (ctx: Ctx, stars: StarView[]): void => {
 };
 
 /** Le dessin de la figure, à peine tracé sous les étoiles : la Rose et ses points cardinaux, la Mimic et son œil. */
-const sketch = (ctx: Ctx, { lines, circle, labels, eye }: Sketch): void => {
+const sketch = (ctx: Ctx, { lines, circle, rings, labels, eye }: Sketch): void => {
   ctx.save();
   ctx.strokeStyle = C.sketch;
   ctx.lineWidth = 1;
@@ -181,9 +181,9 @@ const sketch = (ctx: Ctx, { lines, circle, labels, eye }: Sketch): void => {
     ctx.fill();
     ctx.restore();
   }
-  if (circle) {
+  for (const [x, y, r] of [...(circle ? [circle] : []), ...(rings ?? [])]) {
     ctx.beginPath();
-    ctx.arc(circle[0], circle[1], circle[2], 0, Math.PI * 2);
+    ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.stroke();
   }
   ctx.restore();

@@ -119,5 +119,30 @@
     "name": "The Mimic",
     "eaten": "It has swallowed {n} knowledge.",
     "gain": "+ {n} knowledge (+ {p}%)"
+  },
+  "relics": {
+    "names": {
+      "loupe": "The Magnifying Glass",
+      "astrolabe": "The Astrolabe",
+      "hourglass": "The Hourglass"
+    },
+    "put": {
+      "loupe": "Set out the magnifying glass?",
+      "astrolabe": "Set out the astrolabe?",
+      "hourglass": "Set out the hourglass?"
+    },
+    "bonus": {
+      "loupe": "+{n} guaranteed knowledge per find",
+      "loupeOne": "+1 guaranteed knowledge per find",
+      "astrolabe": "letter +{n}%",
+      "hourglass": "pages read +{n}%"
+    },
+    "acts": "at work",
+    "choose": "set it out?",
+    "wait": "can be set out in {t}",
+    "stops": "{name} will stop working.",
+    "then": "After that, no change for {h} h.",
+    "keep": "Leave it",
+    "confirm": "Set it out"
   }
 }

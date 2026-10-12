@@ -63,6 +63,34 @@
     ],
     "button": "Open the Ledger"
   },
+  "relicLoupe": {
+    "title": "The Magnifying Glass",
+    "text": [
+      "A magnifying glass, between two books.",
+      "Someone searched here.",
+      "He read up close, letter by letter, as if afraid to miss something."
+    ],
+    "button": "Keep it"
+  },
+  "relicAstrolabe": {
+    "title": "The Astrolabe",
+    "text": [
+      "Him again.",
+      "He wanted to know where he was.",
+      "Notches on the rim: he was counting the rooms.",
+      "One day, he stopped counting."
+    ],
+    "button": "Keep it"
+  },
+  "relicHourglass": {
+    "title": "The Hourglass",
+    "text": [
+      "The glass has clouded from being turned over and over.",
+      "He was measuring the time spent searching.",
+      "Under the base, a carved name, worn away by fingers."
+    ],
+    "button": "Keep it"
+  },
   "away": {
     "title": "A dream",
     "text": [

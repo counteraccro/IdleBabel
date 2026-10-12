@@ -27,6 +27,8 @@ export interface Sketch {
   lines: readonly (readonly (readonly [number, number])[])[];
   /** Un cercle (centre, rayon). */
   circle?: readonly [number, number, number];
+  /** D'autres cercles (les reliques : le verre de la loupe, l'astrolabe et son anneau). */
+  rings?: readonly (readonly [number, number, number])[];
   /** Des lettres posées sur la figure (les points cardinaux) : clé de texte, place. */
   labels?: readonly (readonly [string, readonly [number, number]])[];
   /** Un œil en amande, la fente du chat au milieu : centre, demi-largeur, angle (degrés). */
@@ -62,6 +64,23 @@ const rosePoint = (deg: number, len: number) => {
 const HINGE = [140, 560] as const;
 const UPPER = [510, 360] as const;
 const LOWER = [530, 610] as const;
+
+// Les reliques, « Le Cabinet » (maquette .ai/maquette-reliques.html) : le centre en bas, une branche par relique, posée
+// sur son dessin (la loupe à gauche, l'astrolabe au milieu, le sablier à droite), « La patience » sous le centre.
+const CABINET = [320, 520] as const;
+/** Un côté du verre du sablier, du plateau du haut au col puis au plateau du bas (`side` : −1 à gauche, 1 à droite). */
+const glassSide = (side: number): (readonly [number, number])[] =>
+  [
+    [35, 282],
+    [33, 310],
+    [24, 336],
+    [10, 356],
+    [0, 366],
+    [-10, 376],
+    [-24, 396],
+    [-33, 422],
+    [-35, 450],
+  ].map(([dx, y]) => [480 + side * dx, y] as const);
 
 const MANUAL_CELL = [190, 470] as const;
 const AUTO_CELL = [450, 470] as const;
@@ -251,6 +270,49 @@ export const FIGURES: Record<PageId, Figure> = {
         ],
       ],
       eye: [336, 372, 34, -28],
+    },
+  },
+  relics: {
+    spots: {
+      hub: CABINET,
+      l1: [250, 456],
+      l2: [160, 360],
+      a1: [320, 402],
+      a2: [320, 336],
+      h1: [480, 430],
+      h2: [480, 300],
+      d: [320, 630],
+    },
+    deco: [],
+    given: { id: 'hub', opens: ['l1', 'a1', 'h1', 'd'] },
+    sketch: {
+      lines: [
+        // Le manche de la loupe ; l'alidade de l'astrolabe ; les plateaux du sablier, et ses deux bulbes de chaque côté.
+        [
+          [198, 398],
+          [262, 470],
+        ],
+        [
+          [262, 370],
+          [378, 302],
+        ],
+        [
+          [430, 282],
+          [530, 282],
+        ],
+        [
+          [430, 450],
+          [530, 450],
+        ],
+        glassSide(-1),
+        glassSide(1),
+      ],
+      rings: [
+        [160, 360, 54],
+        [320, 336, 66],
+        [320, 336, 44],
+        [320, 259, 10],
+      ],
     },
   },
 };

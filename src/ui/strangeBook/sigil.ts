@@ -17,7 +17,33 @@ const corner = (i: number, r: number): [number, number] => {
 const fixed = (value: number): string => value.toFixed(1);
 const hexagon = (r: number): string => `M${[0, 1, 2, 3, 4, 5].map((i) => corner(i, r).map(fixed).join(' ')).join(' L')} Z`;
 
+/**
+ * Le sceau d'une relique : le dessin de l'objet dans le double hexagone (choix de l'auteur, 12/10, maquette
+ * .ai/maquette-reliques.html, piste B), à la place des traits tirés au hasard. Les icônes de son médaillon (repère 20),
+ * agrandies 2,8 fois au milieu.
+ */
+const RELIC_SIGILS: Record<string, Shape[]> = {
+  relicLoupe: [
+    { kind: 'circle', cx: 45, cy: 45, r: 14.6 },
+    { kind: 'path', d: 'M55.5 58.5 L66 69 Q68.5 71.5 71 69 Q73.5 66.5 71 64 L60.5 53.5' },
+  ],
+  relicAstrolabe: [
+    { kind: 'circle', cx: 50, cy: 54.2, r: 17.4 },
+    { kind: 'circle', cx: 50, cy: 54.2, r: 9.5 },
+    { kind: 'circle', cx: 50, cy: 31.5, r: 4.2 },
+    { kind: 'path', d: 'M36 62.6 L64 45.8' },
+  ],
+  relicHourglass: [
+    { kind: 'path', d: 'M37.4 30.4 H62.6 M37.4 69.6 H62.6' },
+    { kind: 'path', d: 'M41.6 30.4 Q41.6 43 50 50 Q58.4 57 58.4 69.6' },
+    { kind: 'path', d: 'M58.4 30.4 Q58.4 43 50 50 Q41.6 57 41.6 69.6' },
+    { kind: 'path', d: 'M45.2 65.7 Q50 60.1 54.7 65.7' },
+  ],
+};
+
 export const sigil = (series: string, tier = 0): Shape[] => {
+  const relic = RELIC_SIGILS[series];
+  if (relic) return [{ kind: 'path', d: hexagon(R) }, { kind: 'path', d: hexagon(R - 6) }, ...relic];
   const random = seeded(hashText(series));
   const points: [number, number][] = [];
   for (let i = 0; i < 6; i++) points.push(corner(i, 30), corner(i + 0.5, 26));

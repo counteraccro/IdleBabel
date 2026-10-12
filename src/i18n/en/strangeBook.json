@@ -39,7 +39,14 @@
     "etherSpent": "{n} already poured into the Etherium",
     "etherReceived": "Ether the prestiges have brought",
     "prestigeGain": "Ether a prestige would bring right now",
-    "nextEther": "pages to read before the next Ether"
+    "nextEther": "pages to read before the next Ether",
+    "pagesPerSecondRelic": "the Hourglass {relic}",
+    "relic": "what your relic gives you",
+    "relicParts": {
+      "loupe": "{name} · knowledge with every find",
+      "astrolabe": "{name} · the letter comes more often",
+      "hourglass": "{name} · pages read, methods and clicks"
+    }
   },
   "sealsTitle": "Seals",
   "sealsCompletion": "of the seals bear your mark",
@@ -53,6 +60,7 @@
     "intuitions": "Intuitions",
     "etherium": "Etherium",
     "mimic": "The Mimic",
+    "relics": "Relics",
     "rare": "Rare books",
     "secrets": "Secrets"
   },
@@ -224,6 +232,7 @@
     "constellation-start": "Cross the threshold with full hands",
     "constellation-memory": "Fill every cell",
     "constellation-quill": "Trim the quill to its tip",
+    "constellation-explore": "The Compass Rose: East and West",
     "automaticAge": "Enter the Automatic Age",
     "emptyEtherium": "I closed the Etherium without lighting anything.",
     "noHands": "A whole life without turning a page by hand.",
@@ -233,7 +242,17 @@
     "mimicsCaught": "Catch {n} Mimics",
     "mimicBonus": "Take back {n} more knowledge from it",
     "mimicHours": "Let it eat for {n} hours",
+    "relicLoupe": "The Magnifying Glass",
+    "relicAstrolabe": "The Astrolabe",
+    "relicHourglass": "The Hourglass",
+    "relicsAll": "The Cabinet: every relic",
+    "relicChanges": [
+      "A change of heart",
+      "Hesitate: {n} changes of relic",
+      "Never choose: {n} changes of relic"
+    ],
     "constellation-mimic": "Count all its teeth",
+    "constellation-relics": "Light the whole Cabinet",
     "intuition-lightSleep": "Hear a book sleeping"
   }
 }

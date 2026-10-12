@@ -4,14 +4,16 @@ import { formatNumber } from '../core/format';
 import { setNumberText } from './babelDigits';
 import { pagesPerSecond } from '../systems/production';
 import { createBoonMedals } from './letter/boonMedals';
+import { createRelicMedal } from './relics/relicMedal';
 import { boonOn } from '../systems/boons';
 import type { GameState } from '../core/state';
 
 /**
  * Le compteur du haut : les pages en réserve, la vitesse, la Connaissance. L'Etherium ouvert (`showEther`),
- * l'Éther à dépenser à leur place (demande de l'auteur, 09/10) : on ne savait pas combien il en restait.
+ * l'Éther à dépenser à leur place (demande de l'auteur, 09/10) : on ne savait pas combien il en restait. À sa gauche, le
+ * médaillon de la relique qui agit (`onRelic` : il ouvre la vitrine).
  */
-export const createCounter = (state: GameState, showEther: () => boolean = () => false): Component => {
+export const createCounter = (state: GameState, showEther: () => boolean = () => false, onRelic: () => void = () => {}): Component => {
   const root = el('section', 'counter');
   const value = el('div', 'value');
   const rate = el('div', 'label');
@@ -19,7 +21,8 @@ export const createCounter = (state: GameState, showEther: () => boolean = () =>
   const knowledge = el('div', 'label knowledge');
   // Les bonus de la lettre en cours : leurs médaillons, à droite du compteur.
   const medals = createBoonMedals(state);
-  root.append(value, rate, knowledge, medals.root);
+  const relic = createRelicMedal(state, onRelic);
+  root.append(value, rate, knowledge, medals.root, relic.root);
   // Les nombres dans leur propre élément, dorés (classe number).
   const [pages, speed, carried] = [el('span', 'number'), el('span', 'number'), el('span', 'number')];
   const pagesLabel = document.createTextNode('');
@@ -52,6 +55,8 @@ export const createCounter = (state: GameState, showEther: () => boolean = () =>
     speed.classList.toggle('boosted', boonOn('trance'));
     carried.classList.toggle('boosted', boonOn('mind'));
     medals.update();
+    relic.update();
+    relic.root.hidden ||= ether;
   };
   update();
   return { root, update };

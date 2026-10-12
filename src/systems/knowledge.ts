@@ -4,6 +4,7 @@ import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { pagesPerSecond } from './production';
 import { isComplete, missing, openSecret, segmentKind, segments, write, written } from './sentences';
 import { findableTarget, hintFindable } from './findable';
+import { relicKnowledge } from './relics';
 import { tellLore } from './lore';
 import { duplicateShare, filterMultiplier, maxAwaySeconds, targetShare, turnsPerSecond } from './technologies';
 import { sealFindMultiplier } from './seals';
@@ -177,11 +178,11 @@ export const findText = (find: Find): string => {
 };
 
 /**
- * Une trouvaille lue : 1 point de Connaissance (plus, avec l'Etherium et la Mémoire vive de la lettre ; avalé par la Mimic
- * s'il y en a une), et elle s'écrit dans le livre blanc.
+ * Une trouvaille lue : 1 point de Connaissance (plus, avec l'Etherium et la Mémoire vive de la lettre ; et ceux, garantis,
+ * de la Loupe ; avalé par la Mimic s'il y en a une), et elle s'écrit dans le livre blanc.
  */
 export const gainFind = (state: GameState, find: Find): void => {
-  const gained = knowledgePerFind(state) * knowledgeBoon();
+  const gained = knowledgePerFind(state) * knowledgeBoon() + relicKnowledge(state);
   // Une Mimic dans la salle avale la Connaissance ; la trouvaille s'écrit quand même dans le livre blanc.
   if (!swallow(state, gained)) {
     state.knowledge += gained;

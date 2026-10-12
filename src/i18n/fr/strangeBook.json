@@ -39,7 +39,14 @@
     "etherSpent": "{n} déjà versé dans l'Etherium",
     "etherReceived": "Éther que les prestiges ont rapporté",
     "prestigeGain": "Éther qu'un prestige rapporterait maintenant",
-    "nextEther": "pages à lire avant le prochain Éther"
+    "nextEther": "pages à lire avant le prochain Éther",
+    "pagesPerSecondRelic": "le Sablier {relic}",
+    "relic": "ce que ta relique t'apporte",
+    "relicParts": {
+      "loupe": "{name} · Connaissance à chaque trouvaille",
+      "astrolabe": "{name} · la lettre vient plus souvent",
+      "hourglass": "{name} · pages lues, méthodes et clics"
+    }
   },
   "sealsTitle": "Sceaux",
   "sealsCompletion": "des sceaux portent ta marque",
@@ -53,6 +60,7 @@
     "intuitions": "Intuitions",
     "etherium": "Etherium",
     "mimic": "La Mimic",
+    "relics": "Les reliques",
     "rare": "Livres rares",
     "secrets": "Secrets"
   },
@@ -224,6 +232,7 @@
     "constellation-start": "Franchis le seuil les mains pleines",
     "constellation-memory": "Remplis chaque alvéole",
     "constellation-quill": "Taille la plume jusqu’à sa pointe",
+    "constellation-explore": "La Rose des vents : l’Est et l’Ouest",
     "automaticAge": "Entre dans l'Âge Automatique",
     "emptyEtherium": "J'ai refermé l'Etherium sans rien y allumer.",
     "noHands": "Toute une vie sans tourner une page de ma main.",
@@ -233,7 +242,17 @@
     "mimicsCaught": "Attrape {n} Mimics",
     "mimicBonus": "Reprends-lui {n} connaissances de plus",
     "mimicHours": "Laisse-la manger {n} heures",
+    "relicLoupe": "La Loupe",
+    "relicAstrolabe": "L’Astrolabe",
+    "relicHourglass": "Le Sablier",
+    "relicsAll": "Le Cabinet : toutes les reliques",
+    "relicChanges": [
+      "Changer d’avis",
+      "Hésiter : {n} changements de relique",
+      "Ne jamais choisir : {n} changements de relique"
+    ],
     "constellation-mimic": "Compte-lui toutes ses dents",
+    "constellation-relics": "Allume tout le Cabinet",
     "intuition-lightSleep": "Entends dormir un livre"
   }
 }

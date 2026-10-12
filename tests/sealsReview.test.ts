@@ -51,8 +51,8 @@ describe('revue des sceaux (08/10)', () => {
     expect(state.seals['constellation-ages']).toBe(1);
     expect(state.seals['constellation-memory']).toBe(1);
     expect(state.seals[`starsLit-${OPEN_STARS.length}`]).toBe(1);
-    // Les Âges d'après l'Automatique, la Goutte, les sept pointes de la Rose des vents qui n'ouvrent encore rien.
-    expect(OPEN_STARS.length).toBe(STARS.length - 11);
+    // Les Âges d'après l'Automatique, la Goutte, les six pointes de la Rose des vents qui n'ouvrent encore rien.
+    expect(OPEN_STARS.length).toBe(STARS.length - 10);
   });
 
   it('scelle la Connaissance trouvée, et le livre blanc', () => {
@@ -115,8 +115,8 @@ describe('revue des sceaux (08/10)', () => {
 });
 
 describe('indices résolus', () => {
-  it('chaque indice mène à un sceau secret', () => {
-    const secrets = SEALS.filter((seal) => seal.plate === 'secrets').map((seal) => seal.id);
+  it('chaque indice mène à un sceau secret (ou à celui de sa relique)', () => {
+    const secrets = SEALS.filter((seal) => seal.plate === 'secrets' || seal.plate === 'relics').map((seal) => seal.id);
     for (const hint of ANOMALIES.filter((anomaly) => anomaly.family === 'hints')) expect(secrets, hint.id).toContain(hintSeal(hint.id));
   });
 });

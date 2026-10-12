@@ -12,7 +12,7 @@ import {
 } from '../src/data/letter';
 import { EFFECT } from '../src/data/etheriumStars';
 import { PLAYER } from './config';
-import { lit, product } from './vie';
+import { lit, product, relicBonus } from './vie';
 import type { Run } from './partie';
 
 /**
@@ -41,7 +41,10 @@ const NONE: LetterAverage = { reading: 1, finds: 1, clicks: 1, knowledge: 1, pri
 export const letterAverage = (run: Run): LetterAverage => {
   if (PLAYER.letters <= 0) return NONE;
   const level = (id: string): number => run.levels[id] ?? 0;
-  const wait = ((LETTER_WAIT.min + LETTER_WAIT.max) / 2) * product(run.life, EFFECT.letterWait) * (1 - WATCH_STEP * level('watch'));
+  // L'Astrolabe, s'il agit : +40 % d'apparitions (et ses étoiles).
+  const wait =
+    (((LETTER_WAIT.min + LETTER_WAIT.max) / 2) * product(run.life, EFFECT.letterWait) * (1 - WATCH_STEP * level('watch'))) /
+    (1 + relicBonus(run.life, 'astrolabe', 0));
   // Le Souffle retenu et le haut des barbes : une lettre qui reste plus longtemps s'attrape plus souvent (jusqu'à toutes).
   const stays = 8 + BREATH_STEP * level('heldBreath') + (lit(run.life, 'quill.l3') ? 4 : 0);
   const caught = Math.min(1, PLAYER.letters * (stays / 8));

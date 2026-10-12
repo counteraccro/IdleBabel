@@ -40,7 +40,7 @@ export const PLAYER = {
   prestigeWhenRateBelow: 0.8,
   maxRunHours: 48,
   /** Les pages de l'Etherium où le bot allume des étoiles (--pages=reading,hands pour n'en essayer que quelques-unes). */
-  pages: ['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'quill', 'ages', 'explore', 'mimic'] as PageId[],
+  pages: ['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'quill', 'ages', 'explore', 'mimic', 'relics'] as PageId[],
   /** La Page Cornée (1re étoile de la Ruche) ; --sans-cornee pour s'en passer (et donc de toute la Ruche). */
   cornee: true,
   /**

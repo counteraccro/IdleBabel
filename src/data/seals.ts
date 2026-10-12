@@ -12,13 +12,26 @@ import { TECHNOLOGIES } from './technologies';
 import { levelOf, lockOf, maxLevel } from '../systems/technologies';
 import { AUTOMATIC_AGE, TOOLS, type ToolId } from './tools';
 import { mimicSeconds } from '../systems/mimic';
+import { RELICS } from './relics';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
  * une ligne ici, et son texte dans i18n (strangeBook.seals.<texte>) — le sigle, la place sur la
  * planche et la légende sont générés.
  */
-export const PLATES = ['pages', 'books', 'fragments', 'time', 'methods', 'intuitions', 'etherium', 'mimic', 'rare', 'secrets'] as const;
+export const PLATES = [
+  'pages',
+  'books',
+  'fragments',
+  'time',
+  'methods',
+  'intuitions',
+  'etherium',
+  'mimic',
+  'relics',
+  'rare',
+  'secrets',
+] as const;
 export type PlateId = (typeof PLATES)[number];
 
 export interface SealDef {
@@ -179,8 +192,8 @@ export const SEALS: readonly SealDef[] = [
   ...series('prestiges', 'etherium', (s) => s.exiles, [1, 5, 10, 25, 100]),
   ...series('etherReceived', 'etherium', (s) => s.etherReceived, [1, 10, 100, K, 10 * K, 100 * K, M]),
   ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, OPEN_STARS.length]),
-  // L'Exploration n'a encore qu'une pointe à allumer (la Mimic) : son sceau attendra les reliques.
-  ...ETHERIUM_PAGES.filter((page) => page !== 'explore').map((page) =>
+  // L'Exploration : l'Est et l'Ouest allumés (« La Rose des vents », 12/10 ; les autres pointes sont encore fermées).
+  ...ETHERIUM_PAGES.map((page) =>
     seal(`constellation-${page}`, 'etherium', (s) =>
       OPEN_STARS.filter((star) => star.page === page).every((star) => s.etherium.includes(star.id)),
     ),
@@ -192,6 +205,12 @@ export const SEALS: readonly SealDef[] = [
   ...series('mimicsCaught', 'mimic', (s) => s.mimic.caught, [1, 10, 50, 100, 410, K]),
   ...series('mimicBonus', 'mimic', (s) => s.mimic.bonus, [100, K, 10 * K, 100 * K, 10 * M]),
   ...series('mimicHours', 'mimic', (s) => mimicSeconds(s) / HOUR, [1, 10, 100, K]),
+
+  // Les reliques (12/10, .ai/plan-reliques.md) : chacune trouvée (le dessin de l'objet pour sigle, ui/strangeBook/sigil.ts),
+  // toutes, et changer de relique 1, 10, 100 fois (une phrase par palier).
+  ...RELICS.map((relic) => seal(relic.seal, 'relics', (s) => s.relics.found[relic.id] !== undefined)),
+  seal('relicsAll', 'relics', (s) => RELICS.every((relic) => s.relics.found[relic.id] !== undefined)),
+  ...series('relicChanges', 'relics', (s) => s.relics.changes, [1, 10, 100]).map((seal): SealDef => ({ ...seal, phrases: true })),
 
   // Un sceau par livre rare, apposé quand il arrive en main.
   ...RARE_BOOKS.map((book): SealDef => ({

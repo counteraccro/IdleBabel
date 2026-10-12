@@ -5,6 +5,7 @@ import { PAGE_TEXTURE } from '../book/pageLayout';
 import { tallyStrokes, tallyWidth, type TallyItem } from './tally';
 import { cssBaseline, preparePageTexture, type Paper } from '../book/pageRender';
 import { drawSeal, sealSvg, sigil, type Look } from './sigil';
+import { retellRelic } from '../relics/relicStory';
 import { writeDigits } from '../../core/format';
 import { babelTextWidth, drawBabelText, hasBabelDigits, setNumberText } from '../babelDigits';
 import { BIG_BOOK_REWRITE } from '../book3d/book3dBook';
@@ -290,6 +291,8 @@ const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement 
     node.addEventListener('mouseenter', describe);
     node.addEventListener('focus', describe);
     node.addEventListener('click', describe);
+    // Le sceau d'une relique gagné : son récit se relit (12/10).
+    if (item.look === 'gold') node.addEventListener('click', () => retellRelic(item.id));
     // Le livre prend les appuis pour tourner les pages : un sceau garde le sien.
     node.addEventListener('pointerdown', (event) => event.stopPropagation());
     return node;
@@ -328,8 +331,10 @@ export const itemAt = (items: Item[], x: number, y: number): Item | undefined =>
 export const pressItem = (item: Item | undefined, { goTo, hover, act }: ItemActions): boolean => {
   if (item?.kind === 'link') goTo(item.target);
   else if (item?.kind === 'action') act?.(item.id);
-  else if (item?.kind === 'seal') hover?.(item.id);
-  else return false;
+  else if (item?.kind === 'seal') {
+    hover?.(item.id);
+    if (item.look === 'gold') retellRelic(item.id);
+  } else return false;
   return true;
 };
 

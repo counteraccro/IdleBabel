@@ -51,6 +51,15 @@
 .library-caption.shown {
   opacity: 1;
 }
+/* Une relique : sous son nom, ce qu'elle donne et si elle agit (ui/relics/relicShelf.ts). */
+.library-caption i {
+  display: block;
+  text-align: center;
+  font-variant: normal;
+  letter-spacing: 0;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
 /*
  * Un livre ouvert par-dessus : la vitrine reste en fond, floue et assombrie (le flou sur la scène seule :
  * sur la page, il décrocherait le fond noir fixe), et ne retient plus la souris.

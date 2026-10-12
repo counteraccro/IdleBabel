@@ -18,6 +18,7 @@ export const ETHERIUM_PAGES = [
   'quill',
   'explore',
   'mimic',
+  'relics',
 ] as const;
 export type PageId = (typeof ETHERIUM_PAGES)[number];
 
@@ -127,11 +128,11 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['quill', 'r5', 'r4', 120],
   ['quill', 'r6', 'r5', 250],
   // L'Exploration, la Rose des vents (11/10, .ai/maquette-etherium-mimic.html) : le centre est offert, chaque pointe en part
-  // et fait apparaître une chose nouvelle dans les salles. L'Est, la Mimic ; l'Ouest, les reliques (bientôt) ; les
+  // et fait apparaître une chose nouvelle dans les salles. L'Est, la Mimic ; l'Ouest, les reliques (12/10) ; les
   // autres, des idées à venir (CLOSED).
   // L'Est, à 2 : la Mimic s'achète au 3e réveil (simulateur/vie.ts : 4 Éther reçus, l'Âge Automatique en premier).
   ['explore', 'e', null, 2],
-  ['explore', 'w', null, 0],
+  ['explore', 'w', null, 5],
   ['explore', 'n', null, 0],
   ['explore', 's', null, 0],
   ['explore', 'd0', null, 0],
@@ -149,6 +150,15 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['mimic', 'b3', 'b2', 50],
   ['mimic', 'b4', 'b3', 100],
   ['mimic', 'b5', 'b4', 200],
+  // Les reliques, « Le Cabinet » (12/10, .ai/maquette-reliques.html) : le centre est offert quand l'Ouest s'allume ; une
+  // branche par relique (son bonus, deux fois), et « La patience » (le délai pour changer de relique, 12 h → 6 h).
+  ['relics', 'l1', null, 15],
+  ['relics', 'l2', 'l1', 45],
+  ['relics', 'a1', null, 15],
+  ['relics', 'a2', 'a1', 45],
+  ['relics', 'h1', null, 15],
+  ['relics', 'h2', 'h1', 45],
+  ['relics', 'd', null, 60],
 ];
 
 export const STARS: readonly Star[] = RAW.map(([page, id, after, cost]) => ({
@@ -171,7 +181,7 @@ export const CLOSED: ReadonlySet<string> = new Set([
   'ages.inf',
   'memory.a0',
   // Les pointes de la Rose des vents qui n'ouvrent encore rien.
-  ...['w', 'n', 's', 'd0', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
+  ...['n', 's', 'd0', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
 ]);
 
 /** Fermées, mais sans bloquer la suite : les étoiles d'après la Goutte attendent celle d'avant elle. */
@@ -192,7 +202,7 @@ export const afterLit = (star: Star, lit: (id: string) => boolean): boolean => {
 export const NEEDS_AGE: ReadonlySet<string> = new Set(STARS.filter((star) => star.id.startsWith('memory.a')).map((star) => star.id));
 
 /** Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration). */
-export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e' };
+export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e', relics: 'explore.w' };
 
 /** L'étoile qu'il faut avoir allumée avant de pouvoir allumer `id` : l'Âge Automatique, ou celle qui débloque sa page. */
 export const neededFor = (id: string): string | undefined =>
@@ -238,6 +248,8 @@ export const EFFECT = {
   mimicComes: { 'mimic.t1': 1.25, 'mimic.t2': 1.5, 'mimic.t3': 2 },
   /** + part rendue par la Mimic, en plus des 10 % (les dents du bas ; la plus haute compte). */
   mimicGives: { 'mimic.b1': 0.2, 'mimic.b2': 0.35, 'mimic.b3': 0.5, 'mimic.b4': 0.75, 'mimic.b5': 1 },
+  /** Le niveau du bonus de chaque relique (data/relics.ts, RelicDef.bonus) : ses deux étoiles ; la plus haute compte. */
+  relicLevel: { 'relics.l1': 1, 'relics.l2': 2, 'relics.a1': 1, 'relics.a2': 2, 'relics.h1': 1, 'relics.h2': 2 },
 } as const satisfies Record<string, Record<string, number>>;
 
 /** Ce que font les étoiles à effet simple (S). */
@@ -286,7 +298,12 @@ export const S = {
   letterStays: 'quill.l3',
   mimic: 'explore.e',
   mimicEye: 'mimic.eye',
+  relics: 'explore.w',
+  patience: 'relics.d',
 } as const;
+
+/** Les deux étoiles de chaque relique, sur la page « Les reliques » (leur lettre : la loupe, l'astrolabe, le sablier). */
+export const RELIC_BRANCH: Record<string, string> = { loupe: 'l', astrolabe: 'a', hourglass: 'h' };
 
 /** Mémoire des méthodes : l'étoile qui garde la phrase de chaque méthode (Manuel, puis Automatique). */
 export const KEEPS: Record<string, string> = {

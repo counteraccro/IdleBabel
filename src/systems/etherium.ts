@@ -1,4 +1,4 @@
-import { afterLit, CLOSED, EFFECT, KEEPS, S, SIMPLE, neededFor, starById } from '../data/etheriumStars';
+import { afterLit, CLOSED, EFFECT, KEEPS, RELIC_BRANCH, S, SIMPLE, neededFor, starById } from '../data/etheriumStars';
 import { ETHER_READING } from '../data/etherium';
 import { SENTENCES } from '../data/sentences';
 import type { GameState } from '../core/state';
@@ -100,6 +100,19 @@ export const mimicComesFactor = (state: GameState): number =>
 /** Les dents du bas : part rendue en plus des 10 % (la plus haute allumée ; 0 sans elles). */
 export const mimicGivesBonus = (state: GameState): number =>
   Math.max(0, ...Object.entries(EFFECT.mimicGives).map(([id, value]) => (starLit(state, id) ? value : 0)));
+
+/** L'Ouest de l'Exploration : les reliques peuvent apparaître (leurs phrases, dans le livre blanc). */
+export const relicsUnlocked = (state: GameState): boolean => starLit(state, S.relics);
+/** « La patience » : le délai pour changer de relique est raccourci. */
+export const patienceLit = (state: GameState): boolean => starLit(state, S.patience);
+/** Le niveau du bonus d'une relique (0 à 2) : ses étoiles allumées sur la page « Les reliques », la plus haute. */
+export const relicStarLevel = (state: GameState, relic: string): number =>
+  Math.max(
+    0,
+    ...Object.entries(EFFECT.relicLevel).map(([id, level]) =>
+      id.startsWith(`relics.${RELIC_BRANCH[relic]}`) && starLit(state, id) ? level : 0,
+    ),
+  );
 
 /** La partie qui s'achève au prestige : ce dont la Porte se souvient. */
 export interface PreviousRun {

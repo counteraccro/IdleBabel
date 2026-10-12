@@ -27,7 +27,7 @@ import { PLAYER } from './config';
 import { sealCount } from './sceaux';
 import { keptMethods, methodSequence, SECRET, type Method } from './methodes';
 import { EFFECT, S } from '../src/data/etheriumStars';
-import { lit, product, sum, type Life } from './vie';
+import { lit, product, relicBonus, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
 import { MIMIC_BONUS } from '../src/data/mimic';
 
@@ -158,7 +158,11 @@ const mimicAverage = (life: Run['life']): number =>
 const find = (run: Run, turned: number, away = false): void => {
   const chance = findChance(run, away);
   const finds = turned * chance;
-  const knowledge = finds * product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) * mimicAverage(run.life);
+  // La Loupe : des connaissances garanties en plus, à chaque trouvaille.
+  const knowledge =
+    finds *
+    (product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0)) *
+    mimicAverage(run.life);
   run.knowledge += knowledge;
   run.knowledgeGained += knowledge;
   run.life.finds += finds;

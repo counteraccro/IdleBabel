@@ -7,6 +7,7 @@ import { noFinds, type FindCounts } from './countedFinds';
 import type { PartId } from '../data/decipher';
 import { newGameSeed } from './random';
 import type { SceneId } from '../scene/scenes';
+import type { RelicId } from '../data/relics';
 
 export const SAVE_VERSION = 1;
 
@@ -59,6 +60,20 @@ export interface MimicState {
   /** Secondes passées à manger, celles des Mimics attrapées (absences comprises). */
   seconds: number;
 }
+
+/** Les reliques (systems/relics.ts) : gardées pour toujours, prestige compris. */
+export interface RelicsState {
+  /** Les reliques trouvées, et quand (ms). */
+  found: Partial<Record<RelicId, number>>;
+  /** Celle qui agit (une seule à la fois) ; null : aucune. */
+  active: RelicId | null;
+  /** Plus de changement avant ce moment (ms, temps réel : les absences comptent). */
+  lockedUntil: number;
+  /** Changements de relique, depuis toujours (ses sceaux). */
+  changes: number;
+}
+
+export const NO_RELICS: RelicsState = { found: {}, active: null, lockedUntil: 0, changes: 0 };
 
 export const NO_MIMIC: MimicState = { at: null, spot: null, book: 0, eaten: 0, caught: 0, bonus: 0, seconds: 0 };
 
@@ -131,6 +146,8 @@ export interface GameState {
   rabbitCaught: number;
   /** La Mimic (systems/mimic.ts) : celle qui est là, et ce qu'en comptent les sceaux. */
   mimic: MimicState;
+  /** Les reliques (systems/relics.ts) : trouvées, celle qui agit, le délai avant d'en changer. */
+  relics: RelicsState;
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
@@ -207,6 +224,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   darkPatternsFoiled: [],
   rabbitCaught: 0,
   mimic: { ...NO_MIMIC },
+  relics: { ...NO_RELICS, found: {} },
   newSeals: [],
   libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],

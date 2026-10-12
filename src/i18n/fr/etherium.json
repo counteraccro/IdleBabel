@@ -81,6 +81,11 @@
       "name": "La Mimic",
       "figure": "La Mimic",
       "description": "Ce qu’elle avale, elle le rend."
+    },
+    "relics": {
+      "name": "Les reliques",
+      "figure": "Le Cabinet",
+      "description": "Quelqu’un est passé avant moi."
     }
   },
   "stars": {
@@ -498,7 +503,8 @@
       },
       "w": {
         "name": "Ouest",
-        "note": "les reliques, une par salle (bientôt)"
+        "value": "Les reliques",
+        "effect": "se cachent dans les salles (leurs phrases, dans le livre blanc), et leur page s’ouvre"
       },
       "n": {
         "name": "Plus tard",
@@ -575,6 +581,48 @@
         "name": "Dent du bas, cinquième",
         "value": "+100 %",
         "effect": "de connaissances rendues par la Mimic"
+      }
+    },
+    "relics": {
+      "hub": {
+        "name": "Le centre",
+        "value": "Les reliques",
+        "effect": "se rangent dans la vitrine ; une seule agit à la fois"
+      },
+      "l1": {
+        "name": "Loupe 1",
+        "value": "La Loupe :",
+        "effect": "2 connaissances garanties par trouvaille (au lieu d’1)"
+      },
+      "l2": {
+        "name": "Loupe 2",
+        "value": "La Loupe :",
+        "effect": "3 connaissances garanties par trouvaille"
+      },
+      "a1": {
+        "name": "Astrolabe 1",
+        "value": "L’Astrolabe :",
+        "effect": "lettre +60 % (au lieu de +40 %)"
+      },
+      "a2": {
+        "name": "Astrolabe 2",
+        "value": "L’Astrolabe :",
+        "effect": "lettre +80 %"
+      },
+      "h1": {
+        "name": "Sablier 1",
+        "value": "Le Sablier :",
+        "effect": "pages lues +35 % (au lieu de +20 %)"
+      },
+      "h2": {
+        "name": "Sablier 2",
+        "value": "Le Sablier :",
+        "effect": "pages lues +50 %"
+      },
+      "d": {
+        "name": "La patience",
+        "value": "La patience :",
+        "effect": "6 h pour changer de relique (au lieu de 12 h)"
       }
     }
   },

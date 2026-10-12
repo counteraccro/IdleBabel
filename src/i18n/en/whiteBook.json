@@ -190,6 +190,9 @@
     "hintExactly410": "Nothing reads for you. / Somewhere in your pages, / 410.",
     "hintLastInstant": "A letter / is not lost / while it still shines.",
     "hintBabelWord": "Sometimes / the letters follow one another / and spell a name.",
+    "hintRelicLoupe": "Where the sand / comes in through the windows, / someone looked up close.",
+    "hintRelicAstrolabe": "Under the stars, / someone tried to find / where he was.",
+    "hintRelicHourglass": "Under the glass, / someone’s time / stopped running.",
     "hintTrueCatalogue": "A catalogue. / I leaf through it / like a child / in December."
   },
   "guess": "guess · {n} Knowledge",

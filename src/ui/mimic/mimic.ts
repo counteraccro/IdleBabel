@@ -6,6 +6,7 @@ import { modalOpen } from '../modal/modal';
 import { shownScene } from '../../scene';
 import { SCENES } from '../../scene/scenes';
 import { MIMIC_FORBIDDEN, MIMIC_LIGHT, MIMIC_SPOTS, ROOM_IMAGE } from '../../data/mimic';
+import { cover, shaderLight } from '../roomView';
 import { advanceMimic, catchMimic, mimicBonusShare, mimicHere } from '../../systems/mimic';
 import { mimicEyeLit } from '../../systems/etherium';
 import { levelOf } from '../../systems/technologies';
@@ -24,29 +25,6 @@ import type { GameState } from '../../core/state';
 const MAX_STEP = 1;
 /** Une place n'est prise que si le livre tient à l'écran, à cette distance des bords (px). */
 const MARGIN = 8;
-
-/** Le fond « cover » : l'image remplit l'écran sans être déformée (comme src/scene/renderer.ts). */
-const cover = () => {
-  const scale = Math.max(window.innerWidth / ROOM_IMAGE.w, window.innerHeight / ROOM_IMAGE.h);
-  return {
-    scale,
-    left: (window.innerWidth - ROOM_IMAGE.w * scale) / 2,
-    top: (window.innerHeight - ROOM_IMAGE.h * scale) / 2,
-  };
-};
-
-/**
- * La lumière du fond à ce point de l'écran (src/scene/shaders.ts) : la vignette, et le haut assombri pour le compteur.
- * Le livre la reçoit comme la salle.
- */
-const shaderLight = (x: number, y: number): number => {
-  const u = x / window.innerWidth;
-  // Le shader compte de bas en haut.
-  const v = 1 - y / window.innerHeight;
-  const vignette = 1 - ((u - 0.5) ** 2 + (v - 0.5) ** 2) * 0.9;
-  const s = Math.min(1, Math.max(0, (v - 0.7) / 0.3));
-  return vignette * (1 - 0.55 * s * s * (3 - 2 * s));
-};
 
 /** Débogage : la poser à cette place (« salle:numéro »), même cachée par l'interface, ou au bord (« side ») ; null : au jeu. */
 let debugPlace: string | null = null;

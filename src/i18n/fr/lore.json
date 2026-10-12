@@ -68,6 +68,34 @@
     ],
     "button": "Ouvrir le Grand Livre"
   },
+  "relicLoupe": {
+    "title": "La Loupe",
+    "text": [
+      "Une loupe, entre deux livres.",
+      "Quelqu’un a cherché ici.",
+      "Il lisait de près, lettre par lettre, comme s’il avait peur de manquer quelque chose."
+    ],
+    "button": "Garder"
+  },
+  "relicAstrolabe": {
+    "title": "L’Astrolabe",
+    "text": [
+      "Encore lui.",
+      "Il voulait savoir où il était.",
+      "Sur le bord, des encoches : il comptait les salles.",
+      "Un jour, il a arrêté de compter."
+    ],
+    "button": "Garder"
+  },
+  "relicHourglass": {
+    "title": "Le Sablier",
+    "text": [
+      "Le verre s’est terni à force d’être retourné.",
+      "Il mesurait le temps passé à chercher.",
+      "Sous le socle, un nom gravé, effacé par les doigts."
+    ],
+    "button": "Garder"
+  },
   "away": {
     "title": "Un songe",
     "text": [

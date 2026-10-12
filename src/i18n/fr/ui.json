@@ -122,5 +122,30 @@
     "name": "La Mimic",
     "eaten": "Elle a avalé {n} connaissances.",
     "gain": "+ {n} connaissances (+ {p} %)"
+  },
+  "relics": {
+    "names": {
+      "loupe": "La Loupe",
+      "astrolabe": "L’Astrolabe",
+      "hourglass": "Le Sablier"
+    },
+    "put": {
+      "loupe": "Poser la loupe ?",
+      "astrolabe": "Poser l’astrolabe ?",
+      "hourglass": "Poser le sablier ?"
+    },
+    "bonus": {
+      "loupe": "+{n} connaissances garanties à chaque trouvaille",
+      "loupeOne": "+1 connaissance garantie à chaque trouvaille",
+      "astrolabe": "lettre +{n} %",
+      "hourglass": "pages lues +{n} %"
+    },
+    "acts": "elle agit",
+    "choose": "la poser ?",
+    "wait": "on pourra la poser dans {t}",
+    "stops": "{name} cessera d’agir.",
+    "then": "Ensuite, plus de changement avant {h} h.",
+    "keep": "Laisser",
+    "confirm": "Poser"
   }
 }

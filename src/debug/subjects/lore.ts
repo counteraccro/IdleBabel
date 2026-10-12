@@ -14,6 +14,9 @@ const TRIGGERS: Record<LoreId, string> = {
   firstKnowledge: 'à la toute première trouvaille lue',
   firstBookKept: 'au premier livre refermé (gardé, rangé dans la bibliothèque)',
   strangeBook: 'quand le Grand Livre arrive en main (le troisième), puis il s’ouvre en grand',
+  relicLoupe: 'la Loupe trouvée dans le désert (relu sur son sceau)',
+  relicAstrolabe: 'l’Astrolabe trouvé dans la salle de nuit (relu sur son sceau)',
+  relicHourglass: 'le Sablier trouvé sous la verrière (relu sur son sceau)',
 };
 
 const status = (state: GameState, id: LoreId): string => {

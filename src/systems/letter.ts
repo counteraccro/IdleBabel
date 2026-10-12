@@ -16,6 +16,7 @@ import {
 } from '../data/letter';
 import { activeBoons, startBoon } from './boons';
 import { boonLengthFactor, letterStaysBonus, letterWaitFactor, starLit } from './etherium';
+import { relicLetterWait } from './relics';
 import { levelOf } from './technologies';
 import { gainPages, pagesPerSecond } from './production';
 import { drawFind, gainFind } from './knowledge';
@@ -29,9 +30,9 @@ import type { GameState } from '../core/state';
 
 // Ce que font la Plume et les intuitions, au niveau `level` (le sien par défaut).
 
-/** Le Guet et la Plume : l'attente entre deux lettres, en secondes. */
+/** Le Guet, la Plume et l'Astrolabe : l'attente entre deux lettres, en secondes. */
 export const letterWait = (state: GameState, level = levelOf(state, 'watch')): { min: number; max: number } => {
-  const factor = letterWaitFactor(state) * (1 - WATCH_STEP * level);
+  const factor = letterWaitFactor(state) * (1 - WATCH_STEP * level) * relicLetterWait(state);
   return { min: LETTER_WAIT.min * factor, max: LETTER_WAIT.max * factor };
 };
 

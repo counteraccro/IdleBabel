@@ -81,6 +81,11 @@
       "name": "The Mimic",
       "figure": "The Mimic",
       "description": "What it swallows, it gives back."
+    },
+    "relics": {
+      "name": "Relics",
+      "figure": "The Cabinet",
+      "description": "Someone came here before me."
     }
   },
   "stars": {
@@ -498,7 +503,8 @@
       },
       "w": {
         "name": "West",
-        "note": "the relics, one per room (soon)"
+        "value": "Relics",
+        "effect": "hide in the rooms (their lines, in the white book), and their page opens"
       },
       "n": {
         "name": "Later",
@@ -575,6 +581,48 @@
         "name": "Lower tooth, fifth",
         "value": "+100%",
         "effect": "knowledge given back by the Mimic"
+      }
+    },
+    "relics": {
+      "hub": {
+        "name": "The centre",
+        "value": "Relics",
+        "effect": "are kept in the bookcase; only one works at a time"
+      },
+      "l1": {
+        "name": "Magnifying Glass 1",
+        "value": "The Magnifying Glass:",
+        "effect": "2 guaranteed knowledge per find (instead of 1)"
+      },
+      "l2": {
+        "name": "Magnifying Glass 2",
+        "value": "The Magnifying Glass:",
+        "effect": "3 guaranteed knowledge per find"
+      },
+      "a1": {
+        "name": "Astrolabe 1",
+        "value": "The Astrolabe:",
+        "effect": "letter +60% (instead of +40%)"
+      },
+      "a2": {
+        "name": "Astrolabe 2",
+        "value": "The Astrolabe:",
+        "effect": "letter +80%"
+      },
+      "h1": {
+        "name": "Hourglass 1",
+        "value": "The Hourglass:",
+        "effect": "pages read +35% (instead of +20%)"
+      },
+      "h2": {
+        "name": "Hourglass 2",
+        "value": "The Hourglass:",
+        "effect": "pages read +50%"
+      },
+      "d": {
+        "name": "Patience",
+        "value": "Patience:",
+        "effect": "6 h to change relics (instead of 12 h)"
       }
     }
   },

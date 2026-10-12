@@ -21,6 +21,8 @@ const bulb = new THREE.CircleGeometry(RADIUS * 0.7, 24);
 export interface CellLights {
   /** Éclaire `object` (ses matières) par les spots des cases : à faire pour tout ce qui entre dans la vitrine. */
   light: (object: THREE.Object3D) => void;
+  /** Éteint (ou rallume) le spot d'une case : la case d'une relique qui n'agit pas (ui/relics/relicShelf.ts). */
+  setDark: (cell: number, dark: boolean) => void;
 }
 
 /**
@@ -45,6 +47,7 @@ export const addCellLights = (root: THREE.Group, cells: BookcaseCell[]): CellLig
   // Les matières, propres à cette vitrine (elles seront retouchées, puis libérées avec elle).
   const brass = new THREE.MeshStandardMaterial({ color: 0xb08a4a, roughness: 0.35, metalness: 0.85 });
   const glow = new THREE.MeshBasicMaterial({ color: 0xfff0d0 });
+  const faces: THREE.Mesh[] = [];
   for (const cell of cells) {
     const x = cell.left + cell.width / 2;
     const top = cell.floor + cell.height;
@@ -54,6 +57,7 @@ export const addCellLights = (root: THREE.Group, cells: BookcaseCell[]): CellLig
     face.rotation.x = Math.PI / 2;
     face.position.set(x, top - THICK - 0.001, Z);
     root.add(fixture, face);
+    faces.push(face);
 
     // Le cône couvre la case en largeur au niveau de l'étagère.
     const angle = Math.min(Math.atan(cell.width / 2 / cell.height) * 1.6, THREE.MathUtils.degToRad(60));
@@ -122,11 +126,19 @@ export const addCellLights = (root: THREE.Group, cells: BookcaseCell[]): CellLig
     material.needsUpdate = true;
   };
 
+  // Une case éteinte : sa boîte ne contient plus aucun point (le shader n'y trouve plus de spot), son ampoule ne luit plus.
+  const boxes = uniforms.cellBox.value.map((box) => box.clone());
+  const nowhere = new THREE.Vector4(1, -1, 1, -1);
   const lit: CellLights = {
     light: (object) =>
       object.traverse((child) => {
         if (child instanceof THREE.Mesh) for (const material of [child.material].flat()) patch(material);
       }),
+    setDark: (cell, dark) => {
+      if (!boxes[cell]) return;
+      uniforms.cellBox.value[cell].copy(dark ? nowhere : boxes[cell]);
+      faces[cell].visible = !dark;
+    },
   };
   lit.light(root);
   return lit;

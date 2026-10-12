@@ -3,7 +3,7 @@ import { formatCount, writeDigits } from '../../core/format';
 import { BOOK_PAGES, PLATES, SEALS, sealSeries, type PlateId, type SealDef } from '../../data/seals';
 import { babelName, completion, countObtained, plateSeals, sealFindMultiplier, sealObtained } from '../../systems/seals';
 import { statsRevealed } from '../../systems/strangeBook';
-import { mimicUnlocked } from '../../systems/etherium';
+import { mimicUnlocked, relicsUnlocked } from '../../systems/etherium';
 import { isDeciphered } from '../../systems/decipher';
 import { sentenceShown } from '../../systems/sentences';
 import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
@@ -37,11 +37,12 @@ export interface PlatePage {
 
 /**
  * La planche de l'Etherium n'existe qu'après un premier prestige, comme le chapitre Éther : avant, rien ne le laisse deviner.
- * Celle de la Mimic, une fois la Mimic débloquée dans l'Etherium.
+ * Celle de la Mimic, une fois la Mimic débloquée dans l'Etherium ; celle des reliques, une fois l'Ouest allumé.
  */
 const plateShown = (state: GameState, plate: PlateId): boolean => {
   if (plate === 'etherium') return state.etherReceived > 0 || statsRevealed();
   if (plate === 'mimic') return mimicUnlocked(state) || state.mimic.caught > 0 || statsRevealed();
+  if (plate === 'relics') return relicsUnlocked(state) || Object.keys(state.relics.found).length > 0 || statsRevealed();
   return true;
 };
 
