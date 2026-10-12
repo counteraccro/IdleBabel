@@ -15,7 +15,7 @@ export const LETTER_STAYS = 8;
 /** Attrapée dans ses dernières secondes : un sceau secret (« au moment où elle s'éteignait »). */
 export const LAST_INSTANT = 0.5;
 
-export const BOON_IDS = ['trance', 'eye', 'hand', 'mind', 'deal', 'flash', 'find'] as const;
+export const BOON_IDS = ['trance', 'eye', 'hand', 'mind', 'deal', 'flash', 'find', 'fourTen'] as const;
 export type BoonId = (typeof BOON_IDS)[number];
 
 export interface BoonDef {
@@ -26,6 +26,10 @@ export interface BoonDef {
   seconds?: number;
   /** Sa part au tirage, parmi ceux que la lettre connaît. */
   weight: number;
+  /** La lettre ne le connaît qu'une fois la Volée comprise (data/technologies.ts). */
+  afterFlock?: boolean;
+  /** Sa durée ne s'allonge pas (ni la Plume ni la Lettre comprise). */
+  fixed?: boolean;
 }
 
 export const BOONS: readonly BoonDef[] = [
@@ -43,6 +47,8 @@ export const BOONS: readonly BoonDef[] = [
   { id: 'flash', star: 'quill.r5', weight: 10 },
   // Trouvaille : une trouvaille, tout de suite.
   { id: 'find', star: 'quill.r6', weight: 3 },
+  // Quatre cent dix (l'auteur, 12/10) : pages lues et trouvailles ×410, trente secondes ; appris avec la Volée.
+  { id: 'fourTen', seconds: 30, weight: 3, afterFlock: true, fixed: true },
 ];
 
 /** Ce que font les bonus. */
@@ -59,6 +65,8 @@ export const BOON = {
   deal: 0.5,
   /** Éclair : secondes de lecture données d'un coup. */
   flash: 180,
+  /** Quatre cent dix : ×pages lues (méthodes et clics) et ×chance de trouvaille. */
+  fourTen: 410,
 } as const;
 
 /**
@@ -85,3 +93,14 @@ export const WATCH_STEP = 0.05;
 export const BREATH_STEP = 1;
 /** La Lettre comprise : part de durée des bonus en plus. */
 export const UNDERSTOOD_STEP = 0.1;
+/**
+ * La Volée (l'auteur, 12/10) : chance, à chaque niveau, qu'une lettre attrapée en appelle une 2e ; la 2e attrapée, une 3e
+ * à un tiers de cette chance. Leurs bonus se cumulent. Pas le mot BABEL.
+ */
+export const FLOCK_STEP = 0.1;
+/** La 3e lettre : la chance de la 2e divisée par tant. */
+export const FLOCK_THIRD = 3;
+/** Une volée : la lettre suivante monte du livre tant de secondes après la précédente attrapée. */
+export const FLOCK_GAP = 0.6;
+/** Une volée : trois lettres au plus. */
+export const FLOCK_MAX = 3;

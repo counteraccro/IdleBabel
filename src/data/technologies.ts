@@ -62,6 +62,8 @@ export const TECHNOLOGIES = [
   { id: 'watch', prices: [1_000, 5_000, 25_000, 125_000, 625_000], afterLetter: true },
   { id: 'heldBreath', prices: [5_000, 50_000, 500_000], afterLetter: true },
   { id: 'letterUnderstood', prices: [2_500, 12_500, 62_500, 312_500, 1_562_500], afterLetter: true },
+  // La Volée (12/10, l'auteur) : une 2e lettre, parfois une 3e (data/letter.ts) ; prix provisoires, après la Lettre comprise.
+  { id: 'flock', prices: [5_000, 25_000, 125_000, 625_000, 3_125_000], afterLetter: true },
   // Le Sommeil léger (11/10, choix de l'auteur) : la Mimic se trahit, « z z z » au-dessus d'elle quand elle dort. Un niveau.
   { id: 'lightSleep', prices: [10_000], afterMimic: true },
   // La Brassée : un niveau par lot de la marque sous la ruche (×10, ×100, max).

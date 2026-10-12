@@ -3,8 +3,17 @@ import { el, type Component } from '../dom';
 import { t } from '../../i18n';
 import { modalOpen } from '../modal/modal';
 import { LETTERS } from '../../systems/babelText';
-import { BABEL_GAP, BABEL_WORD, BOON } from '../../data/letter';
-import { advanceLetter, boonSeconds, catchLetter, catchWordLetter, letterStays, type Coming } from '../../systems/letter';
+import { BABEL_GAP, BABEL_WORD, BOON, FLOCK_GAP } from '../../data/letter';
+import {
+  advanceLetter,
+  boonSeconds,
+  catchLetter,
+  catchWordLetter,
+  flockGoesOn,
+  letterStays,
+  type Coming,
+  type Flock,
+} from '../../systems/letter';
 import { tranceFactor } from '../../systems/etherium';
 import { durationText } from './duration';
 import type { GameState } from '../../core/state';
@@ -19,6 +28,8 @@ const DUST = 22;
 const GIFT_TOP = 0.2;
 /** Elle reste à cette distance des bords de l'écran (px). */
 const GIFT_MARGIN = 160;
+/** L'écart entre deux légendes d'une volée, l'une au-dessus de l'autre (px). */
+const GIFT_GAP = 8;
 
 /** Sa trajectoire (en parts de l'écran, `t` de 0 à 1) : elle monte du livre en main, lentement, en se balançant. */
 const path = (t: number, seed: number) => ({
@@ -71,9 +82,12 @@ export const createLetter = (state: GameState): Component => {
   const gift = (x: number, y: number, name: string, what: string): void => {
     const legend = el('div', 'letter-gift');
     legend.style.left = `${Math.min(Math.max(x, GIFT_MARGIN), window.innerWidth - GIFT_MARGIN)}px`;
-    legend.style.top = `${Math.max(y - 14, window.innerHeight * GIFT_TOP)}px`;
+    // Une volée : la nouvelle légende se range au-dessus de celles encore là (elles sont tenues par le bas).
+    const highest = Math.min(...[...root.querySelectorAll<HTMLElement>('.letter-gift')].map((other) => parseFloat(other.style.top)));
     legend.append(el('div', 'letter-gift-name', name), el('div', 'letter-gift-what', what));
     root.append(legend);
+    const top = Math.max(y - 14, window.innerHeight * GIFT_TOP);
+    legend.style.top = `${Math.min(top, highest - legend.offsetHeight - GIFT_GAP)}px`;
     window.setTimeout(() => legend.remove(), GIFT_MS);
   };
 
@@ -133,20 +147,25 @@ export const createLetter = (state: GameState): Component => {
     });
   };
 
-  const letter = (): void => {
+  /**
+   * Une lettre ; attrapée, son bonus en cours, elle en appelle parfois une autre (la Volée), jusqu'à trois. Le compte à
+   * rebours attend la fin de la volée.
+   */
+  const letter = (flock: Flock = { caught: 0 }): void => {
     busy = true;
     fly(
       LETTERS[Math.floor(Math.random() * LETTERS.length)],
       false,
       (x, y, left) => {
-        busy = false;
-        const given = catchLetter(state, left);
+        const given = catchLetter(state, left, Math.random, Date.now(), flock);
         const seconds = boonSeconds(state, given.boon);
         const what = t(`ui.letter.boons.${given.boon}.what`)
           .replace('{x}', String(tranceFactor(state, BOON.trance)))
           .replace('{d}', seconds === undefined ? '' : durationText(seconds));
         gift(x, y, t(`ui.letter.boons.${given.boon}.name`), what);
         if (given.pages !== undefined) glowCounter();
+        if (flockGoesOn(state, flock)) window.setTimeout(() => (root.isConnected ? letter(flock) : (busy = false)), FLOCK_GAP * 1000);
+        else busy = false;
       },
       () => {
         busy = false;

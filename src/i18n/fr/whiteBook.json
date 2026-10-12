@@ -306,6 +306,15 @@
         "Chaque lettre attrapée me laisse un peu de ce qu’elle disait."
       ]
     },
+    "flock": {
+      "name": "La Volée",
+      "description": "Une lettre attrapée en appelle parfois une autre ; celle-là, plus rarement, une troisième. Leurs dons s’ajoutent.",
+      "effect": "chance d’une 2e lettre (d’une 3e)",
+      "notes": [
+        "Elles sortent en volée, comme des oiseaux qu’on dérange."
+      ],
+      "chances": "{two} ({three})"
+    },
     "armful": {
       "name": "La Brassée",
       "description": "Je prends les méthodes par brassées : dix, cent, ou tout ce que je peux porter.",

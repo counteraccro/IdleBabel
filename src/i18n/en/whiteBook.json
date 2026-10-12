@@ -306,6 +306,15 @@
         "Each letter I catch leaves me a little of what it said."
       ]
     },
+    "flock": {
+      "name": "The Flight",
+      "description": "A caught letter sometimes calls another; that one, more rarely, a third. Their gifts add up.",
+      "effect": "chance of a 2nd letter (of a 3rd)",
+      "notes": [
+        "They leave in a flight, like startled birds."
+      ],
+      "chances": "{two} ({three})"
+    },
     "armful": {
       "name": "The Armful",
       "description": "I take methods by the armful: ten, a hundred, or all I can carry.",

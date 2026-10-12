@@ -17,6 +17,7 @@ const USEFUL = [
   'watch',
   'heldBreath',
   'letterUnderstood',
+  'flock',
 ];
 
 const priceAt = (id: string, level: number): number | undefined => {

@@ -14,6 +14,7 @@ const ICONS: Partial<Record<BoonId, string>> = {
   hand: '<path d="M7 17V6a1.5 1.5 0 0 1 3 0v5m0-6a1.5 1.5 0 0 1 3 0v6m0-4a1.5 1.5 0 0 1 3 0v6c0 3-2 4-5 4H9l-4-4" fill="none" stroke="#e8c776" stroke-width="1.3" stroke-linecap="round"/>',
   mind: '<path d="M10 3l1.8 4.6L16.5 8l-3.6 3 1.1 4.8L10 13.3 6 15.8 7.1 11 3.5 8l4.7-.4z" fill="none" stroke="#e8c776" stroke-width="1.3" stroke-linejoin="round"/>',
   deal: '<path d="M4 4h6l7 7-6 6-7-7z" fill="none" stroke="#e8c776" stroke-width="1.3" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.3" fill="#e8c776"/>',
+  fourTen: '<text x="10" y="13" text-anchor="middle" font-size="8.5" font-family="Georgia,serif" fill="#e8c776">410</text>',
 };
 
 /** Ses dix dernières secondes, il clignote (s'il durait plus que ça). */

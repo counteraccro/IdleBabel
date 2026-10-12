@@ -136,9 +136,11 @@ export const SEALS: readonly SealDef[] = [
   seal('firstSentence', 'fragments', (s) => SENTENCES.some((sentence) => isComplete(s, sentence.id))),
   seal('whiteBookFull', 'fragments', (s) => SENTENCES.every((sentence) => isComplete(s, sentence.id))),
   // La lettre qui s'échappe (Alpha 1.1, 08/10) : lettres attrapées depuis toujours, une phrase par palier ; trois bonus
-  // en cours à la fois (systems/letter.ts).
+  // en cours à la fois (systems/letter.ts). La Volée (12/10) : deux, puis trois lettres d'une même volée attrapées.
   ...series('letters', 'fragments', (s) => s.letters, [1, 10, 50, 200, K]).map((seal): SealDef => ({ ...seal, phrases: true })),
   event('threeLights', 'fragments'),
+  event('twoLetters', 'fragments'),
+  event('threeLetters', 'fragments'),
 
   ...series('playTime', 'time', (s) => s.stats.playSeconds / HOUR, [1, 10, 100, K]),
   ...series('daysSinceArrival', 'time', daysSinceArrival, [7, 30, 365]),

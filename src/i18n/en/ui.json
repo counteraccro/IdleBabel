@@ -91,6 +91,11 @@
       "find": {
         "name": "Find",
         "what": "A find, right away"
+      },
+      "fourTen": {
+        "name": "Four Hundred Ten",
+        "what": "Pages and finds ×410 for {d}",
+        "short": "Four Hundred Ten · pages and finds ×410"
       }
     },
     "word": {

@@ -4,6 +4,9 @@ import {
   BOON,
   BOONS,
   BREATH_STEP,
+  FLOCK_MAX,
+  FLOCK_STEP,
+  FLOCK_THIRD,
   LAST_INSTANT,
   LETTER_STAYS,
   LETTER_WAIT,
@@ -42,20 +45,47 @@ export const boonLength = (state: GameState, level = levelOf(state, 'letterUnder
 
 /** La durée d'un bonus, en secondes ; aucune s'il agit d'un coup. */
 export const boonSeconds = (state: GameState, id: BoonId, level?: number): number | undefined => {
-  const seconds = BOONS.find((boon) => boon.id === id)?.seconds;
-  return seconds === undefined ? undefined : seconds * boonLength(state, level);
+  const def = BOONS.find((boon) => boon.id === id);
+  if (def?.seconds === undefined) return undefined;
+  return def.fixed ? def.seconds : def.seconds * boonLength(state, level);
 };
 
-/** La lettre le connaît : la Transe dès le début, les autres une fois leur étoile de la Plume allumée. */
+/**
+ * La lettre le connaît : la Transe dès le début, les autres une fois leur étoile de la Plume allumée ; Quatre cent dix,
+ * une fois la Volée comprise.
+ */
 export const boonKnown = (state: GameState, id: BoonId): boolean => {
-  const star = BOONS.find((boon) => boon.id === id)?.star;
-  return !star || starLit(state, star);
+  const def = BOONS.find((boon) => boon.id === id);
+  if (def?.afterFlock && levelOf(state, 'flock') === 0) return false;
+  return !def?.star || starLit(state, def.star);
 };
 
 /** Débogage : le bonus que donnera la prochaine lettre, à la place du tirage. */
 let forcedBoon: BoonId | undefined;
 export const forceBoon = (id: BoonId | undefined): void => {
   forcedBoon = id;
+};
+
+/** La Volée : la chance qu'une lettre attrapée en appelle une 2e (la 2e attrapée, une 3e : cette chance / FLOCK_THIRD). */
+export const flockChance = (state: GameState, level = levelOf(state, 'flock')): number => FLOCK_STEP * level;
+
+/** Débogage : la longueur des volées (1 à 3 lettres attrapées à la suite), à la place du tirage. */
+let forcedFlock: number | undefined;
+export const forceFlock = (size: number | undefined): void => {
+  forcedFlock = size;
+};
+
+/** Une volée : les lettres attrapées à la suite, chacune appelée par la précédente. */
+export interface Flock {
+  caught: number;
+}
+
+/** La lettre de la volée vient d'être attrapée (bonus en cours) : en appelle-t-elle une autre ? */
+export const flockGoesOn = (state: GameState, flock: Flock, random: () => number = Math.random): boolean => {
+  if (flock.caught >= FLOCK_MAX) return false;
+  if (forcedFlock) return flock.caught < forcedFlock;
+  const chance = flockChance(state);
+  return random() < (flock.caught === 1 ? chance : chance / FLOCK_THIRD);
 };
 
 /** Ce que donne la lettre : au hasard, selon les parts, parmi les bonus qu'elle connaît. */
@@ -111,15 +141,21 @@ export interface Gift {
 
 /**
  * Une lettre attrapée, `left` secondes avant qu'elle s'éteigne : son bonus commence (ou agit d'un coup). Dans ses
- * dernières secondes, un sceau secret ; trois bonus à la fois, un sceau.
+ * dernières secondes, un sceau secret ; trois bonus à la fois, un sceau. D'une volée (`flock`, la Volée) : les bonus se
+ * cumulent (le même deux fois : les durées s'ajoutent) ; deux, puis trois lettres de la volée attrapées, un sceau chacun.
  */
-export const catchLetter = (state: GameState, left: number, random: () => number = Math.random, now = Date.now()): Gift => {
+export const catchLetter = (state: GameState, left: number, random: () => number = Math.random, now = Date.now(), flock?: Flock): Gift => {
   state.letters += 1;
   if (left <= LAST_INSTANT) sealEvent(state, 'lastInstant', now);
+  if (flock) {
+    flock.caught += 1;
+    if (flock.caught >= 2) sealEvent(state, 'twoLetters', now);
+    if (flock.caught >= 3) sealEvent(state, 'threeLetters', now);
+  }
   const boon = drawBoon(state, random);
   const seconds = boonSeconds(state, boon);
   const gift: Gift = { boon };
-  if (seconds !== undefined) startBoon(boon, seconds, now);
+  if (seconds !== undefined) startBoon(boon, seconds, now, (flock?.caught ?? 0) > 1);
   else if (boon === 'flash') {
     gift.pages = pagesPerSecond(state) * BOON.flash;
     gainPages(state, gift.pages);

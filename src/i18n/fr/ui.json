@@ -91,6 +91,11 @@
       "find": {
         "name": "Trouvaille",
         "what": "Une trouvaille, tout de suite"
+      },
+      "fourTen": {
+        "name": "Quatre cent dix",
+        "what": "Pages et trouvailles ×410 pendant {d}",
+        "short": "Quatre cent dix · pages et trouvailles ×410"
       }
     },
     "word": {

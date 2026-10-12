@@ -16,9 +16,13 @@ interface Running {
 
 const running: Partial<Record<BoonId, Running>> = {};
 
-/** Un bonus commence, ou repart à sa durée entière s'il était déjà en cours. */
-export const startBoon = (id: BoonId, seconds: number, now = Date.now()): void => {
-  running[id] = { end: now + seconds * 1000, total: seconds * 1000 };
+/**
+ * Un bonus commence, ou repart à sa durée entière s'il était déjà en cours ; `stack` (une lettre de la même volée,
+ * systems/letter.ts) : sa durée s'ajoute à ce qui restait.
+ */
+export const startBoon = (id: BoonId, seconds: number, now = Date.now(), stack = false): void => {
+  const left = stack ? Math.max(0, (running[id]?.end ?? 0) - now) : 0;
+  running[id] = { end: now + left + seconds * 1000, total: left + seconds * 1000 };
 };
 
 /** Le bonus est en cours. */
@@ -45,12 +49,15 @@ export const forgetBoons = (): void => {
 
 // Ce que font les bonus en cours (×1 sans eux).
 
-/** Transe : la lecture des méthodes (×2 ; ×3, ×4 avec la pointe de la Plume). */
-export const readingBoon = (state: GameState): number => (boonOn('trance') ? tranceFactor(state, BOON.trance) : 1);
-/** Œil vif : la chance de trouvaille. */
-export const findsBoon = (): number => (boonOn('eye') ? BOON.eye : 1);
-/** Main légère : les pages d'un clic. */
-export const clickBoon = (): number => (boonOn('hand') ? BOON.hand : 1);
+/** Quatre cent dix : les pages lues (méthodes et clics) et la chance de trouvaille ×410, en plus des autres bonus. */
+const fourTen = (): number => (boonOn('fourTen') ? BOON.fourTen : 1);
+
+/** Transe : la lecture des méthodes (×2 ; ×3, ×4 avec la pointe de la Plume) ; Quatre cent dix. */
+export const readingBoon = (state: GameState): number => (boonOn('trance') ? tranceFactor(state, BOON.trance) : 1) * fourTen();
+/** Œil vif : la chance de trouvaille ; Quatre cent dix. */
+export const findsBoon = (): number => (boonOn('eye') ? BOON.eye : 1) * fourTen();
+/** Main légère : les pages d'un clic ; Quatre cent dix. */
+export const clickBoon = (): number => (boonOn('hand') ? BOON.hand : 1) * fourTen();
 /** Mémoire vive : la Connaissance d'une trouvaille. */
 export const knowledgeBoon = (): number => (boonOn('mind') ? BOON.mind : 1);
 /** Aubaine : le prix des méthodes. */

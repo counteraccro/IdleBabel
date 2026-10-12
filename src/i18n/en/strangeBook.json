@@ -163,6 +163,7 @@
     "intuition-watch": "Keep watch to the end",
     "intuition-heldBreath": "Hold your breath as long as it does",
     "intuition-letterUnderstood": "Understand what the letters say",
+    "intuition-flock": "Raise the whole flight",
     "intuition-armful": "Take it all by the armful",
     "intuition-reminiscence": "Let back what you knew",
     "intuitionGesture": "Master the gesture: {title}",
@@ -206,6 +207,8 @@
       "{n} letters. Enough to write your name, if you remembered it"
     ],
     "threeLights": "Hold three lights at once",
+    "twoLetters": "Catch two letters from the same flight",
+    "threeLetters": "Catch three letters from the same flight",
     "daysSinceArrival": "Come back to the Library for {n} days",
     "fullNight": "Sleep a whole night in the Library",
     "knowledgeFound": "Understand {n} things",

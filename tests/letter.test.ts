@@ -9,6 +9,7 @@ import {
   catchLetter,
   catchWordLetter,
   drawBoon,
+  flockGoesOn,
   forceBoon,
   letterStays,
   letterWait,
@@ -16,6 +17,7 @@ import {
 import { pagesPerSecond, toolRate } from '../src/systems/production';
 import { nextToolCost } from '../src/systems/tools';
 import { findChance } from '../src/systems/knowledge';
+import { nextPrice } from '../src/systems/technologies';
 import { readPage } from '../src/systems/click';
 import { prestige } from '../src/systems/prestige';
 import { intuitionVisible } from '../src/systems/technologies';
@@ -145,5 +147,47 @@ describe('La lettre qui s’échappe', () => {
     prestige(state);
     expect(boonOn('trance')).toBe(false);
     expect(state.letters).toBe(1);
+  });
+
+  it('la Volée : la 1re attrapée en appelle une 2e à 10 % par niveau, la 2e une 3e au tiers, jamais une 4e', () => {
+    const state = game();
+    expect(flockGoesOn(state, { caught: 1 }, () => 0)).toBe(false);
+    state.technologies = { flock: 3 };
+    expect(flockGoesOn(state, { caught: 1 }, () => 0.29)).toBe(true);
+    expect(flockGoesOn(state, { caught: 1 }, () => 0.31)).toBe(false);
+    expect(flockGoesOn(state, { caught: 2 }, () => 0.09)).toBe(true);
+    expect(flockGoesOn(state, { caught: 2 }, () => 0.11)).toBe(false);
+    expect(flockGoesOn(state, { caught: 3 }, () => 0)).toBe(false);
+    state.technologies = { flock: 5 };
+    expect(nextPrice(state, 'flock')).toBeUndefined();
+  });
+
+  it('une volée : les bonus se cumulent, le même deux fois s’ajoute ; deux puis trois lettres, un sceau chacun', () => {
+    const state = game('quill.r1');
+    const flock = { caught: 0 };
+    forceBoon('trance');
+    catchLetter(state, 5, Math.random, 0, flock);
+    expect('twoLetters' in state.seals).toBe(false);
+    forceBoon('eye');
+    catchLetter(state, 5, Math.random, 0, flock);
+    expect('twoLetters' in state.seals).toBe(true);
+    expect(activeBoons(0).map((boon) => boon.id)).toEqual(['trance', 'eye']);
+    forceBoon('trance');
+    catchLetter(state, 5, Math.random, 10_000, flock);
+    expect(activeBoons(10_000).find((boon) => boon.id === 'trance')!.left).toBe(50_000);
+    expect('threeLetters' in state.seals).toBe(true);
+  });
+
+  it('Quatre cent dix : appris avec la Volée, 30 secondes fixes, pages et trouvailles ×410', () => {
+    const state = game(...QUILL);
+    expect(boonKnown(state, 'fourTen')).toBe(false);
+    state.technologies = { flock: 1, letterUnderstood: 5 };
+    expect(boonKnown(state, 'fourTen')).toBe(true);
+    expect(boonSeconds(state, 'fourTen')).toBe(30);
+    const rate = toolRate(state, 'diagonal');
+    const chance = findChance(state);
+    startBoon('fourTen', 30);
+    expect(toolRate(state, 'diagonal')).toBeCloseTo(rate * 410);
+    expect(findChance(state)).toBeCloseTo(chance * 410);
   });
 });

@@ -21,7 +21,8 @@ import {
   turnsPerSecond,
 } from '../../systems/technologies';
 import { reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
-import { boonLength, letterStays, letterWait } from '../../systems/letter';
+import { boonLength, flockChance, letterStays, letterWait } from '../../systems/letter';
+import { FLOCK_THIRD } from '../../data/letter';
 import { durationText } from '../letter/duration';
 import { nextRareChance } from '../../systems/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
@@ -92,6 +93,12 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
       return durationText(letterStays(state, level));
     case 'letterUnderstood':
       return `×${plain(Math.round(boonLength(state, level) * 100) / 100)}`;
+    case 'flock': {
+      const chance = flockChance(state, level);
+      return t('whiteBook.intuitions.flock.chances')
+        .replace('{two}', percent(chance))
+        .replace('{three}', percent(chance / FLOCK_THIRD));
+    }
     case 'lightSleep':
       return t(level > 0 ? 'whiteBook.intuitions.lightSleep.heard' : 'whiteBook.intuitions.lightSleep.silent');
     case 'reminiscence':

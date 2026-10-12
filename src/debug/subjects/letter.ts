@@ -1,7 +1,7 @@
 import { t } from '../../i18n';
 import { BOON_IDS } from '../../data/letter';
 import { activeBoons, forgetBoons } from '../../systems/boons';
-import { callLetter, forceBoon, letterCountdown, letterStays, letterWait } from '../../systems/letter';
+import { callLetter, flockChance, forceBoon, forceFlock, letterCountdown, letterStays, letterWait } from '../../systems/letter';
 import { chips } from '../debugControls';
 import type { DebugSubject } from './subject';
 
@@ -12,7 +12,7 @@ export const LETTER_SUBJECT: DebugSubject = {
   id: 'resources:letter',
   chapter: 'resources',
   name: 'La lettre qui s’échappe',
-  description: 'La faire venir (ou le mot BABEL), choisir son bonus, voir ceux en cours.',
+  description: 'La faire venir (ou le mot BABEL), choisir son bonus et la taille de la volée, voir ceux en cours.',
   peek: (state) => `${state.letters} attrapée(s)`,
   build: (kit, state) => {
     kit.row(
@@ -31,6 +31,16 @@ export const LETTER_SUBJECT: DebugSubject = {
       ]),
       'Pour toutes les lettres suivantes, jusqu’à « Au hasard ».',
     );
+    kit.row(
+      'La volée',
+      chips([
+        ['Au hasard', () => forceFlock(undefined)],
+        ['1 lettre', () => forceFlock(1)],
+        ['2 lettres', () => forceFlock(2)],
+        ['3 lettres', () => forceFlock(3)],
+      ]),
+      'Combien s’appelleront à la suite (chacune attrapée), jusqu’à « Au hasard » (pas le mot BABEL).',
+    );
     kit.number(
       'Lettres attrapées',
       () => state.letters,
@@ -46,6 +56,7 @@ export const LETTER_SUBJECT: DebugSubject = {
       return `${minutes(wait.min)} à ${minutes(wait.max)}`;
     });
     kit.info('À l’écran', () => `${letterStays(state)} s`);
+    kit.info('La Volée', () => `2e : ${Math.round(flockChance(state) * 100)} %, 3e : ${Math.round((flockChance(state) * 100) / 3)} %`);
     kit.info(
       'En cours',
       () =>

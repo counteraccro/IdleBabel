@@ -163,6 +163,7 @@
     "intuition-watch": "Guette jusqu’au bout",
     "intuition-heldBreath": "Retiens ton souffle aussi longtemps qu’elle",
     "intuition-letterUnderstood": "Comprends ce que disent les lettres",
+    "intuition-flock": "Fais lever toute la volée",
     "intuition-armful": "Prends tout à pleins bras",
     "intuition-reminiscence": "Laisse revenir ce que tu savais",
     "intuitionGesture": "Maîtrise le geste : {title}",
@@ -206,6 +207,8 @@
       "{n} lettres. De quoi écrire ton nom, si tu t’en souvenais"
     ],
     "threeLights": "Garde trois lumières à la fois",
+    "twoLetters": "Attrape deux lettres d’une même volée",
+    "threeLetters": "Attrape trois lettres d’une même volée",
     "daysSinceArrival": "Reviens à la Bibliothèque depuis {n} jours",
     "fullNight": "Dors une nuit entière dans la Bibliothèque",
     "knowledgeFound": "Comprends {n} choses",
