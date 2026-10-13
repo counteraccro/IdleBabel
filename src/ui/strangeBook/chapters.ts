@@ -1,13 +1,22 @@
 import { getLocale, t } from '../../i18n';
 import { formatNumber, writeDigits } from '../../core/format';
-import { TOOLS } from '../../data/tools';
+import { DIGITAL_AGE, TOOLS } from '../../data/tools';
 import { PAGES_PER_BOOK } from '../../systems/books';
 import { pagesPerSecond } from '../../systems/production';
 import { meaningfulCovers } from '../../systems/stats';
 import { findChance } from '../../systems/knowledge';
 import { BASE_FIND_CHANCE, type FindKind } from '../../data/knowledge';
 import { filterMultiplier, gestureMultiplier, rareChance } from '../../systems/technologies';
-import { etherCounted, etherReading, findsMultiplier, readingMultiplier, weightLifted, weightPower } from '../../systems/etherium';
+import {
+  digitalMultiplier,
+  etherCounted,
+  etherReading,
+  findsMultiplier,
+  readingMultiplier,
+  weightLifted,
+  weightPresses,
+  weightShown,
+} from '../../systems/etherium';
 import { ETHER_WEIGHT } from '../../data/etherium';
 import { nextRareChance } from '../../systems/rareBooks';
 import { RARE_BOOKS } from '../../data/rareBooks';
@@ -16,6 +25,7 @@ import { isDeciphered } from '../../systems/decipher';
 import { statsRevealed } from '../../systems/strangeBook';
 import { nextEtherPages, nextEtherProgress, prestigeGain } from '../../systems/prestige';
 import { relicBonus, relicReading } from '../../systems/relics';
+import { mimicReading } from '../../systems/mimic';
 import { relicName } from '../relics/relicText';
 import type { PartId } from '../../data/decipher';
 import type { GameState } from '../../core/state';
@@ -84,25 +94,32 @@ const findChanceParts = (state: GameState, readable: boolean): string | string[]
 
 /**
  * La vitesse de lecture, décomposée : ce que lisent les méthodes d'elles-mêmes, × leurs intuitions (en moyenne, pesée
- * par ce que lit chacune) ; puis, après un premier prestige, une seconde ligne : × l'Etherium (le Livre ouvert) et
- * × l'Éther reçu ; et une troisième quand le Sablier agit (demande de l'auteur, 12/10).
+ * par ce que lit chacune) ; puis, après un premier prestige, une seconde ligne : × l'Etherium (le Livre ouvert, et le
+ * Minitel pesé par ce que lisent les méthodes Numériques) et × l'Éther reçu ; une troisième quand le Sablier agit
+ * (demande de l'auteur, 12/10), et une dernière quand la Mimic ralentit la lecture (revue de code, 13/10).
  */
 const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
   const base = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
-  const gestures = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id), 0);
+  const rate = (tool: (typeof TOOLS)[number]): number => state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id);
+  const gestures = TOOLS.reduce((total, tool) => total + rate(tool), 0);
+  const digital = TOOLS.reduce((total, tool) => total + rate(tool) * (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1), 0);
   const prestiged = state.etherReceived > 0;
   const parts = [
     formatNumber(base, getLocale()),
     factor(base > 0 ? gestures / base : 1),
-    ...(prestiged ? [factor(readingMultiplier(state)), factor(etherReading(state))] : []),
+    ...(prestiged ? [factor(readingMultiplier(state) * (gestures > 0 ? digital / gestures : 1)), factor(etherReading(state))] : []),
   ];
   const [methods, intuitions, stars, ether] = parts;
   const hourglass = relicReading(state) > 1 ? factor(relicReading(state)) : null;
-  const relic = hourglass ? [readable ? t('strangeBook.figures.pagesPerSecondRelic').replace('{relic}', hourglass) : hourglass] : [];
-  if (!readable) return prestiged ? [`${methods}  ${intuitions}`, `${stars}  ${ether}`, ...relic] : [`${methods}  ${intuitions}`, ...relic];
+  const slowed = mimicReading(state) < 1 ? factor(mimicReading(state)) : null;
+  const extra = [
+    ...(hourglass ? [readable ? t('strangeBook.figures.pagesPerSecondRelic').replace('{relic}', hourglass) : hourglass] : []),
+    ...(slowed ? [readable ? t('strangeBook.figures.pagesPerSecondMimic').replace('{mimic}', slowed) : slowed] : []),
+  ];
+  if (!readable) return prestiged ? [`${methods}  ${intuitions}`, `${stars}  ${ether}`, ...extra] : [`${methods}  ${intuitions}`, ...extra];
   const first = t('strangeBook.figures.pagesPerSecondParts').replace('{methods}', methods).replace('{intuitions}', intuitions);
-  if (!prestiged) return [first, ...relic];
-  return [first, t('strangeBook.figures.pagesPerSecondEther').replace('{stars}', stars).replace('{ether}', ether), ...relic];
+  if (!prestiged) return [first, ...extra];
+  return [first, t('strangeBook.figures.pagesPerSecondEther').replace('{stars}', stars).replace('{ether}', ether), ...extra];
 };
 
 const rareFound = (state: GameState): number => Object.keys(state.rareBooks).length;
@@ -137,7 +154,7 @@ const relicParts = (state: GameState, readable: boolean): string[] => {
 /** Le poids de la Bibliothèque (13/10) : l'Éther que la lecture compte, sur l'Éther reçu ; levé, l'Atlas finie. */
 const weightValue = (state: GameState): string => number(Math.round(etherCounted(state.etherReceived, weightLifted(state))));
 const weightParts = (state: GameState, readable: boolean): string => {
-  const lifted = weightPower(weightLifted(state)) >= 1;
+  const lifted = !weightPresses(state);
   if (!readable) return lifted ? '' : `${number(state.etherReceived)}`;
   return t(`strangeBook.figures.${lifted ? 'etherWeightLifted' : 'etherWeightParts'}`).replace('{n}', number(ETHER_WEIGHT.from));
 };
@@ -286,7 +303,7 @@ export const CHAPTERS: readonly Chapter[] = [
         caption: 'etra gravel',
         value: weightValue,
         detail: weightParts,
-        shown: (s) => s.etherReceived > ETHER_WEIGHT.from,
+        shown: weightShown,
       },
       { id: 'prestigeGain', caption: 'etra sopi nar', value: (s) => number(prestigeGain(s)) },
       {

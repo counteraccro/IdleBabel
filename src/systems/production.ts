@@ -14,27 +14,33 @@ export const forcePagesPerSecond = (value: number | undefined): void => {
 export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== undefined;
 
 /**
- * Ce que lit une méthode, pour chaque exemplaire : sa base, doublée par son intuition à chaque niveau, et
- * multipliée par la Lecture de l'Etherium (et le Minitel, pour celles de l'Âge Numérique), par l'Éther reçu, par la
- * Transe de la lettre (en cours), par le Sablier (s'il agit) et ralentie par la Mimic (si elle est là).
+ * Ce qui multiplie la lecture de toutes les méthodes : la Lecture de l'Etherium, l'Éther reçu, la Transe de la lettre (en
+ * cours), le Sablier (s'il agit) et la Mimic qui la ralentit (si elle est là) ; et le Minitel, pour celles de l'Âge
+ * Numérique. Calculés une fois pour toutes les méthodes (revue de code, 13/10).
  */
-export const toolRate = (state: GameState, id: ToolId): number => {
-  const tool = TOOLS.find((candidate) => candidate.id === id)!;
-  return (
-    tool.pagesPerSecond *
-    gestureMultiplier(state, id) *
-    readingMultiplier(state) *
-    (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1) *
-    etherReading(state) *
-    readingBoon(state) *
-    relicReading(state) *
-    mimicReading(state)
+type Shared = { all: number; digital: number };
+const shared = (state: GameState): Shared => ({
+  all: readingMultiplier(state) * etherReading(state) * readingBoon(state) * relicReading(state) * mimicReading(state),
+  digital: digitalMultiplier(state),
+});
+
+const rateOf = (state: GameState, tool: (typeof TOOLS)[number], factors: Shared): number =>
+  tool.pagesPerSecond * gestureMultiplier(state, tool.id) * (tool.age === DIGITAL_AGE ? factors.digital : 1) * factors.all;
+
+/** Ce que lit une méthode, pour chaque exemplaire : sa base, doublée par son intuition à chaque niveau, × `shared`. */
+export const toolRate = (state: GameState, id: ToolId): number =>
+  rateOf(
+    state,
+    TOOLS.find((candidate) => candidate.id === id)!,
+    shared(state),
   );
-};
 
 /** Production : celle de chaque méthode (toolRate). */
-export const pagesPerSecond = (state: GameState): number =>
-  forcedPagesPerSecond ?? TOOLS.reduce((total, tool) => total + state.tools[tool.id] * toolRate(state, tool.id), 0);
+export const pagesPerSecond = (state: GameState): number => {
+  if (forcedPagesPerSecond !== undefined) return forcedPagesPerSecond;
+  const factors = shared(state);
+  return TOOLS.reduce((total, tool) => total + state.tools[tool.id] * rateOf(state, tool, factors), 0);
+};
 
 /**
  * Ce qu'un ajout n'a pas pu compter : au-delà de ~10¹⁵ pages, un nombre à virgule ne distingue plus les
@@ -75,8 +81,9 @@ export const producedWholePages = (): number => producedWhole;
  */
 export const creditMethods = (state: GameState, seconds: number): void => {
   if (forcedPagesPerSecond !== undefined) return;
+  const factors = shared(state);
   for (const tool of TOOLS) {
-    const read = state.tools[tool.id] * toolRate(state, tool.id) * seconds;
+    const read = state.tools[tool.id] * rateOf(state, tool, factors) * seconds;
     if (read <= 0) continue;
     state.methodPages[tool.id] = (state.methodPages[tool.id] ?? 0) + read;
     addKeepingRest(state, 'pagesByMethods', read);

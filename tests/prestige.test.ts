@@ -9,7 +9,7 @@ import {
   prestigeGain,
   prestigeReady,
 } from '../src/systems/prestige';
-import { etherReading, lightStar, readingMultiplier, starOpen } from '../src/systems/etherium';
+import { etherReading, lightStar, pageOpen, readingMultiplier, starOpen, weightPresses, weightShown } from '../src/systems/etherium';
 import { readPage } from '../src/systems/click';
 import { refundClosedStars } from '../src/core/closedStars';
 import { segments, toolUnlocked, write } from '../src/systems/sentences';
@@ -161,6 +161,25 @@ describe('Prestige', () => {
     const after = refundClosedStars(state);
     expect(after.etherium).toEqual(['ages.auto', 'ages.quantum', 'memory.a1']);
     expect(after.ether).toBe(115);
+  });
+
+  it('une partie d’avant le 08/10 éteint son Âge Quantique et récupère ses 10 Éther (rouvert en Âge Numérique)', () => {
+    const state = reader(1e9);
+    state.ether = 5;
+    state.etherium = ['ages.auto', 'ages.quantum'];
+    const after = refundClosedStars(state, true);
+    expect(after.etherium).toEqual(['ages.auto']);
+    expect(after.ether).toBe(15);
+  });
+
+  it('le poids de la Bibliothèque se montre dès 5 000 Éther reçus, comme la page de l’Atlas', () => {
+    const state = reader(1e9);
+    state.etherReceived = 4_999;
+    expect(weightShown(state) || pageOpen(state, 'weight')).toBe(false);
+    state.etherReceived = 5_000;
+    expect(weightShown(state)).toBe(true);
+    expect(pageOpen(state, 'weight')).toBe(true);
+    expect(weightPresses(state)).toBe(true);
   });
 
   it('la Porte et la Ruche', () => {

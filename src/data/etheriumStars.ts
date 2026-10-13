@@ -1,4 +1,5 @@
 import { ETHER_WEIGHT } from './etherium';
+import { AUTOMATIC_AGE, DIGITAL_AGE } from './tools';
 
 /**
  * L'Etherium en constellations (validé avec l'auteur le 06/10/2026, .ai/plan-etherium-constellations.md) : une figure
@@ -233,18 +234,20 @@ export const afterLit = (star: Star, lit: (id: string) => boolean): boolean => {
 };
 
 /** Chaque alvéole de la Ruche d'après le Manuel ne s'ouvre qu'avec son Âge (l'étoile de l'Escalier), par sa lettre. */
-const CELL_AGES: Record<string, string> = { a: 'ages.auto', n: 'ages.quantum' };
+const CELL_AGES: Record<string, string> = { a: AUTOMATIC_AGE, n: DIGITAL_AGE };
+/** La lettre de l'alvéole d'une étoile de la Ruche : « memory.n3 » → « n ». */
+const cellOf = (id: string): string => id.slice('memory.'.length, 'memory.'.length + 1);
 
 /** Les étoiles des alvéoles Automatique et Numérique, et l'Âge que chacune attend. */
 export const NEEDS_AGE: ReadonlyMap<string, string> = new Map(
-  STARS.filter((star) => star.page === 'memory' && star.id[7] in CELL_AGES).map((star) => [star.id, CELL_AGES[star.id[7]]]),
+  STARS.filter((star) => star.page === 'memory' && cellOf(star.id) in CELL_AGES).map((star) => [star.id, CELL_AGES[cellOf(star.id)]]),
 );
 
 /**
  * Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration ; le Minitel,
  * par l'Âge Numérique).
  */
-export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e', relics: 'explore.w', screen: 'ages.quantum' };
+export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e', relics: 'explore.w', screen: DIGITAL_AGE };
 
 /** Une page qui attend l'Éther reçu : le Poids, quand l'Éther commence à peser (blanche jusque-là, absente du sommaire). */
 export const PAGE_NEEDS_ETHER: Partial<Record<PageId, number>> = { weight: ETHER_WEIGHT.from };
@@ -361,7 +364,7 @@ export const S = {
   previousKnowledge: 'start.r3',
   handle: 'start.k',
   cornee: 'memory.m0',
-  age: 'ages.auto',
+  age: AUTOMATIC_AGE,
   letterStays: 'quill.l3',
   mimic: 'explore.e',
   mimicEye: 'mimic.eye',

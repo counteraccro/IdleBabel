@@ -1,4 +1,5 @@
-import { afterLit, CLOSED, EFFECT, RELIC_BRANCH, S, STARS, neededFor, type PageId } from '../src/data/etheriumStars';
+import { afterLit, CLOSED, EFFECT, ETHERIUM_PAGES, RELIC_BRANCH, S, STARS, neededFor, type PageId } from '../src/data/etheriumStars';
+import { DIGITAL_AGE } from '../src/data/tools';
 import { relicById } from '../src/data/relics';
 import { PLAYER } from './config';
 import { etherNeeded } from '../src/systems/etherium';
@@ -95,7 +96,7 @@ const open = (life: Life): Buyable[] => [
 type Buyable = { id: string; cost: number };
 
 /** Son prix ; l'Âge Numérique, celui qu'essaie le simulateur s'il en donne un (--numerique). */
-const starCost = (star: Buyable): number => (star.id === 'ages.quantum' && PLAYER.digitalAge > 0 ? PLAYER.digitalAge : star.cost);
+const starCost = (star: Buyable): number => (star.id === DIGITAL_AGE && PLAYER.digitalAge > 0 ? PLAYER.digitalAge : star.cost);
 
 /** Au réveil : le bot prend l'Âge Automatique d'abord, puis l'étoile la moins chère qu'il peut s'offrir, tant qu'il peut. */
 export const spendEther = (life: Life): string[] => {
@@ -141,26 +142,7 @@ export const relicBonus = (life: Life, id: string, none: number): number => {
 
 /** Étoiles allumées sur chaque page. */
 export const litPerPage = (life: Life): string =>
-  (
-    [
-      'reading',
-      'hands',
-      'knowledge',
-      'finds',
-      'away',
-      'start',
-      'memory',
-      'quill',
-      'ages',
-      'weight',
-      'explore',
-      'mimic',
-      'relics',
-      'screen',
-    ] as PageId[]
-  )
-    .map(
-      (page) =>
-        `${page} ${STARS.filter((s) => s.page === page && life.stars.has(s.id)).length}/${STARS.filter((s) => s.page === page).length}`,
-    )
-    .join(', ');
+  ETHERIUM_PAGES.map(
+    (page) =>
+      `${page} ${STARS.filter((s) => s.page === page && life.stars.has(s.id)).length}/${STARS.filter((s) => s.page === page).length}`,
+  ).join(', ');

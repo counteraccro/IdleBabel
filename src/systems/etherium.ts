@@ -79,6 +79,12 @@ export const weightPower = (lifted: number): number => Math.min(1, Number((ETHER
 /** Ce que les étoiles de l'Atlas allumées ont ôté au poids. */
 export const weightLifted = (state: GameState): number => sum(state, EFFECT.weight);
 
+/** Le poids de la Bibliothèque se montre : l'Éther reçu a atteint 5 000 (la page de l'Atlas s'ouvre, data/etheriumStars.ts). */
+export const weightShown = (state: GameState): boolean => state.etherReceived >= ETHER_WEIGHT.from;
+
+/** Le poids pèse encore : il se montre, et les étoiles de l'Atlas ne l'ont pas levé. */
+export const weightPresses = (state: GameState): boolean => weightShown(state) && weightPower(weightLifted(state)) < 1;
+
 /** La lecture en plus, en points de pour cent, que donneraient `gain` Éther de plus (sous le poids : moins d'un par Éther). */
 export const readingGain = (state: GameState, gain: number): number => {
   const lifted = weightLifted(state);

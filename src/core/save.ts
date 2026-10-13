@@ -47,6 +47,8 @@ export const loadGame = (defaultLocale: Locale): GameState => {
               }),
             ),
           ),
+          // Une sauvegarde d'avant le 08/10 : son Âge Quantique est fermé (core/closedStars.ts).
+          saved.findCounts === undefined,
         );
       }
     }

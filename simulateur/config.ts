@@ -1,4 +1,4 @@
-import type { PageId } from '../src/data/etheriumStars';
+import { ETHERIUM_PAGES, type PageId } from '../src/data/etheriumStars';
 
 /**
  * Le joueur imité par le bot. Les chiffres du jeu (méthodes des deux Âges, intuitions, trouvailles, Etherium) viennent
@@ -45,22 +45,7 @@ export const PLAYER = {
   prestigeWhenRateBelow: 0.8,
   maxRunHours: 48,
   /** Les pages de l'Etherium où le bot allume des étoiles (--pages=reading,hands pour n'en essayer que quelques-unes). */
-  pages: [
-    'reading',
-    'hands',
-    'knowledge',
-    'finds',
-    'away',
-    'start',
-    'memory',
-    'quill',
-    'ages',
-    'weight',
-    'explore',
-    'mimic',
-    'relics',
-    'screen',
-  ] as PageId[],
+  pages: [...ETHERIUM_PAGES] as PageId[],
   /** La Page Cornée (1re étoile de la Ruche) ; --sans-cornee pour s'en passer (et donc de toute la Ruche). */
   cornee: true,
   /**

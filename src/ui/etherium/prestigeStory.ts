@@ -10,6 +10,9 @@ import { prestige, prestigeGain } from '../../systems/prestige';
 import { readingGain } from '../../systems/etherium';
 import type { GameState } from '../../core/state';
 
+/** La lecture promise, en points de pour cent : entière, ou au dixième sous 1 (sous le poids, jamais « +0 % »). */
+const shownReading = (reading: number): number => (reading < 1 ? Math.max(0.1, Math.round(reading * 10) / 10) : Math.round(reading));
+
 /** L'adresse de la page de l'Etherium (ui/app.ts). */
 export const ETHERIUM_HASH = '#etherium';
 
@@ -70,7 +73,7 @@ export const openEtherium = (state: GameState, open: () => void, nudge: () => vo
     'dim',
     etherium.confirm.warning
       .replace('{ether}', formatNumber(gain, getLocale()))
-      .replace('{reading}', formatNumber(Math.round(readingGain(state, gain)), getLocale())),
+      .replace('{reading}', formatNumber(shownReading(readingGain(state, gain)), getLocale())),
     false,
   );
 };

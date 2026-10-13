@@ -59,13 +59,21 @@ export const fit = (
   return natural <= width ? size : (size * width) / natural;
 };
 
-/** Le grain du papier : de petits points bruns, tirés de `seed`. */
+/** Teintes du grain du papier : ses points, rangés par opacité, se remplissent ensemble (revue de code, 13/10). */
+const GRAIN_SHADES = 20;
+
+/** Le grain du papier : de petits points bruns, tirés de `seed` ; une vingtaine de remplissages, pas un par point. */
 export const paperGrain = (context: CanvasRenderingContext2D, seed: number): void => {
   const random = rng(seed);
+  const shades = Array.from({ length: GRAIN_SHADES }, () => new Path2D());
   for (let i = 0; i < (W * H) / 120; i++) {
-    context.fillStyle = `rgba(120,90,50,${random() * 0.05})`;
-    context.fillRect(random() * W, random() * H, 1, 1);
+    const shade = Math.min(GRAIN_SHADES - 1, Math.floor(random() * GRAIN_SHADES));
+    shades[shade].rect(random() * W, random() * H, 1, 1);
   }
+  shades.forEach((dots, shade) => {
+    context.fillStyle = `rgba(120,90,50,${((shade + 0.5) / GRAIN_SHADES) * 0.05})`;
+    context.fill(dots);
+  });
 };
 
 /** Le numéro de la page, en bas, côté tranche. */
