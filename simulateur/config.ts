@@ -85,7 +85,7 @@ for (const part of readingOption?.split(',') ?? []) {
  */
 export const DIGITAL = [
   { id: 'minitel', baseCost: 6e15, pagesPerSecond: 2.5e9, pieces: 8 },
-  { id: 'floppy', baseCost: 5e16, pagesPerSecond: 6e9, pieces: 5 },
+  { id: 'computer', baseCost: 5e16, pagesPerSecond: 6e9, pieces: 5 },
   { id: 'search', baseCost: 4e17, pagesPerSecond: 1.5e10, pieces: 5 },
   { id: 'crawler', baseCost: 3.2e18, pagesPerSecond: 4e10, pieces: 5 },
   { id: 'algorithm', baseCost: 2.5e19, pagesPerSecond: 1e11, pieces: 5 },
