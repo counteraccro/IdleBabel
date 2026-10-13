@@ -8,6 +8,7 @@ import { sceneOfAge } from '../src/scene/scenes';
 import { AUTOMATIC_AGE, DIGITAL_AGE, METHOD_CHAIN, TOOLS } from '../src/data/tools';
 import { SEALS } from '../src/data/seals';
 import { starById } from '../src/data/etheriumStars';
+import { starOpen } from '../src/systems/etherium';
 import { LOCALES } from '../src/i18n/locales';
 
 const DIGITAL = ['minitel', 'computer', 'search', 'crawler', 'algorithm'];
@@ -66,6 +67,28 @@ describe('L’Âge Numérique', () => {
     expect(sentenceShown(state, 'bit')).toBe(false);
     state.etherium.push('memory.n0');
     expect(sentenceShown(state, 'bit')).toBe(true);
+  });
+
+  it('l’alvéole Numérique de la Ruche attend l’Âge, puis suit l’Horloge : le Bit, puis une machine par étoile', () => {
+    const state = game(false);
+    state.etherium.push('memory.m0', 'memory.m1', 'memory.m2', 'memory.m3', 'memory.m4', 'memory.m5');
+    state.etherium.push('memory.a1', 'memory.a2', 'memory.a3', 'memory.a4', 'memory.a5');
+    expect(starOpen(state, 'memory.n0')).toBe(false);
+    state.etherium.push(DIGITAL_AGE);
+    expect(starOpen(state, 'memory.n0')).toBe(true);
+    expect(starOpen(state, 'memory.n1')).toBe(false);
+    expect([0, 1, 2, 3, 4, 5].map((i) => starById(`memory.n${i}`)?.cost)).toEqual([100, 100, 200, 400, 800, 1600]);
+  });
+
+  it('une étoile de l’alvéole garde la phrase de sa machine au prestige', () => {
+    const state = game(true);
+    state.etherium.push('memory.n0', 'memory.n1');
+    writeAll(state, 'minitel');
+    writeAll(state, 'computer');
+    state.totalPagesRead = 1e10;
+    prestige(state);
+    expect(toolUnlocked(state, 'minitel')).toBe(true);
+    expect(toolUnlocked(state, 'computer')).toBe(false);
   });
 
   it('le prestige fait oublier leurs phrases, pas l’Âge', () => {

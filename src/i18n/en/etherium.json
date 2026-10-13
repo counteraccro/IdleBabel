@@ -394,6 +394,30 @@
       "a5": {
         "name": "Gallery Clock",
         "effect": "its sentence stays through prestige"
+      },
+      "n0": {
+        "name": "The Bit",
+        "effect": "secret method: its blurry memory, then its sentence stays"
+      },
+      "n1": {
+        "name": "Minitel",
+        "effect": "its sentence stays through prestige"
+      },
+      "n2": {
+        "name": "Home Computer",
+        "effect": "its sentence stays through prestige"
+      },
+      "n3": {
+        "name": "Search Engine",
+        "effect": "its sentence stays through prestige"
+      },
+      "n4": {
+        "name": "Crawler",
+        "effect": "its sentence stays through prestige"
+      },
+      "n5": {
+        "name": "Babel Algorithm",
+        "effect": "its sentence stays through prestige"
       }
     },
     "ages": {

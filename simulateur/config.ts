@@ -84,17 +84,11 @@ for (const part of readingOption?.split(',') ?? []) {
 }
 
 /**
- * Les étoiles de l'Âge Numérique (validées le 13/10 ; pas encore dans le jeu) : l'alvéole Numérique de la Ruche (le Bit, payant,
- * puis la phrase gardée de chaque méthode, prix ×10 l'alvéole Automatique) et la page du Minitel (la prise, puis l'écran :
- * ×lecture des méthodes Numériques, et le clavier : ×Connaissance). Elles s'ouvrent avec l'étoile de l'Âge.
+ * Les étoiles de l'Âge Numérique pas encore dans le jeu (validées le 13/10) : la page du Minitel (la prise, puis l'écran :
+ * ×lecture des méthodes Numériques, et le clavier : ×Connaissance). Elles s'ouvrent avec l'étoile de l'Âge. L'alvéole
+ * Numérique de la Ruche (le Bit, puis la phrase gardée de chaque machine) vient du jeu.
  */
 export const DIGITAL_STARS: { id: string; page: string; after?: string; cost: number }[] = [
-  { id: 'memory.n0', page: 'memory', after: 'memory.a5', cost: 100 },
-  { id: 'memory.n1', page: 'memory', after: 'memory.n0', cost: 100 },
-  { id: 'memory.n2', page: 'memory', after: 'memory.n1', cost: 200 },
-  { id: 'memory.n3', page: 'memory', after: 'memory.n2', cost: 400 },
-  { id: 'memory.n4', page: 'memory', after: 'memory.n3', cost: 800 },
-  { id: 'memory.n5', page: 'memory', after: 'memory.n4', cost: 1600 },
   { id: 'screen.plug', page: 'screen', cost: 1000 },
   { id: 'screen.s1', page: 'screen', after: 'screen.plug', cost: 2000 },
   { id: 'screen.s2', page: 'screen', after: 'screen.s1', cost: 5000 },
@@ -105,16 +99,6 @@ export const DIGITAL_STARS: { id: string; page: string; after?: string; cost: nu
   { id: 'screen.k3', page: 'screen', after: 'screen.k2', cost: 10000 },
   { id: 'screen.k4', page: 'screen', after: 'screen.k3', cost: 25000 },
 ];
-/** Le Bit, l'étoile de départ de l'alvéole Numérique : son souvenir flou (comme la Page Cornée). */
-export const BIT_STAR = 'memory.n0';
-/** La phrase gardée au prestige de chaque méthode Numérique. */
-export const DIGITAL_KEEPS: Record<string, string> = {
-  minitel: 'memory.n1',
-  computer: 'memory.n2',
-  search: 'memory.n3',
-  crawler: 'memory.n4',
-  algorithm: 'memory.n5',
-};
 /** ×lecture des méthodes Numériques (la prise et l'écran), ×Connaissance (le clavier). */
 export const DIGITAL_EFFECT = {
   reading: { 'screen.plug': 1.1, 'screen.s1': 1.25, 'screen.s2': 1.25, 'screen.s3': 1.5, 'screen.s4': 2 },

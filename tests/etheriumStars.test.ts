@@ -29,7 +29,8 @@ describe('Les étoiles de l’Etherium', () => {
       ...Object.values(EFFECT).flatMap((effect) => Object.keys(effect)),
       ...Object.values(S),
       ...Object.values(KEEPS),
-      ...NEEDS_AGE,
+      ...NEEDS_AGE.keys(),
+      ...NEEDS_AGE.values(),
       ...Object.values(PAGE_NEEDS),
     ];
     for (const id of ids) expect(starById(id), id).toBeDefined();

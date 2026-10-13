@@ -82,9 +82,12 @@ const glassSide = (side: number): (readonly [number, number])[] =>
     [-35, 450],
   ].map(([dx, y]) => [480 + side * dx, y] as const);
 
-const MANUAL_CELL = [190, 470] as const;
-const AUTO_CELL = [450, 470] as const;
-const CELL = 88;
+// La Ruche, piste A de la maquette (.ai/maquette-etherium-numerique.html, choix de l'auteur, 13/10) : trois alvéoles en
+// ligne, un peu plus petites pour tenir côte à côte.
+const MANUAL_CELL = [120, 470] as const;
+const AUTO_CELL = [320, 470] as const;
+const DIGITAL_CELL = [520, 470] as const;
+const CELL = 80;
 
 export const FIGURES: Record<PageId, Figure> = {
   // Le livre vu de face : le dos au milieu ; chaque page part du haut du dos, suit le haut de la page, puis le bord
@@ -185,15 +188,17 @@ export const FIGURES: Record<PageId, Figure> = {
     },
     deco: [['top', 'r3']],
   },
-  // Deux alvéoles pointe en haut, côte à côte ; la dernière méthode d'un Âge mène à la première étoile du suivant.
+  // Trois alvéoles pointe en haut, côte à côte ; la dernière méthode d'un Âge mène à la première étoile du suivant.
   memory: {
     spots: {
       ...Object.fromEntries([90, 150, 210, 270, 330, 30].map((deg, i) => [`m${i}`, ring(MANUAL_CELL, CELL, deg)])),
       ...Object.fromEntries([150, 210, 270, 330, 30, 90].map((deg, i) => [`a${i}`, ring(AUTO_CELL, CELL, deg)])),
+      ...Object.fromEntries([150, 210, 270, 330, 30, 90].map((deg, i) => [`n${i}`, ring(DIGITAL_CELL, CELL, deg)])),
     },
     deco: [
       ['m5', 'm0'],
       ['a5', 'a0'],
+      ['n5', 'n0'],
     ],
   },
   ages: {

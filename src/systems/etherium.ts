@@ -11,8 +11,8 @@ import type { GameState } from '../core/state';
 export const starLit = (state: GameState, id: string): boolean => state.etherium.includes(id);
 
 /**
- * L'étoile peut s'allumer : pas encore allumée ni fermée (CLOSED), son étoile d'avant l'est (et l'Âge Automatique, pour
- * son alvéole ; l'Est de l'Exploration, pour la page de la Mimic).
+ * L'étoile peut s'allumer : pas encore allumée ni fermée (CLOSED), son étoile d'avant l'est (et l'Âge de son alvéole,
+ * dans la Ruche ; l'Est de l'Exploration, pour la page de la Mimic).
  */
 export const starOpen = (state: GameState, id: string): boolean => {
   const star = starById(id);

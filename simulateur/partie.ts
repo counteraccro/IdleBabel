@@ -23,10 +23,11 @@ import {
   TARGET_SHARE,
 } from '../src/data/knowledge';
 import { ETHER_READING } from '../src/data/etherium';
-import { BIT_STAR, DIGITAL_EFFECT, PLAYER, WEIGHT, WEIGHT_STARS } from './config';
+import { DIGITAL_EFFECT, PLAYER, WEIGHT, WEIGHT_STARS } from './config';
 import { sealCount } from './sceaux';
 import { BIT, DIGITAL_AGE, keptMethods, methodSequence, SECRET, type Method } from './methodes';
 import { EFFECT, S } from '../src/data/etheriumStars';
+import { SENTENCES } from '../src/data/sentences';
 import { lit, product, relicBonus, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
 import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../src/data/mimic';
@@ -103,6 +104,7 @@ export const newRun = (life: Life): Run => {
 const level = (run: Run, id: string): number => run.levels[id] ?? 0;
 
 /** Le Bit se cherche une fois son étoile allumée (la 1re de l'alvéole Numérique de la Ruche). */
+const BIT_STAR = SENTENCES.find((sentence) => sentence.id === 'bit')?.secret ?? '';
 const bitSought = (life: Life): boolean => PLAYER.bit && lit(life, BIT_STAR);
 
 const allMethods = (run: Run): Method[] => [...run.methods, SECRET, ...(bitSought(run.life) ? [BIT] : [])];

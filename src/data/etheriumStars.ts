@@ -93,7 +93,8 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['start', 'r2', 'r1', 15],
   ['start', 'r3', 'r2', 25],
   ['start', 'k', 'r1', 10],
-  // La Ruche : la Page Cornée, puis les cinq méthodes du Manuel ; l'alvéole Automatique (sa secrète, puis ses cinq) après l'Âge.
+  // La Ruche : la Page Cornée, puis les cinq méthodes du Manuel ; l'alvéole Automatique (sa secrète, puis ses cinq) après l'Âge,
+  // et l'alvéole Numérique (13/10 : le Bit, puis ses cinq, ×10 l'alvéole Automatique) après le sien.
   ['memory', 'm0', null, 1],
   ['memory', 'm1', 'm0', 2],
   ['memory', 'm2', 'm1', 4],
@@ -106,6 +107,12 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['memory', 'a3', 'a2', 40],
   ['memory', 'a4', 'a3', 80],
   ['memory', 'a5', 'a4', 160],
+  ['memory', 'n0', 'a5', 100],
+  ['memory', 'n1', 'n0', 100],
+  ['memory', 'n2', 'n1', 200],
+  ['memory', 'n3', 'n2', 400],
+  ['memory', 'n4', 'n3', 800],
+  ['memory', 'n5', 'n4', 1600],
   // L'Escalier : l'Âge Manuel est offert (il n'est pas une étoile à acheter), puis chaque Âge.
   ['ages', 'auto', null, 1],
   // L'Âge Numérique : 1 500 Éther (validé le 13/10, simulé : achetée vers la 17e partie).
@@ -198,15 +205,19 @@ export const afterLit = (star: Star, lit: (id: string) => boolean): boolean => {
   return !!before && PASSABLE.has(before.id) && afterLit(before, lit);
 };
 
-/** L'alvéole Automatique de la Ruche ne s'ouvre qu'avec l'Âge Automatique (l'étoile de l'Escalier). */
-export const NEEDS_AGE: ReadonlySet<string> = new Set(STARS.filter((star) => star.id.startsWith('memory.a')).map((star) => star.id));
+/** Chaque alvéole de la Ruche d'après le Manuel ne s'ouvre qu'avec son Âge (l'étoile de l'Escalier), par sa lettre. */
+const CELL_AGES: Record<string, string> = { a: 'ages.auto', n: 'ages.quantum' };
+
+/** Les étoiles des alvéoles Automatique et Numérique, et l'Âge que chacune attend. */
+export const NEEDS_AGE: ReadonlyMap<string, string> = new Map(
+  STARS.filter((star) => star.page === 'memory' && star.id[7] in CELL_AGES).map((star) => [star.id, CELL_AGES[star.id[7]]]),
+);
 
 /** Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration). */
 export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e', relics: 'explore.w' };
 
-/** L'étoile qu'il faut avoir allumée avant de pouvoir allumer `id` : l'Âge Automatique, ou celle qui débloque sa page. */
-export const neededFor = (id: string): string | undefined =>
-  NEEDS_AGE.has(id) ? S.age : PAGE_NEEDS[id.slice(0, id.indexOf('.')) as PageId];
+/** L'étoile qu'il faut avoir allumée avant de pouvoir allumer `id` : l'Âge de son alvéole, ou celle qui débloque sa page. */
+export const neededFor = (id: string): string | undefined => NEEDS_AGE.get(id) ?? PAGE_NEEDS[id.slice(0, id.indexOf('.')) as PageId];
 
 /** Ce que donnent les étoiles : des facteurs qui se multiplient, ou des valeurs qui s'ajoutent. */
 export const EFFECT = {
@@ -305,7 +316,7 @@ export const S = {
 /** Les deux étoiles de chaque relique, sur la page « Les reliques » (leur lettre : la loupe, l'astrolabe, le sablier). */
 export const RELIC_BRANCH: Record<string, string> = { loupe: 'l', astrolabe: 'a', hourglass: 'h' };
 
-/** Mémoire des méthodes : l'étoile qui garde la phrase de chaque méthode (Manuel, puis Automatique). */
+/** Mémoire des méthodes : l'étoile qui garde la phrase de chaque méthode (Manuel, Automatique, puis Numérique). */
 export const KEEPS: Record<string, string> = {
   diagonal: 'memory.m1',
   finger: 'memory.m2',
@@ -317,4 +328,9 @@ export const KEEPS: Record<string, string> = {
   lift: 'memory.a3',
   automaton: 'memory.a4',
   clock: 'memory.a5',
+  minitel: 'memory.n1',
+  computer: 'memory.n2',
+  search: 'memory.n3',
+  crawler: 'memory.n4',
+  algorithm: 'memory.n5',
 };

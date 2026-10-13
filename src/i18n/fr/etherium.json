@@ -394,6 +394,30 @@
       "a5": {
         "name": "Horloge des Galeries",
         "effect": "sa phrase reste au prestige"
+      },
+      "n0": {
+        "name": "Le Bit",
+        "effect": "méthode secrète : son souvenir flou, puis sa phrase reste"
+      },
+      "n1": {
+        "name": "Minitel",
+        "effect": "sa phrase reste au prestige"
+      },
+      "n2": {
+        "name": "Micro-Ordinateur",
+        "effect": "sa phrase reste au prestige"
+      },
+      "n3": {
+        "name": "Moteur de Recherche",
+        "effect": "sa phrase reste au prestige"
+      },
+      "n4": {
+        "name": "Robot d’Indexation",
+        "effect": "sa phrase reste au prestige"
+      },
+      "n5": {
+        "name": "Algorithme de Babel",
+        "effect": "sa phrase reste au prestige"
       }
     },
     "ages": {
