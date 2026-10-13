@@ -48,6 +48,8 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   { id: 'rabbit' },
   // Un livre-jeu des années 80 : cent paragraphes, « rendez-vous au 47 », une seule fin (10/10).
   { id: 'endlessBook' },
+  // Un cahier de coloriage pour enfants des années 60 : neuf grands dessins à colorier pour de bon, dans la bibliothèque (13/10).
+  { id: 'coloring' },
   // L'autobiographie du jeu (décidée le 03/10) : la Bibliothèque contient le livre de sa propre création.
   { id: 'idleBabel' },
   // Le livre de débogage (décidé le 01/10) : dix fois plus rare ; du charabia qui bugue, et il ne s'ouvre

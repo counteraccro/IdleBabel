@@ -144,6 +144,11 @@ export interface GameState {
   darkPatternsFoiled: number[];
   /** Prises du Lapin blanc dans « Le Lapin de garenne » (systems/rabbit.ts) : à trois, il rentre (un sceau secret). */
   rabbitCaught: number;
+  /**
+   * Les couleurs de « Colorie la Bibliothèque » (systems/coloring.ts) : pour chaque dessin, la couleur de chaque zone
+   * coloriée. Gardées au prestige.
+   */
+  coloring: Record<string, Record<string, string>>;
   /** La Mimic (systems/mimic.ts) : celle qui est là, et ce qu'en comptent les sceaux. */
   mimic: MimicState;
   /** Les reliques (systems/relics.ts) : trouvées, celle qui agit, le délai avant d'en changer. */
@@ -223,6 +228,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   catalogueRead: [],
   darkPatternsFoiled: [],
   rabbitCaught: 0,
+  coloring: {},
   mimic: { ...NO_MIMIC },
   relics: { ...NO_RELICS, found: {} },
   newSeals: [],

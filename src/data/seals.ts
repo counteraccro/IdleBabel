@@ -220,6 +220,8 @@ export const SEALS: readonly SealDef[] = [
     rareBook: book.id,
     reached: (s) => book.id in s.rareBooks,
   })),
+  // Un premier dessin de « Colorie la Bibliothèque » colorié en entier, dans la bibliothèque (systems/coloring.ts).
+  event('coloringFirst', 'rare'),
 
   seal('insomnia', 'secrets', () => new Date().getHours() === 3),
   seal('still', 'secrets', (s) => !s.settings.bookSway),
@@ -247,6 +249,8 @@ export const SEALS: readonly SealDef[] = [
   secret('endlessEnding'),
   // Le 66 du « Livre sans fin », où aucun choix n'envoie, trouvé en feuilletant (systems/endlessBook.ts).
   secret('endlessCheat'),
+  // Les neuf dessins de « Colorie la Bibliothèque » coloriés en entier (systems/coloring.ts).
+  secret('coloringAll'),
   // Un mot entouré au crayon, à la dernière page du Manuscrit de Voynich (ui/rareBooks/voynich/voynich.ts).
   secret('oneWord'),
   // Vingt pages du Catalogue des catalogues lues dans la bibliothèque, à la recherche d'un cadeau de Noël

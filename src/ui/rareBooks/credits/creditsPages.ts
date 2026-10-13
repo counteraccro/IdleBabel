@@ -55,6 +55,7 @@ const FONTS: [string, string][] = [
   ['Space Mono', 'Colophon Foundry'],
   ['DM Serif Display', 'Colophon Foundry'],
   ['Caveat', 'Impallari Type'],
+  ['Fredoka', 'Milena Brandão'],
   ['Nothing You Could Do', 'Kimberly Geswein'],
 ];
 
@@ -175,8 +176,8 @@ const fontsPage = (context: CanvasRenderingContext2D): void => {
   const { parts, fontsIntro } = text();
   heading(context, parts[3]);
   write(context, fontsIntro, CENTER, 205, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-  // Vingt polices : resserrées pour finir au-dessus du folio.
-  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 23));
+  // Vingt et une polices : resserrées pour finir au-dessus du folio.
+  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 22));
   folio(context, FONTS_PAGE);
 };
 

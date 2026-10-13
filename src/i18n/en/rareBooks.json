@@ -2305,6 +2305,51 @@
       "babelChoice": "ql vxo, turn to {}."
     }
   },
+  "coloring": {
+    "name": "Colour the Library",
+    "cover": [
+      "Colour",
+      "the Library"
+    ],
+    "big": "COLOUR",
+    "small": "the Library",
+    "publisher": "TOWER BOOKS",
+    "badge": [
+      "9",
+      "BIG",
+      "PICTURES"
+    ],
+    "readers": "for little and big readers",
+    "inside": "In this book:",
+    "list": [
+      "the tower",
+      "the book and the lamp",
+      "the letter that flies away",
+      "the rabbit",
+      "the bookshelf",
+      "the window on the desert",
+      "the clock",
+      "the starry night",
+      "the Mimic"
+    ],
+    "nine": "Nine big pictures to colour in.",
+    "owner": "This book belongs to:",
+    "subtitle": "Nine big pictures to colour in",
+    "names": [
+      "The tower",
+      "The book and the lamp",
+      "The letter that flies away",
+      "The rabbit",
+      "The bookshelf",
+      "The window on the desert",
+      "The clock",
+      "The starry night",
+      "The Mimic"
+    ],
+    "howTo": "Pick a pencil, then touch the picture.",
+    "box": "{n} COLOURED PENCILS",
+    "eraser": "the eraser"
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -2439,7 +2484,7 @@
             "Then the Catalogue of Catalogues, the one Borges’s librarians search for. On its midnight-blue leather cover, the book contains itself, until it is nothing but a point of gold. Inside, a register of books, one per line, each with its shelf mark.",
             "Then the Book of Sand, from a story by Borges, with neither a first page nor a last. On its cover, a desert at dusk, and the word “Sand” blowing away grain by grain. Inside, endless verses, page numbers that follow no order, and not one page you can find again.",
             "Then the Big Book of X, which tells the story of the letter X, from the caves to the Library. On its cream cover, a huge black X, like a type specimen. Inside, each chapter begins with a short story, and the rest is written in the X language.", "Then they became harder to find: all of them could be had in a few hours. Each rare book found makes the next one a quarter rarer. The first comes quickly; the last, one book in forty-two thousand, takes hundreds of hours. They belong to no age: a very long-term reward. The Ledger gave them a chapter, “Rarities”: how many have been found, and, as a percentage, the chance that the next book is one. How many are left, it does not say; when none are left, a line says so.", "Then Dark Patterns by Example, a bestseller of today for interface designers, with a foreword of the utmost seriousness. In the library, its examples are not read: they are endured. A cookie banner, a button that runs away, a countdown, an endless unsubscribe, a forced subscription, a basket that fills itself, disguised ads, an invented crowd, double-negative boxes, a feed that never ends: you have to find the way out. There is always one.", "Then The Wild Rabbit, a natural history treatise from the century before, in green cloth and gold. On its cover, an engraved medallion: the grass, the hedge, the burrow, and the rabbit’s place, empty. Inside, twelve plates he is always missing from. That is because he runs: in the library, Alice’s White Rabbit sometimes bounds across the pages. He has to be caught three times; each time, he comes back faster.",
-            "Then The Book with No Ending… except one?, an 80s paperback gamebook from an invented series, “Forking Paths”. On its black cover, a tower that disappears into the clouds: nobody has ever seen the top. Inside, a hundred paragraphs; at the end of each, choices, and the number where to go next. You die often there, and almost every path leads back to 1. It has only one ending: to open it, you have to remember three numbers learned along the way, from one death to the next. After it, the book goes on all the same, in gibberish, to its very last page."
+            "Then The Book with No Ending… except one?, an 80s paperback gamebook from an invented series, “Forking Paths”. On its black cover, a tower that disappears into the clouds: nobody has ever seen the top. Inside, a hundred paragraphs; at the end of each, choices, and the number where to go next. You die often there, and almost every path leads back to 1. It has only one ending: to open it, you have to remember three numbers learned along the way, from one death to the next. After it, the book goes on all the same, in gibberish, to its very last page.", "Then Colour the Library, a children’s colouring book from the 60s, from an invented publisher, Tower Books. On its yellow newsstand cover, the title in big round letters of every colour, and the tower, half coloured in. Inside, nine big pictures, one per spread: on the left, the box of pencils; on the right, the picture. In the library, you touch a pencil, then an area, and it fills in, with the grain of the pencil. The colours stay, even after prestige."
           ]
         },
         "library": {
@@ -2555,6 +2600,8 @@
         "rabbit-a3": "The tracks",
         "endlessBook-b": "The grimoire",
         "endlessBook-c": "The maze of numbers",
+        "coloring-b": "The school exercise book",
+        "coloring-c": "The cover to colour in",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",

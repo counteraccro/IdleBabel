@@ -6,6 +6,7 @@ import { bibleArt } from './bible/bible';
 import { bigXArt } from './bigX/bigX';
 import { catalogueArt } from './catalogue/catalogue';
 import { centerEarthArt } from './centerEarth/centerEarth';
+import { coloringArt } from './coloring/coloring';
 import { blankPageArt } from './blankPage/blankPage';
 import { creditsArt } from './credits/credits';
 import { dadJokesArt } from './dadJokes/dadJokes';
@@ -40,6 +41,7 @@ const ARTS: Record<string, RareBookArt> = {
   blankPage: blankPageArt,
   catalogue: catalogueArt,
   centerEarth: centerEarthArt,
+  coloring: coloringArt,
   credits: creditsArt,
   dadJokes: dadJokesArt,
   darkPatterns: darkPatternsArt,

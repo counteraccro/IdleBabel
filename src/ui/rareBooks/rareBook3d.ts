@@ -73,6 +73,7 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
     // Le signet : de n'importe où dans le livre, on revient au sommaire (ou au titre), puis on le referme.
     bookmark: art.bookmark ?? 1,
     press: (page, x, y) => {
+      if (reading && art.press?.(page, x, y, state)) return true;
       const link = linkAt(page, x, y);
       if (link?.href) window.open(link.href, '_blank', 'noopener');
       else if (link) {
@@ -83,7 +84,7 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
       }
       return link !== undefined;
     },
-    pointable: (page, x, y) => linkAt(page, x, y) !== undefined,
+    pointable: (page, x, y) => (reading && art.pointable?.(page, x, y)) || linkAt(page, x, y) !== undefined,
   };
   return book;
 };

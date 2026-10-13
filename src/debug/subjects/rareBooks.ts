@@ -9,6 +9,9 @@ import { CATCHES } from '../../systems/rabbit';
 import { resetEndlessTrail } from '../../systems/endlessBook';
 import { rabbitCrossNow } from '../../ui/rareBooks/rabbit/rabbitHunt';
 import { BIG_BOOK_REWRITE } from '../../ui/book3d/book3dBook';
+import { COLORING_DRAWINGS } from '../../data/coloring';
+import { colorZone, drawingDone } from '../../systems/coloring';
+import { coloringZones } from '../../ui/rareBooks/coloring/coloringDrawings';
 import type { DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
@@ -111,5 +114,33 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
       },
       { title: 'La seule fin et le tricheur, à retrouver ; le chemin suivi est oublié.' },
     ]);
+    kit.info(
+      'Colorie la Bibliothèque',
+      () =>
+        `${COLORING_DRAWINGS.filter(({ id }) => drawingDone(state, id, coloringZones())).length} / ${COLORING_DRAWINGS.length} dessins finis`,
+    );
+    kit.actions(
+      [
+        'Cahier : tout colorier',
+        () => {
+          // Chaque zone d'une couleur de sa boîte, au hasard ; les sceaux tombent comme en jeu.
+          for (const { id, palette } of COLORING_DRAWINGS)
+            for (const zone of coloringZones()[id])
+              colorZone(state, id, zone, palette[Math.floor(Math.random() * palette.length)], coloringZones());
+          window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
+        },
+        { title: 'Les neuf dessins coloriés (et les deux sceaux).' },
+      ],
+      [
+        'Cahier : tout effacer',
+        () => {
+          state.coloring = {};
+          delete state.seals.coloringFirst;
+          delete state.seals.coloringAll;
+          window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
+        },
+        { title: 'Les dessins redeviennent blancs (et les deux sceaux sont repris).' },
+      ],
+    );
   },
 };

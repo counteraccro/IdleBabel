@@ -41,6 +41,13 @@ export interface RareBookArt {
    * comme `passed`.
    */
   shown?: (page: number, state: GameState) => void;
+  /**
+   * Un clic en (x, y) sur la page `page` (repère de la texture), dans la bibliothèque seulement : true s'il a servi (un
+   * crayon pris, une zone coloriée) ; la double page est redessinée, et elle ne tourne pas.
+   */
+  press?: (page: number, x: number, y: number, state: GameState) => boolean;
+  /** Ce qui, en (x, y) sur la page `page`, se clique (`press`) : la main au survol. */
+  pointable?: (page: number, x: number, y: number) => boolean;
 }
 
 /** L'habillage d'un livre rare ; `tick` : couverture qui vit (le livre de débogage), propre à cet habillage. */
