@@ -79,6 +79,12 @@ export const weightPower = (lifted: number): number => Math.min(1, Number((ETHER
 /** Ce que les étoiles de l'Atlas allumées ont ôté au poids. */
 export const weightLifted = (state: GameState): number => sum(state, EFFECT.weight);
 
+/** La lecture en plus, en points de pour cent, que donneraient `gain` Éther de plus (sous le poids : moins d'un par Éther). */
+export const readingGain = (state: GameState, gain: number): number => {
+  const lifted = weightLifted(state);
+  return (etherCounted(state.etherReceived + gain, lifted) - etherCounted(state.etherReceived, lifted)) * ETHER_READING * 100;
+};
+
 /** L'Éther reçu depuis toujours, dépensé ou non : 1 % de lecture en plus chacun (méthodes et clics), sous le poids. */
 export const etherReading = (state: GameState): number => 1 + etherCounted(state.etherReceived, weightLifted(state)) * ETHER_READING;
 

@@ -4,7 +4,7 @@
   "close": "Refermer le livre",
   "confirm": {
     "title": "L'ouvrir ?",
-    "warning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions, phrases des méthodes. +{n} Éther, +{n} % de lecture.",
+    "warning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions, phrases des méthodes. +{ether} Éther, +{reading} % de lecture.",
     "stay": "Le reposer",
     "open": "Ouvrir"
   },

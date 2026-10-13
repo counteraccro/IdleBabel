@@ -4,7 +4,7 @@
   "close": "Close the book",
   "confirm": {
     "title": "Open it?",
-    "warning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions, method sentences. +{n} Ether, +{n}% reading.",
+    "warning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions, method sentences. +{ether} Ether, +{reading}% reading.",
     "stay": "Put it down",
     "open": "Open"
   },

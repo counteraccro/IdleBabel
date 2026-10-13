@@ -7,6 +7,7 @@ import { formatNumber } from '../../core/format';
 import { getLocale } from '../../i18n';
 import { saveGame } from '../../core/save';
 import { prestige, prestigeGain } from '../../systems/prestige';
+import { readingGain } from '../../systems/etherium';
 import type { GameState } from '../../core/state';
 
 /** L'adresse de la page de l'Etherium (ui/app.ts). */
@@ -67,7 +68,9 @@ export const openEtherium = (state: GameState, open: () => void, nudge: () => vo
       },
     ],
     'dim',
-    etherium.confirm.warning.replaceAll('{n}', formatNumber(gain, getLocale())),
+    etherium.confirm.warning
+      .replace('{ether}', formatNumber(gain, getLocale()))
+      .replace('{reading}', formatNumber(Math.round(readingGain(state, gain)), getLocale())),
     false,
   );
 };

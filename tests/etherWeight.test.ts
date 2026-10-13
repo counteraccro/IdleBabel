@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../src/core/state';
-import { etherCounted, etherReading, lightStar, pageOpen, starOpen } from '../src/systems/etherium';
+import { etherCounted, etherReading, lightStar, pageOpen, readingGain, starOpen } from '../src/systems/etherium';
 import { starById } from '../src/data/etheriumStars';
 
 const received = (ether: number) => {
@@ -39,5 +39,12 @@ describe('Le poids de la Bibliothèque', () => {
     state.etherReceived = 5000;
     expect(pageOpen(state, 'weight')).toBe(true);
     expect(starOpen(state, 'weight.w1')).toBe(true);
+  });
+
+  it('le prestige annonce la lecture en plus sous le poids, pas un pour cent par Éther', () => {
+    expect(readingGain(received(1000), 2000)).toBeCloseTo(2000);
+    const state = received(100_000);
+    expect(readingGain(state, 27_000)).toBeCloseTo((etherCounted(127_000, 0) - etherCounted(100_000, 0)) * 1);
+    expect(readingGain(state, 27_000)).toBeLessThan(27_000 / 10);
   });
 });
