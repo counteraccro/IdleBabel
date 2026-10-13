@@ -535,7 +535,7 @@
       "hinge": {
         "name": "La charnière",
         "value": "La Mimic",
-        "effect": "sa page s’ouvre (elle avale, on l’attrape, elle rend tout + 10 %)"
+        "effect": "elle avale, ralentit la lecture, puis rend tout + 10 %"
       },
       "eye": {
         "name": "L’œil",

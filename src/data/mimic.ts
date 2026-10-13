@@ -12,6 +12,12 @@ export const MIMIC_EVERY = 3600;
 export const MIMIC_BONUS = 0.1;
 
 /**
+ * Tant qu'elle est là, la lecture des méthodes ralentit du pourcentage qu'elle rendra en plus (l'auteur, 13/10), mais
+ * jamais de plus de moitié (avec les dents du bas, elle rend jusqu'à +110 %).
+ */
+export const MIMIC_SLOW_CAP = 0.5;
+
+/**
  * L'appareil photo de chaque salle (maquette .ai/maquette-mimic.html), en pixels de l'image (2688 × 1536) et en mètres :
  * le point de fuite de scenes.ts, l'œil à 1,6 m, une focale commune. x = vx + f·X/Z, y = vy + f·(œil − Y)/Z.
  */

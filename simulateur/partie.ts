@@ -29,7 +29,7 @@ import { keptMethods, methodSequence, SECRET, type Method } from './methodes';
 import { EFFECT, S } from '../src/data/etheriumStars';
 import { lit, product, relicBonus, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
-import { MIMIC_BONUS, MIMIC_EVERY } from '../src/data/mimic';
+import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../src/data/mimic';
 
 /** Une partie, du réveil au prestige. */
 export interface Run {
@@ -106,13 +106,16 @@ const allMethods = (run: Run): Method[] => [...run.methods, SECRET];
 /** L'Éther reçu depuis toujours : +1 % de lecture chacun (méthodes et feuille tournée à la main). */
 const etherReading = (run: Run): number => (PLAYER.etherReading ? 1 + ETHER_READING * run.life.etherReceived : 1);
 
-/** Ce que lit une méthode ; `away` : sans la Transe de la lettre (elle ne vient pas pendant l'absence). */
+/**
+ * Ce que lit une méthode ; `away` : sans la Transe de la lettre ni la Mimic (ni l'une ni l'autre ne vient pendant
+ * l'absence, et le bot attrape la Mimic avant de fermer le jeu). Tant qu'elle est là, la Mimic ralentit la lecture.
+ */
 const rate = (run: Run, method: Method, away = false): number =>
   method.pagesPerSecond *
   (method.gesture ? GESTURE_BONUS ** level(run, method.gesture) : 1) *
   product(run.life, EFFECT.readingRate) *
   etherReading(run) *
-  (away ? 1 : letterAverage(run).reading);
+  (away ? 1 : letterAverage(run).reading * mimicSlow(run.life));
 
 export const pagesPerSecond = (run: Run, away = false): number =>
   allMethods(run).reduce((total, method) => total + (run.owned[method.id] ?? 0) * rate(run, method, away), 0);
@@ -164,6 +167,8 @@ const mimicPresence = (life: Life): number => (lit(life, S.mimic) ? mimicStay() 
 /** Ce qu'elle rend en plus de ce qu'elle a avalé. */
 const mimicGives = (life: Life): number =>
   MIMIC_BONUS + Math.max(0, ...Object.entries(EFFECT.mimicGives).map(([id, v]) => (lit(life, id) ? v : 0)));
+/** La lecture des méthodes, en moyenne : −(ce qu'elle rendra en plus, 50 % au plus) pendant qu'elle est là. */
+const mimicSlow = (life: Life): number => 1 - mimicPresence(life) * Math.min(MIMIC_SLOW_CAP, mimicGives(life));
 
 /** Pages tournées pendant `seconds` : les trouvailles qu'elles cachent, la Connaissance et les phrases des méthodes. */
 const find = (run: Run, turned: number, away = false): void => {

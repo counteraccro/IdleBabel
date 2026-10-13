@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { MIMIC_EVERY } from '../src/data/mimic';
-import { advanceMimic, catchMimic, mimicBonusShare, mimicEvery, mimicSeconds, spawnMimic } from '../src/systems/mimic';
+import { advanceMimic, catchMimic, mimicBonusShare, mimicEvery, mimicReading, mimicSeconds, spawnMimic } from '../src/systems/mimic';
+import { pagesPerSecond } from '../src/systems/production';
 import { addKnowledge, gainFind } from '../src/systems/knowledge';
 import { lightStar } from '../src/systems/etherium';
 import { prestige } from '../src/systems/prestige';
@@ -90,5 +91,22 @@ describe('La Mimic', () => {
   it('le Sommeil léger ne se voit qu’une fois la Mimic débloquée', () => {
     expect(intuitionVisible(createInitialState('fr'), 'lightSleep')).toBe(false);
     expect(intuitionVisible(unlocked(), 'lightSleep')).toBe(true);
+  });
+});
+
+describe('La Mimic ralentit la lecture', () => {
+  it('du pourcentage qu’elle rendra en plus, tant qu’elle est là, jamais de plus de moitié', () => {
+    const state = unlocked();
+    state.tools.diagonal = 10;
+    const free = pagesPerSecond(state);
+    spawnMimic(state, () => 0.5, 1000);
+    expect(mimicReading(state)).toBeCloseTo(0.9);
+    expect(pagesPerSecond(state)).toBeCloseTo(free * 0.9);
+    state.etherium.push('mimic.b1');
+    expect(mimicReading(state)).toBeCloseTo(0.7);
+    state.etherium.push('mimic.b2', 'mimic.b3', 'mimic.b4', 'mimic.b5');
+    expect(mimicReading(state)).toBe(0.5);
+    catchMimic(state, 2000);
+    expect(pagesPerSecond(state)).toBeCloseTo(free);
   });
 });

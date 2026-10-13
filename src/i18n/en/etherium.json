@@ -535,7 +535,7 @@
       "hinge": {
         "name": "The hinge",
         "value": "The Mimic",
-        "effect": "its page opens (it swallows, you catch it, it gives it all back + 10%)"
+        "effect": "it swallows, slows reading, then gives it all back + 10%"
       },
       "eye": {
         "name": "The eye",

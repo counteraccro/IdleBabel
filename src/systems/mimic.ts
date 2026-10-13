@@ -1,4 +1,4 @@
-import { MIMIC_BONUS, MIMIC_EVERY } from '../data/mimic';
+import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../data/mimic';
 import { mimicComesFactor, mimicGivesBonus, mimicUnlocked } from './etherium';
 import type { GameState } from '../core/state';
 
@@ -15,6 +15,9 @@ export const mimicEvery = (state: GameState): number => MIMIC_EVERY / mimicComes
 
 /** Ce qu'elle rend en plus de ce qu'elle a avalé : 10 %, et les dents du bas. */
 export const mimicBonusShare = (state: GameState): number => MIMIC_BONUS + mimicGivesBonus(state);
+
+/** Ce qu'elle laisse de la lecture des méthodes : tant qu'elle est là, −(ce qu'elle rendra en plus), −50 % au plus. */
+export const mimicReading = (state: GameState): number => (mimicHere(state) ? 1 - Math.min(MIMIC_SLOW_CAP, mimicBonusShare(state)) : 1);
 
 /** Débogage : la prochaine avance la fait venir. */
 let called = false;
