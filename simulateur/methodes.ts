@@ -1,7 +1,7 @@
 import { METHOD_CHAIN, TOOLS } from '../src/data/tools';
 import { KEEPS, S } from '../src/data/etheriumStars';
 import { lit, type Life } from './vie';
-import { DIGITAL as DIGITAL_PROPOSED, DIGITAL_SECRET, PLAYER } from './config';
+import { DIGITAL as DIGITAL_PROPOSED, DIGITAL_KEEPS, DIGITAL_SECRET, PLAYER } from './config';
 
 /** Une méthode pour le simulateur : celles du jeu (src/data/tools.ts). */
 export interface Method {
@@ -63,4 +63,7 @@ export const methodSequence = (life: Life): Method[] => [
 ];
 
 /** Méthodes gardées par la Mémoire des méthodes (une étoile de la Ruche chacune). */
-export const keptMethods = (life: Life): string[] => Object.keys(KEEPS).filter((id) => lit(life, KEEPS[id]));
+export const keptMethods = (life: Life): string[] => {
+  const keeps: Record<string, string> = { ...KEEPS, ...DIGITAL_KEEPS };
+  return Object.keys(keeps).filter((id) => lit(life, keeps[id]));
+};

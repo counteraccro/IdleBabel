@@ -27,6 +27,11 @@ export const PLAYER = {
   /** L'Éther reçu fait lire plus vite (+1 % chacun, 07/10) ; --sans-ether-lecture pour s'en passer. */
   etherReading: true,
   /**
+   * Le poids de la Bibliothèque (idée de l'auteur, 13/10 ; --poids) : au-delà de WEIGHT.from Éther reçus, chacun compte
+   * de moins en moins dans la lecture de l'Éther ; les étoiles de WEIGHT_STARS l'allègent.
+   */
+  weight: false,
+  /**
    * Quand la phrase de la première méthode Automatique se trouve : 'échelle', comme toutes les méthodes (l'Échelle à
    * 25 exemplaires, METHOD_GATE) ; 'âge', dès l'Âge acheté (le prix seul fait le verrou).
    */
@@ -112,3 +117,50 @@ export const DIGITAL_GESTURES: Record<string, number> = {
   crawler: 25.6e6,
   algorithm: 51.2e6,
 };
+
+/**
+ * Les étoiles de l'Âge Numérique (proposées le 13/10 ; pas dans le jeu) : l'alvéole Numérique de la Ruche (le Bit, payant,
+ * puis la phrase gardée de chaque méthode, prix ×10 l'alvéole Automatique) et la page du Minitel (la prise, puis l'écran :
+ * ×lecture des méthodes Numériques, et le clavier : ×Connaissance). Elles s'ouvrent avec l'étoile de l'Âge.
+ */
+export const DIGITAL_STARS: { id: string; page: string; after?: string; cost: number }[] = [
+  { id: 'memory.n0', page: 'memory', after: 'memory.a5', cost: 100 },
+  { id: 'memory.n1', page: 'memory', after: 'memory.n0', cost: 100 },
+  { id: 'memory.n2', page: 'memory', after: 'memory.n1', cost: 200 },
+  { id: 'memory.n3', page: 'memory', after: 'memory.n2', cost: 400 },
+  { id: 'memory.n4', page: 'memory', after: 'memory.n3', cost: 800 },
+  { id: 'memory.n5', page: 'memory', after: 'memory.n4', cost: 1600 },
+  { id: 'screen.plug', page: 'screen', cost: 1000 },
+  { id: 'screen.s1', page: 'screen', after: 'screen.plug', cost: 2000 },
+  { id: 'screen.s2', page: 'screen', after: 'screen.s1', cost: 5000 },
+  { id: 'screen.s3', page: 'screen', after: 'screen.s2', cost: 10000 },
+  { id: 'screen.s4', page: 'screen', after: 'screen.s3', cost: 25000 },
+  { id: 'screen.k1', page: 'screen', after: 'screen.plug', cost: 2000 },
+  { id: 'screen.k2', page: 'screen', after: 'screen.k1', cost: 5000 },
+  { id: 'screen.k3', page: 'screen', after: 'screen.k2', cost: 10000 },
+  { id: 'screen.k4', page: 'screen', after: 'screen.k3', cost: 25000 },
+];
+/** Le Bit, l'étoile de départ de l'alvéole Numérique : son souvenir flou (comme la Page Cornée). */
+export const BIT_STAR = 'memory.n0';
+/** La phrase gardée au prestige de chaque méthode Numérique. */
+export const DIGITAL_KEEPS: Record<string, string> = {
+  minitel: 'memory.n1',
+  computer: 'memory.n2',
+  search: 'memory.n3',
+  crawler: 'memory.n4',
+  algorithm: 'memory.n5',
+};
+/** ×lecture des méthodes Numériques (la prise et l'écran), ×Connaissance (le clavier). */
+export const DIGITAL_EFFECT = {
+  reading: { 'screen.plug': 1.1, 'screen.s1': 1.25, 'screen.s2': 1.25, 'screen.s3': 1.5, 'screen.s4': 2 },
+  knowledge: { 'screen.k1': 1.25, 'screen.k2': 1.5, 'screen.k3': 1.5, 'screen.k4': 2 },
+};
+
+/**
+ * Le poids de la Bibliothèque (--poids) : la lecture de l'Éther compte E Éther jusqu'à `from`, puis
+ * from × (E / from)^exposant ; l'exposant part de `power` et chaque étoile de WEIGHT_STARS l'élève de `step` (1 : levé).
+ */
+export const WEIGHT = { from: 5000, power: 0.3, step: 0.1 };
+export const WEIGHT_STARS: { id: string; page: string; after?: string; cost: number }[] = [10_000, 25_000, 60_000, 150_000, 400_000, 1_000_000, 2_500_000].map(
+  (cost, i) => ({ id: `weight.w${i + 1}`, page: 'weight', after: i ? `weight.w${i}` : undefined, cost }),
+);

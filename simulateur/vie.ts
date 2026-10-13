@@ -1,6 +1,6 @@
 import { afterLit, CLOSED, EFFECT, RELIC_BRANCH, S, STARS, neededFor, type PageId } from '../src/data/etheriumStars';
 import { relicById } from '../src/data/relics';
-import { PLAYER } from './config';
+import { DIGITAL_STARS, PLAYER, WEIGHT_STARS } from './config';
 
 /** Ce qui survit au prestige : les pages à vie, l'Éther, les étoiles allumées, la Page Cornée une fois retrouvée. */
 export interface Life {
@@ -77,8 +77,8 @@ export const sum = (life: Life, effect: Record<string, number>): number =>
  * Les étoiles qu'on peut allumer maintenant, comme en jeu : pas fermées, leur étoile d'avant est allumée (et l'Âge, pour
  * l'alvéole Automatique ; l'Est de l'Exploration, pour la Mimic).
  */
-const open = (life: Life) =>
-  STARS.filter(
+const open = (life: Life): Buyable[] => [
+  ...STARS.filter(
     (star) =>
       !life.stars.has(star.id) &&
       PLAYER.pages.includes(star.page) &&
@@ -86,10 +86,21 @@ const open = (life: Life) =>
       afterLit(star, (id) => life.stars.has(id)) &&
       (!neededFor(star.id) || life.stars.has(neededFor(star.id)!)) &&
       (PLAYER.cornee || star.id !== S.cornee),
-  );
+  ),
+  // Celles qui allègent le poids de la Bibliothèque (--poids).
+  ...(PLAYER.weight
+    ? WEIGHT_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after)))
+    : []),
+  // Celles de l'Âge Numérique (proposées : simulateur/config.ts), une fois l'Âge acheté.
+  ...(life.stars.has('ages.quantum')
+    ? DIGITAL_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after)))
+    : []),
+];
+
+type Buyable = { id: string; cost: number };
 
 /** Son prix ; l'Âge Numérique, celui qu'essaie le simulateur (PLAYER.digitalAge). */
-const starCost = (star: (typeof STARS)[number]): number => (star.id === 'ages.quantum' ? PLAYER.digitalAge : star.cost);
+const starCost = (star: Buyable): number => (star.id === 'ages.quantum' ? PLAYER.digitalAge : star.cost);
 
 /** Au réveil : le bot prend l'Âge Automatique d'abord, puis l'étoile la moins chère qu'il peut s'offrir, tant qu'il peut. */
 export const spendEther = (life: Life): string[] => {
@@ -140,4 +151,10 @@ export const litPerPage = (life: Life): string =>
       (page) =>
         `${page} ${STARS.filter((s) => s.page === page && life.stars.has(s.id)).length}/${STARS.filter((s) => s.page === page).length}`,
     )
+    .concat(
+      PLAYER.digitalAge > 0
+        ? [`numérique ${DIGITAL_STARS.filter((s) => life.stars.has(s.id)).length}/${DIGITAL_STARS.length}`]
+        : [],
+    )
+    .concat(PLAYER.weight ? [`poids ${WEIGHT_STARS.filter((s) => life.stars.has(s.id)).length}/${WEIGHT_STARS.length}`] : [])
     .join(', ');

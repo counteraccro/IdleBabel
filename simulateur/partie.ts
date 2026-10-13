@@ -23,7 +23,7 @@ import {
   TARGET_SHARE,
 } from '../src/data/knowledge';
 import { ETHER_READING } from '../src/data/etherium';
-import { PLAYER } from './config';
+import { BIT_STAR, DIGITAL_EFFECT, PLAYER, WEIGHT, WEIGHT_STARS } from './config';
 import { sealCount } from './sceaux';
 import { BIT, DIGITAL_AGE, keptMethods, methodSequence, SECRET, type Method } from './methodes';
 import { EFFECT, S } from '../src/data/etheriumStars';
@@ -102,13 +102,21 @@ export const newRun = (life: Life): Run => {
 
 const level = (run: Run, id: string): number => run.levels[id] ?? 0;
 
-/** Le Bit se cherche dès l'Âge Numérique acheté (son étoile n'existe pas encore). */
-const bitSought = (life: Life): boolean => PLAYER.bit && PLAYER.digitalAge > 0 && lit(life, DIGITAL_AGE);
+/** Le Bit se cherche une fois son étoile allumée (la 1re de l'alvéole Numérique de la Ruche). */
+const bitSought = (life: Life): boolean => PLAYER.bit && PLAYER.digitalAge > 0 && lit(life, BIT_STAR);
 
 const allMethods = (run: Run): Method[] => [...run.methods, SECRET, ...(bitSought(run.life) ? [BIT] : [])];
 
 /** L'Éther reçu depuis toujours : +1 % de lecture chacun (méthodes et feuille tournée à la main). */
-const etherReading = (run: Run): number => (PLAYER.etherReading ? 1 + ETHER_READING * run.life.etherReceived : 1);
+const etherReading = (run: Run): number => (PLAYER.etherReading ? 1 + ETHER_READING * etherCounted(run.life) : 1);
+
+/** L'Éther reçu tel que la lecture le compte : tout, ou moins au-delà de WEIGHT.from avec le poids (--poids). */
+const etherCounted = (life: Life): number => {
+  const received = life.etherReceived;
+  if (!PLAYER.weight || received <= WEIGHT.from) return received;
+  const power = Math.min(1, WEIGHT.power + WEIGHT.step * WEIGHT_STARS.filter((star) => life.stars.has(star.id)).length);
+  return WEIGHT.from * (received / WEIGHT.from) ** power;
+};
 
 /**
  * Ce que lit une méthode ; `away` : sans la Transe de la lettre ni la Mimic (ni l'une ni l'autre ne vient pendant
@@ -118,6 +126,7 @@ const rate = (run: Run, method: Method, away = false): number =>
   method.pagesPerSecond *
   (method.gesture ? GESTURE_BONUS ** level(run, method.gesture) : 1) *
   product(run.life, EFFECT.readingRate) *
+  (method.age === DIGITAL_AGE ? product(run.life, DIGITAL_EFFECT.reading) : 1) *
   etherReading(run) *
   (away ? 1 : letterAverage(run).reading * mimicSlow(run.life));
 
@@ -181,7 +190,7 @@ const find = (run: Run, turned: number, away = false): void => {
   const finds = turned * chance;
   // La Loupe : des connaissances garanties en plus, à chaque trouvaille.
   const found =
-    finds * (product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0));
+    finds * (product(run.life, EFFECT.knowledge) * product(run.life, DIGITAL_EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0));
   const mimicBonus = away ? 0 : found * mimicGives(run.life) * mimicPresence(run.life);
   run.life.mimic.bonus += mimicBonus;
   const knowledge = found + mimicBonus;

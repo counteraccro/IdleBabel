@@ -10,6 +10,7 @@
  *   npm run simule -- --lettres=0              sans la lettre qui s'échappe (0,5 : le bot en attrape une sur deux)
  *   npm run simule -- --numerique=500          l'Âge Numérique proposé (simulateur/config.ts), son étoile à 500 Éther
  *   npm run simule -- --numerique=1500 --sans-bit sans le Bit, méthode secrète proposée de l'Âge Numérique
+ *   npm run simule -- --poids                  le poids de la Bibliothèque (lecture de l'Éther freinée au-delà de 5 000)
  *   npm run simule -- --lecture=auto:0.1       la lecture des méthodes d'un Âge multipliée (manual, auto, num)
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
  */
@@ -33,6 +34,7 @@ if (option('sans-cornee') !== undefined) PLAYER.cornee = false;
 if (option('partie-max')) PLAYER.maxRunHours = Number(option('partie-max'));
 if (option('sceaux')) PLAYER.seals = Number(option('sceaux'));
 if (option('sans-ether-lecture') !== undefined) PLAYER.etherReading = false;
+if (option('poids') !== undefined) PLAYER.weight = true;
 if (option('lettres') !== undefined) PLAYER.letters = Number(option('lettres'));
 if (option('numerique')) PLAYER.digitalAge = Number(option('numerique'));
 if (option('sans-bit') !== undefined) PLAYER.bit = false;
