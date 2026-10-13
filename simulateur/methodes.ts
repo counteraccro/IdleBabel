@@ -1,7 +1,7 @@
 import { METHOD_CHAIN, TOOLS } from '../src/data/tools';
 import { KEEPS, S } from '../src/data/etheriumStars';
 import { lit, type Life } from './vie';
-import { DIGITAL as DIGITAL_PROPOSED, PLAYER } from './config';
+import { DIGITAL as DIGITAL_PROPOSED, DIGITAL_SECRET, PLAYER } from './config';
 
 /** Une méthode pour le simulateur : celles du jeu (src/data/tools.ts). */
 export interface Method {
@@ -45,6 +45,9 @@ export const DIGITAL: Method[] = DIGITAL_PROPOSED.map((m) => ({
   pagesPerSecond: m.pagesPerSecond * PLAYER.reading.num,
   age: DIGITAL_AGE,
 }));
+
+/** Le Bit, méthode secrète de l'Âge Numérique (proposé : simulateur/config.ts). */
+export const BIT: Method = { ...DIGITAL_SECRET, pagesPerSecond: DIGITAL_SECRET.pagesPerSecond * PLAYER.reading.num, age: DIGITAL_AGE };
 
 /** Les méthodes dans l'ordre où leurs phrases se trouvent, selon les Âges achetés. */
 export const methodSequence = (life: Life): Method[] => [

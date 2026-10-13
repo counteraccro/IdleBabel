@@ -9,6 +9,8 @@ export interface Life {
   etherFree: number;
   stars: Set<string>;
   secretFound: boolean;
+  /** Le Bit, une fois retrouvé (comme la Page Cornée). */
+  bitFound: boolean;
   /** Secondes écoulées depuis le début, absences comprises. */
   clock: number;
   prestiges: number;
@@ -39,6 +41,7 @@ export const newLife = (): Life => ({
   etherFree: 0,
   stars: new Set(),
   secretFound: false,
+  bitFound: false,
   clock: 0,
   prestiges: 0,
   clicks: 0,

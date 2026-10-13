@@ -58,6 +58,8 @@ export const PLAYER = {
    * (--numerique=500). Ses méthodes : DIGITAL ci-dessous.
    */
   digitalAge: 0,
+  /** Le Bit, méthode secrète de l'Âge Numérique (proposé le 13/10) : --sans-bit pour s'en passer. */
+  bit: true,
   /**
    * Lecture des méthodes de chaque Âge, multipliée (essais du 13/10 : adoucir le gain d'un Âge à l'autre) :
    * --lecture=auto:0.1,num:0.01 ; 1 partout, les chiffres du jeu.
@@ -81,7 +83,7 @@ for (const part of readingOption?.split(',') ?? []) {
 
 /**
  * Les méthodes de l'Âge Numérique (liste choisie par l'auteur le 13/10 ; prix et lectures proposés, à simuler) : prix,
- * pages/s, morceaux de la phrase. Essai C validé par l'auteur (13/10). Pas encore d'intuitions ni de secrète (le Bit).
+ * pages/s, morceaux de la phrase. Essai C validé par l'auteur (13/10). Pas encore d'intuitions.
  */
 export const DIGITAL = [
   { id: 'minitel', baseCost: 6e15, pagesPerSecond: 2.5e9, pieces: 8 },
@@ -90,3 +92,10 @@ export const DIGITAL = [
   { id: 'crawler', baseCost: 3.2e18, pagesPerSecond: 4e10, pieces: 5 },
   { id: 'algorithm', baseCost: 2.5e19, pagesPerSecond: 1e11, pieces: 5 },
 ];
+
+/**
+ * Le Bit, méthode secrète de l'Âge Numérique (proposé le 13/10, sur le modèle de la Page Cornée : prix entre la 2e et
+ * la 3e méthode, lecture entre la 4e et la 5e). Son étoile n'existe pas encore : il se cherche dès l'Âge acheté.
+ * « Un, zéro. Toute la Bibliothèque tient dans ces deux signes. »
+ */
+export const DIGITAL_SECRET = { id: 'bit', baseCost: 2.56e17, pagesPerSecond: 6.4e10, pieces: 5 };

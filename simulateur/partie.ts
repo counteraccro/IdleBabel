@@ -25,7 +25,7 @@ import {
 import { ETHER_READING } from '../src/data/etherium';
 import { PLAYER } from './config';
 import { sealCount } from './sceaux';
-import { keptMethods, methodSequence, SECRET, type Method } from './methodes';
+import { BIT, DIGITAL_AGE, keptMethods, methodSequence, SECRET, type Method } from './methodes';
 import { EFFECT, S } from '../src/data/etheriumStars';
 import { lit, product, relicBonus, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
@@ -76,6 +76,7 @@ export const newRun = (life: Life): Run => {
     firstBought: {},
   };
   if (life.secretFound) run.unlocked.add(SECRET.id);
+  if (life.bitFound) run.unlocked.add(BIT.id);
   // La Porte : des méthodes au réveil (et leur phrase, sans quoi elles ne serviraient à rien).
   const give = (id: string, count: number): void => {
     if (count < 1) return;
@@ -101,7 +102,10 @@ export const newRun = (life: Life): Run => {
 
 const level = (run: Run, id: string): number => run.levels[id] ?? 0;
 
-const allMethods = (run: Run): Method[] => [...run.methods, SECRET];
+/** Le Bit se cherche dès l'Âge Numérique acheté (son étoile n'existe pas encore). */
+const bitSought = (life: Life): boolean => PLAYER.bit && PLAYER.digitalAge > 0 && lit(life, DIGITAL_AGE);
+
+const allMethods = (run: Run): Method[] => [...run.methods, SECRET, ...(bitSought(run.life) ? [BIT] : [])];
 
 /** L'Éther reçu depuis toujours : +1 % de lecture chacun (méthodes et feuille tournée à la main). */
 const etherReading = (run: Run): number => (PLAYER.etherReading ? 1 + ETHER_READING * run.life.etherReceived : 1);
@@ -151,6 +155,7 @@ const progress = (run: Run, method: Method, found: number): void => {
     run.unlocked.add(method.id);
   }
   if (method === SECRET && run.unlocked.has(SECRET.id)) run.life.secretFound = true;
+  if (method === BIT && run.unlocked.has(BIT.id)) run.life.bitFound = true;
 };
 
 /**
@@ -195,11 +200,14 @@ const find = (run: Run, turned: number, away = false): void => {
   const towardTarget = turned * (Math.min(1, chance) * (1 - duplicates) * share + Math.max(0, chance - 1) * EXTRA_FIND_SHARES.method);
   const current = target(run);
   // Comme dans le jeu : la phrase de la Page Cornée (souvenir flou) partage à parts égales les trouvailles de la
-  // méthode en cours ; seule, chacune prend tout.
-  const secret = lit(run.life, S.cornee) && !run.unlocked.has(SECRET.id);
-  const part = current && secret ? towardTarget / 2 : towardTarget;
+  // méthode en cours ; seule, chacune prend tout. Le Bit pareil (proposé), à parts égales avec elles.
+  const secrets = [
+    ...(lit(run.life, S.cornee) && !run.unlocked.has(SECRET.id) ? [SECRET] : []),
+    ...(bitSought(run.life) && !run.unlocked.has(BIT.id) ? [BIT] : []),
+  ];
+  const part = towardTarget / ((current ? 1 : 0) + secrets.length || 1);
   if (current) progress(run, current, part);
-  if (secret) progress(run, SECRET, part);
+  for (const secret of secrets) progress(run, secret, part);
 };
 
 const gain = (run: Run, pages: number): void => {

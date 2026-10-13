@@ -9,6 +9,7 @@
  *   npm run simule -- --partie-max=96          parties de 96 heures de jeu au plus (absences non comprises)
  *   npm run simule -- --lettres=0              sans la lettre qui s'échappe (0,5 : le bot en attrape une sur deux)
  *   npm run simule -- --numerique=500          l'Âge Numérique proposé (simulateur/config.ts), son étoile à 500 Éther
+ *   npm run simule -- --numerique=1500 --sans-bit sans le Bit, méthode secrète proposée de l'Âge Numérique
  *   npm run simule -- --lecture=auto:0.1       la lecture des méthodes d'un Âge multipliée (manual, auto, num)
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
  */
@@ -34,6 +35,7 @@ if (option('sceaux')) PLAYER.seals = Number(option('sceaux'));
 if (option('sans-ether-lecture') !== undefined) PLAYER.etherReading = false;
 if (option('lettres') !== undefined) PLAYER.letters = Number(option('lettres'));
 if (option('numerique')) PLAYER.digitalAge = Number(option('numerique'));
+if (option('sans-bit') !== undefined) PLAYER.bit = false;
 // L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
 if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
 
@@ -98,6 +100,7 @@ for (let number = 1; life.clock < end; number++) {
     AUTOMATIC.map((method) => short(run.firstBought[method.id])).join(' · '),
     // Pareil pour l'Âge Numérique (proposé).
     DIGITAL.map((method) => short(run.firstBought[method.id])).join(' · '),
+    short(run.firstBought.bit),
     String(sealCount(run)),
     gain > 0 ? `+${gain}` : '(en cours)',
   ];
@@ -124,6 +127,7 @@ const header = [
   '1re Auto',
   'Auto 1 · 2 · 3 · 4 · 5',
   'Num 1 · 2 · 3 · 4 · 5',
+  'Bit',
   'sceaux',
   'Éther',
   'total',
