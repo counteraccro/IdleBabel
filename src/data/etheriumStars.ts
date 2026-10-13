@@ -172,7 +172,7 @@ export const starById = (id: string): Star | undefined => STARS.find((star) => s
 
 /**
  * Étoiles fermées, tant que ce qu'elles donnent n'existe pas (revue du 08/10, décision de l'auteur) : les Âges
- * Quantique, Dimensionnel et Infini, et la Goutte (la méthode secrète de l'Âge Automatique, mise de côté). Elles se
+ * Numérique (id 'quantum' : l'Âge Quantique jusqu'au 13/10, renommé par l'auteur), Dimensionnel et Infini, et la Goutte (la méthode secrète de l'Âge Automatique, mise de côté). Elles se
  * voient sans dire leur nom, ne s'allument pas, et les sceaux de l'Etherium ne les comptent pas.
  */
 export const CLOSED: ReadonlySet<string> = new Set([
