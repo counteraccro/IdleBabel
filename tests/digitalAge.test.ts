@@ -8,7 +8,8 @@ import { sceneOfAge } from '../src/scene/scenes';
 import { AUTOMATIC_AGE, DIGITAL_AGE, METHOD_CHAIN, TOOLS } from '../src/data/tools';
 import { SEALS } from '../src/data/seals';
 import { starById } from '../src/data/etheriumStars';
-import { starOpen } from '../src/systems/etherium';
+import { knowledgePerFind, pageOpen, starOpen } from '../src/systems/etherium';
+import { toolRate } from '../src/systems/production';
 import { LOCALES } from '../src/i18n/locales';
 
 const DIGITAL = ['minitel', 'computer', 'search', 'crawler', 'algorithm'];
@@ -78,6 +79,24 @@ describe('L’Âge Numérique', () => {
     expect(starOpen(state, 'memory.n0')).toBe(true);
     expect(starOpen(state, 'memory.n1')).toBe(false);
     expect([0, 1, 2, 3, 4, 5].map((i) => starById(`memory.n${i}`)?.cost)).toEqual([100, 100, 200, 400, 800, 1600]);
+  });
+
+  it('la page du Minitel attend l’Âge ; l’écran fait lire les machines, pas les autres ; le clavier, la Connaissance', () => {
+    const state = game(false);
+    state.ether = 1e6;
+    expect(pageOpen(state, 'screen')).toBe(false);
+    expect(starOpen(state, 'screen.plug')).toBe(false);
+    state.etherium.push(DIGITAL_AGE);
+    expect(pageOpen(state, 'screen')).toBe(true);
+    const minitel = toolRate(state, 'minitel');
+    const clock = toolRate(state, 'clock');
+    const knowledge = knowledgePerFind(state);
+    state.etherium.push('screen.plug', 'screen.s1', 'screen.k1');
+    expect(toolRate(state, 'minitel')).toBeCloseTo(minitel * 1.1 * 1.25);
+    expect(toolRate(state, 'clock')).toBeCloseTo(clock);
+    expect(knowledgePerFind(state)).toBeCloseTo(knowledge * 1.25);
+    expect(starOpen(state, 'screen.s2')).toBe(true);
+    expect(starOpen(state, 'screen.k2')).toBe(true);
   });
 
   it('une étoile de l’alvéole garde la phrase de sa machine au prestige', () => {

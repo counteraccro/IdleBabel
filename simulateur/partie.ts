@@ -23,7 +23,7 @@ import {
   TARGET_SHARE,
 } from '../src/data/knowledge';
 import { ETHER_READING } from '../src/data/etherium';
-import { DIGITAL_EFFECT, PLAYER } from './config';
+import { PLAYER } from './config';
 import { etherCounted as weighed } from '../src/systems/etherium';
 import { sealCount } from './sceaux';
 import { BIT, DIGITAL_AGE, keptMethods, methodSequence, SECRET, type Method } from './methodes';
@@ -124,7 +124,7 @@ const rate = (run: Run, method: Method, away = false): number =>
   method.pagesPerSecond *
   (method.gesture ? GESTURE_BONUS ** level(run, method.gesture) : 1) *
   product(run.life, EFFECT.readingRate) *
-  (method.age === DIGITAL_AGE ? product(run.life, DIGITAL_EFFECT.reading) : 1) *
+  (method.age === DIGITAL_AGE ? product(run.life, EFFECT.digitalReading) : 1) *
   etherReading(run) *
   (away ? 1 : letterAverage(run).reading * mimicSlow(run.life));
 
@@ -188,9 +188,7 @@ const find = (run: Run, turned: number, away = false): void => {
   const finds = turned * chance;
   // La Loupe : des connaissances garanties en plus, à chaque trouvaille.
   const found =
-    finds *
-    (product(run.life, EFFECT.knowledge) * product(run.life, DIGITAL_EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) +
-      relicBonus(run.life, 'loupe', 0));
+    finds * (product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0));
   const mimicBonus = away ? 0 : found * mimicGives(run.life) * mimicPresence(run.life);
   run.life.mimic.bonus += mimicBonus;
   const knowledge = found + mimicBonus;

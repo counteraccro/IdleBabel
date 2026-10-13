@@ -35,7 +35,8 @@
     "weight": {
       "name": "Le Poids",
       "figure": "L’Atlas",
-      "description": "Chaque Éther pèse un peu plus que le précédent."
+      "description": "Chaque Éther pèse un peu plus que le précédent.",
+      "locked": "Cette page attend\nque l’Éther pèse."
     },
     "hands": {
       "name": "Mains",
@@ -91,6 +92,12 @@
       "name": "Les reliques",
       "figure": "Le Cabinet",
       "description": "Quelqu’un est passé avant moi."
+    },
+    "screen": {
+      "name": "Numérique",
+      "figure": "Le Minitel",
+      "description": "L’écran s’allume quand je m’approche.",
+      "locked": "Cette page attend\nun Âge nouveau."
     }
   },
   "stars": {
@@ -690,6 +697,53 @@
         "value": "Poids levé :",
         "effect": "tout l’Éther reçu compte (puissance 1)"
       }
+    },
+    "screen": {
+      "plug": {
+        "name": "La prise",
+        "value": "×1,1",
+        "effect": "lecture des méthodes Numériques"
+      },
+      "s1": {
+        "name": "L’écran 1",
+        "value": "×1,25",
+        "effect": "lecture des méthodes Numériques"
+      },
+      "s2": {
+        "name": "L’écran 2",
+        "value": "×1,25",
+        "effect": "lecture des méthodes Numériques"
+      },
+      "s3": {
+        "name": "L’écran 3",
+        "value": "×1,5",
+        "effect": "lecture des méthodes Numériques"
+      },
+      "s4": {
+        "name": "L’écran 4",
+        "value": "×2",
+        "effect": "lecture des méthodes Numériques"
+      },
+      "k1": {
+        "name": "La touche 1",
+        "value": "×1,25",
+        "effect": "Connaissance par trouvaille"
+      },
+      "k2": {
+        "name": "La touche 2",
+        "value": "×1,5",
+        "effect": "Connaissance par trouvaille"
+      },
+      "k3": {
+        "name": "La touche 3",
+        "value": "×1,5",
+        "effect": "Connaissance par trouvaille"
+      },
+      "k4": {
+        "name": "La touche 4",
+        "value": "×2",
+        "effect": "Connaissance par trouvaille"
+      }
     }
   },
   "keep": "sa phrase reste au prestige",
@@ -709,7 +763,6 @@
   "contentsLine": "Ce que l’Éther a éclairé.",
   "offered": "offerte",
   "locked": "Cette page attend\nque l’Exploration la trouve.",
-  "lockedWeight": "Cette page attend\nque l’Éther pèse.",
   "compass": {
     "east": "E",
     "west": "O",

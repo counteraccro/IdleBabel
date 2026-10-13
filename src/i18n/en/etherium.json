@@ -35,7 +35,8 @@
     "weight": {
       "name": "The Weight",
       "figure": "Atlas",
-      "description": "Each Ether weighs a little more than the one before."
+      "description": "Each Ether weighs a little more than the one before.",
+      "locked": "This page is waiting\nfor the Ether to weigh."
     },
     "hands": {
       "name": "Hands",
@@ -91,6 +92,12 @@
       "name": "Relics",
       "figure": "The Cabinet",
       "description": "Someone came here before me."
+    },
+    "screen": {
+      "name": "Digital",
+      "figure": "The Minitel",
+      "description": "The screen lights up when I come near.",
+      "locked": "This page is waiting\nfor a new Age."
     }
   },
   "stars": {
@@ -690,6 +697,53 @@
         "value": "Weight lifted:",
         "effect": "all Ether received counts (power 1)"
       }
+    },
+    "screen": {
+      "plug": {
+        "name": "The plug",
+        "value": "×1.1",
+        "effect": "reading of the Digital methods"
+      },
+      "s1": {
+        "name": "The screen 1",
+        "value": "×1.25",
+        "effect": "reading of the Digital methods"
+      },
+      "s2": {
+        "name": "The screen 2",
+        "value": "×1.25",
+        "effect": "reading of the Digital methods"
+      },
+      "s3": {
+        "name": "The screen 3",
+        "value": "×1.5",
+        "effect": "reading of the Digital methods"
+      },
+      "s4": {
+        "name": "The screen 4",
+        "value": "×2",
+        "effect": "reading of the Digital methods"
+      },
+      "k1": {
+        "name": "The key 1",
+        "value": "×1.25",
+        "effect": "Knowledge per find"
+      },
+      "k2": {
+        "name": "The key 2",
+        "value": "×1.5",
+        "effect": "Knowledge per find"
+      },
+      "k3": {
+        "name": "The key 3",
+        "value": "×1.5",
+        "effect": "Knowledge per find"
+      },
+      "k4": {
+        "name": "The key 4",
+        "value": "×2",
+        "effect": "Knowledge per find"
+      }
     }
   },
   "keep": "its sentence stays through prestige",
@@ -709,7 +763,6 @@
   "contentsLine": "What the Ether has lit.",
   "offered": "given",
   "locked": "This page is waiting\nfor Exploration to find it.",
-  "lockedWeight": "This page is waiting\nfor the Ether to weigh.",
   "compass": {
     "east": "E",
     "west": "W",

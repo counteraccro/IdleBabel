@@ -59,6 +59,7 @@ export const PLAYER = {
     'explore',
     'mimic',
     'relics',
+    'screen',
   ] as PageId[],
   /** La Page Cornée (1re étoile de la Ruche) ; --sans-cornee pour s'en passer (et donc de toute la Ruche). */
   cornee: true,
@@ -96,25 +97,3 @@ for (const part of readingOption?.split(',') ?? []) {
   const [age, factor] = part.split(':');
   PLAYER.reading[age as keyof typeof PLAYER.reading] = Number(factor);
 }
-
-/**
- * Les étoiles de l'Âge Numérique pas encore dans le jeu (validées le 13/10) : la page du Minitel (la prise, puis l'écran :
- * ×lecture des méthodes Numériques, et le clavier : ×Connaissance). Elles s'ouvrent avec l'étoile de l'Âge. L'alvéole
- * Numérique de la Ruche (le Bit, puis la phrase gardée de chaque machine) vient du jeu.
- */
-export const DIGITAL_STARS: { id: string; page: string; after?: string; cost: number }[] = [
-  { id: 'screen.plug', page: 'screen', cost: 1000 },
-  { id: 'screen.s1', page: 'screen', after: 'screen.plug', cost: 2000 },
-  { id: 'screen.s2', page: 'screen', after: 'screen.s1', cost: 5000 },
-  { id: 'screen.s3', page: 'screen', after: 'screen.s2', cost: 10000 },
-  { id: 'screen.s4', page: 'screen', after: 'screen.s3', cost: 25000 },
-  { id: 'screen.k1', page: 'screen', after: 'screen.plug', cost: 2000 },
-  { id: 'screen.k2', page: 'screen', after: 'screen.k1', cost: 5000 },
-  { id: 'screen.k3', page: 'screen', after: 'screen.k2', cost: 10000 },
-  { id: 'screen.k4', page: 'screen', after: 'screen.k3', cost: 25000 },
-];
-/** ×lecture des méthodes Numériques (la prise et l'écran), ×Connaissance (le clavier). */
-export const DIGITAL_EFFECT = {
-  reading: { 'screen.plug': 1.1, 'screen.s1': 1.25, 'screen.s2': 1.25, 'screen.s3': 1.5, 'screen.s4': 2 },
-  knowledge: { 'screen.k1': 1.25, 'screen.k2': 1.5, 'screen.k3': 1.5, 'screen.k4': 2 },
-};

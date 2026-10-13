@@ -1,6 +1,6 @@
-import { TOOLS, type ToolId } from '../data/tools';
+import { DIGITAL_AGE, TOOLS, type ToolId } from '../data/tools';
 import { gestureMultiplier } from './technologies';
-import { etherReading, readingMultiplier } from './etherium';
+import { digitalMultiplier, etherReading, readingMultiplier } from './etherium';
 import { readingBoon } from './boons';
 import { relicReading } from './relics';
 import { mimicReading } from './mimic';
@@ -15,17 +15,22 @@ export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== u
 
 /**
  * Ce que lit une méthode, pour chaque exemplaire : sa base, doublée par son intuition à chaque niveau, et
- * multipliée par la Lecture de l'Etherium, par l'Éther reçu, par la Transe de la lettre (en cours), par le Sablier
- * (s'il agit) et ralentie par la Mimic (si elle est là).
+ * multipliée par la Lecture de l'Etherium (et le Minitel, pour celles de l'Âge Numérique), par l'Éther reçu, par la
+ * Transe de la lettre (en cours), par le Sablier (s'il agit) et ralentie par la Mimic (si elle est là).
  */
-export const toolRate = (state: GameState, id: ToolId): number =>
-  TOOLS.find((tool) => tool.id === id)!.pagesPerSecond *
-  gestureMultiplier(state, id) *
-  readingMultiplier(state) *
-  etherReading(state) *
-  readingBoon(state) *
-  relicReading(state) *
-  mimicReading(state);
+export const toolRate = (state: GameState, id: ToolId): number => {
+  const tool = TOOLS.find((candidate) => candidate.id === id)!;
+  return (
+    tool.pagesPerSecond *
+    gestureMultiplier(state, id) *
+    readingMultiplier(state) *
+    (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1) *
+    etherReading(state) *
+    readingBoon(state) *
+    relicReading(state) *
+    mimicReading(state)
+  );
+};
 
 /** Production : celle de chaque méthode (toolRate). */
 export const pagesPerSecond = (state: GameState): number =>

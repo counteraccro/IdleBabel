@@ -92,6 +92,8 @@ export const etherReading = (state: GameState): number => 1 + etherCounted(state
 
 /** Le Livre ouvert (dos, page de gauche) : les pages/s de toutes les méthodes. */
 export const readingMultiplier = (state: GameState): number => product(state, EFFECT.readingRate);
+/** Le Minitel (la prise, l'écran) : les pages/s des méthodes de l'Âge Numérique. */
+export const digitalMultiplier = (state: GameState): number => product(state, EFFECT.digitalReading);
 /** La Main (poignet, paume, index) : les pages d'un clic. */
 export const handsMultiplier = (state: GameState): number => product(state, EFFECT.click);
 /** La Chouette (pattes, corps, aile droite) : ce que rapporte une trouvaille. */

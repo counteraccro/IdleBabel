@@ -7,7 +7,10 @@ import { ETHER_WEIGHT } from './etherium';
  * se multiplient (ou s'ajoutent, pour les quantités). Prix provisoires : le simulateur s'en sert aussi
  * (simulateur/vie.ts). Textes : etherium.pages.<page> et etherium.stars.<page>.<étoile>.
  */
-/** L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10), puis le Poids, qui les touche tous (13/10). */
+/**
+ * L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10), puis le Poids, qui les touche tous ; la
+ * page de chaque Âge à la fin, après les reliques (13/10).
+ */
 export const ETHERIUM_PAGES = [
   'ages',
   'weight',
@@ -22,6 +25,7 @@ export const ETHERIUM_PAGES = [
   'explore',
   'mimic',
   'relics',
+  'screen',
 ] as const;
 export type PageId = (typeof ETHERIUM_PAGES)[number];
 
@@ -131,6 +135,17 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['weight', 'w5', 'w4', 400_000],
   ['weight', 'w6', 'w5', 1_000_000],
   ['weight', 'w7', 'w6', 2_500_000],
+  // Numérique, le Minitel (13/10, .ai/maquette-etherium-numerique.html) : la prise, puis le cordon mène à l'écran (ses
+  // quatre coins : lecture des méthodes Numériques) et au clavier (ses touches : Connaissance). Page de l'Âge Numérique.
+  ['screen', 'plug', null, 1000],
+  ['screen', 's1', 'plug', 2000],
+  ['screen', 's2', 's1', 5000],
+  ['screen', 's3', 's2', 10_000],
+  ['screen', 's4', 's3', 25_000],
+  ['screen', 'k1', 'plug', 2000],
+  ['screen', 'k2', 'k1', 5000],
+  ['screen', 'k3', 'k2', 10_000],
+  ['screen', 'k4', 'k3', 25_000],
   // La Plume (Alpha 1.1, 08/10) : le bec, puis la tige (la lettre vient plus souvent) jusqu'à la pointe (la Transe plus
   // forte) ; les barbes de gauche (durées, temps à l'écran), celles de droite (un bonus de plus chacune).
   ['quill', 'nib', null, 3],
@@ -225,8 +240,11 @@ export const NEEDS_AGE: ReadonlyMap<string, string> = new Map(
   STARS.filter((star) => star.page === 'memory' && star.id[7] in CELL_AGES).map((star) => [star.id, CELL_AGES[star.id[7]]]),
 );
 
-/** Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration). */
-export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e', relics: 'explore.w' };
+/**
+ * Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration ; le Minitel,
+ * par l'Âge Numérique).
+ */
+export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e', relics: 'explore.w', screen: 'ages.quantum' };
 
 /** Une page qui attend l'Éther reçu : le Poids, quand l'Éther commence à peser (blanche jusque-là, absente du sommaire). */
 export const PAGE_NEEDS_ETHER: Partial<Record<PageId, number>> = { weight: ETHER_WEIGHT.from };
@@ -245,7 +263,20 @@ export const EFFECT = {
   /** + part de la production d'une seconde, à chaque clic. */
   clickShare: { 'hands.t': 0.01, 'hands.m': 0.02, 'hands.m2': 0.05 },
   /** ×Connaissance par trouvaille. */
-  knowledge: { 'knowledge.f': 1.5, 'knowledge.b': 1.5, 'knowledge.wr': 2, 'knowledge.er': 2, 'knowledge.ar': 3 },
+  knowledge: {
+    'knowledge.f': 1.5,
+    'knowledge.b': 1.5,
+    'knowledge.wr': 2,
+    'knowledge.er': 2,
+    'knowledge.ar': 3,
+    // Le clavier du Minitel.
+    'screen.k1': 1.25,
+    'screen.k2': 1.5,
+    'screen.k3': 1.5,
+    'screen.k4': 2,
+  },
+  /** ×pages/s des méthodes de l'Âge Numérique (la prise et l'écran du Minitel). */
+  digitalReading: { 'screen.plug': 1.1, 'screen.s1': 1.25, 'screen.s2': 1.25, 'screen.s3': 1.5, 'screen.s4': 2 },
   /** ×prix des intuitions (−10 %, puis −25 % en tout). */
   intuitions: { 'knowledge.wl': 0.9, 'knowledge.el': 0.75 / 0.9 },
   /** ×chance de trouvaille. */

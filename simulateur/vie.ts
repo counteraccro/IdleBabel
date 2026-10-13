@@ -1,6 +1,6 @@
 import { afterLit, CLOSED, EFFECT, RELIC_BRANCH, S, STARS, neededFor, type PageId } from '../src/data/etheriumStars';
 import { relicById } from '../src/data/relics';
-import { DIGITAL_STARS, PLAYER } from './config';
+import { PLAYER } from './config';
 import { etherNeeded } from '../src/systems/etherium';
 
 /** Ce qui survit au prestige : les pages à vie, l'Éther, les étoiles allumées, la Page Cornée une fois retrouvée. */
@@ -76,7 +76,7 @@ export const sum = (life: Life, effect: Record<string, number>): number =>
 
 /**
  * Les étoiles qu'on peut allumer maintenant, comme en jeu : pas fermées, leur étoile d'avant est allumée (et l'Âge, pour
- * l'alvéole Automatique ; l'Est de l'Exploration, pour la Mimic).
+ * son alvéole et la page du Minitel ; l'Est de l'Exploration, pour la Mimic ; 5 000 Éther reçus, pour l'Atlas).
  */
 const open = (life: Life): Buyable[] => [
   ...STARS.filter(
@@ -90,10 +90,6 @@ const open = (life: Life): Buyable[] => [
       (PLAYER.weight || star.page !== 'weight') &&
       life.etherReceived >= etherNeeded(star.page),
   ),
-  // Celles de l'Âge Numérique (proposées : simulateur/config.ts), une fois l'Âge acheté.
-  ...(life.stars.has('ages.quantum')
-    ? DIGITAL_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after)))
-    : []),
 ];
 
 type Buyable = { id: string; cost: number };
@@ -160,11 +156,11 @@ export const litPerPage = (life: Life): string =>
       'explore',
       'mimic',
       'relics',
+      'screen',
     ] as PageId[]
   )
     .map(
       (page) =>
         `${page} ${STARS.filter((s) => s.page === page && life.stars.has(s.id)).length}/${STARS.filter((s) => s.page === page).length}`,
     )
-    .concat([`numérique ${DIGITAL_STARS.filter((s) => life.stars.has(s.id)).length}/${DIGITAL_STARS.length}`])
     .join(', ');

@@ -1,5 +1,5 @@
 import { CLOSED, KEEPS, STARS, neededFor, type PageId } from '../../data/etheriumStars';
-import { etherNeeded, lightStar, pageOpen, starLit, starOpen } from '../../systems/etherium';
+import { lightStar, pageOpen, starLit, starOpen } from '../../systems/etherium';
 import { formatNumber, writeDigits } from '../../core/format';
 import { getLocale, t } from '../../i18n';
 import { FIGURES, type Figure, type Sketch } from './constellations';
@@ -188,9 +188,13 @@ const sketch = (ctx: Ctx, { lines, circle, rings, labels, eye }: Sketch): void =
     write(ctx, t(`etherium.compass.${key}`), x, y - 10, { size: 14, face: TITLE, color: C.faded, align: 'center' });
 };
 
-/** Une page pas encore débloquée : quelques mots au crayon (le Poids attend l'Éther, les autres l'Exploration), et son numéro. */
+/**
+ * Une page pas encore débloquée : quelques mots au crayon (les siens : le Poids attend l'Éther, le Minitel son Âge ; sinon,
+ * l'Exploration), et son numéro.
+ */
 const drawLocked = (ctx: Ctx, page: PageId, number: number): void => {
-  t(etherNeeded(page) > 0 ? 'etherium.lockedWeight' : 'etherium.locked')
+  const own = `etherium.pages.${page}.locked`;
+  t(t(own) === own ? 'etherium.locked' : own)
     .split('\n')
     .forEach((text, i) => write(ctx, text, 320, 360 + i * 36, { size: 30, face: HAND, align: 'center', color: C.faded }));
   nightFolio(ctx, number);
