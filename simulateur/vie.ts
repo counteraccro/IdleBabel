@@ -82,15 +82,13 @@ const open = (life: Life): Buyable[] => [
     (star) =>
       !life.stars.has(star.id) &&
       PLAYER.pages.includes(star.page) &&
-      (!CLOSED.has(star.id) || (star.id === 'ages.quantum' && PLAYER.digitalAge > 0 && life.stars.has(S.age))) &&
+      !CLOSED.has(star.id) &&
       afterLit(star, (id) => life.stars.has(id)) &&
       (!neededFor(star.id) || life.stars.has(neededFor(star.id)!)) &&
       (PLAYER.cornee || star.id !== S.cornee),
   ),
   // Celles qui allègent le poids de la Bibliothèque (--poids).
-  ...(PLAYER.weight
-    ? WEIGHT_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after)))
-    : []),
+  ...(PLAYER.weight ? WEIGHT_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after))) : []),
   // Celles de l'Âge Numérique (proposées : simulateur/config.ts), une fois l'Âge acheté.
   ...(life.stars.has('ages.quantum')
     ? DIGITAL_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after)))
@@ -99,8 +97,8 @@ const open = (life: Life): Buyable[] => [
 
 type Buyable = { id: string; cost: number };
 
-/** Son prix ; l'Âge Numérique, celui qu'essaie le simulateur (PLAYER.digitalAge). */
-const starCost = (star: Buyable): number => (star.id === 'ages.quantum' ? PLAYER.digitalAge : star.cost);
+/** Son prix ; l'Âge Numérique, celui qu'essaie le simulateur s'il en donne un (--numerique). */
+const starCost = (star: Buyable): number => (star.id === 'ages.quantum' && PLAYER.digitalAge > 0 ? PLAYER.digitalAge : star.cost);
 
 /** Au réveil : le bot prend l'Âge Automatique d'abord, puis l'étoile la moins chère qu'il peut s'offrir, tant qu'il peut. */
 export const spendEther = (life: Life): string[] => {
@@ -151,10 +149,6 @@ export const litPerPage = (life: Life): string =>
       (page) =>
         `${page} ${STARS.filter((s) => s.page === page && life.stars.has(s.id)).length}/${STARS.filter((s) => s.page === page).length}`,
     )
-    .concat(
-      PLAYER.digitalAge > 0
-        ? [`numérique ${DIGITAL_STARS.filter((s) => life.stars.has(s.id)).length}/${DIGITAL_STARS.length}`]
-        : [],
-    )
+    .concat([`numérique ${DIGITAL_STARS.filter((s) => life.stars.has(s.id)).length}/${DIGITAL_STARS.length}`])
     .concat(PLAYER.weight ? [`poids ${WEIGHT_STARS.filter((s) => life.stars.has(s.id)).length}/${WEIGHT_STARS.length}`] : [])
     .join(', ');

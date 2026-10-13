@@ -51,8 +51,8 @@ describe('revue des sceaux (08/10)', () => {
     expect(state.seals['constellation-ages']).toBe(1);
     expect(state.seals['constellation-memory']).toBe(1);
     expect(state.seals[`starsLit-${OPEN_STARS.length}`]).toBe(1);
-    // Les Âges d'après l'Automatique, la Goutte, les six pointes de la Rose des vents qui n'ouvrent encore rien.
-    expect(OPEN_STARS.length).toBe(STARS.length - 10);
+    // Les Âges d'après le Numérique, la Goutte, les six pointes de la Rose des vents qui n'ouvrent encore rien.
+    expect(OPEN_STARS.length).toBe(STARS.length - 9);
   });
 
   it('scelle la Connaissance trouvée, et le livre blanc', () => {

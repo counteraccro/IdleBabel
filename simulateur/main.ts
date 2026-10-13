@@ -8,8 +8,8 @@
  *   npm run simule -- --sceaux=30 --sans-ether-lecture   sceaux fixes, sans la lecture de l'Éther reçu (comme avant le 07/10)
  *   npm run simule -- --partie-max=96          parties de 96 heures de jeu au plus (absences non comprises)
  *   npm run simule -- --lettres=0              sans la lettre qui s'échappe (0,5 : le bot en attrape une sur deux)
- *   npm run simule -- --numerique=500          l'Âge Numérique proposé (simulateur/config.ts), son étoile à 500 Éther
- *   npm run simule -- --numerique=1500 --sans-bit sans le Bit, méthode secrète proposée de l'Âge Numérique
+ *   npm run simule -- --numerique=500          l'étoile de l'Âge Numérique à 500 Éther (1 500 dans le jeu)
+ *   npm run simule -- --sans-bit               sans le Bit, méthode secrète de l'Âge Numérique
  *   npm run simule -- --poids                  le poids de la Bibliothèque (lecture de l'Éther freinée au-delà de 5 000)
  *   npm run simule -- --lecture=auto:0.1       la lecture des méthodes d'un Âge multipliée (manual, auto, num)
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
@@ -100,7 +100,7 @@ for (let number = 1; life.clock < end; number++) {
     duration(firstAutomatic),
     // Première fois que chaque méthode Automatique s'achète dans la partie (– : jamais).
     AUTOMATIC.map((method) => short(run.firstBought[method.id])).join(' · '),
-    // Pareil pour l'Âge Numérique (proposé).
+    // Pareil pour l'Âge Numérique.
     DIGITAL.map((method) => short(run.firstBought[method.id])).join(' · '),
     short(run.firstBought.bit),
     // Connaissance gagnée dans la partie ; niveaux des intuitions de l'Âge Numérique (le Bit en dernier).

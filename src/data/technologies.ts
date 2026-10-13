@@ -84,6 +84,14 @@ export const TECHNOLOGIES = [
   { id: 'liftGesture', prices: gesture(400_000), tool: 'lift' },
   { id: 'automatonGesture', prices: gesture(800_000), tool: 'automaton' },
   { id: 'clockGesture', prices: gesture(1_600_000), tool: 'clock' },
+  // L'Âge Numérique (piste A, validée le 13/10) : dans la suite de l'Âge Automatique. Une partie de cet Âge gagne ~200 M de
+  // Connaissance : celles du Robot et de l'Algorithme restent un but lointain (le clavier du Minitel, dans l'Etherium).
+  { id: 'minitelGesture', prices: gesture(3_200_000), tool: 'minitel' },
+  { id: 'computerGesture', prices: gesture(6_400_000), tool: 'computer' },
+  { id: 'searchGesture', prices: gesture(12_800_000), tool: 'search' },
+  { id: 'crawlerGesture', prices: gesture(25_600_000), tool: 'crawler' },
+  { id: 'algorithmGesture', prices: gesture(51_200_000), tool: 'algorithm' },
+  { id: 'bitGesture', prices: gesture(8_000_000), tool: 'bit' },
 ] as const satisfies readonly TechnologyDef[];
 
 export type TechnologyId = (typeof TECHNOLOGIES)[number]['id'];

@@ -1,7 +1,7 @@
-import { METHOD_CHAIN, TOOLS } from '../src/data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, METHOD_CHAIN, TOOLS } from '../src/data/tools';
 import { KEEPS, S } from '../src/data/etheriumStars';
 import { lit, type Life } from './vie';
-import { DIGITAL as DIGITAL_PROPOSED, DIGITAL_KEEPS, DIGITAL_SECRET, PLAYER } from './config';
+import { DIGITAL_KEEPS, PLAYER } from './config';
 
 /** Une méthode pour le simulateur : celles du jeu (src/data/tools.ts). */
 export interface Method {
@@ -23,7 +23,8 @@ const method = (tool: (typeof TOOLS)[number]): Method => ({
   id: tool.id,
   baseCost: PLAYER.methods[tool.id]?.baseCost ?? tool.baseCost,
   pagesPerSecond:
-    (PLAYER.methods[tool.id]?.pagesPerSecond ?? tool.pagesPerSecond) * (tool.age ? PLAYER.reading.auto : PLAYER.reading.manual),
+    (PLAYER.methods[tool.id]?.pagesPerSecond ?? tool.pagesPerSecond) *
+    PLAYER.reading[tool.age === DIGITAL_AGE ? 'num' : tool.age ? 'auto' : 'manual'],
   pieces: PIECES[tool.id] ?? 5,
   gesture: `${tool.id}Gesture`,
   manual: !tool.age,
@@ -33,27 +34,17 @@ const method = (tool: (typeof TOOLS)[number]): Method => ({
 const MANUAL: Method[] = METHOD_CHAIN.filter((tool) => !tool.age).map(method);
 
 /** L'Âge Automatique (src/data/tools.ts) : ses méthodes ne se trouvent qu'une fois l'Âge acheté. */
-export const AUTOMATIC: Method[] = METHOD_CHAIN.filter((tool) => tool.age).map(method);
+export const AUTOMATIC: Method[] = METHOD_CHAIN.filter((tool) => tool.age === AUTOMATIC_AGE).map(method);
 
 /** La Page Cornée, méthode secrète de l'Âge Manuel (dans le jeu : src/data/tools.ts). */
-export const SECRET: Method = method(TOOLS.find((tool) => tool.secret)!);
+export const SECRET: Method = method(TOOLS.find((tool) => tool.id === 'cornee')!);
 
-/** L'Âge Numérique (proposé : simulateur/config.ts), ses intuitions : DIGITAL_GESTURES. */
-export const DIGITAL_AGE = 'ages.quantum';
-export const DIGITAL: Method[] = DIGITAL_PROPOSED.map((m) => ({
-  ...m,
-  pagesPerSecond: m.pagesPerSecond * PLAYER.reading.num,
-  gesture: `${m.id}Gesture`,
-  age: DIGITAL_AGE,
-}));
+/** L'Âge Numérique (src/data/tools.ts). */
+export { DIGITAL_AGE };
+export const DIGITAL: Method[] = METHOD_CHAIN.filter((tool) => tool.age === DIGITAL_AGE).map(method);
 
-/** Le Bit, méthode secrète de l'Âge Numérique (proposé : simulateur/config.ts). */
-export const BIT: Method = {
-  ...DIGITAL_SECRET,
-  pagesPerSecond: DIGITAL_SECRET.pagesPerSecond * PLAYER.reading.num,
-  gesture: 'bitGesture',
-  age: DIGITAL_AGE,
-};
+/** Le Bit, méthode secrète de l'Âge Numérique. */
+export const BIT: Method = method(TOOLS.find((tool) => tool.id === 'bit')!);
 
 /** Les méthodes dans l'ordre où leurs phrases se trouvent, selon les Âges achetés. */
 export const methodSequence = (life: Life): Method[] => [

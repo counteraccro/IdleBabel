@@ -23,10 +23,28 @@ export interface ToolDefinition {
  * 3 h, Échelle vers 9 h.
  */
 export type ToolId =
-  'diagonal' | 'finger' | 'voice' | 'lectern' | 'ladder' | 'cornee' | 'metronome' | 'wheel' | 'lift' | 'automaton' | 'clock';
+  | 'diagonal'
+  | 'finger'
+  | 'voice'
+  | 'lectern'
+  | 'ladder'
+  | 'cornee'
+  | 'metronome'
+  | 'wheel'
+  | 'lift'
+  | 'automaton'
+  | 'clock'
+  | 'minitel'
+  | 'computer'
+  | 'search'
+  | 'crawler'
+  | 'algorithm'
+  | 'bit';
 
 /** L'étoile de l'Etherium qui achète l'Âge Automatique (data/etheriumStars.ts, S.age). */
 export const AUTOMATIC_AGE = 'ages.auto';
+/** L'étoile qui achète l'Âge Numérique (l'Âge Quantique jusqu'au 13/10 : l'id est resté). */
+export const DIGITAL_AGE = 'ages.quantum';
 
 export const COST_GROWTH = 1.15;
 
@@ -53,6 +71,16 @@ export const TOOLS: readonly ToolDefinition[] = [
   { id: 'lift', baseCost: 80e9, pagesPerSecond: 6_000_000, age: AUTOMATIC_AGE },
   { id: 'automaton', baseCost: 1.5e12, pagesPerSecond: 75_000_000, age: AUTOMATIC_AGE },
   { id: 'clock', baseCost: 30e12, pagesPerSecond: 1e9, age: AUTOMATIC_AGE },
+  // L'Âge Numérique (méthodes choisies par l'auteur le 13/10 ; prix et lectures : essai C du simulateur, validé) : des
+  // machines que le chercheur décrit sans les connaître. Lecture au plus ×100 l'Horloge, prix ×8 d'une méthode à l'autre.
+  { id: 'minitel', baseCost: 6e15, pagesPerSecond: 2.5e9, age: DIGITAL_AGE },
+  { id: 'computer', baseCost: 5e16, pagesPerSecond: 6e9, age: DIGITAL_AGE },
+  { id: 'search', baseCost: 4e17, pagesPerSecond: 1.5e10, age: DIGITAL_AGE },
+  { id: 'crawler', baseCost: 3.2e18, pagesPerSecond: 4e10, age: DIGITAL_AGE },
+  { id: 'algorithm', baseCost: 2.5e19, pagesPerSecond: 1e11, age: DIGITAL_AGE },
+  // Le Bit, méthode secrète de l'Âge Numérique (validé le 13/10, sur le modèle de la Page Cornée : prix entre la 2e et la
+  // 3e méthode, lecture entre la 4e et la 5e) ; son étoile, la 1re de l'alvéole Numérique de la Ruche.
+  { id: 'bit', baseCost: 2.56e17, pagesPerSecond: 6.4e10, secret: true, age: DIGITAL_AGE },
 ];
 
 /**

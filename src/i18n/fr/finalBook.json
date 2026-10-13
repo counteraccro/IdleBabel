@@ -49,7 +49,13 @@
     "wheel": "{when}, tu as bâti une roue. Les livres tournaient devant toi.",
     "lift": "{when}, tu as descendu un panier dans le puits. Il est remonté plein.",
     "automaton": "{when}, un automate s'est mis à lire pour toi. Il ne comprenait rien. Toi non plus.",
-    "clock": "{when}, tu as entendu l'horloge des galeries. Depuis, toute la galerie lit avec toi."
+    "clock": "{when}, tu as entendu l'horloge des galeries. Depuis, toute la galerie lit avec toi.",
+    "minitel": "{when}, tu as allumé un étrange appareil. Il savait lire pour toi.",
+    "computer": "{when}, tu as confié mille livres à une boîte qui chauffe. Elle n'en a oublié aucun.",
+    "search": "{when}, tu as tapé trois mots. Le livre est venu.",
+    "crawler": "{when}, quelque chose s'est mis à parcourir les galeries à ta place.",
+    "algorithm": "{when}, tu as compris qu'un nombre suffisait. Tu n'as pas tapé le tien.",
+    "bit": "{when}, tu as vu toute la Bibliothèque tenir dans deux signes."
   },
   "memories": {
     "cup": "{when}, un souvenir est revenu. Une tasse ébréchée. Tu buvais toujours du côté de l'ébréchure."

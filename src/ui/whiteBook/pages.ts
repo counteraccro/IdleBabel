@@ -7,7 +7,7 @@ import { contentsItems, type ContentsEntry } from './contents';
 import { partTitleItems, partTitleLayout, subPartLayout, type WhiteBookPart } from './partTitle';
 import { intuitionItems, reminiscenceNote } from './intuitionPage';
 import { TECHNOLOGIES } from '../../data/technologies';
-import { AUTOMATIC_AGE, TOOLS } from '../../data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS } from '../../data/tools';
 import { starLit } from '../../systems/etherium';
 import { intuitionVisible, technologiesCompletion, understand } from '../../systems/technologies';
 import { completion, guess, guessPrice, isComplete, sentenceShown, written } from '../../systems/sentences';
@@ -117,8 +117,8 @@ const titleItems = (state: GameState): Item[] => [
 ];
 
 /** Les Âges, dans l'ordre (aucun : l'Âge Manuel), et le nom de leur sous-partie (whiteBook.parts). */
-const AGES = [undefined, AUTOMATIC_AGE] as const;
-const AGE_KEYS: Record<string, string> = { manual: 'manualAge', [AUTOMATIC_AGE]: 'automaticAge' };
+const AGES = [undefined, AUTOMATIC_AGE, DIGITAL_AGE] as const;
+const AGE_KEYS: Record<string, string> = { manual: 'manualAge', [AUTOMATIC_AGE]: 'automaticAge', [DIGITAL_AGE]: 'digitalAge' };
 
 const ofKind = (kind: SentenceKind): SentenceDef[] => SENTENCES.filter((sentence) => sentence.kind === kind);
 

@@ -58,12 +58,9 @@ export const PLAYER = {
    * toujours avant de fermer le jeu : elle ne mange pas l'absence.
    */
   mimicMinutes: 30,
-  /**
-   * L'Âge Numérique (proposé, pas dans le jeu ; 13/10) : le prix de son étoile en Éther, ou 0 pour s'en passer
-   * (--numerique=500). Ses méthodes : DIGITAL ci-dessous.
-   */
+  /** Le prix de l'étoile de l'Âge Numérique remplacé, pour essayer (--numerique=500) ; 0 : celui du jeu. */
   digitalAge: 0,
-  /** Le Bit, méthode secrète de l'Âge Numérique (proposé le 13/10) : --sans-bit pour s'en passer. */
+  /** Le Bit, méthode secrète de l'Âge Numérique : --sans-bit pour s'en passer. */
   bit: true,
   /**
    * Lecture des méthodes de chaque Âge, multipliée (essais du 13/10 : adoucir le gain d'un Âge à l'autre) :
@@ -87,39 +84,7 @@ for (const part of readingOption?.split(',') ?? []) {
 }
 
 /**
- * Les méthodes de l'Âge Numérique (liste choisie par l'auteur le 13/10 ; prix et lectures proposés, à simuler) : prix,
- * pages/s, morceaux de la phrase. Essai C validé par l'auteur (13/10). Pas encore d'intuitions.
- */
-export const DIGITAL = [
-  { id: 'minitel', baseCost: 6e15, pagesPerSecond: 2.5e9, pieces: 8 },
-  { id: 'computer', baseCost: 5e16, pagesPerSecond: 6e9, pieces: 5 },
-  { id: 'search', baseCost: 4e17, pagesPerSecond: 1.5e10, pieces: 5 },
-  { id: 'crawler', baseCost: 3.2e18, pagesPerSecond: 4e10, pieces: 5 },
-  { id: 'algorithm', baseCost: 2.5e19, pagesPerSecond: 1e11, pieces: 5 },
-];
-
-/**
- * Le Bit, méthode secrète de l'Âge Numérique (proposé le 13/10, sur le modèle de la Page Cornée : prix entre la 2e et
- * la 3e méthode, lecture entre la 4e et la 5e). Son étoile n'existe pas encore : il se cherche dès l'Âge acheté.
- * « Un, zéro. Toute la Bibliothèque tient dans ces deux signes. »
- */
-export const DIGITAL_SECRET = { id: 'bit', baseCost: 2.56e17, pagesPerSecond: 6.4e10, pieces: 5 };
-
-/**
- * Intuitions de l'Âge Numérique (proposées le 13/10) : une par méthode, ×2 par niveau, 5 niveaux, premier prix dans la
- * suite de celles de l'Âge Automatique (100 000 … 1,6 M) ; le Bit entre le Micro-Ordinateur et le Moteur de Recherche.
- */
-export const DIGITAL_GESTURES: Record<string, number> = {
-  minitel: 3.2e6,
-  computer: 6.4e6,
-  bit: 8e6,
-  search: 12.8e6,
-  crawler: 25.6e6,
-  algorithm: 51.2e6,
-};
-
-/**
- * Les étoiles de l'Âge Numérique (proposées le 13/10 ; pas dans le jeu) : l'alvéole Numérique de la Ruche (le Bit, payant,
+ * Les étoiles de l'Âge Numérique (validées le 13/10 ; pas encore dans le jeu) : l'alvéole Numérique de la Ruche (le Bit, payant,
  * puis la phrase gardée de chaque méthode, prix ×10 l'alvéole Automatique) et la page du Minitel (la prise, puis l'écran :
  * ×lecture des méthodes Numériques, et le clavier : ×Connaissance). Elles s'ouvrent avec l'étoile de l'Âge.
  */
@@ -161,6 +126,6 @@ export const DIGITAL_EFFECT = {
  * from × (E / from)^exposant ; l'exposant part de `power` et chaque étoile de WEIGHT_STARS l'élève de `step` (1 : levé).
  */
 export const WEIGHT = { from: 5000, power: 0.3, step: 0.1 };
-export const WEIGHT_STARS: { id: string; page: string; after?: string; cost: number }[] = [10_000, 25_000, 60_000, 150_000, 400_000, 1_000_000, 2_500_000].map(
-  (cost, i) => ({ id: `weight.w${i + 1}`, page: 'weight', after: i ? `weight.w${i}` : undefined, cost }),
-);
+export const WEIGHT_STARS: { id: string; page: string; after?: string; cost: number }[] = [
+  10_000, 25_000, 60_000, 150_000, 400_000, 1_000_000, 2_500_000,
+].map((cost, i) => ({ id: `weight.w${i + 1}`, page: 'weight', after: i ? `weight.w${i}` : undefined, cost }));

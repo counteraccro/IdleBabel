@@ -1,4 +1,4 @@
-import { AUTOMATIC_AGE, type ToolId } from './tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, type ToolId } from './tools';
 import { ANOMALIES, type AnomalyFamily } from './anomalies';
 
 /**
@@ -37,6 +37,12 @@ export const SENTENCES: readonly SentenceDef[] = [
   { id: 'lift', kind: 'method', tool: 'lift', age: AUTOMATIC_AGE },
   { id: 'automaton', kind: 'method', tool: 'automaton', age: AUTOMATIC_AGE },
   { id: 'clock', kind: 'method', tool: 'clock', age: AUTOMATIC_AGE },
+  { id: 'minitel', kind: 'method', tool: 'minitel', age: DIGITAL_AGE },
+  { id: 'computer', kind: 'method', tool: 'computer', age: DIGITAL_AGE },
+  { id: 'search', kind: 'method', tool: 'search', age: DIGITAL_AGE },
+  { id: 'crawler', kind: 'method', tool: 'crawler', age: DIGITAL_AGE },
+  { id: 'algorithm', kind: 'method', tool: 'algorithm', age: DIGITAL_AGE },
+  { id: 'bit', kind: 'method', tool: 'bit', secret: 'memory.n0', age: DIGITAL_AGE },
   { id: 'cup', kind: 'memory' },
   ...ANOMALIES,
 ];

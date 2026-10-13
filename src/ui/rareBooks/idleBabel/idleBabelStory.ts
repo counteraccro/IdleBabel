@@ -159,6 +159,7 @@ export const STORY: StoryChapter[] = [
       { key: 'scenes', drafts: ['scenes', 'sceneNotebook'] },
       { key: 'mimic', drafts: ['mimic'] },
       { key: 'relics' },
+      { key: 'digitalAge' },
     ],
   },
 ];

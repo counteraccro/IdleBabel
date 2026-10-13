@@ -9,5 +9,11 @@
   "wheel": { "name": "The Book Wheel", "description": "twenty volumes turning before my eyes." },
   "lift": { "name": "The Book Lift", "description": "books from other floors come up to me." },
   "automaton": { "name": "The Reading Automaton", "description": "it understands nothing, but it reads." },
-  "clock": { "name": "The Gallery Clock", "description": "every hour, the whole gallery turns a page." }
+  "clock": { "name": "The Gallery Clock", "description": "every hour, the whole gallery turns a page." },
+  "minitel": { "name": "The Minitel", "description": "a box with a screen that answers when I type." },
+  "computer": { "name": "The Home Computer", "description": "it keeps a thousand books and forgets none." },
+  "search": { "name": "The Search Engine", "description": "three words, and it gives me the right book." },
+  "crawler": { "name": "The Crawler", "description": "it walks the galleries without me." },
+  "algorithm": { "name": "The Babel Algorithm", "description": "a number, and the book is already written." },
+  "bit": { "name": "The Bit", "description": "one, zero: the whole Library." }
 }

@@ -2,16 +2,9 @@ import { TECHNOLOGIES } from '../src/data/technologies';
 import { EFFECT, S } from '../src/data/etheriumStars';
 import type { Run } from './partie';
 import { lit, product } from './vie';
-import { DIGITAL_GESTURES } from './config';
 
-/** Les 5 niveaux d'une intuition de méthode (comme gesture(), src/data/technologies.ts). */
-const gesture = (first: number): number[] => [1, 2, 4, 8, 16].map((step) => first * step);
-
-/** Celles du jeu, plus celles de l'Âge Numérique (proposées : simulateur/config.ts). */
-const ALL: readonly { id: string; prices: readonly number[]; tool?: string; growth?: number }[] = [
-  ...TECHNOLOGIES,
-  ...Object.entries(DIGITAL_GESTURES).map(([tool, first]) => ({ id: `${tool}Gesture`, prices: gesture(first), tool })),
-];
+/** Les intuitions du jeu (celles de l'Âge Numérique comprises). */
+const ALL: readonly { id: string; prices: readonly number[]; tool?: string; growth?: number }[] = TECHNOLOGIES;
 
 /** Celles qui changent le rythme de la partie ; le bot laisse les autres (Flair, Brassée, Réminiscence…). */
 const USEFUL = [

@@ -1,7 +1,7 @@
 import { el } from '../../ui/dom';
 import { currentNotation, formatNumber } from '../../core/format';
 import { chips, clampCount, numberInput, row, shortCount, showCount, stepper, toggle } from '../debugControls';
-import { AUTOMATIC_AGE } from '../../data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE } from '../../data/tools';
 import type { GameState } from '../../core/state';
 
 /**
@@ -25,7 +25,8 @@ export interface DebugSubject {
 }
 
 /** Le nom d'un Âge (`age` d'une méthode : aucun pour l'Âge Manuel). */
-export const ageTitle = (age: string | undefined): string => (age === AUTOMATIC_AGE ? 'L’Âge Automatique' : 'L’Âge Manuel');
+export const ageTitle = (age: string | undefined): string =>
+  age === DIGITAL_AGE ? 'L’Âge Numérique' : age === AUTOMATIC_AGE ? 'L’Âge Automatique' : 'L’Âge Manuel';
 
 export const CHAPTERS = [
   { id: 'resources', title: 'Ressources' },

@@ -1,5 +1,5 @@
 import { el } from '../dom';
-import { AUTOMATIC_AGE } from '../../data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE } from '../../data/tools';
 import { starLit } from '../../systems/etherium';
 import { babelize, seedOf } from '../whiteBook/babelMask';
 import { isDeciphered } from '../../systems/decipher';
@@ -238,7 +238,7 @@ const rowPages = (state: GameState, chapter: Chapter): Slot[][] => {
   const slots: Slot[] = [];
   let age: string | null = null;
   for (const figure of chapter.figures.filter((candidate) => candidate.row && figureShown(state, candidate))) {
-    const key = figure.age === AUTOMATIC_AGE ? 'automaticAge' : 'manualAge';
+    const key = figure.age === DIGITAL_AGE ? 'digitalAge' : figure.age === AUTOMATIC_AGE ? 'automaticAge' : 'manualAge';
     if (byAge && key !== age) slots.push({ kind: 'age', key });
     age = key;
     slots.push({ kind: 'row', figure });

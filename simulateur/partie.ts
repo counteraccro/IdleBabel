@@ -103,7 +103,7 @@ export const newRun = (life: Life): Run => {
 const level = (run: Run, id: string): number => run.levels[id] ?? 0;
 
 /** Le Bit se cherche une fois son étoile allumée (la 1re de l'alvéole Numérique de la Ruche). */
-const bitSought = (life: Life): boolean => PLAYER.bit && PLAYER.digitalAge > 0 && lit(life, BIT_STAR);
+const bitSought = (life: Life): boolean => PLAYER.bit && lit(life, BIT_STAR);
 
 const allMethods = (run: Run): Method[] => [...run.methods, SECRET, ...(bitSought(run.life) ? [BIT] : [])];
 
@@ -190,7 +190,9 @@ const find = (run: Run, turned: number, away = false): void => {
   const finds = turned * chance;
   // La Loupe : des connaissances garanties en plus, à chaque trouvaille.
   const found =
-    finds * (product(run.life, EFFECT.knowledge) * product(run.life, DIGITAL_EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0));
+    finds *
+    (product(run.life, EFFECT.knowledge) * product(run.life, DIGITAL_EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) +
+      relicBonus(run.life, 'loupe', 0));
   const mimicBonus = away ? 0 : found * mimicGives(run.life) * mimicPresence(run.life);
   run.life.mimic.bonus += mimicBonus;
   const knowledge = found + mimicBonus;

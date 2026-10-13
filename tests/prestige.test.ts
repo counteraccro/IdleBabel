@@ -143,11 +143,11 @@ describe('Prestige', () => {
     expect(starOpen(state, 'memory.a1')).toBe(true);
   });
 
-  it('les étoiles fermées ne s’allument pas : les Âges d’après l’Automatique, la Goutte', () => {
+  it('les étoiles fermées ne s’allument pas : les Âges d’après le Numérique, la Goutte', () => {
     const state = reader(1e9);
     state.ether = 10_000;
-    state.etherium = ['ages.auto', 'memory.m0', 'memory.m1', 'memory.m2', 'memory.m3', 'memory.m4', 'memory.m5'];
-    for (const id of ['ages.quantum', 'memory.a0']) {
+    state.etherium = ['ages.auto', 'ages.quantum', 'memory.m0', 'memory.m1', 'memory.m2', 'memory.m3', 'memory.m4', 'memory.m5'];
+    for (const id of ['ages.dim', 'memory.a0']) {
       expect(starOpen(state, id)).toBe(false);
       expect(lightStar(state, id)).toBe(false);
     }
@@ -157,10 +157,10 @@ describe('Prestige', () => {
   it('une partie qui avait allumé une étoile fermée récupère son Éther', () => {
     const state = reader(1e9);
     state.ether = 5;
-    state.etherium = ['ages.auto', 'ages.quantum', 'memory.a0', 'memory.a1'];
+    state.etherium = ['ages.auto', 'ages.quantum', 'ages.dim', 'memory.a0', 'memory.a1'];
     const after = refundClosedStars(state);
-    expect(after.etherium).toEqual(['ages.auto', 'memory.a1']);
-    expect(after.ether).toBe(25);
+    expect(after.etherium).toEqual(['ages.auto', 'ages.quantum', 'memory.a1']);
+    expect(after.ether).toBe(115);
   });
 
   it('la Porte et la Ruche', () => {

@@ -28,7 +28,8 @@ const game = (bought: boolean): GameState => {
 describe('L’Âge Automatique', () => {
   it('cinq méthodes, après celles de l’Âge Manuel, dans la chaîne', () => {
     expect(TOOLS.filter((tool) => tool.age === AUTOMATIC_AGE).map((tool) => tool.id)).toEqual(AUTOMATIC);
-    expect(METHOD_CHAIN.slice(-5).map((tool) => tool.id)).toEqual(AUTOMATIC);
+    const ladder = METHOD_CHAIN.findIndex((tool) => tool.id === 'ladder');
+    expect(METHOD_CHAIN.slice(ladder + 1, ladder + 6).map((tool) => tool.id)).toEqual(AUTOMATIC);
   });
 
   it('avant l’Âge, rien ne le montre : ni ses phrases, ni ses intuitions, ni la méthode en cours', () => {

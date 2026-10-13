@@ -9,5 +9,11 @@
   "wheel": { "name": "La Roue à Livres", "description": "vingt volumes qui défilent sous les yeux." },
   "lift": { "name": "Le Monte-Livres", "description": "les livres des autres étages montent jusqu'à moi." },
   "automaton": { "name": "L'Automate Lecteur", "description": "il ne comprend rien, mais il lit." },
-  "clock": { "name": "L'Horloge des Galeries", "description": "à chaque heure, toute la galerie tourne une page." }
+  "clock": { "name": "L'Horloge des Galeries", "description": "à chaque heure, toute la galerie tourne une page." },
+  "minitel": { "name": "Le Minitel", "description": "une boîte à écran qui répond quand je tape." },
+  "computer": { "name": "Le Micro-Ordinateur", "description": "il garde mille livres et n'en oublie aucun." },
+  "search": { "name": "Le Moteur de Recherche", "description": "trois mots, et il me rend le bon livre." },
+  "crawler": { "name": "Le Robot d'Indexation", "description": "il parcourt les galeries sans moi." },
+  "algorithm": { "name": "L'Algorithme de Babel", "description": "un nombre, et le livre est déjà écrit." },
+  "bit": { "name": "Le Bit", "description": "un, zéro : toute la Bibliothèque." }
 }

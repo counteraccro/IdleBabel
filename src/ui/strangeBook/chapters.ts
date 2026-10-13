@@ -155,6 +155,12 @@ const TOOL_CAPTIONS: Record<string, string> = {
   lift: 'pulo vesk',
   automaton: 'automa lir',
   clock: 'horla galen',
+  minitel: 'tela miro',
+  computer: 'calda memor',
+  search: 'tri verba',
+  crawler: 'galen vagu',
+  algorithm: 'numer babel',
+  bit: 'uno nul',
 };
 
 export const CHAPTERS: readonly Chapter[] = [

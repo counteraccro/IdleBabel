@@ -108,7 +108,8 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['memory', 'a5', 'a4', 160],
   // L'Escalier : l'Âge Manuel est offert (il n'est pas une étoile à acheter), puis chaque Âge.
   ['ages', 'auto', null, 1],
-  ['ages', 'quantum', 'auto', 10],
+  // L'Âge Numérique : 1 500 Éther (validé le 13/10, simulé : achetée vers la 17e partie).
+  ['ages', 'quantum', 'auto', 1500],
   ['ages', 'dim', 'quantum', 100],
   ['ages', 'inf', 'dim', 1000],
   // La Plume (Alpha 1.1, 08/10) : le bec, puis la tige (la lettre vient plus souvent) jusqu'à la pointe (la Transe plus
@@ -172,11 +173,10 @@ export const starById = (id: string): Star | undefined => STARS.find((star) => s
 
 /**
  * Étoiles fermées, tant que ce qu'elles donnent n'existe pas (revue du 08/10, décision de l'auteur) : les Âges
- * Numérique (id 'quantum' : l'Âge Quantique jusqu'au 13/10, renommé par l'auteur), Dimensionnel et Infini, et la Goutte (la méthode secrète de l'Âge Automatique, mise de côté). Elles se
+ * Dimensionnel et Infini, et la Goutte (la méthode secrète de l'Âge Automatique, mise de côté). Elles se
  * voient sans dire leur nom, ne s'allument pas, et les sceaux de l'Etherium ne les comptent pas.
  */
 export const CLOSED: ReadonlySet<string> = new Set([
-  'ages.quantum',
   'ages.dim',
   'ages.inf',
   'memory.a0',

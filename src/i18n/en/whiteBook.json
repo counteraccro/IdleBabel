@@ -10,7 +10,8 @@
     "general": "General intuitions",
     "permanent": "Lasting intuitions",
     "manualAge": "The Manual Age",
-    "automaticAge": "The Automatic Age"
+    "automaticAge": "The Automatic Age",
+    "digitalAge": "The Digital Age"
   },
   "partDescriptions": {
     "method": "Ways of reading I found again. Each one takes me a little faster.",
@@ -20,7 +21,8 @@
     "general": "They belong to no method. They follow me from one Age to the next.",
     "permanent": "These ones I keep. Whatever happens.",
     "manualAge": "My hands, my eyes. Nothing else.",
-    "automaticAge": "Now things read for me. I don’t know if that is better."
+    "automaticAge": "Now things read for me. I don’t know if that is better.",
+    "digitalAge": "Machines that read nothing but numbers. And yet they read everything."
   },
   "anomaliesCompletion": "sentences found · {percent}",
   "anomalyFamilies": {
@@ -72,6 +74,12 @@
     "lift": "A pulley, / a basket. / The floors / come / to me.",
     "automaton": "It understands / nothing. / But it reads, / and it never / stops.",
     "clock": "Every hour, / the whole / gallery / turns / a page.",
+    "minitel": "This strange / device / seems to know / how to read / for me.",
+    "computer": "A screen, / a keyboard, / a box that grows warm. / It keeps a thousand books / and forgets none.",
+    "search": "I type / three words. / It gives me / the book / that holds them.",
+    "crawler": "It walks / the galleries / without me, / and forgets / no page.",
+    "algorithm": "A number / is enough. / The book / comes out, / whole, already written.",
+    "bit": "One, / zero. / The whole Library / fits in / these two signs.",
     "cup": "A cup, / chipped; / I always drank / from the side / of the chip.",
     "shelves": "Five shelves / per wall. / I counted / six, / once. / I did not / count again.",
     "thirtyOne": "Thirty-two books / per shelf. / On this one, / thirty-one. / Someone / is reading right now.",
@@ -225,116 +233,88 @@
       "name": "Ariadne's thread",
       "description": "Finds lean more often toward the sentence I am looking for.",
       "effect": "finds in the sentence I seek",
-      "notes": [
-        "I pull a thread. At the end, always the same sentence."
-      ]
+      "notes": ["I pull a thread. At the end, always the same sentence."]
     },
     "sentenceMemory": {
       "name": "Memory of sentences",
       "description": "I recognise what I have already read. Fewer repeats.",
       "effect": "finds already written",
-      "notes": [
-        "That one, I already have. I move on."
-      ]
+      "notes": ["That one, I already have. I move on."]
     },
     "speedReading": {
       "name": "Speed reading",
       "description": "My fingers turn the pages faster than my eyes.",
       "effect": "leaves turning on their own per second, at most",
-      "notes": [
-        "I no longer read. I leaf through, and it is enough."
-      ]
+      "notes": ["I no longer read. I leaf through, and it is enough."]
     },
     "muscleMemory": {
       "name": "Muscle memory",
       "description": "When I turn a page by hand, everything else follows.",
       "effect": "per click, on top: one second of reading",
-      "notes": [
-        "My gesture pulls the others along."
-      ]
+      "notes": ["My gesture pulls the others along."]
     },
     "returnMap": {
       "name": "Map of the Return",
       "description": "When I am away, I lose less of my reading.",
       "effect": "reading counted while away",
-      "notes": [
-        "I leave marks to find my page again."
-      ]
+      "notes": ["I leave marks to find my page again."]
     },
     "deepSleep": {
       "name": "Deep sleep",
       "description": "I sleep longer. The pages turn all that time.",
       "effect": "time away counted, at most",
-      "notes": [
-        "I sleep. The pages do not."
-      ]
+      "notes": ["I sleep. The pages do not."]
     },
     "flair": {
       "name": "Flair",
       "description": "I can sense the books that are not like the others.",
       "effect": "rare books",
-      "notes": [
-        "That one. I don't know why, but that one."
-      ]
+      "notes": ["That one. I don't know why, but that one."]
     },
     "bargain": {
       "name": "Economy of gesture",
       "description": "Each method costs me a little less to learn. Without end.",
       "effect": "price of methods",
-      "notes": [
-        "I no longer need to reread everything to learn."
-      ]
+      "notes": ["I no longer need to reread everything to learn."]
     },
     "watch": {
       "name": "The Watch",
       "description": "I watch the book: letters escape it more often.",
       "effect": "wait between two letters",
-      "notes": [
-        "They come out when I am not looking. So I look."
-      ],
+      "notes": ["They come out when I am not looking. So I look."],
       "between": "{min} to {max}"
     },
     "heldBreath": {
       "name": "The Held Breath",
       "description": "I hold my breath: the letter stays a little longer.",
       "effect": "time the letter stays",
-      "notes": [
-        "If I stop breathing, it hesitates."
-      ]
+      "notes": ["If I stop breathing, it hesitates."]
     },
     "letterUnderstood": {
       "name": "The Letter Understood",
       "description": "What a letter gives lasts a little longer.",
       "effect": "length of the letter’s boons",
-      "notes": [
-        "Each letter I catch leaves me a little of what it said."
-      ]
+      "notes": ["Each letter I catch leaves me a little of what it said."]
     },
     "flock": {
       "name": "The Flight",
       "description": "A caught letter sometimes calls another; that one, more rarely, a third. Their gifts add up.",
       "effect": "chance of a 2nd letter (of a 3rd)",
-      "notes": [
-        "They leave in a flight, like startled birds."
-      ],
+      "notes": ["They leave in a flight, like startled birds."],
       "chances": "{two} ({three})"
     },
     "armful": {
       "name": "The Armful",
       "description": "I take methods by the armful: ten, a hundred, or all I can carry.",
       "effect": "methods per click",
-      "notes": [
-        "Why just one, when my arms can hold ten?"
-      ],
+      "notes": ["Why just one, when my arms can hold ten?"],
       "all": "all"
     },
     "reminiscence": {
       "name": "Reminiscence",
       "description": "What I once understood comes back on its own, as far as I had gone.",
       "effect": "after a prestige, intuitions come back",
-      "notes": [
-        "I had understood it before. It comes back."
-      ],
+      "notes": ["I had understood it before. It comes back."],
       "byHand": "by hand",
       "alone": "on their own"
     },
@@ -352,16 +332,20 @@
         "wheel": "I barely push. It turns on its own.",
         "lift": "The basket never comes down empty.",
         "automaton": "It reads faster than I do. I do not hold it against it.",
-        "clock": "The hours are shorter. The pages, more numerous."
+        "clock": "The hours are shorter. The pages, more numerous.",
+        "minitel": "I type without looking at the keys.",
+        "computer": "It runs cooler. It keeps more.",
+        "search": "Two words are enough. Soon, just one.",
+        "crawler": "It comes back before I call it.",
+        "algorithm": "The numbers come on their own. So do the books.",
+        "bit": "I no longer see the letters. Only the ones and the zeros."
       }
     },
     "lightSleep": {
       "name": "Light Sleep",
       "description": "A sleeping book does not breathe. That one does.",
       "effect": "above the Mimic, while it sleeps",
-      "notes": [
-        "I can hear it snore, now."
-      ],
+      "notes": ["I can hear it snore, now."],
       "silent": "nothing",
       "heard": "“z z z”"
     }
@@ -425,6 +409,36 @@
       "description": "A clock without hands links every room of the gallery. At each stroke, every open book turns a page.",
       "quote": "I followed the ticking from one room to the next, for a long time, until I understood there was only one clock, hidden everywhere at once. It does not tell the time. It gives the signal. And at each signal, the whole gallery turns a page with me.",
       "source": "inscription carved beneath an empty dial"
+    },
+    "minitel": {
+      "description": "A beige box, a honey-coloured screen, a keyboard that folds away. You type, it answers, and the pages scroll by without anyone turning them.",
+      "quote": "I found it on a shelf, between two books, as if it were one of them. A wire came out of its back and disappeared into the wall. I pressed a key. The screen lit up, and lines came, one by one, faster than I read.",
+      "source": "label stuck under the device"
+    },
+    "computer": {
+      "description": "A screen, a keyboard, a box growing warm under the table. Whatever you give it, it keeps, and gives back whole.",
+      "quote": "The box purrs like a cat. I gave it a book, page by page, and the next day it gave it back to me without a single mistake. I gave it a thousand. It forgot none of them. I have already forgotten the first.",
+      "source": "volume 1,024, page 512"
+    },
+    "search": {
+      "description": "An empty box on a screen. You type a few words into it, and it searches the whole Library for the book that holds them.",
+      "quote": "All my life I have looked for one book. Here, three words are enough, and it offers thousands, sorted from most likely to least. The first is never the one I wanted. But it is always very close.",
+      "source": "sentence found at the top of a blank page"
+    },
+    "crawler": {
+      "description": "A program that never sleeps. It goes from hexagon to hexagon, opens every book, notes every page, and comes back.",
+      "quote": "I have never seen it. I only see its traces: books moved by an inch, pages turned while I slept, a list growing longer on the screen. It has been through galleries I will never reach. It brings me back everything.",
+      "source": "a reader's diary, unknown gallery"
+    },
+    "algorithm": {
+      "description": "A formula. Give it a number, and it returns the book that bears that number, letter for letter, without ever looking for it.",
+      "quote": "Every book in the Library has its number, and that number is enough to write it out in full. I no longer need to go and find it: I only have to calculate it. The book of my life has a number too. I do not dare type it.",
+      "source": "unnumbered volume"
+    },
+    "bit": {
+      "description": "The smallest of signs: one, or zero. Put end to end, they write any book.",
+      "quote": "For a long time I counted the twenty-five symbols of the Library. Two were enough. One, zero, one, one, zero: that is all the warm box holds, and yet it holds everything. I wonder what became of the other twenty-three.",
+      "source": "a memory from before waking"
     }
   },
   "stat": "Each: +{n} page/s · owned: {count}"

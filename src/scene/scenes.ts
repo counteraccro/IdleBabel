@@ -1,5 +1,5 @@
 import type { GameState } from '../core/state';
-import { AUTOMATIC_AGE } from '../data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE } from '../data/tools';
 import { starLit } from '../systems/etherium';
 
 /**
@@ -11,7 +11,7 @@ export interface SceneDefinition {
   id: SceneId;
   image: string;
   depth: string;
-  /** L'Âge qui l'apporte : 1 Manuel, 2 Automatique, 3 le suivant (pas encore dans le jeu). */
+  /** L'Âge qui l'apporte : 1 Manuel, 2 Automatique, 3 Numérique. */
   age: 1 | 2 | 3;
   /** Point de fuite (la fenêtre ou la porte du fond), en coordonnées d'image de 0 à 1. */
   vanishing: { x: number; y: number };
@@ -25,14 +25,15 @@ export const SCENES: readonly SceneDefinition[] = [
   { id: 'verriere', age: 3, image: 'scenes/verriere.jpg', depth: 'scenes/verriere-depth.png', vanishing: { x: 0.49, y: 0.6 } },
 ];
 
-/** L'Âge atteint : 1 Manuel, 2 Automatique (l'Âge Automatique s'achète dans l'Etherium et y reste). */
-const ageReached = (state: GameState): number => (starLit(state, AUTOMATIC_AGE) ? 2 : 1);
+/** L'Âge atteint : 1 Manuel, 2 Automatique, 3 Numérique (un Âge s'achète dans l'Etherium et y reste). */
+const ageReached = (state: GameState): number => (starLit(state, DIGITAL_AGE) ? 3 : starLit(state, AUTOMATIC_AGE) ? 2 : 1);
 
 /** Le fond de l'Âge atteint. */
 export const sceneOfAge = (state: GameState): SceneId => SCENES.filter((scene) => scene.age <= ageReached(state)).at(-1)!.id;
 
 /** Un fond déjà vu : son Âge est atteint. Les autres restent un cadre vide dans le cahier. */
-export const sceneSeen = (state: GameState, id: SceneId): boolean => SCENES.some((scene) => scene.id === id && scene.age <= ageReached(state));
+export const sceneSeen = (state: GameState, id: SceneId): boolean =>
+  SCENES.some((scene) => scene.id === id && scene.age <= ageReached(state));
 
 /**
  * Le fond à montrer : celui que le joueur garde, s'il l'a déjà vu (une sauvegarde effacée garde ses réglages,
