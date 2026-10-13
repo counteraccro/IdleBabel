@@ -7,7 +7,8 @@ import { meaningfulCovers } from '../../systems/stats';
 import { findChance } from '../../systems/knowledge';
 import { BASE_FIND_CHANCE, type FindKind } from '../../data/knowledge';
 import { filterMultiplier, gestureMultiplier, rareChance } from '../../systems/technologies';
-import { etherReading, findsMultiplier, readingMultiplier } from '../../systems/etherium';
+import { etherCounted, etherReading, findsMultiplier, readingMultiplier, weightLifted, weightPower } from '../../systems/etherium';
+import { ETHER_WEIGHT } from '../../data/etherium';
 import { nextRareChance } from '../../systems/rareBooks';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
@@ -131,6 +132,14 @@ const relicValue = (state: GameState): string => {
 const relicParts = (state: GameState, readable: boolean): string[] => {
   const id = state.relics.active;
   return id && readable ? [t(`strangeBook.figures.relicParts.${id}`).replace('{name}', relicName(id))] : [];
+};
+
+/** Le poids de la Bibliothèque (13/10) : l'Éther que la lecture compte, sur l'Éther reçu ; levé, l'Atlas finie. */
+const weightValue = (state: GameState): string => number(Math.round(etherCounted(state.etherReceived, weightLifted(state))));
+const weightParts = (state: GameState, readable: boolean): string => {
+  const lifted = weightPower(weightLifted(state)) >= 1;
+  if (!readable) return lifted ? '' : `${number(state.etherReceived)}`;
+  return t(`strangeBook.figures.${lifted ? 'etherWeightLifted' : 'etherWeightParts'}`).replace('{n}', number(ETHER_WEIGHT.from));
 };
 
 /** Où en est le prochain Éther, en pour cent des pages qui le séparent du dernier. */
@@ -271,6 +280,14 @@ export const CHAPTERS: readonly Chapter[] = [
     figures: [
       { id: 'ether', caption: 'etra dulmo', value: (s) => number(s.ether), detail: etherSpentParts },
       { id: 'etherReceived', caption: 'etra vunel', value: (s) => number(s.etherReceived) },
+      // Le poids de la Bibliothèque, dès qu'il pèse.
+      {
+        id: 'etherWeight',
+        caption: 'etra gravel',
+        value: weightValue,
+        detail: weightParts,
+        shown: (s) => s.etherReceived > ETHER_WEIGHT.from,
+      },
       { id: 'prestigeGain', caption: 'etra sopi nar', value: (s) => number(prestigeGain(s)) },
       {
         id: 'nextEther',

@@ -1,3 +1,5 @@
+import { ETHER_WEIGHT } from './etherium';
+
 /**
  * L'Etherium en constellations (validé avec l'auteur le 06/10/2026, .ai/plan-etherium-constellations.md) : une figure
  * par page, dont les étoiles disent ce qu'elles donnent. Chaque étoile n'a qu'une étoile d'avant (pas de raccourci) ;
@@ -5,9 +7,10 @@
  * se multiplient (ou s'ajoutent, pour les quantités). Prix provisoires : le simulateur s'en sert aussi
  * (simulateur/vie.ts). Textes : etherium.pages.<page> et etherium.stars.<page>.<étoile>.
  */
-/** L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10). */
+/** L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10), puis le Poids, qui les touche tous (13/10). */
 export const ETHERIUM_PAGES = [
   'ages',
+  'weight',
   'reading',
   'hands',
   'knowledge',
@@ -119,6 +122,15 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['ages', 'quantum', 'auto', 1500],
   ['ages', 'dim', 'quantum', 100],
   ['ages', 'inf', 'dim', 1000],
+  // Le Poids, l'Atlas (13/10, piste B de .ai/maquette-etherium-numerique.html) : du pied à la salle qu'il porte, chaque
+  // étoile allège le poids de la Bibliothèque ; la dernière le lève.
+  ['weight', 'w1', null, 10_000],
+  ['weight', 'w2', 'w1', 25_000],
+  ['weight', 'w3', 'w2', 60_000],
+  ['weight', 'w4', 'w3', 150_000],
+  ['weight', 'w5', 'w4', 400_000],
+  ['weight', 'w6', 'w5', 1_000_000],
+  ['weight', 'w7', 'w6', 2_500_000],
   // La Plume (Alpha 1.1, 08/10) : le bec, puis la tige (la lettre vient plus souvent) jusqu'à la pointe (la Transe plus
   // forte) ; les barbes de gauche (durées, temps à l'écran), celles de droite (un bonus de plus chacune).
   ['quill', 'nib', null, 3],
@@ -216,6 +228,9 @@ export const NEEDS_AGE: ReadonlyMap<string, string> = new Map(
 /** Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration). */
 export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e', relics: 'explore.w' };
 
+/** Une page qui attend l'Éther reçu : le Poids, quand l'Éther commence à peser (blanche jusque-là, absente du sommaire). */
+export const PAGE_NEEDS_ETHER: Partial<Record<PageId, number>> = { weight: ETHER_WEIGHT.from };
+
 /** L'étoile qu'il faut avoir allumée avant de pouvoir allumer `id` : l'Âge de son alvéole, ou celle qui débloque sa page. */
 export const neededFor = (id: string): string | undefined => NEEDS_AGE.get(id) ?? PAGE_NEEDS[id.slice(0, id.indexOf('.')) as PageId];
 
@@ -259,6 +274,16 @@ export const EFFECT = {
   mimicComes: { 'mimic.t1': 1.25, 'mimic.t2': 1.5, 'mimic.t3': 2 },
   /** + part rendue par la Mimic, en plus des 10 % (les dents du bas ; la plus haute compte). */
   mimicGives: { 'mimic.b1': 0.2, 'mimic.b2': 0.35, 'mimic.b3': 0.5, 'mimic.b4': 0.75, 'mimic.b5': 1 },
+  /** + exposant du poids de la Bibliothèque (l'Atlas ; data/etherium.ts, ETHER_WEIGHT). */
+  weight: {
+    'weight.w1': 0.1,
+    'weight.w2': 0.1,
+    'weight.w3': 0.1,
+    'weight.w4': 0.1,
+    'weight.w5': 0.1,
+    'weight.w6': 0.1,
+    'weight.w7': 0.1,
+  },
   /** Le niveau du bonus de chaque relique (data/relics.ts, RelicDef.bonus) : ses deux étoiles ; la plus haute compte. */
   relicLevel: { 'relics.l1': 1, 'relics.l2': 2, 'relics.a1': 1, 'relics.a2': 2, 'relics.h1': 1, 'relics.h2': 2 },
 } as const satisfies Record<string, Record<string, number>>;

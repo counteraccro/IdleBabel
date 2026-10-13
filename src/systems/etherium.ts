@@ -1,5 +1,18 @@
-import { afterLit, CLOSED, EFFECT, KEEPS, RELIC_BRANCH, S, SIMPLE, neededFor, starById } from '../data/etheriumStars';
-import { ETHER_READING } from '../data/etherium';
+import {
+  afterLit,
+  CLOSED,
+  EFFECT,
+  KEEPS,
+  PAGE_NEEDS,
+  PAGE_NEEDS_ETHER,
+  RELIC_BRANCH,
+  S,
+  SIMPLE,
+  neededFor,
+  starById,
+  type PageId,
+} from '../data/etheriumStars';
+import { ETHER_READING, ETHER_WEIGHT } from '../data/etherium';
 import { SENTENCES } from '../data/sentences';
 import type { GameState } from '../core/state';
 
@@ -18,7 +31,20 @@ export const starOpen = (state: GameState, id: string): boolean => {
   const star = starById(id);
   if (!star || starLit(state, id) || CLOSED.has(id)) return false;
   const needed = neededFor(id);
-  return afterLit(star, (before) => starLit(state, before)) && (!needed || starLit(state, needed));
+  return (
+    afterLit(star, (before) => starLit(state, before)) &&
+    (!needed || starLit(state, needed)) &&
+    state.etherReceived >= etherNeeded(star.page)
+  );
+};
+
+/** L'Éther reçu qu'attend une page pour s'ouvrir (le Poids : 5 000), 0 sinon. */
+export const etherNeeded = (page: PageId): number => PAGE_NEEDS_ETHER[page] ?? 0;
+
+/** La page est ouverte : rien ne la débloque (sinon, son étoile est allumée), et l'Éther reçu suffit (le Poids). */
+export const pageOpen = (state: GameState, page: PageId): boolean => {
+  const needed = PAGE_NEEDS[page];
+  return (!needed || starLit(state, needed)) && state.etherReceived >= etherNeeded(page);
 };
 
 /** Allume une étoile ouverte, s'il y a assez d'Éther. Renvoie true si elle s'allume. */
@@ -38,8 +64,23 @@ const product = (state: GameState, effect: Record<string, number>): number =>
 const sum = (state: GameState, effect: Record<string, number>): number =>
   Object.entries(effect).reduce((total, [id, value]) => (starLit(state, id) ? total + value : total), 0);
 
-/** L'Éther reçu depuis toujours, dépensé ou non : 1 % de lecture en plus chacun (méthodes et clics). */
-export const etherReading = (state: GameState): number => 1 + state.etherReceived * ETHER_READING;
+/**
+ * L'Éther reçu tel que la lecture le compte (le poids de la Bibliothèque) : tout jusqu'à 5 000, puis
+ * 5 000 × (reçu / 5 000)^exposant ; l'exposant part de 0,3, et chaque étoile de l'Atlas l'élève, jusqu'à 1.
+ */
+export const etherCounted = (received: number, lifted: number): number => {
+  const { from, power } = ETHER_WEIGHT;
+  return received <= from ? received : from * (received / from) ** weightPower(lifted);
+};
+
+/** L'exposant du poids, `lifted` ce qu'ont ajouté les étoiles de l'Atlas allumées (1 : le poids levé). */
+export const weightPower = (lifted: number): number => Math.min(1, Number((ETHER_WEIGHT.power + lifted).toFixed(6)));
+
+/** Ce que les étoiles de l'Atlas allumées ont ôté au poids. */
+export const weightLifted = (state: GameState): number => sum(state, EFFECT.weight);
+
+/** L'Éther reçu depuis toujours, dépensé ou non : 1 % de lecture en plus chacun (méthodes et clics), sous le poids. */
+export const etherReading = (state: GameState): number => 1 + etherCounted(state.etherReceived, weightLifted(state)) * ETHER_READING;
 
 // Ce que font les étoiles.
 

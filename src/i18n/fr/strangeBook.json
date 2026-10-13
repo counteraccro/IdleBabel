@@ -46,7 +46,10 @@
       "loupe": "{name} · Connaissance à chaque trouvaille",
       "astrolabe": "{name} · la lettre vient plus souvent",
       "hourglass": "{name} · pages lues, méthodes et clics"
-    }
+    },
+    "etherWeight": "Éther que compte la lecture",
+    "etherWeightParts": "le poids de la Bibliothèque : chaque Éther au-delà de {n} compte moins",
+    "etherWeightLifted": "le poids de la Bibliothèque est levé"
   },
   "sealsTitle": "Sceaux",
   "sealsCompletion": "des sceaux portent ta marque",
@@ -264,6 +267,7 @@
     "relicChanges": ["Changer d’avis", "Hésiter : {n} changements de relique", "Ne jamais choisir : {n} changements de relique"],
     "constellation-mimic": "Compte-lui toutes ses dents",
     "constellation-relics": "Allume tout le Cabinet",
+    "constellation-weight": "Lève le poids de la Bibliothèque",
     "intuition-lightSleep": "Entends dormir un livre"
   }
 }

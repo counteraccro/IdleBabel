@@ -46,7 +46,10 @@
       "loupe": "{name} · knowledge with every find",
       "astrolabe": "{name} · the letter comes more often",
       "hourglass": "{name} · pages read, methods and clicks"
-    }
+    },
+    "etherWeight": "Ether that reading counts",
+    "etherWeightParts": "the weight of the Library: each Ether beyond {n} counts for less",
+    "etherWeightLifted": "the weight of the Library is lifted"
   },
   "sealsTitle": "Seals",
   "sealsCompletion": "of the seals bear your mark",
@@ -264,6 +267,7 @@
     "relicChanges": ["A change of heart", "Hesitate: {n} changes of relic", "Never choose: {n} changes of relic"],
     "constellation-mimic": "Count all its teeth",
     "constellation-relics": "Light the whole Cabinet",
+    "constellation-weight": "Lift the weight of the Library",
     "intuition-lightSleep": "Hear a book sleeping"
   }
 }

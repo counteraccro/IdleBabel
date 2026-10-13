@@ -32,6 +32,11 @@
       "figure": "Le Livre ouvert",
       "description": "Mes méthodes lisent plus vite."
     },
+    "weight": {
+      "name": "Le Poids",
+      "figure": "L’Atlas",
+      "description": "Chaque Éther pèse un peu plus que le précédent."
+    },
     "hands": {
       "name": "Mains",
       "figure": "La Main",
@@ -648,6 +653,43 @@
         "value": "La patience :",
         "effect": "6 h pour changer de relique (au lieu de 12 h)"
       }
+    },
+    "weight": {
+      "w1": {
+        "name": "Le pied",
+        "value": "Poids allégé :",
+        "effect": "l’Éther au-delà de 5 000 compte davantage (puissance 0,4)"
+      },
+      "w2": {
+        "name": "Le genou",
+        "value": "Poids allégé :",
+        "effect": "l’Éther au-delà de 5 000 compte davantage (puissance 0,5)"
+      },
+      "w3": {
+        "name": "La hanche",
+        "value": "Poids allégé :",
+        "effect": "l’Éther au-delà de 5 000 compte davantage (puissance 0,6)"
+      },
+      "w4": {
+        "name": "L’épaule",
+        "value": "Poids allégé :",
+        "effect": "l’Éther au-delà de 5 000 compte davantage (puissance 0,7)"
+      },
+      "w5": {
+        "name": "Le coude",
+        "value": "Poids allégé :",
+        "effect": "l’Éther au-delà de 5 000 compte davantage (puissance 0,8)"
+      },
+      "w6": {
+        "name": "La main",
+        "value": "Poids allégé :",
+        "effect": "l’Éther au-delà de 5 000 compte davantage (puissance 0,9)"
+      },
+      "w7": {
+        "name": "La salle",
+        "value": "Poids levé :",
+        "effect": "tout l’Éther reçu compte (puissance 1)"
+      }
     }
   },
   "keep": "sa phrase reste au prestige",
@@ -667,10 +709,12 @@
   "contentsLine": "Ce que l’Éther a éclairé.",
   "offered": "offerte",
   "locked": "Cette page attend\nque l’Exploration la trouve.",
+  "lockedWeight": "Cette page attend\nque l’Éther pèse.",
   "compass": {
     "east": "E",
     "west": "O",
     "north": "N",
     "south": "S"
-  }
+  },
+  "readingWeight": "+{n} % de lecture : un par Éther reçu, moins au-delà de 5 000"
 }

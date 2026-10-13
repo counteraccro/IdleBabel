@@ -9,5 +9,12 @@ export const ETHER_PAGES = 1e9;
 /** Lecture en plus pour chaque Éther reçu depuis toujours (dépensé ou non) : 1 %. */
 export const ETHER_READING = 0.01;
 
+/**
+ * Le poids de la Bibliothèque (idée de l'auteur, 13/10, .ai/plan-age-numerique.md) : la lecture de l'Éther compte tout
+ * l'Éther reçu jusqu'à `from`, puis from × (reçu / from)^power. Les étoiles de l'Atlas élèvent l'exposant (EFFECT.weight),
+ * jusqu'à 1 (le poids levé). Sans lui, le +1 % par Éther fait spirale dans l'Âge Numérique.
+ */
+export const ETHER_WEIGHT = { from: 5000, power: 0.3 };
+
 /** Pages lues à vie à partir desquelles le nom de l'Etherium et sa ruche paraissent sur sa couverture. */
 export const ETHERIUM_NAMED_PAGES = 1e6;

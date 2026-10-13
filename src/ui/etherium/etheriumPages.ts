@@ -1,6 +1,7 @@
 import { ETHERIUM_PAGES } from '../../data/etheriumStars';
 import { nextEtherPages } from '../../systems/prestige';
-import { etherReading } from '../../systems/etherium';
+import { etherReading, weightLifted, weightPower } from '../../systems/etherium';
+import { ETHER_WEIGHT } from '../../data/etherium';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
 import { getLocale, t } from '../../i18n';
 import { constellationPage, pageLocked, starViews } from './constellationPage';
@@ -39,9 +40,16 @@ const drawTitle = (ctx: Ctx, state: GameState): void => {
   rule(ctx, 294, 130);
   write(ctx, plain(state.ether), 320, 380, { size: 64, face: TITLE, weight: '600', color: C.gold, align: 'center' });
   write(ctx, t('etherium.ether'), 320, 470, { size: 20, italic: true, color: C.faded, align: 'center', spacing: 3 });
-  // L'Éther reçu depuis toujours, dépensé ou non : 1 % de lecture en plus chacun.
+  // L'Éther reçu depuis toujours, dépensé ou non : 1 % de lecture en plus chacun ; moins au-delà de 5 000, sous le poids.
   const reading = plain(Math.round((etherReading(state) - 1) * 100));
-  write(ctx, t('etherium.reading').replace('{n}', reading), 320, 535, { size: 18, italic: true, color: C.gold, align: 'center', fit: 560 });
+  const weighed = state.etherReceived > ETHER_WEIGHT.from && weightPower(weightLifted(state)) < 1;
+  write(ctx, t(weighed ? 'etherium.readingWeight' : 'etherium.reading').replace('{n}', reading), 320, 535, {
+    size: 18,
+    italic: true,
+    color: C.gold,
+    align: 'center',
+    fit: 560,
+  });
   // Ce qu'il reste à lire : « dans 125 milliards de pages » (le « de » des toutes lettres : formatCount).
   const missing = formatCount(Math.max(0, nextEtherPages(state) - state.totalPagesRead), getLocale());
   write(ctx, t('etherium.next').replace('{n}', missing), 320, 620, { size: 18, italic: true, color: C.faded, align: 'center', fit: 560 });

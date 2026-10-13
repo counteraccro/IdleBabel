@@ -23,7 +23,8 @@ import {
   TARGET_SHARE,
 } from '../src/data/knowledge';
 import { ETHER_READING } from '../src/data/etherium';
-import { DIGITAL_EFFECT, PLAYER, WEIGHT, WEIGHT_STARS } from './config';
+import { DIGITAL_EFFECT, PLAYER } from './config';
+import { etherCounted as weighed } from '../src/systems/etherium';
 import { sealCount } from './sceaux';
 import { BIT, DIGITAL_AGE, keptMethods, methodSequence, SECRET, type Method } from './methodes';
 import { EFFECT, S } from '../src/data/etheriumStars';
@@ -112,13 +113,8 @@ const allMethods = (run: Run): Method[] => [...run.methods, SECRET, ...(bitSough
 /** L'Éther reçu depuis toujours : +1 % de lecture chacun (méthodes et feuille tournée à la main). */
 const etherReading = (run: Run): number => (PLAYER.etherReading ? 1 + ETHER_READING * etherCounted(run.life) : 1);
 
-/** L'Éther reçu tel que la lecture le compte : tout, ou moins au-delà de WEIGHT.from avec le poids (--poids). */
-const etherCounted = (life: Life): number => {
-  const received = life.etherReceived;
-  if (!PLAYER.weight || received <= WEIGHT.from) return received;
-  const power = Math.min(1, WEIGHT.power + WEIGHT.step * WEIGHT_STARS.filter((star) => life.stars.has(star.id)).length);
-  return WEIGHT.from * (received / WEIGHT.from) ** power;
-};
+/** L'Éther reçu tel que la lecture le compte : sous le poids de la Bibliothèque (celui du jeu), ou tout (--sans-poids). */
+const etherCounted = (life: Life): number => (PLAYER.weight ? weighed(life.etherReceived, sum(life, EFFECT.weight)) : life.etherReceived);
 
 /**
  * Ce que lit une méthode ; `away` : sans la Transe de la lettre ni la Mimic (ni l'une ni l'autre ne vient pendant

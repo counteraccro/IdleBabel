@@ -32,6 +32,11 @@
       "figure": "The Open Book",
       "description": "My methods read faster."
     },
+    "weight": {
+      "name": "The Weight",
+      "figure": "Atlas",
+      "description": "Each Ether weighs a little more than the one before."
+    },
     "hands": {
       "name": "Hands",
       "figure": "The Hand",
@@ -648,6 +653,43 @@
         "value": "Patience:",
         "effect": "6 h to change relics (instead of 12 h)"
       }
+    },
+    "weight": {
+      "w1": {
+        "name": "The foot",
+        "value": "Weight eased:",
+        "effect": "Ether beyond 5,000 counts for more (power 0.4)"
+      },
+      "w2": {
+        "name": "The knee",
+        "value": "Weight eased:",
+        "effect": "Ether beyond 5,000 counts for more (power 0.5)"
+      },
+      "w3": {
+        "name": "The hip",
+        "value": "Weight eased:",
+        "effect": "Ether beyond 5,000 counts for more (power 0.6)"
+      },
+      "w4": {
+        "name": "The shoulder",
+        "value": "Weight eased:",
+        "effect": "Ether beyond 5,000 counts for more (power 0.7)"
+      },
+      "w5": {
+        "name": "The elbow",
+        "value": "Weight eased:",
+        "effect": "Ether beyond 5,000 counts for more (power 0.8)"
+      },
+      "w6": {
+        "name": "The hand",
+        "value": "Weight eased:",
+        "effect": "Ether beyond 5,000 counts for more (power 0.9)"
+      },
+      "w7": {
+        "name": "The room",
+        "value": "Weight lifted:",
+        "effect": "all Ether received counts (power 1)"
+      }
     }
   },
   "keep": "its sentence stays through prestige",
@@ -667,10 +709,12 @@
   "contentsLine": "What the Ether has lit.",
   "offered": "given",
   "locked": "This page is waiting\nfor Exploration to find it.",
+  "lockedWeight": "This page is waiting\nfor the Ether to weigh.",
   "compass": {
     "east": "E",
     "west": "W",
     "north": "N",
     "south": "S"
-  }
+  },
+  "readingWeight": "+{n}% reading: one per Ether received, less beyond 5,000"
 }

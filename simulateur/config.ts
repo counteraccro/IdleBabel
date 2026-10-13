@@ -27,10 +27,10 @@ export const PLAYER = {
   /** L'Éther reçu fait lire plus vite (+1 % chacun, 07/10) ; --sans-ether-lecture pour s'en passer. */
   etherReading: true,
   /**
-   * Le poids de la Bibliothèque (idée de l'auteur, 13/10 ; --poids) : au-delà de WEIGHT.from Éther reçus, chacun compte
-   * de moins en moins dans la lecture de l'Éther ; les étoiles de WEIGHT_STARS l'allègent.
+   * Le poids de la Bibliothèque (idée de l'auteur, 13/10 ; dans le jeu : data/etherium.ts, ETHER_WEIGHT) : au-delà de
+   * 5 000 Éther reçus, chacun compte de moins en moins dans la lecture de l'Éther ; l'Atlas l'allège. --sans-poids.
    */
-  weight: false,
+  weight: true,
   /**
    * Quand la phrase de la première méthode Automatique se trouve : 'échelle', comme toutes les méthodes (l'Échelle à
    * 25 exemplaires, METHOD_GATE) ; 'âge', dès l'Âge acheté (le prix seul fait le verrou).
@@ -45,7 +45,21 @@ export const PLAYER = {
   prestigeWhenRateBelow: 0.8,
   maxRunHours: 48,
   /** Les pages de l'Etherium où le bot allume des étoiles (--pages=reading,hands pour n'en essayer que quelques-unes). */
-  pages: ['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'quill', 'ages', 'explore', 'mimic', 'relics'] as PageId[],
+  pages: [
+    'reading',
+    'hands',
+    'knowledge',
+    'finds',
+    'away',
+    'start',
+    'memory',
+    'quill',
+    'ages',
+    'weight',
+    'explore',
+    'mimic',
+    'relics',
+  ] as PageId[],
   /** La Page Cornée (1re étoile de la Ruche) ; --sans-cornee pour s'en passer (et donc de toute la Ruche). */
   cornee: true,
   /**
@@ -104,12 +118,3 @@ export const DIGITAL_EFFECT = {
   reading: { 'screen.plug': 1.1, 'screen.s1': 1.25, 'screen.s2': 1.25, 'screen.s3': 1.5, 'screen.s4': 2 },
   knowledge: { 'screen.k1': 1.25, 'screen.k2': 1.5, 'screen.k3': 1.5, 'screen.k4': 2 },
 };
-
-/**
- * Le poids de la Bibliothèque (--poids) : la lecture de l'Éther compte E Éther jusqu'à `from`, puis
- * from × (E / from)^exposant ; l'exposant part de `power` et chaque étoile de WEIGHT_STARS l'élève de `step` (1 : levé).
- */
-export const WEIGHT = { from: 5000, power: 0.3, step: 0.1 };
-export const WEIGHT_STARS: { id: string; page: string; after?: string; cost: number }[] = [
-  10_000, 25_000, 60_000, 150_000, 400_000, 1_000_000, 2_500_000,
-].map((cost, i) => ({ id: `weight.w${i + 1}`, page: 'weight', after: i ? `weight.w${i}` : undefined, cost }));

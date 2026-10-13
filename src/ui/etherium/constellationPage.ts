@@ -1,5 +1,5 @@
-import { CLOSED, KEEPS, PAGE_NEEDS, STARS, neededFor, type PageId } from '../../data/etheriumStars';
-import { lightStar, starLit, starOpen } from '../../systems/etherium';
+import { CLOSED, KEEPS, STARS, neededFor, type PageId } from '../../data/etheriumStars';
+import { etherNeeded, lightStar, pageOpen, starLit, starOpen } from '../../systems/etherium';
 import { formatNumber, writeDigits } from '../../core/format';
 import { getLocale, t } from '../../i18n';
 import { FIGURES, type Figure, type Sketch } from './constellations';
@@ -82,11 +82,8 @@ export const starViews = (state: GameState, page: PageId): StarView[] => {
   return [...given, ...stars];
 };
 
-/** Une page qu'une autre débloque (la Mimic) : blanche jusque-là, et absente du sommaire. */
-export const pageLocked = (state: GameState, page: PageId): boolean => {
-  const needed = PAGE_NEEDS[page];
-  return !!needed && !starLit(state, needed);
-};
+/** Une page qu'une autre débloque (la Mimic), ou qui attend l'Éther reçu (le Poids) : blanche jusque-là, absente du sommaire. */
+export const pageLocked = (state: GameState, page: PageId): boolean => !pageOpen(state, page);
 
 const plain = (value: number): string => formatNumber(value, getLocale());
 
@@ -191,16 +188,16 @@ const sketch = (ctx: Ctx, { lines, circle, rings, labels, eye }: Sketch): void =
     write(ctx, t(`etherium.compass.${key}`), x, y - 10, { size: 14, face: TITLE, color: C.faded, align: 'center' });
 };
 
-/** Une page pas encore débloquée : quelques mots au crayon, et son numéro. */
-const drawLocked = (ctx: Ctx, number: number): void => {
-  t('etherium.locked')
+/** Une page pas encore débloquée : quelques mots au crayon (le Poids attend l'Éther, les autres l'Exploration), et son numéro. */
+const drawLocked = (ctx: Ctx, page: PageId, number: number): void => {
+  t(etherNeeded(page) > 0 ? 'etherium.lockedWeight' : 'etherium.locked')
     .split('\n')
     .forEach((text, i) => write(ctx, text, 320, 360 + i * 36, { size: 30, face: HAND, align: 'center', color: C.faded }));
   nightFolio(ctx, number);
 };
 
 const drawConstellation = (ctx: Ctx, state: GameState, page: PageId, number: number, hovered: string | null): void => {
-  if (pageLocked(state, page)) return drawLocked(ctx, number);
+  if (pageLocked(state, page)) return drawLocked(ctx, page, number);
   const figure = FIGURES[page];
   const stars = starViews(state, page);
   const byId = Object.fromEntries(stars.map((star) => [star.id, star]));

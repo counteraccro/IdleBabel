@@ -84,6 +84,38 @@ const glassSide = (side: number): (readonly [number, number])[] =>
 
 // La Ruche, piste A de la maquette (.ai/maquette-etherium-numerique.html, choix de l'auteur, 13/10) : trois alvéoles en
 // ligne, un peu plus petites pour tenir côte à côte.
+// L'Atlas, piste B (.ai/maquette-etherium-numerique.html, choix de l'auteur, 13/10) : un géant agenouillé, qui porte une
+// salle de la Bibliothèque (l'hexagone, l'hexagone intérieur, une étagère sur chaque mur).
+const ROOM = [330, 350] as const;
+const roomHex = (r: number) => [0, 1, 2, 3, 4, 5, 6].map((i) => ring(ROOM, r, 30 + i * 60));
+const ATLAS_BODY: readonly (readonly (readonly [number, number])[])[] = [
+  // La jambe à genou, la jambe pliée devant, le dos, le bras gauche sous le fardeau, le bras droit.
+  [
+    [130, 660],
+    [250, 660],
+    [280, 560],
+  ],
+  [
+    [280, 560],
+    [400, 545],
+    [440, 660],
+  ],
+  [
+    [280, 560],
+    [300, 465],
+  ],
+  [
+    [300, 465],
+    [235, 430],
+    [250, 380],
+  ],
+  [
+    [300, 465],
+    [400, 430],
+    [415, 382],
+  ],
+];
+
 const MANUAL_CELL = [120, 470] as const;
 const AUTO_CELL = [320, 470] as const;
 const DIGITAL_CELL = [520, 470] as const;
@@ -200,6 +232,29 @@ export const FIGURES: Record<PageId, Figure> = {
       ['a5', 'a0'],
       ['n5', 'n0'],
     ],
+  },
+  // Du pied à la salle qu'il porte, chaque étoile allège le poids de la Bibliothèque.
+  weight: {
+    spots: {
+      w1: [130, 660],
+      w2: [250, 660],
+      w3: [280, 560],
+      w4: [300, 465],
+      w5: [400, 430],
+      w6: [415, 382],
+      w7: [330, 350],
+    },
+    deco: [],
+    sketch: {
+      lines: [
+        ...ATLAS_BODY,
+        roomHex(92),
+        roomHex(58),
+        ...[0, 1, 2, 3, 4, 5].map((i) => [ring(ROOM, 60, 30 + i * 60 + 22), ring(ROOM, 84, 30 + i * 60 + 18)]),
+      ],
+      // La tête, sous la salle.
+      rings: [[332, 458, 15]],
+    },
   },
   ages: {
     spots: { manual: [320, 665], auto: [440, 575], quantum: [215, 490], dim: [410, 405], inf: [280, 325] },

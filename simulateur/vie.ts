@@ -1,6 +1,7 @@
 import { afterLit, CLOSED, EFFECT, RELIC_BRANCH, S, STARS, neededFor, type PageId } from '../src/data/etheriumStars';
 import { relicById } from '../src/data/relics';
-import { DIGITAL_STARS, PLAYER, WEIGHT_STARS } from './config';
+import { DIGITAL_STARS, PLAYER } from './config';
+import { etherNeeded } from '../src/systems/etherium';
 
 /** Ce qui survit au prestige : les pages à vie, l'Éther, les étoiles allumées, la Page Cornée une fois retrouvée. */
 export interface Life {
@@ -85,10 +86,10 @@ const open = (life: Life): Buyable[] => [
       !CLOSED.has(star.id) &&
       afterLit(star, (id) => life.stars.has(id)) &&
       (!neededFor(star.id) || life.stars.has(neededFor(star.id)!)) &&
-      (PLAYER.cornee || star.id !== S.cornee),
+      (PLAYER.cornee || star.id !== S.cornee) &&
+      (PLAYER.weight || star.page !== 'weight') &&
+      life.etherReceived >= etherNeeded(star.page),
   ),
-  // Celles qui allègent le poids de la Bibliothèque (--poids).
-  ...(PLAYER.weight ? WEIGHT_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after))) : []),
   // Celles de l'Âge Numérique (proposées : simulateur/config.ts), une fois l'Âge acheté.
   ...(life.stars.has('ages.quantum')
     ? DIGITAL_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after)))
@@ -144,11 +145,26 @@ export const relicBonus = (life: Life, id: string, none: number): number => {
 
 /** Étoiles allumées sur chaque page. */
 export const litPerPage = (life: Life): string =>
-  (['reading', 'hands', 'knowledge', 'finds', 'away', 'start', 'memory', 'quill', 'ages', 'explore', 'mimic', 'relics'] as PageId[])
+  (
+    [
+      'reading',
+      'hands',
+      'knowledge',
+      'finds',
+      'away',
+      'start',
+      'memory',
+      'quill',
+      'ages',
+      'weight',
+      'explore',
+      'mimic',
+      'relics',
+    ] as PageId[]
+  )
     .map(
       (page) =>
         `${page} ${STARS.filter((s) => s.page === page && life.stars.has(s.id)).length}/${STARS.filter((s) => s.page === page).length}`,
     )
     .concat([`numérique ${DIGITAL_STARS.filter((s) => life.stars.has(s.id)).length}/${DIGITAL_STARS.length}`])
-    .concat(PLAYER.weight ? [`poids ${WEIGHT_STARS.filter((s) => life.stars.has(s.id)).length}/${WEIGHT_STARS.length}`] : [])
     .join(', ');
