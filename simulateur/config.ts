@@ -84,9 +84,9 @@ for (const part of readingOption?.split(',') ?? []) {
  * pages/s, morceaux de la phrase. Pas encore d'intuitions ni de secrète (le Bit).
  */
 export const DIGITAL = [
-  { id: 'minitel', baseCost: 1e19, pagesPerSecond: 4.5e14, pieces: 8 },
-  { id: 'floppy', baseCost: 2e20, pagesPerSecond: 6e15, pieces: 5 },
-  { id: 'search', baseCost: 4e21, pagesPerSecond: 8e16, pieces: 5 },
-  { id: 'crawler', baseCost: 8e22, pagesPerSecond: 1.1e18, pieces: 5 },
-  { id: 'algorithm', baseCost: 1.6e24, pagesPerSecond: 1.5e19, pieces: 5 },
+  { id: 'minitel', baseCost: 6e15, pagesPerSecond: 2.5e9, pieces: 8 },
+  { id: 'floppy', baseCost: 5e16, pagesPerSecond: 6e9, pieces: 5 },
+  { id: 'search', baseCost: 4e17, pagesPerSecond: 1.5e10, pieces: 5 },
+  { id: 'crawler', baseCost: 3.2e18, pagesPerSecond: 4e10, pieces: 5 },
+  { id: 'algorithm', baseCost: 2.5e19, pagesPerSecond: 1e11, pieces: 5 },
 ];
