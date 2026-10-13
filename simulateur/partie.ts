@@ -29,7 +29,7 @@ import { keptMethods, methodSequence, SECRET, type Method } from './methodes';
 import { EFFECT, S } from '../src/data/etheriumStars';
 import { lit, product, relicBonus, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
-import { MIMIC_BONUS } from '../src/data/mimic';
+import { MIMIC_BONUS, MIMIC_EVERY } from '../src/data/mimic';
 
 /** Une partie, du réveil au prestige. */
 export interface Run {
@@ -37,6 +37,8 @@ export interface Run {
   methods: Method[];
   /** Secondes de jeu depuis le réveil, absences comprises. */
   t: number;
+  /** Secondes de jeu à l'écran depuis le réveil (sans les absences). */
+  played: number;
   pages: number;
   /** Pages lues dans cette partie (elles s'ajoutent aux pages à vie au prestige). */
   read: number;
@@ -60,6 +62,7 @@ export const newRun = (life: Life): Run => {
     life,
     methods: methodSequence(life),
     t: 0,
+    played: 0,
     pages: 0,
     read: 0,
     knowledge: 0,
@@ -148,21 +151,30 @@ const progress = (run: Run, method: Method, found: number): void => {
 };
 
 /**
- * La Mimic (11/10) : le bot la laisse manger et l'attrape à chaque fois, la Connaissance lui revient avec le bonus
- * (10 %, et les dents du bas). En moyenne, une Connaissance ×(1 + bonus), un peu en retard (négligé).
+ * La Mimic (11/10) : une par heure de jeu à l'écran en moyenne (les dents du haut la font venir plus souvent) ; le bot la
+ * laisse manger PLAYER.mimicMinutes puis l'attrape, et toujours avant de fermer le jeu. Elle rend tout avec le bonus
+ * (10 %, et les dents du bas) : en moyenne, une Connaissance ×(1 + bonus × part du temps où elle est là), un peu en
+ * retard (négligé).
  */
-const mimicAverage = (life: Run['life']): number =>
-  lit(life, S.mimic) ? 1 + MIMIC_BONUS + Math.max(0, ...Object.entries(EFFECT.mimicGives).map(([id, v]) => (lit(life, id) ? v : 0))) : 1;
+const mimicEvery = (life: Life): number =>
+  MIMIC_EVERY / Math.max(1, ...Object.entries(EFFECT.mimicComes).map(([id, v]) => (lit(life, id) ? v : 0)));
+const mimicStay = (): number => PLAYER.mimicMinutes * 60;
+/** Part du temps à l'écran où une Mimic est là. */
+const mimicPresence = (life: Life): number => (lit(life, S.mimic) ? mimicStay() / (mimicEvery(life) + mimicStay()) : 0);
+/** Ce qu'elle rend en plus de ce qu'elle a avalé. */
+const mimicGives = (life: Life): number =>
+  MIMIC_BONUS + Math.max(0, ...Object.entries(EFFECT.mimicGives).map(([id, v]) => (lit(life, id) ? v : 0)));
 
 /** Pages tournées pendant `seconds` : les trouvailles qu'elles cachent, la Connaissance et les phrases des méthodes. */
 const find = (run: Run, turned: number, away = false): void => {
   const chance = findChance(run, away);
   const finds = turned * chance;
   // La Loupe : des connaissances garanties en plus, à chaque trouvaille.
-  const knowledge =
-    finds *
-    (product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0)) *
-    mimicAverage(run.life);
+  const found =
+    finds * (product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0));
+  const mimicBonus = away ? 0 : found * mimicGives(run.life) * mimicPresence(run.life);
+  run.life.mimic.bonus += mimicBonus;
+  const knowledge = found + mimicBonus;
   run.knowledge += knowledge;
   run.knowledgeGained += knowledge;
   run.life.finds += finds;
@@ -217,7 +229,12 @@ export const play = (run: Run, seconds: number): void => {
   run.life.bestSpeed = Math.max(run.life.bestSpeed, pps);
   // L'Annulaire : ×2 chance de trouvaille sur les pages tournées à la main (comme deux fois plus de pages).
   find(run, (Math.min(pps, turnsCap(run) * 2) + clicking * 2 * (lit(run.life, S.ring) ? 2 : 1)) * seconds);
+  if (lit(run.life, S.mimic)) {
+    run.life.mimic.caught += seconds / (mimicEvery(run.life) + mimicStay());
+    run.life.mimic.seconds += seconds * mimicPresence(run.life);
+  }
   run.t += seconds;
+  run.played += seconds;
   run.life.clock += seconds;
 };
 

@@ -27,6 +27,10 @@ export interface Life {
   /** Les reliques trouvées (pour toujours) et celle qui agit. */
   relics: Set<string>;
   relic: string | null;
+  /** Changements de relique (ses sceaux). */
+  relicChanges: number;
+  /** La Mimic, depuis toujours (ses sceaux) : attrapées, connaissances rendues en plus, secondes à manger. */
+  mimic: { caught: number; bonus: number; seconds: number };
 }
 
 export const newLife = (): Life => ({
@@ -48,6 +52,8 @@ export const newLife = (): Life => ({
   previous: { owned: {}, read: 0, knowledge: 0, levels: {} },
   relics: new Set(),
   relic: null,
+  relicChanges: 0,
+  mimic: { caught: 0, bonus: 0, seconds: 0 },
 });
 
 /** Conception §4.1 : floor(∛(pages à vie / 1 Md)), moins ce qui est déjà reçu. */
@@ -104,7 +110,9 @@ export const takeRelics = (life: Life): void => {
   if (!life.stars.has(S.relics)) return;
   life.relics.add('loupe');
   if (life.stars.has(S.age)) life.relics.add('astrolabe');
-  life.relic = life.relics.has('astrolabe') && PLAYER.letters > 0 ? 'astrolabe' : 'loupe';
+  const relic = life.relics.has('astrolabe') && PLAYER.letters > 0 ? 'astrolabe' : 'loupe';
+  if (life.relic !== null && life.relic !== relic) life.relicChanges += 1;
+  life.relic = relic;
 };
 
 /** Ce que donne la relique `id` si elle agit (au niveau de ses étoiles) ; sinon `none`. */

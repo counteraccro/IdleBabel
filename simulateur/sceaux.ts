@@ -29,6 +29,13 @@ const asState = (run: Run): GameState => {
   state.exiles = life.prestiges;
   state.etherReceived = life.etherReceived;
   state.etherium = [...life.stars];
+  state.mimic = { ...state.mimic, ...life.mimic };
+  state.relics = {
+    ...state.relics,
+    found: Object.fromEntries([...life.relics].map((id) => [id, now])),
+    active: life.relic as GameState['relics']['active'],
+    changes: life.relicChanges,
+  };
   return state;
 };
 

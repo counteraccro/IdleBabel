@@ -32,7 +32,7 @@ export const PLAYER = {
    */
   automaticGate: 'âge' as 'échelle' | 'âge',
   /**
-   * Quand le bot fait son prestige (toujours au bout de `maxRunHours`, s'il rapporte) : 'double', quand il rapporte
+   * Quand le bot fait son prestige (toujours au bout de `maxRunHours` heures de jeu, absences non comprises, s'il rapporte) : 'double', quand il rapporte
    * au moins autant d'Éther qu'il en a déjà reçu ; 'taux', dès que l'Éther gagné par heure de partie baisse sous
    * `prestigeWhenRateBelow` fois le meilleur vu dans la partie.
    */
@@ -48,4 +48,9 @@ export const PLAYER = {
    * --lettres=0 pour s'en passer.
    */
   letters: 0.5,
+  /**
+   * La Mimic : minutes que le bot la laisse manger avant de l'attraper (elle ne vient qu'à l'écran du jeu). Il l'attrape
+   * toujours avant de fermer le jeu : elle ne mange pas l'absence.
+   */
+  mimicMinutes: 30,
 };

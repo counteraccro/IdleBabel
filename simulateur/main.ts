@@ -6,7 +6,7 @@
  *   npm run simule -- --jours=60 --rythme=2,22 --sans-cornee --porte=échelle --prestige=taux
  *   npm run simule -- --pages=reading,hands    le bot n'allume que les étoiles de ces pages (et l'Âge Automatique)
  *   npm run simule -- --sceaux=30 --sans-ether-lecture   sceaux fixes, sans la lecture de l'Éther reçu (comme avant le 07/10)
- *   npm run simule -- --partie-max=240         parties de 10 jours au plus (absences comprises), pour un rythme lent
+ *   npm run simule -- --partie-max=96          parties de 96 heures de jeu au plus (absences non comprises)
  *   npm run simule -- --lettres=0              sans la lettre qui s'échappe (0,5 : le bot en attrape une sur deux)
  */
 import { PLAYER } from './config';
@@ -64,7 +64,7 @@ const playRun = (run: Run, end: number): number => {
     checkSeals(run);
     const gain = etherGain(run.life, run.read);
     if (gain < 1) continue;
-    if (run.t >= PLAYER.maxRunHours * 3600) return gain;
+    if (run.played >= PLAYER.maxRunHours * 3600) return gain;
     if (PLAYER.prestige === 'double' && gain >= run.life.etherReceived) return gain;
     const rate = gain / run.t;
     bestRate = Math.max(bestRate, rate);
