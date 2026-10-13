@@ -1,6 +1,7 @@
 import { METHOD_CHAIN, TOOLS } from '../src/data/tools';
 import { KEEPS, S } from '../src/data/etheriumStars';
 import { lit, type Life } from './vie';
+import { DIGITAL as DIGITAL_PROPOSED } from './config';
 
 /** Une méthode pour le simulateur : celles du jeu (src/data/tools.ts). */
 export interface Method {
@@ -11,6 +12,8 @@ export interface Method {
   /** Son intuition : production ×2 par niveau. */
   gesture?: string;
   manual?: boolean;
+  /** L'Âge où elle se découvre (rien : le Manuel) ; la première d'un Âge n'attend que la phrase de la dernière d'avant. */
+  age?: string;
 }
 
 /** Morceaux des phrases des méthodes du jeu (whiteBook.sentences, en français). */
@@ -23,6 +26,7 @@ const method = (tool: (typeof TOOLS)[number]): Method => ({
   pieces: PIECES[tool.id] ?? 5,
   gesture: `${tool.id}Gesture`,
   manual: !tool.age,
+  age: tool.age,
 });
 
 const MANUAL: Method[] = METHOD_CHAIN.filter((tool) => !tool.age).map(method);
@@ -33,8 +37,16 @@ export const AUTOMATIC: Method[] = METHOD_CHAIN.filter((tool) => tool.age).map(m
 /** La Page Cornée, méthode secrète de l'Âge Manuel (dans le jeu : src/data/tools.ts). */
 export const SECRET: Method = method(TOOLS.find((tool) => tool.secret)!);
 
+/** L'Âge Numérique (proposé : simulateur/config.ts), sans intuitions. */
+export const DIGITAL_AGE = 'ages.quantum';
+export const DIGITAL: Method[] = DIGITAL_PROPOSED.map((m) => ({ ...m, age: DIGITAL_AGE }));
+
 /** Les méthodes dans l'ordre où leurs phrases se trouvent, selon les Âges achetés. */
-export const methodSequence = (life: Life): Method[] => (lit(life, S.age) ? [...MANUAL, ...AUTOMATIC] : MANUAL);
+export const methodSequence = (life: Life): Method[] => [
+  ...MANUAL,
+  ...(lit(life, S.age) ? AUTOMATIC : []),
+  ...(lit(life, S.age) && lit(life, DIGITAL_AGE) ? DIGITAL : []),
+];
 
 /** Méthodes gardées par la Mémoire des méthodes (une étoile de la Ruche chacune). */
 export const keptMethods = (life: Life): string[] => Object.keys(KEEPS).filter((id) => lit(life, KEEPS[id]));

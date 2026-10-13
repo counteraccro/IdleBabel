@@ -136,8 +136,8 @@ const target = (run: Run): Method | undefined => {
   if (index < 0) return undefined;
   if (index === 0) return run.methods[0];
   const previous = run.methods[index - 1];
-  const firstAutomatic = !run.methods[index].manual && previous.manual;
-  if (firstAutomatic && PLAYER.automaticGate === 'âge') return run.methods[index];
+  const firstOfAge = run.methods[index].age !== previous.age;
+  if (firstOfAge && PLAYER.automaticGate === 'âge') return run.methods[index];
   return (run.owned[previous.id] ?? 0) >= METHOD_GATE ? run.methods[index] : undefined;
 };
 

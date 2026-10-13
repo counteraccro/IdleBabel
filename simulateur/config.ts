@@ -53,4 +53,21 @@ export const PLAYER = {
    * toujours avant de fermer le jeu : elle ne mange pas l'absence.
    */
   mimicMinutes: 30,
+  /**
+   * L'Âge Numérique (proposé, pas dans le jeu ; 13/10) : le prix de son étoile en Éther, ou 0 pour s'en passer
+   * (--numerique=500). Ses méthodes : DIGITAL ci-dessous.
+   */
+  digitalAge: 0,
 };
+
+/**
+ * Les méthodes de l'Âge Numérique (liste choisie par l'auteur le 13/10 ; prix et lectures proposés, à simuler) : prix,
+ * pages/s, morceaux de la phrase. Pas encore d'intuitions ni de secrète (le Bit).
+ */
+export const DIGITAL = [
+  { id: 'minitel', baseCost: 1e19, pagesPerSecond: 4.5e14, pieces: 8 },
+  { id: 'floppy', baseCost: 2e20, pagesPerSecond: 6e15, pieces: 5 },
+  { id: 'search', baseCost: 4e21, pagesPerSecond: 8e16, pieces: 5 },
+  { id: 'crawler', baseCost: 8e22, pagesPerSecond: 1.1e18, pieces: 5 },
+  { id: 'algorithm', baseCost: 1.6e24, pagesPerSecond: 1.5e19, pieces: 5 },
+];

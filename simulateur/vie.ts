@@ -79,23 +79,26 @@ const open = (life: Life) =>
     (star) =>
       !life.stars.has(star.id) &&
       PLAYER.pages.includes(star.page) &&
-      !CLOSED.has(star.id) &&
+      (!CLOSED.has(star.id) || (star.id === 'ages.quantum' && PLAYER.digitalAge > 0 && life.stars.has(S.age))) &&
       afterLit(star, (id) => life.stars.has(id)) &&
       (!neededFor(star.id) || life.stars.has(neededFor(star.id)!)) &&
       (PLAYER.cornee || star.id !== S.cornee),
   );
 
+/** Son prix ; l'Âge Numérique, celui qu'essaie le simulateur (PLAYER.digitalAge). */
+const starCost = (star: (typeof STARS)[number]): number => (star.id === 'ages.quantum' ? PLAYER.digitalAge : star.cost);
+
 /** Au réveil : le bot prend l'Âge Automatique d'abord, puis l'étoile la moins chère qu'il peut s'offrir, tant qu'il peut. */
 export const spendEther = (life: Life): string[] => {
   const bought: string[] = [];
   for (;;) {
-    const choices = open(life).sort((a, b) => Number(b.id === S.age) - Number(a.id === S.age) || a.cost - b.cost);
+    const choices = open(life).sort((a, b) => Number(b.id === S.age) - Number(a.id === S.age) || starCost(a) - starCost(b));
     const star = choices[0];
-    if (!star || star.cost > life.etherFree) {
+    if (!star || starCost(star) > life.etherFree) {
       takeRelics(life);
       return bought;
     }
-    life.etherFree -= star.cost;
+    life.etherFree -= starCost(star);
     life.stars.add(star.id);
     bought.push(star.id);
   }

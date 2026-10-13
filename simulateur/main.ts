@@ -8,10 +8,11 @@
  *   npm run simule -- --sceaux=30 --sans-ether-lecture   sceaux fixes, sans la lecture de l'Éther reçu (comme avant le 07/10)
  *   npm run simule -- --partie-max=96          parties de 96 heures de jeu au plus (absences non comprises)
  *   npm run simule -- --lettres=0              sans la lettre qui s'échappe (0,5 : le bot en attrape une sur deux)
+ *   npm run simule -- --numerique=500          l'Âge Numérique proposé (simulateur/config.ts), son étoile à 500 Éther
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
-import { AUTOMATIC } from './methodes';
+import { AUTOMATIC, DIGITAL } from './methodes';
 import { away, buyMethods, newRun, pagesPerSecond, play, type Run } from './partie';
 import { buyIntuitions } from './intuitions';
 import { etherGain, litPerPage, newLife, spendEther } from './vie';
@@ -30,6 +31,7 @@ if (option('partie-max')) PLAYER.maxRunHours = Number(option('partie-max'));
 if (option('sceaux')) PLAYER.seals = Number(option('sceaux'));
 if (option('sans-ether-lecture') !== undefined) PLAYER.etherReading = false;
 if (option('lettres') !== undefined) PLAYER.letters = Number(option('lettres'));
+if (option('numerique')) PLAYER.digitalAge = Number(option('numerique'));
 // L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
 if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
 
@@ -90,6 +92,8 @@ for (let number = 1; life.clock < end; number++) {
     duration(firstAutomatic),
     // Première fois que chaque méthode Automatique s'achète dans la partie (– : jamais).
     AUTOMATIC.map((method) => short(run.firstBought[method.id])).join(' · '),
+    // Pareil pour l'Âge Numérique (proposé).
+    DIGITAL.map((method) => short(run.firstBought[method.id])).join(' · '),
     String(sealCount(run)),
     gain > 0 ? `+${gain}` : '(en cours)',
   ];
@@ -114,6 +118,7 @@ const header = [
   'Cornée',
   '1re Auto',
   'Auto 1 · 2 · 3 · 4 · 5',
+  'Num 1 · 2 · 3 · 4 · 5',
   'sceaux',
   'Éther',
   'total',
