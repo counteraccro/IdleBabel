@@ -1,7 +1,7 @@
 import { METHOD_CHAIN, TOOLS } from '../src/data/tools';
 import { KEEPS, S } from '../src/data/etheriumStars';
 import { lit, type Life } from './vie';
-import { DIGITAL as DIGITAL_PROPOSED } from './config';
+import { DIGITAL as DIGITAL_PROPOSED, PLAYER } from './config';
 
 /** Une méthode pour le simulateur : celles du jeu (src/data/tools.ts). */
 export interface Method {
@@ -21,8 +21,9 @@ const PIECES: Record<string, number> = { diagonal: 4, finger: 4, voice: 4, lecte
 
 const method = (tool: (typeof TOOLS)[number]): Method => ({
   id: tool.id,
-  baseCost: tool.baseCost,
-  pagesPerSecond: tool.pagesPerSecond,
+  baseCost: PLAYER.methods[tool.id]?.baseCost ?? tool.baseCost,
+  pagesPerSecond:
+    (PLAYER.methods[tool.id]?.pagesPerSecond ?? tool.pagesPerSecond) * (tool.age ? PLAYER.reading.auto : PLAYER.reading.manual),
   pieces: PIECES[tool.id] ?? 5,
   gesture: `${tool.id}Gesture`,
   manual: !tool.age,
@@ -39,7 +40,11 @@ export const SECRET: Method = method(TOOLS.find((tool) => tool.secret)!);
 
 /** L'Âge Numérique (proposé : simulateur/config.ts), sans intuitions. */
 export const DIGITAL_AGE = 'ages.quantum';
-export const DIGITAL: Method[] = DIGITAL_PROPOSED.map((m) => ({ ...m, age: DIGITAL_AGE }));
+export const DIGITAL: Method[] = DIGITAL_PROPOSED.map((m) => ({
+  ...m,
+  pagesPerSecond: m.pagesPerSecond * PLAYER.reading.num,
+  age: DIGITAL_AGE,
+}));
 
 /** Les méthodes dans l'ordre où leurs phrases se trouvent, selon les Âges achetés. */
 export const methodSequence = (life: Life): Method[] => [

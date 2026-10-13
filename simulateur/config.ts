@@ -58,7 +58,26 @@ export const PLAYER = {
    * (--numerique=500). Ses méthodes : DIGITAL ci-dessous.
    */
   digitalAge: 0,
+  /**
+   * Lecture des méthodes de chaque Âge, multipliée (essais du 13/10 : adoucir le gain d'un Âge à l'autre) :
+   * --lecture=auto:0.1,num:0.01 ; 1 partout, les chiffres du jeu.
+   */
+  /** Prix et lecture d'une méthode du jeu remplacés, pour essayer (--methode=voice:12000:18,lectern:800000:650). */
+  methods: {} as Record<string, { baseCost: number; pagesPerSecond: number }>,
+  reading: { manual: 1, auto: 1, num: 1 } as Record<'manual' | 'auto' | 'num', number>,
 };
+
+const methodOption = process.argv.find((arg) => arg.startsWith('--methode='))?.split('=')[1];
+for (const part of methodOption?.split(',') ?? []) {
+  const [id, baseCost, pagesPerSecond] = part.split(':');
+  PLAYER.methods[id] = { baseCost: Number(baseCost), pagesPerSecond: Number(pagesPerSecond) };
+}
+// Lu ici et pas dans main.ts : les méthodes (methodes.ts) sont calculées dès leur import.
+const readingOption = process.argv.find((arg) => arg.startsWith('--lecture='))?.split('=')[1];
+for (const part of readingOption?.split(',') ?? []) {
+  const [age, factor] = part.split(':');
+  PLAYER.reading[age as keyof typeof PLAYER.reading] = Number(factor);
+}
 
 /**
  * Les méthodes de l'Âge Numérique (liste choisie par l'auteur le 13/10 ; prix et lectures proposés, à simuler) : prix,

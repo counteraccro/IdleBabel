@@ -9,6 +9,8 @@
  *   npm run simule -- --partie-max=96          parties de 96 heures de jeu au plus (absences non comprises)
  *   npm run simule -- --lettres=0              sans la lettre qui s'échappe (0,5 : le bot en attrape une sur deux)
  *   npm run simule -- --numerique=500          l'Âge Numérique proposé (simulateur/config.ts), son étoile à 500 Éther
+ *   npm run simule -- --lecture=auto:0.1       la lecture des méthodes d'un Âge multipliée (manual, auto, num)
+ *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
@@ -88,6 +90,8 @@ for (let number = 1; life.clock < end; number++) {
     duration(run.t),
     big(run.read),
     big(pagesPerSecond(run)),
+    // Première fois que chaque méthode Manuelle s'achète (le Doigt, la Voix, le Lutrin, l'Échelle).
+    ['finger', 'voice', 'lectern', 'ladder'].map((id) => short(run.firstBought[id])).join(' · '),
     duration(run.firstBought.cornee),
     duration(firstAutomatic),
     // Première fois que chaque méthode Automatique s'achète dans la partie (– : jamais).
@@ -115,6 +119,7 @@ const header = [
   'durée',
   'pages lues',
   'pages/s fin',
+  'Doigt · Voix · Lutrin · Échelle',
   'Cornée',
   '1re Auto',
   'Auto 1 · 2 · 3 · 4 · 5',
