@@ -81,7 +81,7 @@ for (const part of readingOption?.split(',') ?? []) {
 
 /**
  * Les méthodes de l'Âge Numérique (liste choisie par l'auteur le 13/10 ; prix et lectures proposés, à simuler) : prix,
- * pages/s, morceaux de la phrase. Pas encore d'intuitions ni de secrète (le Bit).
+ * pages/s, morceaux de la phrase. Essai C validé par l'auteur (13/10). Pas encore d'intuitions ni de secrète (le Bit).
  */
 export const DIGITAL = [
   { id: 'minitel', baseCost: 6e15, pagesPerSecond: 2.5e9, pieces: 8 },
