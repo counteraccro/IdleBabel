@@ -2,6 +2,16 @@ import { TECHNOLOGIES } from '../src/data/technologies';
 import { EFFECT, S } from '../src/data/etheriumStars';
 import type { Run } from './partie';
 import { lit, product } from './vie';
+import { DIGITAL_GESTURES } from './config';
+
+/** Les 5 niveaux d'une intuition de méthode (comme gesture(), src/data/technologies.ts). */
+const gesture = (first: number): number[] => [1, 2, 4, 8, 16].map((step) => first * step);
+
+/** Celles du jeu, plus celles de l'Âge Numérique (proposées : simulateur/config.ts). */
+const ALL: readonly { id: string; prices: readonly number[]; tool?: string; growth?: number }[] = [
+  ...TECHNOLOGIES,
+  ...Object.entries(DIGITAL_GESTURES).map(([tool, first]) => ({ id: `${tool}Gesture`, prices: gesture(first), tool })),
+];
 
 /** Celles qui changent le rythme de la partie ; le bot laisse les autres (Flair, Brassée, Réminiscence…). */
 const USEFUL = [
@@ -21,10 +31,10 @@ const USEFUL = [
 ];
 
 const priceAt = (id: string, level: number): number | undefined => {
-  const tech = TECHNOLOGIES.find((t) => t.id === id)!;
-  const prices: readonly number[] = tech.prices;
+  const tech = ALL.find((t) => t.id === id)!;
+  const prices = tech.prices;
   if (level < prices.length) return prices[level];
-  return 'growth' in tech ? prices[prices.length - 1] * tech.growth ** (level - prices.length + 1) : undefined;
+  return tech.growth ? prices[prices.length - 1] * tech.growth ** (level - prices.length + 1) : undefined;
 };
 
 /** Le bot comprend l'intuition la moins chère qu'il peut s'offrir, tant qu'il peut (celle d'une méthode : une fois retrouvée). */
@@ -32,8 +42,8 @@ export const buyIntuitions = (run: Run): void => {
   for (;;) {
     let cheapest: string | undefined;
     let cheapestPrice = Infinity;
-    for (const tech of TECHNOLOGIES) {
-      const useful = 'tool' in tech ? run.unlocked.has(tech.tool) : USEFUL.includes(tech.id);
+    for (const tech of ALL) {
+      const useful = tech.tool ? run.unlocked.has(tech.tool) : USEFUL.includes(tech.id);
       const base = useful ? priceAt(tech.id, run.levels[tech.id] ?? 0) : undefined;
       // La Chouette (−10 %, −25 %) ; l'Auriculaire : la Mémoire musculaire moitié prix.
       const cost = base && base * product(run.life, EFFECT.intuitions) * (tech.id === 'muscleMemory' && lit(run.life, S.pinky) ? 0.5 : 1);

@@ -99,3 +99,16 @@ export const DIGITAL = [
  * « Un, zéro. Toute la Bibliothèque tient dans ces deux signes. »
  */
 export const DIGITAL_SECRET = { id: 'bit', baseCost: 2.56e17, pagesPerSecond: 6.4e10, pieces: 5 };
+
+/**
+ * Intuitions de l'Âge Numérique (proposées le 13/10) : une par méthode, ×2 par niveau, 5 niveaux, premier prix dans la
+ * suite de celles de l'Âge Automatique (100 000 … 1,6 M) ; le Bit entre le Micro-Ordinateur et le Moteur de Recherche.
+ */
+export const DIGITAL_GESTURES: Record<string, number> = {
+  minitel: 3.2e6,
+  computer: 6.4e6,
+  bit: 8e6,
+  search: 12.8e6,
+  crawler: 25.6e6,
+  algorithm: 51.2e6,
+};

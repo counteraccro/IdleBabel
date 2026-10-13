@@ -15,7 +15,7 @@
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
-import { AUTOMATIC, DIGITAL } from './methodes';
+import { AUTOMATIC, BIT, DIGITAL } from './methodes';
 import { away, buyMethods, newRun, pagesPerSecond, play, type Run } from './partie';
 import { buyIntuitions } from './intuitions';
 import { etherGain, litPerPage, newLife, spendEther } from './vie';
@@ -101,6 +101,9 @@ for (let number = 1; life.clock < end; number++) {
     // Pareil pour l'Âge Numérique (proposé).
     DIGITAL.map((method) => short(run.firstBought[method.id])).join(' · '),
     short(run.firstBought.bit),
+    // Connaissance gagnée dans la partie ; niveaux des intuitions de l'Âge Numérique (le Bit en dernier).
+    big(run.knowledgeGained),
+    [...DIGITAL, BIT].map((method) => run.levels[method.gesture!] ?? 0).join(''),
     String(sealCount(run)),
     gain > 0 ? `+${gain}` : '(en cours)',
   ];
@@ -128,6 +131,8 @@ const header = [
   'Auto 1 · 2 · 3 · 4 · 5',
   'Num 1 · 2 · 3 · 4 · 5',
   'Bit',
+  'Conn.',
+  'Int. Num',
   'sceaux',
   'Éther',
   'total',

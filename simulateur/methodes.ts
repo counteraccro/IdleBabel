@@ -38,16 +38,22 @@ export const AUTOMATIC: Method[] = METHOD_CHAIN.filter((tool) => tool.age).map(m
 /** La Page Cornée, méthode secrète de l'Âge Manuel (dans le jeu : src/data/tools.ts). */
 export const SECRET: Method = method(TOOLS.find((tool) => tool.secret)!);
 
-/** L'Âge Numérique (proposé : simulateur/config.ts), sans intuitions. */
+/** L'Âge Numérique (proposé : simulateur/config.ts), ses intuitions : DIGITAL_GESTURES. */
 export const DIGITAL_AGE = 'ages.quantum';
 export const DIGITAL: Method[] = DIGITAL_PROPOSED.map((m) => ({
   ...m,
   pagesPerSecond: m.pagesPerSecond * PLAYER.reading.num,
+  gesture: `${m.id}Gesture`,
   age: DIGITAL_AGE,
 }));
 
 /** Le Bit, méthode secrète de l'Âge Numérique (proposé : simulateur/config.ts). */
-export const BIT: Method = { ...DIGITAL_SECRET, pagesPerSecond: DIGITAL_SECRET.pagesPerSecond * PLAYER.reading.num, age: DIGITAL_AGE };
+export const BIT: Method = {
+  ...DIGITAL_SECRET,
+  pagesPerSecond: DIGITAL_SECRET.pagesPerSecond * PLAYER.reading.num,
+  gesture: 'bitGesture',
+  age: DIGITAL_AGE,
+};
 
 /** Les méthodes dans l'ordre où leurs phrases se trouvent, selon les Âges achetés. */
 export const methodSequence = (life: Life): Method[] => [
