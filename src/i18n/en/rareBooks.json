@@ -1059,6 +1059,7 @@
               "heading": "Fixes",
               "items": [
                 "The return-from-absence notice shows the real counted duration (8 hours, plus Deep Sleep and the Moon), instead of always eight hours.",
+                "Knowledge is shown without decimals: every gain is rounded up to the next whole number.",
                 "Texts revised: the story of the first prestige, the Ledger, one seal and the Minitel page."
               ]
             }

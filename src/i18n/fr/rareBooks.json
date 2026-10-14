@@ -1068,6 +1068,7 @@
               "heading": "Corrections",
               "items": [
                 "Le retour d’absence indique la vraie durée comptée (8 heures, plus le Sommeil profond et la Lune), au lieu de toujours huit heures.",
+                "La Connaissance s’affiche sans décimales : chaque gain est arrondi à l’entier supérieur.",
                 "Textes revus : le récit du premier prestige, le Grand Livre, un sceau et la page du Minitel."
               ]
             }
