@@ -2,6 +2,7 @@ import { CLOSED, KEEPS, STARS, neededFor, type PageId } from '../../data/etheriu
 import { lightStar, pageOpen, starLit, starOpen } from '../../systems/etherium';
 import { etherSpendable } from '../../systems/prestige';
 import { FEED_FLASH } from './feedButton';
+import { announceBribe } from './trueStoryNews';
 import { formatNumber, writeDigits } from '../../core/format';
 import { getLocale, t } from '../../i18n';
 import { FIGURES, type Figure, type Sketch } from './constellations';
@@ -361,7 +362,7 @@ export const constellationPage = (state: GameState, page: PageId, number: number
         window.dispatchEvent(new Event(FEED_FLASH));
         return;
       }
-      if (etherSpendable(state)) lightStar(state, `${page}.${id}`);
+      if (etherSpendable(state) && lightStar(state, `${page}.${id}`) && page === 'curtain') announceBribe(state);
     },
   });
 };

@@ -332,6 +332,67 @@ export const FIGURES: Record<PageId, Figure> = {
       ],
     },
   },
+  // Le Rideau (14/10, .ai/maquette-faux-livre.html, à l'identique) : fermé, vu de face, sans courbe ; la tringle et ses deux
+  // bouts, les deux pans qui se rejoignent au milieu, d'autres plis droits qui s'évasent un peu, le sol. L'ourlet, festonné
+  // par le bas des plis, ne fait que relier.
+  curtain: {
+    spots: {
+      c0: [320, 300],
+      lm: [232, 300],
+      rm: [408, 300],
+      l: [144, 300],
+      r: [496, 300],
+      blm: [226, 646],
+      brm: [414, 646],
+      bl: [128, 664],
+      br: [512, 664],
+    },
+    deco: [
+      ['bl', 'blm'],
+      ['blm', 'brm'],
+      ['brm', 'br'],
+    ],
+    sketch: {
+      lines: [
+        [
+          [104, 300],
+          [536, 300],
+        ],
+        [
+          [104, 292],
+          [104, 308],
+        ],
+        [
+          [536, 292],
+          [536, 308],
+        ],
+        [
+          [320, 304],
+          [320, 652],
+        ],
+        [
+          [188, 304],
+          [178, 655],
+        ],
+        [
+          [276, 304],
+          [272, 650],
+        ],
+        [
+          [364, 304],
+          [368, 650],
+        ],
+        [
+          [452, 304],
+          [462, 655],
+        ],
+        [
+          [104, 684],
+          [536, 684],
+        ],
+      ],
+    },
+  },
   ages: {
     spots: { manual: [320, 665], auto: [440, 575], quantum: [215, 490], dim: [410, 405], inf: [280, 325] },
     deco: [],

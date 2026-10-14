@@ -28,7 +28,7 @@ export interface RareBookArt {
   /** La page du signet (son sommaire) : un clic sur le ruban y ramène ; sans : la page de titre. */
   bookmark?: number;
   /** Les entrées cliquables de la page `page` (un sommaire) : chacune mène à sa page. */
-  links?: (page: number) => PageLink[];
+  links?: (page: number, state: GameState) => PageLink[];
   /** Le lien `link` de la page `page` vient d'être suivi (un livre-jeu : le chemin du lecteur) ; dans la bibliothèque seulement. */
   followed?: (page: number, link: PageLink, state: GameState) => void;
   /**

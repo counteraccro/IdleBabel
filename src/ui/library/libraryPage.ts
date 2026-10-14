@@ -28,6 +28,9 @@ import { layoutBookcase, type ShelfPlace } from './shelfLayout';
 import { shelfLook } from './shelfLook';
 import type { GameState } from '../../core/state';
 import { animationNow } from '../animationClock';
+import { TRUE_STORY_BOOK } from '../../data/trueStory';
+import { storyBribes } from '../../systems/etherium';
+import { trueStoryOpensAt } from '../rareBooks/trueStory/trueStoryPages';
 
 /**
  * Le livre de débogage : un livre rare (10× plus rare), rangé dans sa case à lui ; il ne s'ouvre qu'en mode
@@ -40,6 +43,13 @@ export const LIBRARY_FIRST_BOOK = 'first';
 export const LIBRARY_CREDITS_BOOK = 'credits';
 /** Le livre de la fin (la partie racontée) : pendant le développement, seulement en mode ?debug, seul dans sa case. */
 export const LIBRARY_FINAL_BOOK = 'final';
+/**
+ * « Mon histoire vraie », la fausse fin (14/10) : dès la première étoile du Rideau, il prend la case gardée pour le livre
+ * de la fin (qui ne s'y montre plus, même en mode ?debug), et s'ouvre sur sa dernière bribe.
+ */
+export const LIBRARY_STORY_BOOK = TRUE_STORY_BOOK;
+/** « Mon histoire vraie » est dans la vitrine : une étoile du Rideau au moins est allumée. */
+export const storyShelved = (state: GameState): boolean => storyBribes(state) > 0;
 
 /**
  * Le livre de la vitrine `id` : le premier livre lu, ou un livre rare. Le livre de débogage, en mode ?debug :
@@ -52,7 +62,10 @@ export const shelfBook3d = (state: GameState, id: string, debugging: boolean): B
       ? debugBook3d()
       : id === LIBRARY_FINAL_BOOK
         ? finalBook3d(state)
-        : rareBook3d(state, id);
+        : id === LIBRARY_STORY_BOOK
+          ? // Le livre lui-même, pas une copie : la page 3D y branche `navigate`, que ses signets et ‹ › appellent.
+            Object.assign(rareBook3d(state, id), { openAt: trueStoryOpensAt(storyBribes(state)) })
+          : rareBook3d(state, id);
 
 /** Le livre qui vole de la vitrine à sa page (et retour) : son nom dans bookFlight. */
 export const libraryFlightId = (id: string): string => `library:${id}`;
@@ -164,7 +177,7 @@ export const createLibraryPage = (
   const cartouche = createCartouche(() => (dirty = true));
   const shelfText = (): string =>
     cartoucheText(
-      found.length + (isRareBookFound(state, LIBRARY_DEBUG_BOOK) ? 1 : 0),
+      found.length + (isRareBookFound(state, LIBRARY_DEBUG_BOOK) ? 1 : 0) + (storyShelved(state) ? 1 : 0),
       RELICS.filter((relic) => relicFound(state, relic.id)).length,
     );
   cartouche.mesh.position.set(0, bookcase.size.y - CORNICE_MIDDLE, CORNICE_FRONT);
@@ -174,7 +187,8 @@ export const createLibraryPage = (
     debugging || isRareBookFound(state, LIBRARY_DEBUG_BOOK)
       ? layoutBookcase([{ id: LIBRARY_DEBUG_BOOK, thickness: THICKNESS }], bookcase.cells, [DEBUG_CELL])
       : [];
-  const finalShelf = debugging ? layoutBookcase([{ id: LIBRARY_FINAL_BOOK, thickness: THICKNESS }], bookcase.cells, [FINAL_CELL]) : [];
+  const endBook = storyShelved(state) ? LIBRARY_STORY_BOOK : debugging ? LIBRARY_FINAL_BOOK : null;
+  const finalShelf = endBook ? layoutBookcase([{ id: endBook, thickness: THICKNESS }], bookcase.cells, [FINAL_CELL]) : [];
   const places: Place[] = [
     ...layoutBookcase(
       found.map((id) => ({ id, thickness: thickness(id) })),

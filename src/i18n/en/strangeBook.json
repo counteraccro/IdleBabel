@@ -42,6 +42,7 @@
     "nextEther": "pages to read before the next Ether",
     "pagesPerSecondRelic": "the Hourglass {relic}",
     "pagesPerSecondMimic": "the Mimic {mimic}",
+    "pagesPerSecondStory": "My True Story {story}",
     "relic": "what your relic gives you",
     "relicParts": {
       "loupe": "{name} · Knowledge with every find",
@@ -258,6 +259,7 @@
     "exactly410": "410, hidden in my pages.",
     "lastInstant": "I caught it just as it went out.",
     "babelWord": "I read the Library’s name, letter by letter.",
+    "notThisOne": "Not this one.",
     "mimicsCaught": "Catch {n} Mimics",
     "mimicBonus": "Take back {n} more Knowledge from it",
     "mimicHours": "Let it eat for {n} hours",

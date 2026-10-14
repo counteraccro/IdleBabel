@@ -111,6 +111,11 @@
       "figure": "Le Minitel",
       "description": "L’écran s’allume quand je m’approche.",
       "locked": "Cette page attend\nun Âge nouveau."
+    },
+    "curtain": {
+      "name": "Le Rideau",
+      "figure": "Le Rideau",
+      "description": "Le sens de tout cela."
     }
   },
   "stars": {
@@ -757,6 +762,53 @@
         "value": "×2",
         "effect": "Connaissance par trouvaille"
       }
+    },
+    "curtain": {
+      "c0": {
+        "name": "Le milieu de la tringle",
+        "value": "Mon histoire vraie ·",
+        "effect": "une bribe de plus"
+      },
+      "lm": {
+        "name": "La tringle, à gauche",
+        "value": "Mon histoire vraie ·",
+        "effect": "une bribe de plus"
+      },
+      "rm": {
+        "name": "La tringle, à droite",
+        "value": "Mon histoire vraie ·",
+        "effect": "une bribe de plus"
+      },
+      "l": {
+        "name": "Le bout gauche de la tringle",
+        "value": "Mon histoire vraie ·",
+        "effect": "une bribe de plus"
+      },
+      "r": {
+        "name": "Le bout droit de la tringle",
+        "value": "Mon histoire vraie ·",
+        "effect": "une bribe de plus"
+      },
+      "blm": {
+        "name": "Le bas d’un pli, à gauche",
+        "value": "Mon histoire vraie ·",
+        "effect": "une bribe de plus"
+      },
+      "brm": {
+        "name": "Le bas d’un pli, à droite",
+        "value": "Mon histoire vraie ·",
+        "effect": "une bribe de plus"
+      },
+      "bl": {
+        "name": "L’ourlet, à gauche",
+        "value": "Mon histoire vraie ·",
+        "effect": "une bribe de plus"
+      },
+      "br": {
+        "name": "L’ourlet, à droite",
+        "value": "Mon histoire vraie ·",
+        "effect": "la dernière page"
+      }
     }
   },
   "keep": "sa phrase reste au prestige",
@@ -782,5 +834,18 @@
     "north": "N",
     "south": "S"
   },
-  "readingWeight": "+{n} % de lecture : un par Éther reçu, moins au-delà de 5 000"
+  "readingWeight": "+{n} % de lecture : un par Éther reçu, moins au-delà de 5 000",
+  "trueStory": {
+    "vision": "Mon histoire vraie · page {n}",
+    "end": {
+      "title": "Pas celui-ci",
+      "text": [
+        "Est-ce que je me souviens,\nou est-ce que je l’ai lu ?",
+        "La Bibliothèque a écrit toutes les vies.\nCelle-ci aussi.",
+        "La réponse est dans un autre livre.\nJe lis plus vite."
+      ],
+      "gain": "Lecture ×2, pour toujours",
+      "button": "Chercher encore"
+    }
+  }
 }

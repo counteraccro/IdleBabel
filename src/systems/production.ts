@@ -1,6 +1,6 @@
 import { DIGITAL_AGE, TOOLS, type ToolId } from '../data/tools';
 import { gestureMultiplier } from './technologies';
-import { digitalMultiplier, etherReading, readingMultiplier } from './etherium';
+import { digitalMultiplier, etherReading, readingMultiplier, storyMultiplier } from './etherium';
 import { readingBoon } from './boons';
 import { relicReading } from './relics';
 import { mimicReading } from './mimic';
@@ -15,12 +15,18 @@ export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== u
 
 /**
  * Ce qui multiplie la lecture de toutes les méthodes : la Lecture de l'Etherium, l'Éther reçu, la Transe de la lettre (en
- * cours), le Sablier (s'il agit) et la Mimic qui la ralentit (si elle est là) ; et le Minitel, pour celles de l'Âge
- * Numérique. Calculés une fois pour toutes les méthodes (revue de code, 13/10).
+ * cours), le Sablier (s'il agit), la Mimic qui la ralentit (si elle est là) et le Rideau entier (×2) ; et le Minitel,
+ * pour celles de l'Âge Numérique. Calculés une fois pour toutes les méthodes (revue de code, 13/10).
  */
 type Shared = { all: number; digital: number };
 const shared = (state: GameState): Shared => ({
-  all: readingMultiplier(state) * etherReading(state) * readingBoon(state) * relicReading(state) * mimicReading(state),
+  all:
+    readingMultiplier(state) *
+    etherReading(state) *
+    readingBoon(state) *
+    relicReading(state) *
+    mimicReading(state) *
+    storyMultiplier(state),
   digital: digitalMultiplier(state),
 });
 

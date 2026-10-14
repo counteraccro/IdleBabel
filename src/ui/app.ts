@@ -33,8 +33,10 @@ import {
   LIBRARY_DEBUG_BOOK,
   LIBRARY_FINAL_BOOK,
   LIBRARY_FIRST_BOOK,
+  LIBRARY_STORY_BOOK,
   createLibraryPage,
   shelfBook3d,
+  storyShelved,
   type LibraryPage,
 } from './library/libraryPage';
 import { firstBookKept } from '../systems/books';
@@ -127,6 +129,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     return isRareBookFound(state, id) ||
       id === LIBRARY_CREDITS_BOOK ||
       ((id === LIBRARY_DEBUG_BOOK || id === LIBRARY_FINAL_BOOK) && debugging) ||
+      (id === LIBRARY_STORY_BOOK && storyShelved(state)) ||
       (id === LIBRARY_FIRST_BOOK && firstBookKept(state))
       ? id
       : null;

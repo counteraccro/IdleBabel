@@ -42,6 +42,7 @@
     "nextEther": "pages à lire avant le prochain Éther",
     "pagesPerSecondRelic": "le Sablier {relic}",
     "pagesPerSecondMimic": "la Mimic {mimic}",
+    "pagesPerSecondStory": "Mon histoire vraie {story}",
     "relic": "ce que ta relique t'apporte",
     "relicParts": {
       "loupe": "{name} · Connaissance à chaque trouvaille",
@@ -258,6 +259,7 @@
     "exactly410": "410, caché dans mes pages.",
     "lastInstant": "Je l’ai rattrapée au moment où elle s’éteignait.",
     "babelWord": "J’ai lu le nom de la Bibliothèque, lettre par lettre.",
+    "notThisOne": "Pas celui-ci.",
     "mimicsCaught": "Attrape {n} Mimics",
     "mimicBonus": "Reprends-lui {n} de Connaissance de plus",
     "mimicHours": "Laisse-la manger {n} heures",

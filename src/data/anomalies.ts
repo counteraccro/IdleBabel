@@ -128,6 +128,7 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintExactly410',
     'hintLastInstant',
     'hintBabelWord',
+    'hintNotThisOne',
     // Les reliques (12/10) : chaque phrase pose sa relique dans sa salle (systems/relics.ts) ; elle ne se lit qu'avec
     // l'Ouest de l'Exploration, et sa salle déjà vue.
     'hintRelicLoupe',
@@ -166,4 +167,4 @@ export const HINT_BOOKS: Readonly<Record<string, readonly string[]>> = {
 export const hintSeal = (id: string): string | undefined => (id.startsWith('hint') ? id[4].toLowerCase() + id.slice(5) : undefined);
 
 /** Les indices des secrets de l'Etherium ne tombent qu'après un premier prestige : avant, ils ne voudraient rien dire. */
-export const HINTS_AFTER_PRESTIGE: readonly string[] = ['hintEmptyEtherium', 'hintNoHands'];
+export const HINTS_AFTER_PRESTIGE: readonly string[] = ['hintEmptyEtherium', 'hintNoHands', 'hintNotThisOne'];

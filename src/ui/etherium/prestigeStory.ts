@@ -18,16 +18,17 @@ export const ETHERIUM_HASH = '#etherium';
 
 /**
  * Une modale du prestige (conception §4.1) : ses strophes apparaissent l'une après
- * l'autre, les vers à la ligne, puis `extra` (une précision, plus petite), puis les boutons.
+ * l'autre, les vers à la ligne, puis `extra` (une précision, plus petite), puis les boutons. Renvoie la modale (la fin de
+ * « Mon histoire vraie » y dore sa précision).
  */
-const tell = (
+export const tell = (
   title: string,
   stanzas: string[],
   actions: ModalAction[],
   backdrop: 'dim' | 'black' = 'dim',
   extra?: string,
   enterConfirms = true,
-): void => {
+): HTMLElement => {
   const story = storyLines(stanzas.length);
   story.root.classList.add('prestige-story');
   story.lines.forEach((line, index) => (line.textContent = stanzas[index]));
@@ -39,6 +40,7 @@ const tell = (
   }
   const modal = openModal({ title, body, actions, backdrop, enterConfirms });
   modal.root.querySelector<HTMLElement>('.modal-actions')!.style.animationDelay = `${(stanzas.length + (extra ? 1 : 0)) * PARAGRAPH_MS}ms`;
+  return modal.root;
 };
 
 /**

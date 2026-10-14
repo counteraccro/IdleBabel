@@ -10,7 +10,7 @@ import { AUTOMATIC_AGE, DIGITAL_AGE } from './tools';
  */
 /**
  * L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10), puis le Poids, qui les touche tous ; la
- * page de chaque Âge à la fin, après les reliques (13/10).
+ * page de chaque Âge à la fin, après les reliques (13/10) ; tout au bout, le Rideau, la fausse fin (14/10).
  */
 export const ETHERIUM_PAGES = [
   'ages',
@@ -27,6 +27,7 @@ export const ETHERIUM_PAGES = [
   'mimic',
   'relics',
   'screen',
+  'curtain',
 ] as const;
 export type PageId = (typeof ETHERIUM_PAGES)[number];
 
@@ -195,6 +196,18 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['relics', 'h1', null, 15],
   ['relics', 'h2', 'h1', 45],
   ['relics', 'd', null, 60],
+  // Le Rideau, la fausse fin (14/10, .ai/maquette-faux-livre.html, conception §9.2) : la tringle depuis son milieu, puis le
+  // bas des plis et l'ourlet ; chaque étoile fait remonter une bribe de « Mon histoire vraie ». La dernière, l'ourlet de
+  // droite, attend toutes les autres (WAITS_FOR_PAGE).
+  ['curtain', 'c0', null, 10],
+  ['curtain', 'lm', 'c0', 25],
+  ['curtain', 'rm', 'c0', 60],
+  ['curtain', 'l', 'lm', 150],
+  ['curtain', 'r', 'rm', 400],
+  ['curtain', 'blm', 'lm', 1000],
+  ['curtain', 'brm', 'rm', 3000],
+  ['curtain', 'bl', 'l', 10_000],
+  ['curtain', 'br', 'r', 100_000],
 ];
 
 export const STARS: readonly Star[] = RAW.map(([page, id, after, cost]) => ({
@@ -225,8 +238,16 @@ const PASSABLE: ReadonlySet<string> = new Set(['memory.a0']);
 /** Les étoiles qui peuvent s'allumer aujourd'hui (les sceaux de l'Etherium les comptent). */
 export const OPEN_STARS: readonly Star[] = STARS.filter((star) => !CLOSED.has(star.id));
 
-/** L'étoile d'avant est allumée (ou, pour la Goutte, celle d'avant elle), ou il n'y en a pas : `star` peut s'allumer. */
+/** Les étoiles qui attendent, en plus de la leur, toutes les autres étoiles de leur page : l'ourlet de droite du Rideau. */
+export const WAITS_FOR_PAGE: ReadonlySet<string> = new Set(['curtain.br']);
+
+/**
+ * L'étoile d'avant est allumée (ou, pour la Goutte, celle d'avant elle), ou il n'y en a pas : `star` peut s'allumer. Une
+ * étoile de WAITS_FOR_PAGE attend aussi toutes les autres de sa page.
+ */
 export const afterLit = (star: Star, lit: (id: string) => boolean): boolean => {
+  if (WAITS_FOR_PAGE.has(star.id) && STARS.some((other) => other.page === star.page && other.id !== star.id && !lit(other.id)))
+    return false;
   if (!star.after) return true;
   if (lit(star.after)) return true;
   const before = starById(star.after);
@@ -318,6 +339,8 @@ export const EFFECT = {
     'weight.w6': 0.1,
     'weight.w7': 0.1,
   },
+  /** ×pages/s, à part (le Rideau entier : « Mon histoire vraie » était fausse, il lit plus vite). */
+  storyReading: { 'curtain.br': 2 },
   /** Le niveau du bonus de chaque relique (data/relics.ts, RelicDef.bonus) : ses deux étoiles ; la plus haute compte. */
   relicLevel: { 'relics.l1': 1, 'relics.l2': 2, 'relics.a1': 1, 'relics.a2': 2, 'relics.h1': 1, 'relics.h2': 2 },
 } as const satisfies Record<string, Record<string, number>>;
@@ -370,6 +393,7 @@ export const S = {
   mimicEye: 'mimic.eye',
   relics: 'explore.w',
   patience: 'relics.d',
+  storyEnd: 'curtain.br',
 } as const;
 
 /** Les deux étoiles de chaque relique, sur la page « Les reliques » (leur lettre : la loupe, l'astrolabe, le sablier). */

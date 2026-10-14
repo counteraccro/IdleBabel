@@ -5,7 +5,7 @@ import { isComplete } from '../systems/sentences';
 import { fullyDeciphered } from '../systems/decipher';
 import { pagesPerSecond } from '../systems/production';
 import { SENTENCES } from './sentences';
-import { ETHERIUM_PAGES, OPEN_STARS } from './etheriumStars';
+import { ETHERIUM_PAGES, OPEN_STARS, S } from './etheriumStars';
 import { ANOMALIES, ANOMALY_FAMILIES } from './anomalies';
 import { RARE_BOOKS } from './rareBooks';
 import { TECHNOLOGIES } from './technologies';
@@ -192,8 +192,9 @@ export const SEALS: readonly SealDef[] = [
   ...series('prestiges', 'etherium', (s) => s.exiles, [1, 5, 10, 25, 100]),
   ...series('etherReceived', 'etherium', (s) => s.etherReceived, [1, 10, 100, K, 10 * K, 100 * K, M]),
   ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, OPEN_STARS.length]),
-  // L'Exploration : l'Est et l'Ouest allumés (« La Rose des vents », 12/10 ; les autres pointes sont encore fermées).
-  ...ETHERIUM_PAGES.map((page) =>
+  // L'Exploration : l'Est et l'Ouest allumés (« La Rose des vents », 12/10 ; les autres pointes sont encore fermées). Le
+  // Rideau entier n'a pas le sien : c'est un secret (« Pas celui-ci. », plus bas).
+  ...ETHERIUM_PAGES.filter((page) => page !== 'curtain').map((page) =>
     seal(`constellation-${page}`, 'etherium', (s) =>
       OPEN_STARS.filter((star) => star.page === page).every((star) => s.etherium.includes(star.id)),
     ),
@@ -273,4 +274,6 @@ export const SEALS: readonly SealDef[] = [
   secret('lastInstant'),
   // Le mot BABEL attrapé en entier, lettre par lettre (systems/letter.ts).
   secret('babelWord'),
+  // « Mon histoire vraie » lue jusqu'à sa dernière bribe : le Rideau entier allumé (la fausse fin, 14/10).
+  seal('notThisOne', 'secrets', (s) => s.etherium.includes(S.storyEnd)),
 ];

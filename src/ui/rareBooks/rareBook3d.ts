@@ -35,7 +35,7 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
   const linkAt = (page: number, x: number, y: number) =>
     x >= PAGE_TEXTURE.width * 0.1 && x <= PAGE_TEXTURE.width * 0.9
       ? art
-          .links?.(page)
+          .links?.(page, state)
           .find(
             (link) =>
               y >= link.y && y <= link.y + link.height && (link.x === undefined || (x >= link.x && x <= link.x + (link.width ?? 0))),

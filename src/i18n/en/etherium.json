@@ -111,6 +111,11 @@
       "figure": "The Minitel",
       "description": "The screen lights up when I come near.",
       "locked": "This page is waiting\nfor a new Age."
+    },
+    "curtain": {
+      "name": "The Curtain",
+      "figure": "The Curtain",
+      "description": "The meaning of it all."
     }
   },
   "stars": {
@@ -757,6 +762,53 @@
         "value": "×2",
         "effect": "Knowledge per find"
       }
+    },
+    "curtain": {
+      "c0": {
+        "name": "The middle of the rod",
+        "value": "My True Story ·",
+        "effect": "one more memory"
+      },
+      "lm": {
+        "name": "The rod, left",
+        "value": "My True Story ·",
+        "effect": "one more memory"
+      },
+      "rm": {
+        "name": "The rod, right",
+        "value": "My True Story ·",
+        "effect": "one more memory"
+      },
+      "l": {
+        "name": "The left end of the rod",
+        "value": "My True Story ·",
+        "effect": "one more memory"
+      },
+      "r": {
+        "name": "The right end of the rod",
+        "value": "My True Story ·",
+        "effect": "one more memory"
+      },
+      "blm": {
+        "name": "The foot of a fold, left",
+        "value": "My True Story ·",
+        "effect": "one more memory"
+      },
+      "brm": {
+        "name": "The foot of a fold, right",
+        "value": "My True Story ·",
+        "effect": "one more memory"
+      },
+      "bl": {
+        "name": "The hem, left",
+        "value": "My True Story ·",
+        "effect": "one more memory"
+      },
+      "br": {
+        "name": "The hem, right",
+        "value": "My True Story ·",
+        "effect": "the last page"
+      }
     }
   },
   "keep": "its sentence stays through prestige",
@@ -782,5 +834,18 @@
     "north": "N",
     "south": "S"
   },
-  "readingWeight": "+{n}% reading: one per Ether received, less beyond 5,000"
+  "readingWeight": "+{n}% reading: one per Ether received, less beyond 5,000",
+  "trueStory": {
+    "vision": "My True Story · page {n}",
+    "end": {
+      "title": "Not this one",
+      "text": [
+        "Do I remember,\nor did I read it?",
+        "The Library has written every life.\nThis one too.",
+        "The answer is in another book.\nI read faster."
+      ],
+      "gain": "Reading ×2, forever",
+      "button": "Keep searching"
+    }
+  }
 }

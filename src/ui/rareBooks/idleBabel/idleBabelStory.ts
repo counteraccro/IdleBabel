@@ -161,6 +161,7 @@ export const STORY: StoryChapter[] = [
       { key: 'relics' },
       { key: 'digitalAge' },
       { key: 'feeding' },
+      { key: 'falseEnding' },
     ],
   },
 ];

@@ -348,10 +348,7 @@
   "catalogue": {
     "name": "Le Catalogue des catalogues",
     "cover": ["Catalogue", "des catalogues"],
-    "coverTitle": [
-      "LE CATALOGUE",
-      "des catalogues"
-    ],
+    "coverTitle": ["LE CATALOGUE", "des catalogues"],
     "titlePage": {
       "library": "BIBLIOTHÈQUE DE BABEL",
       "title": "LE CATALOGUE",
@@ -361,24 +358,11 @@
     "notice": {
       "heading": "AVERTISSEMENT",
       "paragraphs": [
-        [
-          "Ce catalogue recense les livres qui suivent",
-          "celui-ci, dans l'ordre de l'étagère."
-        ],
-        [
-          "Il en existe un fidèle. Les autres mentent."
-        ],
-        [
-          "Ce catalogue ne dit pas lequel il est."
-        ],
-        [
-          "Il se recense lui-même, à la première ligne."
-        ],
-        [
-          "Le lecteur qui trouve une erreur est prié",
-          "de ne pas la corriger : une autre page",
-          "la contient déjà."
-        ]
+        ["Ce catalogue recense les livres qui suivent", "celui-ci, dans l'ordre de l'étagère."],
+        ["Il en existe un fidèle. Les autres mentent."],
+        ["Ce catalogue ne dit pas lequel il est."],
+        ["Il se recense lui-même, à la première ligne."],
+        ["Le lecteur qui trouve une erreur est prié", "de ne pas la corriger : une autre page", "la contient déjà."]
       ]
     },
     "register": "REGISTRE",
@@ -391,10 +375,7 @@
     },
     "runningHead": "CATALOGUE DES CATALOGUES",
     "range": "n° {from} – {to}",
-    "russell": [
-      "Catalogue des catalogues qui ne se recensent",
-      "pas eux-mêmes"
-    ],
+    "russell": ["Catalogue des catalogues qui ne se recensent", "pas eux-mêmes"],
     "end": {
       "title": "Le Catalogue des catalogues",
       "see": "voir page 3.",
@@ -404,10 +385,7 @@
       "edition": "?",
       "first": "La première ligne, c'est celui-ci.",
       "wrong": "faux",
-      "russell": [
-        "Doit-il s'y mettre ?",
-        "Alors non. Alors oui."
-      ],
+      "russell": ["Doit-il s'y mettre ?", "Alors non. Alors oui."],
       "last": "J'y suis déjà."
     }
   },
@@ -427,7 +405,20 @@
     "runningHead": "LE GRAND LIVRE DU X",
     "contents": "SOMMAIRE",
     "chapter": "CHAPITRE",
-    "legal": ["XX XXXXX XXXXX XX X", "", "Xxxxxx x'xxx xxxxxx", "", "© Xxxxxxxxxxxx xx Xxxxx, XXXX", "Xxxx xxx xxxxxx xxxxxxxx.", "", "Xxxxx xxxxx : xxxxxxx XXXX", "XXXX : x-xxxx-xxxx-x", "", "Xxxxxxx xx Xxxxxxx xxx xx xxxxxx xx", "xxxxxxx xxxxxxx xx xxxxx."],
+    "legal": [
+      "XX XXXXX XXXXX XX X",
+      "",
+      "Xxxxxx x'xxx xxxxxx",
+      "",
+      "© Xxxxxxxxxxxx xx Xxxxx, XXXX",
+      "Xxxx xxx xxxxxx xxxxxxxx.",
+      "",
+      "Xxxxx xxxxx : xxxxxxx XXXX",
+      "XXXX : x-xxxx-xxxx-x",
+      "",
+      "Xxxxxxx xx Xxxxxxx xxx xx xxxxxx xx",
+      "xxxxxxx xxxxxxx xx xxxxx."
+    ],
     "colophon": ["Xxxxxx x'xxxxxxxx", "xxx xxx xxxxxxx xx xx Xxxxxxxxxxxx", "xx Xxxxx, xx xxxx XXX."],
     "ending": "Le X croit qu'il est seul. Il l'a toujours cru. Il ne regarde pas de près. Xx xx xxxx xxx xxx xxxxx.",
     "preface": {
@@ -1022,38 +1013,183 @@
       ]
     },
     "pages": {
-        "title": "Crédits",
-        "publisher": "BIBLIOTHÈQUE DE BABEL",
-        "foreword": "Avant-propos",
-        "author": "AYMERIC",
-        "about": ["Depuis dix-huit ans, il écrit pour le web", "comme d’autres écrivent des lettres :", "du serveur à l’écran, une ligne après l’autre,", "avec la même passion qu’au premier jour.", "De ces lignes est née une bibliothèque sans fin."],
-        "codeIntro": "Le code du jeu, sur GitHub :",
-        "contents": "Sommaire",
-        "parts": ["Avant-propos", "Le générique", "Les textes", "Les polices", "Notes de mise à jour", "Achevé d’imprimer"],
-        "roll": [
-          ["CONCEPTION", "Aymeric", ""],
-          ["CODE GÉNÉRÉ PAR", "Claude (Anthropic)", ""],
-          ["D’APRÈS", "« La Bibliothèque de Babel »", "Jorge Luis Borges, 1941"],
-          ["MOTEUR 3D", "three.js", ""],
-          ["OUTILS", "Vite, TypeScript", ""],
-          ["PUBLIÉ SUR", "GitHub Pages", ""],
-          ["IMAGES", "Photo de vieux bois", "domaine public"]
-        ],
-        "textsIntro": "Tous du domaine public.",
-        "texts": [
-          ["L’Odyssée", "Homère, traduction de Leconte de Lisle", "Lemerre, 1893 · Wikisource"],
-          ["Les Mille et Une Nuits", "traduction d’Antoine Galland", "Le Normant, 1806 · Wikisource"],
-          ["Alice au pays des merveilles", "Lewis Carroll, traduction d’Henri Bué", "1869 · Wikisource"],
-          ["Moby Dick", "Herman Melville", "Harper, 1851 · Projet Gutenberg"],
-          ["Voyage au centre de la Terre", "Jules Verne", "Hetzel, 1867 · Wikisource"],
-          ["Don Quichotte", "Cervantès, traduction de Louis Viardot", "Hachette, 1863 · Wikisource"],
-          ["La Divine Comédie", "Dante, traduction de Lamennais", "Didier, 1863 · Wikisource"],
-          ["Manuscrit trouvé à Saragosse", "Jan Potocki", "Gide fils, 1814 · Wikisource"],
-          ["L’Encyclopédie", "Diderot et d’Alembert, tome I", "Paris, 1751 · Wikisource"]
-        ],
-        "fontsIntro": "Sous licence libre (SIL Open Font License).",
-        "notes": [{"title": "Alpha 2", "date": "13 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Un troisième Âge, l’Âge Numérique, sur l’Escalier de l’Etherium (1 500 Éther) : cinq nouvelles méthodes, le Minitel, le Micro-Ordinateur, le Moteur de Recherche, le Robot d’Indexation et l’Algorithme de Babel, et une méthode secrète à retrouver.", "Une intuition par nouvelle méthode, et leurs sceaux.", "Une salle pour l’Âge Numérique : la verrière.", "Etherium : l’alvéole Numérique de la Ruche, et la page « Numérique », le Minitel.", "Le poids de la Bibliothèque : au-delà de 5 000 Éther reçus, chaque Éther fait gagner un peu moins de lecture. Une nouvelle page de l’Etherium, l’Atlas, l’allège ; le Grand Livre l’indique au chapitre « Éther »."]}]}, {"title": "Alpha 1.5", "date": "13 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Un nouveau livre rare interactif, à lire dans la bibliothèque : Colorie la Bibliothèque, un cahier de coloriage de neuf dessins. Les couleurs restent, même après le prestige.", "Deux nouveaux sceaux, dont un secret.", "La Mimic ralentit la lecture des méthodes tant qu’elle est là, du pourcentage qu’elle rendra en plus (50 % au plus).", "Équilibre : la Voix Éteinte et le Lutrin de Pierre coûtent moins cher (3 000 et 800 000 pages) et lisent moins (8 et 650 pages par seconde).", "Équilibre : les méthodes de l’Âge Automatique lisent deux fois moins vite."]}]}, {"title": "Alpha 1.4", "date": "12 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Nouvelle intuition, la Volée : une lettre attrapée peut en appeler une 2e, puis une 3e ; leurs bonus se cumulent.", "Nouveau bonus de la lettre, Quatre cent dix : pages et trouvailles ×410 pendant 30 secondes.", "Deux nouveaux sceaux : deux, puis trois lettres d’une même volée.", "Les reliques : trois objets cachés dans les salles, à trouver grâce au livre blanc. Rangées dans la vitrine, une seule agit à la fois ; leur médaillon est à gauche du compteur.", "Etherium : l’Ouest de la rose des vents s’allume, avec la page des reliques.", "De nouveaux sceaux, sur la planche « Les reliques » du Grand Livre."]}, {"heading": "Corrections", "items": ["Grand Livre : la page des sceaux et les grands chiffres ne débordent plus de la page."]}]}, {"title": "Alpha 1.3", "date": "10 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Le jeu prévient quand une nouvelle version est en ligne, et propose de recharger.", "Un nouveau livre rare : Voyage au centre de la Terre, de Jules Verne.", "Un nouveau livre rare interactif, à lire dans la bibliothèque : Le Livre sans fin… sauf une ?, un livre-jeu.", "Deux nouveaux sceaux secrets.", "Le décor change avec l’Âge : une salle pour l’Âge Manuel, une autre pour l’Âge Automatique. Le cahier d’options permet de garder sa salle préférée.", "La Mimic : un livre caché dans la salle, qui avale la Connaissance et la rend avec un bonus. À débloquer dans l’Etherium."]}, {"heading": "Corrections", "items": ["Le sommaire du livre des crédits, ouvert depuis les notes de mise à jour, mène de nouveau à ses parties.", "La Mimic ne reste plus en mémoire quand on ouvre un livre puis qu’on revient au jeu."]}]}, {"title": "Alpha 1.2", "date": "9 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Deux livres rares interactifs, à lire dans la bibliothèque.", "De nouveaux sceaux, dont deux secrets.", "Etherium ouvert : le compteur affiche l’Éther à dépenser.", "Livre blanc : les intuitions générales ont leur propre partie.", "Grand Livre : le nombre de prestiges, au chapitre « Heures »."]}, {"heading": "Corrections", "items": ["Un livre ouvert n’arrête plus les trouvailles.", "La lecture automatique n’est plus bridée à 10 feuilles par seconde.", "Un livre ouvert depuis un sceau a de nouveau sa taille.", "Livre blanc : l’effet du Guet ne déborde plus de la page.", "Grand Livre : chaque légende est sous son chiffre.", "Lapin de garenne : un clic qui manque le lapin ne tourne plus la page."]}]}, {"title": "Alpha 1.1", "date": "8 octobre 2026", "sections": [{"heading": "Nouveautés", "items": ["Une lettre s’échappe parfois du livre : attrape-la pour un bonus de quelques secondes.", "La Plume, neuvième constellation : six bonus de plus.", "Trois intuitions, de nouveaux sceaux."]}]}, {"title": "Alpha 1", "date": "8 octobre 2026", "sections": [{"heading": "", "items": ["La boucle de jeu complète : l’Âge Manuel et l’Âge Automatique.", "L’Etherium et ses huit constellations.", "Plus de 300 sceaux, des livres rares et la bibliothèque.", "Ta partie est gardée d’une version à l’autre."]}]}],
-        "colophon": ["Achevé d’imprimer", "dans la Bibliothèque de Babel,", "sur les presses de l’hexagone", "où vous vous trouvez.", "", "Tirage : un exemplaire.", "Il y en a une infinité d’autres."]
+      "title": "Crédits",
+      "publisher": "BIBLIOTHÈQUE DE BABEL",
+      "foreword": "Avant-propos",
+      "author": "AYMERIC",
+      "about": [
+        "Depuis dix-huit ans, il écrit pour le web",
+        "comme d’autres écrivent des lettres :",
+        "du serveur à l’écran, une ligne après l’autre,",
+        "avec la même passion qu’au premier jour.",
+        "De ces lignes est née une bibliothèque sans fin."
+      ],
+      "codeIntro": "Le code du jeu, sur GitHub :",
+      "contents": "Sommaire",
+      "parts": ["Avant-propos", "Le générique", "Les textes", "Les polices", "Notes de mise à jour", "Achevé d’imprimer"],
+      "roll": [
+        ["CONCEPTION", "Aymeric", ""],
+        ["CODE GÉNÉRÉ PAR", "Claude (Anthropic)", ""],
+        ["D’APRÈS", "« La Bibliothèque de Babel »", "Jorge Luis Borges, 1941"],
+        ["MOTEUR 3D", "three.js", ""],
+        ["OUTILS", "Vite, TypeScript", ""],
+        ["PUBLIÉ SUR", "GitHub Pages", ""],
+        ["IMAGES", "Photo de vieux bois", "domaine public"]
+      ],
+      "textsIntro": "Tous du domaine public.",
+      "texts": [
+        ["L’Odyssée", "Homère, traduction de Leconte de Lisle", "Lemerre, 1893 · Wikisource"],
+        ["Les Mille et Une Nuits", "traduction d’Antoine Galland", "Le Normant, 1806 · Wikisource"],
+        ["Alice au pays des merveilles", "Lewis Carroll, traduction d’Henri Bué", "1869 · Wikisource"],
+        ["Moby Dick", "Herman Melville", "Harper, 1851 · Projet Gutenberg"],
+        ["Voyage au centre de la Terre", "Jules Verne", "Hetzel, 1867 · Wikisource"],
+        ["Don Quichotte", "Cervantès, traduction de Louis Viardot", "Hachette, 1863 · Wikisource"],
+        ["La Divine Comédie", "Dante, traduction de Lamennais", "Didier, 1863 · Wikisource"],
+        ["Manuscrit trouvé à Saragosse", "Jan Potocki", "Gide fils, 1814 · Wikisource"],
+        ["L’Encyclopédie", "Diderot et d’Alembert, tome I", "Paris, 1751 · Wikisource"]
+      ],
+      "fontsIntro": "Sous licence libre (SIL Open Font License).",
+      "notes": [
+        {
+          "title": "Alpha 2",
+          "date": "13 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Un troisième Âge, l’Âge Numérique, sur l’Escalier de l’Etherium (1 500 Éther) : cinq nouvelles méthodes, le Minitel, le Micro-Ordinateur, le Moteur de Recherche, le Robot d’Indexation et l’Algorithme de Babel, et une méthode secrète à retrouver.",
+                "Une intuition par nouvelle méthode, et leurs sceaux.",
+                "Une salle pour l’Âge Numérique : la verrière.",
+                "Etherium : l’alvéole Numérique de la Ruche, et la page « Numérique », le Minitel.",
+                "Le poids de la Bibliothèque : au-delà de 5 000 Éther reçus, chaque Éther fait gagner un peu moins de lecture. Une nouvelle page de l’Etherium, l’Atlas, l’allège ; le Grand Livre l’indique au chapitre « Éther »."
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Alpha 1.5",
+          "date": "13 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Un nouveau livre rare interactif, à lire dans la bibliothèque : Colorie la Bibliothèque, un cahier de coloriage de neuf dessins. Les couleurs restent, même après le prestige.",
+                "Deux nouveaux sceaux, dont un secret.",
+                "La Mimic ralentit la lecture des méthodes tant qu’elle est là, du pourcentage qu’elle rendra en plus (50 % au plus).",
+                "Équilibre : la Voix Éteinte et le Lutrin de Pierre coûtent moins cher (3 000 et 800 000 pages) et lisent moins (8 et 650 pages par seconde).",
+                "Équilibre : les méthodes de l’Âge Automatique lisent deux fois moins vite."
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Alpha 1.4",
+          "date": "12 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Nouvelle intuition, la Volée : une lettre attrapée peut en appeler une 2e, puis une 3e ; leurs bonus se cumulent.",
+                "Nouveau bonus de la lettre, Quatre cent dix : pages et trouvailles ×410 pendant 30 secondes.",
+                "Deux nouveaux sceaux : deux, puis trois lettres d’une même volée.",
+                "Les reliques : trois objets cachés dans les salles, à trouver grâce au livre blanc. Rangées dans la vitrine, une seule agit à la fois ; leur médaillon est à gauche du compteur.",
+                "Etherium : l’Ouest de la rose des vents s’allume, avec la page des reliques.",
+                "De nouveaux sceaux, sur la planche « Les reliques » du Grand Livre."
+              ]
+            },
+            { "heading": "Corrections", "items": ["Grand Livre : la page des sceaux et les grands chiffres ne débordent plus de la page."] }
+          ]
+        },
+        {
+          "title": "Alpha 1.3",
+          "date": "10 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Le jeu prévient quand une nouvelle version est en ligne, et propose de recharger.",
+                "Un nouveau livre rare : Voyage au centre de la Terre, de Jules Verne.",
+                "Un nouveau livre rare interactif, à lire dans la bibliothèque : Le Livre sans fin… sauf une ?, un livre-jeu.",
+                "Deux nouveaux sceaux secrets.",
+                "Le décor change avec l’Âge : une salle pour l’Âge Manuel, une autre pour l’Âge Automatique. Le cahier d’options permet de garder sa salle préférée.",
+                "La Mimic : un livre caché dans la salle, qui avale la Connaissance et la rend avec un bonus. À débloquer dans l’Etherium."
+              ]
+            },
+            {
+              "heading": "Corrections",
+              "items": [
+                "Le sommaire du livre des crédits, ouvert depuis les notes de mise à jour, mène de nouveau à ses parties.",
+                "La Mimic ne reste plus en mémoire quand on ouvre un livre puis qu’on revient au jeu."
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Alpha 1.2",
+          "date": "9 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Deux livres rares interactifs, à lire dans la bibliothèque.",
+                "De nouveaux sceaux, dont deux secrets.",
+                "Etherium ouvert : le compteur affiche l’Éther à dépenser.",
+                "Livre blanc : les intuitions générales ont leur propre partie.",
+                "Grand Livre : le nombre de prestiges, au chapitre « Heures »."
+              ]
+            },
+            {
+              "heading": "Corrections",
+              "items": [
+                "Un livre ouvert n’arrête plus les trouvailles.",
+                "La lecture automatique n’est plus bridée à 10 feuilles par seconde.",
+                "Un livre ouvert depuis un sceau a de nouveau sa taille.",
+                "Livre blanc : l’effet du Guet ne déborde plus de la page.",
+                "Grand Livre : chaque légende est sous son chiffre.",
+                "Lapin de garenne : un clic qui manque le lapin ne tourne plus la page."
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Alpha 1.1",
+          "date": "8 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Une lettre s’échappe parfois du livre : attrape-la pour un bonus de quelques secondes.",
+                "La Plume, neuvième constellation : six bonus de plus.",
+                "Trois intuitions, de nouveaux sceaux."
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Alpha 1",
+          "date": "8 octobre 2026",
+          "sections": [
+            {
+              "heading": "",
+              "items": [
+                "La boucle de jeu complète : l’Âge Manuel et l’Âge Automatique.",
+                "L’Etherium et ses huit constellations.",
+                "Plus de 300 sceaux, des livres rares et la bibliothèque.",
+                "Ta partie est gardée d’une version à l’autre."
+              ]
+            }
+          ]
+        }
+      ],
+      "colophon": [
+        "Achevé d’imprimer",
+        "dans la Bibliothèque de Babel,",
+        "sur les presses de l’hexagone",
+        "où vous vous trouvez.",
+        "",
+        "Tirage : un exemplaire.",
+        "Il y en a une infinité d’autres."
+      ]
     }
   },
   "blankPage": {
@@ -1172,60 +1308,25 @@
       "season": "LA SAISON",
       "facts": "LES FAITS DE LA SAISON",
       "champions": "LES CHAMPIONS",
-      "championLabels": [
-        "Football",
-        "Coupe",
-        "Boxe (lourds)",
-        "Grand Prix",
-        "Base-ball",
-        "Grande Boucle"
-      ],
+      "championLabels": ["Football", "Coupe", "Boxe (lourds)", "Grand Prix", "Base-ball", "Grande Boucle"],
       "league": "FOOTBALL · CHAMPIONNAT",
       "cup": "FOOTBALL · COUPE",
       "boxing": "BOXE · CHAMPIONNATS DU MONDE",
       "racing": "COURSES",
       "baseball": "BASE-BALL",
       "misc": "DIVERS",
-      "leagueHead": [
-        "Rg",
-        "Club",
-        "Pts",
-        "J",
-        "G",
-        "N",
-        "P",
-        "BP",
-        "BC"
-      ],
+      "leagueHead": ["Rg", "Club", "Pts", "J", "G", "N", "P", "BP", "BC"],
       "relegated": "Relégués : {clubs}.",
       "winPoints": "Victoire à {n} points.",
-      "rounds": [
-        "QUARTS DE FINALE",
-        "DEMI-FINALES",
-        "FINALE"
-      ],
+      "rounds": ["QUARTS DE FINALE", "DEMI-FINALES", "FINALE"],
       "extraTime": "a.p.",
       "penalties": "t.a.b. {a}-{b}",
       "finalAt": "{date}, stade de Valmorne",
       "scorers": "Buts : {list}.",
       "minute": "{name} {n}e",
-      "weights": [
-        "Mouches",
-        "Coqs",
-        "Plumes",
-        "Légers",
-        "Welters",
-        "Moyens",
-        "Mi-lourds",
-        "Lourds"
-      ],
+      "weights": ["Mouches", "Coqs", "Plumes", "Légers", "Welters", "Moyens", "Mi-lourds", "Lourds"],
       "beats": "bat",
-      "methods": [
-        "KO {n}e",
-        "aux points",
-        "abandon {n}e",
-        "arrêt {n}e"
-      ],
+      "methods": ["KO {n}e", "aux points", "abandon {n}e", "arrêt {n}e"],
       "retains": "conserve son titre",
       "newChampion": "nouveau champion",
       "races": [
@@ -1241,39 +1342,17 @@
       "finish": "Arrivée : {list}",
       "payout": "Rapport : {x} F pour 10 F",
       "decimal": ",",
-      "leagues": [
-        "LIGUE DE L’EST",
-        "LIGUE DE L’OUEST"
-      ],
-      "ballHead": [
-        "Club",
-        "V",
-        "D",
-        "Moy."
-      ],
+      "leagues": ["LIGUE DE L’EST", "LIGUE DE L’OUEST"],
+      "ballHead": ["Club", "V", "D", "Moy."],
       "series": "LA FINALE (au meilleur des sept)",
       "game": "Match {n}",
       "seriesWon": "Les {club} l’emportent {a} victoires à {b}.",
       "tour": "LA GRANDE BOUCLE",
-      "podium": [
-        "1er",
-        "2e",
-        "3e"
-      ],
+      "podium": ["1er", "2e", "3e"],
       "tennis": "TENNIS",
-      "tournaments": [
-        "Internationaux de Valmorne",
-        "Open de Port Alder",
-        "Tournoi sur gazon de Norwick",
-        "Masters d’hiver"
-      ],
+      "tournaments": ["Internationaux de Valmorne", "Open de Port Alder", "Tournoi sur gazon de Norwick", "Masters d’hiver"],
       "records": "LES RECORDS (au 31 décembre)",
-      "events": [
-        "100 m",
-        "1 500 m",
-        "Hauteur",
-        "Marathon"
-      ],
+      "events": ["100 m", "1 500 m", "Hauteur", "Marathon"],
       "newRecord": "NOUVEAU",
       "fact": {
         "league": "{club} champion pour la {nth} fois.",
@@ -1286,29 +1365,8 @@
         "ball": "Les {club} remportent la finale de base-ball.",
         "record": "Record du {event} battu : {value}."
       },
-      "days": [
-        "dim.",
-        "lun.",
-        "mar.",
-        "mer.",
-        "jeu.",
-        "ven.",
-        "sam."
-      ],
-      "months": [
-        "janvier",
-        "février",
-        "mars",
-        "avril",
-        "mai",
-        "juin",
-        "juillet",
-        "août",
-        "septembre",
-        "octobre",
-        "novembre",
-        "décembre"
-      ]
+      "days": ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+      "months": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
     }
   },
   "directory": {
@@ -1475,7 +1533,10 @@
       ["Que ne faut-il jamais dire à un antiquaire ?", "« Quoi de neuf ? »"],
       ["Pourquoi les électriciens sont-ils forts au judo ?", "Ils connaissent toutes les prises."],
       ["J’avais une blague sur les piscines…", "… mais elle est tombée à l’eau."],
-      ["Combien de bibliothécaires faut-il pour changer une ampoule dans la Bibliothèque ?", "Aucun : ils cherchent encore le livre qui explique comment faire."],
+      [
+        "Combien de bibliothécaires faut-il pour changer une ampoule dans la Bibliothèque ?",
+        "Aucun : ils cherchent encore le livre qui explique comment faire."
+      ],
       ["Quel est le comble pour un livre de 410 pages ?", "Se faire lire en diagonale."],
       ["Tu connais la blague du livre sans fin ?", "Moi non plus : je ne suis jamais arrivé au bout."],
       ["Pourquoi les livres de la Bibliothèque ne racontent-ils jamais de blagues ?", "Il leur faut 410 pages pour arriver à la chute."],
@@ -1485,15 +1546,8 @@
   },
   "darkPatterns": {
     "name": "Les dark patterns par l'exemple",
-    "cover": [
-      "Les dark patterns",
-      "par l'exemple"
-    ],
-    "title": [
-      "Les dark",
-      "patterns",
-      "par l'exemple"
-    ],
+    "cover": ["Les dark patterns", "par l'exemple"],
+    "title": ["Les dark", "patterns", "par l'exemple"],
     "authors": "Sylvain & Aymeric F.",
     "stars": "« Impossible de le reposer. »",
     "reader": "— un lecteur, toujours là",
@@ -1541,10 +1595,7 @@
         "Je n'ai qu'un conseil à donner au lecteur : lisez-le jusqu'au bout. Pas parce que vous y serez obligé, mais parce qu'à la dernière page, vous saurez où sont les sorties.",
         "Il y en a toujours une."
       ],
-      "prefaceBy": [
-        "Tom",
-        "Lead développeur front"
-      ],
+      "prefaceBy": ["Tom", "Lead développeur front"],
       "contents": "Sommaire",
       "howTo": "Mode d'emploi",
       "howToText": [
@@ -1567,11 +1618,7 @@
       "smallExit": "sortie",
       "article": "Article",
       "termsWords": "le lecteur la page le livre présentes conditions toute lecture vaut acceptation sans réserve de chaque article ci-après dénommé ainsi que tout hexagone attenant la bibliothèque se réserve le droit de modifier à tout moment sans préavis ni information préalable les pages lues ne sont ni reprises ni échangées la résiliation est possible par courrier adressé au bibliothécaire en poste dans un délai de quatre cent dix jours ouvrés à compter de la page suivante dans la limite des stocks disponibles",
-      "end": [
-        "Vous êtes arrivé au bout.",
-        "La sortie était là depuis le début :",
-        "on peut toujours refermer un livre."
-      ],
+      "end": ["Vous êtes arrivé au bout.", "La sortie était là depuis le début :", "on peut toujours refermer un livre."],
       "endSmall": "Merci de votre fidélité.",
       "chapters": [
         {
@@ -1679,41 +1726,21 @@
         "stock": "Plus que 2 pages en stock !",
         "wantMore": "Oui, je veux lire plus !",
         "ignorant": "Non merci, je préfère rester ignorant",
-        "sure": [
-          "Êtes-vous sûr ?",
-          "Vraiment sûr ?",
-          "Pourquoi partez-vous ?"
-        ],
+        "sure": ["Êtes-vous sûr ?", "Vraiment sûr ?", "Pourquoi partez-vous ?"],
         "stay": "Rester",
         "yes": "Oui",
         "choose": "Choisissez votre formule",
-        "plans": [
-          "Lecteur",
-          "Bibliothécaire",
-          "Hexagone infini"
-        ],
+        "plans": ["Lecteur", "Bibliothécaire", "Hexagone infini"],
         "perMonth": "pages / mois",
         "best": "LE PLUS CHOISI",
         "trial": "Essai gratuit*",
         "limited": "Continuer avec la version limitée (déconseillé)",
         "cart": "Votre panier",
         "cartRows": [
-          [
-            "Un livre",
-            "1 page"
-          ],
-          [
-            "Assurance perte de page",
-            "4 pages"
-          ],
-          [
-            "Don à l'hexagone voisin",
-            "2 pages"
-          ],
-          [
-            "Seconde copie (recommandé)",
-            "1 page"
-          ]
+          ["Un livre", "1 page"],
+          ["Assurance perte de page", "4 pages"],
+          ["Don à l'hexagone voisin", "2 pages"],
+          ["Seconde copie (recommandé)", "1 page"]
         ],
         "total": "Total",
         "totalPrice": "8 pages",
@@ -1826,28 +1853,17 @@
           {
             "name": "Lecteur",
             "price": "41",
-            "perks": [
-              "1 page à la fois",
-              "Lettres de l'alphabet incluses"
-            ]
+            "perks": ["1 page à la fois", "Lettres de l'alphabet incluses"]
           },
           {
             "name": "Bibliothécaire",
             "price": "410",
-            "perks": [
-              "Toutes les pages",
-              "Signet doré",
-              "Assistance par hexagone"
-            ]
+            "perks": ["Toutes les pages", "Signet doré", "Assistance par hexagone"]
           },
           {
             "name": "Hexagone infini",
             "price": "4 100",
-            "perks": [
-              "Toutes les pages, deux fois",
-              "Un hexagone à votre nom",
-              "Sortie prioritaire*"
-            ]
+            "perks": ["Toutes les pages, deux fois", "Un hexagone à votre nom", "Sortie prioritaire*"]
           }
         ],
         "perMonth": "pages / mois",
@@ -1859,11 +1875,7 @@
         "paying": "Prélèvement de 410 pages…",
         "paid": "Rassurez-vous : la Bibliothèque ne prend rien. Elle a déjà tout.",
         "lose": "Vous allez perdre :",
-        "losses": [
-          "Le signet doré",
-          "L'assistance par hexagone",
-          "Notre estime"
-        ],
+        "losses": ["Le signet doré", "L'assistance par hexagone", "Notre estime"],
         "keep": "Rester Premium",
         "goLimited": "Continuer en version limitée",
         "free": "Version limitée activée : vous pouvez lire. Comme avant."
@@ -1871,40 +1883,16 @@
       "cart": {
         "title": "Votre panier",
         "items": [
-          [
-            "Un livre",
-            1
-          ],
-          [
-            "Assurance perte de page",
-            4
-          ],
-          [
-            "Don à l’hexagone voisin",
-            2
-          ],
-          [
-            "Seconde copie (recommandé)",
-            1
-          ]
+          ["Un livre", 1],
+          ["Assurance perte de page", 4],
+          ["Don à l’hexagone voisin", 2],
+          ["Seconde copie (recommandé)", 1]
         ],
         "more": [
-          [
-            "Signet assorti",
-            1
-          ],
-          [
-            "Garantie de 410 ans",
-            3
-          ],
-          [
-            "Emballage cadeau (pour vous)",
-            1
-          ],
-          [
-            "Lettre « Une page par jour »",
-            2
-          ]
+          ["Signet assorti", 1],
+          ["Garantie de 410 ans", 3],
+          ["Emballage cadeau (pour vous)", 1],
+          ["Lettre « Une page par jour »", 2]
         ],
         "alsoLike": "Vous aimerez aussi",
         "total": "Total",
@@ -1918,26 +1906,13 @@
       "ads": {
         "site": "livre-410.babel",
         "text": "Téléchargez la page suivante, gratuitement et sans inscription.",
-        "buttons": [
-          "TÉLÉCHARGER",
-          "⬇ Télécharger maintenant",
-          "DÉMARRER"
-        ],
+        "buttons": ["TÉLÉCHARGER", "⬇ Télécharger maintenant", "DÉMARRER"],
         "ad": "annonce",
         "realLink": "le vrai lien",
         "popups": [
-          [
-            "🎉 Félicitations !",
-            "Vous êtes le 410ᵉ visiteur ! Une page en or vous attend."
-          ],
-          [
-            "⚠ Votre livre est lent",
-            "3 virus ralentissent vos pages. Nettoyez-les maintenant."
-          ],
-          [
-            "🔥 Lecteurs célibataires",
-            "Dans votre hexagone. Ils lisent, eux aussi."
-          ]
+          ["🎉 Félicitations !", "Vous êtes le 410ᵉ visiteur ! Une page en or vous attend."],
+          ["⚠ Votre livre est lent", "3 virus ralentissent vos pages. Nettoyez-les maintenant."],
+          ["🔥 Lecteurs célibataires", "Dans votre hexagone. Ils lisent, eux aussi."]
         ],
         "claim": "Réclamer mon prix",
         "claimed": "Votre prix : la page suivante, et 12 onglets de plus.",
@@ -1970,11 +1945,7 @@
           "Cochez cette case si vous ne voulez pas ne pas recevoir {x}.",
           "Décochez cette case pour ne pas refuser {x}."
         ],
-        "what": [
-          "nos offres de lecture quotidiennes",
-          "la lettre des hexagones voisins",
-          "les messages de nos partenaires"
-        ],
+        "what": ["nos offres de lecture quotidiennes", "la lettre des hexagones voisins", "les messages de nos partenaires"],
         "validate": "Valider",
         "one": "Merci ! Vous recevrez 1 lettre par jour.",
         "many": "Merci ! Vous recevrez {n} lettres par jour.",
@@ -2003,14 +1974,8 @@
   },
   "rabbit": {
     "name": "Le Lapin de garenne",
-    "cover": [
-      "Le Lapin",
-      "de garenne"
-    ],
-    "title": [
-      "LE LAPIN",
-      "DE GARENNE"
-    ],
+    "cover": ["Le Lapin", "de garenne"],
+    "title": ["LE LAPIN", "DE GARENNE"],
     "spine": "LE LAPIN DE GARENNE",
     "sub": "Mœurs, terriers et habitudes",
     "by": "PAR",
@@ -2054,20 +2019,7 @@
       "platesList": "LISTE DES PLANCHES",
       "index": "TABLE ALPHABÉTIQUE",
       "chapter": "CHAPITRE",
-      "ordinals": [
-        "PREMIER",
-        "II",
-        "III",
-        "IV",
-        "V",
-        "VI",
-        "VII",
-        "VIII",
-        "IX",
-        "X",
-        "XI",
-        "XII"
-      ],
+      "ordinals": ["PREMIER", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"],
       "chapters": [
         {
           "name": "Du lapin en général",
@@ -2146,110 +2098,32 @@
       "latin": "(Lepus cuniculus, Linn.)",
       "engraver": "H. C. del. et sculp.",
       "indexEntries": [
-        [
-          "Aboiement (absence d’)",
-          214
-        ],
-        [
-          "Belette",
-          263
-        ],
-        [
-          "Blanc (lapin), voir Montre",
-          0
-        ],
-        [
-          "Blé (jeune)",
-          73
-        ],
-        [
-          "Chapeau de l’auteur",
-          141
-        ],
-        [
-          "Clapier",
-          295
-        ],
-        [
-          "Course",
-          135
-        ],
-        [
-          "Crépuscule",
-          281
-        ],
-        [
-          "Écorce",
-          284
-        ],
-        [
-          "Fuite",
-          137
-        ],
-        [
-          "Furet",
-          264
-        ],
-        [
-          "Garenne",
-          8
-        ],
-        [
-          "Gîte",
-          41
-        ],
-        [
-          "Haie",
-          4
-        ],
-        [
-          "Lièvre (différences avec le)",
-          9
-        ],
-        [
-          "Montre, voir Blanc (lapin)",
-          0
-        ],
-        [
-          "Neige",
-          287
-        ],
-        [
-          "Oreille",
-          169
-        ],
-        [
-          "Papier (goût pour le)",
-          75
-        ],
-        [
-          "Renard",
-          262
-        ],
-        [
-          "Retard",
-          0
-        ],
-        [
-          "Saut",
-          136
-        ],
-        [
-          "Serpolet",
-          73
-        ],
-        [
-          "Terrier",
-          40
-        ],
-        [
-          "Trèfle",
-          74
-        ],
-        [
-          "Trou (trop étroit)",
-          4
-        ]
+        ["Aboiement (absence d’)", 214],
+        ["Belette", 263],
+        ["Blanc (lapin), voir Montre", 0],
+        ["Blé (jeune)", 73],
+        ["Chapeau de l’auteur", 141],
+        ["Clapier", 295],
+        ["Course", 135],
+        ["Crépuscule", 281],
+        ["Écorce", 284],
+        ["Fuite", 137],
+        ["Furet", 264],
+        ["Garenne", 8],
+        ["Gîte", 41],
+        ["Haie", 4],
+        ["Lièvre (différences avec le)", 9],
+        ["Montre, voir Blanc (lapin)", 0],
+        ["Neige", 287],
+        ["Oreille", 169],
+        ["Papier (goût pour le)", 75],
+        ["Renard", 262],
+        ["Retard", 0],
+        ["Saut", 136],
+        ["Serpolet", 73],
+        ["Terrier", 40],
+        ["Trèfle", 74],
+        ["Trou (trop étroit)", 4]
       ],
       "end": "FIN",
       "endSmall": "Achevé d’imprimer dans un hexagone."
@@ -2261,16 +2135,10 @@
   },
   "endlessBook": {
     "name": "Le Livre sans fin… sauf une ?",
-    "cover": [
-      "Le Livre sans fin",
-      "… sauf une ?"
-    ],
+    "cover": ["Le Livre sans fin", "… sauf une ?"],
     "collection": "LES SENTIERS QUI BIFURQUENT",
     "number": "7",
-    "title": [
-      "LE LIVRE",
-      "SANS FIN"
-    ],
+    "title": ["LE LIVRE", "SANS FIN"],
     "tail": "… sauf une ?",
     "author": "ARIANE DELAFIL",
     "tagline": "Un livre-jeu · C’est vous qui choisissez votre chemin",
@@ -2278,18 +2146,9 @@
     "hook": "Personne n’a jamais vu le sommet.",
     "blurb": "La tour se dresse au milieu de nulle part, et elle monte, monte, jusqu’à entrer dans les nuages. On dit que là-haut, une porte s’ouvre sur le ciel. On dit aussi que tous ceux qui l’ont cherchée sont revenus au point de départ. Ogresse, sphinx, miroirs, escalier qui ne finit pas : à chaque page, c’est vous qui décidez où aller.",
     "stats": [
-      [
-        "100",
-        "paragraphes"
-      ],
-      [
-        "27",
-        "façons de mourir"
-      ],
-      [
-        "1",
-        "seule fin"
-      ]
+      ["100", "paragraphes"],
+      ["27", "façons de mourir"],
+      ["1", "seule fin"]
     ],
     "memory": "Pas de dés, pas de crayon : seulement votre mémoire.",
     "age": "Dès 10 ans",
@@ -2320,18 +2179,11 @@
   },
   "coloring": {
     "name": "Colorie la Bibliothèque",
-    "cover": [
-      "Colorie",
-      "la Bibliothèque"
-    ],
+    "cover": ["Colorie", "la Bibliothèque"],
     "big": "COLORIE",
     "small": "la Bibliothèque",
     "publisher": "ÉDITIONS DE LA TOUR",
-    "badge": [
-      "9",
-      "GRANDS",
-      "DESSINS"
-    ],
+    "badge": ["9", "GRANDS", "DESSINS"],
     "readers": "pour les petits et les grands lecteurs",
     "inside": "Dans ce cahier :",
     "list": [
@@ -2393,10 +2245,7 @@
       "plate": "PLANCHE",
       "plateNote": "plat et dos, d’après la maquette",
       "drafts": "PISTES ÉCARTÉES",
-      "colophon": [
-        "Ce livre s’écrit encore.",
-        "Il grandira avec le jeu."
-      ],
+      "colophon": ["Ce livre s’écrit encore.", "Il grandira avec le jeu."],
       "chapters": {
         "idea": {
           "title": "L’idée",
@@ -2496,8 +2345,12 @@
             "Puis le Manuscrit de Voynich, le seul livre que personne n’a jamais su lire. Sur sa couverture de vélin pousse une plante qui n’existe pas. Dedans, des plantes encore, des cercles d’étoiles, des bassins, des pots d’apothicaire, et une écriture inconnue, tracée trait par trait.",
             "Puis le Catalogue des catalogues, celui que cherchent les bibliothécaires de Borges. Sur sa couverture de cuir bleu nuit, le livre se contient lui-même, jusqu’à n’être plus qu’un point d’or. Dedans, un registre de livres, un par ligne, chacun avec sa cote.",
             "Puis le Livre de sable, celui d’une nouvelle de Borges, qui n’a ni première ni dernière page. Sur sa couverture, un désert au soir, et le mot « sable » qui s’en va en grains. Dedans, des versets sans fin, des numéros de page sans suite, et pas une page qu’on retrouve.",
-            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.", "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur quarante-deux mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit.", "Puis les Dark patterns par l’exemple, un best-seller d’aujourd’hui pour concepteurs d’interfaces, préfacé avec le plus grand sérieux. Dans la bibliothèque, ses exemples ne se lisent pas : ils se subissent. Un bandeau de cookies, un bouton qui fuit, un compte à rebours, un désabonnement sans fin, un abonnement forcé, un panier qui se remplit tout seul, des publicités déguisées, une foule inventée, des cases à double négation, un fil qui ne finit jamais : il faut trouver la sortie. Il y en a toujours une.", "Puis le Lapin de garenne, un traité d’histoire naturelle du siècle d’avant, toile verte et or. Sur sa couverture, un médaillon gravé : l’herbe, la haie, le terrier, et la place du lapin, vide. Dedans, douze planches où il manque toujours. C’est qu’il court : dans la bibliothèque, le Lapin blanc d’Alice traverse parfois les pages en bondissant. Il faut l’attraper trois fois ; à chaque fois, il revient plus vite.",
-            "Puis le Livre sans fin… sauf une ?, un livre-jeu de poche des années 80, dans une collection inventée, « Les Sentiers qui bifurquent ». Sur sa couverture noire, une tour qui entre dans les nuages : personne n’en a jamais vu le sommet. Dedans, cent paragraphes ; au bas de chacun, des choix, et le numéro où continuer. On y meurt souvent, et presque tous les chemins ramènent au 1. Il n’a qu’une fin : pour l’ouvrir, il faut se souvenir de trois nombres appris en route, d’une mort à l’autre. Après elle, le livre continue quand même, en charabia, jusqu’à sa dernière page.", "Puis Colorie la Bibliothèque, un cahier de coloriage pour enfants des années 60, chez un éditeur inventé, les Éditions de la Tour. Sur sa couverture jaune de kiosque, le titre en grosses lettres rondes de toutes les couleurs, et la tour, à moitié coloriée. Dedans, neuf grands dessins, un par double page : à gauche, la boîte de crayons ; à droite, le dessin. Dans la bibliothèque, on touche un crayon, puis une zone, et elle se remplit, avec le grain du crayon. Les couleurs restent, même après le prestige."
+            "Puis le grand livre du X, qui raconte l’histoire de la lettre X, des grottes jusqu’à la Bibliothèque. Sur sa couverture crème, un X noir immense, comme un spécimen de typographie. Dedans, chaque chapitre commence par une petite histoire, et la suite est écrite en langue X.",
+            "Puis ils sont devenus plus longs à trouver : on les avait tous en quelques heures. Chaque livre rare trouvé rend le suivant plus rare d’un quart. Le premier vient vite ; le dernier, un livre sur quarante-deux mille, demande des centaines d’heures. Ils ne sont d’aucun âge : une récompense de très long terme. Le Grand Livre leur a donné un chapitre, « Raretés » : combien sont trouvés, et, en pour cent, la chance que le prochain livre en soit un. Combien il en reste, il ne le dit pas ; quand il n’en reste plus, une phrase le dit.",
+            "Puis les Dark patterns par l’exemple, un best-seller d’aujourd’hui pour concepteurs d’interfaces, préfacé avec le plus grand sérieux. Dans la bibliothèque, ses exemples ne se lisent pas : ils se subissent. Un bandeau de cookies, un bouton qui fuit, un compte à rebours, un désabonnement sans fin, un abonnement forcé, un panier qui se remplit tout seul, des publicités déguisées, une foule inventée, des cases à double négation, un fil qui ne finit jamais : il faut trouver la sortie. Il y en a toujours une.",
+            "Puis le Lapin de garenne, un traité d’histoire naturelle du siècle d’avant, toile verte et or. Sur sa couverture, un médaillon gravé : l’herbe, la haie, le terrier, et la place du lapin, vide. Dedans, douze planches où il manque toujours. C’est qu’il court : dans la bibliothèque, le Lapin blanc d’Alice traverse parfois les pages en bondissant. Il faut l’attraper trois fois ; à chaque fois, il revient plus vite.",
+            "Puis le Livre sans fin… sauf une ?, un livre-jeu de poche des années 80, dans une collection inventée, « Les Sentiers qui bifurquent ». Sur sa couverture noire, une tour qui entre dans les nuages : personne n’en a jamais vu le sommet. Dedans, cent paragraphes ; au bas de chacun, des choix, et le numéro où continuer. On y meurt souvent, et presque tous les chemins ramènent au 1. Il n’a qu’une fin : pour l’ouvrir, il faut se souvenir de trois nombres appris en route, d’une mort à l’autre. Après elle, le livre continue quand même, en charabia, jusqu’à sa dernière page.",
+            "Puis Colorie la Bibliothèque, un cahier de coloriage pour enfants des années 60, chez un éditeur inventé, les Éditions de la Tour. Sur sa couverture jaune de kiosque, le titre en grosses lettres rondes de toutes les couleurs, et la tour, à moitié coloriée. Dedans, neuf grands dessins, un par double page : à gauche, la boîte de crayons ; à droite, le dessin. Dans la bibliothèque, on touche un crayon, puis une zone, et elle se remplit, avec le grain du crayon. Les couleurs restent, même après le prestige."
           ]
         },
         "library": {
@@ -2539,8 +2392,25 @@
             "Parmi les livres modernes, deux sortes nouvelles : des autobiographies, où les visages restent vides, et des bandes dessinées, numérotées comme une série."
           ]
         },
-        "away": {"head": "L’absence", "text": ["Le jeu a appris à continuer sans le joueur. Jeu fermé ou onglet caché, les pages se lisent au rythme de la production, à moitié, huit heures au plus. Le livre en main avance, les livres finis se referment, les livres rares croisés en route sont trouvés, les sceaux suivent.", "Au retour, le chercheur croit sortir d’un rêve. Une modale le détrompe, et dit ce que ses mains ont fait sans lui.", "Le livre blanc ou la bibliothèque ouverts, le livre en main n’est plus là : longtemps, ses pages n’ont plus tourné, et rien ne s’y trouvait. Au retour au jeu, ce temps compte maintenant comme une fenêtre ouverte. Et les pages qui tournent seules ne dépassaient pas dix feuilles par seconde, quel que soit leur plafond : elles le tiennent."]},
-        "intuitions": {"head": "Les intuitions", "text": ["La Connaissance a trouvé à quoi servir. Le livre blanc a reçu une partie de plus, juste après les méthodes : les intuitions, des choses que le chercheur sent avant de les comprendre.", "La première est le filtre sémantique. Cinq niveaux, payés en Connaissance, et à chacun les trouvailles se font plus fréquentes. Sa page dit tout : le niveau, la chance d’avant et d’après, le prix au crayon. Un premier essai, des notes dans la marge, n’était pas compréhensible. Il a été refait.", "Puis les autres sont venues : le fil d’Ariane, la mémoire des phrases, la lecture rapide, la mémoire musculaire, la cartographie du retour, le flair, et une par méthode de lecture, qui double ce que la méthode fait lire. Celle d’une méthode pas encore retrouvée reste en symboles. Une seule n’a pas de fin : le sommeil profond, une heure d’absence comptée en plus à chaque niveau, chaque fois deux fois plus chère. Puis une deuxième sans fin, l’économie du geste : les méthodes coûtent un peu moins à chaque niveau. Et parce que les intuitions s’oublieront à l’Exil, la réminiscence est prête : elles reviennent seules jusqu’au niveau le plus haut déjà atteint, et une note au crayon la laisse faire ou non. Elle est devenue une intuition permanente, qui n’apparaît qu’après le premier Exil.", "La Connaissance venait trop vite. Les trouvailles sont devenues plus rares, les prix plus hauts : il faut maintenant des centaines d’heures pour tout comprendre. Dans le livre blanc et la ruche des méthodes, chaque méthode dit ce qu’elle lit vraiment, intuition comprise. Sous la ruche, une marque dorée dit combien un clic en achète : une, dix, cent, ou tout ce que les pages permettent. Elle se déplie au survol. Chaque lot s’ouvre avec la brassée, la première des intuitions permanentes : un confort, que l’Exil ne fera pas oublier. Le Grand Livre a reçu une planche de plus, « Intuitions » : un sceau pour chacune, comprise jusqu’au bout ; pour celles qui n’ont pas de fin, au niveau dix. Chaque sceau rend aussi les trouvailles plus fréquentes, d’un pour cent, et la chance peut dépasser cent pour cent : à 554 %, une page rapporte cinq trouvailles, et une sixième à 54 %. Une seule s’y voit surlignée.", "Puis le premier âge a ralenti. Une méthode ne se trouve plus qu’une fois la précédente possédée vingt-cinq fois ; en attendant, des bâtons au crayon les comptent sous son nom, par cinq. Les cinq dernières coûtent deux fois plus : l’échelle arrive vers la quatorzième heure. Au-delà de cent pour cent, les trouvailles en plus rapportent leur Connaissance, mais n’écrivent presque plus rien : un peu de méthode, un peu d’indice, un peu de souvenir. Et un indice qui mène à un livre rare attend que ce livre soit trouvé.", "Puis le premier âge a perdu quatre méthodes : le pouce, le regard large, le double feuilletage et le miroir. Cinq par âge, pas plus, pour que chacune compte. Les prix ont été refaits, et l’échelle arrive toujours vers la quatorzième heure. Une partie qui les avait les a oubliées. Chaque méthode a reçu ses sceaux : un, vingt-cinq, cinquante, cent, cent cinquante et cinq cents exemplaires, dans une même partie. Cinq cents échelles coûtent un nombre de pages à trente-neuf chiffres : les derniers sont faits pour les très longues parties. Dans le Grand Livre, chaque méthode a maintenant sa page, son nom en sous-titre, et une seconde série : les pages qu’elle a lues depuis le réveil, de dix fois son prix à mille milliards de fois. Une dernière page les réunit toutes : chaque méthode achetée dans la partie remplit un volume de quatre cent dix, comme les pages d’un livre de la Bibliothèque. Neuf volumes, neuf sceaux. La planche « Pages » a reçu une seconde page, pour ce qui ne s’oublie jamais, même en recommençant : les pages lues par les méthodes, de mille en mille, d’une seule à un nombre de trente et un chiffres ; et celles lues à la main, de dix en dix, jusqu’à cent mille. Chacun de ces sceaux a sa propre phrase, et ses nombres s’écrivent comme le joueur l’a choisi dans le cahier. Une troisième page suit, pour la vitesse la plus haute de toute une vie : de dix en dix pages par seconde jusqu’à cent millions, puis de cent en cent jusqu’à un nombre de trente et un chiffres."]},
+        "away": {
+          "head": "L’absence",
+          "text": [
+            "Le jeu a appris à continuer sans le joueur. Jeu fermé ou onglet caché, les pages se lisent au rythme de la production, à moitié, huit heures au plus. Le livre en main avance, les livres finis se referment, les livres rares croisés en route sont trouvés, les sceaux suivent.",
+            "Au retour, le chercheur croit sortir d’un rêve. Une modale le détrompe, et dit ce que ses mains ont fait sans lui.",
+            "Le livre blanc ou la bibliothèque ouverts, le livre en main n’est plus là : longtemps, ses pages n’ont plus tourné, et rien ne s’y trouvait. Au retour au jeu, ce temps compte maintenant comme une fenêtre ouverte. Et les pages qui tournent seules ne dépassaient pas dix feuilles par seconde, quel que soit leur plafond : elles le tiennent."
+          ]
+        },
+        "intuitions": {
+          "head": "Les intuitions",
+          "text": [
+            "La Connaissance a trouvé à quoi servir. Le livre blanc a reçu une partie de plus, juste après les méthodes : les intuitions, des choses que le chercheur sent avant de les comprendre.",
+            "La première est le filtre sémantique. Cinq niveaux, payés en Connaissance, et à chacun les trouvailles se font plus fréquentes. Sa page dit tout : le niveau, la chance d’avant et d’après, le prix au crayon. Un premier essai, des notes dans la marge, n’était pas compréhensible. Il a été refait.",
+            "Puis les autres sont venues : le fil d’Ariane, la mémoire des phrases, la lecture rapide, la mémoire musculaire, la cartographie du retour, le flair, et une par méthode de lecture, qui double ce que la méthode fait lire. Celle d’une méthode pas encore retrouvée reste en symboles. Une seule n’a pas de fin : le sommeil profond, une heure d’absence comptée en plus à chaque niveau, chaque fois deux fois plus chère. Puis une deuxième sans fin, l’économie du geste : les méthodes coûtent un peu moins à chaque niveau. Et parce que les intuitions s’oublieront à l’Exil, la réminiscence est prête : elles reviennent seules jusqu’au niveau le plus haut déjà atteint, et une note au crayon la laisse faire ou non. Elle est devenue une intuition permanente, qui n’apparaît qu’après le premier Exil.",
+            "La Connaissance venait trop vite. Les trouvailles sont devenues plus rares, les prix plus hauts : il faut maintenant des centaines d’heures pour tout comprendre. Dans le livre blanc et la ruche des méthodes, chaque méthode dit ce qu’elle lit vraiment, intuition comprise. Sous la ruche, une marque dorée dit combien un clic en achète : une, dix, cent, ou tout ce que les pages permettent. Elle se déplie au survol. Chaque lot s’ouvre avec la brassée, la première des intuitions permanentes : un confort, que l’Exil ne fera pas oublier. Le Grand Livre a reçu une planche de plus, « Intuitions » : un sceau pour chacune, comprise jusqu’au bout ; pour celles qui n’ont pas de fin, au niveau dix. Chaque sceau rend aussi les trouvailles plus fréquentes, d’un pour cent, et la chance peut dépasser cent pour cent : à 554 %, une page rapporte cinq trouvailles, et une sixième à 54 %. Une seule s’y voit surlignée.",
+            "Puis le premier âge a ralenti. Une méthode ne se trouve plus qu’une fois la précédente possédée vingt-cinq fois ; en attendant, des bâtons au crayon les comptent sous son nom, par cinq. Les cinq dernières coûtent deux fois plus : l’échelle arrive vers la quatorzième heure. Au-delà de cent pour cent, les trouvailles en plus rapportent leur Connaissance, mais n’écrivent presque plus rien : un peu de méthode, un peu d’indice, un peu de souvenir. Et un indice qui mène à un livre rare attend que ce livre soit trouvé.",
+            "Puis le premier âge a perdu quatre méthodes : le pouce, le regard large, le double feuilletage et le miroir. Cinq par âge, pas plus, pour que chacune compte. Les prix ont été refaits, et l’échelle arrive toujours vers la quatorzième heure. Une partie qui les avait les a oubliées. Chaque méthode a reçu ses sceaux : un, vingt-cinq, cinquante, cent, cent cinquante et cinq cents exemplaires, dans une même partie. Cinq cents échelles coûtent un nombre de pages à trente-neuf chiffres : les derniers sont faits pour les très longues parties. Dans le Grand Livre, chaque méthode a maintenant sa page, son nom en sous-titre, et une seconde série : les pages qu’elle a lues depuis le réveil, de dix fois son prix à mille milliards de fois. Une dernière page les réunit toutes : chaque méthode achetée dans la partie remplit un volume de quatre cent dix, comme les pages d’un livre de la Bibliothèque. Neuf volumes, neuf sceaux. La planche « Pages » a reçu une seconde page, pour ce qui ne s’oublie jamais, même en recommençant : les pages lues par les méthodes, de mille en mille, d’une seule à un nombre de trente et un chiffres ; et celles lues à la main, de dix en dix, jusqu’à cent mille. Chacun de ces sceaux a sa propre phrase, et ses nombres s’écrivent comme le joueur l’a choisi dans le cahier. Une troisième page suit, pour la vitesse la plus haute de toute une vie : de dix en dix pages par seconde jusqu’à cent millions, puis de cent en cent jusqu’à un nombre de trente et un chiffres."
+          ]
+        },
         "prestige": {
           "head": "Le prestige",
           "text": [
@@ -2550,17 +2420,98 @@
             "Puis l’Etherium est venu sur la pile dès le début, un livre violet qui se nourrit des pages lues. On le prend en main comme les autres, on regarde sa couverture et son dos ; c’est ouvrir sa couverture qui fait le prestige. Tant que cela ne rapporte pas un Éther, elle résiste : elle se soulève à peine et retombe. Ensuite, il luit. Chaque fois, une question courte dit ce qui sera perdu et l’Éther gagné ; « Ouvrir » se clique. La première fois seulement, le sol se dérobe, et quand le chercheur rouvre les yeux, autour de lui, plus rien : le livre s’est nourri de tout. Reposé, il ne disparaît plus : il retourne sur la pile, scellé jusqu’au prochain prestige."
           ]
         },
-        "constellations": {"head": "Les constellations", "text": ["Puis l’Etherium est passé de nuit. Ses arbres à une tige devaient se séparer en branches ; trois pistes ont été dessinées : la fourche, l’arbre de Porphyre, la double page. Aucune n’a été gardée. À la place, une constellation inventée par page, dont la figure dit ce qu’elle donne : un livre ouvert pour la lecture, une main, une chouette pour la Connaissance, une loupe pour les trouvailles, une lune pour l’absence, une porte pour le réveil, une ruche pour la mémoire des méthodes, un escalier pour les Âges. Chaque étoile n’a qu’une étoile d’avant ; elle s’allume avec de l’Éther, et ce que donnent les étoiles se multiplie. Les nœuds des anciens arbres ont rendu leur Éther. Puis, une à une, les étoiles ont reçu ce qu’elles promettaient : des feuilles qui tournent plus vite, des intuitions moins chères, une porte qui se souvient de la partie d’avant.", "Pour l’encre, quatre nuits ont été essayées : l’atlas sur papier, la nuit, la nuit retenue, la nuit qui se mérite. La nuit tout court l’a emporté : des pages violettes, une poussière d’étoiles fixe, des traits d’or qui brillent. Dans la pièce, la lampe la faisait virer au bordeaux ; ses pages ont reçu de quoi garder leur violet.", "Puis l’Éther a compté même dépensé : chaque Éther reçu depuis toujours fait lire un pour cent de plus, aux méthodes comme aux mains. La garde le dit sous l’Éther à dépenser, le retour d’une absence dit l’Éther qu’elle a fait mériter, et le Grand Livre décompose la vitesse de lecture comme la chance de trouvaille : les méthodes, leurs intuitions, l’Etherium, l’Éther. La liste des méthodes y a pris ses propres pages, rangées par Âge une fois l’Âge Automatique acheté : il y en aura des dizaines. Pas de quoi passer le mur : de quoi le rendre moins haut.", "Avant l’Alpha, une revue du jeu entier. Le simulateur a appris les sceaux et l’Éther qui fait lire : en un mois, tout l’Etherium s’allume ; les Âges suivants auront leurs constellations, bien plus chères. En attendant, leurs marches restent fermées, comme la Goutte dans la Ruche : on les voit, sans leur nom. La chance de trouvaille a reçu sa part de l’Etherium, et quelques mots ont été remis d’aplomb. L’Etherium ouvert, sa couverture soulevée, le compteur du haut dit l’Éther à dépenser, à la place des pages : on ne savait plus combien il en restait."]},
-        "cornee": {"head": "La Page Cornée", "text": ["La première étoile de la Ruche a reçu sa méthode : la Page Cornée, la méthode secrète de l’Âge Manuel. Allumée, elle rend un souvenir flou : une page du livre blanc en symboles, une phrase à retrouver en même temps que la méthode en cours. Retrouvée, elle ne s’oublie plus, même au prestige. Elle s’est rangée en dernier, après l’Échelle."]},
-        "automaticAge": {"head": "L’Âge Automatique", "text": ["Une marche de l’Escalier a reçu son Âge : l’Âge Automatique, une étoile d’Éther. Acheté une fois pour toutes, il ouvre cinq mécanismes qui lisent pour le chercheur, du plus petit à la galerie entière : le Métronome, la Roue à Livres, le Monte-Livres, l’Automate Lecteur et l’Horloge des Galeries. Chacun a sa phrase, son intuition et ses sceaux. Le premier n’attend pas vingt-cinq Échelles : l’Âge acheté suffit. Leurs prix ont été choisis au simulateur, parmi quatre essais ; plus tard, leur lecture a été divisée par deux, pour que l’Éther monte par paliers, un Âge après l’autre. Dans l’Âge Manuel, la Voix Éteinte et le Lutrin de Pierre ont été rapprochés : vingt-cinq Voix coûtaient plus que la moitié d’un Lutrin. Dans le livre blanc, les méthodes et les intuitions se rangent alors par Âge, chacun sous son titre."]},
-        "sealsReview": {"head": "Les sceaux rattrapent le jeu", "text": ["Le prestige, l’Etherium et l’Âge Automatique étaient arrivés sans un seul sceau. Une revue les a rattrapés : une planche de l’Etherium, qui n’apparaît qu’après un premier réveil (prestiges, Éther recueilli, étoiles allumées, chaque constellation entière, l’Âge Automatique) ; la Connaissance comprise, le livre blanc rempli, le Grand Livre lu en entier, une nuit entière d’absence, les jours passés depuis l’arrivée. Les sceaux d’une méthode ne se montrent plus avant elle : rien de la Page Cornée ni de l’Âge Automatique avant qu’ils existent pour le chercheur. Les séries trop courtes ont été prolongées jusqu’aux nombres que le jeu atteint désormais, et les pages tournées à la main ont reçu neuf phrases de plus, jusqu’à la main vide du premier jour. Trois secrets se sont ajoutés, chacun avec sa phrase dans le livre blanc ; un indice résolu y porte en marge, en or, le sceau qu’il a fait gagner.", "On nous a dit qu’on voyait les sceaux apparaître sans savoir à quoi ils correspondaient. La vision dit désormais sous le sceau le nom de sa planche et sa légende, en symboles de Babel tant que les sceaux ne se lisent pas, avec une ligne qui l’avoue ; elle attend qu’on la survole, et un clic ouvre le Grand Livre sur sa planche, où le sceau attend en évidence, sa légende déjà écrite. Les premiers sceaux tombent avant le Grand Livre et ne se touchent pas : les trois premières visions qu’on peut toucher le disent. Trois pistes ont été essayées."]},
-        "letter": {"head": "La lettre qui s’échappe", "text": ["Après l’Alpha, une idée de l’auteur : des bonus qui ne durent pas. Quatre choses ont été essayées pour les porter : une page qui s’envole d’une étagère, une phalène d’or, une lettre qui s’échappe du livre, un dos de livre qui luit. La lettre l’a emporté. De temps en temps, une lettre de Babel monte du livre en main ; attrapée, elle se défait en poussière d’or et donne un bonus, quelques secondes. Ce qui court se lit dans un médaillon, à droite du compteur, cerclé du temps qui reste.", "Au début, elle est rare, brève, et ne donne que la Transe. Une neuvième constellation, la Plume, la fait venir plus souvent, rester plus longtemps, et lui apprend six autres bonus : l’Œil vif, la Main légère, la Mémoire vive, l’Aubaine, l’Éclair, la Trouvaille. Les prix ont été montés : à terme, c’est un bonus très fort. Dès la première lettre attrapée, trois intuitions apparaissent : le Guet, le Souffle retenu, la Lettre comprise. Et, très rarement, ce n’est pas une lettre qui vient, mais un mot, lettre par lettre : BABEL. Le livre blanc, lui, a rangé à part les intuitions qui ne tiennent à aucune méthode : une fois les Âges séparés, elles ont leur sous-partie, avant eux.", "Plus tard, l’auteur a voulu que les bonus se cumulent. Une quatrième intuition, la Volée, fait qu’une lettre attrapée en appelle parfois une autre, et celle-là, plus rarement, une troisième ; leurs dons s’ajoutent. Puis un bonus court et démesuré, appris avec elle : Quatre cent dix, le nombre de pages d’un livre de la Bibliothèque ; le temps qu’il dure, pages et trouvailles sont multipliées par ce nombre. Le mot BABEL, lui, vient toujours seul."]},
-        "newVersion": {"head": "La nouvelle version", "text": ["Puis le jeu a appris à voir qu’il avait vieilli. Toutes les cinq minutes, et à chaque retour sur l’onglet, il relit le nom de la version en ligne. Si une nouvelle est sortie, une fenêtre le dit et propose de recharger, la lecture sauvegardée juste avant. Rien ne se recharge tout seul : un piège ou une chasse peuvent être en cours. Deux tons ont été essayés, l’un dans le monde, l’autre sobre. Le sobre l’a emporté."]},
-        "scenes": {"head": "Les salles", "text": ["Puis le décor a été repeint. La salle du début, à une fenêtre, ne disait pas la grandeur de Babel. Trois ébauches en volumes ont été bâties, l’œil à hauteur de lecteur : un balcon sur un puits immense, une nef qui fuit jusqu’à l’horizon, des hexagones en enfilade. Les hexagones l’ont emporté.", "Les ébauches ont guidé la peinture : leur carte de profondeur, donnée au peintre, tient les murs droits. Il en est sorti trois salles, une par Âge : l’hexagone aux fenêtres sur le désert pour l’Âge Manuel, la salle sous les étoiles pour l’Âge Automatique, la verrière pour l’Âge suivant. L’obscurité qui se levait page après page est partie avec l’ancienne salle.", "Le cahier d’options a reçu une page : le chercheur y a dessiné chaque salle vue, et l’on garde celle qu’on préfère. Une liste et de petites fenêtres ont été essayées avant les croquis."]},
-        "mimic": {"head": "La Mimic", "text": ["Puis un livre de trop. Une idée de l’auteur : la Mimic, un livre ordinaire posé quelque part dans la salle. Tant qu’elle est là, elle avale toute la Connaissance trouvée, et ne part jamais d’elle-même. Au premier clic, elle mord ; au second, elle disparaît et rend tout, dix pour cent en plus. Elle a son prix : tant qu’elle est là, les méthodes lisent moins vite, d’autant qu’elle rendra en plus, jamais de plus de moitié. La tuer vite pour continuer à dépenser, ou la laisser manger longtemps : c’est tout le choix.", "Elle a la reliure des livres de la Bibliothèque, et leur taille : une vraie boîte en perspective, calée sur le point de fuite de chaque salle, l’œil à hauteur de lecteur. De temps en temps, deux yeux sortent du cuir, au bord de la tranche, et les pages font la bouche. Des yeux d’ambre et des yeux verts ont été essayés ; ceux de braise l’ont emporté. Sur un écran en hauteur, où aucune place de la salle ne se voit, elle devient un sceau au bord de l’écran, un petit livre qui dort ; à moitié sorti de l’écran, il a été écarté.", "Elle se débloque dans l’Etherium, sur une constellation nouvelle, l’Exploration : une rose des vents, dont chaque pointe fera apparaître quelque chose dans les salles. L’Est, c’est elle ; l’Ouest attend les reliques. Sa page à elle s’ouvre ensuite : l’œil montre ce qu’elle a avalé, les dents du haut la font venir plus souvent, celles du bas lui font rendre plus. Une intuition, le Sommeil léger, la trahit quand elle dort ; une planche de sceaux compte celles qu’on attrape, ce qu’elles rendent en plus, et le temps qu’on les laisse manger. Le sommaire de l’Etherium tient désormais sur deux pages."]},
-        "relics": {"head": "Les reliques", "text": ["Puis l’Ouest de la rose. Les reliques : les instruments d’un chercheur venu avant lui, une par salle. Des objets de la vie ordinaire, une montre, une tasse, des lunettes, ont été écartés : ils ne disaient rien de la quête de sens. Il en est resté une loupe, un astrolabe, un sablier.", "L’Ouest allumé, chaque relique a sa phrase dans le livre blanc, qui ne se lit qu’une fois sa salle vue. La phrase lue, l’objet est posé dans sa salle, à sa vraie taille, en perspective, sans reflet ni signe : rien ne doit trahir qu’il est là. Un clic : un morceau du récit de l’autre chercheur, son sceau, et l’objet rejoint une petite case de la vitrine, de celles où aucun livre ne tenait.", "Une seule agit à la fois : la loupe garantit de la Connaissance à chaque trouvaille, l’astrolabe fait venir la lettre plus souvent, le sablier fait lire plus. En changer la fait agir aussitôt, puis la vitrine refuse tout changement pendant douze heures ; un délai pendant lequel rien n’agissait a été écarté. Leur page de l’Etherium, le Cabinet, renforce chacune et apprend la patience : six heures au lieu de douze. Un médaillon, à gauche du compteur, dit laquelle agit. Sur la corniche de la vitrine, un cartouche d’ébène compte en lettres d’or les livres et les reliques rangés."]},
-        "digitalAge": {"head": "L’Âge Numérique", "text": ["Une marche de plus sur l’Escalier : l’Âge Numérique, mille cinq cents Éther. Il devait s’appeler l’Âge Quantique ; il a été renommé, plus cohérent avec ce qui le précède. Il ouvre cinq machines que le chercheur décrit sans les connaître : le Minitel, le Micro-Ordinateur, le Moteur de Recherche, le Robot d’Indexation et l’Algorithme de Babel ; la Disquette, d’abord prévue, a laissé sa place au Micro-Ordinateur. Une méthode secrète s’y cache, le Bit, sur le modèle de la Page Cornée. Leurs prix ont été choisis au simulateur, parmi trois essais, avec un but posé pour chaque Âge : des dizaines d’Éther par prestige dans le premier, des centaines dans le deuxième, des milliers dans celui-ci. Les intuitions des dernières machines restent hors de portée d’une seule partie : un but lointain. L’Âge acheté, la salle devient la verrière.", "La Ruche a reçu sa troisième alvéole, celle du Numérique ; pour tenir côte à côte, les trois ont un peu rapetissé. L’Horloge des Galeries mène au Bit : allumé, il rend son souvenir flou, comme la Page Cornée. Puis chaque machine y garde sa phrase au prestige, dix fois plus cher que dans l’alvéole Automatique. Tant que l’Âge n’est pas acheté, l’alvéole ne se voit pas.", "Puis l’Éther s’est mis à peser. Chaque Éther reçu fait lire un pour cent de plus : dans l’Âge Numérique, c’était une spirale. Au-delà de cinq mille, chacun compte désormais un peu moins que le précédent ; c’est le poids de la Bibliothèque, et le Grand Livre le dit au chapitre « Éther ». Une page nouvelle de l’Etherium, juste après l’Escalier, le soulage : l’Atlas, un géant agenouillé qui porte une salle de la Bibliothèque. Du pied à la salle, sept étoiles ; la dernière lève le poids. La page reste blanche tant que l’Éther ne pèse pas.", "L’Âge Numérique a aussi reçu sa page de l’Etherium, la dernière du livre, après les reliques : « Numérique », un Minitel tracé en étoiles. De la prise, le cordon mène à l’écran, dont les quatre coins font lire ses machines plus vite, et au clavier, dont les touches rapportent plus de Connaissance. Comme l’alvéole, elle reste blanche tant que l’Âge n’est pas acheté.", "Avec lui, le jeu est passé en Alpha 2."]},
-        "feeding": {"head": "Le nourrir", "text": ["Puis un joueur s’est fait prendre deux fois : l’Etherium refermé trop vite, son Éther restait sans emploi jusqu’au prestige suivant. Le prix a été gardé : l’Éther ne se dépense que juste après un prestige. Mais le livre se consulte désormais à tout moment, dès le premier Éther ; ses étoiles y montrent leur prix, en pâle.", "Ouvrir sa couverture ne fait plus le prestige. Il se fait d’un bouton, sous le compteur, pour ne pas avoir à revenir à la première page : le nourrir. Le puits, abandonné depuis longtemps, a failli revenir dans le mot ; c’est le récit qui a tranché, celui d’un livre qui se nourrit des pages lues. Une étoile touchée trop tôt le rappelle : elle ne s’allume qu’une fois le livre nourri. S’il ne reste rien à gagner mais de quoi allumer une étoile, on peut le nourrir encore : une partie perdue, pour dépenser. Et le refermer juste après pose une question.", "Le récit du premier prestige a suivi, à la relecture de l’histoire : il ne dit plus « J’ai ouvert le livre », puisqu’on l’ouvre à tout moment, mais « Je lui ai tout donné » ; à son réveil, ce sont ses étoiles qui attendent."]},
+        "constellations": {
+          "head": "Les constellations",
+          "text": [
+            "Puis l’Etherium est passé de nuit. Ses arbres à une tige devaient se séparer en branches ; trois pistes ont été dessinées : la fourche, l’arbre de Porphyre, la double page. Aucune n’a été gardée. À la place, une constellation inventée par page, dont la figure dit ce qu’elle donne : un livre ouvert pour la lecture, une main, une chouette pour la Connaissance, une loupe pour les trouvailles, une lune pour l’absence, une porte pour le réveil, une ruche pour la mémoire des méthodes, un escalier pour les Âges. Chaque étoile n’a qu’une étoile d’avant ; elle s’allume avec de l’Éther, et ce que donnent les étoiles se multiplie. Les nœuds des anciens arbres ont rendu leur Éther. Puis, une à une, les étoiles ont reçu ce qu’elles promettaient : des feuilles qui tournent plus vite, des intuitions moins chères, une porte qui se souvient de la partie d’avant.",
+            "Pour l’encre, quatre nuits ont été essayées : l’atlas sur papier, la nuit, la nuit retenue, la nuit qui se mérite. La nuit tout court l’a emporté : des pages violettes, une poussière d’étoiles fixe, des traits d’or qui brillent. Dans la pièce, la lampe la faisait virer au bordeaux ; ses pages ont reçu de quoi garder leur violet.",
+            "Puis l’Éther a compté même dépensé : chaque Éther reçu depuis toujours fait lire un pour cent de plus, aux méthodes comme aux mains. La garde le dit sous l’Éther à dépenser, le retour d’une absence dit l’Éther qu’elle a fait mériter, et le Grand Livre décompose la vitesse de lecture comme la chance de trouvaille : les méthodes, leurs intuitions, l’Etherium, l’Éther. La liste des méthodes y a pris ses propres pages, rangées par Âge une fois l’Âge Automatique acheté : il y en aura des dizaines. Pas de quoi passer le mur : de quoi le rendre moins haut.",
+            "Avant l’Alpha, une revue du jeu entier. Le simulateur a appris les sceaux et l’Éther qui fait lire : en un mois, tout l’Etherium s’allume ; les Âges suivants auront leurs constellations, bien plus chères. En attendant, leurs marches restent fermées, comme la Goutte dans la Ruche : on les voit, sans leur nom. La chance de trouvaille a reçu sa part de l’Etherium, et quelques mots ont été remis d’aplomb. L’Etherium ouvert, sa couverture soulevée, le compteur du haut dit l’Éther à dépenser, à la place des pages : on ne savait plus combien il en restait."
+          ]
+        },
+        "cornee": {
+          "head": "La Page Cornée",
+          "text": [
+            "La première étoile de la Ruche a reçu sa méthode : la Page Cornée, la méthode secrète de l’Âge Manuel. Allumée, elle rend un souvenir flou : une page du livre blanc en symboles, une phrase à retrouver en même temps que la méthode en cours. Retrouvée, elle ne s’oublie plus, même au prestige. Elle s’est rangée en dernier, après l’Échelle."
+          ]
+        },
+        "automaticAge": {
+          "head": "L’Âge Automatique",
+          "text": [
+            "Une marche de l’Escalier a reçu son Âge : l’Âge Automatique, une étoile d’Éther. Acheté une fois pour toutes, il ouvre cinq mécanismes qui lisent pour le chercheur, du plus petit à la galerie entière : le Métronome, la Roue à Livres, le Monte-Livres, l’Automate Lecteur et l’Horloge des Galeries. Chacun a sa phrase, son intuition et ses sceaux. Le premier n’attend pas vingt-cinq Échelles : l’Âge acheté suffit. Leurs prix ont été choisis au simulateur, parmi quatre essais ; plus tard, leur lecture a été divisée par deux, pour que l’Éther monte par paliers, un Âge après l’autre. Dans l’Âge Manuel, la Voix Éteinte et le Lutrin de Pierre ont été rapprochés : vingt-cinq Voix coûtaient plus que la moitié d’un Lutrin. Dans le livre blanc, les méthodes et les intuitions se rangent alors par Âge, chacun sous son titre."
+          ]
+        },
+        "sealsReview": {
+          "head": "Les sceaux rattrapent le jeu",
+          "text": [
+            "Le prestige, l’Etherium et l’Âge Automatique étaient arrivés sans un seul sceau. Une revue les a rattrapés : une planche de l’Etherium, qui n’apparaît qu’après un premier réveil (prestiges, Éther recueilli, étoiles allumées, chaque constellation entière, l’Âge Automatique) ; la Connaissance comprise, le livre blanc rempli, le Grand Livre lu en entier, une nuit entière d’absence, les jours passés depuis l’arrivée. Les sceaux d’une méthode ne se montrent plus avant elle : rien de la Page Cornée ni de l’Âge Automatique avant qu’ils existent pour le chercheur. Les séries trop courtes ont été prolongées jusqu’aux nombres que le jeu atteint désormais, et les pages tournées à la main ont reçu neuf phrases de plus, jusqu’à la main vide du premier jour. Trois secrets se sont ajoutés, chacun avec sa phrase dans le livre blanc ; un indice résolu y porte en marge, en or, le sceau qu’il a fait gagner.",
+            "On nous a dit qu’on voyait les sceaux apparaître sans savoir à quoi ils correspondaient. La vision dit désormais sous le sceau le nom de sa planche et sa légende, en symboles de Babel tant que les sceaux ne se lisent pas, avec une ligne qui l’avoue ; elle attend qu’on la survole, et un clic ouvre le Grand Livre sur sa planche, où le sceau attend en évidence, sa légende déjà écrite. Les premiers sceaux tombent avant le Grand Livre et ne se touchent pas : les trois premières visions qu’on peut toucher le disent. Trois pistes ont été essayées."
+          ]
+        },
+        "letter": {
+          "head": "La lettre qui s’échappe",
+          "text": [
+            "Après l’Alpha, une idée de l’auteur : des bonus qui ne durent pas. Quatre choses ont été essayées pour les porter : une page qui s’envole d’une étagère, une phalène d’or, une lettre qui s’échappe du livre, un dos de livre qui luit. La lettre l’a emporté. De temps en temps, une lettre de Babel monte du livre en main ; attrapée, elle se défait en poussière d’or et donne un bonus, quelques secondes. Ce qui court se lit dans un médaillon, à droite du compteur, cerclé du temps qui reste.",
+            "Au début, elle est rare, brève, et ne donne que la Transe. Une neuvième constellation, la Plume, la fait venir plus souvent, rester plus longtemps, et lui apprend six autres bonus : l’Œil vif, la Main légère, la Mémoire vive, l’Aubaine, l’Éclair, la Trouvaille. Les prix ont été montés : à terme, c’est un bonus très fort. Dès la première lettre attrapée, trois intuitions apparaissent : le Guet, le Souffle retenu, la Lettre comprise. Et, très rarement, ce n’est pas une lettre qui vient, mais un mot, lettre par lettre : BABEL. Le livre blanc, lui, a rangé à part les intuitions qui ne tiennent à aucune méthode : une fois les Âges séparés, elles ont leur sous-partie, avant eux.",
+            "Plus tard, l’auteur a voulu que les bonus se cumulent. Une quatrième intuition, la Volée, fait qu’une lettre attrapée en appelle parfois une autre, et celle-là, plus rarement, une troisième ; leurs dons s’ajoutent. Puis un bonus court et démesuré, appris avec elle : Quatre cent dix, le nombre de pages d’un livre de la Bibliothèque ; le temps qu’il dure, pages et trouvailles sont multipliées par ce nombre. Le mot BABEL, lui, vient toujours seul."
+          ]
+        },
+        "newVersion": {
+          "head": "La nouvelle version",
+          "text": [
+            "Puis le jeu a appris à voir qu’il avait vieilli. Toutes les cinq minutes, et à chaque retour sur l’onglet, il relit le nom de la version en ligne. Si une nouvelle est sortie, une fenêtre le dit et propose de recharger, la lecture sauvegardée juste avant. Rien ne se recharge tout seul : un piège ou une chasse peuvent être en cours. Deux tons ont été essayés, l’un dans le monde, l’autre sobre. Le sobre l’a emporté."
+          ]
+        },
+        "scenes": {
+          "head": "Les salles",
+          "text": [
+            "Puis le décor a été repeint. La salle du début, à une fenêtre, ne disait pas la grandeur de Babel. Trois ébauches en volumes ont été bâties, l’œil à hauteur de lecteur : un balcon sur un puits immense, une nef qui fuit jusqu’à l’horizon, des hexagones en enfilade. Les hexagones l’ont emporté.",
+            "Les ébauches ont guidé la peinture : leur carte de profondeur, donnée au peintre, tient les murs droits. Il en est sorti trois salles, une par Âge : l’hexagone aux fenêtres sur le désert pour l’Âge Manuel, la salle sous les étoiles pour l’Âge Automatique, la verrière pour l’Âge suivant. L’obscurité qui se levait page après page est partie avec l’ancienne salle.",
+            "Le cahier d’options a reçu une page : le chercheur y a dessiné chaque salle vue, et l’on garde celle qu’on préfère. Une liste et de petites fenêtres ont été essayées avant les croquis."
+          ]
+        },
+        "mimic": {
+          "head": "La Mimic",
+          "text": [
+            "Puis un livre de trop. Une idée de l’auteur : la Mimic, un livre ordinaire posé quelque part dans la salle. Tant qu’elle est là, elle avale toute la Connaissance trouvée, et ne part jamais d’elle-même. Au premier clic, elle mord ; au second, elle disparaît et rend tout, dix pour cent en plus. Elle a son prix : tant qu’elle est là, les méthodes lisent moins vite, d’autant qu’elle rendra en plus, jamais de plus de moitié. La tuer vite pour continuer à dépenser, ou la laisser manger longtemps : c’est tout le choix.",
+            "Elle a la reliure des livres de la Bibliothèque, et leur taille : une vraie boîte en perspective, calée sur le point de fuite de chaque salle, l’œil à hauteur de lecteur. De temps en temps, deux yeux sortent du cuir, au bord de la tranche, et les pages font la bouche. Des yeux d’ambre et des yeux verts ont été essayés ; ceux de braise l’ont emporté. Sur un écran en hauteur, où aucune place de la salle ne se voit, elle devient un sceau au bord de l’écran, un petit livre qui dort ; à moitié sorti de l’écran, il a été écarté.",
+            "Elle se débloque dans l’Etherium, sur une constellation nouvelle, l’Exploration : une rose des vents, dont chaque pointe fera apparaître quelque chose dans les salles. L’Est, c’est elle ; l’Ouest attend les reliques. Sa page à elle s’ouvre ensuite : l’œil montre ce qu’elle a avalé, les dents du haut la font venir plus souvent, celles du bas lui font rendre plus. Une intuition, le Sommeil léger, la trahit quand elle dort ; une planche de sceaux compte celles qu’on attrape, ce qu’elles rendent en plus, et le temps qu’on les laisse manger. Le sommaire de l’Etherium tient désormais sur deux pages."
+          ]
+        },
+        "relics": {
+          "head": "Les reliques",
+          "text": [
+            "Puis l’Ouest de la rose. Les reliques : les instruments d’un chercheur venu avant lui, une par salle. Des objets de la vie ordinaire, une montre, une tasse, des lunettes, ont été écartés : ils ne disaient rien de la quête de sens. Il en est resté une loupe, un astrolabe, un sablier.",
+            "L’Ouest allumé, chaque relique a sa phrase dans le livre blanc, qui ne se lit qu’une fois sa salle vue. La phrase lue, l’objet est posé dans sa salle, à sa vraie taille, en perspective, sans reflet ni signe : rien ne doit trahir qu’il est là. Un clic : un morceau du récit de l’autre chercheur, son sceau, et l’objet rejoint une petite case de la vitrine, de celles où aucun livre ne tenait.",
+            "Une seule agit à la fois : la loupe garantit de la Connaissance à chaque trouvaille, l’astrolabe fait venir la lettre plus souvent, le sablier fait lire plus. En changer la fait agir aussitôt, puis la vitrine refuse tout changement pendant douze heures ; un délai pendant lequel rien n’agissait a été écarté. Leur page de l’Etherium, le Cabinet, renforce chacune et apprend la patience : six heures au lieu de douze. Un médaillon, à gauche du compteur, dit laquelle agit. Sur la corniche de la vitrine, un cartouche d’ébène compte en lettres d’or les livres et les reliques rangés."
+          ]
+        },
+        "digitalAge": {
+          "head": "L’Âge Numérique",
+          "text": [
+            "Une marche de plus sur l’Escalier : l’Âge Numérique, mille cinq cents Éther. Il devait s’appeler l’Âge Quantique ; il a été renommé, plus cohérent avec ce qui le précède. Il ouvre cinq machines que le chercheur décrit sans les connaître : le Minitel, le Micro-Ordinateur, le Moteur de Recherche, le Robot d’Indexation et l’Algorithme de Babel ; la Disquette, d’abord prévue, a laissé sa place au Micro-Ordinateur. Une méthode secrète s’y cache, le Bit, sur le modèle de la Page Cornée. Leurs prix ont été choisis au simulateur, parmi trois essais, avec un but posé pour chaque Âge : des dizaines d’Éther par prestige dans le premier, des centaines dans le deuxième, des milliers dans celui-ci. Les intuitions des dernières machines restent hors de portée d’une seule partie : un but lointain. L’Âge acheté, la salle devient la verrière.",
+            "La Ruche a reçu sa troisième alvéole, celle du Numérique ; pour tenir côte à côte, les trois ont un peu rapetissé. L’Horloge des Galeries mène au Bit : allumé, il rend son souvenir flou, comme la Page Cornée. Puis chaque machine y garde sa phrase au prestige, dix fois plus cher que dans l’alvéole Automatique. Tant que l’Âge n’est pas acheté, l’alvéole ne se voit pas.",
+            "Puis l’Éther s’est mis à peser. Chaque Éther reçu fait lire un pour cent de plus : dans l’Âge Numérique, c’était une spirale. Au-delà de cinq mille, chacun compte désormais un peu moins que le précédent ; c’est le poids de la Bibliothèque, et le Grand Livre le dit au chapitre « Éther ». Une page nouvelle de l’Etherium, juste après l’Escalier, le soulage : l’Atlas, un géant agenouillé qui porte une salle de la Bibliothèque. Du pied à la salle, sept étoiles ; la dernière lève le poids. La page reste blanche tant que l’Éther ne pèse pas.",
+            "L’Âge Numérique a aussi reçu sa page de l’Etherium, la dernière du livre, après les reliques : « Numérique », un Minitel tracé en étoiles. De la prise, le cordon mène à l’écran, dont les quatre coins font lire ses machines plus vite, et au clavier, dont les touches rapportent plus de Connaissance. Comme l’alvéole, elle reste blanche tant que l’Âge n’est pas acheté.",
+            "Avec lui, le jeu est passé en Alpha 2."
+          ]
+        },
+        "feeding": {
+          "head": "Le nourrir",
+          "text": [
+            "Puis un joueur s’est fait prendre deux fois : l’Etherium refermé trop vite, son Éther restait sans emploi jusqu’au prestige suivant. Le prix a été gardé : l’Éther ne se dépense que juste après un prestige. Mais le livre se consulte désormais à tout moment, dès le premier Éther ; ses étoiles y montrent leur prix, en pâle.",
+            "Ouvrir sa couverture ne fait plus le prestige. Il se fait d’un bouton, sous le compteur, pour ne pas avoir à revenir à la première page : le nourrir. Le puits, abandonné depuis longtemps, a failli revenir dans le mot ; c’est le récit qui a tranché, celui d’un livre qui se nourrit des pages lues. Une étoile touchée trop tôt le rappelle : elle ne s’allume qu’une fois le livre nourri. S’il ne reste rien à gagner mais de quoi allumer une étoile, on peut le nourrir encore : une partie perdue, pour dépenser. Et le refermer juste après pose une question.",
+            "Le récit du premier prestige a suivi, à la relecture de l’histoire : il ne dit plus « J’ai ouvert le livre », puisqu’on l’ouvre à tout moment, mais « Je lui ai tout donné » ; à son réveil, ce sont ses étoiles qui attendent."
+          ]
+        },
+        "falseEnding": {
+          "head": "La fausse fin",
+          "text": [
+            "Il fallait une fin à chercher. Il y en a une à acheter : une dernière page à l’Etherium, le Rideau, tracé en étoiles, qui promet « le sens de tout cela ». La première étoile coûte dix Éther ; la dernière, cent mille, et elle attend toutes les autres.",
+            "Chaque étoile allumée fait remonter un souvenir, surligné dans un livre de la vitrine, à la place gardée pour le livre de la fin : « Mon histoire vraie », le seul dont le titre se lit en clair. Une tasse, une clé, une voix, un carnet blanc, le 410, un nom brodé : chaque mystère du jeu y trouve sa réponse. Puis la tasse change de bord, et le tilleul devient un chêne.",
+            "À la dernière page, quelqu’un a écrit au crayon : « Pas celui-ci. » Le chercheur ne sait plus s’il se souvient ou s’il l’a lu. La réponse est dans un autre livre ; en attendant, il lit deux fois plus vite."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [
@@ -2676,5 +2627,22 @@
   "debug": {
     "name": "Débogage",
     "cover": ["Débogage"]
+  },
+  "trueStory": {
+    "name": "Mon histoire vraie",
+    "cover": ["Mon histoire", "vraie"],
+    "page": "page {n}",
+    "bribes": [
+      "…j’avais sept ans… une tasse, le bord gauche… elle m’a glissé des mains devant la fenêtre, à cause du tilleul qui frappait la vitre… Maman l’a gardée quand même. Depuis, je bois toujours du côté de l’ébréchure.",
+      "…une petite clé de laiton, pendue à un clou près de la porte… la clé de la maison… je ne l’ai jamais rendue.",
+      "…le soir, mon père lisait à voix basse, assis au bord du lit… je l’entends encore quand je lis…",
+      "…un carnet blanc, pour mes dix ans… j’y écrivais tout, chaque jour… plus tard, je n’ai plus su me relire.",
+      "…nous habitions au 410… quatre cent dix… je l’écrivais partout, sur mes cahiers, sur les murs…",
+      "…mon nom, c’est ma grand-mère qui l’avait choisi… elle le brodait au col de tous mes vêtements… quand je mentais, elle disait : « Je sais qui tu es. »",
+      "…j’écrivais dans la marge de tous mes livres… une écriture qui penche… la maîtresse disait qu’elle allait tomber…",
+      "…la tasse, le bord droit… ou le gauche ?… et devant la fenêtre, ce n’était pas un tilleul. Un chêne. Je crois.",
+      "…je n’ai jamais quitté la ville… jamais vu de bibliothèque plus grande que celle de l’école…"
+    ],
+    "pencil": "« Pas celui-ci. »"
   }
 }

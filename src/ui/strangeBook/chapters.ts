@@ -13,6 +13,7 @@ import {
   etherReading,
   findsMultiplier,
   readingMultiplier,
+  storyMultiplier,
   weightLifted,
   weightPresses,
   weightShown,
@@ -96,7 +97,8 @@ const findChanceParts = (state: GameState, readable: boolean): string | string[]
  * La vitesse de lecture, décomposée : ce que lisent les méthodes d'elles-mêmes, × leurs intuitions (en moyenne, pesée
  * par ce que lit chacune) ; puis, après un premier prestige, une seconde ligne : × l'Etherium (le Livre ouvert, et le
  * Minitel pesé par ce que lisent les méthodes Numériques) et × l'Éther reçu ; une troisième quand le Sablier agit
- * (demande de l'auteur, 12/10), et une dernière quand la Mimic ralentit la lecture (revue de code, 13/10).
+ * (demande de l'auteur, 12/10), une quand la Mimic ralentit la lecture (revue de code, 13/10), et une dernière une fois le
+ * Rideau entier allumé (« Mon histoire vraie » ×2, à part, 14/10).
  */
 const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
   const base = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
@@ -112,9 +114,11 @@ const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
   const [methods, intuitions, stars, ether] = parts;
   const hourglass = relicReading(state) > 1 ? factor(relicReading(state)) : null;
   const slowed = mimicReading(state) < 1 ? factor(mimicReading(state)) : null;
+  const story = storyMultiplier(state) > 1 ? factor(storyMultiplier(state)) : null;
   const extra = [
     ...(hourglass ? [readable ? t('strangeBook.figures.pagesPerSecondRelic').replace('{relic}', hourglass) : hourglass] : []),
     ...(slowed ? [readable ? t('strangeBook.figures.pagesPerSecondMimic').replace('{mimic}', slowed) : slowed] : []),
+    ...(story ? [readable ? t('strangeBook.figures.pagesPerSecondStory').replace('{story}', story) : story] : []),
   ];
   if (!readable) return prestiged ? [`${methods}  ${intuitions}`, `${stars}  ${ether}`, ...extra] : [`${methods}  ${intuitions}`, ...extra];
   const first = t('strangeBook.figures.pagesPerSecondParts').replace('{methods}', methods).replace('{intuitions}', intuitions);

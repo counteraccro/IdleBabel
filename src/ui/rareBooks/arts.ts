@@ -26,6 +26,7 @@ import { rabbitArt } from './rabbit/rabbit';
 import { saragossaArt } from './saragossa/saragossa';
 import { sandArt } from './sand/sand';
 import { voynichArt } from './voynich/voynich';
+import { trueStoryArt } from './trueStory/trueStory';
 import { defaultArt } from './defaultArt';
 import { debugBookArt } from './debugBook/debugBook';
 import type { RareBookArt } from './rareBookArt';
@@ -59,6 +60,7 @@ const ARTS: Record<string, RareBookArt> = {
   rabbit: rabbitArt,
   saragossa: saragossaArt,
   sand: sandArt,
+  trueStory: trueStoryArt,
   voynich: voynichArt,
   debug: debugBookArt,
 };

@@ -103,6 +103,10 @@ export const etherReading = (state: GameState): number => 1 + etherCounted(state
 
 /** Le Livre ouvert (dos, page de gauche) : les pages/s de toutes les méthodes. */
 export const readingMultiplier = (state: GameState): number => product(state, EFFECT.readingRate);
+/** Le Rideau entier : ×2 pages/s, à part. */
+export const storyMultiplier = (state: GameState): number => product(state, EFFECT.storyReading);
+/** Les bribes de « Mon histoire vraie » remontées : une par étoile du Rideau allumée. */
+export const storyBribes = (state: GameState): number => state.etherium.filter((id) => id.startsWith('curtain.')).length;
 /** Le Minitel (la prise, l'écran) : les pages/s des méthodes de l'Âge Numérique. */
 export const digitalMultiplier = (state: GameState): number => product(state, EFFECT.digitalReading);
 /** La Main (poignet, paume, index) : les pages d'un clic. */
