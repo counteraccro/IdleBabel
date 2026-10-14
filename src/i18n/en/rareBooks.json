@@ -2419,7 +2419,7 @@
         "away": {
           "head": "Absence",
           "text": [
-            "The game learned to go on without the player. Game closed, pages are read at the pace of production, at half rate, eight hours at most. The book in hand moves on, finished books close, rare books met along the way are found, seals follow. A hidden tab is not an absence: the game keeps running there, slowed down so as not to weigh on the browser, and the counters stay right. Its title shows the pages in store: you can watch them climb from another tab.",
+            "The game learned to go on without the player. Game closed, pages are read at the pace of production, at half rate, eight hours at most. The book in hand moves on, finished books close, rare books met along the way are found, seals follow. A hidden tab is not an absence: the game keeps running there, slowed down so as not to weigh on the browser, and the counters stay right. Its title shows the pages in store: you can watch them climb from another tab. The options notebook exports the game as a string of characters, and takes it back: options, progress, Ether, it all fits.",
             "On return, the seeker thinks they are waking from a dream. A modal sets them straight, and tells what their hands did without them.",
             "With the white book or the library open, the book in hand is gone: for a long time its pages stopped turning, and nothing was found in them. Back to the game, that time now counts like an open window. And pages turning on their own never went past ten leaves a second, whatever their cap: now they keep it."
           ]

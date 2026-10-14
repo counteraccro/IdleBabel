@@ -289,3 +289,24 @@
 .animations-paused body :not(.modal-backdrop, .modal-backdrop *)::after {
   animation-play-state: paused !important;
 }
+
+/* La chaîne d'une sauvegarde exportée ou à importer (ui/options/saveTransfer.ts). */
+.save-code textarea {
+  width: min(520px, 100%);
+  box-sizing: border-box;
+  padding: 8px 10px;
+  font: 0.75rem/1.4 ui-monospace, Menlo, Consolas, monospace;
+  word-break: break-all;
+  resize: vertical;
+  color: #f3dc9c;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(224, 184, 112, 0.4);
+  border-radius: 3px;
+}
+.save-code textarea:focus {
+  outline: none;
+  border-color: var(--modal-accent);
+}
+.save-code-error:empty {
+  display: none;
+}

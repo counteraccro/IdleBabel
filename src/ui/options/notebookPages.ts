@@ -1,3 +1,4 @@
+import { openSaveExport, openSaveImport } from './saveTransfer';
 import { AVAILABLE_LOCALES, getLocale, localeName, messages, t, type Locale } from '../../i18n';
 import { NOTATIONS, formatNumber } from '../../core/format';
 import { seedLabel } from '../../core/random';
@@ -146,6 +147,10 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
       w.heading(t('ui.save'));
       // La graine de la partie, cachée partout ailleurs : à nous donner si quelque chose cloche.
       w.note(t('ui.seed').replace('{seed}', seedLabel(state.seed)));
+      w.skip(1);
+      // La partie en une chaîne, à garder ou à reprendre sur un autre appareil (demande de l'auteur, 14/10).
+      w.link(t('ui.exportSave'), () => openSaveExport(state));
+      w.link(t('ui.importSave'), () => openSaveImport(state));
       w.skip(1);
       if (reset === 'ask') w.link(t('ui.reset'), () => (reset = 'confirm'), true);
       else if (reset === 'done') w.note(t('notebook.resetDone'));
