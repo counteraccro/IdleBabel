@@ -3,11 +3,24 @@
   "name": "The Etherium",
   "close": "Close the book",
   "confirm": {
-    "title": "Open it?",
-    "warning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions, method sentences. +{ether} Ether, +{reading}% reading.",
-    "stay": "Put it down",
-    "open": "Open"
+    "title": "Feed it?",
+    "warning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions, method sentences. +{ether} Ether, +{reading}% reading. Then you can spend your Ether on its stars, until you close it.",
+    "againTitle": "Feed it again?",
+    "againWarning": "Everything you hold will be lost: pages, methods, Knowledge, intuitions, method sentences. No more Ether, but you can spend yours on its stars, until you close it.",
+    "stay": "Stay",
+    "feed": "Feed it"
   },
+  "feed": {
+    "button": "Feed it · +{n} Ether",
+    "again": "Feed it again"
+  },
+  "closeAsk": {
+    "title": "Close it?",
+    "text": "You have {n} Ether left. Once closed, its stars won't light again until you feed it once more.",
+    "stay": "Stay",
+    "close": "Close it"
+  },
+  "refused": "It only lights once the book is fed.",
   "opening": {
     "title": "The opening",
     "text": [

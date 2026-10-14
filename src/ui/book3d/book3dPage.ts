@@ -135,7 +135,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
    * l'écran ne l'efface pas, voir app.ts).
    */
   const leave = (): void => {
-    if (homing) return;
+    if (homing || spec.leaving?.(leave)) return;
     if (!flightStart || !book || still.matches) return onBack();
     homing = { open: Number(open.value), shut };
     controls.enabled = false;

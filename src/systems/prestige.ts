@@ -5,15 +5,16 @@ import { recordOnce } from '../core/history';
 import { forgetIntuitions } from './reminiscence';
 import { forgetPagesRest } from './production';
 import { forgetBoons } from './boons';
-import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor } from './etherium';
+import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor, starAffordable } from './etherium';
 import { levelOf, maxLevel } from './technologies';
 import { sealEvent } from './seals';
 import { catchMimic } from './mimic';
 import type { GameState } from '../core/state';
 
 /**
- * Le prestige (conception §4.1) : le chercheur ouvre l'Etherium, le livre qui se nourrit des pages lues ; le sol se
- * dérobe, et quand il rouvre les yeux, ses pages l'attendent. Il y dépense l'Éther que valent les pages lues depuis toujours.
+ * Le prestige (conception §4.1) : le chercheur nourrit l'Etherium, le livre qui se nourrit des pages lues ; le sol se
+ * dérobe, et quand il rouvre les yeux, ses pages l'attendent. Il y dépense l'Éther que valent les pages lues depuis toujours,
+ * jusqu'à ce qu'il le referme ; le reste du temps, le livre se consulte seulement (l'auteur, 14/10).
  */
 
 /** L'Éther que méritent les pages lues depuis toujours : floor(∛(pages / 1 Md)). */
@@ -22,8 +23,24 @@ export const etherDeserved = (state: GameState): number => Math.floor(Math.cbrt(
 /** Ce que rapporterait le prestige maintenant. */
 export const prestigeGain = (state: GameState): number => Math.max(0, etherDeserved(state) - state.etherReceived);
 
-/** L'Etherium peut s'ouvrir : le prestige rapporte au moins 1 Éther, et ses pages ne sont pas déjà ouvertes. */
+/** Le livre violet luit : le prestige rapporte au moins 1 Éther, et l'Éther ne se dépense pas déjà. */
 export const prestigeReady = (state: GameState): boolean => prestigeGain(state) >= 1 && !state.etheriumInHand;
+
+/** L'Éther se dépense : juste après un prestige, tant que l'Etherium n'est pas refermé. */
+export const etherSpendable = (state: GameState): boolean => state.etheriumInHand;
+
+/**
+ * Le nourrir encore : le prestige ne rapporte rien, mais l'Éther en réserve allume une étoile. Le prix d'une partie pour le
+ * dépenser (l'auteur, 14/10).
+ */
+export const feedAgainReady = (state: GameState): boolean =>
+  !state.etheriumInHand && prestigeGain(state) < 1 && state.etherReceived > 0 && starAffordable(state);
+
+/** Le bouton sous l'Éther : le nourrir rapporte, ou le nourrir encore permet de dépenser. */
+export const feedReady = (state: GameState): boolean => prestigeGain(state) >= 1 || feedAgainReady(state);
+
+/** L'Etherium s'ouvre (se consulte) dès le premier Éther, reçu ou à recevoir ; avant, sa couverture résiste. */
+export const etheriumOpens = (state: GameState): boolean => state.etherReceived > 0 || prestigeGain(state) >= 1;
 
 /** Pages lues à vie qu'il faut pour l'Éther suivant (le n-ième en demande n³ milliards). */
 export const nextEtherPages = (state: GameState): number => (etherDeserved(state) + 1) ** 3 * ETHER_PAGES;
@@ -39,19 +56,22 @@ export const nextEtherProgress = (state: GameState): number => {
  * Connaissance, intuitions, phrases des méthodes que la Mémoire ne garde pas). Restent les pages à vie, les sceaux,
  * les livres rares, le reste du livre blanc, l'Éther et les étoiles de l'Etherium, et ce que celles-ci donnent au réveil
  * (la Porte, l'Aigrette gauche, le Reflet). Il se réveille l'Etherium en main.
- * Renvoie l'Éther reçu (rien si le prestige ne rapporte pas encore).
+ * Sans Éther à gagner, le nourrir encore (feedAgainReady) : la même chute, pour dépenser l'Éther en réserve ; elle ne compte
+ * pas comme un prestige (ni le compte, ni l'histoire, ni le sceau « sans les mains »).
+ * Renvoie l'Éther reçu (0 aussi quand rien ne se passe : feedReady le dit avant).
  */
 export const prestige = (state: GameState, now = Date.now()): number => {
+  if (!feedReady(state)) return 0;
   const gain = prestigeGain(state);
-  if (gain < 1) return 0;
+  const counted = gain >= 1;
   // Toute une partie, depuis le dernier réveil, sans tourner une page à la main : un sceau secret.
-  if (state.wake.book >= 0 && state.stats.clicks === state.wake.clicks) sealEvent(state, 'noHands', now);
+  if (counted && state.wake.book >= 0 && state.stats.clicks === state.wake.clicks) sealEvent(state, 'noHands', now);
   // Une Mimic dans la salle est attrapée d'office : elle rend tout avant que la Connaissance reparte de zéro (décision de
   // l'auteur, 11/10).
   catchMimic(state, now);
   state.etherReceived += gain;
   state.ether += gain;
-  state.exiles += 1;
+  if (counted) state.exiles += 1;
   const previous = { tools: { ...state.tools }, pages: state.totalPagesRead - state.wake.pages, knowledge: state.cycleKnowledge };
   const levels = { ...state.technologies };
   state.pages = 0;
@@ -77,11 +97,11 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   for (const sentence of SENTENCES)
     if (sentence.kind === 'method' && !sentence.secret && !kept.includes(sentence.id)) delete state.written[sentence.id];
   state.etheriumInHand = true;
-  recordOnce(state, 'prestige', String(state.exiles), now);
+  if (counted) recordOnce(state, 'prestige', String(state.exiles), now);
   return gain;
 };
 
-/** L'Etherium refermé : il retourne sur la pile, et ne se rouvre plus avant le prochain prestige. */
+/** L'Etherium refermé : il retourne sur la pile ; ses étoiles ne s'allument plus avant le prochain prestige. */
 export const closeEtherium = (state: GameState): void => {
   // Refermé sans y avoir allumé une étoile depuis le réveil : un sceau secret.
   if (state.etheriumInHand && state.etherium.length === state.wake.stars) sealEvent(state, 'emptyEtherium');

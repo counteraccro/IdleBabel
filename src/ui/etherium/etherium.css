@@ -12,3 +12,37 @@
   opacity: 0;
   animation: modal-story-in 0.8s ease forwards;
 }
+
+/* Le bouton sous l'Éther (feedButton.ts) : le bouton du jeu, bordé de violet, qui respire ; le compteur laisse passer la souris
+   au-dessus d'un livre ouvert, pas lui. */
+.etherium-feed {
+  margin-top: 8px;
+  pointer-events: auto;
+  border-color: rgba(190, 150, 240, 0.7);
+  box-shadow: 0 0 10px rgba(170, 120, 240, 0.45);
+  text-shadow: none;
+  animation: etherium-feed-breathe 3.2s ease-in-out infinite;
+}
+.etherium-feed[hidden] {
+  display: none;
+}
+/* Une étoile touchée en consultation : il luit un instant. */
+.etherium-feed.flash {
+  animation: etherium-feed-flash 1.2s ease-in-out;
+}
+@keyframes etherium-feed-breathe {
+  50% {
+    box-shadow: 0 0 18px rgba(170, 120, 240, 0.75);
+  }
+}
+@keyframes etherium-feed-flash {
+  30% {
+    box-shadow: 0 0 28px rgba(200, 160, 255, 1);
+    border-color: #e2ccff;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .etherium-feed {
+    animation: none;
+  }
+}

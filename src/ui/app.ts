@@ -42,10 +42,11 @@ import { libraryHasNews, visitLibrary } from '../systems/library';
 import { showDebugBookError } from './library/debugBookError';
 import { isRareBookFound } from '../systems/rareBooks';
 import { etherium3d } from './etherium/etherium3d';
-import { ETHERIUM_HASH, openEtherium } from './etherium/prestigeStory';
+import { ETHERIUM_HASH, askCloseEtherium } from './etherium/prestigeStory';
+import { createFeedButton } from './etherium/feedButton';
 import { takeStrangeBookPage } from './strangeBook/openAt';
 import { NOTES_PAGE } from './rareBooks/credits/creditsPages';
-import { closeEtherium, prestigeReady } from '../systems/prestige';
+import { closeEtherium, etheriumOpens, prestigeReady } from '../systems/prestige';
 import { ETHERIUM_NAMED_PAGES } from '../data/etherium';
 import type { Component } from './dom';
 
@@ -175,8 +176,11 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   // Le compteur aussi : au-dessus du jeu comme des livres ouverts, il ne clignote pas d'un écran à l'autre.
   /** La page de l'Etherium, tant qu'il est en main. */
   let etheriumPage: ReturnType<typeof createBook3dPage> | null = null;
-  // L'Etherium ouvert (sa couverture soulevée, pas seulement regardé), il compte l'Éther à dépenser.
-  const counter = createCounter(state, () => openBook() === 'etherium' && etheriumPage?.opened() === true, open(LIBRARY_HASH));
+  // L'Etherium ouvert (sa couverture soulevée, pas seulement regardé), il compte l'Éther ; dessous, le bouton du prestige.
+  const etheriumOpened = (): boolean => openBook() === 'etherium' && etheriumPage?.opened() === true;
+  // Le prestige fait, livre ouvert : ses pages se redessinent (la garde montre l'Éther qu'il vient de verser).
+  const feed = createFeedButton(state, etheriumOpened, () => window.dispatchEvent(new Event(BIG_BOOK_REWRITE)));
+  const counter = createCounter(state, etheriumOpened, open(LIBRARY_HASH), feed);
   const lasting: Component[] = [header, counter];
 
   const game = (): Component[] => [
@@ -292,23 +296,18 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       };
       return pileBook(createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : backLabel()));
     }
-    // L'Etherium, pris en main : sa couverture ne s'ouvre que pour le prestige (confirmé) ; au réveil, ses pages
-    // sont là. Une fois reposé, il ne se rouvre plus avant le prochain prestige (render).
+    // L'Etherium, pris en main : il se consulte dès le premier Éther (avant, sa couverture résiste) ; le prestige se fait
+    // par le bouton sous l'Éther (feedButton.ts), et l'Éther ne se dépense que juste après (l'auteur, 14/10). Le quitter
+    // juste après un prestige, avec de quoi allumer une étoile, pose une question (askCloseEtherium).
     if (window.location.hash === ETHERIUM_HASH) {
       const spec = etherium3d(state);
-      if (!state.etheriumInHand)
-        spec.sealed = (cover) =>
-          openEtherium(
-            state,
-            () => {
-              delete spec.sealed;
-              // Ses pages ont été dessinées avant le prestige : la garde redessinée montre l'Éther qu'il vient de verser.
-              window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
-              cover.open();
-            },
-            cover.nudge,
-          );
-      etheriumPage = createBook3dPage(spec, back, state.etheriumInHand ? t('etherium.close') : backLabel());
+      spec.sealed = (cover) => {
+        if (!etheriumOpens(state)) return cover.nudge();
+        delete spec.sealed;
+        cover.open();
+      };
+      spec.leaving = (go) => askCloseEtherium(state, go);
+      etheriumPage = createBook3dPage(spec, back, t('etherium.close'));
       return pileBook(etheriumPage);
     }
     // Les notes de mise à jour : le livre des crédits seul, sans la vitrine (la bibliothèque peut n'être pas encore là).
@@ -320,11 +319,18 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     return game();
   };
 
-  /** L'Etherium était en main : quitté, de quelque façon que ce soit, il est refermé, et retourne sur la pile. */
+  /** L'Etherium était à l'écran : quitté, de quelque façon que ce soit, il est refermé, et retourne sur la pile. */
   let etheriumOpen = false;
   const render = (): void => {
     document.documentElement.lang = state.locale;
     if (etheriumOpen && openBook() !== 'etherium') {
+      // Quitté autrement que par son bouton (la pile, la clé, le retour du navigateur), juste après un prestige, avec de
+      // quoi allumer une étoile : il reste à l'écran le temps de la question ; refermé, on va où l'on allait.
+      const target = window.location.hash;
+      if (askCloseEtherium(state, () => (window.location.hash = target))) {
+        window.history.replaceState(null, '', ETHERIUM_HASH);
+        return;
+      }
       closeEtherium(state);
       saveGame(state);
     }

@@ -1,5 +1,7 @@
 import { CLOSED, KEEPS, STARS, neededFor, type PageId } from '../../data/etheriumStars';
 import { lightStar, pageOpen, starLit, starOpen } from '../../systems/etherium';
+import { etherSpendable } from '../../systems/prestige';
+import { FEED_FLASH } from './feedButton';
 import { formatNumber, writeDigits } from '../../core/format';
 import { getLocale, t } from '../../i18n';
 import { FIGURES, type Figure, type Sketch } from './constellations';
@@ -11,7 +13,8 @@ import type { GameState } from '../../core/state';
 /**
  * Une page de constellation de l'Etherium, comme dans la maquette validée (.ai/maquette-etherium-constellations.html) :
  * les étoiles de la figure, chacune reliée à son étoile d'avant ; en haut, l'étoile survolée (ou la prochaine), son effet,
- * son prix. Cliquer une étoile qui peut s'allumer l'allume.
+ * son prix. Cliquer une étoile qui peut s'allumer l'allume. Hors du temps de la dépense (juste après un prestige), le
+ * livre se consulte : les prix en pâle ; une étoile qu'on pourrait s'offrir, touchée, dit qu'il faut d'abord le nourrir.
  */
 
 /**
@@ -26,6 +29,8 @@ export interface StarView extends Point {
   cost: number;
   status: StarStatus;
   affordable: boolean;
+  /** Assez d'Éther pour elle, mais l'Éther ne se dépense pas encore (le livre consulté). */
+  waiting: boolean;
   /** L'étoile de départ de la figure : un anneau. */
   start: boolean;
   /** Offerte (l'Âge Manuel). */
@@ -58,6 +63,7 @@ export const starViews = (state: GameState, page: PageId): StarView[] => {
           cost: 0,
           status: 'done',
           affordable: false,
+          waiting: false,
           start: true,
           given: true,
         },
@@ -67,13 +73,15 @@ export const starViews = (state: GameState, page: PageId): StarView[] => {
     const id = star.id.slice(page.length + 1);
     const [x, y] = figure.spots[id];
     const status = statusOf(state, page, id);
+    const enough = status === 'next' && state.ether >= star.cost;
     return {
       id,
       x,
       y,
       cost: star.cost,
       status,
-      affordable: status === 'next' && state.ether >= star.cost,
+      affordable: enough && etherSpendable(state),
+      waiting: enough && !etherSpendable(state),
       start: !figure.given && !star.after,
       given: false,
       after: star.after?.slice(page.length + 1) ?? (figure.given?.opens.includes(id) ? figure.given.id : undefined),
@@ -200,7 +208,14 @@ const drawLocked = (ctx: Ctx, page: PageId, number: number): void => {
   nightFolio(ctx, number);
 };
 
-const drawConstellation = (ctx: Ctx, state: GameState, page: PageId, number: number, hovered: string | null): void => {
+const drawConstellation = (
+  ctx: Ctx,
+  state: GameState,
+  page: PageId,
+  number: number,
+  hovered: string | null,
+  refused: string | null,
+): void => {
   if (pageLocked(state, page)) return drawLocked(ctx, page, number);
   const figure = FIGURES[page];
   const stars = starViews(state, page);
@@ -311,14 +326,22 @@ const drawConstellation = (ctx: Ctx, state: GameState, page: PageId, number: num
       color: shown.status === 'far' || shown.status === 'hidden' ? C.faded : C.ink,
       fit: 580,
     });
-    write(ctx, noteOf(page, shown), 320, 240, { size: 26, face: HAND, align: 'center', color: shown.affordable ? C.gold : C.faded });
+    // L'étoile touchée qui attend : la phrase à la place du prix, tant qu'on ne la quitte pas.
+    if (shown.id === refused)
+      write(ctx, t('etherium.refused'), 320, 240, { size: 26, face: HAND, align: 'center', color: C.gold, fit: 580 });
+    else write(ctx, noteOf(page, shown), 320, 240, { size: 26, face: HAND, align: 'center', color: shown.affordable ? C.gold : C.faded });
   } else write(ctx, t('etherium.complete'), 320, 226, { size: 26, face: HAND, align: 'center', color: C.faded });
   nightFolio(ctx, number);
 };
 
-export const constellationPage = (state: GameState, page: PageId, number: number): LeafPage =>
-  nightLeaf({
-    draw: (ctx, hovered) => drawConstellation(ctx, state, page, number, hovered),
+export const constellationPage = (state: GameState, page: PageId, number: number): LeafPage => {
+  /** L'étoile touchée qui attend (le livre consulté) : sa phrase, jusqu'à ce que la souris la quitte. */
+  let refused: string | null = null;
+  return nightLeaf({
+    draw: (ctx, hovered) => {
+      if (refused !== hovered) refused = null;
+      drawConstellation(ctx, state, page, number, hovered, refused);
+    },
     spots: () =>
       pageLocked(state, page)
         ? []
@@ -331,6 +354,14 @@ export const constellationPage = (state: GameState, page: PageId, number: number
             pointer: star.affordable,
           })),
     press: (id) => {
-      if (FIGURES[page].given?.id !== id) lightStar(state, `${page}.${id}`);
+      if (FIGURES[page].given?.id === id) return;
+      if (starViews(state, page).find((star) => star.id === id)?.waiting) {
+        refused = id;
+        // Le bouton sous l'Éther luit en même temps.
+        window.dispatchEvent(new Event(FEED_FLASH));
+        return;
+      }
+      if (etherSpendable(state)) lightStar(state, `${page}.${id}`);
     },
   });
+};

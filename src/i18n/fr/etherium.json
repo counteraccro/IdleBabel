@@ -3,11 +3,24 @@
   "name": "L'Etherium",
   "close": "Refermer le livre",
   "confirm": {
-    "title": "L'ouvrir ?",
-    "warning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions, phrases des méthodes. +{ether} Éther, +{reading} % de lecture.",
-    "stay": "Le reposer",
-    "open": "Ouvrir"
+    "title": "Le nourrir ?",
+    "warning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions, phrases des méthodes. +{ether} Éther, +{reading} % de lecture. Ensuite, tu pourras dépenser ton Éther dans ses étoiles, jusqu'à ce que tu le refermes.",
+    "againTitle": "Le nourrir encore ?",
+    "againWarning": "Tout ce que tu as en main sera perdu : pages, méthodes, Connaissance, intuitions, phrases des méthodes. Pas d'Éther de plus, mais tu pourras dépenser le tien dans ses étoiles, jusqu'à ce que tu le refermes.",
+    "stay": "Rester",
+    "feed": "Le nourrir"
   },
+  "feed": {
+    "button": "Le nourrir · +{n} Éther",
+    "again": "Le nourrir encore"
+  },
+  "closeAsk": {
+    "title": "Le refermer ?",
+    "text": "Il te reste {n} Éther. Refermé, ses étoiles ne s'allumeront plus avant que tu le nourrisses à nouveau.",
+    "stay": "Rester",
+    "close": "Le refermer"
+  },
+  "refused": "Elle ne s'allume qu'une fois le livre nourri.",
   "opening": {
     "title": "L'ouverture",
     "text": [

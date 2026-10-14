@@ -160,6 +160,7 @@ export const STORY: StoryChapter[] = [
       { key: 'mimic', drafts: ['mimic'] },
       { key: 'relics' },
       { key: 'digitalAge' },
+      { key: 'feeding' },
     ],
   },
 ];

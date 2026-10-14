@@ -1,5 +1,5 @@
 import { ETHERIUM_PAGES, OPEN_STARS, type PageId } from '../../data/etheriumStars';
-import { etherDeserved, nextEtherPages, prestige, prestigeGain } from '../../systems/prestige';
+import { etherDeserved, feedReady, nextEtherPages, prestige, prestigeGain } from '../../systems/prestige';
 import { starLit } from '../../systems/etherium';
 import { t } from '../../i18n';
 import { ETHER_PAGES } from '../../data/etherium';
@@ -61,7 +61,7 @@ export const PRESTIGE_SUBJECTS: DebugSubject[] = [
       kit.info('Prestiges faits', () => String(state.exiles));
       kit.check(
         'Etherium en main',
-        'Au réveil : ses pages s’ouvrent ; refermé, il reste sur la pile, fermé jusqu’au prochain prestige.',
+        'Au réveil : l’Éther se dépense ; refermé, le livre se consulte seulement, jusqu’au prochain prestige.',
         () => state.etheriumInHand,
         (on) => (state.etheriumInHand = on),
       );
@@ -78,14 +78,16 @@ export const PRESTIGE_SUBJECTS: DebugSubject[] = [
         [
           'Prestige tout de suite',
           () => {
-            if (prestige(state) < 1) return;
+            if (!feedReady(state)) return;
+            prestige(state);
             // Comme dans le jeu : enregistré aussitôt, et l'on se réveille l'Etherium ouvert.
             saveGame(state);
             if (window.location.hash === ETHERIUM_HASH) rebuildScreen();
             else window.location.hash = ETHERIUM_HASH;
           },
           {
-            title: 'Sans confirmation ni récit : l’Éther reçu, tout est remis à zéro, la partie enregistrée, l’Etherium ouvert.',
+            title:
+              'Sans confirmation ni récit : l’Éther reçu (ou rien, s’il le nourrit encore), tout est remis à zéro, la partie enregistrée, l’Etherium ouvert.',
           },
         ],
       );

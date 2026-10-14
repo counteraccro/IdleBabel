@@ -10,6 +10,7 @@ import {
   SIMPLE,
   neededFor,
   starById,
+  STARS,
   type PageId,
 } from '../data/etheriumStars';
 import { ETHER_READING, ETHER_WEIGHT } from '../data/etherium';
@@ -55,6 +56,10 @@ export const lightStar = (state: GameState, id: string): boolean => {
   state.etherium.push(id);
   return true;
 };
+
+/** Une étoile au moins peut s'allumer avec l'Éther en réserve (sa page ouverte). */
+export const starAffordable = (state: GameState): boolean =>
+  STARS.some((star) => state.ether >= star.cost && pageOpen(state, star.page) && starOpen(state, star.id));
 
 /** Les facteurs des étoiles allumées, multipliés (1 sans aucune). */
 const product = (state: GameState, effect: Record<string, number>): number =>

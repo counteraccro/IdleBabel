@@ -54,10 +54,15 @@ export interface Book3d {
   finished?: () => void;
   /**
    * Le livre ne s'ouvre pas tout seul (le livre de débogage hors du mode ?debug, l'Etherium) : on le prend, on le
-   * tourne, mais ouvrir sa couverture appelle ceci à la place ; `cover.open` l'ouvre quand même (l'Etherium, le
-   * prestige confirmé), `cover.nudge` l'entrouvre à peine et le laisse retomber (il résiste).
+   * tourne, mais ouvrir sa couverture appelle ceci à la place ; `cover.open` l'ouvre quand même (l'Etherium, dès le
+   * premier Éther), `cover.nudge` l'entrouvre à peine et le laisse retomber (il résiste).
    */
   sealed?: (cover: SealedCover) => void;
+  /**
+   * Le livre retient qui le quitte par son bouton (l'Etherium : « Le refermer ? ») : true s'il le retient, et il appelle
+   * `go` une fois d'accord pour partir.
+   */
+  leaving?: (go: () => void) => boolean;
   /** Couverture qui vit (le livre de débogage) : appelé à chaque image ; true si elle a changé (à redessiner). */
   tick?: (now: number) => boolean;
   /** Le livre demande d'aller à une page (entrée du sommaire) : branché par la page 3D. */

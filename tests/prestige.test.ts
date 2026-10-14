@@ -3,6 +3,10 @@ import { createInitialState } from '../src/core/state';
 import {
   closeEtherium,
   etherDeserved,
+  etherSpendable,
+  etheriumOpens,
+  feedAgainReady,
+  feedReady,
   nextEtherPages,
   nextEtherProgress,
   prestige,
@@ -61,6 +65,43 @@ describe('Prestige', () => {
     expect(prestigeReady(state)).toBe(true);
     state.etheriumInHand = true;
     expect(prestigeReady(state)).toBe(false);
+  });
+
+  it('l’Etherium se consulte dès le premier Éther ; l’Éther ne se dépense que juste après un prestige', () => {
+    const state = reader(5e8);
+    expect(etheriumOpens(state)).toBe(false);
+    state.totalPagesRead = 1e9;
+    expect(etheriumOpens(state)).toBe(true);
+    expect(etherSpendable(state)).toBe(false);
+    prestige(state);
+    expect(etherSpendable(state)).toBe(true);
+    closeEtherium(state);
+    expect(etherSpendable(state)).toBe(false);
+    expect(etheriumOpens(state)).toBe(true);
+  });
+
+  it('le nourrir encore : sans Éther à gagner, pour dépenser celui en réserve, sans compter comme un prestige', () => {
+    const state = reader(1e9);
+    prestige(state);
+    closeEtherium(state);
+    // 1 Éther en réserve, la première étoile de la Lecture en coûte 1.
+    expect(prestigeGain(state)).toBe(0);
+    expect(feedAgainReady(state)).toBe(true);
+    expect(feedReady(state)).toBe(true);
+    expect(prestigeReady(state)).toBe(false);
+    state.tools.diagonal = 40;
+    expect(prestige(state)).toBe(0);
+    expect(state.tools.diagonal).toBe(0);
+    expect(state.exiles).toBe(1);
+    expect(state.etherReceived).toBe(1);
+    expect(etherSpendable(state)).toBe(true);
+    expect(lightStar(state, 'reading.s0')).toBe(true);
+    closeEtherium(state);
+    // Plus rien à allumer : rien à faire.
+    expect(feedAgainReady(state)).toBe(false);
+    state.tools.diagonal = 40;
+    expect(prestige(state)).toBe(0);
+    expect(state.tools.diagonal).toBe(40);
   });
 
   it('rapporte l’Éther mérité moins celui déjà reçu', () => {
