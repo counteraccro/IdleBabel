@@ -1051,6 +1051,29 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.1",
+          "date": "14 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Le prestige se fait par un bouton sous le compteur d’Éther : « Le nourrir », confirmé à chaque fois. L’Etherium se consulte à tout moment dès le premier Éther ; l’Éther ne se dépense toujours que juste après un prestige.",
+                "« Le nourrir encore » : sans Éther à gagner, permet de dépenser l’Éther en réserve. Ne compte pas comme un prestige.",
+                "Quitter l’Etherium juste après un prestige, avec de quoi allumer une étoile, demande confirmation.",
+                "Une nouvelle page dans l’Etherium.",
+                "Un nouveau sceau secret."
+              ]
+            },
+            {
+              "heading": "Corrections",
+              "items": [
+                "Le retour d’absence indique la vraie durée comptée (8 heures, plus le Sommeil profond et la Lune), au lieu de toujours huit heures.",
+                "Textes revus : le récit du premier prestige, le Grand Livre, un sceau et la page du Minitel."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2",
           "date": "13 octobre 2026",
           "sections": [
@@ -2509,7 +2532,8 @@
           "text": [
             "Il fallait une fin à chercher. Il y en a une à acheter : une dernière page à l’Etherium, le Rideau, tracé en étoiles, qui promet « le sens de tout cela ». La première étoile coûte dix Éther ; la dernière, cent mille, et elle attend toutes les autres.",
             "Chaque étoile allumée fait remonter un souvenir, surligné dans un livre de la vitrine, à la place gardée pour le livre de la fin : « Mon histoire vraie », le seul dont le titre se lit en clair. Une tasse, une clé, une voix, un carnet blanc, le 410, un nom brodé : chaque mystère du jeu y trouve sa réponse. Puis la tasse change de bord, et le tilleul devient un chêne.",
-            "À la dernière page, quelqu’un a écrit au crayon : « Pas celui-ci. » Le chercheur ne sait plus s’il se souvient ou s’il l’a lu. La réponse est dans un autre livre ; en attendant, il lit deux fois plus vite."
+            "À la dernière page, quelqu’un a écrit au crayon : « Pas celui-ci. » Le chercheur ne sait plus s’il se souvient ou s’il l’a lu. La réponse est dans un autre livre ; en attendant, il lit deux fois plus vite.",
+            "Avec elle, le jeu est passé en Alpha 2.1."
           ]
         },
         "thisBook": {

@@ -1042,6 +1042,29 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.1",
+          "date": "October 14, 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "Prestige is done with a button under the Ether counter: “Feed it”, confirmed every time. The Etherium can be browsed at any time from the first Ether; Ether can still only be spent right after a prestige.",
+                "“Feed it again”: with no Ether to gain, lets you spend the Ether in reserve. Does not count as a prestige.",
+                "Leaving the Etherium right after a prestige, with enough to light a star, asks for confirmation.",
+                "A new page in the Etherium.",
+                "A new secret seal."
+              ]
+            },
+            {
+              "heading": "Fixes",
+              "items": [
+                "The return-from-absence notice shows the real counted duration (8 hours, plus Deep Sleep and the Moon), instead of always eight hours.",
+                "Texts revised: the story of the first prestige, the Ledger, one seal and the Minitel page."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2",
           "date": "October 13, 2026",
           "sections": [
@@ -2509,7 +2532,8 @@
           "text": [
             "There had to be an ending to look for. There is one to buy: a last page in the Etherium, the Curtain, drawn in stars, which promises “the meaning of it all”. The first star costs ten Ether; the last, a hundred thousand, and it waits for all the others.",
             "Each star lit brings back a memory, highlighted in a book on the shelves, in the place kept for the book of the end: “My True Story”, the only one whose title can be read plainly. A cup, a key, a voice, a white notebook, 410, an embroidered name: every mystery of the game finds its answer there. Then the cup changes rims, and the lime tree becomes an oak.",
-            "On the last page, someone wrote in pencil: “Not this one.” Remembered, or read? The seeker can no longer tell. The answer is in another book; meanwhile, the reading goes twice as fast."
+            "On the last page, someone wrote in pencil: “Not this one.” Remembered, or read? The seeker can no longer tell. The answer is in another book; meanwhile, the reading goes twice as fast.",
+            "With it, the game moved to Alpha 2.1."
           ]
         },
         "thisBook": {
