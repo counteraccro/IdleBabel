@@ -6,6 +6,7 @@ import { pauseEnded, settleHidden, watchAbsence } from './core/absence';
 import { onResume } from './ui/animationClock';
 import { mountApp } from './ui/app';
 import { mountSealVisions } from './ui/sealVision';
+import { mountTabTitle } from './ui/tabTitle';
 import { mountScene } from './scene';
 import { sceneShown } from './scene/scenes';
 import { beyond } from './systems/perception';
@@ -32,6 +33,7 @@ readReaderNameWith(() => state.playerName);
 
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);
 mountSealVisions(state);
+mountTabTitle(state);
 startLoop(state, update);
 void mountScene({ beyond: () => beyond(state), wanted: () => sceneShown(state) });
 if (isDebugEnabled()) mountDebugPanel(state);

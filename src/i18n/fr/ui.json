@@ -2,6 +2,8 @@
   "methods": "Méthodes de lecture",
   "pages": "Pages lues",
   "perSecond": "/s",
+  "tabTitle": "{n} pages - Idle Babel",
+  "tabTitleOne": "{n} page - Idle Babel",
   "read": "Feuilleter une page",
   "owned": "Possédés",
   "buy": "Acheter",
