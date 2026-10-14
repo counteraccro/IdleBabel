@@ -1061,7 +1061,10 @@
                 "« Le nourrir encore » : sans Éther à gagner, permet de dépenser l’Éther en réserve. Ne compte pas comme un prestige.",
                 "Quitter l’Etherium juste après un prestige, avec de quoi allumer une étoile, demande confirmation.",
                 "Une nouvelle page dans l’Etherium.",
-                "Un nouveau sceau secret."
+                "Un nouveau sceau secret.",
+                "Exporter et importer la sauvegarde, dans le cahier d’options : toute la partie en une chaîne de caractères.",
+                "Le titre de l’onglet affiche les pages en réserve.",
+                "Onglet caché, le jeu continue au ralenti : la lecture est comptée en entier, sans retour d’absence. Seul le jeu fermé compte comme une absence."
               ]
             },
             {
