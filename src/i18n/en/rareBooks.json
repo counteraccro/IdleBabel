@@ -1055,7 +1055,7 @@
                 "A new secret seal.",
                 "Export and import the save, in the options notebook: the whole game as a string of characters.",
                 "The tab title shows the pages in store.",
-                "With the tab hidden, the game keeps running, slowed down: reading is counted in full, with no return from absence, and the Mimic’s wait goes on (she appears on return). Only a closed game counts as an absence."
+                "With the tab hidden, the game keeps running, slowed down: reading is counted in full, with no return from absence, and the Mimic’s wait goes on (it appears on return). Only a closed game counts as an absence."
               ]
             },
             {
