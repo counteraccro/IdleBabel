@@ -111,7 +111,7 @@
     "rareBooks": "livres rares",
     "seals": "sceaux",
     "ether": "Éther à recueillir",
-    "capped": "Seules les huit premières heures comptent.",
+    "capped": "Seules les {n} premières heures comptent.",
     "button": "Reprendre la lecture"
   }
 }

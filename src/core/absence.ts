@@ -33,6 +33,8 @@ export interface AwayReport {
   ether: number;
   /** L'absence a duré plus que ce qui est compté (Sommeil profond). */
   capped: boolean;
+  /** Les heures d'absence comptées, au plus (8, plus le Sommeil profond et la Lune). */
+  countedHours: number;
 }
 
 /**
@@ -78,6 +80,7 @@ export const passTime = (state: GameState, seconds: number, mode: 'away' | 'paus
     seals: Object.keys(state.seals).length - before.seals,
     ether: state.etherReceived > 0 ? etherDeserved(state) - before.ether : 0,
     capped: seconds > counted,
+    countedHours: counted / 3600,
   };
 };
 

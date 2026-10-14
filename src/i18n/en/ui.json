@@ -118,8 +118,8 @@
   },
   "mimic": {
     "name": "The Mimic",
-    "eaten": "It has swallowed {n} knowledge.",
-    "gain": "+ {n} knowledge (+ {p}%)"
+    "eaten": "It has swallowed {n} Knowledge.",
+    "gain": "+ {n} Knowledge (+ {p}%)"
   },
   "relics": {
     "names": {
@@ -133,8 +133,8 @@
       "hourglass": "Set out the hourglass?"
     },
     "bonus": {
-      "loupe": "+{n} guaranteed knowledge per find",
-      "loupeOne": "+1 guaranteed knowledge per find",
+      "loupe": "+{n} guaranteed Knowledge per find",
+      "loupeOne": "+1 guaranteed Knowledge per find",
       "astrolabe": "letter +{n}%",
       "hourglass": "pages read +{n}%"
     },

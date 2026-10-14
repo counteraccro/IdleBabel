@@ -33,7 +33,7 @@ const tally = (report: AwayReport): HTMLElement => {
     list.append(el('dt', '', t(`lore.away.${key}`)), el('dd', '', formatNumber(Math.floor(report[key]), getLocale())));
   }
   root.append(list);
-  if (report.capped) root.append(el('p', '', t('lore.away.capped')));
+  if (report.capped) root.append(el('p', '', t('lore.away.capped').replace('{n}', formatNumber(report.countedHours, getLocale()))));
   return root;
 };
 

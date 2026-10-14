@@ -24,8 +24,8 @@
   "opening": {
     "title": "L'ouverture",
     "text": [
-      "Que s'est-il passé ?\nJ'ai ouvert le livre.\nLe sol s'est dérobé.",
-      "Quand je rouvre les yeux,\nses pages m'attendent.\nJe peux enfin le lire.",
+      "Que s'est-il passé ?\nJe lui ai tout donné.\nLe sol s'est dérobé.",
+      "Quand je rouvre les yeux,\nses étoiles m'attendent.\nJe peux enfin les allumer.",
       "Autour de moi, plus rien.\nIl s'est nourri de tout."
     ],
     "button": "Lire"
@@ -589,7 +589,7 @@
       "eye": {
         "name": "L’œil",
         "value": "Voir",
-        "effect": "combien de connaissances elle a englouties"
+        "effect": "combien de Connaissance elle a engloutie"
       },
       "t1": {
         "name": "Dent du haut",
@@ -609,27 +609,27 @@
       "b1": {
         "name": "Dent du bas",
         "value": "+20 %",
-        "effect": "de connaissances rendues par la Mimic"
+        "effect": "de Connaissance rendue par la Mimic"
       },
       "b2": {
         "name": "Dent du bas, deuxième",
         "value": "+35 %",
-        "effect": "de connaissances rendues par la Mimic"
+        "effect": "de Connaissance rendue par la Mimic"
       },
       "b3": {
         "name": "Dent du bas, troisième",
         "value": "+50 %",
-        "effect": "de connaissances rendues par la Mimic"
+        "effect": "de Connaissance rendue par la Mimic"
       },
       "b4": {
         "name": "Dent du bas, quatrième",
         "value": "+75 %",
-        "effect": "de connaissances rendues par la Mimic"
+        "effect": "de Connaissance rendue par la Mimic"
       },
       "b5": {
         "name": "Dent du bas, cinquième",
         "value": "+100 %",
-        "effect": "de connaissances rendues par la Mimic"
+        "effect": "de Connaissance rendue par la Mimic"
       }
     },
     "relics": {
@@ -641,12 +641,12 @@
       "l1": {
         "name": "Loupe 1",
         "value": "La Loupe :",
-        "effect": "2 connaissances garanties par trouvaille (au lieu d’1)"
+        "effect": "2 de Connaissance garantie par trouvaille (au lieu d’1)"
       },
       "l2": {
         "name": "Loupe 2",
         "value": "La Loupe :",
-        "effect": "3 connaissances garanties par trouvaille"
+        "effect": "3 de Connaissance garantie par trouvaille"
       },
       "a1": {
         "name": "Astrolabe 1",

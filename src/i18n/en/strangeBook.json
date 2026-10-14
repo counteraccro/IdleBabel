@@ -22,8 +22,8 @@
     "rareAll": "you found them all, there are none left",
     "rareChanceParts": "one book in {n}",
     "playTime": "the time the Library has taken from you",
-    "startDate": "the day you arrived",
-    "days": "days since you arrived",
+    "startDate": "the first day you remember",
+    "days": "days since the first one you remember",
     "reawakenings": "prestiges: times you have opened your eyes again",
     "pagesPerSecond": "pages passing before your eyes each second",
     "pagesPerSecondParts": "your methods {methods} · your intuitions {intuitions}",
@@ -44,7 +44,7 @@
     "pagesPerSecondMimic": "the Mimic {mimic}",
     "relic": "what your relic gives you",
     "relicParts": {
-      "loupe": "{name} · knowledge with every find",
+      "loupe": "{name} · Knowledge with every find",
       "astrolabe": "{name} · the letter comes more often",
       "hourglass": "{name} · pages read, methods and clicks"
     },
@@ -132,7 +132,7 @@
       "{n} pages. Each gesture turns a whole shelf",
       "{n} pages. A whole gallery keeps the shape of your hand",
       "{n} pages: more than the grains of sand on every beach",
-      "{n} pages. The librarians speak of a hand that turns on its own",
+      "{n} pages. Books speak of a hand that turns on its own",
       "{n} pages. The Library turns beneath your hand",
       "{n} pages. You open your hand: it is empty, as on the first day"
     ],
@@ -259,7 +259,7 @@
     "lastInstant": "I caught it just as it went out.",
     "babelWord": "I read the Library’s name, letter by letter.",
     "mimicsCaught": "Catch {n} Mimics",
-    "mimicBonus": "Take back {n} more knowledge from it",
+    "mimicBonus": "Take back {n} more Knowledge from it",
     "mimicHours": "Let it eat for {n} hours",
     "relicLoupe": "The Magnifying Glass",
     "relicAstrolabe": "The Astrolabe",

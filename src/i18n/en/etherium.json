@@ -24,8 +24,8 @@
   "opening": {
     "title": "The opening",
     "text": [
-      "What happened?\nI opened the book.\nThe floor gave way.",
-      "When I open my eyes again,\nits pages are waiting for me.\nAt last, I can read it.",
+      "What happened?\nI gave it everything.\nThe floor gave way.",
+      "When I open my eyes again,\nits stars are waiting for me.\nAt last, I can light them.",
       "Around me, nothing left.\nIt has fed on everything."
     ],
     "button": "Read"
@@ -589,7 +589,7 @@
       "eye": {
         "name": "The eye",
         "value": "See",
-        "effect": "how much knowledge it has swallowed"
+        "effect": "how much Knowledge it has swallowed"
       },
       "t1": {
         "name": "Upper tooth",
@@ -609,27 +609,27 @@
       "b1": {
         "name": "Lower tooth",
         "value": "+20%",
-        "effect": "knowledge given back by the Mimic"
+        "effect": "Knowledge given back by the Mimic"
       },
       "b2": {
         "name": "Lower tooth, second",
         "value": "+35%",
-        "effect": "knowledge given back by the Mimic"
+        "effect": "Knowledge given back by the Mimic"
       },
       "b3": {
         "name": "Lower tooth, third",
         "value": "+50%",
-        "effect": "knowledge given back by the Mimic"
+        "effect": "Knowledge given back by the Mimic"
       },
       "b4": {
         "name": "Lower tooth, fourth",
         "value": "+75%",
-        "effect": "knowledge given back by the Mimic"
+        "effect": "Knowledge given back by the Mimic"
       },
       "b5": {
         "name": "Lower tooth, fifth",
         "value": "+100%",
-        "effect": "knowledge given back by the Mimic"
+        "effect": "Knowledge given back by the Mimic"
       }
     },
     "relics": {
@@ -641,12 +641,12 @@
       "l1": {
         "name": "Magnifying Glass 1",
         "value": "The Magnifying Glass:",
-        "effect": "2 guaranteed knowledge per find (instead of 1)"
+        "effect": "2 guaranteed Knowledge per find (instead of 1)"
       },
       "l2": {
         "name": "Magnifying Glass 2",
         "value": "The Magnifying Glass:",
-        "effect": "3 guaranteed knowledge per find"
+        "effect": "3 guaranteed Knowledge per find"
       },
       "a1": {
         "name": "Astrolabe 1",

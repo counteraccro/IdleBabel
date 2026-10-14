@@ -121,8 +121,8 @@
   },
   "mimic": {
     "name": "La Mimic",
-    "eaten": "Elle a avalé {n} connaissances.",
-    "gain": "+ {n} connaissances (+ {p} %)"
+    "eaten": "Elle a avalé {n} de Connaissance.",
+    "gain": "+ {n} de Connaissance (+ {p} %)"
   },
   "relics": {
     "names": {
@@ -136,8 +136,8 @@
       "hourglass": "Poser le sablier ?"
     },
     "bonus": {
-      "loupe": "+{n} connaissances garanties à chaque trouvaille",
-      "loupeOne": "+1 connaissance garantie à chaque trouvaille",
+      "loupe": "+{n} de Connaissance garantie à chaque trouvaille",
+      "loupeOne": "+1 de Connaissance garantie à chaque trouvaille",
       "astrolabe": "lettre +{n} %",
       "hourglass": "pages lues +{n} %"
     },

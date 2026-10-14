@@ -106,7 +106,7 @@
     "rareBooks": "rare books",
     "seals": "seals",
     "ether": "Ether to gather",
-    "capped": "Only the first eight hours count.",
+    "capped": "Only the first {n} hours count.",
     "button": "Go back to reading"
   }
 }
