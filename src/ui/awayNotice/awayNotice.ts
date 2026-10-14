@@ -57,7 +57,7 @@ const show = (report: AwayReport): void => {
 };
 
 /**
- * Au retour d'une longue absence (jeu fermé, onglet caché : core/absence.ts), le chercheur croit sortir
+ * Au retour d'une longue absence (jeu fermé : core/absence.ts), le chercheur croit sortir
  * d'un rêve ; sous le récit, ce que la lecture a rapporté sans lui. Une autre modale à l'écran : il attend
  * qu'elle se ferme. Rien avant que le joueur ne se soit présenté.
  */

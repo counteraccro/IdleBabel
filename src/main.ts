@@ -2,7 +2,7 @@ import './ui/styles.css';
 import { detectLocale, setLocale } from './i18n';
 import { loadGame, saveGame } from './core/save';
 import { startLoop } from './core/loop';
-import { pauseEnded, watchAbsence } from './core/absence';
+import { pauseEnded, settleHidden, watchAbsence } from './core/absence';
 import { onResume } from './ui/animationClock';
 import { mountApp } from './ui/app';
 import { mountSealVisions } from './ui/sealVision';
@@ -36,5 +36,10 @@ startLoop(state, update);
 void mountScene({ beyond: () => beyond(state), wanted: () => sceneShown(state) });
 if (isDebugEnabled()) mountDebugPanel(state);
 
-setInterval(() => saveGame(state), AUTOSAVE_MS);
-window.addEventListener('beforeunload', () => saveGame(state));
+// Onglet caché, ce que le livre en main a trouvé est compté avant chaque sauvegarde : rien ne se perd s'il est fermé.
+const save = (): void => {
+  settleHidden(state);
+  saveGame(state);
+};
+setInterval(save, AUTOSAVE_MS);
+window.addEventListener('beforeunload', save);

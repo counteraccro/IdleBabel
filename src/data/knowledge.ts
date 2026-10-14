@@ -58,5 +58,5 @@ export const MAX_TURNS_PER_SECOND = 8;
 /** Absence prise en compte au plus (conception §10), avant le Sommeil profond. */
 export const MAX_AWAY_SECONDS = 8 * 3600;
 
-/** Part de la lecture comptée pendant une absence, jeu fermé ou onglet caché (conception §10) : pages, livres, trouvailles ; avant la Cartographie du Retour. */
+/** Part de la lecture comptée pendant une absence, jeu fermé (conception §10) : pages, livres, trouvailles ; avant la Cartographie du Retour. */
 export const AWAY_SHARE = 0.5;

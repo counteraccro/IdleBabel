@@ -38,9 +38,9 @@ export interface AwayReport {
 }
 
 /**
- * Le jeu continue sans le chercheur : `away`, jeu fermé ou onglet caché (rien n'a tourné, on compte la part
- * part awayShare de tout, Cartographie du Retour) ; `pause`, une modale ouverte (les pages sont déjà comptées par la boucle, le livre
- * à l'écran était figé). Pages au rythme de la production, livres, trouvailles, livres rares et sceaux.
+ * Le jeu continue sans le chercheur : `away`, jeu fermé (rien n'a tourné, on compte la part awayShare de tout,
+ * Cartographie du Retour) ; `pause`, une modale ouverte ou l'onglet caché (les pages sont déjà comptées par la
+ * boucle, le livre à l'écran était figé). Pages au rythme de la production, livres, trouvailles, livres rares et sceaux.
  */
 export const passTime = (state: GameState, seconds: number, mode: 'away' | 'pause'): AwayReport => {
   const share = mode === 'away' ? awayShare(state) : 1;
@@ -111,19 +111,30 @@ const awaySince = (state: GameState, from: number, mode: 'away' | 'pause'): void
   else untold = report;
 };
 
+/** Onglet caché depuis tant (horloge Date) : le livre en main ne tourne plus à l'écran. */
+let hiddenAt: number | null = null;
+
 /**
- * Le jeu fermé (depuis la dernière sauvegarde) ou l'onglet caché, quand rien ne tourne à l'écran : la
- * boucle ne produit plus et laisse `lastTick` à l'heure où l'onglet a été caché (core/loop.ts), tout est
- * compté ici au retour (même chargé dans un onglet déjà caché : depuis le chargement).
+ * Le jeu fermé (depuis la dernière sauvegarde) : absence, comptée au chargement. L'onglet caché n'en est
+ * pas une (demande de l'auteur, 14/10) : la boucle continue de produire (core/loop.ts), le livre en main est
+ * figé ; au retour, ses trouvailles et ses livres refermés comptent comme une modale, sans récit du retour.
  */
 export const watchAbsence = (state: GameState): void => {
   awaySince(state, state.lastTick, 'away');
   state.lastTick = Date.now();
+  if (document.hidden) hiddenAt = Date.now();
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) return;
-    awaySince(state, state.lastTick, 'away');
-    state.lastTick = Date.now();
+    if (document.hidden) hiddenAt ??= Date.now();
+    else settleHidden(state);
   });
+};
+
+/** Le temps passé onglet caché, jusqu'à maintenant (au retour, ou avant une sauvegarde si l'onglet l'est encore). */
+export const settleHidden = (state: GameState): void => {
+  if (hiddenAt === null) return;
+  const from = hiddenAt;
+  hiddenAt = document.hidden ? Date.now() : null;
+  awaySince(state, from, 'pause');
 };
 
 /** Une modale vient de se fermer après `seconds` : les pages n'ont pas tourné à l'écran, le jeu a continué. */

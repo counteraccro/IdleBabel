@@ -217,7 +217,7 @@ export const pagesTurnedAway = (state: GameState, seconds: number, turnsFactor =
 };
 
 /**
- * Absence (onglet fermé ou caché) : les pages tournées seules (pagesTurnedAway, plafond × `turnsFactor`), dont on
+ * Absence (onglet fermé) : les pages tournées seules (pagesTurnedAway, plafond × `turnsFactor`), dont on
  * compte la part `share`, cachent leurs trouvailles comme les autres. Renvoie le nombre trouvé.
  */
 export const findWhileAway = (
