@@ -34,7 +34,7 @@ export const spawnMimic = (state: GameState, random: () => number = Math.random,
 };
 
 /**
- * `seconds` de jeu à l'écran : peut-être une Mimic (une par heure en moyenne). Seulement une fois débloquée, et s'il n'y
+ * `seconds` de jeu (à l'écran, ou onglet caché) : peut-être une Mimic (une par heure en moyenne). Seulement une fois débloquée, et s'il n'y
  * en a pas déjà une. Renvoie true si elle vient d'apparaître.
  */
 export const advanceMimic = (state: GameState, seconds: number, random: () => number = Math.random, now = Date.now()): boolean => {
@@ -42,7 +42,8 @@ export const advanceMimic = (state: GameState, seconds: number, random: () => nu
     called = false;
     return false;
   }
-  if (!called && random() >= seconds / mimicEvery(state)) return false;
+  // Une chance par seconde : sur un long moment d'un coup (l'onglet caché, ui/mimic), la même loi, sans dépasser 1.
+  if (!called && random() >= 1 - Math.exp(-seconds / mimicEvery(state))) return false;
   called = false;
   spawnMimic(state, random, now);
   return true;

@@ -1064,7 +1064,7 @@
                 "Un nouveau sceau secret.",
                 "Exporter et importer la sauvegarde, dans le cahier d’options : toute la partie en une chaîne de caractères.",
                 "Le titre de l’onglet affiche les pages en réserve.",
-                "Onglet caché, le jeu continue au ralenti : la lecture est comptée en entier, sans retour d’absence. Seul le jeu fermé compte comme une absence."
+                "Onglet caché, le jeu continue au ralenti : la lecture est comptée en entier, sans retour d’absence, et l’attente de la Mimic avance (elle paraît au retour). Seul le jeu fermé compte comme une absence."
               ]
             },
             {
@@ -2422,7 +2422,7 @@
         "away": {
           "head": "L’absence",
           "text": [
-            "Le jeu a appris à continuer sans le joueur. Jeu fermé, les pages se lisent au rythme de la production, à moitié, huit heures au plus. Le livre en main avance, les livres finis se referment, les livres rares croisés en route sont trouvés, les sceaux suivent. L’onglet caché n’est pas une absence : le jeu y tourne au ralenti, pour ne pas peser sur le navigateur, et les compteurs restent justes. Son titre montre les pages en réserve : on les voit grimper depuis un autre onglet. Le cahier d’options exporte la partie en une chaîne de caractères, et la reprend : options, avancement, Éther, tout y tient.",
+            "Le jeu a appris à continuer sans le joueur. Jeu fermé, les pages se lisent au rythme de la production, à moitié, huit heures au plus. Le livre en main avance, les livres finis se referment, les livres rares croisés en route sont trouvés, les sceaux suivent. L’onglet caché n’est pas une absence : le jeu y tourne au ralenti, pour ne pas peser sur le navigateur, et les compteurs restent justes ; la Mimic s’y prépare, et attend le retour pour paraître. Son titre montre les pages en réserve : on les voit grimper depuis un autre onglet. Le cahier d’options exporte la partie en une chaîne de caractères, et la reprend : options, avancement, Éther, tout y tient.",
             "Au retour, le chercheur croit sortir d’un rêve. Une modale le détrompe, et dit ce que ses mains ont fait sans lui.",
             "Le livre blanc ou la bibliothèque ouverts, le livre en main n’est plus là : longtemps, ses pages n’ont plus tourné, et rien ne s’y trouvait. Au retour au jeu, ce temps compte maintenant comme une fenêtre ouverte. Et les pages qui tournent seules ne dépassaient pas dix feuilles par seconde, quel que soit leur plafond : elles le tiennent."
           ]

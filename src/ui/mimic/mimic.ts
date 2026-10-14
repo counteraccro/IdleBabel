@@ -17,9 +17,9 @@ import { mimicTextures, type MimicTextures } from './mimicTextures';
 import type { GameState } from '../../core/state';
 
 /**
- * La Mimic à l'écran du jeu (maquettes .ai/maquette-mimic.html et .ai/maquette-mimic-cote.html) : elle vient (une fois
- * par heure de jeu, l'onglet visible, aucune fenêtre ouverte), se pose à une place de la salle qu'on voit à l'écran, ou,
- * s'il n'y en a pas, au bord droit en sceau. Premier clic : elle mord ; second : elle disparaît et rend tout.
+ * La Mimic à l'écran du jeu (maquettes .ai/maquette-mimic.html et .ai/maquette-mimic-cote.html) : elle vient une fois
+ * par heure de jeu, onglet caché compris, mais ne paraît que l'onglet visible et aucune fenêtre ouverte ; elle se pose à
+ * une place de la salle qu'on voit à l'écran, ou, s'il n'y en a pas, au bord droit en sceau. Premier clic : elle mord ; second : elle disparaît et rend tout.
  */
 
 /** L'attente n'avance pas de plus d'une seconde d'un coup (onglet repris, machine en veille). */
@@ -36,6 +36,18 @@ export const createMimic = (state: GameState): Component => {
   const room = el('div', 'mimic-room');
   root.append(room);
   let last = Date.now();
+  // Onglet caché, son attente avance aussi (demande de l'auteur, 14/10) : le temps caché est mis de côté, elle ne
+  // paraît qu'au retour, à l'écran du jeu et sans fenêtre ouverte (l'écran n'est pas redessiné onglet caché, core/loop.ts).
+  let hiddenAt: number | null = document.hidden ? Date.now() : null;
+  let hiddenSeconds = 0;
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) hiddenAt ??= Date.now();
+    else if (hiddenAt !== null) {
+      hiddenSeconds += (Date.now() - hiddenAt) / 1000;
+      hiddenAt = null;
+      last = Date.now();
+    }
+  });
   let textures: MimicTextures | null = null;
   let loading: number | null = null;
   /** Ses textures n'ont pas pu être faites : elle reste au bord de l'écran, en sceau (il n'en a pas besoin). */
@@ -212,7 +224,10 @@ export const createMimic = (state: GameState): Component => {
     const seconds = Math.min(MAX_STEP, (now - last) / 1000);
     last = now;
     // Elle ne vient qu'à l'écran du jeu, visible, sans fenêtre ouverte, et pas en train de s'en aller.
-    if (!document.hidden && !modalOpen() && root.isConnected && !root.classList.contains('screen-out')) advanceMimic(state, seconds);
+    if (!document.hidden && !modalOpen() && root.isConnected && !root.classList.contains('screen-out')) {
+      advanceMimic(state, seconds + hiddenSeconds);
+      hiddenSeconds = 0;
+    }
     if (leaving) return;
     if (!mimicHere(state)) {
       if (book || side) clear();

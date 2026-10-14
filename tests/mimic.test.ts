@@ -32,6 +32,14 @@ describe('La Mimic', () => {
     expect(advanceMimic(state, 1, () => 0)).toBe(false);
   });
 
+  it('une longue attente d’un coup (onglet caché) : la même loi, une chance qui ne dépasse jamais 1', () => {
+    // Une heure : 1 − e⁻¹ ≈ 63 %.
+    expect(advanceMimic(unlocked(), MIMIC_EVERY, () => 0.6)).toBe(true);
+    expect(advanceMimic(unlocked(), MIMIC_EVERY, () => 0.65)).toBe(false);
+    // Dix heures : presque sûre.
+    expect(advanceMimic(unlocked(), 10 * MIMIC_EVERY, () => 0.9999)).toBe(true);
+  });
+
   it('avale toutes les connaissances gagnées, et les rend avec 10 % de plus au second clic', () => {
     const state = unlocked();
     spawnMimic(state, () => 0.5, 0);
