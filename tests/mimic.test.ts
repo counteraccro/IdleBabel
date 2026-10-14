@@ -41,13 +41,14 @@ describe('La Mimic', () => {
     expect(state.mimic.eaten).toBe(2);
     const given = catchMimic(state, 3_600_000);
     expect(given).toEqual({ eaten: 2, bonus: 2 * 0.1 });
-    expect(state.knowledge).toBeCloseTo(2.2);
-    expect(state.lifetimeKnowledge).toBeCloseTo(2.2);
+    // 2,2 : arrondi au supérieur, la Connaissance se compte en entiers.
+    expect(state.knowledge).toBe(3);
+    expect(state.lifetimeKnowledge).toBe(3);
     expect(state.mimic).toMatchObject({ at: null, eaten: 0, caught: 1, seconds: 3600 });
     expect(state.mimic.bonus).toBeCloseTo(0.2);
     // Partie : elle va de nouveau au joueur.
     gainFind(state, find);
-    expect(state.knowledge).toBeCloseTo(3.2);
+    expect(state.knowledge).toBe(4);
   });
 
   it('les dents : plus souvent (la plus haute compte), et rend plus (s’ajoute aux 10 %)', () => {

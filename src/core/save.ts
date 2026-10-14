@@ -39,6 +39,10 @@ export const loadGame = (defaultLocale: Locale): GameState => {
                 etherium: saved.etherium ?? [],
                 findCounts: countSavedFinds(saved.findCounts, finds),
                 totalPagesRead: saved.totalPagesRead ?? saved.pages,
+                // Une partie d'avant le 14/10 a pu garder des décimales de Connaissance : arrondies au supérieur.
+                knowledge: Math.ceil(saved.knowledge ?? 0),
+                cycleKnowledge: Math.ceil(saved.cycleKnowledge ?? 0),
+                lifetimeKnowledge: Math.ceil(saved.lifetimeKnowledge ?? 0),
                 // Une partie d'avant ces compteurs part de ce qu'elle sait : les pages de ses méthodes, ses clics.
                 pagesByMethods: saved.pagesByMethods ?? Object.values(saved.methodPages ?? {}).reduce((sum, read) => sum + (read ?? 0), 0),
                 pagesByHand: saved.pagesByHand ?? (saved.stats?.clicks ?? 0) * PAGES_PER_CLICK,

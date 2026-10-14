@@ -188,7 +188,8 @@ export const findText = (find: Find): string => {
  * de la Loupe ; avalé par la Mimic s'il y en a une), et elle s'écrit dans le livre blanc.
  */
 export const gainFind = (state: GameState, find: Find): void => {
-  const gained = knowledgePerFind(state) * knowledgeBoon() + relicKnowledge(state);
+  // Les bonus multiplient : arrondi au supérieur, la Connaissance se compte en entiers.
+  const gained = Math.ceil(knowledgePerFind(state) * knowledgeBoon() + relicKnowledge(state));
   // Une Mimic dans la salle avale la Connaissance ; la trouvaille s'écrit quand même dans le livre blanc.
   if (!swallow(state, gained)) {
     state.knowledge += gained;

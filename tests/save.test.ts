@@ -121,6 +121,16 @@ describe('sauvegarde', () => {
     expect(loadGame('fr').pages).toBe(0);
   });
 
+  it('arrondit au supérieur la Connaissance à virgule d’une partie d’avant le 14/10', () => {
+    const state = createInitialState('fr');
+    state.knowledge = 12.3;
+    state.cycleKnowledge = 20.01;
+    state.lifetimeKnowledge = 40.5;
+    saveGame(state);
+    const loaded = loadGame('fr');
+    expect([loaded.knowledge, loaded.cycleKnowledge, loaded.lifetimeKnowledge]).toEqual([13, 21, 41]);
+  });
+
   it('garde la graine ; une partie d’avant les graines a la graine 0', () => {
     const state = createInitialState('fr');
     saveGame(state);

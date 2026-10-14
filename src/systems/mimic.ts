@@ -72,7 +72,8 @@ export const mimicSeconds = (state: GameState, now = Date.now()): number =>
 export const catchMimic = (state: GameState, now = Date.now()): { eaten: number; bonus: number } | undefined => {
   if (!mimicHere(state)) return undefined;
   const given = mimicReturn(state);
-  const total = given.eaten + given.bonus;
+  // Son bonus est une part : arrondi au supérieur, la Connaissance se compte en entiers.
+  const total = Math.ceil(given.eaten + given.bonus);
   state.knowledge += total;
   state.cycleKnowledge += total;
   state.lifetimeKnowledge += total;

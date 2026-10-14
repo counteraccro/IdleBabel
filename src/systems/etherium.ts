@@ -200,7 +200,7 @@ export const openDoor = (state: GameState, previous: PreviousRun): void => {
       state.tools[id] += Math.floor(previous.tools[id] * SIMPLE.archShare);
   const share = Math.max(0, ...Object.entries(EFFECT.previousPages).map(([id, value]) => (starLit(state, id) ? value : 0)));
   state.pages += previous.pages * share;
-  if (starLit(state, S.previousKnowledge)) state.knowledge += previous.knowledge * SIMPLE.previousKnowledge;
+  if (starLit(state, S.previousKnowledge)) state.knowledge += Math.ceil(previous.knowledge * SIMPLE.previousKnowledge);
 };
 
 /** L'Aigrette gauche : le premier niveau de chaque intuition reste au prestige. */
