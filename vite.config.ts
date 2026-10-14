@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig, type Plugin } from 'vite';
 import { VERSION } from './src/data/version';
 
@@ -23,4 +24,7 @@ export default defineConfig({
     __BUILD_DATE__: JSON.stringify(BUILD_DATE),
   },
   plugins: [versionFile()],
+  // Les tests qui jouent des milliers de pages prennent ~1 s ici, plus de 5 s sur la machine de GitHub, plus lente et qui
+  // lance tous les fichiers à la fois (build du 14/10 en échec) : ils ont le temps.
+  test: { testTimeout: 30_000 },
 });
