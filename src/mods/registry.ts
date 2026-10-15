@@ -1,4 +1,5 @@
 import type { GameState } from '../core/state';
+import { clearModOptions, declareModOptions, type ModOption, type ModOptionValues } from './modOptions';
 
 /** Un mod, tel que `IdleBabel.registerMod` le reçoit (comme Game.registerMod de Cookie Clicker). */
 export interface ModDef {
@@ -10,6 +11,10 @@ export interface ModDef {
   save?: () => string;
   /** Après `init`, avec ce que `save()` avait rendu la dernière fois (s'il a déjà été sauvegardé). */
   load?: (text: string) => void;
+  /** Ses options, réglées sur une page du cahier à lui, dans cet ordre (src/mods/modOptions.ts). */
+  options?: ModOption[];
+  /** Après `init` et `load`, avec la valeur de chaque option ; puis à chaque changement au cahier. */
+  onOptions?: (values: ModOptionValues) => void;
 }
 
 const mods = new Map<string, ModDef>();
@@ -49,6 +54,7 @@ export const registerMod = (state: GameState, id: string, mod: ModDef): boolean 
   if (mod.init) guard(id, 'init', mod.init);
   const saved = state.modData[id];
   if (saved !== undefined && mod.load) guard(id, 'load', () => mod.load!(saved));
+  declareModOptions(state, id, mod.options, typeof mod.version === 'string' ? mod.version : undefined, mod.onOptions);
   return true;
 };
 
@@ -68,5 +74,6 @@ export const clearMods = (): void => {
   mods.clear();
   names.clear();
   versions.clear();
+  clearModOptions();
   loading = null;
 };

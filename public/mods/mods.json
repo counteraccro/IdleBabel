@@ -34,6 +34,18 @@
       "kind": "js"
     },
     {
+      "id": "better-babel",
+      "name": { "fr": "BetterBabel", "en": "BetterBabel" },
+      "description": {
+        "fr": "Des aides de lecture : la méthode la plus rentable en couleur, et un bloc pour la prochaine lettre, la Mimic, le prochain Éther, les intuitions.",
+        "en": "Reading aids: the most profitable method in colour, and a block for the next letter, the Mimic, the next Ether, intuitions."
+      },
+      "author": "Idle Babel",
+      "version": "1.0.0",
+      "file": "better-babel.js",
+      "kind": "js"
+    },
+    {
       "id": "exemple",
       "name": { "fr": "Deux sceaux de plus", "en": "Two more seals" },
       "description": {

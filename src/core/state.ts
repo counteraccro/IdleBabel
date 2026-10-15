@@ -203,6 +203,8 @@ export interface GameState {
   modsOff: string[];
   /** Ce que chaque mod a rendu à la dernière sauvegarde (son `save()`), par son nom : rendu à son `load()`. */
   modData: Record<string, string>;
+  /** Les options de chaque mod réglées au cahier (registerMod `options`), par son nom : gardées comme les réglages. */
+  modOptions: Record<string, Record<string, string | boolean>>;
   /** Quand le premier mod a été chargé (ms) ; null : jamais. Pour toujours, même s'il est retiré (le sceau « Triche »). */
   modded: number | null;
   /**
@@ -262,6 +264,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   mods: [],
   modsOff: [],
   modData: {},
+  modOptions: {},
   modded: null,
   seed,
 });

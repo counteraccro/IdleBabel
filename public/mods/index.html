@@ -173,6 +173,8 @@
             <li><a href="#fr-heberger">L’héberger</a></li>
             <li><a href="#fr-api">L’API</a></li>
             <li><a href="#fr-crochets">Les crochets</a></li>
+            <li><a href="#fr-options">Les options d’un mod</a></li>
+            <li><a href="#fr-game">Ce que calcule le jeu : <code>game</code></a></li>
             <li><a href="#fr-etat">La partie : <code>state</code></a></li>
             <li><a href="#fr-json">Les mods sans code (.json)</a></li>
             <li><a href="#fr-exemples">Les mods du jeu, commentés</a></li>
@@ -242,12 +244,13 @@
           <table>
             <tr><th>Nom</th><th>Ce qu’il fait</th></tr>
             <tr>
-              <td><code>registerMod(nom, { version, init, save, load })</code></td>
+              <td><code>registerMod(nom, { version, init, save, load, options, onOptions })</code></td>
               <td>
                 Enregistre le mod. <code>version</code> : une chaîne (« 1.0.0 »), montrée au cahier à côté de son nom.
                 <code>init()</code> : une fois, au chargement ; c’est là qu’on pose ses crochets.
                 <code>save()</code> : rend une chaîne, gardée dans la sauvegarde du jeu. <code>load(texte)</code> : appelé juste
-                après <code>init</code>, avec ce que <code>save()</code> avait rendu la dernière fois. Tous sont facultatifs.
+                après <code>init</code>, avec ce que <code>save()</code> avait rendu la dernière fois. <code>options</code> et
+                <code>onOptions</code> : voir <a href="#fr-options">les options</a>. Tous sont facultatifs.
                 Rend <code>false</code> si le nom est vide ou déjà pris.
               </td>
             </tr>
@@ -264,6 +267,8 @@
             </tr>
             <tr><td><code>format(nombre)</code></td><td>Un nombre écrit dans la notation choisie par le joueur (« 1,23 million »…).</td></tr>
             <tr><td><code>locale</code></td><td>La langue du jeu : <code>'fr'</code> ou <code>'en'</code>.</td></tr>
+            <tr><td><code>game</code></td><td>Ce que le jeu calcule (production, prix, Éther, lettre, Mimic), en lecture seule : voir <a href="#fr-game">plus bas</a>.</td></tr>
+            <tr><td><code>option(mod, id)</code></td><td>La valeur d’une option d’un mod, réglée au cahier (<a href="#fr-options">les options</a>) ; <code>undefined</code> si elle n’existe pas.</td></tr>
             <tr><td><code>loadMod(adresse)</code></td><td>Charge un autre mod (rend une promesse : <code>true</code> s’il a chargé).</td></tr>
             <tr>
               <td><code>replaceHeldBook(book =&gt; ({ root, update }))</code></td>
@@ -349,6 +354,51 @@
             </tr>
           </table>
         </div>
+
+        <h2 id="fr-options">Les options d’un mod</h2>
+        <p>
+          Un mod déclare ses options dans <code>registerMod</code> ; le jeu leur dessine une page du cahier, juste après la page
+          « Mods » (une par mod actif qui en a), les garde dans la sauvegarde (export compris) et prévient le mod quand elles
+          changent. Rien à écrire pour le cahier.
+        </p>
+        <pre><code>IdleBabel.registerMod('mon-mod', {
+  version: '1.0.0',
+  options: [
+    <span class="comment">// Un choix parmi plusieurs : le choisi est entouré au stylo.</span>
+    { id: 'taille', name: { fr: 'Taille', en: 'Size' }, default: 'grand',
+      choices: [{ id: 'petit', name: { fr: 'Petit', en: 'Small' } }, { id: 'grand', name: { fr: 'Grand', en: 'Large' } }] },
+    <span class="comment">// Sans choices : une case à cocher (default true ou false), avec sa ligne au crayon.</span>
+    { id: 'bloc', name: { fr: 'Le bloc', en: 'The block' }, hint: { fr: 'En bas à gauche.', en: 'Bottom left.' }, default: true },
+    <span class="comment">// needs : grisée tant que la case « bloc » est décochée.</span>
+    { id: 'heure', name: { fr: 'L’heure', en: 'The time' }, default: true, needs: 'bloc' },
+  ],
+  <span class="comment">// Après init et load, avec toutes les valeurs ; puis à chaque changement au cahier.</span>
+  onOptions(valeurs) { console.log(valeurs.taille, valeurs.bloc); },
+});
+IdleBabel.option('mon-mod', 'taille');   <span class="comment">// 'grand' : la valeur, n'importe quand</span></code></pre>
+        <p>
+          <code>name</code>, <code>hint</code> et le nom d’un choix : une chaîne, ou <code>{ fr, en }</code>. Une valeur gardée
+          qui ne vaut plus rien (option retirée, choix renommé) reprend son défaut ; une option mal formée est sautée (dit dans la
+          console). La page a le nom du mod, sa version, puis chaque option dans l’ordre déclaré.
+        </p>
+
+        <h2 id="fr-game">Ce que calcule le jeu : <code>IdleBabel.game</code></h2>
+        <p>
+          Les vraies formules du jeu, en lecture seule : un mod qui montre des chiffres les demande ici plutôt que de les recopier
+          (elles changent à chaque rééquilibrage). Rien ici ne modifie la partie. Les noms sont dans la langue du jeu.
+        </p>
+        <div class="table">
+          <table>
+            <tr><th>Fonction</th><th>Ce qu’elle rend</th></tr>
+            <tr data-game="methods"><td><code>methods()</code></td><td>Chaque méthode : <code>{ id, name, owned, visible, nextCost, rate }</code>. <code>visible</code> : retrouvée, son sceau est dans la ruche ; <code>nextCost</code> : le prix du prochain exemplaire (Économie du geste et bonus en cours compris) ; <code>rate</code> : les pages par seconde d’un exemplaire de plus.</td></tr>
+            <tr data-game="pagesPerSecond"><td><code>pagesPerSecond()</code></td><td>La production, en pages par seconde.</td></tr>
+            <tr data-game="intuitions"><td><code>intuitions()</code></td><td>Chaque intuition du livre blanc : <code>{ id, name, level, maxLevel, nextPrice, visible, method }</code>. <code>nextPrice</code> : en Connaissance, <code>undefined</code> au bout ou tant qu’elle ne peut pas se comprendre ; <code>maxLevel</code> : <code>Infinity</code> si elle est sans fin ; <code>method</code> : l’id de la méthode qu’elle double à chaque niveau, sinon <code>null</code>.</td></tr>
+            <tr data-game="letterIn"><td><code>letterIn()</code></td><td>Les secondes avant la prochaine lettre, ou <code>undefined</code> tant qu’elle n’est pas tirée. Le compte ne descend qu’à l’écran du jeu.</td></tr>
+            <tr data-game="mimic"><td><code>mimic()</code></td><td><code>{ unlocked, here, every }</code> : débloquée, là en ce moment, et toutes les combien de secondes en moyenne. Elle n’a pas d’heure : chaque seconde, une petite chance.</td></tr>
+            <tr data-game="ether"><td><code>ether()</code></td><td><code>{ gain, total, next }</code> : l’Éther que rapporterait le prestige maintenant, les pages lues depuis toujours, et celles qu’il faut pour un Éther de plus.</td></tr>
+          </table>
+        </div>
+        <p>Chaque sceau de la ruche porte <code>data-method="&lt;id&gt;"</code> : un mod sait quel hexagone est quelle méthode. Le jeu ne touche à aucun autre attribut <code>data-*</code> d’un sceau : un mod peut y écrire.</p>
 
         <h2 id="fr-etat">La partie : <code>IdleBabel.state</code></h2>
         <p>
@@ -446,6 +496,29 @@ IdleBabel.registerMod('sans-mimic', {
           Le vrai fichier ajoute le boîtier, le titre, « Pages 12–13 sur 410 », la barre de progression, la page de titre d’un
           livre neuf, et une police qui rapetisse pour que les deux pages tiennent dans l’écran.
         </p>
+        <h3 id="fr-better-babel">BetterBabel — <a href="better-babel/better-babel.js">better-babel.js</a></h3>
+        <p>
+          Des aides de lecture, comme Cookie Monster pour Cookie Clicker : chaque méthode de la ruche prend la couleur de son
+          rang, et un bloc en bas à gauche dit la prochaine lettre, la Mimic, le prochain Éther, les intuitions à s’offrir. Ses
+          neuf options ont leur page au cahier. Les passages clés :
+        </p>
+        <pre><code><span class="comment">// Le rang d'une méthode : attente + remboursement d'un exemplaire, le plus petit gagne.</span>
+const production = IdleBabel.game.pagesPerSecond();
+const score = (m) =&gt; Math.max(0, m.nextCost - IdleBabel.state.pages) / production + m.nextCost / m.rate;
+const ranked = IdleBabel.game.methods().filter((m) =&gt; m.visible).sort((a, b) =&gt; score(a) - score(b));
+<span class="comment">// La couleur : un attribut à lui sur le sceau, et ses styles (le jeu n'y touche pas).</span>
+for (const seal of document.querySelectorAll('.method-seal[data-method]'))
+  seal.dataset.betterRank = ranked.findIndex((m) =&gt; m.id === seal.dataset.method);
+<span class="comment">// Le prochain Éther : les pages qui manquent ÷ le rythme de la dernière minute.</span>
+const { total, next } = IdleBabel.game.ether();
+<span class="comment">// La Mimic n'a pas d'heure : sa moyenne, et la chance de la voir d'ici 10 min.</span>
+const { every } = IdleBabel.game.mimic();
+const chance = 1 - Math.exp(-600 / every);</code></pre>
+        <p>
+          Le bloc est posé dans le pied de l’écran (crochet <code>draw</code>, une fois par seconde) ; le rythme se mesure au
+          crochet <code>tick</code>, onglet caché compris. Ses limites : le rang vaut pour un exemplaire, même en lot ×10 ; il
+          ignore ce qu’un achat débloque sans pages (la phrase à 25 exemplaires, les sceaux).
+        </p>
         <h3>Deux sceaux de plus — <a href="exemple/exemple.json">exemple.json</a></h3>
         <p>Un mod sans code : deux sceaux, l’un à un million de pages lues, l’autre après dix heures de jeu.</p>
         <h3>Un mod qui garde des données</h3>
@@ -509,6 +582,8 @@ IdleBabel.registerMod('compte-mots', {
             <li><a href="#en-host">Hosting it</a></li>
             <li><a href="#en-api">The API</a></li>
             <li><a href="#en-hooks">Hooks</a></li>
+            <li><a href="#en-options">A mod’s options</a></li>
+            <li><a href="#en-game">What the game computes: <code>game</code></a></li>
             <li><a href="#en-state">The game: <code>state</code></a></li>
             <li><a href="#en-json">Mods without code (.json)</a></li>
             <li><a href="#en-examples">The game’s mods, explained</a></li>
@@ -571,12 +646,13 @@ IdleBabel.registerMod('compte-mots', {
           <table>
             <tr><th>Name</th><th>What it does</th></tr>
             <tr>
-              <td><code>registerMod(name, { version, init, save, load })</code></td>
+              <td><code>registerMod(name, { version, init, save, load, options, onOptions })</code></td>
               <td>
                 Registers the mod. <code>version</code>: a string (“1.0.0”), shown in the notebook next to its name.
                 <code>init()</code>: once, when it loads; this is where hooks go. <code>save()</code>: returns a
                 string, kept in the game’s save. <code>load(text)</code>: called right after <code>init</code>, with what
-                <code>save()</code> returned last time. All are optional. Returns <code>false</code> if the name is empty or
+                <code>save()</code> returned last time. <code>options</code> and <code>onOptions</code>: see
+                <a href="#en-options">options</a>. All are optional. Returns <code>false</code> if the name is empty or
                 already taken.
               </td>
             </tr>
@@ -593,6 +669,8 @@ IdleBabel.registerMod('compte-mots', {
             </tr>
             <tr><td><code>format(number)</code></td><td>A number written in the player’s chosen notation (“1.23 million”…).</td></tr>
             <tr><td><code>locale</code></td><td>The game’s language: <code>'fr'</code> or <code>'en'</code>.</td></tr>
+            <tr><td><code>game</code></td><td>What the game computes (production, prices, Ether, letter, Mimic), read-only: see <a href="#en-game">below</a>.</td></tr>
+            <tr><td><code>option(mod, id)</code></td><td>The value of a mod’s option, set in the notebook (<a href="#en-options">options</a>); <code>undefined</code> if it does not exist.</td></tr>
             <tr><td><code>loadMod(address)</code></td><td>Loads another mod (returns a promise: <code>true</code> if it loaded).</td></tr>
             <tr>
               <td><code>replaceHeldBook(book =&gt; ({ root, update }))</code></td>
@@ -677,6 +755,51 @@ IdleBabel.registerMod('compte-mots', {
             </tr>
           </table>
         </div>
+
+        <h2 id="en-options">A mod’s options</h2>
+        <p>
+          A mod declares its options in <code>registerMod</code>; the game draws them a page of the notebook, right after the
+          “Mods” page (one per active mod that has some), keeps them in the save (export included) and tells the mod when they
+          change. Nothing to write for the notebook.
+        </p>
+        <pre><code>IdleBabel.registerMod('my-mod', {
+  version: '1.0.0',
+  options: [
+    <span class="comment">// One choice among several: the chosen one is circled in pen.</span>
+    { id: 'size', name: { fr: 'Taille', en: 'Size' }, default: 'large',
+      choices: [{ id: 'small', name: { fr: 'Petit', en: 'Small' } }, { id: 'large', name: { fr: 'Grand', en: 'Large' } }] },
+    <span class="comment">// Without choices: a checkbox (default true or false), with its pencil line.</span>
+    { id: 'block', name: { fr: 'Le bloc', en: 'The block' }, hint: { fr: 'En bas à gauche.', en: 'Bottom left.' }, default: true },
+    <span class="comment">// needs: greyed out while the “block” box is unchecked.</span>
+    { id: 'clock', name: { fr: 'L’heure', en: 'The time' }, default: true, needs: 'block' },
+  ],
+  <span class="comment">// After init and load, with every value; then at each change in the notebook.</span>
+  onOptions(values) { console.log(values.size, values.block); },
+});
+IdleBabel.option('my-mod', 'size');   <span class="comment">// 'large': the value, at any time</span></code></pre>
+        <p>
+          <code>name</code>, <code>hint</code> and a choice’s name: a string, or <code>{ fr, en }</code>. A kept value that no
+          longer means anything (option removed, choice renamed) goes back to its default; a malformed option is skipped (said in
+          the console). The page shows the mod’s name, its version, then each option in the declared order.
+        </p>
+
+        <h2 id="en-game">What the game computes: <code>IdleBabel.game</code></h2>
+        <p>
+          The game’s real formulas, read-only: a mod that shows numbers asks for them here rather than copying them (they change
+          at every rebalance). Nothing here changes the game. Names are in the game’s language.
+        </p>
+        <div class="table">
+          <table>
+            <tr><th>Function</th><th>What it returns</th></tr>
+            <tr data-game="methods"><td><code>methods()</code></td><td>Each method: <code>{ id, name, owned, visible, nextCost, rate }</code>. <code>visible</code>: found again, its seal is in the hive; <code>nextCost</code>: the price of the next copy (Economy of gesture and current boons included); <code>rate</code>: the pages per second of one more copy.</td></tr>
+            <tr data-game="pagesPerSecond"><td><code>pagesPerSecond()</code></td><td>The production, in pages per second.</td></tr>
+            <tr data-game="intuitions"><td><code>intuitions()</code></td><td>Each intuition of the white book: <code>{ id, name, level, maxLevel, nextPrice, visible, method }</code>. <code>nextPrice</code>: in Knowledge, <code>undefined</code> at the end or while it cannot be understood; <code>maxLevel</code>: <code>Infinity</code> if endless; <code>method</code>: the id of the method it doubles at each level, otherwise <code>null</code>.</td></tr>
+            <tr data-game="letterIn"><td><code>letterIn()</code></td><td>Seconds before the next letter, or <code>undefined</code> while it is not drawn. The count only goes down on the game screen.</td></tr>
+            <tr data-game="mimic"><td><code>mimic()</code></td><td><code>{ unlocked, here, every }</code>: unlocked, here right now, and every how many seconds on average. It has no set time: every second, a small chance.</td></tr>
+            <tr data-game="ether"><td><code>ether()</code></td><td><code>{ gain, total, next }</code>: the Ether a prestige would bring now, the pages read since forever, and those needed for one more Ether.</td></tr>
+          </table>
+        </div>
+        <p>Each seal of the hive has <code>data-method="&lt;id&gt;"</code>: a mod knows which hexagon is which method. The game touches no other <code>data-*</code> attribute of a seal: a mod may write there.</p>
 
         <h2 id="en-state">The game: <code>IdleBabel.state</code></h2>
         <p>
@@ -773,6 +896,29 @@ IdleBabel.registerMod('sans-mimic', {
         <p>
           The real file adds the casing, the title, “Pages 12–13 of 410”, the progress bar, a new book’s title page, and a
           font that shrinks so both pages fit on the screen.
+        </p>
+        <h3 id="en-better-babel">BetterBabel — <a href="better-babel/better-babel.js">better-babel.js</a></h3>
+        <p>
+          Reading aids, like Cookie Monster for Cookie Clicker: each method of the hive takes the colour of its rank, and a
+          block at the bottom left gives the next letter, the Mimic, the next Ether, the intuitions you can afford. Its nine
+          options have their page in the notebook. The key parts:
+        </p>
+        <pre><code><span class="comment">// A method's rank: waiting + payback of one copy, the smallest wins.</span>
+const production = IdleBabel.game.pagesPerSecond();
+const score = (m) =&gt; Math.max(0, m.nextCost - IdleBabel.state.pages) / production + m.nextCost / m.rate;
+const ranked = IdleBabel.game.methods().filter((m) =&gt; m.visible).sort((a, b) =&gt; score(a) - score(b));
+<span class="comment">// The colour: its own attribute on the seal, and its styles (the game never touches it).</span>
+for (const seal of document.querySelectorAll('.method-seal[data-method]'))
+  seal.dataset.betterRank = ranked.findIndex((m) =&gt; m.id === seal.dataset.method);
+<span class="comment">// The next Ether: the missing pages ÷ the pace of the last minute.</span>
+const { total, next } = IdleBabel.game.ether();
+<span class="comment">// The Mimic has no set time: its average, and the chance to see it within 10 min.</span>
+const { every } = IdleBabel.game.mimic();
+const chance = 1 - Math.exp(-600 / every);</code></pre>
+        <p>
+          The block is placed in the screen’s footer (<code>draw</code> hook, once a second); the pace is measured on the
+          <code>tick</code> hook, hidden tab included. Its limits: the rank is for one copy, even when buying ×10; it ignores what
+          a purchase unlocks without pages (the sentence at 25 copies, seals).
         </p>
         <h3>Two more seals — <a href="exemple/exemple.json">exemple.json</a></h3>
         <p>A mod without code: two seals, one at a million pages read, the other after ten hours of play.</p>

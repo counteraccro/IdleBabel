@@ -279,6 +279,13 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
     note: (text: string): void => {
       top += paragraph(text, TEXT_LEFT, top);
     },
+    /** Ce que `run` écrit, à demi effacé : un réglage qui ne sert plus (une option de mod dont la case est décochée). */
+    faded: (run: () => void): void => {
+      context.save();
+      context.globalAlpha = 0.35;
+      run();
+      context.restore();
+    },
     /** Saute des carreaux. */
     skip: (rows: number): void => {
       top += rows * GRID;

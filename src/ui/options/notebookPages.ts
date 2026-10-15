@@ -1,5 +1,7 @@
 import { openSaveExport, openSaveImport } from './saveTransfer';
 import { writeModsPage } from './modsPage';
+import { writeModOptionsPage } from './modOptionsPage';
+import { modsWithOptions } from '../../mods/modOptions';
 import { AVAILABLE_LOCALES, getLocale, localeName, messages, t, type Locale } from '../../i18n';
 import { NOTATIONS, formatNumber } from '../../core/format';
 import { seedLabel } from '../../core/random';
@@ -175,7 +177,12 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
 
   /** Écrit la page `index` (0 : l'intérieur de la couverture, jamais visible). */
   return (index: number, w: Writer, sketches: Sketches, spineOnLeft: boolean): void => {
-    content[index]?.(w, sketches);
+    if (content[index]) content[index](w, sketches);
+    // Après la page « Mods », un recto par mod actif qui a des options (13, 15…), dans l'ordre de leur chargement.
+    else if (index >= 13 && index % 2 === 1) {
+      const mod = modsWithOptions()[(index - 13) / 2];
+      if (mod) writeModOptionsPage(w, state, mod);
+    }
     // Il a numéroté les premières pages, puis a cessé.
     if (index >= 1 && index <= 9) w.folio(index, spineOnLeft);
     const margin = margins.get(index);

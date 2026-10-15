@@ -30,6 +30,8 @@ export interface MethodSeal {
 
 export const createMethodSeal = (id: ToolId): MethodSeal => {
   const root = el('button', 'method-seal');
+  // Pour qu'un mod sache quel sceau est quelle méthode ; le jeu ne touche à aucun autre attribut data-* d'un sceau.
+  root.dataset.method = id;
   const count = el('span', 'method-count number');
   root.append(el('span', 'method-rim'), el('span', 'method-core'));
   root.insertAdjacentHTML('beforeend', sigilSvg(id));

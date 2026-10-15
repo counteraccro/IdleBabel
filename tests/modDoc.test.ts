@@ -3,6 +3,7 @@ import doc from '../public/mods/index.html?raw';
 import { HOOK_NAMES } from '../src/mods/hooks';
 import { mountModApi } from '../src/mods/api';
 import { createInitialState } from '../src/core/state';
+import { modGame } from '../src/mods/game';
 
 vi.stubGlobal('window', new EventTarget());
 
@@ -18,5 +19,9 @@ describe('la documentation des mods', () => {
       expect(fr, name).toContain(`<code>${name}`);
       expect(en, name).toContain(`<code>${name}`);
     }
+  });
+
+  it('dit chaque fonction de IdleBabel.game, dans les deux langues', () => {
+    for (const name of Object.keys(modGame(createInitialState('fr')))) expect(doc.split(`data-game="${name}"`).length - 1, name).toBe(2);
   });
 });

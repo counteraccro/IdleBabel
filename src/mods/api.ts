@@ -4,6 +4,8 @@ import { loadMod } from './loader';
 import { notify } from './notify';
 import { replaceHeldBook, type HeldBookFactory } from './heldBook';
 import { addModSeal, type ModSealInput } from './modSeals';
+import { modOption } from './modOptions';
+import { modGame, type ModGame } from './game';
 import { formatNumber } from '../core/format';
 import { getLocale } from '../i18n';
 import type { GameState } from '../core/state';
@@ -12,6 +14,8 @@ import type { GameState } from '../core/state';
 export interface IdleBabelApi {
   /** La partie, lisible et modifiable : à vos risques. */
   readonly state: GameState;
+  /** Ce que le jeu calcule (production, prix, Éther, lettre, Mimic), en lecture seule : les vraies formules. */
+  readonly game: ModGame;
   /** `fr` ou `en`. */
   readonly locale: string;
   registerMod: (id: string, mod: ModDef) => boolean;
@@ -22,6 +26,8 @@ export interface IdleBabelApi {
   format: (value: number) => string;
   /** Remplace le livre en main (livres ordinaires seulement) par la vue que rend `factory`. */
   replaceHeldBook: (factory: HeldBookFactory) => void;
+  /** La valeur d'une option d'un mod (registerMod `options`), réglée au cahier ; undefined si elle n'existe pas. */
+  option: (mod: string, id: string) => string | boolean | undefined;
 }
 
 declare global {
@@ -38,6 +44,7 @@ export const mountModApi = (state: GameState): IdleBabelApi => {
   let lastMod = 'mod';
   const api: IdleBabelApi = {
     state,
+    game: modGame(state),
     get locale() {
       return getLocale();
     },
@@ -60,6 +67,7 @@ export const mountModApi = (state: GameState): IdleBabelApi => {
     addSeal: (seal) => addModSeal(lastMod, seal),
     format: (value) => formatNumber(value, getLocale(), state.settings.notation),
     replaceHeldBook,
+    option: (mod, id) => modOption(state, String(mod), String(id)),
   };
   window.IdleBabel = api;
   return api;
