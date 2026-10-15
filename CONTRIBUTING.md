@@ -8,8 +8,8 @@ les propositions de fonctionnalités se font par une *issue*, pour en parler ava
 Un mod change un morceau du jeu. La documentation complète (l'API, les crochets, les mods sans code, des exemples
 commentés) : **https://counteraccro.github.io/IdleBabel/mods/**.
 
-Un mod chargé par son adresse ne demande rien à personne. Pour qu'il entre dans **la liste du jeu** (une case à cocher dans
-le cahier d'options, servi par le jeu lui-même), ouvrez une *pull request* :
+Un mod chargé par son adresse ne demande rien à personne. Pour qu'il entre dans **la liste du jeu** (la « Liste des mods » du
+cahier d'options, servie par le jeu lui-même), ouvrez une *pull request* :
 
 1. Un dossier `public/mods/<id>/`, où `<id>` est le nom du mod (minuscules, chiffres, tirets), avec :
    - le fichier du mod : `<id>.js`, qui commence par `IdleBabel.registerMod('<id>', …)`, ou `<id>.json` (`"id": "<id>"`) ;

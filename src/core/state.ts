@@ -199,6 +199,8 @@ export interface GameState {
    * la liste (public/mods/mods.json). Gardés quand on efface la sauvegarde, comme les réglages.
    */
   mods: string[];
+  /** Les mods de `mods` désactivés (case décochée au cahier) : gardés dans la liste, mais plus chargés. */
+  modsOff: string[];
   /** Ce que chaque mod a rendu à la dernière sauvegarde (son `save()`), par son nom : rendu à son `load()`. */
   modData: Record<string, string>;
   /** Quand le premier mod a été chargé (ms) ; null : jamais. Pour toujours, même s'il est retiré (le sceau « Triche »). */
@@ -258,6 +260,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   wake: { pages: 0, book: -1, clicks: 0, stars: 0 },
   lastTick: now,
   mods: [],
+  modsOff: [],
   modData: {},
   modded: null,
   seed,

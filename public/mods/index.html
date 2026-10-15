@@ -200,14 +200,16 @@
 
         <h2 id="fr-charger">Le charger</h2>
         <p>
-          Dans le jeu, ouvrez le cahier d’options, page <strong>Mods</strong> (après la Sauvegarde). Les mods de la liste se
-          cochent ; pour un autre, « <strong>Ajouter un mod par son adresse</strong> » et collez son adresse, par exemple :
+          Dans le jeu, ouvrez le cahier d’options, page <strong>Mods</strong> (après la Sauvegarde). « <strong>Liste des
+          mods</strong> » montre ceux du jeu, avec leur description : « Ajouter » en prend un. Pour un autre, « <strong>Ajouter
+          un mod par son adresse</strong> » et collez son adresse, par exemple :
         </p>
         <pre><code>https://counteraccro.github.io/IdleBabel/mods/sans-mimic/sans-mimic.js</code></pre>
         <p>
-          Le mod se charge aussitôt, puis à chaque visite, dans l’ordre où ils ont été ajoutés. Les adresses sont gardées dans la
-          sauvegarde (et dans son export). Retirer un mod recharge la page sans lui : un mod en code ne se défait pas en cours de
-          partie.
+          Le mod se charge aussitôt, puis à chaque visite, dans l’ordre où ils ont été ajoutés ; il apparaît sur la page Mods.
+          Sa case décochée le désactive (il reste dans la liste, il n’est plus chargé) ; « supprimer » l’enlève. L’un comme
+          l’autre recharge la page : un mod en code ne se défait pas en cours de partie. La liste est gardée dans la sauvegarde
+          (et dans son export).
         </p>
         <p>
           Pour essayer pendant que vous écrivez, la console du navigateur suffit : <code>IdleBabel.loadMod('https://…')</code>.
@@ -437,7 +439,7 @@ IdleBabel.registerMod('compte-mots', {
 
         <h2 id="fr-proposer">Proposer un mod pour la liste du jeu</h2>
         <p>
-          Les mods de la liste se cochent dans le cahier, sans adresse à coller : ils sont servis par le jeu lui-même. Pour y
+          Les mods de la liste s’ajoutent depuis le cahier, sans adresse à coller : ils sont servis par le jeu lui-même. Pour y
           proposer le vôtre, ouvrez une <em>pull request</em> sur
           <a href="https://github.com/counteraccro/IdleBabel">le dépôt du jeu</a> avec :
         </p>
@@ -492,13 +494,15 @@ IdleBabel.registerMod('compte-mots', {
 
         <h2 id="en-load">Loading it</h2>
         <p>
-          In the game, open the options notebook, page <strong>Mods</strong> (after Save). Mods from the list are ticked; for any
-          other, “<strong>Add a mod by its address</strong>” and paste its address, for instance:
+          In the game, open the options notebook, page <strong>Mods</strong> (after Save). “<strong>Mod list</strong>” shows the
+          game’s mods, with their description: “Add” takes one. For any other, “<strong>Add a mod by its address</strong>” and
+          paste its address, for instance:
         </p>
         <pre><code>https://counteraccro.github.io/IdleBabel/mods/sans-mimic/sans-mimic.js</code></pre>
         <p>
-          The mod loads right away, then on every visit, in the order they were added. Addresses are kept in the save (and in its
-          export). Removing a mod reloads the page without it: a code mod cannot be undone mid-game.
+          The mod loads right away, then on every visit, in the order they were added; it shows on the Mods page. Unticking it
+          disables it (it stays in the list, no longer loaded); “delete” removes it. Either one reloads the page: a code mod
+          cannot be undone mid-game. The list is kept in the save (and in its export).
         </p>
         <p>To try things while you write, the browser console is enough: <code>IdleBabel.loadMod('https://…')</code>.</p>
 
@@ -722,7 +726,7 @@ IdleBabel.registerMod('word-count', {
 
         <h2 id="en-propose">Proposing a mod for the game’s list</h2>
         <p>
-          Mods from the list are ticked in the notebook, no address to paste: the game serves them itself. To propose yours, open a
+          Mods from the list are added from the notebook, no address to paste: the game serves them itself. To propose yours, open a
           pull request on <a href="https://github.com/counteraccro/IdleBabel">the game’s repository</a> with:
         </p>
         <ul>

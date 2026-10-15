@@ -2,7 +2,8 @@ import { el } from '../dom';
 import { openModal } from '../modal/modal';
 import { getLocale, t } from '../../i18n';
 import { catalogEntry, catalogMods } from '../../mods/catalog';
-import { loadMod, modStatus, removeMod } from '../../mods/loader';
+import { loadMod, modStatus, removeMod, switchMod } from '../../mods/loader';
+import { openModCatalog } from './modCatalogModal';
 import { modName } from '../../mods/registry';
 import { modText } from '../../mods/modSeals';
 import { saveGame } from '../../core/save';
@@ -15,16 +16,8 @@ const rewrite = (): void => {
   window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
 };
 
-/** Un mod retiré (ou décoché) : la partie est enregistrée sans lui, et la page se recharge (validé le 14/10). */
-const reloadWithout = (state: GameState, entry: string): void => {
-  removeMod(state, entry);
-  saveGame(state);
-  window.location.reload();
-};
-
-/** Un mod de la liste coché : enregistré, la page se recharge avec lui (comme décocher). */
-const reloadWith = (state: GameState, entry: string): void => {
-  state.mods.push(entry);
+/** La partie enregistrée, la page se recharge : un mod en code ne se défait pas à chaud (validé le 14/10). */
+const reload = (state: GameState): void => {
   saveGame(state);
   window.location.reload();
 };
@@ -67,30 +60,51 @@ const openAddMod = (state: GameState): void => {
   input.focus();
 };
 
+/** Le nom d'un mod de la liste du joueur, et sa ligne au crayon : sa description, ou son adresse. */
+const describe = (state: GameState, entry: string): { name: string; hint: string } => {
+  const locale = getLocale();
+  const listed = catalogMods().find((mod) => catalogEntry(mod) === entry);
+  const status = modStatus(entry);
+  const name = listed ? modText(listed.name, locale) : (modName(entry) ?? entry.split('/').pop()!);
+  const hint = listed ? modText(listed.description, locale) : entry;
+  if (status === 'missing') return { name: `${name} (${t('ui.mods.notFound')})`, hint };
+  if (state.modsOff.includes(entry)) return { name: `${name} (${t('ui.mods.off')})`, hint };
+  return { name, hint };
+};
+
 /**
- * La page « Mods » du cahier (plan des mods, §3 et §8) : les mods de la liste, une case chacun ; dessous, ceux ajoutés
- * par leur adresse, à retirer ; la documentation pour en écrire.
+ * La page « Mods » du cahier (demande de l'auteur, 15/10) : seulement les mods du joueur, chacun avec sa case (décochée :
+ * désactivé, gardé dans la liste) et « supprimer » ; dessous, la liste des mods du jeu (une fenêtre), l'ajout par
+ * adresse, la documentation. Activer, désactiver ou supprimer recharge la page.
  */
 export const writeModsPage = (w: Writer, state: GameState): void => {
-  const locale = getLocale();
   w.heading(t('ui.mods.title'));
-  for (const mod of catalogMods()) {
-    const entry = catalogEntry(mod);
-    const on = state.mods.includes(entry);
-    w.toggle(`${modText(mod.name, locale)} (${mod.author})`, modText(mod.description, locale), on, () =>
-      on ? reloadWithout(state, entry) : reloadWith(state, entry),
+  w.note(t(state.mods.length === 0 ? 'ui.mods.none' : 'ui.mods.howTo'));
+  w.skip(1);
+  for (const entry of state.mods) {
+    const { name, hint } = describe(state, entry);
+    const on = !state.modsOff.includes(entry);
+    w.toggle(name, hint, on, () => {
+      switchMod(state, entry, !on);
+      reload(state);
+    });
+    w.link(
+      t('ui.mods.remove'),
+      () => {
+        removeMod(state, entry);
+        reload(state);
+      },
+      true,
     );
-  }
-  const listed = new Set(catalogMods().map(catalogEntry));
-  const others = state.mods.filter((entry) => !listed.has(entry));
-  if (others.length > 0) w.skip(1);
-  for (const entry of others) {
-    const status = modStatus(entry);
-    const name = status === 'missing' ? t('ui.mods.notFound') : status === 'loading' ? '…' : (modName(entry) ?? entry.split('/').pop()!);
-    w.note(`${name} — ${entry}`);
-    w.link(t('ui.mods.remove'), () => reloadWithout(state, entry), true);
+    w.skip(1);
   }
   w.skip(1);
+  w.link(t('ui.mods.catalog'), () =>
+    openModCatalog(state, () => {
+      saveGame(state);
+      rewrite();
+    }),
+  );
   w.link(t('ui.mods.add'), () => openAddMod(state));
   w.link(t('ui.mods.write'), () => window.open(`${import.meta.env.BASE_URL}mods/index.html`, '_blank', 'noopener'));
   w.skip(1);

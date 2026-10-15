@@ -1,0 +1,42 @@
+/* La liste des mods du jeu (modCatalogModal.ts) : une ligne par mod, son nom, son auteur, sa description, « Ajouter ». */
+.mod-catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: min(52vh, 420px);
+  overflow-y: auto;
+  text-align: left;
+}
+.mod-catalog-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 14px;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(224, 184, 112, 0.2);
+}
+.mod-catalog-item:last-child {
+  border-bottom: none;
+}
+.mod-catalog-name {
+  color: #f3dc9c;
+}
+.mod-catalog-author {
+  margin-left: 6px;
+  font-size: 0.85em;
+  color: #9c8a68;
+}
+.mod-catalog-text {
+  grid-column: 1;
+  font-size: 0.92em;
+  color: #cdb892;
+}
+.mod-catalog-item .modal-button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  white-space: nowrap;
+}
+.mod-catalog-empty {
+  color: #9c8a68;
+  text-align: center;
+}

@@ -9,6 +9,7 @@ import { checkSeals, completion, plateSeals } from '../src/systems/seals';
 import { pagesPerSecond } from '../src/systems/production';
 import { readPage } from '../src/systems/click';
 import { advanceMimic } from '../src/systems/mimic';
+import { loadSavedMods, removeMod, switchMod } from '../src/mods/loader';
 
 vi.stubGlobal('window', new EventTarget());
 
@@ -109,5 +110,20 @@ describe('Les mods', () => {
     state.modded = Date.now();
     checkSeals(state);
     expect('cheat' in state.seals).toBe(true);
+  });
+
+  it('se désactivent sans quitter la liste du joueur, ou s’en suppriment', async () => {
+    const state = createInitialState('fr');
+    state.mods = ['mods/a/a.js', 'mods/b/b.js'];
+    switchMod(state, 'mods/a/a.js', false);
+    expect(state.modsOff).toEqual(['mods/a/a.js']);
+    // Les deux désactivés : rien à charger (aucun script posé).
+    switchMod(state, 'mods/b/b.js', false);
+    await loadSavedMods(state);
+    switchMod(state, 'mods/a/a.js', true);
+    expect(state.modsOff).toEqual(['mods/b/b.js']);
+    removeMod(state, 'mods/b/b.js');
+    expect(state.mods).toEqual(['mods/a/a.js']);
+    expect(state.modsOff).toEqual([]);
   });
 });

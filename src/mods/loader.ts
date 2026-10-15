@@ -2,11 +2,14 @@ import { startLoading } from './registry';
 import { readJsonMod } from './jsonMod';
 import type { GameState } from '../core/state';
 
-/** Ce que le cahier sait d'une adresse : en train de charger, chargée, ou introuvable (erreur, fichier absent). */
-export type ModStatus = 'loading' | 'loaded' | 'missing';
+/**
+ * Ce que le cahier sait d'un mod : en train de charger, chargé, introuvable (erreur, fichier absent), ou désactivé (pas
+ * chargé à cette visite).
+ */
+export type ModStatus = 'loading' | 'loaded' | 'missing' | 'off';
 const statuses = new Map<string, ModStatus>();
 
-export const modStatus = (entry: string): ModStatus => statuses.get(entry) ?? 'loading';
+export const modStatus = (entry: string): ModStatus => statuses.get(entry) ?? 'off';
 
 /** L'adresse à charger : telle quelle si elle est complète, sinon un mod de la liste, servi par le jeu. */
 export const modAddress = (entry: string): string => (/^https?:\/\//i.test(entry) ? entry : `${import.meta.env.BASE_URL}${entry}`);
@@ -57,12 +60,18 @@ export const loadMod = async (state: GameState, entry: string): Promise<boolean>
   return loaded;
 };
 
-/** Au lancement : les mods de la partie, un à un, dans l'ordre. */
+/** Au lancement : les mods de la partie, un à un, dans l'ordre ; pas ceux désactivés. */
 export const loadSavedMods = async (state: GameState): Promise<void> => {
-  for (const entry of [...state.mods]) await loadMod(state, entry);
+  for (const entry of [...state.mods]) if (!state.modsOff.includes(entry)) await loadMod(state, entry);
 };
 
-/** Retirer un mod : la page se recharge sans lui (un mod .js ne se défait pas à chaud, validé le 14/10). */
+/** Supprimer un mod de la liste : la page se recharge sans lui (un mod .js ne se défait pas à chaud, validé le 14/10). */
 export const removeMod = (state: GameState, entry: string): void => {
   state.mods = state.mods.filter((other) => other !== entry);
+  state.modsOff = state.modsOff.filter((other) => other !== entry);
+};
+
+/** Désactiver un mod (il reste dans la liste, plus chargé), ou le réactiver : la page se recharge aussi. */
+export const switchMod = (state: GameState, entry: string, on: boolean): void => {
+  state.modsOff = on ? state.modsOff.filter((other) => other !== entry) : [...new Set([...state.modsOff, entry])];
 };
