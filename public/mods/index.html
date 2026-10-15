@@ -546,6 +546,10 @@ IdleBabel.registerMod('compte-mots', {
           Au premier mod chargé, la partie est marquée, pour toujours, même si le mod est retiré ensuite. Rien d’autre : le jeu
           continue comme avant. Où cela se voit, c’est à vous de le trouver.
         </p>
+        <p>
+          Ce qu’un mod ajoute (ses sceaux, ses données) ne compte jamais dans l’avancement du jeu. Désactivé au cahier, il garde
+          tout dans la sauvegarde ; supprimé, tout s’en efface : ce que <code>save()</code> gardait, ses options, ses sceaux.
+        </p>
         <div class="note warning">
           Un mod en code peut tout faire : changer la partie, la casser, lire ce que la page affiche. Ne chargez que des mods de
           confiance, ceux de la liste du jeu (relus avant d’y entrer) ou ceux dont vous avez lu le code.
@@ -946,6 +950,10 @@ IdleBabel.registerMod('word-count', {
         <p>
           When the first mod loads, the game is marked, forever, even if the mod is removed later. Nothing else: the game goes on
           as before. Where it shows is for you to find.
+        </p>
+        <p>
+          What a mod adds (its seals, its data) never counts in the game’s progress. Disabled in the notebook, it keeps
+          everything in the save; removed, everything is erased from it: what <code>save()</code> kept, its options, its seals.
         </p>
         <div class="note warning">
           A code mod can do anything: change the game, break it, read what the page shows. Only load mods you trust: those of the

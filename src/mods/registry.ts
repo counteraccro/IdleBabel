@@ -49,7 +49,10 @@ export const registerMod = (state: GameState, id: string, mod: ModDef): boolean 
     return false;
   }
   mods.set(id, mod);
-  if (loading) names.set(loading, id);
+  if (loading) {
+    names.set(loading, id);
+    state.modNames[loading] = id;
+  }
   if (loading && typeof mod.version === 'string' && mod.version) versions.set(loading, mod.version);
   if (mod.init) guard(id, 'init', mod.init);
   const saved = state.modData[id];

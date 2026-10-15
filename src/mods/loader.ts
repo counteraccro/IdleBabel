@@ -1,4 +1,5 @@
-import { startLoading } from './registry';
+import { modName, startLoading } from './registry';
+import { modSealId } from './modSeals';
 import { readJsonMod } from './jsonMod';
 import type { GameState } from '../core/state';
 
@@ -65,10 +66,22 @@ export const loadSavedMods = async (state: GameState): Promise<void> => {
   for (const entry of [...state.mods]) if (!state.modsOff.includes(entry)) await loadMod(state, entry);
 };
 
-/** Supprimer un mod de la liste : la page se recharge sans lui (un mod .js ne se défait pas à chaud, validé le 14/10). */
+/**
+ * Supprimer un mod de la liste : la page se recharge sans lui (un mod .js ne se défait pas à chaud, validé le 14/10). Ses
+ * données quittent la sauvegarde (l'auteur, 15/10) : ce qu'il gardait, ses options, ses sceaux. Désactivé, il les garde.
+ */
 export const removeMod = (state: GameState, entry: string): void => {
   state.mods = state.mods.filter((other) => other !== entry);
   state.modsOff = state.modsOff.filter((other) => other !== entry);
+  const id = state.modNames[entry] ?? modName(entry);
+  delete state.modNames[entry];
+  // Un autre mod de la liste porte le même nom : ses données restent.
+  if (id === undefined || Object.values(state.modNames).includes(id)) return;
+  delete state.modData[id];
+  delete state.modOptions[id];
+  const prefix = modSealId(id, '');
+  for (const seal of Object.keys(state.seals)) if (seal.startsWith(prefix)) delete state.seals[seal];
+  state.newSeals = state.newSeals.filter((seal) => !seal.startsWith(prefix));
 };
 
 /** Désactiver un mod (il reste dans la liste, plus chargé), ou le réactiver : la page se recharge aussi. */

@@ -224,6 +224,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
             settings: state.settings,
             mods: state.mods,
             modsOff: state.modsOff,
+            modNames: state.modNames,
             modOptions: state.modOptions,
           });
           saveGame(state);

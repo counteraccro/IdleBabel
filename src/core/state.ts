@@ -201,6 +201,11 @@ export interface GameState {
   mods: string[];
   /** Les mods de `mods` désactivés (case décochée au cahier) : gardés dans la liste, mais plus chargés. */
   modsOff: string[];
+  /**
+   * Le nom que s'est donné chaque mod de `mods` (registerMod), par son adresse : de quoi effacer ses données quand il est
+   * supprimé, même s'il n'a pas été chargé à cette visite.
+   */
+  modNames: Record<string, string>;
   /** Ce que chaque mod a rendu à la dernière sauvegarde (son `save()`), par son nom : rendu à son `load()`. */
   modData: Record<string, string>;
   /** Les options de chaque mod réglées au cahier (registerMod `options`), par son nom : gardées comme les réglages. */
@@ -263,6 +268,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   lastTick: now,
   mods: [],
   modsOff: [],
+  modNames: {},
   modData: {},
   modOptions: {},
   modded: null,

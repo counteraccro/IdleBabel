@@ -135,6 +135,30 @@ describe('Les mods', () => {
     expect(state.modsOff).toEqual([]);
   });
 
+  it('supprimés, effacent leurs données de la sauvegarde ; désactivés, les gardent (l’auteur, 15/10)', () => {
+    const state = createInitialState('fr');
+    state.mods = ['mods/a/a.js', 'mods/b/b.js'];
+    for (const [entry, id] of [
+      ['mods/a/a.js', 'a'],
+      ['mods/b/b.js', 'b'],
+    ]) {
+      startLoading(entry);
+      registerMod(state, id, { save: () => `données ${id}` });
+      startLoading(null);
+      state.modOptions[id] = { bloc: false };
+      state.seals[modSealId(id, 'cent')] = 1;
+      state.newSeals.push(modSealId(id, 'cent'));
+    }
+    collectModData(state);
+    switchMod(state, 'mods/a/a.js', false);
+    removeMod(state, 'mods/b/b.js');
+    expect(state.modData).toEqual({ a: 'données a' });
+    expect(state.modOptions).toEqual({ a: { bloc: false } });
+    expect(Object.keys(state.seals)).toEqual([modSealId('a', 'cent')]);
+    expect(state.newSeals).toEqual([modSealId('a', 'cent')]);
+    expect(state.modNames).toEqual({ 'mods/a/a.js': 'a' });
+  });
+
   it('remplacent le livre en main par une seule vue, la dernière, et le livre en est prévenu (la liseuse, 15/10)', () => {
     expect(heldBookReplacement()).toBeNull();
     const told = vi.fn();
