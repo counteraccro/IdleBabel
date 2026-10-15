@@ -6,7 +6,8 @@ Des aides de lecture, comme Cookie Monster pour Cookie Clicker.
   attente + remboursement d'un exemplaire, `max(0, prix − pages) ÷ production + prix ÷ gain`.
 - **Le bloc en bas à gauche** : la prochaine lettre ; la Mimic (elle n'a pas d'heure : sa moyenne, et la chance de la voir
   d'ici 10 min) ; le prochain Éther (d'après le rythme de lecture de la dernière minute) et le gain du prestige ; les
-  intuitions qu'on peut s'offrir, puis la prochaine et son délai. Cliquer son titre le replie.
+  intuitions qu'on peut s'offrir, puis la prochaine et son délai ; la relique qui agit et le temps avant de pouvoir en
+  changer (dès deux reliques trouvées). Cliquer son titre le replie.
 - **Ses options**, sur sa page du cahier : méthodes colorées (toutes, la meilleure, aucune), pastille ou contour, couleurs
   pour daltoniens, le bloc et chacune de ses lignes, durées précises ou arrondies.
 
@@ -20,7 +21,8 @@ Reading aids, like Cookie Monster for Cookie Clicker.
   waiting + payback of one copy, `max(0, price − pages) ÷ production + price ÷ gain`.
 - **The bottom-left block**: the next letter; the Mimic (it has no set time: its average, and the chance to see it within
   10 min); the next Ether (from the reading pace of the last minute) and the prestige gain; the intuitions you can afford,
-  then the next one and how long until it. Clicking its title folds it.
+  then the next one and how long until it; the active relic and the time before it can be changed (once two relics are
+  found). Clicking its title folds it.
 - **Its options**, on its notebook page: coloured methods (all, the best, none), dot or rim, colour-blind colours, the
   block and each of its lines, precise or rounded durations.
 

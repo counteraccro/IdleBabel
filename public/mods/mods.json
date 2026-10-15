@@ -37,11 +37,11 @@
       "id": "better-babel",
       "name": { "fr": "BetterBabel", "en": "BetterBabel" },
       "description": {
-        "fr": "Des aides de lecture : la méthode la plus rentable en couleur, et un bloc pour la prochaine lettre, la Mimic, le prochain Éther, les intuitions.",
-        "en": "Reading aids: the most profitable method in colour, and a block for the next letter, the Mimic, the next Ether, intuitions."
+        "fr": "Des aides de lecture : la méthode la plus rentable en couleur, et un bloc pour la prochaine lettre, la Mimic, le prochain Éther, les intuitions, le délai avant de changer de relique.",
+        "en": "Reading aids: the most profitable method in colour, and a block for the next letter, the Mimic, the next Ether, intuitions, the wait before changing relic."
       },
       "author": "Idle Babel",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "file": "better-babel.js",
       "kind": "js"
     },

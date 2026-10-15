@@ -1,6 +1,6 @@
 // BetterBabel : des aides de lecture, comme Cookie Monster pour Cookie Clicker.
 // - La ruche : chaque méthode prend la couleur de son rang (vert : la plus rentable, puis jaune, orange, rouge).
-// - Un bloc en bas à gauche : la prochaine lettre, la Mimic, le prochain Éther, les intuitions à s'offrir.
+// - Un bloc en bas à gauche : la prochaine lettre, la Mimic, le prochain Éther, les intuitions à s'offrir, la relique.
 // - Ses options, sur sa page du cahier (le jeu la dessine d'après `options`).
 // Tout vient de IdleBabel.game (les vraies formules du jeu, en lecture seule) : rien n'est recopié ici.
 (() => {
@@ -8,7 +8,7 @@
 const mod = { opt: {}, closed: undefined, refresh: () => {} };
 
 IdleBabel.registerMod('better-babel', {
-  version: '1.0.0',
+  version: '1.1.0',
 
   // Un choix parmi plusieurs (`choices`), ou une case. `needs` : grisée au cahier quand cette case est décochée.
   options: [
@@ -20,11 +20,12 @@ IdleBabel.registerMod('better-babel', {
     { id: 'palette', name: { fr: 'Couleurs', en: 'Colours' }, default: 'rg',
       choices: [{ id: 'rg', name: { fr: 'Vert → rouge', en: 'Green → red' } }, { id: 'cb', name: { fr: 'Pour daltoniens', en: 'Colour-blind' } }] },
     { id: 'panel', name: { fr: 'Le bloc en bas à gauche', en: 'The bottom-left block' }, default: true,
-      hint: { fr: 'La lettre, la Mimic, l’Éther, les intuitions.', en: 'The letter, the Mimic, Ether, intuitions.' } },
+      hint: { fr: 'La lettre, la Mimic, l’Éther, les intuitions, la relique.', en: 'The letter, the Mimic, Ether, intuitions, the relic.' } },
     { id: 'letter', name: { fr: 'Prochaine lettre', en: 'Next letter' }, default: true, needs: 'panel' },
     { id: 'mimic', name: { fr: 'Mimic', en: 'Mimic' }, default: true, needs: 'panel' },
     { id: 'ether', name: { fr: 'Prochain Éther', en: 'Next Ether' }, default: true, needs: 'panel' },
     { id: 'ints', name: { fr: 'Intuitions', en: 'Intuitions' }, default: true, needs: 'panel' },
+    { id: 'relic', name: { fr: 'Changer de relique', en: 'Change relic' }, default: true, needs: 'panel' },
     { id: 'durations', name: { fr: 'Durées', en: 'Durations' }, default: 'precise', needs: 'panel',
       choices: [{ id: 'precise', name: { fr: 'Précises', en: 'Precise' } }, { id: 'round', name: { fr: 'Arrondies', en: 'Rounded' } }] },
   ],
@@ -51,11 +52,13 @@ IdleBabel.registerMod('better-babel', {
       fr: { letter: 'Lettre', mimic: 'Mimic', ether: 'Éther', ints: 'Intuitions', every: (d) => `En moyenne toutes les ${d}`,
         soon: (p) => `${p} % d'ici 10 min`, here: 'Elle est là !', locked: 'Pas encore débloquée', gain: (n) => `+${n} au prestige`,
         next: (d) => `Le suivant dans ${d}`, inK: (d) => `dans ~${d}`, others: (n) => `+${n} autres`, lvl: (n) => `niv. ${n}`,
-        perS: 'pages/s', day: 'j', decimal: ',', year: 'plus d’un an' },
+        perS: 'pages/s', day: 'j', decimal: ',', year: 'plus d’un an', relic: 'Relique', none: 'Aucune',
+        change: (d) => `Changer dans ${d}`, canChange: 'On peut en changer' },
       en: { letter: 'Letter', mimic: 'Mimic', ether: 'Ether', ints: 'Intuitions', every: (d) => `Every ${d} on average`,
         soon: (p) => `${p}% within 10 min`, here: 'It is here!', locked: 'Not unlocked yet', gain: (n) => `+${n} on prestige`,
         next: (d) => `Next one in ${d}`, inK: (d) => `in ~${d}`, others: (n) => `+${n} more`, lvl: (n) => `lvl ${n}`,
-        perS: 'pages/s', day: 'd', decimal: '.', year: 'over a year' },
+        perS: 'pages/s', day: 'd', decimal: '.', year: 'over a year', relic: 'Relic', none: 'None',
+        change: (d) => `Change in ${d}`, canChange: 'You can change it' },
     };
     const say = () => words[IdleBabel.locale] ?? words.en;
 
@@ -235,6 +238,12 @@ IdleBabel.registerMod('better-babel', {
           list.append(intuitionLine(later, gained > 0 ? w.inK(duration((later.nextPrice - knowledge) / gained)) : IdleBabel.format(later.nextPrice), 'later'));
         }
         if (list.childElementCount > 0) rows.push(row(w.ints, list));
+      }
+      // La relique : seulement quand il y en a une autre à prendre (deux trouvées au moins).
+      const relics = game.relics();
+      if (mod.opt.relic && relics.found >= 2) {
+        const wait = relics.changeIn > 0 ? small(w.change(duration(relics.changeIn)), 'better-num') : small(w.canChange, 'better-here');
+        rows.push(row(w.relic, relics.name ?? w.none, wait));
       }
       body.replaceChildren(...rows);
       sum.textContent = `${w.letter} ${letterText} · ${w.ether} ${duration(etherIn)}`;

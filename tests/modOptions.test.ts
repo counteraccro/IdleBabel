@@ -73,4 +73,17 @@ describe('IdleBabel.game', () => {
     expect(gesture.method).toBe('diagonal');
     expect(game.intuitions().find((intuition) => intuition.id === 'bargain')!.level).toBe(3);
   });
+
+  it('dit la relique qui agit et le temps avant de pouvoir en changer', () => {
+    const state = createInitialState('fr');
+    expect(modGame(state).relics()).toEqual({ active: null, name: null, found: 0, changeIn: 0 });
+    state.relics.found = { loupe: 1, hourglass: 2 };
+    state.relics.active = 'hourglass';
+    state.relics.lockedUntil = Date.now() + 3_600_000;
+    const relics = modGame(state).relics();
+    expect(relics).toMatchObject({ active: 'hourglass', found: 2 });
+    expect(relics.name).toBeTruthy();
+    expect(relics.changeIn).toBeGreaterThan(3590);
+    expect(relics.changeIn).toBeLessThanOrEqual(3600);
+  });
 });

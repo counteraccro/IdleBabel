@@ -396,6 +396,7 @@ IdleBabel.option('mon-mod', 'taille');   <span class="comment">// 'grand' : la v
             <tr data-game="letterIn"><td><code>letterIn()</code></td><td>Les secondes avant la prochaine lettre, ou <code>undefined</code> tant qu’elle n’est pas tirée. Le compte ne descend qu’à l’écran du jeu.</td></tr>
             <tr data-game="mimic"><td><code>mimic()</code></td><td><code>{ unlocked, here, every }</code> : débloquée, là en ce moment, et toutes les combien de secondes en moyenne. Elle n’a pas d’heure : chaque seconde, une petite chance.</td></tr>
             <tr data-game="ether"><td><code>ether()</code></td><td><code>{ gain, total, next }</code> : l’Éther que rapporterait le prestige maintenant, les pages lues depuis toujours, et celles qu’il faut pour un Éther de plus.</td></tr>
+            <tr data-game="relics"><td><code>relics()</code></td><td><code>{ active, name, found, changeIn }</code> : la relique qui agit (son id et son nom, <code>null</code> : aucune), combien sont trouvées, et les secondes avant de pouvoir en changer (0 : on peut). Le délai compte en temps réel, absences comprises.</td></tr>
           </table>
         </div>
         <p>Chaque sceau de la ruche porte <code>data-method="&lt;id&gt;"</code> : un mod sait quel hexagone est quelle méthode. Le jeu ne touche à aucun autre attribut <code>data-*</code> d’un sceau : un mod peut y écrire.</p>
@@ -499,8 +500,8 @@ IdleBabel.registerMod('sans-mimic', {
         <h3 id="fr-better-babel">BetterBabel — <a href="better-babel/better-babel.js">better-babel.js</a></h3>
         <p>
           Des aides de lecture, comme Cookie Monster pour Cookie Clicker : chaque méthode de la ruche prend la couleur de son
-          rang, et un bloc en bas à gauche dit la prochaine lettre, la Mimic, le prochain Éther, les intuitions à s’offrir. Ses
-          neuf options ont leur page au cahier. Les passages clés :
+          rang, et un bloc en bas à gauche dit la prochaine lettre, la Mimic, le prochain Éther, les intuitions à s’offrir, le
+          temps avant de pouvoir changer de relique. Ses dix options ont leur page au cahier. Les passages clés :
         </p>
         <pre><code><span class="comment">// Le rang d'une méthode : attente + remboursement d'un exemplaire, le plus petit gagne.</span>
 const production = IdleBabel.game.pagesPerSecond();
@@ -801,6 +802,7 @@ IdleBabel.option('my-mod', 'size');   <span class="comment">// 'large': the valu
             <tr data-game="letterIn"><td><code>letterIn()</code></td><td>Seconds before the next letter, or <code>undefined</code> while it is not drawn. The count only goes down on the game screen.</td></tr>
             <tr data-game="mimic"><td><code>mimic()</code></td><td><code>{ unlocked, here, every }</code>: unlocked, here right now, and every how many seconds on average. It has no set time: every second, a small chance.</td></tr>
             <tr data-game="ether"><td><code>ether()</code></td><td><code>{ gain, total, next }</code>: the Ether a prestige would bring now, the pages read since forever, and those needed for one more Ether.</td></tr>
+            <tr data-game="relics"><td><code>relics()</code></td><td><code>{ active, name, found, changeIn }</code>: the active relic (its id and name, <code>null</code>: none), how many are found, and the seconds before it can be changed (0: now). The wait counts in real time, absences included.</td></tr>
           </table>
         </div>
         <p>Each seal of the hive has <code>data-method="&lt;id&gt;"</code>: a mod knows which hexagon is which method. The game touches no other <code>data-*</code> attribute of a seal: a mod may write there.</p>
@@ -904,8 +906,8 @@ IdleBabel.registerMod('sans-mimic', {
         <h3 id="en-better-babel">BetterBabel — <a href="better-babel/better-babel.js">better-babel.js</a></h3>
         <p>
           Reading aids, like Cookie Monster for Cookie Clicker: each method of the hive takes the colour of its rank, and a
-          block at the bottom left gives the next letter, the Mimic, the next Ether, the intuitions you can afford. Its nine
-          options have their page in the notebook. The key parts:
+          block at the bottom left gives the next letter, the Mimic, the next Ether, the intuitions you can afford, the time
+          before the relic can be changed. Its ten options have their page in the notebook. The key parts:
         </p>
         <pre><code><span class="comment">// A method's rank: waiting + payback of one copy, the smallest wins.</span>
 const production = IdleBabel.game.pagesPerSecond();

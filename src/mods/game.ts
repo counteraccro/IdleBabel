@@ -7,6 +7,8 @@ import { intuitionVisible, levelOf, maxLevel, nextPrice, technology } from '../s
 import { letterCountdown } from '../systems/letter';
 import { mimicEvery, mimicHere } from '../systems/mimic';
 import { mimicUnlocked } from '../systems/etherium';
+import { relicFound, relicWait } from '../systems/relics';
+import { RELICS } from '../data/relics';
 import { nextEtherPages, prestigeGain } from '../systems/prestige';
 import { t } from '../i18n';
 import type { GameState } from '../core/state';
@@ -74,6 +76,16 @@ export const modGame = (state: GameState) => ({
   mimic: () => ({ unlocked: mimicUnlocked(state), here: mimicHere(state), every: mimicEvery(state) }),
   /** L'Éther : gain du prestige maintenant, pages lues depuis toujours, et pages qu'il faut pour un Éther de plus. */
   ether: () => ({ gain: prestigeGain(state), total: state.totalPagesRead, next: nextEtherPages(state) }),
+  /**
+   * Les reliques : celle qui agit (son id et son nom, null : aucune), combien sont trouvées, et les secondes avant de
+   * pouvoir en changer (0 : on peut ; le délai compte en temps réel, absences comprises).
+   */
+  relics: () => ({
+    active: state.relics.active,
+    name: state.relics.active ? t(`ui.relics.names.${state.relics.active}`) : null,
+    found: RELICS.filter(({ id }) => relicFound(state, id)).length,
+    changeIn: relicWait(state) / 1000,
+  }),
 });
 
 export type ModGame = ReturnType<typeof modGame>;
