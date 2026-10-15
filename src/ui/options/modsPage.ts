@@ -92,7 +92,7 @@ export const writeModsPage = (w: Writer, state: GameState): void => {
   }
   w.skip(1);
   w.link(t('ui.mods.add'), () => openAddMod(state));
-  w.link(t('ui.mods.write'), () => window.open(`${import.meta.env.BASE_URL}mods/`, '_blank', 'noopener'));
+  w.link(t('ui.mods.write'), () => window.open(`${import.meta.env.BASE_URL}mods/index.html`, '_blank', 'noopener'));
   w.skip(1);
   w.note(t('ui.mods.warning'));
 };

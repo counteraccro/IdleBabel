@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+    <title>Mods - Idle Babel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" rel="stylesheet" />
+    <!--
+      La documentation des mods (plan des mods, 14/10) : publiée avec le jeu, à l'adresse
+      https://counteraccro.github.io/IdleBabel/mods/. Chaque crochet y a sa ligne, en français et en anglais
+      (data-hook) : un test le vérifie (tests/modDoc.test.ts).
+    -->
+    <style>
+      :root {
+        --ink: #efe3c8;
+        --muted: #b8a684;
+        --accent: #e0b870;
+        --panel: rgba(255, 240, 210, 0.04);
+        --border: rgba(201, 164, 106, 0.3);
+        --code: #15110c;
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #0b0907;
+        color: var(--ink);
+        font: 17px/1.65 Georgia, 'Times New Roman', serif;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 32px 16px 80px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 16px;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: Cinzel, Georgia, serif;
+        font-weight: 600;
+        color: var(--accent);
+        line-height: 1.25;
+      }
+      h1 {
+        margin: 0;
+        font-size: 30px;
+        letter-spacing: 0.04em;
+      }
+      h2 {
+        margin: 48px 0 12px;
+        font-size: 22px;
+      }
+      h3 {
+        margin: 28px 0 8px;
+        font-size: 17px;
+      }
+      a {
+        color: var(--accent);
+      }
+      .langs button {
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font: 600 14px Cinzel, Georgia, serif;
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+      .langs button[aria-pressed='true'] {
+        color: #0b0907;
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      article[hidden] {
+        display: none;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 18px;
+      }
+      code {
+        font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        background: var(--code);
+        padding: 1px 5px;
+        border-radius: 3px;
+      }
+      pre {
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 14px 16px;
+        overflow-x: auto;
+      }
+      pre code {
+        padding: 0;
+        background: none;
+      }
+      .comment {
+        color: #8f8571;
+      }
+      .table {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+      }
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      th {
+        color: var(--muted);
+        font-weight: normal;
+      }
+      .note {
+        border-left: 3px solid var(--accent);
+        background: var(--panel);
+        padding: 10px 16px;
+        margin: 20px 0;
+      }
+      .warning {
+        border-left-color: #d9826a;
+      }
+      nav ol {
+        columns: 2;
+        padding-left: 20px;
+        color: var(--muted);
+      }
+      @media (max-width: 600px) {
+        nav ol {
+          columns: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Idle Babel — Mods</h1>
+        <div class="langs" role="group" aria-label="Langue / Language">
+          <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </header>
+
+      <!-- ===================================================== FRANÇAIS ===================================================== -->
+      <article lang="fr">
+        <p class="lead">
+          Un mod change un morceau du jeu : il lit plus vite, chasse la Mimic, attrape les lettres, ajoute des sceaux… Cette page
+          explique comment en écrire un, le charger, et le proposer pour la liste du jeu.
+        </p>
+        <nav>
+          <ol>
+            <li><a href="#fr-premier">Un premier mod</a></li>
+            <li><a href="#fr-charger">Le charger</a></li>
+            <li><a href="#fr-heberger">L’héberger</a></li>
+            <li><a href="#fr-api">L’API</a></li>
+            <li><a href="#fr-crochets">Les crochets</a></li>
+            <li><a href="#fr-etat">La partie : <code>state</code></a></li>
+            <li><a href="#fr-json">Les mods sans code (.json)</a></li>
+            <li><a href="#fr-exemples">Les mods du jeu, commentés</a></li>
+            <li><a href="#fr-triche">Ce qu’un mod change à la partie</a></li>
+            <li><a href="#fr-proposer">Proposer un mod</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="fr-premier">Un premier mod</h2>
+        <p>
+          Un mod est un fichier JavaScript. Il s’enregistre auprès du jeu par <code>IdleBabel.registerMod</code>, puis se branche
+          sur ses <em>crochets</em> : des moments du jeu où il est appelé. Celui-ci double la lecture de toutes les méthodes :
+        </p>
+        <pre><code>IdleBabel.registerMod('double-lecture', {
+  init() {
+    <span class="comment">// À chaque calcul de la production : ×2.</span>
+    IdleBabel.registerHook('reading', () =&gt; 2);
+    IdleBabel.notify('Double lecture', 'Les méthodes lisent deux fois plus vite.');
+  },
+});</code></pre>
+        <p>
+          Enregistrez-le sous <code>double-lecture.js</code>, mettez-le en ligne (voir <a href="#fr-heberger">plus bas</a>), et
+          chargez-le dans le jeu.
+        </p>
+
+        <h2 id="fr-charger">Le charger</h2>
+        <p>
+          Dans le jeu, ouvrez le cahier d’options, page <strong>Mods</strong> (après la Sauvegarde). Les mods de la liste se
+          cochent ; pour un autre, « <strong>Ajouter un mod par son adresse</strong> » et collez son adresse, par exemple :
+        </p>
+        <pre><code>https://counteraccro.github.io/IdleBabel/mods/sans-mimic/sans-mimic.js</code></pre>
+        <p>
+          Le mod se charge aussitôt, puis à chaque visite, dans l’ordre où ils ont été ajoutés. Les adresses sont gardées dans la
+          sauvegarde (et dans son export). Retirer un mod recharge la page sans lui : un mod en code ne se défait pas en cours de
+          partie.
+        </p>
+        <p>
+          Pour essayer pendant que vous écrivez, la console du navigateur suffit : <code>IdleBabel.loadMod('https://…')</code>.
+        </p>
+
+        <h2 id="fr-heberger">L’héberger</h2>
+        <p>
+          Il faut une adresse qui serve le fichier comme du JavaScript (ou du JSON). Ce qui marche :
+        </p>
+        <ul>
+          <li>
+            <strong>GitHub Pages</strong> : un dépôt avec Pages activé, le fichier à la racine :
+            <code>https://votre-nom.github.io/votre-depot/mon-mod.js</code>.
+          </li>
+          <li>
+            <strong>jsDelivr</strong>, devant un dépôt GitHub public, sans rien configurer :
+            <code>https://cdn.jsdelivr.net/gh/votre-nom/votre-depot/mon-mod.js</code>.
+          </li>
+          <li>Un <strong>Gist</strong> : jsDelivr ne sert que les dépôts ; pour un Gist, passez plutôt par un dépôt.</li>
+        </ul>
+        <div class="note">
+          Les adresses « raw » de GitHub (<code>raw.githubusercontent.com</code>, <code>gist.githubusercontent.com</code>) servent
+          le fichier comme du texte : le navigateur refuse de l’exécuter. Elles marchent pour un mod <code>.json</code>, pas pour un
+          <code>.js</code>.
+        </div>
+
+        <h2 id="fr-api">L’API : <code>window.IdleBabel</code></h2>
+        <div class="table">
+          <table>
+            <tr><th>Nom</th><th>Ce qu’il fait</th></tr>
+            <tr>
+              <td><code>registerMod(nom, { init, save, load })</code></td>
+              <td>
+                Enregistre le mod. <code>init()</code> : une fois, au chargement ; c’est là qu’on pose ses crochets.
+                <code>save()</code> : rend une chaîne, gardée dans la sauvegarde du jeu. <code>load(texte)</code> : appelé juste
+                après <code>init</code>, avec ce que <code>save()</code> avait rendu la dernière fois. Tous trois sont facultatifs.
+                Rend <code>false</code> si le nom est vide ou déjà pris.
+              </td>
+            </tr>
+            <tr><td><code>registerHook(crochet, fonction)</code></td><td>Branche une fonction sur un <a href="#fr-crochets">crochet</a>.</td></tr>
+            <tr><td><code>state</code></td><td>La partie, lisible et modifiable (voir <a href="#fr-etat">plus bas</a>).</td></tr>
+            <tr><td><code>notify(titre, texte)</code></td><td>Une annonce en bas de l’écran, qui s’efface seule (du texte, pas de HTML).</td></tr>
+            <tr>
+              <td><code>addSeal({ id, name, text, reached })</code></td>
+              <td>
+                Un sceau à vous, sur une planche « Mods » du livre étrange. <code>name</code> et <code>text</code> : une chaîne, ou
+                <code>{ fr, en }</code>. <code>reached(state)</code> : rend <code>true</code> quand il est atteint (regardé à
+                chaque pas du jeu). Il prend le nom du mod qui l’ajoute : appelez-le dans <code>init</code>.
+              </td>
+            </tr>
+            <tr><td><code>format(nombre)</code></td><td>Un nombre écrit dans la notation choisie par le joueur (« 1,23 million »…).</td></tr>
+            <tr><td><code>locale</code></td><td>La langue du jeu : <code>'fr'</code> ou <code>'en'</code>.</td></tr>
+            <tr><td><code>loadMod(adresse)</code></td><td>Charge un autre mod (rend une promesse : <code>true</code> s’il a chargé).</td></tr>
+          </table>
+        </div>
+        <p>
+          Un mod qui lève une erreur ne fait pas planter le jeu : l’erreur s’écrit dans la console, ce crochet-là est sauté, le
+          reste continue.
+        </p>
+
+        <h2 id="fr-crochets">Les crochets</h2>
+        <p><code>IdleBabel.registerHook(nom, fonction)</code> ; plusieurs mods peuvent se brancher sur le même crochet.</p>
+        <div class="table">
+          <table>
+            <tr><th>Crochet</th><th>Quand</th><th>La fonction reçoit</th><th>Elle rend</th></tr>
+            <tr data-hook="tick">
+              <td><code>tick</code></td>
+              <td>À chaque pas de la boucle de jeu (dix par seconde ; une par seconde, onglet caché).</td>
+              <td>Les secondes écoulées.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="draw">
+              <td><code>draw</code></td>
+              <td>Après chaque mise à jour de l’écran (onglet visible seulement).</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="reading">
+              <td><code>reading</code></td>
+              <td>À chaque calcul de la production.</td>
+              <td>—</td>
+              <td>Un multiplicateur de la lecture de toutes les méthodes (<code>2</code> : deux fois plus).</td>
+            </tr>
+            <tr data-hook="click">
+              <td><code>click</code></td>
+              <td>Une feuille tournée à la main.</td>
+              <td>—</td>
+              <td>Un multiplicateur des pages de ce clic.</td>
+            </tr>
+            <tr data-hook="find">
+              <td><code>find</code></td>
+              <td>Une trouvaille lue (dans le livre en main, ou pendant une absence).</td>
+              <td><code>{ kind, text, duplicate }</code> : <code>kind</code> vaut <code>'word'</code>, <code>'piece'</code> ou <code>'sentence'</code> ; <code>duplicate</code>, un morceau déjà écrit.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="prestige">
+              <td><code>prestige</code></td>
+              <td>Juste après un prestige (« Le nourrir »).</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="reset">
+              <td><code>reset</code></td>
+              <td>La sauvegarde effacée, juste avant que la page se recharge.</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="mimic">
+              <td><code>mimic</code></td>
+              <td>Une Mimic va apparaître.</td>
+              <td>—</td>
+              <td><code>false</code> pour l’en empêcher (rien, ou autre chose : elle vient).</td>
+            </tr>
+            <tr data-hook="letter">
+              <td><code>letter</code></td>
+              <td>Une lettre vient de s’échapper du livre.</td>
+              <td>
+                <code>{ id, glyph, catch() }</code> : <code>id</code> vaut <code>'letter'</code> (un bonus) ou <code>'word'</code>
+                (une lettre du mot BABEL) ; <code>catch()</code> l’attrape, comme un clic dessus.
+              </td>
+              <td>—</td>
+            </tr>
+          </table>
+        </div>
+
+        <h2 id="fr-etat">La partie : <code>IdleBabel.state</code></h2>
+        <p>
+          Tout l’état de la partie, tel qu’il est sauvegardé. On peut le lire, et le modifier, à ses risques : le jeu ne vérifie
+          rien. Les champs les plus utiles :
+        </p>
+        <div class="table">
+          <table>
+            <tr><th>Champ</th><th>Ce que c’est</th></tr>
+            <tr><td><code>pages</code></td><td>Les pages en réserve (celles qu’on dépense).</td></tr>
+            <tr><td><code>totalPagesRead</code></td><td>Les pages lues depuis toujours (ne baisse jamais).</td></tr>
+            <tr><td><code>tools</code></td><td>Les méthodes possédées : <code>{ diagonal: 12, finger: 3, … }</code>.</td></tr>
+            <tr><td><code>knowledge</code>, <code>lifetimeKnowledge</code></td><td>La Connaissance à dépenser ; celle trouvée depuis toujours.</td></tr>
+            <tr><td><code>ether</code>, <code>etherReceived</code></td><td>L’Éther à dépenser ; celui reçu depuis toujours.</td></tr>
+            <tr><td><code>booksFinished</code>, <code>bookPage</code></td><td>Les livres lus jusqu’au bout ; la page du livre en main.</td></tr>
+            <tr><td><code>stats.clicks</code>, <code>stats.playSeconds</code></td><td>Les feuilles tournées à la main ; le temps de jeu, en secondes.</td></tr>
+            <tr><td><code>exiles</code></td><td>Les prestiges faits.</td></tr>
+            <tr><td><code>seals</code></td><td>Les sceaux obtenus, avec leur date.</td></tr>
+            <tr><td><code>settings</code></td><td>Les réglages du cahier d’options.</td></tr>
+            <tr><td><code>mods</code>, <code>modData</code></td><td>Les adresses des mods chargés ; ce que chacun a sauvegardé.</td></tr>
+          </table>
+        </div>
+        <p>Pour garder des données à vous, passez par <code>save</code> / <code>load</code> plutôt que d’ajouter des champs.</p>
+
+        <h2 id="fr-json">Les mods sans code (.json)</h2>
+        <p>
+          Un fichier <code>.json</code> ne contient que des données : il ne peut rien faire d’autre que ce que le jeu prévoit, il
+          est donc sans risque. Pour l’instant, il ajoute des sceaux, chacun atteint quand un compteur du jeu arrive à sa valeur :
+        </p>
+        <pre><code>{
+  "id": "mon-mod",
+  "seals": [
+    {
+      "id": "million",
+      "name": { "fr": "Un million", "en": "One million" },
+      "text": { "fr": "Lis un million de pages", "en": "Read a million pages" },
+      "when": { "pagesRead": 1000000 }
+    }
+  ]
+}</code></pre>
+        <p>
+          Les compteurs : <code>pagesRead</code> (depuis toujours), <code>booksRead</code>, <code>clicks</code>,
+          <code>knowledge</code> (depuis toujours), <code>ether</code> (reçu), <code>playSeconds</code>, <code>prestiges</code>.
+          Plusieurs dans <code>when</code> : il les faut tous.
+        </p>
+        <p>
+          Les sceaux des mods sont sur leur propre planche, à la fin du livre étrange. Ils ne comptent ni dans l’avancement du
+          livre ni dans le bonus de trouvailles (+1 % par sceau) : un mod ne fausse pas la partie par là.
+        </p>
+
+        <h2 id="fr-exemples">Les mods du jeu, commentés</h2>
+        <h3>Sans Mimic — <a href="sans-mimic/sans-mimic.js">sans-mimic.js</a></h3>
+        <pre><code><span class="comment">// Le nom du mod : celui qu'affiche le cahier, et la clé de ses données.</span>
+IdleBabel.registerMod('sans-mimic', {
+  <span class="comment">// Appelé une fois, au chargement.</span>
+  init() {
+    <span class="comment">// Juste avant qu'une Mimic apparaisse, le jeu demande : rendre false l'en empêche.</span>
+    IdleBabel.registerHook('mimic', () =&gt; false);
+  },
+});</code></pre>
+        <p>Une Mimic déjà là reste : attrapez-la, elle rend ce qu’elle a avalé.</p>
+        <h3>Attrape-lettres — <a href="attrape-lettres/attrape-lettres.js">attrape-lettres.js</a></h3>
+        <pre><code>IdleBabel.registerMod('attrape-lettres', {
+  init() {
+    <span class="comment">// Chaque lettre qui s'échappe du livre arrive ici.</span>
+    IdleBabel.registerHook('letter', (letter) =&gt; {
+      <span class="comment">// On la laisse monter une seconde, puis on l'attrape, comme d'un clic.</span>
+      setTimeout(() =&gt; letter.catch(), 1000);
+    });
+  },
+});</code></pre>
+        <p>Les lettres du mot BABEL aussi : le mot s’écrit en entier.</p>
+        <h3>Deux sceaux de plus — <a href="exemple/exemple.json">exemple.json</a></h3>
+        <p>Un mod sans code : deux sceaux, l’un à un million de pages lues, l’autre après dix heures de jeu.</p>
+        <h3>Un mod qui garde des données</h3>
+        <pre><code>let mots = 0;
+IdleBabel.registerMod('compte-mots', {
+  init() {
+    IdleBabel.registerHook('find', (find) =&gt; {
+      if (find.kind === 'word') mots += 1;
+    });
+    IdleBabel.addSeal({
+      id: 'cent-mots',
+      name: { fr: 'Cent mots', en: 'A hundred words' },
+      text: { fr: 'Trouve cent mots avec ce mod', en: 'Find a hundred words with this mod' },
+      reached: () =&gt; mots &gt;= 100,
+    });
+  },
+  <span class="comment">// Gardé dans la sauvegarde du jeu, rendu à load() à la visite suivante.</span>
+  save: () =&gt; String(mots),
+  load: (texte) =&gt; { mots = Number(texte) || 0; },
+});</code></pre>
+
+        <h2 id="fr-triche">Ce qu’un mod change à la partie</h2>
+        <p>
+          Au premier mod chargé, la partie est marquée, pour toujours, même si le mod est retiré ensuite. Rien d’autre : le jeu
+          continue comme avant. Où cela se voit, c’est à vous de le trouver.
+        </p>
+        <div class="note warning">
+          Un mod en code peut tout faire : changer la partie, la casser, lire ce que la page affiche. Ne chargez que des mods de
+          confiance, ceux de la liste du jeu (relus avant d’y entrer) ou ceux dont vous avez lu le code.
+        </div>
+
+        <h2 id="fr-proposer">Proposer un mod pour la liste du jeu</h2>
+        <p>
+          Les mods de la liste se cochent dans le cahier, sans adresse à coller : ils sont servis par le jeu lui-même. Pour y
+          proposer le vôtre, ouvrez une <em>pull request</em> sur
+          <a href="https://github.com/counteraccro/IdleBabel">le dépôt du jeu</a> avec :
+        </p>
+        <ul>
+          <li>un dossier <code>public/mods/&lt;id&gt;/</code> : le fichier du mod, un <code>README.md</code> court, une capture ;</li>
+          <li>sa ligne dans <code>public/mods/mods.json</code> : nom et description en français et en anglais, auteur, version.</li>
+        </ul>
+        <p>
+          Les règles : pas de réseau (aucun <code>fetch</code>, aucun script venu d’ailleurs), pas de vraie personne nommée, pas de
+          code minifié (il doit se relire), et <code>npm test</code> passe. Chaque mod est relu en entier avant d’entrer dans la
+          liste. Le détail est dans <a href="https://github.com/counteraccro/IdleBabel/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.
+        </p>
+        <p><a href="../">← Retour au jeu</a></p>
+      </article>
+
+      <!-- ===================================================== ENGLISH ====================================================== -->
+      <article lang="en" hidden>
+        <p class="lead">
+          A mod changes a piece of the game: faster reading, no Mimic, letters caught on their own, new seals… This page explains
+          how to write one, load it, and propose it for the game’s list.
+        </p>
+        <nav>
+          <ol>
+            <li><a href="#en-first">A first mod</a></li>
+            <li><a href="#en-load">Loading it</a></li>
+            <li><a href="#en-host">Hosting it</a></li>
+            <li><a href="#en-api">The API</a></li>
+            <li><a href="#en-hooks">Hooks</a></li>
+            <li><a href="#en-state">The game: <code>state</code></a></li>
+            <li><a href="#en-json">Mods without code (.json)</a></li>
+            <li><a href="#en-examples">The game’s mods, explained</a></li>
+            <li><a href="#en-cheat">What a mod changes to the game</a></li>
+            <li><a href="#en-propose">Proposing a mod</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="en-first">A first mod</h2>
+        <p>
+          A mod is a JavaScript file. It registers with the game through <code>IdleBabel.registerMod</code>, then plugs into its
+          <em>hooks</em>: moments of the game where it gets called. This one doubles the reading of every method:
+        </p>
+        <pre><code>IdleBabel.registerMod('double-reading', {
+  init() {
+    <span class="comment">// Every time production is computed: ×2.</span>
+    IdleBabel.registerHook('reading', () =&gt; 2);
+    IdleBabel.notify('Double reading', 'Methods read twice as fast.');
+  },
+});</code></pre>
+        <p>
+          Save it as <code>double-reading.js</code>, put it online (see <a href="#en-host">below</a>), and load it in the game.
+        </p>
+
+        <h2 id="en-load">Loading it</h2>
+        <p>
+          In the game, open the options notebook, page <strong>Mods</strong> (after Save). Mods from the list are ticked; for any
+          other, “<strong>Add a mod by its address</strong>” and paste its address, for instance:
+        </p>
+        <pre><code>https://counteraccro.github.io/IdleBabel/mods/sans-mimic/sans-mimic.js</code></pre>
+        <p>
+          The mod loads right away, then on every visit, in the order they were added. Addresses are kept in the save (and in its
+          export). Removing a mod reloads the page without it: a code mod cannot be undone mid-game.
+        </p>
+        <p>To try things while you write, the browser console is enough: <code>IdleBabel.loadMod('https://…')</code>.</p>
+
+        <h2 id="en-host">Hosting it</h2>
+        <p>You need an address that serves the file as JavaScript (or JSON). What works:</p>
+        <ul>
+          <li>
+            <strong>GitHub Pages</strong>: a repository with Pages enabled, the file at its root:
+            <code>https://your-name.github.io/your-repo/my-mod.js</code>.
+          </li>
+          <li>
+            <strong>jsDelivr</strong>, in front of a public GitHub repository, nothing to set up:
+            <code>https://cdn.jsdelivr.net/gh/your-name/your-repo/my-mod.js</code>.
+          </li>
+          <li>A <strong>Gist</strong>: jsDelivr only serves repositories; for a Gist, use a repository instead.</li>
+        </ul>
+        <div class="note">
+          GitHub’s “raw” addresses (<code>raw.githubusercontent.com</code>, <code>gist.githubusercontent.com</code>) serve the file
+          as plain text: the browser refuses to run it. They work for a <code>.json</code> mod, not for a <code>.js</code> one.
+        </div>
+
+        <h2 id="en-api">The API: <code>window.IdleBabel</code></h2>
+        <div class="table">
+          <table>
+            <tr><th>Name</th><th>What it does</th></tr>
+            <tr>
+              <td><code>registerMod(name, { init, save, load })</code></td>
+              <td>
+                Registers the mod. <code>init()</code>: once, when it loads; this is where hooks go. <code>save()</code>: returns a
+                string, kept in the game’s save. <code>load(text)</code>: called right after <code>init</code>, with what
+                <code>save()</code> returned last time. All three are optional. Returns <code>false</code> if the name is empty or
+                already taken.
+              </td>
+            </tr>
+            <tr><td><code>registerHook(hook, function)</code></td><td>Plugs a function into a <a href="#en-hooks">hook</a>.</td></tr>
+            <tr><td><code>state</code></td><td>The game, readable and writable (see <a href="#en-state">below</a>).</td></tr>
+            <tr><td><code>notify(title, text)</code></td><td>A notice at the bottom of the screen that fades on its own (text, not HTML).</td></tr>
+            <tr>
+              <td><code>addSeal({ id, name, text, reached })</code></td>
+              <td>
+                A seal of your own, on a “Mods” plate of the strange book. <code>name</code> and <code>text</code>: a string, or
+                <code>{ fr, en }</code>. <code>reached(state)</code>: returns <code>true</code> once it is reached (checked at every
+                step of the game). It takes the name of the mod adding it: call it in <code>init</code>.
+              </td>
+            </tr>
+            <tr><td><code>format(number)</code></td><td>A number written in the player’s chosen notation (“1.23 million”…).</td></tr>
+            <tr><td><code>locale</code></td><td>The game’s language: <code>'fr'</code> or <code>'en'</code>.</td></tr>
+            <tr><td><code>loadMod(address)</code></td><td>Loads another mod (returns a promise: <code>true</code> if it loaded).</td></tr>
+          </table>
+        </div>
+        <p>
+          A mod that throws does not crash the game: the error goes to the console, that hook is skipped, the rest goes on.
+        </p>
+
+        <h2 id="en-hooks">Hooks</h2>
+        <p><code>IdleBabel.registerHook(name, function)</code>; several mods can plug into the same hook.</p>
+        <div class="table">
+          <table>
+            <tr><th>Hook</th><th>When</th><th>The function receives</th><th>It returns</th></tr>
+            <tr data-hook="tick">
+              <td><code>tick</code></td>
+              <td>At every step of the game loop (ten per second; one per second in a hidden tab).</td>
+              <td>The seconds elapsed.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="draw">
+              <td><code>draw</code></td>
+              <td>After every screen update (visible tab only).</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="reading">
+              <td><code>reading</code></td>
+              <td>Every time production is computed.</td>
+              <td>—</td>
+              <td>A multiplier for the reading of every method (<code>2</code>: twice as much).</td>
+            </tr>
+            <tr data-hook="click">
+              <td><code>click</code></td>
+              <td>A leaf turned by hand.</td>
+              <td>—</td>
+              <td>A multiplier for that click’s pages.</td>
+            </tr>
+            <tr data-hook="find">
+              <td><code>find</code></td>
+              <td>A find read (in the book in hand, or while away).</td>
+              <td><code>{ kind, text, duplicate }</code>: <code>kind</code> is <code>'word'</code>, <code>'piece'</code> or <code>'sentence'</code>; <code>duplicate</code>, a piece already written.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="prestige">
+              <td><code>prestige</code></td>
+              <td>Right after a prestige (“Feed it”).</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="reset">
+              <td><code>reset</code></td>
+              <td>The save wiped, just before the page reloads.</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="mimic">
+              <td><code>mimic</code></td>
+              <td>A Mimic is about to appear.</td>
+              <td>—</td>
+              <td><code>false</code> to stop it (nothing, or anything else: it comes).</td>
+            </tr>
+            <tr data-hook="letter">
+              <td><code>letter</code></td>
+              <td>A letter has just escaped the book.</td>
+              <td>
+                <code>{ id, glyph, catch() }</code>: <code>id</code> is <code>'letter'</code> (a boon) or <code>'word'</code> (a
+                letter of the word BABEL); <code>catch()</code> catches it, like a click on it.
+              </td>
+              <td>—</td>
+            </tr>
+          </table>
+        </div>
+
+        <h2 id="en-state">The game: <code>IdleBabel.state</code></h2>
+        <p>
+          The whole state of the game, as it is saved. You can read it, and change it, at your own risk: the game checks nothing.
+          The most useful fields:
+        </p>
+        <div class="table">
+          <table>
+            <tr><th>Field</th><th>What it is</th></tr>
+            <tr><td><code>pages</code></td><td>Pages in store (the ones you spend).</td></tr>
+            <tr><td><code>totalPagesRead</code></td><td>Pages read since the very beginning (never goes down).</td></tr>
+            <tr><td><code>tools</code></td><td>Methods owned: <code>{ diagonal: 12, finger: 3, … }</code>.</td></tr>
+            <tr><td><code>knowledge</code>, <code>lifetimeKnowledge</code></td><td>Knowledge to spend; Knowledge found since the beginning.</td></tr>
+            <tr><td><code>ether</code>, <code>etherReceived</code></td><td>Ether to spend; Ether received since the beginning.</td></tr>
+            <tr><td><code>booksFinished</code>, <code>bookPage</code></td><td>Books read to the end; the page of the book in hand.</td></tr>
+            <tr><td><code>stats.clicks</code>, <code>stats.playSeconds</code></td><td>Leaves turned by hand; play time, in seconds.</td></tr>
+            <tr><td><code>exiles</code></td><td>Prestiges done.</td></tr>
+            <tr><td><code>seals</code></td><td>Seals obtained, with their date.</td></tr>
+            <tr><td><code>settings</code></td><td>The options notebook’s settings.</td></tr>
+            <tr><td><code>mods</code>, <code>modData</code></td><td>Addresses of the loaded mods; what each one saved.</td></tr>
+          </table>
+        </div>
+        <p>To keep data of your own, use <code>save</code> / <code>load</code> rather than adding fields.</p>
+
+        <h2 id="en-json">Mods without code (.json)</h2>
+        <p>
+          A <code>.json</code> file holds data only: it can do nothing but what the game allows, so it is safe. For now, it adds
+          seals, each reached when a game counter gets to its value:
+        </p>
+        <pre><code>{
+  "id": "my-mod",
+  "seals": [
+    {
+      "id": "million",
+      "name": { "fr": "Un million", "en": "One million" },
+      "text": { "fr": "Lis un million de pages", "en": "Read a million pages" },
+      "when": { "pagesRead": 1000000 }
+    }
+  ]
+}</code></pre>
+        <p>
+          Counters: <code>pagesRead</code> (since the beginning), <code>booksRead</code>, <code>clicks</code>,
+          <code>knowledge</code> (since the beginning), <code>ether</code> (received), <code>playSeconds</code>,
+          <code>prestiges</code>. Several in <code>when</code>: all are needed.
+        </p>
+        <p>
+          Mod seals have their own plate, at the end of the strange book. They count neither in the book’s progress nor in the
+          finds bonus (+1% per seal): a mod does not skew the game that way.
+        </p>
+
+        <h2 id="en-examples">The game’s mods, explained</h2>
+        <h3>No Mimic — <a href="sans-mimic/sans-mimic.js">sans-mimic.js</a></h3>
+        <pre><code><span class="comment">// The mod's name: the one the notebook shows, and the key of its data.</span>
+IdleBabel.registerMod('sans-mimic', {
+  <span class="comment">// Called once, when it loads.</span>
+  init() {
+    <span class="comment">// Right before a Mimic appears, the game asks: returning false stops it.</span>
+    IdleBabel.registerHook('mimic', () =&gt; false);
+  },
+});</code></pre>
+        <p>A Mimic already there stays: catch it, it gives back what it swallowed.</p>
+        <h3>Letter catcher — <a href="attrape-lettres/attrape-lettres.js">attrape-lettres.js</a></h3>
+        <pre><code>IdleBabel.registerMod('attrape-lettres', {
+  init() {
+    <span class="comment">// Every letter escaping the book comes here.</span>
+    IdleBabel.registerHook('letter', (letter) =&gt; {
+      <span class="comment">// Let it rise for a second, then catch it, like a click.</span>
+      setTimeout(() =&gt; letter.catch(), 1000);
+    });
+  },
+});</code></pre>
+        <p>The letters of the word BABEL too: the whole word gets written.</p>
+        <h3>Two more seals — <a href="exemple/exemple.json">exemple.json</a></h3>
+        <p>A mod without code: two seals, one at a million pages read, the other after ten hours of play.</p>
+        <h3>A mod that keeps data</h3>
+        <pre><code>let words = 0;
+IdleBabel.registerMod('word-count', {
+  init() {
+    IdleBabel.registerHook('find', (find) =&gt; {
+      if (find.kind === 'word') words += 1;
+    });
+    IdleBabel.addSeal({
+      id: 'hundred-words',
+      name: { fr: 'Cent mots', en: 'A hundred words' },
+      text: { fr: 'Trouve cent mots avec ce mod', en: 'Find a hundred words with this mod' },
+      reached: () =&gt; words &gt;= 100,
+    });
+  },
+  <span class="comment">// Kept in the game's save, given back to load() on the next visit.</span>
+  save: () =&gt; String(words),
+  load: (text) =&gt; { words = Number(text) || 0; },
+});</code></pre>
+
+        <h2 id="en-cheat">What a mod changes to the game</h2>
+        <p>
+          When the first mod loads, the game is marked, forever, even if the mod is removed later. Nothing else: the game goes on
+          as before. Where it shows is for you to find.
+        </p>
+        <div class="note warning">
+          A code mod can do anything: change the game, break it, read what the page shows. Only load mods you trust: those of the
+          game’s list (reviewed before getting in) or those whose code you have read.
+        </div>
+
+        <h2 id="en-propose">Proposing a mod for the game’s list</h2>
+        <p>
+          Mods from the list are ticked in the notebook, no address to paste: the game serves them itself. To propose yours, open a
+          pull request on <a href="https://github.com/counteraccro/IdleBabel">the game’s repository</a> with:
+        </p>
+        <ul>
+          <li>a folder <code>public/mods/&lt;id&gt;/</code>: the mod’s file, a short <code>README.md</code>, a screenshot;</li>
+          <li>its line in <code>public/mods/mods.json</code>: name and description in French and English, author, version.</li>
+        </ul>
+        <p>
+          The rules: no network (no <code>fetch</code>, no script from elsewhere), no real person named, no minified code (it must
+          be readable), and <code>npm test</code> passes. Every mod is read in full before it enters the list. Details in
+          <a href="https://github.com/counteraccro/IdleBabel/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.
+        </p>
+        <p><a href="../">← Back to the game</a></p>
+      </article>
+    </main>
+    <script>
+      // FR / EN : la langue du navigateur au départ, ou celle de ?lang= ; le choix est gardé pour la visite suivante.
+      (() => {
+        const buttons = document.querySelectorAll('.langs button');
+        const show = (lang) => {
+          document.documentElement.lang = lang;
+          document.querySelectorAll('article[lang]').forEach((article) => (article.hidden = article.lang !== lang));
+          buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.lang === lang)));
+          try {
+            localStorage.setItem('idle-babel-mods-lang', lang);
+          } catch {}
+        };
+        let saved = null;
+        try {
+          saved = localStorage.getItem('idle-babel-mods-lang');
+        } catch {}
+        const asked = new URLSearchParams(location.search).get('lang');
+        const lang = [asked, saved, navigator.language.slice(0, 2)].find((candidate) => candidate === 'fr' || candidate === 'en') ?? 'en';
+        show(lang);
+        buttons.forEach((button) => button.addEventListener('click', () => show(button.dataset.lang)));
+      })();
+    </script>
+  </body>
+</html>

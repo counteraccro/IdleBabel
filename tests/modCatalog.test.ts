@@ -16,6 +16,8 @@ describe('la liste des mods (public/mods/mods.json)', () => {
     for (const mod of catalog) {
       expect(mod.id).toMatch(/^[a-z0-9-]+$/);
       expect(file(mod)).toBeDefined();
+      // Son README court, pour la relecture (CONTRIBUTING.md).
+      expect(files[`../public/mods/${mod.id}/README.md`]).toBeDefined();
       expect(mod.file.endsWith(`.${mod.kind}`)).toBe(true);
       for (const text of [mod.name, mod.description]) {
         expect(typeof text === 'object' && text.fr && text.en).toBeTruthy();
