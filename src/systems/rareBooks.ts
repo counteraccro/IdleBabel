@@ -3,6 +3,7 @@ import { gameRandom } from '../core/random';
 import { STRANGE_BOOK_INDEX } from './strangeBook';
 import { rareChance } from './technologies';
 import { handleMultiplier } from './etherium';
+import { runHooks } from '../mods/hooks';
 import type { GameState } from '../core/state';
 
 /** Un livre sur 200 est un livre rare (tant qu'il en reste à trouver), avant le Flair. */
@@ -57,6 +58,9 @@ export const rareBookAt = (state: GameState, index: number): string | undefined 
 /** Le livre n° `index` arrive en main : s'il est rare, il est trouvé (pour toujours). */
 export const takeBook = (state: GameState, index: number): string | undefined => {
   const id = rareBookAt(state, index);
-  if (id && !isRareBookFound(state, id)) state.rareBooks[id] = index;
+  if (id && !isRareBookFound(state, id)) {
+    state.rareBooks[id] = index;
+    runHooks('rareBook', { id, index });
+  }
   return id;
 };

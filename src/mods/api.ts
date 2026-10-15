@@ -6,6 +6,7 @@ import { replaceHeldBook, type HeldBookFactory } from './heldBook';
 import { addModSeal, type ModSealInput } from './modSeals';
 import { modOption } from './modOptions';
 import { modGame, type ModGame } from './game';
+import { modify, tune } from './quantities';
 import { formatNumber } from '../core/format';
 import { getLocale } from '../i18n';
 import type { GameState } from '../core/state';
@@ -28,6 +29,13 @@ export interface IdleBabelApi {
   replaceHeldBook: (factory: HeldBookFactory) => void;
   /** La valeur d'une option d'un mod (registerMod `options`), réglée au cahier ; undefined si elle n'existe pas. */
   option: (mod: string, id: string) => string | boolean | undefined;
+  /**
+   * Change une grandeur du jeu (src/mods/quantities.ts) : un facteur (×) ou un ajout (+), selon elle ; une fonction,
+   * appelée à chaque calcul, ou un nombre fixe. Rend false si la grandeur n'existe pas.
+   */
+  modify: (name: string, value: number | (() => number)) => boolean;
+  /** Règle une règle de base du jeu (`costGrowth`, `methodGate`, `etherPages`) ; false si elle n'existe pas ou hors bornes. */
+  tune: (name: string, value: number) => boolean;
 }
 
 declare global {
@@ -68,6 +76,16 @@ export const mountModApi = (state: GameState): IdleBabelApi => {
     format: (value) => formatNumber(value, getLocale(), state.settings.notation),
     replaceHeldBook,
     option: (mod, id) => modOption(state, String(mod), String(id)),
+    modify: (name, value) => {
+      const done = modify(String(name), typeof value === 'number' ? () => value : value);
+      if (!done) console.error(`[Idle Babel] grandeur inconnue, ou pas une fonction : « ${String(name)} ».`);
+      return done;
+    },
+    tune: (name, value) => {
+      const done = tune(String(name), value);
+      if (!done) console.error(`[Idle Babel] règle inconnue, ou valeur hors bornes : « ${String(name)} » = ${String(value)}.`);
+      return done;
+    },
   };
   window.IdleBabel = api;
   return api;

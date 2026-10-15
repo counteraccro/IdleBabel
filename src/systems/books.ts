@@ -1,6 +1,7 @@
 import type { GameState } from '../core/state';
 import { recordOnce } from '../core/history';
 import { STRANGE_BOOK_INDEX } from './strangeBook';
+import { runHooks } from '../mods/hooks';
 import { loreTold } from './lore';
 
 /** Tous les livres de la Bibliothèque ont 410 pages (Borges), comme le Livre Total. */
@@ -31,6 +32,7 @@ export const closeBook = (state: GameState): void => {
   recordOnce(state, 'firstBook');
   // Son récit attend qu'il arrive en main (meetStrangeBook, handReading3d.ts).
   if (state.booksFinished === STRANGE_BOOK_INDEX) recordOnce(state, 'strangeBook');
+  runHooks('book', { finished: state.booksFinished });
 };
 
 /**

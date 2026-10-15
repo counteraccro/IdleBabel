@@ -11,8 +11,7 @@ import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS } from '../../data/tools';
 import { starLit } from '../../systems/etherium';
 import { intuitionVisible, technologiesCompletion, understand } from '../../systems/technologies';
 import { completion, guess, guessPrice, isComplete, sentenceShown, written } from '../../systems/sentences';
-import { waitingFor } from '../../systems/findable';
-import { METHOD_GATE } from '../../data/knowledge';
+import { methodGate, waitingFor } from '../../systems/findable';
 import { babelize, seedOf } from './babelMask';
 import { sentenceBody } from './sentencePage';
 import { folio, type Item, type TextItem } from '../strangeBook/pageItems';
@@ -80,7 +79,8 @@ const sentenceLayout = (
 const waitingTally = (state: GameState, sentence: SentenceDef): Item[] => {
   const before = waitingFor(state, sentence.id);
   if (!before) return [];
-  return [{ kind: 'tally', x: 320, y: TALLY_Y, count: METHOD_GATE, done: Math.min(state.tools[before], METHOD_GATE) }];
+  const gate = methodGate();
+  return [{ kind: 'tally', x: 320, y: TALLY_Y, count: gate, done: Math.min(state.tools[before], gate) }];
 };
 
 /**

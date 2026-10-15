@@ -10,6 +10,7 @@ import { levelOf, maxLevel } from './technologies';
 import { sealEvent } from './seals';
 import { catchMimic } from './mimic';
 import { runHooks } from '../mods/hooks';
+import { rule } from '../mods/quantities';
 import type { GameState } from '../core/state';
 
 /**
@@ -18,8 +19,11 @@ import type { GameState } from '../core/state';
  * jusqu'à ce qu'il le referme ; le reste du temps, le livre se consulte seulement (l'auteur, 14/10).
  */
 
+/** Pages lues à vie pour le premier Éther : ETHER_PAGES, ou ce qu'a réglé un mod (`etherPages`). */
+export const etherPages = (): number => rule('etherPages', ETHER_PAGES);
+
 /** L'Éther que méritent les pages lues depuis toujours : floor(∛(pages / 1 Md)). */
-export const etherDeserved = (state: GameState): number => Math.floor(Math.cbrt(state.totalPagesRead / ETHER_PAGES));
+export const etherDeserved = (state: GameState): number => Math.floor(Math.cbrt(state.totalPagesRead / etherPages()));
 
 /** Ce que rapporterait le prestige maintenant. */
 export const prestigeGain = (state: GameState): number => Math.max(0, etherDeserved(state) - state.etherReceived);
@@ -44,11 +48,11 @@ export const feedReady = (state: GameState): boolean => prestigeGain(state) >= 1
 export const etheriumOpens = (state: GameState): boolean => state.etherReceived > 0 || prestigeGain(state) >= 1;
 
 /** Pages lues à vie qu'il faut pour l'Éther suivant (le n-ième en demande n³ milliards). */
-export const nextEtherPages = (state: GameState): number => (etherDeserved(state) + 1) ** 3 * ETHER_PAGES;
+export const nextEtherPages = (state: GameState): number => (etherDeserved(state) + 1) ** 3 * etherPages();
 
 /** Où en est l'Éther suivant, de 0 à 1 : depuis les pages du dernier Éther mérité. */
 export const nextEtherProgress = (state: GameState): number => {
-  const from = etherDeserved(state) ** 3 * ETHER_PAGES;
+  const from = etherDeserved(state) ** 3 * etherPages();
   return Math.min(1, Math.max(0, (state.totalPagesRead - from) / (nextEtherPages(state) - from)));
 };
 

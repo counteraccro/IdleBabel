@@ -3,6 +3,8 @@ import { sceneSeen } from '../scene/scenes';
 import { patienceLit, relicStarLevel, relicsUnlocked } from './etherium';
 import { isComplete } from './sentences';
 import { tellLore } from './lore';
+import { runHooks } from '../mods/hooks';
+import { modded } from '../mods/quantities';
 import type { GameState } from '../core/state';
 
 /**
@@ -45,11 +47,13 @@ export const findRelic = (state: GameState, id: RelicId, now = Date.now()): bool
   state.relics.found[id] = now;
   if (!state.relics.active) state.relics.active = id;
   tellLore(state, relicById(id)!.lore);
+  runHooks('relic', { id });
   return true;
 };
 
 /** Le délai, en heures, avant de pouvoir changer encore de relique (« La patience » le raccourcit). */
-export const relicLockHours = (state: GameState): number => (patienceLit(state) ? RELIC_PATIENT_HOURS : RELIC_LOCK_HOURS);
+export const relicLockHours = (state: GameState): number =>
+  (patienceLit(state) ? RELIC_PATIENT_HOURS : RELIC_LOCK_HOURS) * modded('relicLock');
 
 /** Le temps qui reste avant de pouvoir changer de relique (ms) ; 0 : on peut. */
 export const relicWait = (state: GameState, now = Date.now()): number => Math.max(0, state.relics.lockedUntil - now);

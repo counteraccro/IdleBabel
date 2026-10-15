@@ -1,8 +1,7 @@
 import { ETHERIUM_PAGES, OPEN_STARS, type PageId } from '../../data/etheriumStars';
-import { etherDeserved, feedReady, nextEtherPages, prestige, prestigeGain } from '../../systems/prestige';
+import { etherDeserved, etherPages, feedReady, nextEtherPages, prestige, prestigeGain } from '../../systems/prestige';
 import { starLit } from '../../systems/etherium';
 import { t } from '../../i18n';
-import { ETHER_PAGES } from '../../data/etherium';
 import type { GameState } from '../../core/state';
 import { saveGame } from '../../core/save';
 import { ETHERIUM_HASH } from '../../ui/etherium/prestigeStory';
@@ -21,7 +20,7 @@ const setGain = (state: GameState, gain: number): void => {
   const deserved = state.etherReceived + wanted;
   if (deserved > etherDeserved(state)) {
     // Un rien de plus : la racine cubique de n³ milliards tombe parfois juste sous n.
-    const missing = deserved ** 3 * ETHER_PAGES * (1 + 1e-12) - state.totalPagesRead;
+    const missing = deserved ** 3 * etherPages() * (1 + 1e-12) - state.totalPagesRead;
     state.totalPagesRead += missing;
     state.pages += missing;
   } else state.etherReceived = etherDeserved(state) - wanted;

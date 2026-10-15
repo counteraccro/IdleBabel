@@ -1,22 +1,30 @@
 import { BUY_LOTS, COST_GROWTH, TOOLS, type BuyLot, type ToolId } from '../data/tools';
+import { runHooks } from '../mods/hooks';
 import type { GameState } from '../core/state';
 import { recordOnce } from '../core/history';
 import { armfulLots, toolPriceFactor } from './technologies';
 import { priceBoon } from './boons';
+import { modded, rule } from '../mods/quantities';
+
+/** La hausse de prix d'un exemplaire au suivant : 1,15, ou celle qu'a réglée un mod (`costGrowth`). */
+const growth = (): number => rule('costGrowth', COST_GROWTH);
 
 /** Prix(n) = PrixBase × 1,15^n */
-export const toolCost = (baseCost: number, owned: number): number => baseCost * COST_GROWTH ** owned;
+export const toolCost = (baseCost: number, owned: number): number => baseCost * growth() ** owned;
 
-/** Prix de la prochaine, Économie du geste et Aubaine de la lettre (en cours) comprises. */
+/** Prix de la prochaine, Économie du geste, Aubaine de la lettre (en cours) et mods (grandeurs `methodCost`) comprises. */
 export const nextToolCost = (state: GameState, id: ToolId): number => {
   const tool = TOOLS.find((t) => t.id === id)!;
-  return toolCost(tool.baseCost, state.tools[id]) * toolPriceFactor(state) * priceBoon();
+  return (
+    toolCost(tool.baseCost, state.tools[id]) * toolPriceFactor(state) * priceBoon() * modded('methodCost') * modded(`methodCost:${id}`)
+  );
 };
 
 /** Prix de `count` méthodes d'un coup : chacune 15 % plus chère que la précédente (suite géométrique). */
 export const lotCost = (state: GameState, id: ToolId, count: number): number => {
   const next = nextToolCost(state, id);
-  return count === 1 ? next : (next * (COST_GROWTH ** count - 1)) / (COST_GROWTH - 1);
+  const rate = growth();
+  return count === 1 ? next : (next * (rate ** count - 1)) / (rate - 1);
 };
 
 /** Assez de pages pour ce prix ? (À un cheveu près : la somme d'une suite garde des miettes d'arrondi.) */
@@ -27,7 +35,8 @@ export const affordableTools = (state: GameState, id: ToolId): number => {
   // Des pages sans fin (débogage) : le compte ne finirait jamais.
   if (!Number.isFinite(state.pages)) return 0;
   const next = nextToolCost(state, id);
-  let count = Math.max(0, Math.floor(Math.log(1 + (state.pages * (COST_GROWTH - 1)) / next) / Math.log(COST_GROWTH)));
+  const rate = growth();
+  let count = Math.max(0, Math.floor(Math.log(1 + (state.pages * (rate - 1)) / next) / Math.log(rate)));
   // Le logarithme peut se tromper d'une unité à l'arrondi : on vérifie avec le prix exact.
   while (count > 0 && !canPay(state, lotCost(state, id, count))) count -= 1;
   while (canPay(state, lotCost(state, id, count + 1))) count += 1;
@@ -60,6 +69,7 @@ export const buyTools = (state: GameState, id: ToolId, lot: BuyLot = 1): number 
   state.pages = Math.max(0, state.pages - cost);
   state.tools[id] += count;
   recordOnce(state, 'firstTool', id);
+  runHooks('buy', { method: id, count, cost });
   return count;
 };
 

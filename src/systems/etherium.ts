@@ -15,6 +15,7 @@ import {
 } from '../data/etheriumStars';
 import { ETHER_READING, ETHER_WEIGHT } from '../data/etherium';
 import { SENTENCES } from '../data/sentences';
+import { runHooks } from '../mods/hooks';
 import type { GameState } from '../core/state';
 
 /**
@@ -54,6 +55,7 @@ export const lightStar = (state: GameState, id: string): boolean => {
   if (!star || !starOpen(state, id) || state.ether < star.cost) return false;
   state.ether -= star.cost;
   state.etherium.push(id);
+  runHooks('star', { id, cost: star.cost });
   return true;
 };
 

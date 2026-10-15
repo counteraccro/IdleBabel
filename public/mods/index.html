@@ -173,6 +173,7 @@
             <li><a href="#fr-heberger">L’héberger</a></li>
             <li><a href="#fr-api">L’API</a></li>
             <li><a href="#fr-crochets">Les crochets</a></li>
+            <li><a href="#fr-grandeurs">Changer les chiffres du jeu</a></li>
             <li><a href="#fr-options">Les options d’un mod</a></li>
             <li><a href="#fr-game">Ce que calcule le jeu : <code>game</code></a></li>
             <li><a href="#fr-etat">La partie : <code>state</code></a></li>
@@ -269,6 +270,8 @@
             <tr><td><code>locale</code></td><td>La langue du jeu : <code>'fr'</code> ou <code>'en'</code>.</td></tr>
             <tr><td><code>game</code></td><td>Ce que le jeu calcule (production, prix, Éther, lettre, Mimic), en lecture seule : voir <a href="#fr-game">plus bas</a>.</td></tr>
             <tr><td><code>option(mod, id)</code></td><td>La valeur d’une option d’un mod, réglée au cahier (<a href="#fr-options">les options</a>) ; <code>undefined</code> si elle n’existe pas.</td></tr>
+            <tr><td><code>modify(grandeur, valeur)</code></td><td>Change un chiffre du jeu : voir <a href="#fr-grandeurs">les grandeurs</a>.</td></tr>
+            <tr><td><code>tune(règle, nombre)</code></td><td>Change une règle de base du jeu : voir <a href="#fr-grandeurs">les règles</a>.</td></tr>
             <tr><td><code>loadMod(adresse)</code></td><td>Charge un autre mod (rend une promesse : <code>true</code> s’il a chargé).</td></tr>
             <tr>
               <td><code>replaceHeldBook(book =&gt; ({ root, update }))</code></td>
@@ -352,8 +355,118 @@
               </td>
               <td>—</td>
             </tr>
+            <tr data-hook="buy">
+              <td><code>buy</code></td>
+              <td>Des méthodes achetées (un clic sur la ruche).</td>
+              <td><code>{ method, count, cost }</code> : la méthode, combien, pour combien de pages.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="intuition">
+              <td><code>intuition</code></td>
+              <td>Un niveau d’intuition compris (au livre blanc, ou rendu par la Réminiscence).</td>
+              <td><code>{ id, level }</code> : l’intuition, son nouveau niveau.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="star">
+              <td><code>star</code></td>
+              <td>Une étoile de l’Etherium allumée.</td>
+              <td><code>{ id, cost }</code> : « page.étoile », son prix en Éther.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="rareBook">
+              <td><code>rareBook</code></td>
+              <td>Un livre rare trouvé : il arrive en main (pendant une absence aussi).</td>
+              <td><code>{ id, index }</code> : le livre rare, le numéro du livre.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="relic">
+              <td><code>relic</code></td>
+              <td>Une relique trouvée dans sa salle.</td>
+              <td><code>{ id }</code></td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="seal">
+              <td><code>seal</code></td>
+              <td>Un sceau apposé (ceux des mods compris).</td>
+              <td><code>{ id }</code></td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="book">
+              <td><code>book</code></td>
+              <td>Le livre en main lu jusqu’au bout et refermé (pendant une absence aussi).</td>
+              <td><code>{ finished }</code> : les livres finis depuis le début de la partie.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="mimicCaught">
+              <td><code>mimicCaught</code></td>
+              <td>La Mimic attrapée (ou rendue juste avant un prestige).</td>
+              <td><code>{ eaten, bonus }</code> : la Connaissance qu’elle avait avalée, et son bonus.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="boon">
+              <td><code>boon</code></td>
+              <td>Une lettre attrapée : son bonus commence.</td>
+              <td><code>{ id, seconds }</code> : le bonus, sa durée (aucune : il agit d’un coup).</td>
+              <td>—</td>
+            </tr>
           </table>
         </div>
+
+        <h2 id="fr-grandeurs">Changer les chiffres du jeu : <code>modify</code> et <code>tune</code></h2>
+        <p>
+          Chaque chiffre du jeu qu’un mod peut changer porte un nom : une <em>grandeur</em>. Le jeu la calcule à un seul
+          endroit, avec tout ce qui la touche (intuitions, étoiles, reliques, lettre…), puis y applique les mods.
+          <code>IdleBabel.modify(grandeur, valeur)</code> : <code>valeur</code> est un nombre, ou une fonction appelée à chaque
+          calcul (qui rend un nombre). Une grandeur « × » multiplie (1 : rien ne change) ; une grandeur « + » ajoute
+          (0 : rien ne change). Plusieurs mods sur la même grandeur : leurs facteurs se multiplient, leurs ajouts
+          s’additionnent. Rend <code>false</code> si la grandeur n’existe pas.
+        </p>
+        <pre><code><span class="comment">// Deux fois plus de trouvailles, et la Mimic deux fois plus rare.</span>
+IdleBabel.modify('findChance', 2);
+IdleBabel.modify('mimicEvery', 2);
+<span class="comment">// La Lecture Diagonale lit ×10 tant qu'on en a moins de 50.</span>
+IdleBabel.modify('method:diagonal', () =&gt; (IdleBabel.state.tools.diagonal &lt; 50 ? 10 : 1));</code></pre>
+        <div class="table">
+          <table>
+            <tr><th>Grandeur</th><th></th><th>Ce qu’elle est</th></tr>
+            <tr data-quantity="reading"><td><code>reading</code></td><td>×</td><td>pages/s de toutes les méthodes (comme le crochet <code>reading</code>)</td></tr>
+            <tr data-quantity="method:"><td><code>method:&lt;id&gt;</code></td><td>×</td><td>pages/s d’une méthode (<code>method:diagonal</code>…)</td></tr>
+            <tr data-quantity="click"><td><code>click</code></td><td>×</td><td>pages d’une feuille tournée à la main (comme le crochet <code>click</code>)</td></tr>
+            <tr data-quantity="clickShare"><td><code>clickShare</code></td><td>+</td><td>part de la production d’une seconde gagnée à chaque clic (0,01 : 1 %)</td></tr>
+            <tr data-quantity="methodCost"><td><code>methodCost</code></td><td>×</td><td>prix de toutes les méthodes</td></tr>
+            <tr data-quantity="methodCost:"><td><code>methodCost:&lt;id&gt;</code></td><td>×</td><td>prix d’une méthode</td></tr>
+            <tr data-quantity="turns"><td><code>turns</code></td><td>+</td><td>feuilles tournées seules au plus par seconde</td></tr>
+            <tr data-quantity="findChance"><td><code>findChance</code></td><td>×</td><td>chance qu’une page cache une trouvaille</td></tr>
+            <tr data-quantity="knowledge"><td><code>knowledge</code></td><td>×</td><td>Connaissance par trouvaille</td></tr>
+            <tr data-quantity="duplicates"><td><code>duplicates</code></td><td>+</td><td>part des trouvailles qui répètent un morceau déjà écrit (négatif : moins)</td></tr>
+            <tr data-quantity="intuitionCost"><td><code>intuitionCost</code></td><td>×</td><td>prix des intuitions</td></tr>
+            <tr data-quantity="rareChance"><td><code>rareChance</code></td><td>×</td><td>chance qu’un livre soit rare</td></tr>
+            <tr data-quantity="awayShare"><td><code>awayShare</code></td><td>+</td><td>part de la lecture comptée pendant une absence (0,1 : 10 %)</td></tr>
+            <tr data-quantity="awayHours"><td><code>awayHours</code></td><td>+</td><td>heures d’absence comptées au plus</td></tr>
+            <tr data-quantity="letterWait"><td><code>letterWait</code></td><td>×</td><td>attente entre deux lettres</td></tr>
+            <tr data-quantity="letterStays"><td><code>letterStays</code></td><td>+</td><td>secondes où la lettre reste à l’écran</td></tr>
+            <tr data-quantity="boonLength"><td><code>boonLength</code></td><td>×</td><td>durée des bonus de la lettre</td></tr>
+            <tr data-quantity="mimicEvery"><td><code>mimicEvery</code></td><td>×</td><td>attente moyenne entre deux Mimics</td></tr>
+            <tr data-quantity="mimicGives"><td><code>mimicGives</code></td><td>+</td><td>part que rend la Mimic en plus de ce qu’elle a avalé (0,1 : 10 %)</td></tr>
+            <tr data-quantity="relicLock"><td><code>relicLock</code></td><td>×</td><td>délai avant de pouvoir changer de relique</td></tr>
+          </table>
+        </div>
+        <p>
+          <code>IdleBabel.tune(règle, nombre)</code> change une règle de base du jeu, qu’aucun facteur ne peut changer. Le
+          dernier mod qui la règle gagne ; une valeur hors bornes est refusée (<code>false</code>).
+        </p>
+        <div class="table">
+          <table>
+            <tr><th>Règle</th><th>Dans le jeu</th><th>Ce qu’elle est</th></tr>
+            <tr data-rule="costGrowth"><td><code>costGrowth</code></td><td>1,15</td><td>chaque exemplaire d’une méthode coûte tant de fois le précédent ; entre 1,0001 et 10</td></tr>
+            <tr data-rule="methodGate"><td><code>methodGate</code></td><td>25</td><td>exemplaires de la méthode d’avant qu’il faut pour trouver la phrase de la suivante ; un entier de 0 à 100</td></tr>
+            <tr data-rule="etherPages"><td><code>etherPages</code></td><td>1 milliard</td><td>pages lues à vie pour le premier Éther (le n-ième en demande n³ fois plus) ; au moins 1</td></tr>
+          </table>
+        </div>
+        <p>
+          <code>IdleBabel.game</code> rend les chiffres avec les mods (le prix d’une méthode, sa production, l’Éther…) : un mod
+          qui les affiche, comme BetterBabel, voit ce que les autres ont changé.
+        </p>
 
         <h2 id="fr-options">Les options d’un mod</h2>
         <p>
@@ -588,6 +701,7 @@ IdleBabel.registerMod('compte-mots', {
             <li><a href="#en-host">Hosting it</a></li>
             <li><a href="#en-api">The API</a></li>
             <li><a href="#en-hooks">Hooks</a></li>
+            <li><a href="#en-quantities">Changing the game’s numbers</a></li>
             <li><a href="#en-options">A mod’s options</a></li>
             <li><a href="#en-game">What the game computes: <code>game</code></a></li>
             <li><a href="#en-state">The game: <code>state</code></a></li>
@@ -677,6 +791,8 @@ IdleBabel.registerMod('compte-mots', {
             <tr><td><code>locale</code></td><td>The game’s language: <code>'fr'</code> or <code>'en'</code>.</td></tr>
             <tr><td><code>game</code></td><td>What the game computes (production, prices, Ether, letter, Mimic), read-only: see <a href="#en-game">below</a>.</td></tr>
             <tr><td><code>option(mod, id)</code></td><td>The value of a mod’s option, set in the notebook (<a href="#en-options">options</a>); <code>undefined</code> if it does not exist.</td></tr>
+            <tr><td><code>modify(quantity, value)</code></td><td>Changes a number of the game: see <a href="#en-quantities">quantities</a>.</td></tr>
+            <tr><td><code>tune(rule, number)</code></td><td>Changes a base rule of the game: see <a href="#en-quantities">rules</a>.</td></tr>
             <tr><td><code>loadMod(address)</code></td><td>Loads another mod (returns a promise: <code>true</code> if it loaded).</td></tr>
             <tr>
               <td><code>replaceHeldBook(book =&gt; ({ root, update }))</code></td>
@@ -759,8 +875,118 @@ IdleBabel.registerMod('compte-mots', {
               </td>
               <td>—</td>
             </tr>
+            <tr data-hook="buy">
+              <td><code>buy</code></td>
+              <td>Methods bought (a click on the hive).</td>
+              <td><code>{ method, count, cost }</code>: the method, how many, for how many pages.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="intuition">
+              <td><code>intuition</code></td>
+              <td>An intuition level understood (in the white book, or given back by Reminiscence).</td>
+              <td><code>{ id, level }</code>: the intuition, its new level.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="star">
+              <td><code>star</code></td>
+              <td>An Etherium star lit.</td>
+              <td><code>{ id, cost }</code>: “page.star”, its price in Ether.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="rareBook">
+              <td><code>rareBook</code></td>
+              <td>A rare book found: it comes to hand (during an absence too).</td>
+              <td><code>{ id, index }</code>: the rare book, the book’s number.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="relic">
+              <td><code>relic</code></td>
+              <td>A relic found in its room.</td>
+              <td><code>{ id }</code></td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="seal">
+              <td><code>seal</code></td>
+              <td>A seal earned (mods’ seals included).</td>
+              <td><code>{ id }</code></td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="book">
+              <td><code>book</code></td>
+              <td>The book in hand read to the end and closed (during an absence too).</td>
+              <td><code>{ finished }</code>: books finished since the start of the run.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="mimicCaught">
+              <td><code>mimicCaught</code></td>
+              <td>The Mimic caught (or given back just before a prestige).</td>
+              <td><code>{ eaten, bonus }</code>: the Knowledge it had swallowed, and its bonus.</td>
+              <td>—</td>
+            </tr>
+            <tr data-hook="boon">
+              <td><code>boon</code></td>
+              <td>A letter caught: its boon starts.</td>
+              <td><code>{ id, seconds }</code>: the boon, its length (none: it acts at once).</td>
+              <td>—</td>
+            </tr>
           </table>
         </div>
+
+        <h2 id="en-quantities">Changing the game’s numbers: <code>modify</code> and <code>tune</code></h2>
+        <p>
+          Every number of the game a mod can change has a name: a <em>quantity</em>. The game computes it in one place, with
+          everything that touches it (intuitions, stars, relics, letter…), then applies the mods.
+          <code>IdleBabel.modify(quantity, value)</code>: <code>value</code> is a number, or a function called at every
+          computation (returning a number). A “×” quantity multiplies (1: nothing changes); a “+” quantity adds (0: nothing
+          changes). Several mods on the same quantity: their factors multiply, their additions add up. Returns
+          <code>false</code> if the quantity does not exist.
+        </p>
+        <pre><code><span class="comment">// Twice as many finds, and the Mimic twice as rare.</span>
+IdleBabel.modify('findChance', 2);
+IdleBabel.modify('mimicEvery', 2);
+<span class="comment">// Diagonal Reading reads ×10 while you own fewer than 50.</span>
+IdleBabel.modify('method:diagonal', () =&gt; (IdleBabel.state.tools.diagonal &lt; 50 ? 10 : 1));</code></pre>
+        <div class="table">
+          <table>
+            <tr><th>Quantity</th><th></th><th>What it is</th></tr>
+            <tr data-quantity="reading"><td><code>reading</code></td><td>×</td><td>pages/s of every method (like the <code>reading</code> hook)</td></tr>
+            <tr data-quantity="method:"><td><code>method:&lt;id&gt;</code></td><td>×</td><td>pages/s of one method (<code>method:diagonal</code>…)</td></tr>
+            <tr data-quantity="click"><td><code>click</code></td><td>×</td><td>pages of a leaf turned by hand (like the <code>click</code> hook)</td></tr>
+            <tr data-quantity="clickShare"><td><code>clickShare</code></td><td>+</td><td>share of one second of production gained per click (0.01: 1%)</td></tr>
+            <tr data-quantity="methodCost"><td><code>methodCost</code></td><td>×</td><td>price of every method</td></tr>
+            <tr data-quantity="methodCost:"><td><code>methodCost:&lt;id&gt;</code></td><td>×</td><td>price of one method</td></tr>
+            <tr data-quantity="turns"><td><code>turns</code></td><td>+</td><td>leaves turned on their own per second, at most</td></tr>
+            <tr data-quantity="findChance"><td><code>findChance</code></td><td>×</td><td>chance that a page hides a find</td></tr>
+            <tr data-quantity="knowledge"><td><code>knowledge</code></td><td>×</td><td>Knowledge per find</td></tr>
+            <tr data-quantity="duplicates"><td><code>duplicates</code></td><td>+</td><td>share of finds repeating a piece already written (negative: fewer)</td></tr>
+            <tr data-quantity="intuitionCost"><td><code>intuitionCost</code></td><td>×</td><td>price of intuitions</td></tr>
+            <tr data-quantity="rareChance"><td><code>rareChance</code></td><td>×</td><td>chance that a book is rare</td></tr>
+            <tr data-quantity="awayShare"><td><code>awayShare</code></td><td>+</td><td>share of reading counted while away (0.1: 10%)</td></tr>
+            <tr data-quantity="awayHours"><td><code>awayHours</code></td><td>+</td><td>hours of absence counted, at most</td></tr>
+            <tr data-quantity="letterWait"><td><code>letterWait</code></td><td>×</td><td>wait between two letters</td></tr>
+            <tr data-quantity="letterStays"><td><code>letterStays</code></td><td>+</td><td>seconds the letter stays on screen</td></tr>
+            <tr data-quantity="boonLength"><td><code>boonLength</code></td><td>×</td><td>length of the letter’s boons</td></tr>
+            <tr data-quantity="mimicEvery"><td><code>mimicEvery</code></td><td>×</td><td>average wait between two Mimics</td></tr>
+            <tr data-quantity="mimicGives"><td><code>mimicGives</code></td><td>+</td><td>share the Mimic gives back on top of what it swallowed (0.1: 10%)</td></tr>
+            <tr data-quantity="relicLock"><td><code>relicLock</code></td><td>×</td><td>wait before the relic can be changed</td></tr>
+          </table>
+        </div>
+        <p>
+          <code>IdleBabel.tune(rule, number)</code> changes a base rule of the game, one no factor can change. The last mod
+          to set it wins; a value out of bounds is refused (<code>false</code>).
+        </p>
+        <div class="table">
+          <table>
+            <tr><th>Rule</th><th>In the game</th><th>What it is</th></tr>
+            <tr data-rule="costGrowth"><td><code>costGrowth</code></td><td>1.15</td><td>each copy of a method costs this many times the previous one; between 1.0001 and 10</td></tr>
+            <tr data-rule="methodGate"><td><code>methodGate</code></td><td>25</td><td>copies of the previous method needed to find the next one’s sentence; a whole number from 0 to 100</td></tr>
+            <tr data-rule="etherPages"><td><code>etherPages</code></td><td>1 billion</td><td>pages read in a lifetime for the first Ether (the n-th needs n³ times more); at least 1</td></tr>
+          </table>
+        </div>
+        <p>
+          <code>IdleBabel.game</code> returns the numbers with mods (a method’s price, its production, Ether…): a mod that
+          shows them, like BetterBabel, sees what the others changed.
+        </p>
 
         <h2 id="en-options">A mod’s options</h2>
         <p>

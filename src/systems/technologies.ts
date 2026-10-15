@@ -28,6 +28,8 @@ import {
   turnsBonus,
 } from './etherium';
 import { BUY_LOTS, type BuyLot, type ToolId } from '../data/tools';
+import { modded } from '../mods/quantities';
+import { runHooks } from '../mods/hooks';
 import type { GameState } from '../core/state';
 
 export const technology = (id: TechnologyId): TechnologyDef => TECHNOLOGIES.find((tech) => tech.id === id)!;
@@ -66,7 +68,7 @@ export const lockOf = (state: GameState, id: TechnologyId): Locked | undefined =
 /** Prix du niveau suivant, s'il en reste et qu'il peut se comprendre (moins cher avec la Chouette de l'Etherium). */
 export const nextPrice = (state: GameState, id: TechnologyId): number | undefined => {
   const price = lockOf(state, id) ? undefined : priceAt(id, levelOf(state, id));
-  const factor = intuitionPriceFactor(state, id);
+  const factor = intuitionPriceFactor(state, id) * modded('intuitionCost');
   return price === undefined || factor === 1 ? price : Math.ceil(price * factor);
 };
 
@@ -77,6 +79,7 @@ export const understand = (state: GameState, id: TechnologyId): boolean => {
   state.knowledge -= price;
   state.technologies[id] = levelOf(state, id) + 1;
   state.technologiesBest[id] = Math.max(bestOf(state, id), levelOf(state, id));
+  runHooks('intuition', { id, level: levelOf(state, id) });
   return true;
 };
 
@@ -91,27 +94,27 @@ export const targetShare = (state: GameState, level = levelOf(state, 'ariadne'))
 
 /** Mémoire des phrases : part des trouvailles qui répètent un morceau déjà écrit. */
 export const duplicateShare = (state: GameState, level = levelOf(state, 'sentenceMemory')): number =>
-  Math.max(0, DUPLICATE_SHARE - MEMORY_STEP * level - duplicatesBonus(state));
+  Math.min(1, Math.max(0, DUPLICATE_SHARE - MEMORY_STEP * level - duplicatesBonus(state) + modded('duplicates')));
 
 /** Lecture rapide : feuilles tournées seules au plus par seconde. */
 export const turnsPerSecond = (state: GameState, level = levelOf(state, 'speedReading')): number =>
-  SPEED_LEVELS[Math.min(level, SPEED_LEVELS.length - 1)] + turnsBonus(state);
+  Math.max(1, SPEED_LEVELS[Math.min(level, SPEED_LEVELS.length - 1)] + turnsBonus(state) + modded('turns'));
 
 /** Mémoire musculaire : part de la production d'une seconde que rapporte en plus chaque clic. */
 export const clickShare = (state: GameState, level = levelOf(state, 'muscleMemory')): number =>
-  MUSCLE_STEP * level + clickShareBonus(state);
+  Math.max(0, MUSCLE_STEP * level + clickShareBonus(state) + modded('clickShare'));
 
 /** Cartographie du Retour : part de la lecture comptée pendant une absence. */
 export const awayShare = (state: GameState, level = levelOf(state, 'returnMap')): number =>
-  Math.min(1, AWAY_SHARE + RETURN_STEP * level + awayShareBonus(state));
+  Math.min(1, Math.max(0, AWAY_SHARE + RETURN_STEP * level + awayShareBonus(state) + modded('awayShare')));
 
 /** Sommeil profond : absence comptée au plus (en secondes). */
 export const maxAwaySeconds = (state: GameState, level = levelOf(state, 'deepSleep')): number =>
-  MAX_AWAY_SECONDS + SLEEP_STEP * level + awaySecondsBonus(state);
+  Math.max(0, MAX_AWAY_SECONDS + SLEEP_STEP * level + awaySecondsBonus(state) + modded('awayHours') * 3600);
 
 /** Flair : chance qu'un livre soit rare. */
 export const rareChance = (state: GameState, level = levelOf(state, 'flair')): number =>
-  rareMultiplier(state) / FLAIR_LEVELS[Math.min(level, FLAIR_LEVELS.length - 1)];
+  (rareMultiplier(state) * modded('rareChance')) / FLAIR_LEVELS[Math.min(level, FLAIR_LEVELS.length - 1)];
 
 /** Économie du geste : ce qu'elle fait au prix des méthodes. */
 export const toolPriceFactor = (state: GameState, level = levelOf(state, 'bargain')): number => BARGAIN_FACTOR ** level;

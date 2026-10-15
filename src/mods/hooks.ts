@@ -23,11 +23,48 @@ export interface Hooks {
   mimic: () => boolean | void;
   /** Une lettre vient de paraître : `catch()` l'attrape comme un clic. */
   letter: (letter: ModLetter) => void;
+  /** Des méthodes achetées (un clic sur la ruche) : laquelle, combien, pour combien de pages. */
+  buy: (buy: { method: string; count: number; cost: number }) => void;
+  /** Un niveau d'intuition compris (au livre blanc, ou rendu par la Réminiscence) : laquelle, son niveau. */
+  intuition: (intuition: { id: string; level: number }) => void;
+  /** Une étoile de l'Etherium allumée : « page.étoile », et son prix en Éther. */
+  star: (star: { id: string; cost: number }) => void;
+  /** Un livre rare trouvé (il arrive en main, absence comprise) : lequel, et le numéro du livre. */
+  rareBook: (book: { id: string; index: number }) => void;
+  /** Une relique trouvée dans sa salle. */
+  relic: (relic: { id: string }) => void;
+  /** Un sceau apposé (ceux des mods compris). */
+  seal: (seal: { id: string }) => void;
+  /** Le livre en main lu jusqu'au bout et refermé (absence comprise) : les livres finis, depuis le début de la partie. */
+  book: (book: { finished: number }) => void;
+  /** La Mimic attrapée (ou rendue juste avant un prestige) : la Connaissance qu'elle avait avalée, et son bonus. */
+  mimicCaught: (mimic: { eaten: number; bonus: number }) => void;
+  /** Une lettre attrapée : le bonus qu'elle donne, et sa durée en secondes (aucune : il agit d'un coup). */
+  boon: (boon: { id: string; seconds?: number }) => void;
 }
 
 export type HookName = keyof Hooks;
 
-export const HOOK_NAMES: readonly HookName[] = ['tick', 'draw', 'reading', 'click', 'find', 'prestige', 'reset', 'mimic', 'letter'];
+export const HOOK_NAMES: readonly HookName[] = [
+  'tick',
+  'draw',
+  'reading',
+  'click',
+  'find',
+  'prestige',
+  'reset',
+  'mimic',
+  'letter',
+  'buy',
+  'intuition',
+  'star',
+  'rareBook',
+  'relic',
+  'seal',
+  'book',
+  'mimicCaught',
+  'boon',
+];
 
 /** Une trouvaille, telle qu'un mod la voit. */
 export interface ModFind {
@@ -57,6 +94,15 @@ const hooks: { [N in HookName]: Hooks[N][] } = {
   reset: [],
   mimic: [],
   letter: [],
+  buy: [],
+  intuition: [],
+  star: [],
+  rareBook: [],
+  relic: [],
+  seal: [],
+  book: [],
+  mimicCaught: [],
+  boon: [],
 };
 
 export const isHookName = (name: string): name is HookName => (HOOK_NAMES as readonly string[]).includes(name);

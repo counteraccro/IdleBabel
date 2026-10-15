@@ -21,6 +21,8 @@ import { levelOf } from './technologies';
 import { gainPages, pagesPerSecond } from './production';
 import { drawFind, gainFind } from './knowledge';
 import { sealEvent } from './seals';
+import { runHooks } from '../mods/hooks';
+import { modded } from '../mods/quantities';
 import type { GameState } from '../core/state';
 
 /**
@@ -32,17 +34,17 @@ import type { GameState } from '../core/state';
 
 /** Le Guet, la Plume et l'Astrolabe : l'attente entre deux lettres, en secondes. */
 export const letterWait = (state: GameState, level = levelOf(state, 'watch')): { min: number; max: number } => {
-  const factor = letterWaitFactor(state) * (1 - WATCH_STEP * level) * relicLetterWait(state);
+  const factor = letterWaitFactor(state) * (1 - WATCH_STEP * level) * relicLetterWait(state) * modded('letterWait');
   return { min: LETTER_WAIT.min * factor, max: LETTER_WAIT.max * factor };
 };
 
 /** Le Souffle retenu et la Plume : le temps où la lettre reste à l'écran, en secondes. */
 export const letterStays = (state: GameState, level = levelOf(state, 'heldBreath')): number =>
-  LETTER_STAYS + BREATH_STEP * level + letterStaysBonus(state);
+  Math.max(1, LETTER_STAYS + BREATH_STEP * level + letterStaysBonus(state) + modded('letterStays'));
 
 /** La Lettre comprise et la Plume : ce qu'elles font à la durée des bonus. */
 export const boonLength = (state: GameState, level = levelOf(state, 'letterUnderstood')): number =>
-  boonLengthFactor(state) * (1 + UNDERSTOOD_STEP * level);
+  boonLengthFactor(state) * (1 + UNDERSTOOD_STEP * level) * modded('boonLength');
 
 /** La durée d'un bonus, en secondes ; aucune s'il agit d'un coup. */
 export const boonSeconds = (state: GameState, id: BoonId, level?: number): number | undefined => {
@@ -162,6 +164,7 @@ export const catchLetter = (state: GameState, left: number, random: () => number
     gainPages(state, gift.pages);
   } else gainFind(state, drawFind(state, random));
   if (activeBoons(now).length >= 3) sealEvent(state, 'threeLights', now);
+  runHooks('boon', seconds === undefined ? { id: boon } : { id: boon, seconds });
   return gift;
 };
 

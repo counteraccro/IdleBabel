@@ -4,6 +4,7 @@ import { HOOK_NAMES } from '../src/mods/hooks';
 import { mountModApi } from '../src/mods/api';
 import { createInitialState } from '../src/core/state';
 import { modGame } from '../src/mods/game';
+import { QUANTITIES, RULES } from '../src/mods/quantities';
 
 vi.stubGlobal('window', new EventTarget());
 
@@ -23,5 +24,11 @@ describe('la documentation des mods', () => {
 
   it('dit chaque fonction de IdleBabel.game, dans les deux langues', () => {
     for (const name of Object.keys(modGame(createInitialState('fr')))) expect(doc.split(`data-game="${name}"`).length - 1, name).toBe(2);
+  });
+
+  it('dit chaque grandeur et chaque règle, dans les deux langues', () => {
+    for (const name of [...Object.keys(QUANTITIES), 'method:', 'methodCost:'])
+      expect(doc.split(`data-quantity="${name}"`).length - 1, name).toBe(2);
+    for (const name of Object.keys(RULES)) expect(doc.split(`data-rule="${name}"`).length - 1, name).toBe(2);
   });
 });

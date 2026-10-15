@@ -4,7 +4,11 @@ import { SENTENCES } from '../data/sentences';
 import { METHOD_CHAIN, type ToolId } from '../data/tools';
 import { currentTarget } from './sentences';
 import { relicHintFindable } from './relics';
+import { rule } from '../mods/quantities';
 import type { GameState } from '../core/state';
+
+/** Exemplaires de la méthode d'avant qu'il faut : METHOD_GATE, ou ce qu'a réglé un mod (`methodGate`). */
+export const methodGate = (): number => rule('methodGate', METHOD_GATE);
 
 /**
  * La phrase de méthode en cours, si elle peut déjà se trouver : la méthode d'avant possédée à METHOD_GATE
@@ -18,7 +22,7 @@ export const findableTarget = (state: GameState): string | undefined => {
   if (index <= 0) return target;
   const previous = METHOD_CHAIN[index - 1];
   if (previous.age !== METHOD_CHAIN[index].age) return target;
-  return state.tools[previous.id] >= METHOD_GATE ? target : undefined;
+  return state.tools[previous.id] >= methodGate() ? target : undefined;
 };
 
 /** La phrase `id` est la méthode en cours, mais elle attend : la méthode d'avant, à METHOD_GATE exemplaires. */

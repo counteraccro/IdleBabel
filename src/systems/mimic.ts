@@ -1,6 +1,7 @@
 import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../data/mimic';
 import { mimicComesFactor, mimicGivesBonus, mimicUnlocked } from './etherium';
-import { hookAllows } from '../mods/hooks';
+import { hookAllows, runHooks } from '../mods/hooks';
+import { modded } from '../mods/quantities';
 import type { GameState } from '../core/state';
 
 /**
@@ -12,10 +13,10 @@ import type { GameState } from '../core/state';
 export const mimicHere = (state: GameState): boolean => state.mimic.at !== null;
 
 /** Secondes, en moyenne, entre deux Mimics (les dents du haut les rapprochent). */
-export const mimicEvery = (state: GameState): number => MIMIC_EVERY / mimicComesFactor(state);
+export const mimicEvery = (state: GameState): number => (MIMIC_EVERY / mimicComesFactor(state)) * modded('mimicEvery');
 
 /** Ce qu'elle rend en plus de ce qu'elle a avalé : 10 %, et les dents du bas. */
-export const mimicBonusShare = (state: GameState): number => MIMIC_BONUS + mimicGivesBonus(state);
+export const mimicBonusShare = (state: GameState): number => Math.max(0, MIMIC_BONUS + mimicGivesBonus(state) + modded('mimicGives'));
 
 /** Ce qu'elle laisse de la lecture des méthodes : tant qu'elle est là, −(ce qu'elle rendra en plus), −50 % au plus. */
 export const mimicReading = (state: GameState): number => (mimicHere(state) ? 1 - Math.min(MIMIC_SLOW_CAP, mimicBonusShare(state)) : 1);
@@ -87,5 +88,6 @@ export const catchMimic = (state: GameState, now = Date.now()): { eaten: number;
   state.mimic.at = null;
   state.mimic.spot = null;
   state.mimic.eaten = 0;
+  runHooks('mimicCaught', given);
   return given;
 };

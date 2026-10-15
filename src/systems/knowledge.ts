@@ -12,6 +12,7 @@ import { findsMultiplier, knowledgePerFind } from './etherium';
 import { findsBoon, knowledgeBoon } from './boons';
 import { swallow } from './mimic';
 import { runHooks } from '../mods/hooks';
+import { modded } from '../mods/quantities';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -31,11 +32,13 @@ export const maxTurnsPerSecond = (state: GameState): number => turnCap ?? turnsP
 
 /**
  * Chance qu'une page tournée cache une trouvaille : la base, × le filtre sémantique, × les sceaux obtenus
- * (+1 % chacun), × les Trouvailles de l'Etherium, × l'Œil vif de la lettre (en cours). Détail : dans le chapitre
- * « Révélations » du Grand Livre.
+ * (+1 % chacun), × les Trouvailles de l'Etherium, × l'Œil vif de la lettre (en cours), × les mods (grandeur `findChance`).
+ * Détail : dans le chapitre « Révélations » du Grand Livre.
  */
 export const findChance = (state: GameState): number =>
-  forced ? 1 : BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state) * findsMultiplier(state) * findsBoon();
+  forced
+    ? 1
+    : BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state) * findsMultiplier(state) * findsBoon() * modded('findChance');
 
 /** Pages tournées dans le livre en main depuis le début de la partie. */
 const pagesTurned = (state: GameState): number => state.booksFinished * PAGES_PER_BOOK + state.bookPage;
@@ -190,7 +193,7 @@ export const findText = (find: Find): string => {
  */
 export const gainFind = (state: GameState, find: Find): void => {
   // Les bonus multiplient : arrondi au supérieur, la Connaissance se compte en entiers.
-  const gained = Math.ceil(knowledgePerFind(state) * knowledgeBoon() + relicKnowledge(state));
+  const gained = Math.ceil(knowledgePerFind(state) * knowledgeBoon() * modded('knowledge') + relicKnowledge(state));
   // Une Mimic dans la salle avale la Connaissance ; la trouvaille s'écrit quand même dans le livre blanc.
   if (!swallow(state, gained)) {
     state.knowledge += gained;

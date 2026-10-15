@@ -4,6 +4,7 @@ import { SEAL_FIND_BONUS } from '../data/knowledge';
 import { seeded, hashText } from '../core/random';
 import { LETTERS } from './babelText';
 import { modSeals } from '../mods/modSeals';
+import { runHooks } from '../mods/hooks';
 
 /** Tous les sceaux : ceux du jeu, puis ceux des mods (qui ne comptent pas dans l'avancement : `completion`). */
 export const allSeals = (): readonly SealDef[] => [...SEALS, ...modSeals()];
@@ -23,12 +24,18 @@ export const onSealed = (listener: SealListener): (() => void) => {
 /** Annonce des sceaux (vision à droite de l'écran) sans rien changer à la partie : sert au débogage. */
 export const announceSeals = (ids: string[]): void => listeners.forEach((listener) => listener(ids));
 
+/** Les mods (crochet `seal`) : un appel par sceau apposé ; jamais pour une annonce rejouée (débogage). */
+const tellMods = (ids: readonly string[]): void => {
+  for (const id of ids) runHooks('seal', { id });
+};
+
 /** Débogage : appose d'un coup tous les sceaux pas encore obtenus. */
 export const sealAll = (state: GameState, now = Date.now()): void => {
   const sealed = SEALS.filter((seal) => !(seal.id in state.seals)).map((seal) => seal.id);
   for (const id of sealed) state.seals[id] = now;
   state.newSeals.push(...sealed);
   if (sealed.length) announceSeals(sealed);
+  tellMods(sealed);
 };
 
 /** Appelé à chaque tick : scelle ce qui vient d'être atteint (avec sa date), et l'annonce. */
@@ -42,6 +49,7 @@ export const checkSeals = (state: GameState, now = Date.now()): void => {
     }
   }
   if (sealed.length) announceSeals(sealed);
+  tellMods(sealed);
 };
 
 /** Un secret qui tient à un geste (voir `secret` dans data/seals.ts) : scellé et annoncé, une seule fois. */
@@ -50,6 +58,7 @@ export const sealEvent = (state: GameState, id: string, now = Date.now()): void 
   state.seals[id] = now;
   state.newSeals.push(id);
   announceSeals([id]);
+  tellMods([id]);
 };
 
 /** Le joueur a vu ces sceaux dans le livre étrange. */
