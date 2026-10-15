@@ -189,7 +189,7 @@
           Un mod est un fichier JavaScript. Il s’enregistre auprès du jeu par <code>IdleBabel.registerMod</code>, puis se branche
           sur ses <em>crochets</em> : des moments du jeu où il est appelé. Celui-ci double la lecture de toutes les méthodes :
         </p>
-        <pre><code>IdleBabel.registerMod('double-lecture', {
+        <pre><code>IdleBabel.registerMod('double-reading', {
   version: '1.0.0',
   init() {
     <span class="comment">// À chaque calcul de la production : ×2.</span>
@@ -198,7 +198,7 @@
   },
 });</code></pre>
         <p>
-          Enregistrez-le sous <code>double-lecture.js</code>, mettez-le en ligne (voir <a href="#fr-heberger">plus bas</a>), et
+          Enregistrez-le sous <code>double-reading.js</code>, mettez-le en ligne (voir <a href="#fr-heberger">plus bas</a>), et
           chargez-le dans le jeu.
         </p>
 
@@ -226,11 +226,11 @@
         <ul>
           <li>
             <strong>GitHub Pages</strong> : un dépôt avec Pages activé, le fichier à la racine :
-            <code>https://votre-nom.github.io/votre-depot/mon-mod.js</code>.
+            <code>https://votre-nom.github.io/votre-depot/my-mod.js</code>.
           </li>
           <li>
             <strong>jsDelivr</strong>, devant un dépôt GitHub public, sans rien configurer :
-            <code>https://cdn.jsdelivr.net/gh/votre-nom/votre-depot/mon-mod.js</code>.
+            <code>https://cdn.jsdelivr.net/gh/votre-nom/votre-depot/my-mod.js</code>.
           </li>
           <li>Un <strong>Gist</strong> : jsDelivr ne sert que les dépôts ; pour un Gist, passez plutôt par un dépôt.</li>
         </ul>
@@ -474,21 +474,21 @@ IdleBabel.modify('method:diagonal', () =&gt; (IdleBabel.state.tools.diagonal &lt
           « Mods » (une par mod actif qui en a), les garde dans la sauvegarde (export compris) et prévient le mod quand elles
           changent. Le sommaire, en première page du cahier, y mène. Rien à écrire pour le cahier.
         </p>
-        <pre><code>IdleBabel.registerMod('mon-mod', {
+        <pre><code>IdleBabel.registerMod('my-mod', {
   version: '1.0.0',
   options: [
     <span class="comment">// Un choix parmi plusieurs : le choisi est entouré au stylo.</span>
-    { id: 'taille', name: { fr: 'Taille', en: 'Size' }, default: 'grand',
-      choices: [{ id: 'petit', name: { fr: 'Petit', en: 'Small' } }, { id: 'grand', name: { fr: 'Grand', en: 'Large' } }] },
+    { id: 'size', name: { fr: 'Taille', en: 'Size' }, default: 'large',
+      choices: [{ id: 'small', name: { fr: 'Petit', en: 'Small' } }, { id: 'large', name: { fr: 'Grand', en: 'Large' } }] },
     <span class="comment">// Sans choices : une case à cocher (default true ou false), avec sa ligne au crayon.</span>
-    { id: 'bloc', name: { fr: 'Le bloc', en: 'The block' }, hint: { fr: 'En bas à gauche.', en: 'Bottom left.' }, default: true },
-    <span class="comment">// needs : grisée tant que la case « bloc » est décochée.</span>
-    { id: 'heure', name: { fr: 'L’heure', en: 'The time' }, default: true, needs: 'bloc' },
+    { id: 'block', name: { fr: 'Le bloc', en: 'The block' }, hint: { fr: 'En bas à gauche.', en: 'Bottom left.' }, default: true },
+    <span class="comment">// needs : grisée tant que la case « block » est décochée.</span>
+    { id: 'clock', name: { fr: 'L’heure', en: 'The time' }, default: true, needs: 'block' },
   ],
   <span class="comment">// Après init et load, avec toutes les valeurs ; puis à chaque changement au cahier.</span>
-  onOptions(valeurs) { console.log(valeurs.taille, valeurs.bloc); },
+  onOptions(values) { console.log(values.size, values.block); },
 });
-IdleBabel.option('mon-mod', 'taille');   <span class="comment">// 'grand' : la valeur, n'importe quand</span></code></pre>
+IdleBabel.option('my-mod', 'size');   <span class="comment">// 'large' : la valeur, n'importe quand</span></code></pre>
         <p>
           <code>name</code>, <code>hint</code> et le nom d’un choix : une chaîne, ou <code>{ fr, en }</code>. Une valeur gardée
           qui ne vaut plus rien (option retirée, choix renommé) reprend son défaut ; une option mal formée est sautée (dit dans la
@@ -543,7 +543,7 @@ IdleBabel.option('mon-mod', 'taille');   <span class="comment">// 'grand' : la v
           est donc sans risque. Pour l’instant, il ajoute des sceaux, chacun atteint quand un compteur du jeu arrive à sa valeur :
         </p>
         <pre><code>{
-  "id": "mon-mod",
+  "id": "my-mod",
   "version": "1.0.0",
   "seals": [
     {
@@ -636,23 +636,23 @@ const chance = 1 - Math.exp(-600 / every);</code></pre>
         <h3>Deux sceaux de plus — <a href="exemple/exemple.json">exemple.json</a></h3>
         <p>Un mod sans code : deux sceaux, l’un à un million de pages lues, l’autre après dix heures de jeu.</p>
         <h3>Un mod qui garde des données</h3>
-        <pre><code>let mots = 0;
-IdleBabel.registerMod('compte-mots', {
+        <pre><code>let words = 0;
+IdleBabel.registerMod('word-count', {
   version: '1.0.0',
   init() {
     IdleBabel.registerHook('find', (find) =&gt; {
-      if (find.kind === 'word') mots += 1;
+      if (find.kind === 'word') words += 1;
     });
     IdleBabel.addSeal({
-      id: 'cent-mots',
+      id: 'hundred-words',
       name: { fr: 'Cent mots', en: 'A hundred words' },
       text: { fr: 'Trouve cent mots avec ce mod', en: 'Find a hundred words with this mod' },
-      reached: () =&gt; mots &gt;= 100,
+      reached: () =&gt; words &gt;= 100,
     });
   },
   <span class="comment">// Gardé dans la sauvegarde du jeu, rendu à load() à la visite suivante.</span>
-  save: () =&gt; String(mots),
-  load: (texte) =&gt; { mots = Number(texte) || 0; },
+  save: () =&gt; String(words),
+  load: (text) =&gt; { words = Number(text) || 0; },
 });</code></pre>
 
         <h2 id="fr-triche">Ce qu’un mod change à la partie</h2>
