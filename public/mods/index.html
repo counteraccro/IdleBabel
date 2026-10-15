@@ -187,6 +187,7 @@
           sur ses <em>crochets</em> : des moments du jeu où il est appelé. Celui-ci double la lecture de toutes les méthodes :
         </p>
         <pre><code>IdleBabel.registerMod('double-lecture', {
+  version: '1.0.0',
   init() {
     <span class="comment">// À chaque calcul de la production : ×2.</span>
     IdleBabel.registerHook('reading', () =&gt; 2);
@@ -241,11 +242,12 @@
           <table>
             <tr><th>Nom</th><th>Ce qu’il fait</th></tr>
             <tr>
-              <td><code>registerMod(nom, { init, save, load })</code></td>
+              <td><code>registerMod(nom, { version, init, save, load })</code></td>
               <td>
-                Enregistre le mod. <code>init()</code> : une fois, au chargement ; c’est là qu’on pose ses crochets.
+                Enregistre le mod. <code>version</code> : une chaîne (« 1.0.0 »), montrée au cahier à côté de son nom.
+                <code>init()</code> : une fois, au chargement ; c’est là qu’on pose ses crochets.
                 <code>save()</code> : rend une chaîne, gardée dans la sauvegarde du jeu. <code>load(texte)</code> : appelé juste
-                après <code>init</code>, avec ce que <code>save()</code> avait rendu la dernière fois. Tous trois sont facultatifs.
+                après <code>init</code>, avec ce que <code>save()</code> avait rendu la dernière fois. Tous sont facultatifs.
                 Rend <code>false</code> si le nom est vide ou déjà pris.
               </td>
             </tr>
@@ -378,6 +380,7 @@
         </p>
         <pre><code>{
   "id": "mon-mod",
+  "version": "1.0.0",
   "seals": [
     {
       "id": "million",
@@ -401,6 +404,7 @@
         <h3>Sans Mimic — <a href="sans-mimic/sans-mimic.js">sans-mimic.js</a></h3>
         <pre><code><span class="comment">// Le nom du mod : celui qu'affiche le cahier, et la clé de ses données.</span>
 IdleBabel.registerMod('sans-mimic', {
+  version: '1.0.0',
   <span class="comment">// Appelé une fois, au chargement.</span>
   init() {
     <span class="comment">// Juste avant qu'une Mimic apparaisse, le jeu demande : rendre false l'en empêche.</span>
@@ -410,6 +414,7 @@ IdleBabel.registerMod('sans-mimic', {
         <p>Une Mimic déjà là reste : attrapez-la, elle rend ce qu’elle a avalé.</p>
         <h3>Attrape-lettres — <a href="attrape-lettres/attrape-lettres.js">attrape-lettres.js</a></h3>
         <pre><code>IdleBabel.registerMod('attrape-lettres', {
+  version: '1.0.0',
   init() {
     <span class="comment">// Chaque lettre qui s'échappe du livre arrive ici.</span>
     IdleBabel.registerHook('letter', (letter) =&gt; {
@@ -446,6 +451,7 @@ IdleBabel.registerMod('sans-mimic', {
         <h3>Un mod qui garde des données</h3>
         <pre><code>let mots = 0;
 IdleBabel.registerMod('compte-mots', {
+  version: '1.0.0',
   init() {
     IdleBabel.registerHook('find', (find) =&gt; {
       if (find.kind === 'word') mots += 1;
@@ -480,7 +486,7 @@ IdleBabel.registerMod('compte-mots', {
         </p>
         <ul>
           <li>un dossier <code>public/mods/&lt;id&gt;/</code> : le fichier du mod, un <code>README.md</code> court, une capture ;</li>
-          <li>sa ligne dans <code>public/mods/mods.json</code> : nom et description en français et en anglais, auteur, version.</li>
+          <li>sa ligne dans <code>public/mods/mods.json</code> : nom et description en français et en anglais, auteur, version (la même que dans le fichier du mod).</li>
         </ul>
         <p>
           Les règles : pas de réseau (aucun <code>fetch</code>, aucun script venu d’ailleurs), pas de vraie personne nommée, pas de
@@ -517,6 +523,7 @@ IdleBabel.registerMod('compte-mots', {
           <em>hooks</em>: moments of the game where it gets called. This one doubles the reading of every method:
         </p>
         <pre><code>IdleBabel.registerMod('double-reading', {
+  version: '1.0.0',
   init() {
     <span class="comment">// Every time production is computed: ×2.</span>
     IdleBabel.registerHook('reading', () =&gt; 2);
@@ -564,11 +571,12 @@ IdleBabel.registerMod('compte-mots', {
           <table>
             <tr><th>Name</th><th>What it does</th></tr>
             <tr>
-              <td><code>registerMod(name, { init, save, load })</code></td>
+              <td><code>registerMod(name, { version, init, save, load })</code></td>
               <td>
-                Registers the mod. <code>init()</code>: once, when it loads; this is where hooks go. <code>save()</code>: returns a
+                Registers the mod. <code>version</code>: a string (“1.0.0”), shown in the notebook next to its name.
+                <code>init()</code>: once, when it loads; this is where hooks go. <code>save()</code>: returns a
                 string, kept in the game’s save. <code>load(text)</code>: called right after <code>init</code>, with what
-                <code>save()</code> returned last time. All three are optional. Returns <code>false</code> if the name is empty or
+                <code>save()</code> returned last time. All are optional. Returns <code>false</code> if the name is empty or
                 already taken.
               </td>
             </tr>
@@ -700,6 +708,7 @@ IdleBabel.registerMod('compte-mots', {
         </p>
         <pre><code>{
   "id": "my-mod",
+  "version": "1.0.0",
   "seals": [
     {
       "id": "million",
@@ -723,6 +732,7 @@ IdleBabel.registerMod('compte-mots', {
         <h3>No Mimic — <a href="sans-mimic/sans-mimic.js">sans-mimic.js</a></h3>
         <pre><code><span class="comment">// The mod's name: the one the notebook shows, and the key of its data.</span>
 IdleBabel.registerMod('sans-mimic', {
+  version: '1.0.0',
   <span class="comment">// Called once, when it loads.</span>
   init() {
     <span class="comment">// Right before a Mimic appears, the game asks: returning false stops it.</span>
@@ -732,6 +742,7 @@ IdleBabel.registerMod('sans-mimic', {
         <p>A Mimic already there stays: catch it, it gives back what it swallowed.</p>
         <h3>Letter catcher — <a href="attrape-lettres/attrape-lettres.js">attrape-lettres.js</a></h3>
         <pre><code>IdleBabel.registerMod('attrape-lettres', {
+  version: '1.0.0',
   init() {
     <span class="comment">// Every letter escaping the book comes here.</span>
     IdleBabel.registerHook('letter', (letter) =&gt; {
@@ -768,6 +779,7 @@ IdleBabel.registerMod('sans-mimic', {
         <h3>A mod that keeps data</h3>
         <pre><code>let words = 0;
 IdleBabel.registerMod('word-count', {
+  version: '1.0.0',
   init() {
     IdleBabel.registerHook('find', (find) =&gt; {
       if (find.kind === 'word') words += 1;
@@ -801,7 +813,7 @@ IdleBabel.registerMod('word-count', {
         </p>
         <ul>
           <li>a folder <code>public/mods/&lt;id&gt;/</code>: the mod’s file, a short <code>README.md</code>, a screenshot;</li>
-          <li>its line in <code>public/mods/mods.json</code>: name and description in French and English, author, version.</li>
+          <li>its line in <code>public/mods/mods.json</code>: name and description in French and English, author, version (the same as in the mod file).</li>
         </ul>
         <p>
           The rules: no network (no <code>fetch</code>, no script from elsewhere), no real person named, no minified code (it must

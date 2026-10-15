@@ -9,7 +9,7 @@ import type { GameState } from '../../core/state';
 
 /**
  * La liste des mods du jeu (demande de l'auteur, 15/10) : rien n'est montré au cahier tant qu'on ne l'ouvre pas. Chaque
- * mod a son nom, son auteur, sa description ; « Ajouter » le charge aussitôt et le met dans la liste du joueur.
+ * mod a son nom, son auteur, sa version, sa description ; « Ajouter » le charge aussitôt et le met dans la liste du joueur.
  */
 export const openModCatalog = (state: GameState, onAdded: () => void): void => {
   const locale = getLocale();
@@ -19,7 +19,10 @@ export const openModCatalog = (state: GameState, onAdded: () => void): void => {
     const entry = catalogEntry(mod);
     const item = el('div', 'mod-catalog-item');
     const title = el('div');
-    title.append(el('span', 'mod-catalog-name', modText(mod.name, locale)), el('span', 'mod-catalog-author', mod.author));
+    title.append(
+      el('span', 'mod-catalog-name', modText(mod.name, locale)),
+      el('span', 'mod-catalog-author', `${mod.author} · ${t('ui.mods.version').replace('{v}', mod.version)}`),
+    );
     const add = el('button', 'modal-button', t('ui.mods.addThis'));
     add.type = 'button';
     const added = (): void => {

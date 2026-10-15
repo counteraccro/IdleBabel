@@ -1057,7 +1057,7 @@
             {
               "heading": "Nouveautés",
               "items": [
-                "Les mods : une page « Mods » dans le cahier d’options. « Liste des mods » propose ceux du jeu ; un mod peut aussi s’ajouter par son adresse. Chacun se désactive d’une case, ou se supprime.",
+                "Les mods : une page « Mods » dans le cahier d’options. « Liste des mods » propose ceux du jeu, avec leur auteur et leur version ; un mod peut aussi s’ajouter par son adresse. Chacun se désactive d’une case, ou se supprime.",
                 "Quatre mods dans la liste : Sans Mimic, Attrape-lettres, Liseuse (le livre en main devient une liseuse ; les livres rares et le Grand Livre restent en 3D) et Deux sceaux de plus.",
                 "Une documentation pour écrire un mod, en français et en anglais, à l’adresse counteraccro.github.io/IdleBabel/mods/, et la marche à suivre pour proposer le sien à la liste du jeu.",
                 "Un nouveau sceau secret."

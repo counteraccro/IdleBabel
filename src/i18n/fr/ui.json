@@ -53,6 +53,7 @@
     "none": "Aucun mod pour l’instant.",
     "howTo": "Décocher un mod le désactive sans le supprimer. L’un comme l’autre recharge la page.",
     "catalog": "Liste des mods",
+    "version": "v{v}",
     "catalogEmpty": "La liste des mods n’a pas pu être lue.",
     "addThis": "Ajouter",
     "added": "Ajouté",

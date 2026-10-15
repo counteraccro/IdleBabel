@@ -32,13 +32,16 @@ describe('la liste des mods (public/mods/mods.json)', () => {
       for (const word of FORBIDDEN) expect(code.includes(word), `${mod.id} : ${word}`).toBe(false);
       // Il s'enregistre sous son nom.
       expect(code).toContain(`registerMod('${mod.id}'`);
+      // Sa version, la même que sur sa ligne (le cahier la montre ; demande de l'auteur, 15/10).
+      expect(code, mod.id).toContain(`version: '${mod.version}'`);
     }
   });
 
   it('a des mods en données lisibles, au nom de leur ligne', () => {
     for (const mod of catalog.filter((candidate) => candidate.kind === 'json')) {
-      const data = JSON.parse(file(mod)!) as { id: string };
+      const data = JSON.parse(file(mod)!) as { id: string; version?: string };
       expect(data.id).toBe(mod.id);
+      expect(data.version, mod.id).toBe(mod.version);
     }
   });
 });

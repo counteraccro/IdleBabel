@@ -4,7 +4,7 @@ import { getLocale, t } from '../../i18n';
 import { catalogEntry, catalogMods } from '../../mods/catalog';
 import { loadMod, modStatus, removeMod, switchMod } from '../../mods/loader';
 import { openModCatalog } from './modCatalogModal';
-import { modName } from '../../mods/registry';
+import { modName, modVersion } from '../../mods/registry';
 import { modText } from '../../mods/modSeals';
 import { saveGame } from '../../core/save';
 import { BIG_BOOK_REWRITE } from '../book3d/book3dBook';
@@ -60,12 +60,14 @@ const openAddMod = (state: GameState): void => {
   input.focus();
 };
 
-/** Le nom d'un mod de la liste du joueur, et sa ligne au crayon : sa description, ou son adresse. */
+/** Le nom d'un mod de la liste du joueur (et sa version), et sa ligne au crayon : sa description, ou son adresse. */
 const describe = (state: GameState, entry: string): { name: string; hint: string } => {
   const locale = getLocale();
   const listed = catalogMods().find((mod) => catalogEntry(mod) === entry);
   const status = modStatus(entry);
-  const name = listed ? modText(listed.name, locale) : (modName(entry) ?? entry.split('/').pop()!);
+  const version = listed?.version ?? modVersion(entry);
+  const bare = listed ? modText(listed.name, locale) : (modName(entry) ?? entry.split('/').pop()!);
+  const name = version ? `${bare} ${t('ui.mods.version').replace('{v}', version)}` : bare;
   const hint = listed ? modText(listed.description, locale) : entry;
   if (status === 'missing') return { name: `${name} (${t('ui.mods.notFound')})`, hint };
   if (state.modsOff.includes(entry)) return { name: `${name} (${t('ui.mods.off')})`, hint };

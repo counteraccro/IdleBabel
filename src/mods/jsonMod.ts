@@ -34,12 +34,13 @@ const condition = (when: unknown): ((state: GameState) => boolean) | null => {
 };
 
 /**
- * Un mod en données, sans code (plan des mods, §1) : son nom, et ses sceaux. Un sceau mal formé est sauté (dit dans la
+ * Un mod en données, sans code (plan des mods, §1) : son nom, sa version, et ses sceaux. Un sceau mal formé est sauté (dit dans la
  * console) ; le mod est refusé (false) sans nom, ou si son nom est déjà pris.
  */
 export const readJsonMod = (state: GameState, data: unknown): boolean => {
-  const mod = data as { id?: unknown; seals?: unknown };
-  if (!mod || typeof mod.id !== 'string' || !registerMod(state, mod.id, {})) return false;
+  const mod = data as { id?: unknown; version?: unknown; seals?: unknown };
+  const version = typeof mod?.version === 'string' ? mod.version : undefined;
+  if (!mod || typeof mod.id !== 'string' || !registerMod(state, mod.id, { version })) return false;
   for (const seal of Array.isArray(mod.seals) ? (mod.seals as JsonSeal[]) : []) {
     const reached = condition(seal?.when);
     if (!reached || !addModSeal(mod.id, { ...seal, reached }))

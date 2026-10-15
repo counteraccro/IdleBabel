@@ -53,6 +53,7 @@
     "none": "No mod yet.",
     "howTo": "Unticking a mod disables it without deleting it. Either one reloads the page.",
     "catalog": "Mod list",
+    "version": "v{v}",
     "catalogEmpty": "The mod list could not be read.",
     "addThis": "Add",
     "added": "Added",

@@ -2,6 +2,8 @@ import type { GameState } from '../core/state';
 
 /** Un mod, tel que `IdleBabel.registerMod` le reçoit (comme Game.registerMod de Cookie Clicker). */
 export interface ModDef {
+  /** Sa version (« 1.0.0 ») : montrée au cahier, à côté de son nom. */
+  version?: string;
   /** Une fois, au chargement du mod : il y pose ses crochets. */
   init?: () => void;
   /** À chaque sauvegarde : une chaîne, gardée dans la sauvegarde du jeu (export compris). */
@@ -15,6 +17,7 @@ const mods = new Map<string, ModDef>();
 /** L'adresse du mod en train de se charger (src/mods/loader.ts) : son nom s'y rattache, pour le cahier. */
 let loading: string | null = null;
 const names = new Map<string, string>();
+const versions = new Map<string, string>();
 
 export const startLoading = (address: string | null): void => {
   loading = address;
@@ -22,6 +25,9 @@ export const startLoading = (address: string | null): void => {
 
 /** Le nom qu'a pris le mod chargé depuis cette adresse (celui de registerMod), s'il en a pris un. */
 export const modName = (address: string): string | undefined => names.get(address);
+
+/** La version qu'a dite le mod chargé depuis cette adresse (registerMod, ou le champ `version` d'un mod .json). */
+export const modVersion = (address: string): string | undefined => versions.get(address);
 
 const guard = (id: string, what: string, run: () => void): void => {
   try {
@@ -39,6 +45,7 @@ export const registerMod = (state: GameState, id: string, mod: ModDef): boolean 
   }
   mods.set(id, mod);
   if (loading) names.set(loading, id);
+  if (loading && typeof mod.version === 'string' && mod.version) versions.set(loading, mod.version);
   if (mod.init) guard(id, 'init', mod.init);
   const saved = state.modData[id];
   if (saved !== undefined && mod.load) guard(id, 'load', () => mod.load!(saved));
@@ -60,5 +67,6 @@ export const collectModData = (state: GameState): void => {
 export const clearMods = (): void => {
   mods.clear();
   names.clear();
+  versions.clear();
   loading = null;
 };

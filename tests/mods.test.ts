@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { clearHooks, hookAllows, hookProduct, registerHook, runHooks } from '../src/mods/hooks';
-import { clearMods, collectModData, registerMod } from '../src/mods/registry';
+import { clearMods, collectModData, modVersion, registerMod, startLoading } from '../src/mods/registry';
 import { readJsonMod } from '../src/mods/jsonMod';
 import { clearModSeals, modSealId } from '../src/mods/modSeals';
 import { SEALS } from '../src/data/seals';
@@ -151,5 +151,19 @@ describe('Les mods', () => {
     expect(warn).toHaveBeenCalledOnce();
     expect(error).toHaveBeenCalledOnce();
     window.removeEventListener(HELD_BOOK_REPLACED, told);
+  });
+
+  it('gardent la version que dit chaque mod, pour le cahier (demande de l’auteur, 15/10)', () => {
+    const state = createInitialState('fr');
+    startLoading('https://exemple.org/a.js');
+    registerMod(state, 'a', { version: '2.1.0' });
+    startLoading('https://exemple.org/b.json');
+    readJsonMod(state, { id: 'b', version: '0.3.0', seals: [] });
+    startLoading('https://exemple.org/c.js');
+    registerMod(state, 'c', {});
+    startLoading(null);
+    expect(modVersion('https://exemple.org/a.js')).toBe('2.1.0');
+    expect(modVersion('https://exemple.org/b.json')).toBe('0.3.0');
+    expect(modVersion('https://exemple.org/c.js')).toBeUndefined();
   });
 });

@@ -1048,7 +1048,7 @@
             {
               "heading": "New",
               "items": [
-                "Mods: a “Mods” page in the options notebook. “Mod list” offers the game’s own; a mod can also be added by its address. Each one can be disabled with a tick box, or removed.",
+                "Mods: a “Mods” page in the options notebook. “Mod list” offers the game’s own, with their author and version; a mod can also be added by its address. Each one can be disabled with a tick box, or removed.",
                 "Four mods in the list: No Mimic, Letter catcher, E-reader (the book in hand becomes an e-reader; rare books and the Great Book stay in 3D) and Two more seals.",
                 "Documentation for writing a mod, in French and English, at counteraccro.github.io/IdleBabel/mods/, and the steps to propose your own for the game’s list.",
                 "A new secret seal."

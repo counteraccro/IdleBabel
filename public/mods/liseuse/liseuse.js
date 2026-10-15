@@ -8,6 +8,7 @@
 //   book.text(page) -> { before, find, after }, book.turn() (tourne une feuille, comme un clic sur le livre).
 // Le jeu appelle update() à chaque feuille tournée, à la main ou seule : on réécrit l'écran.
 IdleBabel.registerMod('liseuse', {
+  version: '1.0.0',
   init() {
     const words = {
       fr: { page: (a, b) => (b ? `Pages ${a}–${b} sur 410` : `Page ${a} sur 410`) },

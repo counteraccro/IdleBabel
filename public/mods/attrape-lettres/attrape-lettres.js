@@ -2,6 +2,7 @@
 // Le crochet « letter » reçoit la lettre qui vient de paraître ; sa fonction catch() l'attrape.
 // Les lettres du mot BABEL aussi (id « word ») : le mot s'écrit en entier.
 IdleBabel.registerMod('attrape-lettres', {
+  version: '1.0.0',
   init() {
     IdleBabel.registerHook('letter', (letter) => {
       // Une seconde pour la voir monter, puis elle est prise.

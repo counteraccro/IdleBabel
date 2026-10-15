@@ -12,7 +12,8 @@ Un mod chargé par son adresse ne demande rien à personne. Pour qu'il entre dan
 cahier d'options, servie par le jeu lui-même), ouvrez une *pull request* :
 
 1. Un dossier `public/mods/<id>/`, où `<id>` est le nom du mod (minuscules, chiffres, tirets), avec :
-   - le fichier du mod : `<id>.js`, qui commence par `IdleBabel.registerMod('<id>', …)`, ou `<id>.json` (`"id": "<id>"`) ;
+   - le fichier du mod : `<id>.js`, qui commence par `IdleBabel.registerMod('<id>', { version: '1.0.0', … })`, ou `<id>.json`
+     (`"id": "<id>"`, `"version": "1.0.0"`) ;
    - un `README.md` court : ce qu'il fait, en français et en anglais ;
    - une capture (`capture.png`) si le mod change ce qu'on voit.
 2. Sa ligne dans `public/mods/mods.json` :
@@ -27,7 +28,8 @@ cahier d'options, servie par le jeu lui-même), ouvrez une *pull request* :
      "kind": "js"
    }
    ```
-3. `npm test` passe : un test vérifie le registre (un nom unique, le fichier présent, les textes en français et en anglais).
+3. `npm test` passe : un test vérifie le registre (un nom unique, le fichier présent, les textes en français et en anglais, la même
+   version dans le fichier et dans sa ligne). Une mise à jour du mod change sa version aux deux endroits.
 
 ### Les règles
 
@@ -49,7 +51,8 @@ to everyone. Documentation: **https://counteraccro.github.io/IdleBabel/mods/**.
 
 To get a mod into **the in-game list**, open a pull request with a folder `public/mods/<id>/` (the mod file, a short
 `README.md` in French and English, a screenshot if it changes what you see) and its line in `public/mods/mods.json`
-(name and description in French and English, author, version, file, kind). `npm test` must pass.
+(name and description in French and English, author, version, file, kind). The mod file states the same version
+(`registerMod('<id>', { version: '1.0.0', … })`, or `"version"` in a `.json`). `npm test` must pass.
 
 Rules: no network (no `fetch`, `XMLHttpRequest`, `WebSocket`, no outside script or `import()`), no minified code, no real
 person named or targeted, French and English for anything the player reads, no changes to the game's files (`src/`): if a
