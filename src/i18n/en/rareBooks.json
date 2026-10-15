@@ -1042,6 +1042,21 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.2",
+          "date": "October 15, 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "Mods: a “Mods” page in the options notebook. “Mod list” offers the game’s own; a mod can also be added by its address. Each one can be disabled with a tick box, or removed.",
+                "Four mods in the list: No Mimic, Letter catcher, E-reader (the book in hand becomes an e-reader; rare books and the Great Book stay in 3D) and Two more seals.",
+                "Documentation for writing a mod, in French and English, at counteraccro.github.io/IdleBabel/mods/, and the steps to propose your own for the game’s list.",
+                "A new secret seal."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.1",
           "date": "October 14, 2026",
           "sections": [
@@ -2422,7 +2437,7 @@
         "away": {
           "head": "Absence",
           "text": [
-            "The game learned to go on without the player. Game closed, pages are read at the pace of production, at half rate, eight hours at most. The book in hand moves on, finished books close, rare books met along the way are found, seals follow. A hidden tab is not an absence: the game keeps running there, slowed down so as not to weigh on the browser, and the counters stay right; the Mimic gets ready there, and waits for the return to appear. Its title shows the pages in store: you can watch them climb from another tab. The options notebook exports the game as a string of characters, and takes it back: options, progress, Ether, it all fits. One page further, the mods: take one from the list, or load one by its address; each plugs into the game to change a piece of it, and a tick box disables it. One of them turns the open book into an e-reader, a grey ink screen and a page you touch to turn; rare books stay books.",
+            "The game learned to go on without the player. Game closed, pages are read at the pace of production, at half rate, eight hours at most. The book in hand moves on, finished books close, rare books met along the way are found, seals follow. A hidden tab is not an absence: the game keeps running there, slowed down so as not to weigh on the browser, and the counters stay right; the Mimic gets ready there, and waits for the return to appear. Its title shows the pages in store: you can watch them climb from another tab. The options notebook exports the game as a string of characters, and takes it back: options, progress, Ether, it all fits. One page further, the mods: take one from the list, or load one by its address; each plugs into the game to change a piece of it, and a tick box disables it. One of them turns the open book into an e-reader, a grey ink screen and a page you touch to turn; rare books stay books. With mods, the game moved to Alpha 2.2.",
             "On return, the seeker thinks they are waking from a dream. A modal sets them straight, and tells what their hands did without them.",
             "With the white book or the library open, the book in hand is gone: for a long time its pages stopped turning, and nothing was found in them. Back to the game, that time now counts like an open window. And pages turning on their own never went past ten leaves a second, whatever their cap: now they keep it."
           ]
