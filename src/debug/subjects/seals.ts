@@ -16,6 +16,7 @@ const PLATE_NAMES: Record<PlateId, string> = {
   relics: 'Les reliques',
   rare: 'Livres rares',
   secrets: 'Secrets',
+  mods: 'Mods',
 };
 
 const ALL: DebugSubject = {

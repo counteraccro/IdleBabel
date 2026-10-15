@@ -3,6 +3,13 @@ import { SEALS, type PlateId, type SealDef } from '../data/seals';
 import { SEAL_FIND_BONUS } from '../data/knowledge';
 import { seeded, hashText } from '../core/random';
 import { LETTERS } from './babelText';
+import { modSeals } from '../mods/modSeals';
+
+/** Tous les sceaux : ceux du jeu, puis ceux des mods (qui ne comptent pas dans l'avancement : `completion`). */
+export const allSeals = (): readonly SealDef[] => [...SEALS, ...modSeals()];
+
+/** Un sceau par son identifiant, du jeu ou d'un mod. */
+export const findSeal = (id: string | null): SealDef | undefined => allSeals().find((seal) => seal.id === id);
 
 type SealListener = (ids: string[]) => void;
 const listeners = new Set<SealListener>();
@@ -27,7 +34,7 @@ export const sealAll = (state: GameState, now = Date.now()): void => {
 /** Appelé à chaque tick : scelle ce qui vient d'être atteint (avec sa date), et l'annonce. */
 export const checkSeals = (state: GameState, now = Date.now()): void => {
   const sealed: string[] = [];
-  for (const seal of SEALS) {
+  for (const seal of allSeals()) {
     if (!(seal.id in state.seals) && seal.reached(state)) {
       state.seals[seal.id] = now;
       state.newSeals.push(seal.id);
@@ -39,7 +46,7 @@ export const checkSeals = (state: GameState, now = Date.now()): void => {
 
 /** Un secret qui tient à un geste (voir `secret` dans data/seals.ts) : scellé et annoncé, une seule fois. */
 export const sealEvent = (state: GameState, id: string, now = Date.now()): void => {
-  if (id in state.seals || !SEALS.some((seal) => seal.id === id)) return;
+  if (id in state.seals || !findSeal(id)) return;
   state.seals[id] = now;
   state.newSeals.push(id);
   announceSeals([id]);
@@ -52,7 +59,7 @@ export const markSealsSeen = (state: GameState, ids: readonly string[]): void =>
 
 export const sealObtained = (state: GameState, seal: SealDef): boolean => seal.id in state.seals;
 
-export const plateSeals = (plate: PlateId): SealDef[] => SEALS.filter((seal) => seal.plate === plate);
+export const plateSeals = (plate: PlateId): SealDef[] => allSeals().filter((seal) => seal.plate === plate);
 
 /** Sceaux obtenus sur une liste. */
 export const countObtained = (state: GameState, seals: readonly SealDef[]): number =>

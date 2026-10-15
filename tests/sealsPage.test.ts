@@ -7,7 +7,8 @@ const FOLIO_TOP = 730;
 
 describe('la page des sceaux du Grand Livre', () => {
   it('garde la liste de toutes les planches au-dessus du folio, même avec des planches de plus', () => {
-    for (const count of [PLATES.length, PLATES.length + 1, PLATES.length + 3]) {
+    // Jusqu'à 14 lignes, comme avant la planche des mods (15/10) : elle a pris l'une des trois places de marge.
+    for (const count of [PLATES.length, PLATES.length + 1, PLATES.length + 2]) {
       const { step, size } = plateLines(count);
       const last = LINE_TOP + (count - 1) * step;
       expect(last).toBeLessThanOrEqual(LINE_BOTTOM + 1e-9);

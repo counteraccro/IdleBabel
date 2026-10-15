@@ -1,0 +1,37 @@
+{
+  "mods": [
+    {
+      "id": "sans-mimic",
+      "name": { "fr": "Sans Mimic", "en": "No Mimic" },
+      "description": { "fr": "Aucune Mimic n'apparaît plus.", "en": "No Mimic ever appears." },
+      "author": "Idle Babel",
+      "version": "1.0.0",
+      "file": "sans-mimic.js",
+      "kind": "js"
+    },
+    {
+      "id": "attrape-lettres",
+      "name": { "fr": "Attrape-lettres", "en": "Letter catcher" },
+      "description": {
+        "fr": "Chaque lettre qui s'échappe du livre est attrapée toute seule.",
+        "en": "Every letter that escapes the book is caught on its own."
+      },
+      "author": "Idle Babel",
+      "version": "1.0.0",
+      "file": "attrape-lettres.js",
+      "kind": "js"
+    },
+    {
+      "id": "exemple",
+      "name": { "fr": "Deux sceaux de plus", "en": "Two more seals" },
+      "description": {
+        "fr": "Un mod sans code : deux sceaux sur une planche « Mods » du livre étrange.",
+        "en": "A mod without code: two seals on a “Mods” plate of the strange book."
+      },
+      "author": "Idle Babel",
+      "version": "1.0.0",
+      "file": "exemple.json",
+      "kind": "json"
+    }
+  ]
+}

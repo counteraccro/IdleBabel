@@ -1,8 +1,8 @@
 import './sealVision.css';
 import { el } from './dom';
 import { t } from '../i18n';
-import { SEALS, sealSeries } from '../data/seals';
-import { onSealed } from '../systems/seals';
+import { sealSeries } from '../data/seals';
+import { findSeal, onSealed } from '../systems/seals';
 import { isDeciphered } from '../systems/decipher';
 import { strangeBookFound } from '../systems/strangeBook';
 import { sealSvg, sigil } from './strangeBook/sigil';
@@ -32,7 +32,7 @@ export const mountSealVisions = (state: GameState): void => {
   let count = 0;
 
   onSealed((ids) => {
-    const seal = SEALS.find((candidate) => candidate.id === ids[ids.length - 1]);
+    const seal = findSeal(ids[ids.length - 1]);
     if (!seal) return;
     const shapes = sigil(sealSeries(seal), seal.tier?.index ?? 0);
     const uid = `vision-${count++}`;

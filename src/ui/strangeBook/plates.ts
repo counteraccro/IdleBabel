@@ -1,7 +1,8 @@
 import { getLocale, t } from '../../i18n';
 import { formatCount, writeDigits } from '../../core/format';
 import { BOOK_PAGES, PLATES, SEALS, sealSeries, type PlateId, type SealDef } from '../../data/seals';
-import { babelName, completion, countObtained, plateSeals, sealFindMultiplier, sealObtained } from '../../systems/seals';
+import { babelName, completion, countObtained, findSeal, plateSeals, sealFindMultiplier, sealObtained } from '../../systems/seals';
+import { modText } from '../../mods/modSeals';
 import { statsRevealed } from '../../systems/strangeBook';
 import { mimicUnlocked, relicsUnlocked } from '../../systems/etherium';
 import { isDeciphered } from '../../systems/decipher';
@@ -42,6 +43,7 @@ export interface PlatePage {
 const plateShown = (state: GameState, plate: PlateId): boolean => {
   if (plate === 'etherium') return state.etherReceived > 0 || statsRevealed();
   if (plate === 'mimic') return mimicUnlocked(state) || state.mimic.caught > 0 || statsRevealed();
+  if (plate === 'mods') return plateSeals('mods').length > 0;
   if (plate === 'relics') return relicsUnlocked(state) || Object.keys(state.relics.found).length > 0 || statsRevealed();
   return true;
 };
@@ -88,6 +90,7 @@ export const plateTitle = (state: GameState, plate: PlateId): string =>
   isDeciphered(state, 'contents') ? t(`strangeBook.plates.${plate}`) : babelName(`plate:${plate}`, 1);
 
 const sealText = (seal: SealDef): string => {
+  if (seal.mod) return modText(seal.mod.text, getLocale());
   const title = seal.rareBook ? t(`rareBooks.${seal.rareBook}.name`) : seal.tool ? t(`tools.${seal.tool}.name`) : '';
   // Une phrase à lui, à son palier ; le nombre, dans la notation choisie au cahier d'options comme les autres.
   const key = seal.phrases && seal.tier ? `${seal.text}.${seal.tier.index}` : seal.text;
@@ -107,12 +110,14 @@ const date = (at: number): string =>
 
 /** Légende du sceau survolé : son nom en symboles, et ce qu'il récompense une fois obtenu. */
 export const sealLegend = (state: GameState, id: string | null): { name: string; text: string } => {
-  const seal = SEALS.find((candidate) => candidate.id === id);
+  const seal = findSeal(id);
   if (!seal) return { name: '', text: '' };
   const obtained = sealObtained(state, seal);
   const when = obtained ? date(state.seals[seal.id]) : '…';
   // Lisible : ce que le sceau récompense, puis sa date.
-  if (isDeciphered(state, 'seals')) return { name: sealText(seal), text: when };
+  // Celui d'un mod : son nom devant la date.
+  if (isDeciphered(state, 'seals'))
+    return { name: sealText(seal), text: seal.mod ? `${modText(seal.mod.name, getLocale())} — ${when}` : when };
   // Illisible comme le reste du livre (en symboles de Babel) ; la date, en chiffres.
   return { name: babelName(seal.id), text: obtained ? `${babelName(`${seal.id}:text`, 4)} — ${when}` : when };
 };

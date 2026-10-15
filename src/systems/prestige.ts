@@ -9,6 +9,7 @@ import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor, starAffor
 import { levelOf, maxLevel } from './technologies';
 import { sealEvent } from './seals';
 import { catchMimic } from './mimic';
+import { runHooks } from '../mods/hooks';
 import type { GameState } from '../core/state';
 
 /**
@@ -98,6 +99,7 @@ export const prestige = (state: GameState, now = Date.now()): number => {
     if (sentence.kind === 'method' && !sentence.secret && !kept.includes(sentence.id)) delete state.written[sentence.id];
   state.etheriumInHand = true;
   if (counted) recordOnce(state, 'prestige', String(state.exiles), now);
+  runHooks('prestige');
   return gain;
 };
 

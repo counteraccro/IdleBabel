@@ -1,5 +1,6 @@
 import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../data/mimic';
 import { mimicComesFactor, mimicGivesBonus, mimicUnlocked } from './etherium';
+import { hookAllows } from '../mods/hooks';
 import type { GameState } from '../core/state';
 
 /**
@@ -45,6 +46,8 @@ export const advanceMimic = (state: GameState, seconds: number, random: () => nu
   // Une chance par seconde : sur un long moment d'un coup (l'onglet caché, ui/mimic), la même loi, sans dépasser 1.
   if (!called && random() >= 1 - Math.exp(-seconds / mimicEvery(state))) return false;
   called = false;
+  // Un mod peut l'en empêcher (crochet `mimic`, le mod « Sans Mimic »).
+  if (!hookAllows('mimic')) return false;
   spawnMimic(state, random, now);
   return true;
 };

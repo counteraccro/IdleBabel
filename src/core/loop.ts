@@ -4,6 +4,7 @@ import { trackPlay } from '../systems/stats';
 import { checkSeals } from '../systems/seals';
 import { chronicle } from '../systems/chronicle';
 import { remember } from '../systems/reminiscence';
+import { runHooks } from '../mods/hooks';
 
 /** La partie avance par pas de tant (le compteur aussi : les pages qui tournent seules, ui/book3d/autoTurn3d.ts). */
 export const TICK_MS = 100;
@@ -24,10 +25,13 @@ export const startLoop = (state: GameState, onTick: () => void): void => {
     produce(state, (now - state.lastTick) / 1000);
     state.lastTick = now;
     trackPlay(state, (now - previous) / 1000);
+    runHooks('tick', (now - previous) / 1000);
     previous = now;
     remember(state);
     checkSeals(state, now);
     chronicle(state, now);
-    if (!document.hidden) onTick();
+    if (document.hidden) return;
+    onTick();
+    runHooks('draw');
   }, TICK_MS);
 };

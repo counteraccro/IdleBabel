@@ -195,6 +195,15 @@ export interface GameState {
   wake: { pages: number; book: number; clicks: number; stars: number };
   lastTick: number;
   /**
+   * Les mods (src/mods) chargés à chaque visite, dans l'ordre : leur adresse, ou leur chemin dans le jeu pour ceux de
+   * la liste (public/mods/mods.json). Gardés quand on efface la sauvegarde, comme les réglages.
+   */
+  mods: string[];
+  /** Ce que chaque mod a rendu à la dernière sauvegarde (son `save()`), par son nom : rendu à son `load()`. */
+  modData: Record<string, string>;
+  /** Quand le premier mod a été chargé (ms) ; null : jamais. Pour toujours, même s'il est retiré (le sceau « Triche »). */
+  modded: number | null;
+  /**
    * La graine de la partie (core/random.ts, gameRandom) : les couvertures, le texte des pages, les livres rares
    * et les trouvailles en sont tirés. Cachée : seul le cahier d'options l'écrit, pour la donner (débogage).
    * 0 : une partie d'avant les graines (la Bibliothèque de toujours).
@@ -248,5 +257,8 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   visionHints: 0,
   wake: { pages: 0, book: -1, clicks: 0, stars: 0 },
   lastTick: now,
+  mods: [],
+  modData: {},
+  modded: null,
   seed,
 });

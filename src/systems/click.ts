@@ -6,6 +6,7 @@ import { PAGES_PER_LEAF } from './books';
 import { etherReading, handsMultiplier } from './etherium';
 import { clickBoon, fourTen } from './boons';
 import { relicReading } from './relics';
+import { hookProduct } from '../mods/hooks';
 
 /** Une feuille tournée à la main : ses deux pages lues. */
 export const PAGES_PER_CLICK = PAGES_PER_LEAF;
@@ -14,13 +15,14 @@ export const PAGES_PER_CLICK = PAGES_PER_LEAF;
  * Une feuille tournée à la main (ses pages comptent à vie : pagesByHand) ; la Mémoire musculaire (et les doigts
  * de l'Etherium) y ajoute une part de la production d'une seconde, les Mains de l'Etherium multiplient le tout. L'Éther
  * reçu, le Sablier et Quatre cent dix multiplient la feuille elle-même (la production l'est déjà : sinon, ×410 deux fois) ;
- * la Main légère de la lettre, le tout.
+ * la Main légère de la lettre et les mods (crochet `click`), le tout.
  */
 export const readPage = (state: GameState): void => {
   const read =
     (PAGES_PER_CLICK * etherReading(state) * relicReading(state) * fourTen() + pagesPerSecond(state) * clickShare(state)) *
     handsMultiplier(state) *
-    clickBoon();
+    clickBoon() *
+    hookProduct('click');
   gainPages(state, read);
   state.pagesByHand += read;
   state.stats.clicks += 1;

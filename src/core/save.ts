@@ -7,6 +7,7 @@ import { refundClosedStars } from './closedStars';
 import { PAGES_PER_CLICK } from '../systems/click';
 import { countSavedFinds } from './countedFinds';
 import type { Find } from '../data/knowledge';
+import { collectModData } from '../mods/registry';
 
 const SAVE_KEY = 'idle-babel-save';
 
@@ -72,6 +73,7 @@ let savesLocked = false;
 
 export const saveGame = (state: GameState): void => {
   if (savesLocked) return;
+  collectModData(state);
   try {
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
   } catch {
@@ -95,6 +97,7 @@ const EXPORT_END = '!END!';
  * sauvegarde, en base64, suivi de !END! (comme Cookie Clicker).
  */
 export const exportSave = (state: GameState): string => {
+  collectModData(state);
   const bytes = new TextEncoder().encode(JSON.stringify(state));
   let binary = '';
   for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));

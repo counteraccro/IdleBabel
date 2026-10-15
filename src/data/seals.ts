@@ -13,6 +13,7 @@ import { levelOf, lockOf, maxLevel } from '../systems/technologies';
 import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS, type ToolId } from './tools';
 import { mimicSeconds } from '../systems/mimic';
 import { RELICS } from './relics';
+import type { ModText } from '../mods/modSeals';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
@@ -31,6 +32,8 @@ export const PLATES = [
   'relics',
   'rare',
   'secrets',
+  // Les sceaux des mods (src/mods/modSeals.ts) : la planche n'existe qu'avec eux.
+  'mods',
 ] as const;
 export type PlateId = (typeof PLATES)[number];
 
@@ -49,6 +52,8 @@ export interface SealDef {
   method?: ToolId | 'all';
   /** Une phrase à lui, au palier de sa série : strangeBook.seals.<text>.<index> (la liste de la série). */
   phrases?: boolean;
+  /** Sceau d'un mod (src/mods/modSeals.ts) : son nom et son texte, donnés par le mod (pas de clé i18n). */
+  mod?: { name: ModText; text: ModText };
   reached: (state: GameState) => boolean;
 }
 
@@ -276,4 +281,6 @@ export const SEALS: readonly SealDef[] = [
   secret('babelWord'),
   // « Mon histoire vraie » lue jusqu'à sa dernière bribe : le Rideau entier allumé (la fausse fin, 14/10).
   seal('notThisOne', 'secrets', (s) => s.etherium.includes(S.storyEnd)),
+  // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).
+  seal('cheat', 'secrets', (s) => s.modded !== null),
 ];

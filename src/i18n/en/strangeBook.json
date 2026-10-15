@@ -67,7 +67,8 @@
     "mimic": "The Mimic",
     "relics": "Relics",
     "rare": "Rare books",
-    "secrets": "Secrets"
+    "secrets": "Secrets",
+    "mods": "Mods"
   },
   "allMethods": "All methods",
   "volumes": {
@@ -260,6 +261,7 @@
     "lastInstant": "I caught it just as it went out.",
     "babelWord": "I read the Library’s name, letter by letter.",
     "notThisOne": "Not this one.",
+    "cheat": "Slip into the Library a page it did not write",
     "mimicsCaught": "Catch {n} Mimics",
     "mimicBonus": "Take back {n} more Knowledge from it",
     "mimicHours": "Let it eat for {n} hours",

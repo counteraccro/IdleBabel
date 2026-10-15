@@ -11,6 +11,7 @@ import { sealFindMultiplier } from './seals';
 import { findsMultiplier, knowledgePerFind } from './etherium';
 import { findsBoon, knowledgeBoon } from './boons';
 import { swallow } from './mimic';
+import { runHooks } from '../mods/hooks';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -200,6 +201,7 @@ export const gainFind = (state: GameState, find: Find): void => {
   }
   state.stats.fragments += 1;
   state.findCounts[find.kind] += 1;
+  runHooks('find', { kind: find.kind, text: findText(find), duplicate: !!find.duplicate });
   if (find.duplicate) return;
   write(state, find.sentence, find.segment === undefined ? segments(find.sentence).map((_, index) => index) : [find.segment]);
 };

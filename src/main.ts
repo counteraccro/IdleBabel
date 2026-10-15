@@ -17,6 +17,9 @@ import { isDeciphered } from './systems/decipher';
 import { readReaderNameWith } from './systems/readerName';
 import { chronicle } from './systems/chronicle';
 import { readGameSeedWith } from './core/random';
+import { mountModApi } from './mods/api';
+import { loadSavedMods } from './mods/loader';
+import { loadCatalog } from './mods/catalog';
 
 const AUTOSAVE_MS = 10_000;
 
@@ -34,6 +37,10 @@ readReaderNameWith(() => state.playerName);
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);
 mountSealVisions(state);
 mountTabTitle(state);
+// Les mods (src/mods) : l'API d'abord, puis ceux de la partie, dans l'ordre ; la liste du cahier à côté.
+mountModApi(state);
+void loadSavedMods(state);
+void loadCatalog();
 startLoop(state, update);
 void mountScene({ beyond: () => beyond(state), wanted: () => sceneShown(state) });
 if (isDebugEnabled()) mountDebugPanel(state);

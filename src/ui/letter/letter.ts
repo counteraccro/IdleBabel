@@ -16,6 +16,7 @@ import {
 } from '../../systems/letter';
 import { tranceFactor } from '../../systems/etherium';
 import { durationText } from './duration';
+import { runHooks } from '../../mods/hooks';
 import type { GameState } from '../../core/state';
 
 /** Le compte à rebours n'avance pas de plus d'une seconde d'un coup (onglet repris, machine en veille). */
@@ -140,13 +141,25 @@ export const createLetter = (state: GameState): Component => {
       requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
-    catcher.addEventListener('pointerdown', (event) => {
-      if (caught) return;
+    const take = (x: number, y: number): void => {
+      if (caught || !catcher.isConnected || catcher.classList.contains('gone')) return;
       caught = true;
-      event.stopPropagation();
       catcher.remove();
-      dust(event.clientX, event.clientY);
-      onCatch(event.clientX, event.clientY, stays - elapsed / 1000);
+      dust(x, y);
+      onCatch(x, y, stays - elapsed / 1000);
+    };
+    catcher.addEventListener('pointerdown', (event) => {
+      event.stopPropagation();
+      take(event.clientX, event.clientY);
+    });
+    // Un mod la voit paraître (crochet `letter`) : il peut l'attraper, au point où elle est.
+    runHooks('letter', {
+      id: word ? 'word' : 'letter',
+      glyph,
+      catch: () => {
+        const p = path(elapsed / (stays * 1000), seed);
+        take(p.x * window.innerWidth, p.y * window.innerHeight);
+      },
     });
   };
 

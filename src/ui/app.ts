@@ -51,6 +51,7 @@ import { NOTES_PAGE } from './rareBooks/credits/creditsPages';
 import { closeEtherium, etheriumOpens, prestigeReady } from '../systems/prestige';
 import { ETHERIUM_NAMED_PAGES } from '../data/etherium';
 import type { Component } from './dom';
+import { runHooks } from '../mods/hooks';
 
 const OPTIONS_HASH = '#options';
 const STRANGE_BOOK_HASH = '#livre';
@@ -215,10 +216,11 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
           saveGame(state);
         },
         onReset: () => {
+          runHooks('reset');
           deleteSave();
-          // Nouvelle partie : le livre étrange est à retrouver, même si le débogage le montrait.
+          // Nouvelle partie (les mods restent, comme les réglages) : le livre étrange est à retrouver, même si le débogage le montrait.
           revealStats(false);
-          Object.assign(state, createInitialState(state.locale), { settings: state.settings });
+          Object.assign(state, createInitialState(state.locale), { settings: state.settings, mods: state.mods });
           saveGame(state);
           // On repart de zéro à l'accueil du site : page rechargée, sans #options ni ?debug.
           window.location.replace(import.meta.env.BASE_URL);

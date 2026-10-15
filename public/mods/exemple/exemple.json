@@ -1,0 +1,18 @@
+{
+  "id": "exemple",
+  "name": "Deux sceaux de plus",
+  "seals": [
+    {
+      "id": "million",
+      "name": { "fr": "Un million", "en": "One million" },
+      "text": { "fr": "Lis un million de pages", "en": "Read a million pages" },
+      "when": { "pagesRead": 1000000 }
+    },
+    {
+      "id": "patience",
+      "name": { "fr": "Patience", "en": "Patience" },
+      "text": { "fr": "Reste dix heures dans la Bibliothèque", "en": "Stay ten hours in the Library" },
+      "when": { "playSeconds": 36000 }
+    }
+  ]
+}

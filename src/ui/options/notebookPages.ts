@@ -1,4 +1,5 @@
 import { openSaveExport, openSaveImport } from './saveTransfer';
+import { writeModsPage } from './modsPage';
 import { AVAILABLE_LOCALES, getLocale, localeName, messages, t, type Locale } from '../../i18n';
 import { NOTATIONS, formatNumber } from '../../core/format';
 import { seedLabel } from '../../core/random';
@@ -168,6 +169,8 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
         w.link(t('ui.no'), () => (reset = 'ask'));
       }
     },
+    // Les mods (plan des mods, 14/10) : après la sauvegarde, au recto suivant.
+    11: (w) => writeModsPage(w, state),
   };
 
   /** Écrit la page `index` (0 : l'intérieur de la couverture, jamais visible). */
