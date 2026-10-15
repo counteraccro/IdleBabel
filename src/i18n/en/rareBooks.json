@@ -1054,6 +1054,12 @@
                 "Documentation for writing a mod, in French and English, at counteraccro.github.io/IdleBabel/mods/, and the steps to propose your own for the game’s list.",
                 "A new secret seal."
               ]
+            },
+            {
+              "heading": "Fixes",
+              "items": [
+                "Erasing the save also removes the mods: the new game starts without any."
+              ]
             }
           ]
         },

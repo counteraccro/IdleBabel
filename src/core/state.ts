@@ -196,7 +196,7 @@ export interface GameState {
   lastTick: number;
   /**
    * Les mods (src/mods) chargés à chaque visite, dans l'ordre : leur adresse, ou leur chemin dans le jeu pour ceux de
-   * la liste (public/mods/mods.json). Gardés quand on efface la sauvegarde, comme les réglages.
+   * la liste (public/mods/mods.json). Effacer la sauvegarde les supprime tous (seuls les réglages restent).
    */
   mods: string[];
   /** Les mods de `mods` désactivés (case décochée au cahier) : gardés dans la liste, mais plus chargés. */

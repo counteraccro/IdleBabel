@@ -1063,6 +1063,12 @@
                 "Une documentation pour écrire un mod, en français et en anglais, à l’adresse counteraccro.github.io/IdleBabel/mods/, et la marche à suivre pour proposer le sien à la liste du jeu.",
                 "Un nouveau sceau secret."
               ]
+            },
+            {
+              "heading": "Corrections",
+              "items": [
+                "Effacer la sauvegarde supprime aussi les mods : la nouvelle partie commence sans aucun."
+              ]
             }
           ]
         },

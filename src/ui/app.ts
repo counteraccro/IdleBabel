@@ -218,15 +218,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         onReset: () => {
           runHooks('reset');
           deleteSave();
-          // Nouvelle partie (les mods restent, comme les réglages) : le livre étrange est à retrouver, même si le débogage le montrait.
+          // Nouvelle partie, sans aucun mod (seuls les réglages restent) : le livre étrange est à retrouver, même si le débogage le montrait.
           revealStats(false);
-          Object.assign(state, createInitialState(state.locale), {
-            settings: state.settings,
-            mods: state.mods,
-            modsOff: state.modsOff,
-            modNames: state.modNames,
-            modOptions: state.modOptions,
-          });
+          Object.assign(state, createInitialState(state.locale), { settings: state.settings });
           saveGame(state);
           // On repart de zéro à l'accueil du site : page rechargée, sans #options ni ?debug.
           window.location.replace(import.meta.env.BASE_URL);
