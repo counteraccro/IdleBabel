@@ -20,6 +20,12 @@ afterEach(() => {
 });
 
 describe('Les mods', () => {
+  it('ne sont jamais actifs d’office : une nouvelle partie n’en a aucun (demande de l’auteur, 15/10)', () => {
+    const state = createInitialState('fr');
+    expect(state.mods).toEqual([]);
+    expect(state.modded).toBeNull();
+  });
+
   it('multiplient la lecture et le clic par leurs crochets, sans rien changer sans mod', () => {
     const state = createInitialState('fr');
     state.tools.diagonal = 10;
