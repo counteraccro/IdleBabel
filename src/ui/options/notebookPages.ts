@@ -1,6 +1,6 @@
 import { openSaveExport, openSaveImport } from './saveTransfer';
-import { writeModsPage } from './modsPage';
-import { writeModOptionsPage } from './modOptionsPage';
+import { modsPages } from './modsPage';
+import { modTitle, writeModOptionsPage } from './modOptionsPage';
 import { modsWithOptions } from '../../mods/modOptions';
 import { AVAILABLE_LOCALES, getLocale, localeName, messages, t, type Locale } from '../../i18n';
 import { NOTATIONS, formatNumber } from '../../core/format';
@@ -24,6 +24,9 @@ export interface NotebookActions {
  * presque vide après les réglages ; la dernière page de gauche est la 24, en face du plat arrière.
  */
 export const NOTEBOOK_PAGES = 25;
+
+/** La page « Mods » : après la sauvegarde, au recto suivant ; ses suites et les pages des mods la suivent. */
+const MODS_PAGE = 11;
 
 /** Ce qu'une page peut dessiner d'autre que l'écriture : les croquis, déjà tracés, et les salles dessinées. */
 export type Sketches = Record<DoodleKind, CanvasImageSource> & { rooms: Record<SceneId, CanvasImageSource> };
@@ -65,7 +68,7 @@ const drawMargins = (): Map<number, { note?: number; scribble?: string; at: numb
  * Le cahier d'options : ce que le chercheur a noté sur la première page, puis les réglages page après
  * page, ses croquis au dos des feuilles, et ses remarques dans la marge.
  */
-export const createNotebookPages = (state: GameState, actions: NotebookActions) => {
+export const createNotebookPages = (state: GameState, actions: NotebookActions, go: (index: number) => void) => {
   /** Effacer la sauvegarde : la question posée, puis la réponse (le temps que la page d'accueil se recharge). */
   let reset: 'ask' | 'confirm' | 'done' = 'ask';
   // Tirées une fois : la page redessinée (case cochée, langue) garde ses remarques.
@@ -76,6 +79,34 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
   };
   const toggle = (w: Writer, key: Parameters<typeof setting>[0]): void =>
     w.toggle(t(`ui.${key}`), t(`ui.${key}Hint`), state.settings[key], setting(key));
+
+  // Brouillon où la plume mesure ce qui tient dans une page (les mods du joueur).
+  let draft: CanvasRenderingContext2D | null = null;
+  const drafted = (): CanvasRenderingContext2D => (draft ??= document.createElement('canvas').getContext('2d')!);
+  /**
+   * Les pages des mods, à la suite, recto et verso : « Mods » (et sa suite, s'il y en a trop pour une page), puis une page
+   * par mod actif qui a des options, dans l'ordre de leur chargement. Ce qui dépasse le cahier n'y est pas.
+   */
+  const modPages = (): Map<number, (w: Writer) => void> => {
+    const pages = [...modsPages(state, drafted()), ...modsWithOptions().map((mod) => (w: Writer) => writeModOptionsPage(w, state, mod))];
+    return new Map(pages.slice(0, NOTEBOOK_PAGES - MODS_PAGE).map((write, i) => [MODS_PAGE + i, write]));
+  };
+  /** Le sommaire de la première page (demande de l'auteur, 15/10) : chaque partie, et chaque mod qui a des options. */
+  const writeContents = (w: Writer): void => {
+    w.heading(t('ui.contents'));
+    const parts: [string, number][] = [
+      [t('ui.reading'), 3],
+      [t('ui.display'), 5],
+      [t('ui.scene'), 7],
+      [t('ui.save'), 9],
+      [t('ui.mods.title'), MODS_PAGE],
+    ];
+    const first = MODS_PAGE + modsPages(state, drafted()).length;
+    modsWithOptions().forEach((mod, i) => {
+      if (first + i < NOTEBOOK_PAGES) parts.push([modTitle(mod), first + i]);
+    });
+    for (const [name, index] of parts) w.link(name, () => go(index));
+  };
 
   const content: Record<number, (w: Writer, sketches: Sketches) => void> = {
     1: (w) => {
@@ -88,6 +119,8 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
           act: () => actions.onLocale(locale),
         })),
       );
+      w.skip(1);
+      writeContents(w);
     },
     2: (w, sketches) => w.sketch(sketches.hexagon, 360, 380, 300),
     3: (w) => {
@@ -171,18 +204,12 @@ export const createNotebookPages = (state: GameState, actions: NotebookActions) 
         w.link(t('ui.no'), () => (reset = 'ask'));
       }
     },
-    // Les mods (plan des mods, 14/10) : après la sauvegarde, au recto suivant.
-    11: (w) => writeModsPage(w, state),
   };
 
   /** Écrit la page `index` (0 : l'intérieur de la couverture, jamais visible). */
   return (index: number, w: Writer, sketches: Sketches, spineOnLeft: boolean): void => {
     if (content[index]) content[index](w, sketches);
-    // Après la page « Mods », un recto par mod actif qui a des options (13, 15…), dans l'ordre de leur chargement.
-    else if (index >= 13 && index % 2 === 1) {
-      const mod = modsWithOptions()[(index - 13) / 2];
-      if (mod) writeModOptionsPage(w, state, mod);
-    }
+    else if (index >= MODS_PAGE) modPages().get(index)?.(w);
     // Il a numéroté les premières pages, puis a cessé.
     if (index >= 1 && index <= 9) w.folio(index, spineOnLeft);
     const margin = margins.get(index);

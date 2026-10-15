@@ -6,6 +6,12 @@ import { saveGame } from '../../core/save';
 import type { Writer } from './notebookInk';
 import type { GameState } from '../../core/state';
 
+/** Le nom d'un mod qui a des options : celui de la liste du jeu, sinon celui qu'il s'est donné. */
+export const modTitle = (mod: ModWithOptions): string => {
+  const listed = catalogMods().find((other) => other.id === mod.id);
+  return listed ? modText(listed.name, getLocale()) : mod.id;
+};
+
 /**
  * La page d'un mod qui a des options (maquette .ai/maquette-better-babel.html, validée le 15/10) : son nom, sa version
  * au crayon, puis chaque option dans l'ordre déclaré, un choix entouré ou une case. Une option qui dépend d'une case
@@ -14,7 +20,7 @@ import type { GameState } from '../../core/state';
 export const writeModOptionsPage = (w: Writer, state: GameState, mod: ModWithOptions): void => {
   const locale = getLocale();
   const listed = catalogMods().find((other) => other.id === mod.id);
-  w.heading(listed ? modText(listed.name, locale) : mod.id);
+  w.heading(modTitle(mod));
   const version = mod.version ?? listed?.version;
   const signed = [version && t('ui.mods.version').replace('{v}', version), listed?.author].filter(Boolean).join(' · ');
   if (signed) w.note(signed);

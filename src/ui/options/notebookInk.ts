@@ -148,6 +148,8 @@ export const createWriter = (context: CanvasRenderingContext2D, page: number) =>
 
   return {
     zones,
+    /** Le haut de la prochaine ligne : de quoi savoir si la page est pleine. */
+    at: (): number => top,
     /** Titre du cahier, souligné de deux traits. */
     title: (text: string): void => {
       item++;

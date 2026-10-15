@@ -18,6 +18,7 @@
   "build": "Version du",
   "version": "Version {name}",
   "options": "Options",
+  "contents": "Sommaire",
   "back": "Retour au jeu",
   "backToLibrary": "Retour à la bibliothèque",
   "lookAround": "Regarder autour de moi",
@@ -58,7 +59,8 @@
     "addThis": "Ajouter",
     "added": "Ajouté",
     "write": "Écrire un mod",
-    "warning": "Un mod peut tout changer à la partie, et la casser : n’en chargez que de confiance."
+    "warning": "Un mod peut tout changer à la partie, et la casser : n’en chargez que de confiance.",
+    "continued": "suite"
   },
   "yes": "Oui, effacer",
   "no": "Annuler",

@@ -357,9 +357,9 @@
 
         <h2 id="fr-options">Les options d’un mod</h2>
         <p>
-          Un mod déclare ses options dans <code>registerMod</code> ; le jeu leur dessine une page du cahier, juste après la page
+          Un mod déclare ses options dans <code>registerMod</code> ; le jeu leur dessine une page du cahier, juste après les pages
           « Mods » (une par mod actif qui en a), les garde dans la sauvegarde (export compris) et prévient le mod quand elles
-          changent. Rien à écrire pour le cahier.
+          changent. Le sommaire, en première page du cahier, y mène. Rien à écrire pour le cahier.
         </p>
         <pre><code>IdleBabel.registerMod('mon-mod', {
   version: '1.0.0',
@@ -759,8 +759,8 @@ IdleBabel.registerMod('compte-mots', {
         <h2 id="en-options">A mod’s options</h2>
         <p>
           A mod declares its options in <code>registerMod</code>; the game draws them a page of the notebook, right after the
-          “Mods” page (one per active mod that has some), keeps them in the save (export included) and tells the mod when they
-          change. Nothing to write for the notebook.
+          “Mods” pages (one per active mod that has some), keeps them in the save (export included) and tells the mod when they
+          change. The contents, on the notebook’s first page, lead there. Nothing to write for the notebook.
         </p>
         <pre><code>IdleBabel.registerMod('my-mod', {
   version: '1.0.0',

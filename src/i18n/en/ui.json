@@ -18,6 +18,7 @@
   "build": "Build of",
   "version": "Version {name}",
   "options": "Options",
+  "contents": "Contents",
   "back": "Back to the game",
   "backToLibrary": "Back to the library",
   "lookAround": "Look around me",
@@ -58,7 +59,8 @@
     "addThis": "Add",
     "added": "Added",
     "write": "Write a mod",
-    "warning": "A mod can change anything in the game, and break it: only load mods you trust."
+    "warning": "A mod can change anything in the game, and break it: only load mods you trust.",
+    "continued": "continued"
   },
   "yes": "Yes, erase",
   "no": "Cancel",

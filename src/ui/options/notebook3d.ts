@@ -20,7 +20,8 @@ const sketchImage = (kind: DoodleKind, seed: number, color: string): Promise<HTM
  * coche les réglages au stylo. Mince (24 pages), agrafé : ni tranchefiles, ni signet.
  */
 export const notebook3d = (state: GameState, actions: NotebookActions): Book3d => {
-  const write = createNotebookPages(state, actions);
+  // Le sommaire mène à une page : le livre la feuillette (navigate, branché par la page 3D).
+  const write = createNotebookPages(state, actions, (index) => book.navigate?.(index));
   let wears: HTMLCanvasElement[] = [];
   let sketches: Sketches | null = null;
   // Pour savoir ce qu'un clic touche : la page réécrite sur un canvas de brouillon.
@@ -31,7 +32,7 @@ export const notebook3d = (state: GameState, actions: NotebookActions): Book3d =
     write(index, writer, sketches, index % 2 === 1);
     return writer.zones;
   };
-  return {
+  const book: Book3d = {
     // Proportions d'une page ; plats de carte fine, à peine plus grands que les feuilles.
     shape: { width: 0.8, height: 1, thickness: 0.02, board: 0.0025, overhang: 0.004, corner: 0.012 },
     source: {
@@ -82,4 +83,5 @@ export const notebook3d = (state: GameState, actions: NotebookActions): Book3d =
       };
     },
   };
+  return book;
 };

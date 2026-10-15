@@ -8,7 +8,8 @@ import { modName, modVersion } from '../../mods/registry';
 import { modText } from '../../mods/modSeals';
 import { saveGame } from '../../core/save';
 import { BIG_BOOK_REWRITE } from '../book3d/book3dBook';
-import type { Writer } from './notebookInk';
+import { createWriter, type Writer } from './notebookInk';
+import { GRID } from './notebookPaper';
 import type { GameState } from '../../core/state';
 
 /** Le cahier se réécrit (un mod vient de se charger, ou pas). */
@@ -74,33 +75,34 @@ const describe = (state: GameState, entry: string): { name: string; hint: string
   return { name, hint };
 };
 
-/**
- * La page « Mods » du cahier (demande de l'auteur, 15/10) : seulement les mods du joueur, chacun avec sa case (décochée :
- * désactivé, gardé dans la liste) et « supprimer » ; dessous, la liste des mods du jeu (une fenêtre), l'ajout par
- * adresse, la documentation. Activer, désactiver ou supprimer recharge la page.
- */
-export const writeModsPage = (w: Writer, state: GameState): void => {
-  w.heading(t('ui.mods.title'));
-  w.note(t(state.mods.length === 0 ? 'ui.mods.none' : 'ui.mods.howTo'));
-  w.skip(1);
-  for (const entry of state.mods) {
-    const { name, hint } = describe(state, entry);
-    const on = !state.modsOff.includes(entry);
-    w.toggle(name, hint, on, () => {
-      switchMod(state, entry, !on);
+/** Bas de l'écriture d'une page : sous cette ligne, un mod passe à la page suivante. */
+const PAGE_BOTTOM = 800 - 3 * GRID;
+
+/** Un mod de la liste du joueur : sa case (décochée : désactivé, gardé dans la liste) et « supprimer ». */
+const writeEntry = (w: Writer, state: GameState, entry: string): void => {
+  const { name, hint } = describe(state, entry);
+  const on = !state.modsOff.includes(entry);
+  w.toggle(name, hint, on, () => {
+    switchMod(state, entry, !on);
+    reload(state);
+  });
+  w.link(
+    t('ui.mods.remove'),
+    () => {
+      removeMod(state, entry);
       reload(state);
-    });
-    w.link(
-      t('ui.mods.remove'),
-      () => {
-        removeMod(state, entry);
-        reload(state);
-      },
-      true,
-    );
-    w.skip(1);
-  }
+    },
+    true,
+  );
   w.skip(1);
+};
+
+/**
+ * Le haut de la page « Mods » (demande de l'auteur, 15/10) : la liste des mods du jeu (une fenêtre), l'ajout par adresse,
+ * la documentation, l'avertissement ; ils passent avant les mods du joueur, pour ne jamais tomber hors de la page.
+ */
+const writeHead = (w: Writer, state: GameState): void => {
+  w.heading(t('ui.mods.title'));
   w.link(t('ui.mods.catalog'), () =>
     openModCatalog(state, () => {
       saveGame(state);
@@ -111,4 +113,36 @@ export const writeModsPage = (w: Writer, state: GameState): void => {
   w.link(t('ui.mods.write'), () => window.open(`${import.meta.env.BASE_URL}mods/index.html`, '_blank', 'noopener'));
   w.skip(1);
   w.note(t('ui.mods.warning'));
+  w.skip(1);
+  w.note(t(state.mods.length === 0 ? 'ui.mods.none' : 'ui.mods.howTo'));
+  w.skip(1);
+};
+
+/** Le titre d'une page de suite. */
+const writeContinued = (w: Writer): void => w.heading(`${t('ui.mods.title')} (${t('ui.mods.continued')})`);
+
+/**
+ * Les pages « Mods » : les mods du joueur répartis de page en page, autant que chacune en tient (mesurés avec la plume
+ * sur `draft`, un brouillon). Rend une fonction d'écriture par page, la première d'abord.
+ */
+export const modsPages = (state: GameState, draft: CanvasRenderingContext2D): ((w: Writer) => void)[] => {
+  const pages: string[][] = [[]];
+  let w = createWriter(draft, 0);
+  writeHead(w, state);
+  for (const entry of state.mods) {
+    writeEntry(w, state, entry);
+    if (w.at() > PAGE_BOTTOM && pages.at(-1)!.length > 0) {
+      // Il ne tient plus : il ouvre la page suivante.
+      w = createWriter(draft, 0);
+      writeContinued(w);
+      writeEntry(w, state, entry);
+      pages.push([]);
+    }
+    pages.at(-1)!.push(entry);
+  }
+  return pages.map((entries, i) => (page: Writer) => {
+    if (i === 0) writeHead(page, state);
+    else writeContinued(page);
+    for (const entry of entries) writeEntry(page, state, entry);
+  });
 };
