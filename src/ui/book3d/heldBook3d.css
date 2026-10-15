@@ -18,3 +18,8 @@
     width: 96vw;
   }
 }
+
+/* Le livre en main, 3D ou remplacé par un mod (handReading3d.ts) : le conteneur s'efface, son livre prend sa place dans la grille. */
+.hand-reading {
+  display: contents;
+}

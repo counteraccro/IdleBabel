@@ -22,6 +22,18 @@
       "kind": "js"
     },
     {
+      "id": "liseuse",
+      "name": { "fr": "Liseuse", "en": "E-reader" },
+      "description": {
+        "fr": "Le livre ouvert devient une liseuse à encre électronique (livres ordinaires seulement).",
+        "en": "The open book becomes an e-ink reader (ordinary books only)."
+      },
+      "author": "Idle Babel",
+      "version": "1.0.0",
+      "file": "liseuse.js",
+      "kind": "js"
+    },
+    {
       "id": "exemple",
       "name": { "fr": "Deux sceaux de plus", "en": "Two more seals" },
       "description": {

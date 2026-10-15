@@ -21,7 +21,7 @@ export const createAutoTurn3d = ({ produced, max }: AutoTurnSource) => {
   let pending = 0;
   /** Temps à attendre avant la page suivante (plafond) ; négatif : de l'avance, pour tenir le rythme exact. */
   let wait = 0;
-  return (dt: number, turner: Turner, lastSpread: number, ready: boolean): void => {
+  return (dt: number, turner: Pick<Turner, 'target' | 'go'>, lastSpread: number, ready: boolean): void => {
     const now = produced();
     const fresh = now - seen;
     seen = now;

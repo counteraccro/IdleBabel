@@ -10,6 +10,7 @@ import { pagesPerSecond } from '../src/systems/production';
 import { readPage } from '../src/systems/click';
 import { advanceMimic } from '../src/systems/mimic';
 import { loadSavedMods, removeMod, switchMod } from '../src/mods/loader';
+import { clearHeldBookReplacement, heldBookReplacement, HELD_BOOK_REPLACED, replaceHeldBook } from '../src/mods/heldBook';
 
 vi.stubGlobal('window', new EventTarget());
 
@@ -17,6 +18,7 @@ afterEach(() => {
   clearHooks();
   clearMods();
   clearModSeals();
+  clearHeldBookReplacement();
 });
 
 describe('Les mods', () => {
@@ -131,5 +133,23 @@ describe('Les mods', () => {
     removeMod(state, 'mods/b/b.js');
     expect(state.mods).toEqual(['mods/a/a.js']);
     expect(state.modsOff).toEqual([]);
+  });
+
+  it('remplacent le livre en main par une seule vue, la dernière, et le livre en est prévenu (la liseuse, 15/10)', () => {
+    expect(heldBookReplacement()).toBeNull();
+    const told = vi.fn();
+    window.addEventListener(HELD_BOOK_REPLACED, told);
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const first = () => ({ root: {} as HTMLElement });
+    const second = () => ({ root: {} as HTMLElement });
+    replaceHeldBook(first);
+    replaceHeldBook(second);
+    replaceHeldBook('pas une fonction' as never);
+    expect(heldBookReplacement()).toBe(second);
+    expect(told).toHaveBeenCalledTimes(2);
+    expect(warn).toHaveBeenCalledOnce();
+    expect(error).toHaveBeenCalledOnce();
+    window.removeEventListener(HELD_BOOK_REPLACED, told);
   });
 });

@@ -17,6 +17,7 @@ import { modalOpen } from '../modal/modal';
 import type { Book3d } from './book3dBook';
 import { screenDown } from './ribbonTail';
 import { animationNow } from '../animationClock';
+import { attachBookKeys } from './bookKeys';
 
 /** Inclinaison du livre vers le lecteur : la caméra le regarde d'un peu plus bas que d'aplomb. */
 const TILT = THREE.MathUtils.degToRad(20);
@@ -72,6 +73,8 @@ export interface HeldBook extends Component {
   reset: (spec: Book3d, spread: number, closed: boolean) => void;
   /** Vie du livre : interrompue quand il quitte l'écran (pour y attacher des écouteurs). */
   signal: AbortSignal;
+  /** Le livre n'est pas en train de passer de main (il se lit, ou attend fermé) : on peut le remplacer (mods). */
+  settled: () => boolean;
 }
 
 /**
@@ -218,25 +221,7 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
     backward: !options.onLeaf,
     signal: lifetime.signal,
   });
-  window.addEventListener(
-    'keydown',
-    (event) => {
-      // Écran qui s'en va (fondu), fenêtre de lore ouverte, ou touche destinée à un champ ou à un bouton
-      // (Entrée, Espace) : le livre n'y répond pas.
-      if (root.closest('.screen-out') || modalOpen()) return;
-      const target = event.target as HTMLElement;
-      if (target.closest('input, textarea, select, [contenteditable]')) return;
-      if ((event.key === 'Enter' || event.key === ' ') && target.closest('button, a')) return;
-      const forward = event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowRight';
-      if (!forward && event.key !== 'ArrowLeft') return;
-      event.preventDefault();
-      // Touche gardée enfoncée : le navigateur répète l'appui ~30 fois par seconde. Chaque page tournée
-      // étant une page lue, ce serait un clic automatique : un appui, une page, comme à la souris.
-      if (event.repeat) return;
-      step(forward);
-    },
-    { signal: lifetime.signal },
-  );
+  attachBookKeys(root, step, lifetime.signal);
   const autoTurn = first.autoTurn ? createAutoTurn3d(first.autoTurn) : null;
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -307,5 +292,5 @@ export const createHeldBook3d = (first: Book3d, options: HeldBookOptions): HeldB
       phase = closed ? 'closed' : 'reading';
     });
   };
-  return { root, update: () => {}, reset, signal: lifetime.signal };
+  return { root, update: () => {}, reset, signal: lifetime.signal, settled: () => phase !== 'busy' };
 };

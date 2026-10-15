@@ -263,6 +263,19 @@
             <tr><td><code>format(nombre)</code></td><td>Un nombre écrit dans la notation choisie par le joueur (« 1,23 million »…).</td></tr>
             <tr><td><code>locale</code></td><td>La langue du jeu : <code>'fr'</code> ou <code>'en'</code>.</td></tr>
             <tr><td><code>loadMod(adresse)</code></td><td>Charge un autre mod (rend une promesse : <code>true</code> s’il a chargé).</td></tr>
+            <tr>
+              <td><code>replaceHeldBook(book =&gt; ({ root, update }))</code></td>
+              <td>
+                Remplace le livre ouvert en bas de l’écran par votre vue (<code>root</code>, un élément HTML), au même endroit.
+                Le jeu garde le rythme des pages, les trouvailles et la fin du livre ; <code>update()</code> est appelé à chaque
+                feuille tournée, à la main ou seule. <code>book</code> : <code>index</code> (le n° du livre), <code>page</code>
+                (la feuille ouverte montre <code>page</code> et <code>page + 1</code> ; 0 : le livre vient d’arriver),
+                <code>pages</code> (410), <code>title</code>, <code>text(page)</code> (rend <code>{ before, find, after }</code> :
+                <code>find</code>, la trouvaille, ou vide) et <code>turn()</code> (tourne une feuille, comme un clic). Livres
+                ordinaires seulement : un livre rare et le Grand Livre restent en 3D. Un seul remplaçant, le dernier.
+                Exemple : <a href="#fr-liseuse">la liseuse</a>.
+              </td>
+            </tr>
           </table>
         </div>
         <p>
@@ -406,6 +419,28 @@ IdleBabel.registerMod('sans-mimic', {
   },
 });</code></pre>
         <p>Les lettres du mot BABEL aussi : le mot s’écrit en entier.</p>
+        <h3 id="fr-liseuse">Liseuse — <a href="liseuse/liseuse.js">liseuse.js</a></h3>
+        <pre><code>IdleBabel.replaceHeldBook((book) =&gt; {
+  <span class="comment">// La vue : un écran, et sa moitié droite qui tourne la feuille.</span>
+  const root = document.createElement('div');
+  const next = document.createElement('div');
+  next.addEventListener('click', () =&gt; book.turn());
+  <span class="comment">// Une page : son charabia, sa trouvaille soulignée (en texte, jamais en HTML).</span>
+  const paragraph = (page) =&gt; {
+    const { before, find, after } = book.text(page);
+    const p = document.createElement('p');
+    p.append(before, ' ', Object.assign(document.createElement('u'), { textContent: find }), ' ', after);
+    return p;
+  };
+  <span class="comment">// Appelé à chaque feuille tournée : on réécrit l'écran.</span>
+  const update = () =&gt; root.replaceChildren(paragraph(book.page), paragraph(book.page + 1), next);
+  update();
+  return { root, update };
+});</code></pre>
+        <p>
+          Le vrai fichier ajoute le boîtier, le titre, « Pages 12–13 sur 410 », la barre de progression, la page de titre d’un
+          livre neuf, et une police qui rapetisse pour que les deux pages tiennent dans l’écran.
+        </p>
         <h3>Deux sceaux de plus — <a href="exemple/exemple.json">exemple.json</a></h3>
         <p>Un mod sans code : deux sceaux, l’un à un million de pages lues, l’autre après dix heures de jeu.</p>
         <h3>Un mod qui garde des données</h3>
@@ -551,6 +586,19 @@ IdleBabel.registerMod('compte-mots', {
             <tr><td><code>format(number)</code></td><td>A number written in the player’s chosen notation (“1.23 million”…).</td></tr>
             <tr><td><code>locale</code></td><td>The game’s language: <code>'fr'</code> or <code>'en'</code>.</td></tr>
             <tr><td><code>loadMod(address)</code></td><td>Loads another mod (returns a promise: <code>true</code> if it loaded).</td></tr>
+            <tr>
+              <td><code>replaceHeldBook(book =&gt; ({ root, update }))</code></td>
+              <td>
+                Replaces the open book at the bottom of the screen with your view (<code>root</code>, an HTML element), in the
+                same place. The game keeps the page rhythm, the finds and the end of the book; <code>update()</code> is called
+                at every leaf turned, by hand or on its own. <code>book</code>: <code>index</code> (the book’s number),
+                <code>page</code> (the open leaf shows <code>page</code> and <code>page + 1</code>; 0: the book just arrived),
+                <code>pages</code> (410), <code>title</code>, <code>text(page)</code> (returns <code>{ before, find, after }</code>:
+                <code>find</code>, the find, or empty) and <code>turn()</code> (turns a leaf, like a click). Ordinary books
+                only: a rare book and the Great Book stay in 3D. One replacement only, the last one.
+                Example: <a href="#en-liseuse">the e-reader</a>.
+              </td>
+            </tr>
           </table>
         </div>
         <p>
@@ -693,6 +741,28 @@ IdleBabel.registerMod('sans-mimic', {
   },
 });</code></pre>
         <p>The letters of the word BABEL too: the whole word gets written.</p>
+        <h3 id="en-liseuse">E-reader — <a href="liseuse/liseuse.js">liseuse.js</a></h3>
+        <pre><code>IdleBabel.replaceHeldBook((book) =&gt; {
+  <span class="comment">// The view: a screen, and its right half that turns the leaf.</span>
+  const root = document.createElement('div');
+  const next = document.createElement('div');
+  next.addEventListener('click', () =&gt; book.turn());
+  <span class="comment">// A page: its gibberish, its find underlined (as text, never as HTML).</span>
+  const paragraph = (page) =&gt; {
+    const { before, find, after } = book.text(page);
+    const p = document.createElement('p');
+    p.append(before, ' ', Object.assign(document.createElement('u'), { textContent: find }), ' ', after);
+    return p;
+  };
+  <span class="comment">// Called at every leaf turned: the screen is rewritten.</span>
+  const update = () =&gt; root.replaceChildren(paragraph(book.page), paragraph(book.page + 1), next);
+  update();
+  return { root, update };
+});</code></pre>
+        <p>
+          The real file adds the casing, the title, “Pages 12–13 of 410”, the progress bar, a new book’s title page, and a
+          font that shrinks so both pages fit on the screen.
+        </p>
         <h3>Two more seals — <a href="exemple/exemple.json">exemple.json</a></h3>
         <p>A mod without code: two seals, one at a million pages read, the other after ten hours of play.</p>
         <h3>A mod that keeps data</h3>

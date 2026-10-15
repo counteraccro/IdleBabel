@@ -2,6 +2,7 @@ import { isHookName, registerHook, type Hooks } from './hooks';
 import { registerMod, type ModDef } from './registry';
 import { loadMod } from './loader';
 import { notify } from './notify';
+import { replaceHeldBook, type HeldBookFactory } from './heldBook';
 import { addModSeal, type ModSealInput } from './modSeals';
 import { formatNumber } from '../core/format';
 import { getLocale } from '../i18n';
@@ -19,6 +20,8 @@ export interface IdleBabelApi {
   notify: (title: string, text?: string) => void;
   addSeal: (seal: ModSealInput) => boolean;
   format: (value: number) => string;
+  /** Remplace le livre en main (livres ordinaires seulement) par la vue que rend `factory`. */
+  replaceHeldBook: (factory: HeldBookFactory) => void;
 }
 
 declare global {
@@ -56,6 +59,7 @@ export const mountModApi = (state: GameState): IdleBabelApi => {
     notify,
     addSeal: (seal) => addModSeal(lastMod, seal),
     format: (value) => formatNumber(value, getLocale(), state.settings.notation),
+    replaceHeldBook,
   };
   window.IdleBabel = api;
   return api;

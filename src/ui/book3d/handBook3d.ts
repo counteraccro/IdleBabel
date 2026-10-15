@@ -30,6 +30,8 @@ import type { Book3d } from './book3dBook';
 import type { BookShape } from './bookMesh';
 import type { HandFinds } from './handFinds';
 import type { GameState } from '../../core/state';
+import type { PageContent } from '../../systems/babelText';
+import type { AutoTurnSource } from './autoTurn3d';
 
 /** Un livre ordinaire tenu en main : plus mince que les grands livres, plats plus fins. */
 const HAND_SHAPE: BookShape = { width: 0.8, height: 1, thickness: 0.12, board: 0.012, overhang: 0.035, corner: 0.03, arch: 2.5, sag: 0.12 };
@@ -46,6 +48,19 @@ export const keptBook3d = (state: GameState, index: number): Book3d => {
 /** Longueur d'une page de charabia. */
 const PAGE_LENGTH = 700;
 
+/** Une feuille tourne toutes les deux pages entières produites : au rythme du compteur (plafonné). */
+export const handAutoTurn = (state: GameState): AutoTurnSource => ({
+  produced: () => Math.floor(producedWholePages() / PAGES_PER_LEAF),
+  max: () => (state.settings.autoTurn ? maxTurnsPerSecond(state) : 0),
+});
+
+/**
+ * Le texte de la page `page` (à partir de 2) du livre n° `index` : même livre, même page, même charabia (la page se
+ * redessine à l'identique quand on y revient), et sa trouvaille. Le livre 3D le dessine, la liseuse d'un mod l'écrit.
+ */
+export const handPageContent = (index: number, page: number, finds?: HandFinds): PageContent =>
+  createPage(PAGE_LENGTH, finds?.fragment(page), gameRandom(`${index}:${page}`));
+
 /**
  * Le livre tenu en main, en 3D : le n° `index` (sa couverture tirée de son numéro, son papier), ses 410
  * pages (205 feuilles) de charabia de Babel après la page de titre ; ses pages tournent seules au rythme de la production.
@@ -55,11 +70,7 @@ const PAGE_LENGTH = 700;
 export const handBook3d = (state: GameState, index = state.booksFinished, finds?: HandFinds): Book3d => {
   finds?.open(index);
   const next = (): Book3d => handBook3d(state, index + 1, finds);
-  // Une feuille tourne toutes les deux pages entières produites : au rythme du compteur (plafonné).
-  const autoTurn = {
-    produced: () => Math.floor(producedWholePages() / PAGES_PER_LEAF),
-    max: () => (state.settings.autoTurn ? maxTurnsPerSecond(state) : 0),
-  };
+  const autoTurn = handAutoTurn(state);
   // Un livre rare arrive en main : il est trouvé, pour toujours. C'est le livre de la bibliothèque, tenu
   // en main (sans trouvailles : on ne lit pas de charabia).
   const rare = isStrangeBook(index) ? undefined : takeBook(state, index);
@@ -88,15 +99,7 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
           strange(page, canvas, spineOnLeft);
           return true;
         }
-        // Même livre, même page : même charabia (la page se redessine à l'identique quand on y revient).
-        const random = gameRandom(`${index}:${page}`);
-        drawPageTexture(
-          canvas,
-          layoutPage(createPage(PAGE_LENGTH, finds?.fragment(page), random)),
-          spineOnLeft,
-          paper,
-          pageNumberLabel(index, page),
-        );
+        drawPageTexture(canvas, layoutPage(handPageContent(index, page, finds)), spineOnLeft, paper, pageNumberLabel(index, page));
         return true;
       },
     },
