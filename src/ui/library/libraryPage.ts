@@ -31,6 +31,24 @@ import { animationNow } from '../animationClock';
 import { TRUE_STORY_BOOK } from '../../data/trueStory';
 import { storyBribes } from '../../systems/etherium';
 import { trueStoryOpensAt } from '../rareBooks/trueStory/trueStoryPages';
+import { writeDigits } from '../../core/format';
+import { ENDING_TOMES, fakeEndingsFound, storyFinished } from '../../systems/endings';
+import { relicEnvironment } from '../relics/relicModels';
+import {
+  EASEL_LEAN,
+  EASEL_LIP,
+  ENDINGS_DEPTH,
+  ENDINGS_HEIGHT,
+  LOW_FLOOR,
+  STAND_FLOOR,
+  TOMES,
+  TOME_FLOOR,
+  TOME_FRONT,
+  createEndingsShelf,
+} from './endingsShelf3d';
+import { createTome, type Tome } from './endingsTome';
+import { createLotteryMachine } from './lotteryMachine3d';
+import { GLIDE_MS, glideEase, rememberView, rememberedView, shotOf, type LibraryView, type Shot } from './libraryViews';
 
 /**
  * Le livre de débogage : un livre rare (10× plus rare), rangé dans sa case à lui ; il ne s'ouvre qu'en mode
@@ -44,11 +62,12 @@ export const LIBRARY_CREDITS_BOOK = 'credits';
 /** Le livre de la fin (la partie racontée) : pendant le développement, seulement en mode ?debug, seul dans sa case. */
 export const LIBRARY_FINAL_BOOK = 'final';
 /**
- * « Mon histoire vraie », la fausse fin (14/10) : dès la première étoile du Rideau, il prend la case gardée pour le livre
- * de la fin (qui ne s'y montre plus, même en mode ?debug), et s'ouvre sur sa dernière bribe.
+ * « Mon histoire vraie », la fausse fin (14/10) : dès la première étoile du Rideau, elle trône en haut du meuble des fins
+ * (16/10), de face, comme si c'était le vrai livre ; lue jusqu'au bout, elle descend à sa place de tome 1. Elle s'ouvre sur
+ * sa dernière bribe.
  */
 export const LIBRARY_STORY_BOOK = TRUE_STORY_BOOK;
-/** « Mon histoire vraie » est dans la vitrine : une étoile du Rideau au moins est allumée. */
+/** « Mon histoire vraie » est dans le meuble des fins : une étoile du Rideau au moins est allumée. */
 export const storyShelved = (state: GameState): boolean => storyBribes(state) > 0;
 
 /**
@@ -89,11 +108,27 @@ const SHADOW_FROM = new THREE.Vector3(0, 1, 1).normalize();
 const SHADOW_DISTANCE = 8;
 /** Épaisseur d'un livre rare qui ne dit pas la sienne (rareBook3d.ts). */
 const THICKNESS = 0.12;
+/** Le livre du chevalet, survolé, avance moins qu'un livre tiré de sa case. */
+const EASEL_PULL = 0.08;
+/**
+ * Le meuble des fins et la machine de la Loterie, à gauche de la vitrine (la maquette les pose à 9 de la vitrine : le meuble
+ * à -0,95 de ce point, la machine à +1,15 et un peu en avant).
+ */
+const ENDINGS_X = -9;
+const ENDINGS_SHELF_X = ENDINGS_X - 0.95;
+const MACHINE_AT = new THREE.Vector3(ENDINGS_X + 1.15, 0, 0.15);
 
 interface Place {
-  spot: ShelfPlace;
+  id: string;
+  /** Sa place dans une case de la vitrine (pas pour le meuble des fins). */
+  spot?: ShelfPlace;
   /** Où il pivote : debout, son coin bas-droit-avant (pour pencher) ; couché, le milieu de son dessous à l'avant. */
   pivot: THREE.Vector3;
+  /** Debout, il bascule par le haut quand on le tire ; de combien il sort de sa case. */
+  tip: boolean;
+  reach: number;
+  /** Le bord d'étagère où s'écrit son nom (hauteur). */
+  floor: number;
   /** Le livre posé (null : place vide, ou pas encore chargé). */
   holder: THREE.Group | null;
   /** Le livre lui-même (ce qui s'envole). */
@@ -133,7 +168,20 @@ export const createLibraryPage = (
   const stage = el('div', 'library-stage');
   const canvas = el('canvas', 'library-canvas');
   const caption = el('div', 'library-caption');
-  stage.append(canvas, caption);
+  // Les flèches d'un meuble à l'autre : à gauche sur la vitrine (vers le meuble des fins), à droite sur le meuble des fins.
+  const toEndings = el('button', 'library-arrow left', '‹');
+  const toLibrary = el('button', 'library-arrow right', '›');
+  const arrowTitles = (): void => {
+    for (const [arrow, key] of [
+      [toEndings, 'ui.endings.toEndings'],
+      [toLibrary, 'ui.endings.toLibrary'],
+    ] as const) {
+      arrow.title = t(key);
+      arrow.setAttribute('aria-label', t(key));
+    }
+  };
+  arrowTitles();
+  stage.append(canvas, caption, toEndings, toLibrary);
   root.append(back, stage);
 
   let dirty = true;
@@ -155,6 +203,28 @@ export const createLibraryPage = (
   lamp.position.set(0, bookcase.size.y + 1.4, 3);
   lamp.target.position.copy(center);
   scene.add(lamp, lamp.target);
+  // Le meuble des fins et la machine (maquette du 16/10) : la même lampe au-dessus, une autre, plus douce, sur la machine.
+  const endings = createEndingsShelf(ENDINGS_SHELF_X, () => (dirty = true));
+  scene.add(endings.root);
+  const environment = relicEnvironment(renderer);
+  endings.brass.envMap = environment;
+  endings.brass.envMapIntensity = 0.25;
+  const machine = createLotteryMachine({ sign: () => t('ui.lottery.sign'), jackpot: () => t('ui.lottery.jackpot') }, environment, () => 0);
+  machine.root.position.copy(MACHINE_AT);
+  scene.add(machine.root);
+  // Cinzel peut arriver après le premier dessin des panneaux.
+  void document.fonts?.load("600 40px 'Cinzel'").then(() => {
+    if (root.isConnected || !mounted) machine.relabel();
+    dirty = true;
+  });
+  const endingsCenter = new THREE.Vector3(ENDINGS_X, ENDINGS_HEIGHT / 2, 0);
+  const endingsLamp = new THREE.SpotLight(0xffd9a0, 18, 14, THREE.MathUtils.degToRad(40), 0.6, 1.4);
+  endingsLamp.position.set(ENDINGS_X, ENDINGS_HEIGHT + 1.4, 3);
+  endingsLamp.target.position.copy(endingsCenter);
+  const machineLamp = new THREE.SpotLight(0xffc98a, 6, 6, THREE.MathUtils.degToRad(28), 0.8, 1.6);
+  machineLamp.position.set(MACHINE_AT.x, ENDINGS_HEIGHT + 0.6, 1.6);
+  machineLamp.target.position.set(MACHINE_AT.x, 1.4, 0.3);
+  scene.add(endingsLamp, endingsLamp.target, machineLamp, machineLamp.target);
   // La pièce s'assombrit : ce sont les spots des cases qui font briller la vitrine.
   scene.traverse((object) => {
     if (object instanceof THREE.Light) object.intensity *= ROOM_DIM;
@@ -177,19 +247,21 @@ export const createLibraryPage = (
   const cartouche = createCartouche(() => (dirty = true));
   const shelfText = (): string =>
     cartoucheText(
-      found.length + (isRareBookFound(state, LIBRARY_DEBUG_BOOK) ? 1 : 0) + (storyShelved(state) ? 1 : 0),
+      found.length + (isRareBookFound(state, LIBRARY_DEBUG_BOOK) ? 1 : 0),
       RELICS.filter((relic) => relicFound(state, relic.id)).length,
     );
   cartouche.mesh.position.set(0, bookcase.size.y - CORNICE_MIDDLE, CORNICE_FRONT);
   bookcase.root.add(cartouche.mesh);
   cartouche.write(shelfText());
+  // Celui du meuble des fins : les fausses fins trouvées, sur onze (« 1/11 »).
+  const endingsText = (): string => writeDigits(`${fakeEndingsFound(state)}/${ENDING_TOMES}`);
+  endings.cartouche.write(endingsText());
   const debugShelf =
     debugging || isRareBookFound(state, LIBRARY_DEBUG_BOOK)
       ? layoutBookcase([{ id: LIBRARY_DEBUG_BOOK, thickness: THICKNESS }], bookcase.cells, [DEBUG_CELL])
       : [];
-  const endBook = storyShelved(state) ? LIBRARY_STORY_BOOK : debugging ? LIBRARY_FINAL_BOOK : null;
-  const finalShelf = endBook ? layoutBookcase([{ id: endBook, thickness: THICKNESS }], bookcase.cells, [FINAL_CELL]) : [];
-  const places: Place[] = [
+  const finalShelf = debugging ? layoutBookcase([{ id: LIBRARY_FINAL_BOOK, thickness: THICKNESS }], bookcase.cells, [FINAL_CELL]) : [];
+  const shelfPlaces: Place[] = [
     ...layoutBookcase(
       found.map((id) => ({ id, thickness: thickness(id) })),
       bookcase.cells,
@@ -206,17 +278,78 @@ export const createLibraryPage = (
       spot.pose === 'stand'
         ? new THREE.Vector3(floor.x + spot.x + spot.width, floor.y + spot.y, z)
         : new THREE.Vector3(floor.x + spot.x, floor.y + spot.y, z);
-    return { spot, pivot, holder: null, book: null, pull: 0, aim: 0 };
+    return {
+      id: spot.id,
+      spot,
+      pivot,
+      tip: spot.pose === 'stand',
+      reach: PULL,
+      floor: cell.floor,
+      holder: null,
+      book: null,
+      pull: 0,
+      aim: 0,
+    };
   });
+  // « Mon histoire vraie » dans le meuble des fins : en haut sur le chevalet pendant qu'on la lit, tome 1 une fois finie.
+  const reading = storyShelved(state) && !storyFinished(state);
+  const endingsAt = (local: THREE.Vector3): THREE.Vector3 => local.clone().add(endings.root.position);
+  const storyPlaces: Place[] = !storyShelved(state)
+    ? []
+    : reading
+      ? [
+          {
+            id: LIBRARY_STORY_BOOK,
+            pivot: endingsAt(EASEL_LIP),
+            tip: false,
+            reach: EASEL_PULL,
+            floor: STAND_FLOOR,
+            holder: null,
+            book: null,
+            pull: 0,
+            aim: 0,
+          },
+        ]
+      : [
+          {
+            id: LIBRARY_STORY_BOOK,
+            pivot: endingsAt(new THREE.Vector3(TOMES[0].x, TOME_FLOOR, TOME_FRONT)),
+            tip: true,
+            reach: PULL,
+            floor: LOW_FLOOR,
+            holder: null,
+            book: null,
+            pull: 0,
+            aim: 0,
+          },
+        ];
+  const places = [...shelfPlaces, ...storyPlaces];
+  // Le tome 1, rangé : un dos de la collection (son bandeau, son numéro), comme dans la maquette.
+  let tome: Tome | null = null;
+  if (storyPlaces[0] && !reading) {
+    const place = storyPlaces[0];
+    tome = createTome(0, t('ui.endings.collection'));
+    tome.mesh.position.set(0, 0, 0);
+    const holder = new THREE.Group();
+    holder.add(tome.mesh);
+    holder.position.copy(place.pivot);
+    endings.cellLights.light(holder);
+    scene.add(holder);
+    place.holder = holder;
+    place.book = tome.anchor;
+    // Great Vibes peut arriver après le premier dessin.
+    void document.fonts?.load("400 40px 'Great Vibes'").then(() => tome?.rename(t('ui.endings.collection')));
+  }
   // Les livres trouvés : leur vrai modèle, chargé à part (couvertures, polices).
-  for (const place of places) {
-    const book = shelfBook3d(state, place.spot.id, debugging);
+  for (const place of shelfPlaces) {
+    const spot = place.spot!;
+    const book = shelfBook3d(state, spot.id, debugging);
     place.tick = book.tick;
     void book.look().then((look) => {
       if (!root.isConnected && mounted) return;
-      const mesh = createBookMesh(book.shape, shelfLook(look, place.spot));
+      const mesh = createBookMesh(book.shape, shelfLook(look, spot));
       mesh.setOpen(0);
-      const standing = place.spot.pose === 'stand';
+      const standing = spot.pose === 'stand';
       // Le dos vers le lecteur : debout, ou couché sur le plat (tourné d'un quart de tour dans son plan).
       const turn = new THREE.Group();
       mesh.root.rotation.y = Math.PI / 2;
@@ -228,7 +361,7 @@ export const createLibraryPage = (
       const box = visibleBox(mesh.root);
       // Debout : son coin bas-droit-avant au pivot ; couché : le milieu de son dessous, à l'avant.
       turn.position.set(standing ? -box.max.x : -(box.min.x + box.max.x) / 2, -box.min.y, -box.max.z);
-      tilt.rotation.set(0, place.spot.yaw, -place.spot.lean);
+      tilt.rotation.set(0, spot.yaw, -spot.lean);
       mesh.root.traverse((object) => {
         if (object instanceof THREE.Mesh) object.castShadow = object.receiveShadow = true;
       });
@@ -242,29 +375,102 @@ export const createLibraryPage = (
       dirty = true;
     });
   }
+  // « Mon histoire vraie » en lecture : de face, sa couverture vers le lecteur, penchée contre le chevalet, sur sa lèvre.
+  if (reading) {
+    const place = storyPlaces[0];
+    const book = shelfBook3d(state, LIBRARY_STORY_BOOK, debugging);
+    const easelSpot: ShelfPlace = {
+      id: LIBRARY_STORY_BOOK,
+      cell: -1,
+      pose: 'stand',
+      x: 0,
+      y: 0,
+      width: 0,
+      depth: 0,
+      yaw: 0,
+      lean: EASEL_LEAN,
+    };
+    void book.look().then((look) => {
+      if (!root.isConnected && mounted) return;
+      const mesh = createBookMesh(book.shape, shelfLook(look, easelSpot));
+      mesh.setOpen(0);
+      const box = visibleBox(mesh.root);
+      // Le milieu de son dessous, la couverture à l'avant.
+      mesh.root.position.set(-(box.min.x + box.max.x) / 2, -box.min.y, -box.max.z);
+      mesh.root.traverse((object) => {
+        if (object instanceof THREE.Mesh) object.castShadow = object.receiveShadow = true;
+      });
+      const tilt = new THREE.Group();
+      tilt.rotation.x = -EASEL_LEAN;
+      tilt.add(mesh.root);
+      const holder = new THREE.Group();
+      holder.add(tilt);
+      holder.position.copy(place.pivot);
+      endings.cellLights.light(holder);
+      scene.add(holder);
+      place.holder = holder;
+      place.book = mesh.root;
+      dirty = true;
+    });
+  }
 
-  /** La caméra en face de la vitrine, à hauteur de son milieu : toute la vitrine tient dans le canvas. */
-  const fit = (): void => {
-    const half = THREE.MathUtils.degToRad(camera.fov / 2);
-    const tall = (bookcase.size.y / 2) * 1.08;
-    const wide = (bookcase.size.x / 2) * 1.12;
-    const distance = Math.max(tall / Math.tan(half), wide / (Math.tan(half) * camera.aspect)) + bookcase.size.z / 2;
-    camera.position.set(0, center.y, distance);
-    camera.lookAt(center);
-    lighting.follow(camera, center, 1);
+  /** Ce que la caméra cadre devant chaque meuble : la vitrine entière ; le meuble des fins et la machine (maquette). */
+  const framing = (name: LibraryView) =>
+    name === 'library'
+      ? { center, tall: (bookcase.size.y / 2) * 1.08, wide: (bookcase.size.x / 2) * 1.12, depth: bookcase.size.z }
+      : {
+          center: new THREE.Vector3(ENDINGS_X + 0.1, ENDINGS_HEIGHT / 2, 0),
+          tall: (ENDINGS_HEIGHT / 2) * 1.1,
+          wide: 2.0 * 1.1,
+          depth: ENDINGS_DEPTH,
+        };
+  let view: LibraryView = rememberedView();
+  let glide: { from: Shot; to: Shot; start: number } | null = null;
+  /** La caméra entre deux vues (`k` de 0 à 1), à hauteur de leur milieu, et les lumières qui la suivent. */
+  const aim = (to: Shot, k: number, from: Shot = to): void => {
+    const look = from.center.clone().lerp(to.center, k);
+    camera.position.copy(from.position).lerp(to.position, k);
+    camera.lookAt(look);
+    camera.updateMatrixWorld();
+    lighting.follow(camera, look, 1);
     // La lumière qui porte les ombres vient d'en haut et de devant, comme celle des spots des cases (qui n'en
     // portent pas) : un livre tiré de sa case pose son ombre derrière lui et vers le bas, pas sur le côté.
     const rig = shadowLamp.parent!;
     rig.updateMatrixWorld(true);
-    shadowLamp.position.copy(rig.worldToLocal(center.clone().addScaledVector(SHADOW_FROM, SHADOW_DISTANCE)));
-    shadowLamp.target.position.copy(rig.worldToLocal(center.clone()));
+    shadowLamp.position.copy(rig.worldToLocal(look.clone().addScaledVector(SHADOW_FROM, SHADOW_DISTANCE)));
+    shadowLamp.target.position.copy(rig.worldToLocal(look.clone()));
   };
+  /** La caméra en face du meuble qu'on regarde, à hauteur de son milieu : tout le meuble tient dans le canvas. */
+  const fit = (): void => aim(shotOf(camera, framing(view)), 1);
+  const showArrows = (): void => {
+    toEndings.hidden = view !== 'library';
+    toLibrary.hidden = view !== 'endings';
+  };
+  showArrows();
+  /** Glisse d'un meuble à l'autre : la caméra file de côté et se pose devant le nouveau. */
+  const go = (name: LibraryView): void => {
+    if (view === name) return;
+    hover(null);
+    glide = { from: shotOf(camera, framing(view)), to: shotOf(camera, framing(name)), start: animationNow() };
+    view = name;
+    rememberView(name);
+    showArrows();
+    // La fin du glissement à la minuterie (onglet caché : requestAnimationFrame y est gelé).
+    setTimeout(() => {
+      if (!glide || !root.isConnected) return;
+      glide = null;
+      fit();
+      renderer.render(scene, camera);
+    }, GLIDE_MS + 50);
+  };
+  toEndings.addEventListener('click', () => go('endings'));
+  toLibrary.addEventListener('click', () => go('library'));
 
   /** Le nom du livre survolé, posé sur le bord avant de son étagère, au milieu du livre. */
   const placeCaption = (): void => {
     if (!hovered?.holder) return;
     const box = visibleBox(hovered.holder);
-    const at = new THREE.Vector3((box.min.x + box.max.x) / 2, bookcase.cells[hovered.spot.cell].floor, FRONT).project(camera);
+    const at = new THREE.Vector3((box.min.x + box.max.x) / 2, hovered.floor, FRONT).project(camera);
     caption.style.left = `${((at.x + 1) / 2) * 100}%`;
     caption.style.top = `${((1 - at.y) / 2) * 100}%`;
   };
@@ -292,7 +498,7 @@ export const createLibraryPage = (
       });
     return shown.find((place) => hit && place.holder!.getObjectById(hit.object.id)) ?? null;
   };
-  const label = ({ spot: { id } }: Place): string =>
+  const label = ({ id }: Place): string =>
     id === LIBRARY_FIRST_BOOK ? t('ui.firstBook') : id === LIBRARY_FINAL_BOOK ? t('finalBook.title') : t(`rareBooks.${id}.name`);
   const hover = (place: Place | null): void => {
     if (hovered === place) return;
@@ -332,7 +538,21 @@ export const createLibraryPage = (
     relicCaption();
     caption.classList.toggle('shown', id !== null);
   };
+  /** Le levier ou le bouton rouge de la machine, sous la souris. */
+  const handleAt = (event: MouseEvent) => {
+    const rect = canvas.getBoundingClientRect();
+    pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
+    raycaster.setFromCamera(pointer, camera);
+    return view === 'endings' && !glide ? machine.handleAt(raycaster) : null;
+  };
   canvas.addEventListener('pointermove', (event) => {
+    if (glide) return;
+    if (handleAt(event)) {
+      hoverRelic(null);
+      hover(null);
+      canvas.style.cursor = 'pointer';
+      return;
+    }
     const relic = relicAt(event);
     hoverRelic(relic);
     if (!relic) hover(placeAt(event));
@@ -343,15 +563,18 @@ export const createLibraryPage = (
   });
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
   canvas.addEventListener('click', (event) => {
+    if (glide) return;
+    const handle = handleAt(event);
+    if (handle) return machine.press(handle, animationNow());
     const relic = relicAt(event);
     if (relic) return relics.choose(relic);
     const place = placeAt(event);
     if (!place?.holder || !place.book) return;
     // Il part de sa place dans sa case, tel qu'on le voit (sorti à moitié) : la page reprend ce départ.
-    if (!still.matches) launchFlight(libraryFlightId(place.spot.id), place.book, camera, canvas);
+    if (!still.matches) launchFlight(libraryFlightId(place.id), place.book, camera, canvas);
     place.holder.visible = false;
-    opened = place.spot.id;
-    onOpen(place.spot.id);
+    opened = place.id;
+    onOpen(place.id);
   });
 
   let before = animationNow();
@@ -372,7 +595,7 @@ export const createLibraryPage = (
     for (const place of places) {
       if (!place.holder) continue;
       if (place.holder.visible && place.tick?.(now)) moving = true;
-      const away = home.has(libraryFlightId(place.spot.id)) || opened === place.spot.id;
+      const away = home.has(libraryFlightId(place.id)) || opened === place.id;
       if (place.holder.visible === away) {
         place.holder.visible = !away;
         moving = true;
@@ -380,9 +603,17 @@ export const createLibraryPage = (
       const pull = still.matches ? place.aim : place.pull + (place.aim - place.pull) * Math.min(1, dt * PULL_RATE);
       place.pull = Math.abs(place.aim - pull) < 0.002 ? place.aim : pull;
       if (place.pull !== place.aim) moving = true;
-      place.holder.position.z = place.pivot.z + PULL * place.pull;
-      if (place.spot.pose === 'stand') place.holder.rotation.x = TIP * place.pull;
+      place.holder.position.z = place.pivot.z + place.reach * place.pull;
+      if (place.tip) place.holder.rotation.x = TIP * place.pull;
     }
+    if (glide) {
+      const k = Math.min(1, (now - glide.start) / GLIDE_MS);
+      aim(glide.to, glideEase(k), glide.from);
+      if (k >= 1) glide = null;
+      moving = true;
+    }
+    // La machine : son levier, son bouton, ses ampoules (seulement quand on la voit).
+    if ((view === 'endings' || glide) && machine.tick(now)) moving = true;
     // Le temps qui reste avant de pouvoir changer de relique avance dans sa légende.
     relicCaption();
     if (resize()) {
@@ -410,6 +641,11 @@ export const createLibraryPage = (
     update: () => {
       back.textContent = `← ${t('ui.back')}`;
       cartouche.write(shelfText());
+      endings.cartouche.write(endingsText());
+      machine.relabel();
+      tome?.rename(t('ui.endings.collection'));
+      arrowTitles();
+      dirty = true;
       if (hovered) caption.textContent = label(hovered);
     },
   };

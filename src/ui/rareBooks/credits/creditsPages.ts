@@ -55,6 +55,7 @@ const FONTS: [string, string][] = [
   ['Space Mono', 'Colophon Foundry'],
   ['DM Serif Display', 'Colophon Foundry'],
   ['Caveat', 'Impallari Type'],
+  ['Great Vibes', 'Robert Leuschke'],
   ['Fredoka', 'Milena Brandão'],
   ['Nothing You Could Do', 'Kimberly Geswein'],
 ];

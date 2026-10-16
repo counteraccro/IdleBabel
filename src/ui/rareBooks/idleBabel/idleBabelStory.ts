@@ -162,6 +162,7 @@ export const STORY: StoryChapter[] = [
       { key: 'digitalAge' },
       { key: 'feeding' },
       { key: 'falseEnding' },
+      { key: 'endingsShelf' },
     ],
   },
 ];

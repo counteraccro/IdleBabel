@@ -90,6 +90,8 @@
   "knowledge": "Connaissance",
   "library": "La bibliothèque",
   "shelfCount": {"books": "{n} livres", "booksOne": "1 livre", "relics": "{n} reliques", "relicsOne": "1 relique"},
+  "endings": {"collection": "La Vraie Fin", "toLibrary": "Vers la bibliothèque", "toEndings": "Vers le meuble des fins"},
+  "lottery": {"sign": "LOTERIE", "jackpot": "GROS LOT"},
   "shelveBook": "Ranger le livre",
   "firstBook": "Mon premier livre",
   "debugBookError": "Erreur fatale",

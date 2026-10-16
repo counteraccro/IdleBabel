@@ -186,3 +186,37 @@ export const drawBabelText = (
     x += DIGIT_WIDTH * size;
   }
 };
+
+/**
+ * Un chiffre de Babel seul, centré en (`x`, `y`), haut de `size` pixels, doré, aux traits épais de `width` (repère 100) :
+ * les rouleaux et l'écran des jetons de la machine de la Loterie (ui/library/lotteryMachine3d.ts).
+ */
+export const drawBabelDigit = (
+  context: CanvasRenderingContext2D,
+  digit: number,
+  x: number,
+  y: number,
+  size: number,
+  width: number,
+): void => {
+  context.save();
+  context.translate(x - size / 2, y - size / 2);
+  context.scale(size / 100, size / 100);
+  const gradient = context.createLinearGradient(0, 0, 100, 100);
+  for (const [at, color] of GOLD) gradient.addColorStop(at, color);
+  context.strokeStyle = gradient;
+  context.fillStyle = gradient;
+  context.lineWidth = width;
+  context.lineCap = 'round';
+  context.lineJoin = 'round';
+  for (const shape of SHAPES[digit]) {
+    if ('d' in shape) context.stroke(new Path2D(shape.d));
+    else {
+      context.beginPath();
+      context.arc(shape.circle[0], shape.circle[1], shape.circle[2], 0, Math.PI * 2);
+      if (shape.filled) context.fill();
+      else context.stroke();
+    }
+  }
+  context.restore();
+};

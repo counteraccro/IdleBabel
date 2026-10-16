@@ -48,6 +48,9 @@ export const addCellLights = (root: THREE.Group, cells: BookcaseCell[]): CellLig
   const brass = new THREE.MeshStandardMaterial({ color: 0xb08a4a, roughness: 0.35, metalness: 0.85 });
   const glow = new THREE.MeshBasicMaterial({ color: 0xfff0d0 });
   const faces: THREE.Mesh[] = [];
+  // Le shader compare des points du monde : un meuble déplacé dans la scène (le meuble des fins) y décale ses cases.
+  root.updateWorldMatrix(true, false);
+  const at = new THREE.Vector3().setFromMatrixPosition(root.matrixWorld);
   for (const cell of cells) {
     const x = cell.left + cell.width / 2;
     const top = cell.floor + cell.height;
@@ -61,9 +64,11 @@ export const addCellLights = (root: THREE.Group, cells: BookcaseCell[]): CellLig
 
     // Le cône couvre la case en largeur au niveau de l'étagère.
     const angle = Math.min(Math.atan(cell.width / 2 / cell.height) * 1.6, THREE.MathUtils.degToRad(60));
-    const lamp = new THREE.Vector3(x, top - THICK, Z);
-    const spot = new THREE.Vector3(x, cell.floor, Z - 0.1);
-    uniforms.cellBox.value.push(new THREE.Vector4(cell.left - EDGE, cell.left + cell.width + EDGE, cell.floor - EDGE, top + EDGE));
+    const lamp = new THREE.Vector3(x, top - THICK, Z).add(at);
+    const spot = new THREE.Vector3(x, cell.floor, Z - 0.1).add(at);
+    uniforms.cellBox.value.push(
+      new THREE.Vector4(at.x + cell.left - EDGE, at.x + cell.left + cell.width + EDGE, at.y + cell.floor - EDGE, at.y + top + EDGE),
+    );
     uniforms.cellLamp.value.push(new THREE.Vector4(lamp.x, lamp.y, lamp.z, cell.height * 2.2));
     uniforms.cellAim.value.push(lamp.clone().sub(spot).normalize());
     uniforms.cellCone.value.push(new THREE.Vector2(Math.cos(angle), Math.cos(angle * (1 - PENUMBRA))));

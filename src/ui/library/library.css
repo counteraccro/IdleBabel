@@ -92,3 +92,50 @@
   background: rgba(0, 0, 0, 0.45);
   border-left: 2px solid #a8402e;
 }
+/*
+ * Les flèches d'un meuble à l'autre (maquette du meuble des fins, 16/10) : un chevron doré, au bord de la scène, à
+ * mi-hauteur ; à gauche sur la vitrine, à droite sur le meuble des fins.
+ */
+.library-arrow,
+.library-arrow:hover {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 12px 18px;
+  cursor: pointer;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 64px;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.7;
+  text-shadow:
+    0 0 10px rgba(224, 184, 112, 0.45),
+    0 2px 4px #000;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
+}
+.library-arrow:hover {
+  opacity: 1;
+}
+.library-arrow.right {
+  right: 8px;
+}
+.library-arrow.right:hover {
+  transform: translate(4px, -50%);
+}
+.library-arrow.left {
+  left: 8px;
+}
+.library-arrow.left:hover {
+  transform: translate(-4px, -50%);
+}
+.library-arrow[hidden] {
+  display: none;
+}
+.library-page.backdrop .library-arrow {
+  opacity: 0;
+}

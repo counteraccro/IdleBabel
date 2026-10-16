@@ -1062,6 +1062,7 @@
                 "Cinq mods dans la liste : Sans Mimic, Attrape-lettres, Liseuse (le livre en main devient une liseuse ; les livres rares et le Grand Livre restent en 3D), BetterBabel (la méthode la plus rentable en couleur dans la ruche, et un bloc en bas à gauche : prochaine lettre, Mimic, prochain Éther, intuitions à s’offrir, délai avant de changer de relique) et Deux sceaux de plus.",
                 "Une documentation pour écrire un mod, en français et en anglais, à l’adresse counteraccro.github.io/IdleBabel/mods/, et la marche à suivre pour proposer le sien à la liste du jeu.",
                 "Un mod peut changer les chiffres du jeu (chance de trouvaille, prix, attente de la lettre, de la Mimic…) et trois de ses règles (hausse des prix, seuil de découverte des méthodes, prix de l’Éther) ; neuf nouveaux moments où se brancher (achat, intuition, étoile, livre rare, relique, sceau, livre fini, Mimic attrapée, bonus de la lettre).",
+                "Le meuble des fins, à gauche de la bibliothèque (une flèche y mène, une autre en revient) : « Mon histoire vraie » y déménage, en haut pendant qu’on la lit, puis tome 1 de la collection « La Vraie Fin » (onze places). À côté, la machine de la Loterie, encore sans jeton.",
                 "Un nouveau sceau secret."
               ]
             },
@@ -2561,6 +2562,14 @@
             "Chaque étoile allumée fait remonter un souvenir, surligné dans un livre de la vitrine, à la place gardée pour le livre de la fin : « Mon histoire vraie », le seul dont le titre se lit en clair. Une tasse, une clé, une voix, un carnet blanc, le 410, un nom brodé : chaque mystère du jeu y trouve sa réponse. Puis la tasse change de bord, et le tilleul devient un chêne.",
             "À la dernière page, quelqu’un a écrit au crayon : « Pas celui-ci. » Le chercheur ne sait plus s’il se souvient ou s’il l’a lu. La réponse est dans un autre livre ; en attendant, il lit deux fois plus vite.",
             "Avec elle, le jeu est passé en Alpha 2.1."
+          ]
+        },
+        "endingsShelf": {
+          "head": "La Vraie Fin",
+          "text": [
+            "« Mon histoire vraie » a quitté la vitrine. À gauche de la bibliothèque, une flèche mène à un autre meuble, du même bois, à deux étages. En haut, sur un socle, un chevalet de laiton attend un livre posé de face ; en bas, onze places, chacune numérotée, pour une collection : « La Vraie Fin ». Son nom court d’un dos à l’autre, en lettres anglaises dorées, et ne se lit en entier que la rangée complète. Le cartouche compte les tomes, sur onze.",
+            "Pendant qu’on la lit, « Mon histoire vraie » trône en haut, comme si c’était le vrai livre. Finie, elle descend à sa place : tome 1. Le livre du haut, lui, n’est d’aucune collection.",
+            "À côté, une machine de casino, cuivre et or : la Loterie. Trois rouleaux aux chiffres de Babel, un panneau qui promet le gros lot, trois 7, un levier, un bouton rouge. Il faut un jeton. Il n’y en a pas encore : le levier descend à peine, le bouton s’enfonce, rien ne tourne. La machine d’abord en bois, et ses néons de toutes les couleurs, ont été écartés."
           ]
         },
         "thisBook": {
