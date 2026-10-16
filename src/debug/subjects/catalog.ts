@@ -3,6 +3,7 @@ import { RESOURCE_SUBJECTS } from './resources';
 import { SEED_SUBJECT } from './seed';
 import { LETTER_SUBJECT } from './letter';
 import { MIMIC_SUBJECT } from './mimic';
+import { LOTTERY_SUBJECT } from './lottery';
 import { RELIC_SUBJECT } from './relics';
 import { METHOD_SUBJECTS } from './methods';
 import { INTUITION_SUBJECTS } from './intuitions';
@@ -22,6 +23,7 @@ export const SUBJECTS: readonly DebugSubject[] = [
   ...RESOURCE_SUBJECTS,
   LETTER_SUBJECT,
   MIMIC_SUBJECT,
+  LOTTERY_SUBJECT,
   RELIC_SUBJECT,
   SEED_SUBJECT,
   ...METHOD_SUBJECTS,

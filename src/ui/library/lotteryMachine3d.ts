@@ -7,8 +7,11 @@ import { jackpotPanel, signPanel, tokensPanel, type Panel } from './lotteryPanel
 /**
  * La machine de la Loterie (maquette validée le 16/10, .ai/maquette-meuble-des-fins.html ; mesures reprises telles quelles) :
  * un bandit manchot de casino, sur le modèle donné par l'auteur, sans bois : métal cuivré et doré, panneaux bordeaux,
- * ampoules ; trois rouleaux aux chiffres de Babel ; le levier et le bouton rouge se prennent à la souris. Elle est vide :
- * sans jeton, on ne peut rien faire (le bouton s'enfonce, le levier descend un peu et remonte ; rien ne tourne).
+ * ampoules ; trois rouleaux aux chiffres de Babel ; le levier et le bouton rouge se prennent à la souris. Sans jeton, on
+ * ne peut rien faire (le bouton s'enfonce, le levier descend un peu et remonte ; rien ne tourne) ; avec, le levier descend
+ * jusqu'en bas, les rouleaux tournent et s'arrêtent l'un après l'autre, et le panneau du gros lot dit le résultat. Le tirage
+ * est déjà joué (systems/lottery.ts) : les rouleaux ne font que le montrer, et finissent d'eux-mêmes (onglet caché, l'horloge
+ * a avancé).
  */
 const W = 1.16;
 const LOW_Y0 = 0.2;
@@ -33,15 +36,30 @@ const EMPTY_PULL_MS = 420;
 const BUTTON_MS = 320;
 /** Les ampoules clignotent une sur deux, à tour de rôle, à ce rythme. */
 const BLINK_MS = 480;
+/** Avec un jeton : le levier tout en bas, plus lentement. */
+const FULL_PULL_MS = 700;
+/** Les rouleaux s'arrêtent l'un après l'autre, à ces instants (ms après le levier) ; au moins tant de tours. */
+const REEL_STOPS = [1500, 2100, 2700];
+const REEL_TURNS = 4;
+/** Le résultat reste sur le panneau tant (ms), puis le gros lot revient. */
+const RESULT_MS = 9000;
 
 export type LotteryHandle = 'lever' | 'button';
+
+/** Un tirage joué : les chiffres où s'arrêtent les rouleaux, et ce que le panneau en dit. */
+export interface MachineDraw {
+  reels: readonly [number, number, number];
+  result: { title: string; line: string };
+}
 
 export interface LotteryMachine {
   root: THREE.Group;
   /** Le levier ou le bouton sous le rayon (souris), ou rien. */
   handleAt: (raycaster: THREE.Raycaster) => LotteryHandle | null;
-  /** On tire le levier, on appuie sur le bouton. */
+  /** On tire le levier, on appuie sur le bouton : un jeton est joué s'il y en a (rien pendant que les rouleaux tournent). */
   press: (by: LotteryHandle, now: number) => void;
+  /** Les rouleaux tournent encore. */
+  spinning: (now: number) => boolean;
   /** Fait avancer le levier, le bouton, les ampoules ; vrai si l'image a changé. */
   tick: (now: number) => boolean;
   /** Réécrit les panneaux (la langue a changé, une police est arrivée). */
@@ -99,14 +117,24 @@ const reelTexture = (): THREE.CanvasTexture => {
   return canvasTexture(canvas);
 };
 
+/** L'angle d'un rouleau qui montre le chiffre `digit` dans sa fenêtre (à un tour près). */
+const reelAngle = (digit: number): number => ((SYMBOLS.indexOf(digit) + 0.5) / SYMBOLS.length) * Math.PI * 2;
+
+/** Ralentit jusqu'à l'arrêt, avec un petit rebond. */
+const reelEase = (k: number): number => {
+  const c = 1.2;
+  return 1 + (c + 1) * (k - 1) ** 3 + c * (k - 1) ** 2;
+};
+
 /**
  * La machine, son socle en y = 0. `labels` : ses deux textes, dans la langue du jeu ; `environment` : le reflet de la pièce,
- * pour le métal (comme dans la maquette, à 0,25).
+ * pour le métal (comme dans la maquette, à 0,25) ; `tokens` : les jetons à l'écran ; `play` : joue un jeton (rien sans jeton).
  */
 export const createLotteryMachine = (
   labels: { sign: () => string; jackpot: () => string },
   environment: THREE.Texture,
   tokens: () => number,
+  play: () => MachineDraw | undefined,
 ): LotteryMachine => {
   const root = new THREE.Group();
   const copper = new THREE.MeshStandardMaterial({ color: 0xc98a52, roughness: 0.32, metalness: 0.9 });
@@ -123,7 +151,8 @@ export const createLotteryMachine = (
   add(rounded(W + 0.06, 0.08, 0.78, 0.03, copper), 0, 0.16, 0);
   add(rounded(W, BOX_H, 0.7, 0.06, copper), 0, LOW_Y0 + BOX_H / 2, 0);
   add(rounded(0.96, 0.56, 0.04, 0.03, gold), 0, LOW_Y0 + 0.5, 0.35);
-  const panels: Panel[] = [jackpotPanel(labels.jackpot), tokensPanel(tokens)];
+  let result: MachineDraw['result'] | null = null;
+  const panels: Panel[] = [jackpotPanel(labels.jackpot, () => result), tokensPanel(tokens)];
   add(panels[0].mesh, 0, LOW_Y0 + 0.5, 0.374);
   add(panels[1].mesh, 0, LOW_Y0 + 0.13, 0.36);
   add(rounded(0.4, 0.12, 0.03, 0.02, gold), 0, LOW_Y0 + 0.13, 0.338);
@@ -165,6 +194,7 @@ export const createLotteryMachine = (
   }
   // Les rouleaux, arrêtés chacun sur un chiffre à lui.
   const reelBand = new THREE.MeshStandardMaterial({ map: reelTexture(), roughness: 0.55, side: THREE.DoubleSide });
+  const reels: THREE.Group[] = [];
   [-1, 0, 1].forEach((i, n) => {
     const reel = new THREE.Group();
     const cylinder = new THREE.Mesh(new THREE.CylinderGeometry(REEL_R, REEL_R, WIN_W - 0.02, 64, 1, true), reelBand);
@@ -173,6 +203,7 @@ export const createLotteryMachine = (
     reel.position.set(i * (WIN_W + WIN_GAP), WIN_Y, 0.25 - REEL_R);
     reel.rotation.x = ((((n * 3 + 1) % SYMBOLS.length) + 0.5) / SYMBOLS.length) * Math.PI * 2;
     root.add(reel);
+    reels.push(reel);
   });
 
   // Le fronton : une enseigne en arc, cuivrée, son panneau « LOTERIE » ; au sommet, un hexagone doré.
@@ -215,8 +246,15 @@ export const createLotteryMachine = (
   });
 
   let leverStart = -1;
+  /** Le levier descend tout en bas (un jeton joué), ou un peu (sans jeton). */
+  let fullPull = false;
   let buttonStart = -1;
   let beat = -1;
+  /** Le tirage en cours : quand il a commencé, d'où partent les rouleaux et où ils s'arrêtent ; null : rien ne tourne. */
+  let spin: { start: number; from: number[]; to: number[]; draw: MachineDraw } | null = null;
+  /** Le résultat s'efface du panneau à ce moment. */
+  let resultUntil = -1;
+  const spinning = (now: number): boolean => spin !== null && now - spin.start < REEL_STOPS[REEL_STOPS.length - 1];
   return {
     root,
     handleAt: (raycaster) => {
@@ -225,16 +263,50 @@ export const createLotteryMachine = (
       return !hit ? null : hit.object === redButton ? 'button' : 'lever';
     },
     press: (by, now) => {
-      if (by === 'button') {
-        if (buttonStart < 0) buttonStart = now;
-      } else if (leverStart < 0) leverStart = now;
-      // Pas encore de jeton : rien ne tourne (les tirages viendront avec eux).
+      if (spin !== null || leverStart >= 0 || buttonStart >= 0) return;
+      if (by === 'button') buttonStart = now;
+      else leverStart = now;
+      const draw = play();
+      fullPull = draw !== undefined;
+      if (!draw) return;
+      // Chaque rouleau fait au moins REEL_TURNS tours, et s'arrête sur son chiffre.
+      const to = reels.map((reel, i) => {
+        const base = reel.rotation.x + (REEL_TURNS + i) * Math.PI * 2;
+        const target = reelAngle(draw.reels[i]);
+        return base + ((((target - base) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2));
+      });
+      spin = { start: now, from: reels.map((reel) => reel.rotation.x), to, draw };
+      result = null;
+      resultUntil = -1;
+      panels.forEach((one) => one.redraw());
     },
+    spinning,
     tick: (now) => {
       let changed = false;
+      if (spin) {
+        const current = spin;
+        current.to.forEach((to, i) => {
+          const k = Math.min(1, (now - current.start) / REEL_STOPS[i]);
+          reels[i].rotation.x = current.from[i] + (to - current.from[i]) * reelEase(k);
+        });
+        if (!spinning(now)) {
+          spin = null;
+          result = current.draw.result;
+          resultUntil = now + RESULT_MS;
+          panels[0].redraw();
+        }
+        changed = true;
+      }
+      if (resultUntil >= 0 && now >= resultUntil) {
+        result = null;
+        resultUntil = -1;
+        panels[0].redraw();
+        changed = true;
+      }
       if (leverStart >= 0) {
-        const k = (now - leverStart) / EMPTY_PULL_MS;
-        lever.rotation.x = EMPTY_PULL * (k < 0.4 ? k / 0.4 : Math.max(0, 1 - (k - 0.4) / 0.6));
+        const pull = fullPull ? 1 : EMPTY_PULL;
+        const k = (now - leverStart) / (fullPull ? FULL_PULL_MS : EMPTY_PULL_MS);
+        lever.rotation.x = pull * (k < 0.4 ? k / 0.4 : Math.max(0, 1 - (k - 0.4) / 0.6));
         if (k >= 1) {
           lever.rotation.x = 0;
           leverStart = -1;
@@ -251,7 +323,8 @@ export const createLotteryMachine = (
         }
         changed = true;
       }
-      const next = Math.floor(now / BLINK_MS);
+      // Pendant que les rouleaux tournent, les ampoules s'affolent.
+      const next = Math.floor(now / (spin ? BLINK_MS / 3 : BLINK_MS));
       if (next !== beat) {
         beat = next;
         bulbs.forEach((bulb, i) => (bulb.material.emissiveIntensity = (i + beat) % 2 === 0 ? 2.2 : 0.25));

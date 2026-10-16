@@ -47,8 +47,8 @@ describe('La Mimic', () => {
     gainFind(state, find);
     expect(state.knowledge).toBe(0);
     expect(state.mimic.eaten).toBe(2);
-    const given = catchMimic(state, 3_600_000);
-    expect(given).toEqual({ eaten: 2, bonus: 2 * 0.1 });
+    const given = catchMimic(state, 3_600_000, () => 0.9);
+    expect(given).toEqual({ eaten: 2, bonus: 2 * 0.1, token: false });
     // 2,2 : arrondi au supérieur, la Connaissance se compte en entiers.
     expect(state.knowledge).toBe(3);
     expect(state.lifetimeKnowledge).toBe(3);

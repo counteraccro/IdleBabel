@@ -4,6 +4,8 @@ import { digitalMultiplier, etherReading, readingMultiplier, storyMultiplier } f
 import { readingBoon } from './boons';
 import { relicReading } from './relics';
 import { mimicReading } from './mimic';
+import { lotteryMethod, lotteryReading } from './lotteryEffects';
+import { goldenEatsPages, goldenHere } from './goldenMimic';
 import { hookProduct } from '../mods/hooks';
 import { modded } from '../mods/quantities';
 import type { GameState } from '../core/state';
@@ -17,7 +19,7 @@ export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== u
 
 /**
  * Ce qui multiplie la lecture de toutes les méthodes : la Lecture de l'Etherium, l'Éther reçu, la Transe de la lettre (en
- * cours), le Sablier (s'il agit), la Mimic qui la ralentit (si elle est là), le Rideau entier (×2) et les mods (crochet `reading`, grandeur `reading`) ; et le Minitel,
+ * cours), le Sablier (s'il agit), la Mimic qui la ralentit (si elle est là), le Rideau entier (×2), les bonus et malus de la Loterie et les mods (crochet `reading`, grandeur `reading`) ; et le Minitel,
  * pour celles de l'Âge Numérique. Calculés une fois pour toutes les méthodes (revue de code, 13/10).
  */
 type Shared = { all: number; digital: number };
@@ -29,6 +31,7 @@ const shared = (state: GameState): Shared => ({
     relicReading(state) *
     mimicReading(state) *
     storyMultiplier(state) *
+    lotteryReading(state) *
     hookProduct('reading') *
     modded('reading'),
   digital: digitalMultiplier(state),
@@ -39,6 +42,7 @@ const rateOf = (state: GameState, tool: (typeof TOOLS)[number], factors: Shared)
   gestureMultiplier(state, tool.id) *
   (tool.age === DIGITAL_AGE ? factors.digital : 1) *
   factors.all *
+  lotteryMethod(state, tool.id) *
   modded(`method:${tool.id}`);
 
 /** Ce que lit une méthode, pour chaque exemplaire : sa base, doublée par son intuition à chaque niveau, × `shared`. */
@@ -75,8 +79,9 @@ export const forgetPagesRest = (): void => {
   carry.pages = 0;
 };
 
-/** Toute page lue passe par ici : elle s'ajoute au stock et au total à vie. */
+/** Toute page lue passe par ici : elle s'ajoute au stock et au total à vie, sauf si la Mimic dorée la mange. */
 export const gainPages = (state: GameState, amount: number): void => {
+  if (goldenEatsPages(state, amount)) return;
   addKeepingRest(state, 'pages', amount);
   addKeepingRest(state, 'totalPagesRead', amount);
 };
@@ -91,10 +96,11 @@ export const producedWholePages = (): number => producedWhole;
 
 /**
  * Ce que chaque méthode a lu pendant `seconds`, et toutes ensemble depuis toujours (leurs sceaux) ; rien quand
- * le débogage impose la production.
+ * le débogage impose la production, ou que la Mimic dorée mange tout.
  */
 export const creditMethods = (state: GameState, seconds: number): void => {
-  if (forcedPagesPerSecond !== undefined) return;
+  // La Mimic dorée mange ce qu'elles lisent : rien n'est compté.
+  if (forcedPagesPerSecond !== undefined || goldenHere(state)) return;
   const factors = shared(state);
   for (const tool of TOOLS) {
     const read = state.tools[tool.id] * rateOf(state, tool, factors) * seconds;

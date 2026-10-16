@@ -37,19 +37,21 @@ export interface MimicSide {
   destroy: () => void;
 }
 
-export const createMimicSide = (onClick: () => void): MimicSide => {
-  const root = el('div', 'mimic-side');
+/** `golden` : la Mimic dorée de la Loterie (le même sceau, en or). */
+export const createMimicSide = (onClick: () => void, golden = false): MimicSide => {
+  const root = el('div', golden ? 'mimic-side golden' : 'mimic-side');
   const seal = el('button', 'method-seal mimic');
   seal.type = 'button';
-  seal.setAttribute('aria-label', t('ui.mimic.name'));
+  const name = t(golden ? 'ui.lottery.golden.name' : 'ui.mimic.name');
+  seal.setAttribute('aria-label', name);
   seal.innerHTML = `<span class="method-rim"></span><span class="method-core"></span>${sigil()}`;
   const count = el('span', 'method-count');
   seal.append(count);
   const snores = el('div', 'mimic-side-zzz');
   snores.innerHTML = '<span>z</span><span>z</span><span>z</span>';
   const tip = el('div', 'mimic-tip');
-  const tipName = el('strong', undefined, t('ui.mimic.name'));
-  const tipLine = el('em', undefined, t('whiteBook.intuitions.lightSleep.description'));
+  const tipName = el('strong', undefined, name);
+  const tipLine = el('em', undefined, t(golden ? 'ui.lottery.golden.line' : 'whiteBook.intuitions.lightSleep.description'));
   const tipEaten = el('div');
   tip.append(tipName, tipLine, tipEaten);
   root.append(seal, snores, tip);

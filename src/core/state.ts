@@ -8,6 +8,7 @@ import type { PartId } from '../data/decipher';
 import { newGameSeed } from './random';
 import type { SceneId } from '../scene/scenes';
 import type { RelicId } from '../data/relics';
+import type { LotteryEffectId } from '../data/lottery';
 
 export const SAVE_VERSION = 1;
 
@@ -72,6 +73,43 @@ export interface RelicsState {
   /** Changements de relique, depuis toujours (ses sceaux). */
   changes: number;
 }
+
+/** Un bonus ou un malus de la Loterie en cours (data/lottery.ts) : temps réel, les absences comptent. */
+export interface LotteryEffect {
+  id: LotteryEffectId;
+  /** Heure de fin (ms). */
+  end: number;
+  /** Sa durée entière (ms), ajouts compris : le cercle du médaillon. */
+  total: number;
+  /** La méthode visée (le ×10, la méthode arrêtée). */
+  method?: ToolId;
+}
+
+/** La Mimic dorée de la Loterie (un malus) : elle mange tout ce qui est gagné, puis s'en va sans rien rendre. */
+export interface GoldenMimic {
+  /** Elle s'en va à ce moment (ms). */
+  until: number;
+  /** Sa reliure (un livre ordinaire, doré). */
+  book: number;
+  /** Sa place (« salle:numéro »), comme la Mimic. */
+  spot: string | null;
+  /** Ce qu'elle a mangé. */
+  pages: number;
+  knowledge: number;
+  /** Les coups reçus (on ne peut pas la tuer). */
+  strikes: number;
+}
+
+/** La Loterie (systems/lottery.ts) : gardée au prestige ; les jetons ne s'achètent jamais. */
+export interface LotteryState {
+  tokens: number;
+  effects: LotteryEffect[];
+  golden: GoldenMimic | null;
+  /** Tirages, depuis toujours. */
+  draws: number;
+}
+
+export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0 };
 
 export const NO_RELICS: RelicsState = { found: {}, active: null, lockedUntil: 0, changes: 0 };
 
@@ -153,6 +191,8 @@ export interface GameState {
   mimic: MimicState;
   /** Les reliques (systems/relics.ts) : trouvées, celle qui agit, le délai avant d'en changer. */
   relics: RelicsState;
+  /** La Loterie : jetons, bonus et malus en cours, la Mimic dorée. */
+  lottery: LotteryState;
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
@@ -249,6 +289,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   coloring: {},
   mimic: { ...NO_MIMIC },
   relics: { ...NO_RELICS, found: {} },
+  lottery: { ...NO_LOTTERY, effects: [] },
   newSeals: [],
   libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],

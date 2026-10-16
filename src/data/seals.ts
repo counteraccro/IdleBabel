@@ -279,6 +279,8 @@ export const SEALS: readonly SealDef[] = [
   secret('lastInstant'),
   // Le mot BABEL attrapé en entier, lettre par lettre (systems/letter.ts).
   secret('babelWord'),
+  // La Mimic dorée de la Loterie, qu'on ne peut pas tuer, frappée dix fois quand même (systems/goldenMimic.ts).
+  secret('tenTimes'),
   // « Mon histoire vraie » lue jusqu'à sa dernière bribe : le Rideau entier allumé (la fausse fin, 14/10).
   seal('notThisOne', 'secrets', (s) => s.etherium.includes(S.storyEnd)),
   // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).

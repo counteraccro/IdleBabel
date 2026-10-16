@@ -82,11 +82,25 @@ const panel = (w: number, h: number, paint: (context: CanvasRenderingContext2D, 
   return { mesh: new THREE.Mesh(new THREE.PlaneGeometry(w, h), material), redraw };
 };
 
-/** Le panneau du bas : « GROS LOT », et trois 7 de Babel (le 7-7-7 des casinos). */
-export const jackpotPanel = (title: () => string): Panel =>
+/**
+ * Le panneau du bas : « GROS LOT », et trois 7 de Babel (le 7-7-7 des casinos) ; après un tirage, son résultat (`result`) :
+ * un titre (« BONUS »), et ce qu'il donne en dessous.
+ */
+export const jackpotPanel = (title: () => string, result: () => { title: string; line: string } | null): Panel =>
   panel(0.88, 0.48, (context, w, h) => {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
+    const shown = result();
+    if (shown) {
+      halo(context, () => {
+        context.fillStyle = goldText(context);
+        fitFont(context, shown.title, h * 0.24, CINZEL, w * 0.8);
+        context.fillText(shown.title, w / 2, h * 0.36);
+        fitFont(context, shown.line, h * 0.12, CINZEL, w * 0.82);
+        context.fillText(shown.line, w / 2, h * 0.66);
+      });
+      return;
+    }
     halo(context, () => {
       context.fillStyle = goldText(context);
       // Dans le cadre doré du panneau (sa marge de 14 px et le filet) : 80 % de la largeur au plus.

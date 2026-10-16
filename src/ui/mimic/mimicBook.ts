@@ -155,6 +155,8 @@ export interface MimicRoom {
   vanishing: { x: number; y: number };
   /** Lumière de la salle à la place du livre (filtre, en part) : celle de la salle, et l'assombrissement du fond. */
   light: number;
+  /** La Mimic dorée de la Loterie : le même livre, en or. */
+  golden?: boolean;
 }
 
 export interface MimicBook {
@@ -307,7 +309,9 @@ export const createMimicBook = (textures: MimicTextures, spot: MimicSpot, room: 
     const geo = geometry();
     const cam: Vec = [0, EYE_HEIGHT, 0];
     root.style.opacity = String(v.fade);
-    body.style.filter = `brightness(${room.light.toFixed(3)}) sepia(0.12)`;
+    body.style.filter = room.golden
+      ? `brightness(${(room.light * 1.8).toFixed(3)}) sepia(1) saturate(3) hue-rotate(-6deg) drop-shadow(0 0 8px rgba(232, 199, 118, 0.6))`
+      : `brightness(${room.light.toFixed(3)}) sepia(0.12)`;
     hits = [];
     const shown: [HTMLElement, number][] = [];
     for (const face of FACES) {

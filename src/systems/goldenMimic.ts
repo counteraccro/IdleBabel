@@ -1,0 +1,57 @@
+import { GOLDEN_SECONDS, GOLDEN_STRIKES } from '../data/lottery';
+import { sealEvent } from './seals';
+import type { GameState } from '../core/state';
+
+/**
+ * La Mimic dorée (un malus de la Loterie, l'auteur, 16/10) : on ne peut pas la tuer. Tant qu'elle est là, elle mange
+ * tout ce qui est gagné, pages et Connaissance (pas ce qu'on a déjà), avant la Mimic ordinaire ; au bout de cinq
+ * minutes, elle s'en va sans rien rendre. Un gain de la Loterie tiré pendant ce temps y passe aussi.
+ */
+
+export const goldenHere = (state: GameState, now = Date.now()): boolean => (state.lottery.golden?.until ?? 0) > now;
+
+/** Elle arrive ; déjà là, elle reste cinq minutes de plus. */
+export const spawnGolden = (state: GameState, random: () => number = Math.random, now = Date.now()): void => {
+  const golden = state.lottery.golden;
+  if (golden && golden.until > now) {
+    golden.until += GOLDEN_SECONDS * 1000;
+    return;
+  }
+  state.lottery.golden = {
+    until: now + GOLDEN_SECONDS * 1000,
+    book: 1 + Math.floor(random() * 1_000_000),
+    spot: null,
+    pages: 0,
+    knowledge: 0,
+    strikes: 0,
+  };
+};
+
+/** Des pages gagnées : mangées si elle est là (renvoie true). */
+export const goldenEatsPages = (state: GameState, amount: number): boolean => {
+  if (!goldenHere(state)) return false;
+  state.lottery.golden!.pages += amount;
+  return true;
+};
+
+/** De la Connaissance gagnée : mangée si elle est là (renvoie true). */
+export const goldenEatsKnowledge = (state: GameState, amount: number): boolean => {
+  if (!goldenHere(state)) return false;
+  state.lottery.golden!.knowledge += amount;
+  return true;
+};
+
+/** On la frappe quand même : rien ne se passe. Dix fois : un sceau secret (« Dix fois. Pour rien. »). */
+export const strikeGolden = (state: GameState, now = Date.now()): void => {
+  if (!goldenHere(state, now)) return;
+  const golden = state.lottery.golden!;
+  golden.strikes += 1;
+  if (golden.strikes >= GOLDEN_STRIKES) sealEvent(state, 'tenTimes', now);
+};
+
+/** Partie : elle ne laisse rien derrière elle (renvoie true si elle vient de partir). */
+export const goldenGone = (state: GameState, now = Date.now()): boolean => {
+  if (!state.lottery.golden || goldenHere(state, now)) return false;
+  state.lottery.golden = null;
+  return true;
+};

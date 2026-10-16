@@ -2,6 +2,8 @@ import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../data/mimic';
 import { mimicComesFactor, mimicGivesBonus, mimicUnlocked } from './etherium';
 import { hookAllows, runHooks } from '../mods/hooks';
 import { modded } from '../mods/quantities';
+import { goldenEatsKnowledge, goldenHere } from './goldenMimic';
+import { MIMIC_TOKEN_CHANCE } from '../data/lottery';
 import type { GameState } from '../core/state';
 
 /**
@@ -40,7 +42,8 @@ export const spawnMimic = (state: GameState, random: () => number = Math.random,
  * en a pas déjà une. Renvoie true si elle vient d'apparaître.
  */
 export const advanceMimic = (state: GameState, seconds: number, random: () => number = Math.random, now = Date.now()): boolean => {
-  if (!mimicUnlocked(state) || mimicHere(state)) {
+  // Pas pendant que la Mimic dorée de la Loterie est là.
+  if (!mimicUnlocked(state) || mimicHere(state) || goldenHere(state)) {
     called = false;
     return false;
   }
@@ -53,8 +56,9 @@ export const advanceMimic = (state: GameState, seconds: number, random: () => nu
   return true;
 };
 
-/** Une connaissance gagnée : avalée s'il y a une Mimic (renvoie true), sinon elle va au joueur. */
+/** Une connaissance gagnée : avalée par la Mimic dorée, ou par la Mimic s'il y en a une (renvoie true), sinon elle va au joueur. */
 export const swallow = (state: GameState, amount: number): boolean => {
+  if (goldenEatsKnowledge(state, amount)) return true;
   if (!mimicHere(state)) return false;
   state.mimic.eaten += amount;
   return true;
@@ -71,10 +75,14 @@ export const mimicSeconds = (state: GameState, now = Date.now()): number =>
   state.mimic.seconds + (state.mimic.at === null ? 0 : Math.max(0, now - state.mimic.at) / 1000);
 
 /**
- * Elle disparaît (le second clic, ou juste avant un prestige) : elle rend tout, avec le bonus. Renvoie ce qu'elle a rendu
- * (rien s'il n'y avait pas de Mimic).
+ * Elle disparaît (le second clic, ou juste avant un prestige) : elle rend tout, avec le bonus, et une fois sur trois un
+ * jeton de la Loterie (`token`). Renvoie ce qu'elle a rendu (rien s'il n'y avait pas de Mimic).
  */
-export const catchMimic = (state: GameState, now = Date.now()): { eaten: number; bonus: number } | undefined => {
+export const catchMimic = (
+  state: GameState,
+  now = Date.now(),
+  random: () => number = Math.random,
+): { eaten: number; bonus: number; token: boolean } | undefined => {
   if (!mimicHere(state)) return undefined;
   const given = mimicReturn(state);
   // Son bonus est une part : arrondi au supérieur, la Connaissance se compte en entiers.
@@ -88,6 +96,8 @@ export const catchMimic = (state: GameState, now = Date.now()): { eaten: number;
   state.mimic.at = null;
   state.mimic.spot = null;
   state.mimic.eaten = 0;
+  const token = random() < MIMIC_TOKEN_CHANCE;
+  if (token) state.lottery.tokens += 1;
   runHooks('mimicCaught', given);
-  return given;
+  return { ...given, token };
 };

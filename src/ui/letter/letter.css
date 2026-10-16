@@ -187,6 +187,10 @@
 .boon-medal:hover .boon-medal-tip {
   opacity: 1;
 }
+/* Un malus de la Loterie : cerclé de rouge. */
+.boon-medal.curse .boon-medal-ring {
+  background: conic-gradient(#c2453a calc(var(--left, 1) * 1turn), rgba(194, 69, 58, 0.18) 0);
+}
 /* Ses dix dernières secondes : il clignote. */
 .boon-medal.ending {
   animation: boon-ending 1s ease-in-out infinite;

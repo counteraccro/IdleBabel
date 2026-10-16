@@ -34,6 +34,7 @@ const readSave = (raw: string, defaultLocale: Locale): GameState | null => {
             wake: { ...initial.wake, ...saved.wake },
             mimic: { ...initial.mimic, ...saved.mimic },
             relics: { ...initial.relics, ...saved.relics, found: { ...saved.relics?.found } },
+            lottery: { ...initial.lottery, ...saved.lottery, effects: [...(saved.lottery?.effects ?? [])] },
             // Les nœuds des anciens arbres, ou les étoiles : core/etheriumTrees.ts ; les étoiles fermées : core/closedStars.ts.
             etherium: saved.etherium ?? [],
             findCounts: countSavedFinds(saved.findCounts, finds),

@@ -9,6 +9,7 @@ import { MIMIC_LIGHT, MIMIC_SPOTS, ROOM_IMAGE } from '../../data/mimic';
 import { cover, hiveTop, screenBox, shaderLight } from '../roomView';
 import { leaveWith, sweepLeftovers } from '../leftovers';
 import { advanceMimic, catchMimic, mimicBonusShare, mimicHere } from '../../systems/mimic';
+import { goldenGone, goldenHere, strikeGolden } from '../../systems/goldenMimic';
 import { mimicEyeLit } from '../../systems/etherium';
 import { levelOf } from '../../systems/technologies';
 import { createMimicBook, mimicSize, spill, spotBox, type MimicBook } from './mimicBook';
@@ -20,7 +21,33 @@ import type { GameState } from '../../core/state';
  * La Mimic à l'écran du jeu (maquettes .ai/maquette-mimic.html et .ai/maquette-mimic-cote.html) : elle vient une fois
  * par heure de jeu, onglet caché compris, mais ne paraît que l'onglet visible et aucune fenêtre ouverte ; elle se pose à
  * une place de la salle qu'on voit à l'écran, ou, s'il n'y en a pas, au bord droit en sceau. Premier clic : elle mord ; second : elle disparaît et rend tout.
+ * La Mimic dorée de la Loterie (systems/goldenMimic.ts) passe avant elle, au même endroit et de la même façon, en or : elle
+ * mord à chaque clic sans jamais disparaître, et s'en va d'elle-même, sans rien rendre.
  */
+
+/** Ce qui est dans la salle : sa reliure, ce qu'elle a avalé, sa place (lue et gardée dans la partie). */
+interface Here {
+  golden: boolean;
+  book: number;
+  eaten: number;
+  spot: string | null;
+  setSpot: (spot: string) => void;
+}
+
+const here = (state: GameState): Here | null => {
+  const golden = state.lottery.golden;
+  if (golden && goldenHere(state))
+    return { golden: true, book: golden.book, eaten: golden.knowledge, spot: golden.spot, setSpot: (spot) => (golden.spot = spot) };
+  if (mimicHere(state))
+    return {
+      golden: false,
+      book: state.mimic.book,
+      eaten: state.mimic.eaten,
+      spot: state.mimic.spot,
+      setSpot: (spot) => (state.mimic.spot = spot),
+    };
+  return null;
+};
 
 /** L'attente n'avance pas de plus d'une seconde d'un coup (onglet repris, machine en veille). */
 const MAX_STEP = 1;
@@ -59,6 +86,8 @@ export const createMimic = (state: GameState): Component => {
   let struck = 0;
   /** Elle est en train de disparaître : l'animation va jusqu'au bout. */
   let leaving = false;
+  /** Celle qu'on voit est la Mimic dorée. */
+  let shownGolden = false;
   let size = '';
 
   const number = (value: number): string => writeDigits(formatNumber(Math.floor(value), getLocale()));
@@ -72,11 +101,19 @@ export const createMimic = (state: GameState): Component => {
     side = null;
     bookSpot = null;
     struck = 0;
+    shownGolden = false;
   };
 
   /** Le second clic : elle rend tout, avec le bonus ; les lettres s'échappent. */
   const strike = (at?: (text: string) => void): void => {
     if (leaving) return;
+    // La Mimic dorée : on ne peut pas la tuer, elle mord à chaque coup (dix : un sceau secret).
+    if (shownGolden) {
+      book?.bite();
+      side?.bite();
+      strikeGolden(state);
+      return;
+    }
     struck += 1;
     if (struck === 1) {
       book?.bite();
@@ -89,7 +126,8 @@ export const createMimic = (state: GameState): Component => {
     const text = t('ui.mimic.gain')
       .replace('{n}', number((given?.eaten ?? 0) + (given?.bonus ?? 0)))
       .replace('{p}', formatNumber(Math.round(share * 100), getLocale()));
-    at?.(text);
+    // Une fois sur trois, elle lâche un jeton de la Loterie.
+    at?.(given?.token ? `${text} · ${t('ui.lottery.token')}` : text);
   };
 
   const onRoomClick = (event: PointerEvent): void => {
@@ -106,7 +144,7 @@ export const createMimic = (state: GameState): Component => {
     event.stopPropagation();
     event.preventDefault();
     // Attrapée (2e clic) : plus de main ni de liseré pendant qu'elle disparaît.
-    if (struck >= 1) {
+    if (struck >= 1 && !shownGolden) {
       room.classList.remove('hover');
       document.documentElement.classList.remove('mimic-hover');
     }
@@ -164,7 +202,7 @@ export const createMimic = (state: GameState): Component => {
   };
 
   const showRoom = (scene: string, index: number, view: ReturnType<typeof cover>): void => {
-    const key = `${scene}:${index}`;
+    const key = `${shownGolden ? 'golden:' : ''}${scene}:${index}`;
     const definition = SCENES.find((candidate) => candidate.id === scene)!;
     const spot = MIMIC_SPOTS[scene][index];
     if (!book || bookSpot !== key) {
@@ -175,7 +213,7 @@ export const createMimic = (state: GameState): Component => {
       const light =
         (MIMIC_LIGHT[scene] ?? 0.7) *
         shaderLight(((box.x0 + box.x1) / 2) * view.scale + view.left, ((box.y0 + box.y1) / 2) * view.scale + view.top);
-      book = createMimicBook(textures!, spot, { vanishing: definition.vanishing, light });
+      book = createMimicBook(textures!, spot, { vanishing: definition.vanishing, light, golden: shownGolden });
       bookSpot = key;
       room.append(book.root);
       size = '';
@@ -194,21 +232,24 @@ export const createMimic = (state: GameState): Component => {
   };
 
   const showSide = (): void => {
-    if (side) return;
+    if (side && side.root.classList.contains('golden') === shownGolden) return;
+    side?.destroy();
     book?.destroy();
     book = null;
     bookSpot = null;
-    side = createMimicSide(() =>
-      strike((text) => {
-        const current = side;
-        current?.vanish(text);
-        window.setTimeout(() => {
-          current?.destroy();
-          if (side === current) side = null;
-          leaving = false;
-          struck = 0;
-        }, 2600);
-      }),
+    side = createMimicSide(
+      () =>
+        strike((text) => {
+          const current = side;
+          current?.vanish(text);
+          window.setTimeout(() => {
+            current?.destroy();
+            if (side === current) side = null;
+            leaving = false;
+            struck = 0;
+          }, 2600);
+        }),
+      shownGolden,
     );
     root.append(side.root);
   };
@@ -216,6 +257,29 @@ export const createMimic = (state: GameState): Component => {
   /** À la hauteur de la ruche des méthodes, au bord droit. */
   const placeSide = (): void => {
     side!.root.style.top = `${hiveTop()}px`;
+  };
+
+  /** La Mimic dorée s'en va : comme la Mimic attrapée, mais elle ne rend rien. */
+  const goldenLeaves = (): void => {
+    const text = t('ui.lottery.golden.gone');
+    leaving = true;
+    room.classList.remove('hover');
+    document.documentElement.classList.remove('mimic-hover');
+    const done = (): void => {
+      leaving = false;
+      clear();
+    };
+    if (book) {
+      const current = book;
+      current.vanish((cx, cy) => {
+        const box = room.getBoundingClientRect();
+        spill(document.body, box.left + cx, box.top + cy, text);
+        window.setTimeout(done, 2500);
+      });
+    } else if (side) {
+      side.vanish(text);
+      window.setTimeout(done, 2600);
+    } else done();
   };
 
   const update = (): void => {
@@ -229,16 +293,27 @@ export const createMimic = (state: GameState): Component => {
       hiddenSeconds = 0;
     }
     if (leaving) return;
-    if (!mimicHere(state)) {
+    // La Mimic dorée est partie d'elle-même : elle disparaît sans rien rendre.
+    if (shownGolden && !goldenHere(state)) {
+      goldenGone(state);
+      return goldenLeaves();
+    }
+    goldenGone(state);
+    const present = here(state);
+    if (!present) {
       if (book || side) clear();
       return;
     }
-    if (!textures || loading !== state.mimic.book) {
-      if (loading !== state.mimic.book) {
-        loading = state.mimic.book;
+    if (present.golden !== shownGolden) {
+      clear();
+      shownGolden = present.golden;
+    }
+    if (!textures || loading !== present.book) {
+      if (loading !== present.book) {
+        loading = present.book;
         textures = null;
         failed = false;
-        const wanted = state.mimic.book;
+        const wanted = present.book;
         mimicTextures(wanted).then(
           (ready) => {
             if (loading === wanted) textures = ready;
@@ -255,25 +330,25 @@ export const createMimic = (state: GameState): Component => {
     const scene = shownScene();
     const visible = visibleSpots(scene, view);
     // Sa place, si on la voit dans la salle affichée ; sinon une autre, au hasard ; sinon le bord de l'écran.
-    const [savedScene, savedIndex] = (state.mimic.spot ?? '').split(':');
+    const [savedScene, savedIndex] = (present.spot ?? '').split(':');
     let index = savedScene === scene ? Number(savedIndex) : NaN;
     const [debugScene, debugIndex] = (debugPlace ?? '').split(':');
     if (debugPlace === 'side') index = NaN;
     else if (debugScene === scene && MIMIC_SPOTS[scene]?.[Number(debugIndex)]) index = Number(debugIndex);
     else if (!visible.includes(index)) {
       index = visible.length ? visible[Math.floor(Math.random() * visible.length)] : NaN;
-      if (!Number.isNaN(index)) state.mimic.spot = `${scene}:${index}`;
+      if (!Number.isNaN(index)) present.setSpot(`${scene}:${index}`);
     }
     if (Number.isNaN(index) || !textures) showSide();
     else showRoom(scene, index, view);
     const eye = mimicEyeLit(state);
     const snore = levelOf(state, 'lightSleep') > 0;
-    const eaten = formatNumber(Math.floor(state.mimic.eaten), getLocale());
+    const eaten = formatNumber(Math.floor(present.eaten), getLocale());
     if (book) book.show({ count: eye ? eaten : null, snore });
     if (side) {
       placeSide();
       // Sous l'icône, en court (« 1,2 M »), comme dans la maquette.
-      const short = formatNumber(Math.floor(state.mimic.eaten), getLocale(), currentNotation() === 'babel' ? 'babel' : 'short');
+      const short = formatNumber(Math.floor(present.eaten), getLocale(), currentNotation() === 'babel' ? 'babel' : 'short');
       side.show({ count: eye ? short : null, eaten: eye ? writeDigits(eaten) : null, snore });
     }
   };

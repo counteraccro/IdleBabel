@@ -145,6 +145,13 @@ html.mimic-hover * {
 .mimic-side .mimic .method-rim {
   background: linear-gradient(180deg, #8a3a26, #4a1a10);
 }
+/* La Mimic dorée de la Loterie : bord d'or, lueur dorée. */
+.mimic-side.golden .method-seal.mimic {
+  filter: drop-shadow(0 0 9px rgba(232, 199, 118, 0.7));
+}
+.mimic-side.golden .mimic .method-rim {
+  background: linear-gradient(180deg, #f2d48a, #a8762c);
+}
 .mimic-side .mimic .method-sigil {
   opacity: 1;
 }

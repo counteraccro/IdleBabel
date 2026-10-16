@@ -48,6 +48,8 @@ import {
 } from './endingsShelf3d';
 import { createTome, type Tome } from './endingsTome';
 import { createLotteryMachine } from './lotteryMachine3d';
+import { machineDraw } from './lotteryText';
+import { drawLottery } from '../../systems/lottery';
 import { GLIDE_MS, glideEase, rememberView, rememberedView, shotOf, type LibraryView, type Shot } from './libraryViews';
 
 /**
@@ -209,7 +211,15 @@ export const createLibraryPage = (
   const environment = relicEnvironment(renderer);
   endings.brass.envMap = environment;
   endings.brass.envMapIntensity = 0.25;
-  const machine = createLotteryMachine({ sign: () => t('ui.lottery.sign'), jackpot: () => t('ui.lottery.jackpot') }, environment, () => 0);
+  const machine = createLotteryMachine(
+    { sign: () => t('ui.lottery.sign'), jackpot: () => t('ui.lottery.jackpot') },
+    environment,
+    () => state.lottery.tokens,
+    () => {
+      const draw = drawLottery(state);
+      return draw && machineDraw(draw);
+    },
+  );
   machine.root.position.copy(MACHINE_AT);
   scene.add(machine.root);
   // Cinzel peut arriver après le premier dessin des panneaux.
