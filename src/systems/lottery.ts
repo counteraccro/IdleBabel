@@ -18,6 +18,8 @@ import { findWhileAway } from './knowledge';
 import { checkSeals } from './seals';
 import { lotteryEffects, startLotteryEffect } from './lotteryEffects';
 import { spawnGolden } from './goldenMimic';
+import { modded } from '../mods/quantities';
+import { runHooks } from '../mods/hooks';
 import type { GameState } from '../core/state';
 
 /**
@@ -87,8 +89,9 @@ const ownedMethods = (state: GameState): ToolId[] =>
 /** Le gain : trente minutes de lecture d'absence, d'un coup (les pages de la production, les trouvailles de leurs feuilles). */
 const gain = (state: GameState, draw: Draw, random: () => number): void => {
   const before = { pages: state.pages, knowledge: state.knowledge };
-  gainPages(state, pagesPerSecond(state) * GAIN_SECONDS);
-  findWhileAway(state, GAIN_SECONDS, random);
+  const seconds = GAIN_SECONDS * modded('lotteryGain');
+  gainPages(state, pagesPerSecond(state) * seconds);
+  findWhileAway(state, seconds, random);
   draw.pages = state.pages - before.pages;
   draw.knowledge = state.knowledge - before.knowledge;
 };
@@ -111,7 +114,7 @@ const boon = (state: GameState, draw: Draw, random: () => number, now: number): 
     const owned = ownedMethods(state);
     draw.method = owned[Math.floor(random() * owned.length)];
   }
-  startLotteryEffect(state, chosen.id, BOON_SECONDS, now, draw.method);
+  startLotteryEffect(state, chosen.id, BOON_SECONDS * modded('lotteryBoon'), now, draw.method);
 };
 
 const curse = (state: GameState, draw: Draw, random: () => number, now: number): void => {
@@ -126,7 +129,7 @@ const curse = (state: GameState, draw: Draw, random: () => number, now: number):
   draw.curse = chosen.id;
   if (chosen.id === 'golden') return spawnGolden(state, random, now);
   if (chosen.id === 'stopped') draw.method = best;
-  startLotteryEffect(state, chosen.id, CURSE_SECONDS, now, draw.method);
+  startLotteryEffect(state, chosen.id, CURSE_SECONDS * modded('lotteryCurse'), now, draw.method);
 };
 
 /** On joue un jeton : rien sans jeton, ni tous les bonus en cours (renvoie undefined). */
@@ -134,7 +137,9 @@ export const drawLottery = (state: GameState, random: () => number = Math.random
   if (state.lottery.tokens <= 0 || lotteryBlocked(state, now)) return undefined;
   state.lottery.tokens -= 1;
   state.lottery.draws += 1;
-  let outcome = OUTCOMES.find((one) => one.id === forced)?.id ?? pick(OUTCOMES, random).id;
+  // Les mods peuvent changer les chances de chaque résultat (lotteryOdds:<résultat>).
+  const odds = OUTCOMES.map((one) => ({ id: one.id, weight: one.weight * modded(`lotteryOdds:${one.id}`) }));
+  let outcome = OUTCOMES.find((one) => one.id === forced)?.id ?? pick(odds, random).id;
   if (LOTTERY_BOONS.some((one) => one.id === forced)) outcome = 'boon';
   if (LOTTERY_CURSES.some((one) => one.id === forced)) outcome = 'curse';
   // Le livre du gros lot n'est pas encore écrit : ses chances vont à « rien ».
@@ -145,5 +150,6 @@ export const drawLottery = (state: GameState, random: () => number = Math.random
   else if (outcome === 'curse') curse(state, draw, random, now);
   forced = null;
   checkSeals(state, now);
+  runHooks('lottery', { ...draw, reels: [...draw.reels] });
   return draw;
 };

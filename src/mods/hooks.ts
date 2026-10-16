@@ -41,6 +41,8 @@ export interface Hooks {
   mimicCaught: (mimic: { eaten: number; bonus: number }) => void;
   /** Une lettre attrapée : le bonus qu'elle donne, et sa durée en secondes (aucune : il agit d'un coup). */
   boon: (boon: { id: string; seconds?: number }) => void;
+  /** Un jeton joué à la Loterie : son résultat, ses trois rouleaux, et ce qu'il a donné. */
+  lottery: (draw: ModDraw) => void;
 }
 
 export type HookName = keyof Hooks;
@@ -64,6 +66,7 @@ export const HOOK_NAMES: readonly HookName[] = [
   'book',
   'mimicCaught',
   'boon',
+  'lottery',
 ];
 
 /** Une trouvaille, telle qu'un mod la voit. */
@@ -73,6 +76,20 @@ export interface ModFind {
   text: string;
   /** Un morceau déjà écrit : il rapporte sa Connaissance, rien de neuf ne s'écrit. */
   duplicate: boolean;
+}
+
+/** Un tirage de la Loterie, tel qu'un mod le voit. */
+export interface ModDraw {
+  outcome: 'nothing' | 'gain' | 'boon' | 'curse' | 'jackpot';
+  /** Les trois chiffres des rouleaux, de gauche à droite. */
+  reels: [number, number, number];
+  /** Le gain : pages et Connaissance arrivées (0 si la Mimic dorée les a mangées). */
+  pages?: number;
+  knowledge?: number;
+  /** Le bonus ou le malus tiré, et la méthode qu'il vise. */
+  boon?: string;
+  curse?: string;
+  method?: string;
 }
 
 /** Une lettre à l'écran : `letter` (un bonus) ou une lettre du mot BABEL (`word`). */
@@ -103,6 +120,7 @@ const hooks: { [N in HookName]: Hooks[N][] } = {
   book: [],
   mimicCaught: [],
   boon: [],
+  lottery: [],
 };
 
 export const isHookName = (name: string): name is HookName => (HOOK_NAMES as readonly string[]).includes(name);

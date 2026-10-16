@@ -27,7 +27,7 @@ describe('la documentation des mods', () => {
   });
 
   it('dit chaque grandeur et chaque règle, dans les deux langues', () => {
-    for (const name of [...Object.keys(QUANTITIES), 'method:', 'methodCost:'])
+    for (const name of [...Object.keys(QUANTITIES), 'method:', 'methodCost:', 'lotteryOdds:'])
       expect(doc.split(`data-quantity="${name}"`).length - 1, name).toBe(2);
     for (const name of Object.keys(RULES)) expect(doc.split(`data-rule="${name}"`).length - 1, name).toBe(2);
   });

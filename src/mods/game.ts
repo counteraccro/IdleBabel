@@ -10,6 +10,9 @@ import { mimicUnlocked } from '../systems/etherium';
 import { relicFound, relicWait } from '../systems/relics';
 import { RELICS } from '../data/relics';
 import { nextEtherPages, prestigeGain } from '../systems/prestige';
+import { lotteryBlocked } from '../systems/lottery';
+import { lotteryEffects } from '../systems/lotteryEffects';
+import { goldenHere } from '../systems/goldenMimic';
 import { t } from '../i18n';
 import type { GameState } from '../core/state';
 
@@ -86,6 +89,24 @@ export const modGame = (state: GameState) => ({
     found: RELICS.filter(({ id }) => relicFound(state, id)).length,
     changeIn: relicWait(state) / 1000,
   }),
+  /**
+   * La Loterie : les jetons, ceux déjà joués, la machine bloquée (tous les bonus en cours), les bonus et malus en cours
+   * (leur id, la méthode visée, les secondes qui leur restent), et les secondes qui restent à la Mimic dorée (0 : absente).
+   */
+  lottery: () => {
+    const now = Date.now();
+    return {
+      tokens: state.lottery.tokens,
+      draws: state.lottery.draws,
+      blocked: lotteryBlocked(state, now),
+      effects: lotteryEffects(state, now).map((effect) => ({
+        id: effect.id,
+        method: effect.method ?? null,
+        left: (effect.end - now) / 1000,
+      })),
+      golden: goldenHere(state, now) ? (state.lottery.golden!.until - now) / 1000 : 0,
+    };
+  },
 });
 
 export type ModGame = ReturnType<typeof modGame>;

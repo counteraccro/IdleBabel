@@ -96,7 +96,7 @@ export const catchMimic = (
   state.mimic.at = null;
   state.mimic.spot = null;
   state.mimic.eaten = 0;
-  const token = random() < MIMIC_TOKEN_CHANCE;
+  const token = random() < MIMIC_TOKEN_CHANCE * modded('tokenChance');
   if (token) state.lottery.tokens += 1;
   runHooks('mimicCaught', given);
   return { ...given, token };

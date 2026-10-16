@@ -48,18 +48,29 @@ export const QUANTITIES = {
   mimicGives: 'sum',
   /** × délai avant de pouvoir changer de relique. */
   relicLock: 'product',
+  /** × chance qu'une Mimic attrapée lâche un jeton de la Loterie. */
+  tokenChance: 'product',
+  /** × durée de lecture que rapporte un gain de la Loterie (30 min). */
+  lotteryGain: 'product',
+  /** × durée des bonus de la Loterie (une heure). */
+  lotteryBoon: 'product',
+  /** × durée des malus de la Loterie (dix minutes ; la Mimic dorée, cinq). */
+  lotteryCurse: 'product',
 } as const satisfies Record<string, Combine>;
 
 export type QuantityName = keyof typeof QUANTITIES;
 
-/** Les grandeurs d'une seule méthode : « method:<id> » (× ses pages/s), « methodCost:<id> » (× son prix). */
-const PER_METHOD: Record<string, Combine> = { method: 'product', methodCost: 'product' };
+/**
+ * Les grandeurs d'une seule chose : « method:<id> » (× les pages/s d'une méthode), « methodCost:<id> » (× son prix),
+ * « lotteryOdds:<résultat> » (× les chances d'un résultat de la Loterie : nothing, gain, boon, curse, jackpot).
+ */
+const PER_ITEM: Record<string, Combine> = { method: 'product', methodCost: 'product', lotteryOdds: 'product' };
 
 /** La façon de combiner `name`, s'il existe (« method:diagonal » compris) ; undefined sinon. */
 export const combineOf = (name: string): Combine | undefined => {
   if (Object.hasOwn(QUANTITIES, name)) return QUANTITIES[name as QuantityName];
   const colon = name.indexOf(':');
-  return colon > 0 && colon < name.length - 1 ? PER_METHOD[name.slice(0, colon)] : undefined;
+  return colon > 0 && colon < name.length - 1 ? PER_ITEM[name.slice(0, colon)] : undefined;
 };
 
 const modifiers = new Map<string, (() => unknown)[]>();

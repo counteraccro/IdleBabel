@@ -409,6 +409,12 @@
               <td><code>{ id, seconds }</code> : le bonus, sa durée (aucune : il agit d’un coup).</td>
               <td>—</td>
             </tr>
+            <tr data-hook="lottery">
+              <td><code>lottery</code></td>
+              <td>Un jeton joué à la Loterie.</td>
+              <td><code>{ outcome, reels, pages, knowledge, boon, curse, method }</code> : le résultat (<code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code>), les trois chiffres des rouleaux ; selon lui, ce que le gain a rapporté (0 si la Mimic dorée l’a mangé), le bonus ou le malus tiré, et la méthode qu’il vise.</td>
+              <td>—</td>
+            </tr>
           </table>
         </div>
 
@@ -449,6 +455,11 @@ IdleBabel.modify('method:diagonal', () =&gt; (IdleBabel.state.tools.diagonal &lt
             <tr data-quantity="mimicEvery"><td><code>mimicEvery</code></td><td>×</td><td>attente moyenne entre deux Mimics</td></tr>
             <tr data-quantity="mimicGives"><td><code>mimicGives</code></td><td>+</td><td>part que rend la Mimic en plus de ce qu’elle a avalé (0,1 : 10 %)</td></tr>
             <tr data-quantity="relicLock"><td><code>relicLock</code></td><td>×</td><td>délai avant de pouvoir changer de relique</td></tr>
+            <tr data-quantity="tokenChance"><td><code>tokenChance</code></td><td>×</td><td>chance qu’une Mimic attrapée lâche un jeton de la Loterie (1 sur 3)</td></tr>
+            <tr data-quantity="lotteryOdds:"><td><code>lotteryOdds:&lt;résultat&gt;</code></td><td>×</td><td>chances d’un résultat de la Loterie : <code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code> (0 : il ne sort plus)</td></tr>
+            <tr data-quantity="lotteryGain"><td><code>lotteryGain</code></td><td>×</td><td>durée de lecture que rapporte un gain de la Loterie (30 min)</td></tr>
+            <tr data-quantity="lotteryBoon"><td><code>lotteryBoon</code></td><td>×</td><td>durée des bonus de la Loterie (une heure)</td></tr>
+            <tr data-quantity="lotteryCurse"><td><code>lotteryCurse</code></td><td>×</td><td>durée des malus de la Loterie (dix minutes ; la Mimic dorée, cinq)</td></tr>
           </table>
         </div>
         <p>
@@ -510,6 +521,7 @@ IdleBabel.option('my-mod', 'size');   <span class="comment">// 'large' : la vale
             <tr data-game="mimic"><td><code>mimic()</code></td><td><code>{ unlocked, here, every }</code> : débloquée, là en ce moment, et toutes les combien de secondes en moyenne. Elle n’a pas d’heure : chaque seconde, une petite chance.</td></tr>
             <tr data-game="ether"><td><code>ether()</code></td><td><code>{ gain, total, next }</code> : l’Éther que rapporterait le prestige maintenant, les pages lues depuis toujours, et celles qu’il faut pour un Éther de plus.</td></tr>
             <tr data-game="relics"><td><code>relics()</code></td><td><code>{ active, name, found, changeIn }</code> : la relique qui agit (son id et son nom, <code>null</code> : aucune), combien sont trouvées, et les secondes avant de pouvoir en changer (0 : on peut). Le délai compte en temps réel, absences comprises.</td></tr>
+            <tr data-game="lottery"><td><code>lottery()</code></td><td><code>{ tokens, draws, blocked, effects, golden }</code> : les jetons, ceux déjà joués, la machine bloquée (tous ses bonus en cours : elle ne prend plus de jeton), chaque bonus ou malus en cours (<code>{ id, method, left }</code> : la méthode visée ou <code>null</code>, les secondes qui lui restent), et les secondes qui restent à la Mimic dorée (0 : absente). Tout compte en temps réel, absences comprises.</td></tr>
           </table>
         </div>
         <p>Chaque sceau de la ruche porte <code>data-method="&lt;id&gt;"</code> : un mod sait quel hexagone est quelle méthode. Le jeu ne touche à aucun autre attribut <code>data-*</code> d’un sceau : un mod peut y écrire.</p>
@@ -929,6 +941,12 @@ IdleBabel.registerMod('word-count', {
               <td><code>{ id, seconds }</code>: the boon, its length (none: it acts at once).</td>
               <td>—</td>
             </tr>
+            <tr data-hook="lottery">
+              <td><code>lottery</code></td>
+              <td>A token played at the Lottery.</td>
+              <td><code>{ outcome, reels, pages, knowledge, boon, curse, method }</code>: the outcome (<code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code>), the three reel digits; depending on it, what the win brought (0 if the Golden Mimic ate it), the bonus or penalty drawn, and the method it targets.</td>
+              <td>—</td>
+            </tr>
           </table>
         </div>
 
@@ -969,6 +987,11 @@ IdleBabel.modify('method:diagonal', () =&gt; (IdleBabel.state.tools.diagonal &lt
             <tr data-quantity="mimicEvery"><td><code>mimicEvery</code></td><td>×</td><td>average wait between two Mimics</td></tr>
             <tr data-quantity="mimicGives"><td><code>mimicGives</code></td><td>+</td><td>share the Mimic gives back on top of what it swallowed (0.1: 10%)</td></tr>
             <tr data-quantity="relicLock"><td><code>relicLock</code></td><td>×</td><td>wait before the relic can be changed</td></tr>
+            <tr data-quantity="tokenChance"><td><code>tokenChance</code></td><td>×</td><td>chance that a caught Mimic drops a Lottery token (1 in 3)</td></tr>
+            <tr data-quantity="lotteryOdds:"><td><code>lotteryOdds:&lt;outcome&gt;</code></td><td>×</td><td>odds of a Lottery outcome: <code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code> (0: it never comes up)</td></tr>
+            <tr data-quantity="lotteryGain"><td><code>lotteryGain</code></td><td>×</td><td>reading time a Lottery win brings (30 min)</td></tr>
+            <tr data-quantity="lotteryBoon"><td><code>lotteryBoon</code></td><td>×</td><td>length of Lottery bonuses (one hour)</td></tr>
+            <tr data-quantity="lotteryCurse"><td><code>lotteryCurse</code></td><td>×</td><td>length of Lottery penalties (ten minutes; the Golden Mimic, five)</td></tr>
           </table>
         </div>
         <p>
@@ -1030,6 +1053,7 @@ IdleBabel.option('my-mod', 'size');   <span class="comment">// 'large': the valu
             <tr data-game="mimic"><td><code>mimic()</code></td><td><code>{ unlocked, here, every }</code>: unlocked, here right now, and every how many seconds on average. It has no set time: every second, a small chance.</td></tr>
             <tr data-game="ether"><td><code>ether()</code></td><td><code>{ gain, total, next }</code>: the Ether a prestige would bring now, the pages read since forever, and those needed for one more Ether.</td></tr>
             <tr data-game="relics"><td><code>relics()</code></td><td><code>{ active, name, found, changeIn }</code>: the active relic (its id and name, <code>null</code>: none), how many are found, and the seconds before it can be changed (0: now). The wait counts in real time, absences included.</td></tr>
+            <tr data-game="lottery"><td><code>lottery()</code></td><td><code>{ tokens, draws, blocked, effects, golden }</code>: the tokens, those already played, whether the machine is locked (all its bonuses running: it takes no more tokens), each running bonus or penalty (<code>{ id, method, left }</code>: the targeted method or <code>null</code>, its seconds left), and the seconds left to the Golden Mimic (0: gone). Everything counts in real time, absences included.</td></tr>
           </table>
         </div>
         <p>Each seal of the hive has <code>data-method="&lt;id&gt;"</code>: a mod knows which hexagon is which method. The game touches no other <code>data-*</code> attribute of a seal: a mod may write there.</p>

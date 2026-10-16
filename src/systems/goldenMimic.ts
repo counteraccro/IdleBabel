@@ -1,5 +1,6 @@
 import { GOLDEN_SECONDS, GOLDEN_STRIKES } from '../data/lottery';
 import { sealEvent } from './seals';
+import { modded } from '../mods/quantities';
 import type { GameState } from '../core/state';
 
 /**
@@ -13,12 +14,13 @@ export const goldenHere = (state: GameState, now = Date.now()): boolean => (stat
 /** Elle arrive ; déjà là, elle reste cinq minutes de plus. */
 export const spawnGolden = (state: GameState, random: () => number = Math.random, now = Date.now()): void => {
   const golden = state.lottery.golden;
+  const length = GOLDEN_SECONDS * 1000 * modded('lotteryCurse');
   if (golden && golden.until > now) {
-    golden.until += GOLDEN_SECONDS * 1000;
+    golden.until += length;
     return;
   }
   state.lottery.golden = {
-    until: now + GOLDEN_SECONDS * 1000,
+    until: now + length,
     book: 1 + Math.floor(random() * 1_000_000),
     spot: null,
     pages: 0,
