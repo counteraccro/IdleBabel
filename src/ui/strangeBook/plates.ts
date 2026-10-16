@@ -10,7 +10,7 @@ import { sentenceShown } from '../../systems/sentences';
 import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
 import type { GameState } from '../../core/state';
 import { TOOLS, type ToolId } from '../../data/tools';
-import { LINE_SIZE, LINE_TOP, plateLines } from './plateLines';
+import { LINE_SIZE, LINE_STEP, LINE_TOP, MORE_TOP, plateListPages } from './plateLines';
 
 /**
  * Les sceaux dans le livre étrange : une page d'avancement, puis une planche par thème, en alvéoles
@@ -168,23 +168,44 @@ const bonusLine = (state: GameState): TextItem => {
   });
 };
 
-/** Introduction : la part des sceaux obtenus, et l'avancement de chaque planche. */
-export const completionItems = (state: GameState, plates: PlatePage[], number: number): Item[] => {
+/** Les pages de la liste des planches : l'introduction, puis ses pages de suite (plateLines.ts). */
+export const completionPageCount = (plates: PlatePage[]): number =>
+  plateListPages(plates.filter((plate) => plate.part === 0).length).length;
+
+/**
+ * Introduction (`part` 0) : la part des sceaux obtenus, et l'avancement de chaque planche ; ce qui n'y tient pas continue
+ * sur les pages de suite (`part` 1, 2…), sous le titre répété.
+ */
+export const completionItems = (state: GameState, plates: PlatePage[], number: number, part = 0): Item[] => {
   const firsts = plates.filter((plate) => plate.part === 0);
-  const { step, size } = plateLines(firsts.length);
+  const sizes = plateListPages(firsts.length);
+  const start = sizes.slice(0, part).reduce((total, count) => total + count, 0);
+  const top = part === 0 ? LINE_TOP : MORE_TOP;
   return [
     ...heading(sealsTitle(state)),
-    { kind: 'text', text: writeDigits(`${Math.floor(completion(state) * 100)} %`), x: 320, y: 200, size: 84, align: 'center', spacing: 2 },
-    completionCaption(state),
-    bonusLine(state),
-    ...firsts.flatMap((plate, index): Item[] => {
-      const y = LINE_TOP + index * step;
+    ...(part === 0
+      ? [
+          {
+            kind: 'text',
+            text: writeDigits(`${Math.floor(completion(state) * 100)} %`),
+            x: 320,
+            y: 200,
+            size: 84,
+            align: 'center',
+            spacing: 2,
+          } satisfies Item,
+          completionCaption(state),
+          bonusLine(state),
+        ]
+      : []),
+    ...firsts.slice(start, start + sizes[part]).flatMap((plate, index): Item[] => {
+      const y = top + index * LINE_STEP;
       return [
-        ...(plateHasNews(state, plate.plate) ? [newsMark(98, y, size)] : []),
-        { kind: 'text', text: plateTitle(state, plate.plate), x: 110, y, size, align: 'left', spacing: 2 },
-        { kind: 'dots', x1: 330, x2: 450, y: y + (17 * size) / LINE_SIZE },
-        { kind: 'text', text: tally(state, plate.plate), x: 530, y, size, align: 'right' },
-        { kind: 'link', y: y - 8, height: step - 4, target: plate.page },
+        ...(plateHasNews(state, plate.plate) ? [newsMark(98, y, LINE_SIZE)] : []),
+        { kind: 'text', text: plateTitle(state, plate.plate), x: 110, y, size: LINE_SIZE, align: 'left', spacing: 2 },
+        { kind: 'dots', x1: 330, x2: 450, y: y + 17 },
+        { kind: 'text', text: tally(state, plate.plate), x: 530, y, size: LINE_SIZE, align: 'right' },
+        { kind: 'link', y: y - 8, height: LINE_STEP - 4, target: plate.page },
       ];
     }),
     folio(number),

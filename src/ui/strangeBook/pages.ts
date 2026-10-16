@@ -28,6 +28,7 @@ import {
   sealLegend,
   sealsTitle,
   completionItems,
+  completionPageCount,
   plateItems,
   platePages,
   type PlatePage,
@@ -376,8 +377,10 @@ const layout = (state: GameState, offset: number) => {
   const onLeft = (page: number): number => ((offset + page) % 2 === 1 ? page + 1 : page);
   const afterChapters = first + chapterPages.reduce((total, count) => total + count, 0);
   const sealsPage = onLeft(afterChapters);
-  const plates: PlatePage[] = platePages(state, sealsPage + 1);
-  return { chapters, listPages, chapterStart, afterChapters, sealsPage, plates };
+  // La liste des planches peut prendre plus d'une page (son introduction, ses pages de suite) : les planches viennent après.
+  const sealsPages = completionPageCount(platePages(state, 0));
+  const plates: PlatePage[] = platePages(state, sealsPage + sealsPages);
+  return { chapters, listPages, chapterStart, afterChapters, sealsPage, sealsPages, plates };
 };
 
 /**
@@ -391,7 +394,7 @@ export const sealPage = (state: GameState, id: string | null, offset = 1): numbe
 
 /** `focus` : le sceau qu'on vient voir (une vision cliquée), en évidence sur sa planche, sa légende écrite d'office. */
 export const createPages = (state: GameState, goTo: (page: number) => void, offset = 0, focus?: string): LeafPage[] => {
-  const { chapters, listPages, chapterStart, afterChapters, sealsPage, plates } = layout(state, offset);
+  const { chapters, listPages, chapterStart, afterChapters, sealsPage, sealsPages, plates } = layout(state, offset);
   const blankPage = (page: number): LeafPage => createLeafPage(() => [folio(page + 1)], goTo);
   const entries: Entry[] = [
     ...chapters.map((chapter, index) => ({
@@ -424,7 +427,11 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
       ];
     }),
     ...(sealsPage > afterChapters ? [blankPage(afterChapters)] : []),
-    createLeafPage(() => completionItems(state, plates, sealsPage + 1), goTo, { onShown: () => markPartRead(state, 'seals') }),
+    ...Array.from({ length: sealsPages }, (_, part) =>
+      createLeafPage(() => completionItems(state, plates, sealsPage + part + 1, part), goTo, {
+        onShown: () => markPartRead(state, 'seals'),
+      }),
+    ),
     ...plates.map((plate) =>
       // Le sceau survolé, sinon celui qu'on est venu voir : sa légende, et son or plus sombre.
       createLeafPage(
