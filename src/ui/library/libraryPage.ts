@@ -14,7 +14,7 @@ import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { visibleBox } from '../book3d/visibleBox';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
-import { CORNICE_FRONT, CORNICE_MIDDLE, DEBUG_CELL, FILL_ORDER, FINAL_CELL, FRONT, MORE_FILL_ORDER, createBookcase } from './bookcase3d';
+import { CORNICE_FRONT, CORNICE_MIDDLE, DEBUG_CELL, FILL_ORDER, FRONT, MORE_FILL_ORDER, createBookcase } from './bookcase3d';
 import { finalBook3d } from '../finalBook/finalBook3d';
 import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
@@ -32,7 +32,7 @@ import { TRUE_STORY_BOOK } from '../../data/trueStory';
 import { storyBribes } from '../../systems/etherium';
 import { trueStoryOpensAt } from '../rareBooks/trueStory/trueStoryPages';
 import { writeDigits } from '../../core/format';
-import { ENDING_TOMES, fakeEndingsFound, storyFinished } from '../../systems/endings';
+import { ENDING_TOMES, fakeEndingsFound } from '../../systems/endings';
 import { relicEnvironment } from '../relics/relicModels';
 import {
   EASEL_LEAN,
@@ -61,11 +61,14 @@ export const LIBRARY_DEBUG_BOOK = 'debug';
 export const LIBRARY_FIRST_BOOK = 'first';
 /** Le livre des crédits : pas tiré comme les livres rares, il est dans la bibliothèque dès le début. */
 export const LIBRARY_CREDITS_BOOK = 'credits';
-/** Le livre de la fin (la partie racontée) : pendant le développement, seulement en mode ?debug, seul dans sa case. */
+/**
+ * Le livre de la fin (la partie racontée), le vrai : pendant le développement, seulement en mode ?debug. En haut du meuble
+ * des fins, de face sur le chevalet (l'auteur, 16/10) ; il n'est pas de la collection « La Vraie Fin ».
+ */
 export const LIBRARY_FINAL_BOOK = 'final';
 /**
- * « Mon histoire vraie », la fausse fin (14/10) : dès la première étoile du Rideau, elle trône en haut du meuble des fins
- * (16/10), de face, comme si c'était le vrai livre ; lue jusqu'au bout, elle descend à sa place de tome 1. Elle s'ouvre sur
+ * « Mon histoire vraie », la fausse fin (14/10) : dès la première étoile du Rideau, elle est le tome 1 du meuble des fins,
+ * sur la tranche, qu'on la lise encore ou qu'elle soit finie (le haut est au vrai livre, l'auteur, 16/10). Elle s'ouvre sur
  * sa dernière bribe.
  */
 export const LIBRARY_STORY_BOOK = TRUE_STORY_BOOK;
@@ -270,7 +273,6 @@ export const createLibraryPage = (
     debugging || isRareBookFound(state, LIBRARY_DEBUG_BOOK)
       ? layoutBookcase([{ id: LIBRARY_DEBUG_BOOK, thickness: THICKNESS }], bookcase.cells, [DEBUG_CELL])
       : [];
-  const finalShelf = debugging ? layoutBookcase([{ id: LIBRARY_FINAL_BOOK, thickness: THICKNESS }], bookcase.cells, [FINAL_CELL]) : [];
   const shelfPlaces: Place[] = [
     ...layoutBookcase(
       found.map((id) => ({ id, thickness: thickness(id) })),
@@ -279,7 +281,6 @@ export const createLibraryPage = (
       MORE_FILL_ORDER,
     ),
     ...debugShelf,
-    ...finalShelf,
   ].map((spot) => {
     const cell = bookcase.cells[spot.cell];
     const floor = new THREE.Vector2(cell.left + cell.width / 2, cell.floor);
@@ -301,42 +302,42 @@ export const createLibraryPage = (
       aim: 0,
     };
   });
-  // « Mon histoire vraie » dans le meuble des fins : en haut sur le chevalet pendant qu'on la lit, tome 1 une fois finie.
-  const reading = storyShelved(state) && !storyFinished(state);
+  // Le meuble des fins : en haut sur le chevalet, le vrai livre (?debug) ; en bas, « Mon histoire vraie », tome 1.
   const endingsAt = (local: THREE.Vector3): THREE.Vector3 => local.clone().add(endings.root.position);
-  const storyPlaces: Place[] = !storyShelved(state)
-    ? []
-    : reading
-      ? [
-          {
-            id: LIBRARY_STORY_BOOK,
-            pivot: endingsAt(EASEL_LIP),
-            tip: false,
-            reach: EASEL_PULL,
-            floor: STAND_FLOOR,
-            holder: null,
-            book: null,
-            pull: 0,
-            aim: 0,
-          },
-        ]
-      : [
-          {
-            id: LIBRARY_STORY_BOOK,
-            pivot: endingsAt(new THREE.Vector3(TOMES[0].x, TOME_FLOOR, TOME_FRONT)),
-            tip: true,
-            reach: PULL,
-            floor: LOW_FLOOR,
-            holder: null,
-            book: null,
-            pull: 0,
-            aim: 0,
-          },
-        ];
-  const places = [...shelfPlaces, ...storyPlaces];
+  const easelPlaces: Place[] = debugging
+    ? [
+        {
+          id: LIBRARY_FINAL_BOOK,
+          pivot: endingsAt(EASEL_LIP),
+          tip: false,
+          reach: EASEL_PULL,
+          floor: STAND_FLOOR,
+          holder: null,
+          book: null,
+          pull: 0,
+          aim: 0,
+        },
+      ]
+    : [];
+  const storyPlaces: Place[] = storyShelved(state)
+    ? [
+        {
+          id: LIBRARY_STORY_BOOK,
+          pivot: endingsAt(new THREE.Vector3(TOMES[0].x, TOME_FLOOR, TOME_FRONT)),
+          tip: true,
+          reach: PULL,
+          floor: LOW_FLOOR,
+          holder: null,
+          book: null,
+          pull: 0,
+          aim: 0,
+        },
+      ]
+    : [];
+  const places = [...shelfPlaces, ...easelPlaces, ...storyPlaces];
   // Le tome 1, rangé : un dos de la collection (son bandeau, son numéro), comme dans la maquette.
   let tome: Tome | null = null;
-  if (storyPlaces[0] && !reading) {
+  if (storyPlaces[0]) {
     const place = storyPlaces[0];
     tome = createTome(0, t('ui.endings.collection'));
     tome.mesh.position.set(0, 0, 0);
@@ -385,12 +386,13 @@ export const createLibraryPage = (
       dirty = true;
     });
   }
-  // « Mon histoire vraie » en lecture : de face, sa couverture vers le lecteur, penchée contre le chevalet, sur sa lèvre.
-  if (reading) {
-    const place = storyPlaces[0];
-    const book = shelfBook3d(state, LIBRARY_STORY_BOOK, debugging);
+  // Le vrai livre : de face, sa couverture vers le lecteur, penché contre le chevalet, sur sa lèvre.
+  if (easelPlaces[0]) {
+    const place = easelPlaces[0];
+    const book = shelfBook3d(state, LIBRARY_FINAL_BOOK, debugging);
+    place.tick = book.tick;
     const easelSpot: ShelfPlace = {
-      id: LIBRARY_STORY_BOOK,
+      id: LIBRARY_FINAL_BOOK,
       cell: -1,
       pose: 'stand',
       x: 0,

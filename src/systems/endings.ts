@@ -1,5 +1,4 @@
-import { S } from '../data/etheriumStars';
-import { starLit, storyBribes } from './etherium';
+import { storyBribes } from './etherium';
 import type { GameState } from '../core/state';
 
 /**
@@ -8,8 +7,5 @@ import type { GameState } from '../core/state';
  */
 export const ENDING_TOMES = 11;
 
-/** « Mon histoire vraie » est lue jusqu'au bout (« Pas celui-ci ») : elle quitte le haut du meuble pour sa place de tome 1. */
-export const storyFinished = (state: GameState): boolean => starLit(state, S.storyEnd);
-
-/** Les fausses fins trouvées (rangées en bas, ou en lecture en haut), sur ENDING_TOMES. */
+/** Les fausses fins trouvées (rangées en bas, lues jusqu'au bout ou pas), sur ENDING_TOMES. */
 export const fakeEndingsFound = (state: GameState): number => (storyBribes(state) > 0 ? 1 : 0);
