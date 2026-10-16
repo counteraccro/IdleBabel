@@ -4,9 +4,9 @@ import type { ToolId } from '../data/tools';
 import type { GameState, LotteryEffect } from '../core/state';
 
 /**
- * Ce que font les bonus et les malus de la Loterie en cours (systems/lottery.ts les tire). Ils se cumulent : un nouveau
- * tirage n'en efface aucun (l'auteur, 16/10) ; un bonus déjà en cours ne se tire plus (systems/lottery.ts). Ils comptent
- * en temps réel et restent au prestige.
+ * Ce que font les bonus et les malus de la Loterie en cours (systems/lottery.ts les tire). Des effets différents se
+ * cumulent : un nouveau tirage n'en efface aucun (l'auteur, 16/10) ; un bonus ou un malus déjà en cours ne se tire plus
+ * (systems/lottery.ts). Ils comptent en temps réel et restent au prestige.
  */
 
 /** Ceux qui durent encore. */
@@ -38,7 +38,7 @@ export const allLotteryBoons = (state: GameState, now = Date.now()): boolean => 
 export const allLotteryCurses = (state: GameState, now = Date.now()): boolean =>
   LOTTERY_CURSES.every((curse) => (curse.id === 'golden' ? goldenHere(state, now) : on(state, curse.id, now)));
 
-/** Un bonus ou un malus commence ; le même malus (et la même méthode) déjà en cours : sa durée s'ajoute à ce qui restait. */
+/** Un bonus ou un malus commence ; le même déjà en cours (débogage seulement) : sa durée s'ajoute à ce qui restait. */
 export const startLotteryEffect = (state: GameState, id: LotteryEffectId, seconds: number, now = Date.now(), method?: ToolId): void => {
   state.lottery.effects = lotteryEffects(state, now);
   const same = state.lottery.effects.find((effect) => effect.id === id && effect.method === method);

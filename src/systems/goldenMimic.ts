@@ -1,5 +1,6 @@
 import { GOLDEN_SECONDS, GOLDEN_STRIKES } from '../data/lottery';
 import { sealEvent } from './seals';
+import { catchMimic } from './mimic';
 import { modded } from '../mods/quantities';
 import type { GameState } from '../core/state';
 
@@ -11,7 +12,11 @@ import type { GameState } from '../core/state';
 
 export const goldenHere = (state: GameState, now = Date.now()): boolean => (state.lottery.golden?.until ?? 0) > now;
 
-/** Elle arrive ; déjà là, elle reste cinq minutes de plus. Rend ces secondes (mods compris). */
+/**
+ * Elle arrive : la Mimic ordinaire, si elle est là, est écrasée et rend ce qu'elle doit (comme attrapée, l'auteur, 16/10).
+ * Déjà là (débogage seulement : un malus ne se tire pas deux fois), elle reste cinq minutes de plus. Rend ces secondes
+ * (mods compris).
+ */
 export const spawnGolden = (state: GameState, random: () => number = Math.random, now = Date.now()): number => {
   const golden = state.lottery.golden;
   const length = GOLDEN_SECONDS * 1000 * modded('lotteryCurse');
@@ -20,6 +25,7 @@ export const spawnGolden = (state: GameState, random: () => number = Math.random
     golden.total = golden.until - now;
     return length / 1000;
   }
+  catchMimic(state, now, random);
   state.lottery.golden = {
     until: now + length,
     total: length,

@@ -21,11 +21,9 @@ export const mimicEvery = (state: GameState): number => (MIMIC_EVERY / mimicCome
 export const mimicBonusShare = (state: GameState): number => Math.max(0, MIMIC_BONUS + mimicGivesBonus(state) + modded('mimicGives'));
 
 /**
- * Ce qu'elle laisse de la lecture des méthodes : tant qu'elle est là, −(ce qu'elle rendra en plus), −50 % au plus. Pas
- * pendant que la Mimic dorée la cache (on ne peut pas l'attraper) : elle ralentit de nouveau quand la dorée s'en va.
+ * Ce qu'elle laisse de la lecture des méthodes : tant qu'elle est là, −(ce qu'elle rendra en plus), −50 % au plus.
  */
-export const mimicReading = (state: GameState): number =>
-  mimicHere(state) && !goldenHere(state) ? 1 - Math.min(MIMIC_SLOW_CAP, mimicBonusShare(state)) : 1;
+export const mimicReading = (state: GameState): number => (mimicHere(state) ? 1 - Math.min(MIMIC_SLOW_CAP, mimicBonusShare(state)) : 1);
 
 /** Débogage : la prochaine avance la fait venir. */
 let called = false;

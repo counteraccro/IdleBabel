@@ -17,7 +17,7 @@ import { creditMethods, gainPages, pagesPerSecond, toolRate } from './production
 import { findWhileAway } from './knowledge';
 import { checkSeals } from './seals';
 import { lotteryEffects, startLotteryEffect } from './lotteryEffects';
-import { spawnGolden } from './goldenMimic';
+import { goldenHere, spawnGolden } from './goldenMimic';
 import { modded } from '../mods/quantities';
 import { runHooks } from '../mods/hooks';
 import type { GameState } from '../core/state';
@@ -25,8 +25,9 @@ import type { GameState } from '../core/state';
 /**
  * Un tirage de la Loterie (data/lottery.ts) : un jeton part, les rouleaux s'arrêtent sur trois chiffres de Babel qui
  * disent le résultat. Rien n'annule rien : un nouveau tirage n'efface pas un malus en cours, et ce que gagne un tirage
- * pendant que la Mimic dorée est là, elle le mange (l'auteur, 16/10). Un bonus ne vaut qu'une fois à la fois : avec
- * beaucoup de jetons, ils casseraient le jeu ; tous en cours, la machine se bloque (l'auteur, 16/10).
+ * pendant que la Mimic dorée est là, elle le mange (l'auteur, 16/10). Un bonus ou un malus ne vaut qu'une fois à la fois :
+ * déjà en cours, il ne se tire plus. Tous les bonus en cours, la machine se bloque ; tous les malus, un malus tiré donne
+ * « rien » (l'auteur, 16/10).
  */
 
 export interface Draw {
@@ -40,7 +41,7 @@ export interface Draw {
   boon?: LotteryBoonId;
   curse?: LotteryCurseId;
   method?: ToolId;
-  /** La durée qu'il donne (secondes, mods compris) ; un malus déjà en cours s'allonge d'autant. */
+  /** La durée qu'il donne (secondes, mods compris). */
   seconds?: number;
 }
 
@@ -125,22 +126,24 @@ const boon = (state: GameState, draw: Draw, random: () => number, now: number): 
   startLotteryEffect(state, chosen.id, draw.seconds, now, draw.method);
 };
 
+/** Les malus qu'un tirage peut encore donner : ceux qui ne sont pas en cours (l'auteur, 16/10) ; pas d'arrêt sans méthode. */
+export const drawableCurses = (state: GameState, now = Date.now()): (typeof LOTTERY_CURSES)[number][] => {
+  const running = lotteryEffects(state, now);
+  const methods = TOOLS.some((tool) => state.tools[tool.id] > 0);
+  return LOTTERY_CURSES.filter((one) =>
+    one.id === 'golden' ? !goldenHere(state, now) : !running.some((effect) => effect.id === one.id) && (one.id !== 'stopped' || methods),
+  );
+};
+
 const curse = (state: GameState, draw: Draw, random: () => number, now: number): void => {
-  // Une méthode déjà arrêtée le reste plus longtemps (sinon, à 0, elle laisserait la suivante s'arrêter aussi).
-  const best = lotteryEffects(state, now).find((effect) => effect.id === 'stopped')?.method ?? ownedMethods(state)[0];
-  // Sans méthode, rien à arrêter : la production ÷ 2 (qui ne fait rien non plus), ou la Mimic dorée.
-  const chosen =
-    LOTTERY_CURSES.find((one) => one.id === forced && (one.id !== 'stopped' || best)) ??
-    pick(
-      LOTTERY_CURSES.filter((one) => one.id !== 'stopped' || best),
-      random,
-    );
+  const drawable = drawableCurses(state, now);
+  const chosen = drawable.find((one) => one.id === forced) ?? pick(drawable, random);
   draw.curse = chosen.id;
   if (chosen.id === 'golden') {
     draw.seconds = spawnGolden(state, random, now);
     return;
   }
-  if (chosen.id === 'stopped') draw.method = best;
+  if (chosen.id === 'stopped') draw.method = ownedMethods(state)[0];
   draw.seconds = CURSE_SECONDS * modded('lotteryCurse');
   startLotteryEffect(state, chosen.id, draw.seconds, now, draw.method);
 };
@@ -157,6 +160,8 @@ export const drawLottery = (state: GameState, random: () => number = Math.random
   if (LOTTERY_CURSES.some((one) => one.id === forced)) outcome = 'curse';
   // Le livre du gros lot n'est pas encore écrit : ses chances vont à « rien ».
   if (outcome === 'jackpot' && !JACKPOT_READY) outcome = 'nothing';
+  // Tous les malus en cours : un malus ne se tire pas deux fois, ses chances vont à « rien ».
+  if (outcome === 'curse' && drawableCurses(state, now).length === 0) outcome = 'nothing';
   const draw: Draw = { outcome, reels: reelsFor(outcome, random) };
   if (outcome === 'gain') gain(state, draw, random);
   else if (outcome === 'boon') boon(state, draw, random, now);
