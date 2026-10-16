@@ -13,6 +13,8 @@ import { levelOf, lockOf, maxLevel } from '../systems/technologies';
 import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS, type ToolId } from './tools';
 import { mimicSeconds } from '../systems/mimic';
 import { RELICS } from './relics';
+import { TOKENS_SPENT_STEPS } from './lottery';
+import { allLotteryBoons, allLotteryCurses } from '../systems/lotteryEffects';
 import type { ModText } from '../mods/modSeals';
 
 /**
@@ -30,6 +32,7 @@ export const PLATES = [
   'etherium',
   'mimic',
   'relics',
+  'lottery',
   'rare',
   'secrets',
   // Les sceaux des mods (src/mods/modSeals.ts) : la planche n'existe qu'avec eux.
@@ -219,6 +222,9 @@ export const SEALS: readonly SealDef[] = [
   seal('relicsAll', 'relics', (s) => RELICS.every((relic) => s.relics.found[relic.id] !== undefined)),
   ...series('relicChanges', 'relics', (s) => s.relics.changes, [1, 10, 100]).map((seal): SealDef => ({ ...seal, phrases: true })),
 
+  // La Loterie (16/10) : les jetons joués, depuis toujours.
+  ...series('tokensSpent', 'lottery', (s) => s.lottery.draws, TOKENS_SPENT_STEPS),
+
   // Un sceau par livre rare, apposé quand il arrive en main.
   ...RARE_BOOKS.map((book): SealDef => ({
     id: `rare-${book.id}`,
@@ -281,6 +287,11 @@ export const SEALS: readonly SealDef[] = [
   secret('babelWord'),
   // La Mimic dorée de la Loterie, qu'on ne peut pas tuer, frappée dix fois quand même (systems/goldenMimic.ts).
   secret('tenTimes'),
+  // Les malus de la Loterie tous à la fois (÷2, la méthode arrêtée, la Mimic dorée) ; tous ses bonus ; tout ensemble
+  // (l'auteur, 16/10 : les bonus ne se cumulent plus, la machine se bloque quand ils y sont tous).
+  seal('allCurses', 'secrets', (s) => allLotteryCurses(s)),
+  seal('allBoons', 'secrets', (s) => allLotteryBoons(s)),
+  seal('allEffects', 'secrets', (s) => allLotteryBoons(s) && allLotteryCurses(s)),
   // « Mon histoire vraie » lue jusqu'à sa dernière bribe : le Rideau entier allumé (la fausse fin, 14/10).
   seal('notThisOne', 'secrets', (s) => s.etherium.includes(S.storyEnd)),
   // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).

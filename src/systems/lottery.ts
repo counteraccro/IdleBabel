@@ -16,14 +16,15 @@ import { TOOLS, type ToolId } from '../data/tools';
 import { gainPages, pagesPerSecond, toolRate } from './production';
 import { findWhileAway } from './knowledge';
 import { checkSeals } from './seals';
-import { startLotteryEffect } from './lotteryEffects';
+import { lotteryEffects, startLotteryEffect } from './lotteryEffects';
 import { spawnGolden } from './goldenMimic';
 import type { GameState } from '../core/state';
 
 /**
  * Un tirage de la Loterie (data/lottery.ts) : un jeton part, les rouleaux s'arrêtent sur trois chiffres de Babel qui
  * disent le résultat. Rien n'annule rien : un nouveau tirage n'efface pas un malus en cours, et ce que gagne un tirage
- * pendant que la Mimic dorée est là, elle le mange (l'auteur, 16/10).
+ * pendant que la Mimic dorée est là, elle le mange (l'auteur, 16/10). Un bonus ne vaut qu'une fois à la fois : avec
+ * beaucoup de jetons, ils casseraient le jeu ; tous en cours, la machine se bloque (l'auteur, 16/10).
  */
 
 export interface Draw {
@@ -92,17 +93,24 @@ const gain = (state: GameState, draw: Draw, random: () => number): void => {
   draw.knowledge = state.knowledge - before.knowledge;
 };
 
+/** Les bonus qu'un tirage peut encore donner : ceux qui ne sont pas en cours ; pas de ×10 sans méthode. */
+export const drawableBoons = (state: GameState, now = Date.now()): (typeof LOTTERY_BOONS)[number][] => {
+  const running = lotteryEffects(state, now);
+  const methods = TOOLS.some((tool) => state.tools[tool.id] > 0);
+  return LOTTERY_BOONS.filter((one) => !running.some((effect) => effect.id === one.id) && (one.id !== 'method10' || methods));
+};
+
+/** Tous les bonus en cours : la machine ne prend plus de jeton (le levier descend à peine, comme sans jeton). */
+export const lotteryBlocked = (state: GameState, now = Date.now()): boolean => drawableBoons(state, now).length === 0;
+
 const boon = (state: GameState, draw: Draw, random: () => number, now: number): void => {
-  const owned = ownedMethods(state);
-  // Sans méthode, pas de ×10 : un des autres.
-  const chosen =
-    LOTTERY_BOONS.find((one) => one.id === forced && (one.id !== 'method10' || owned.length > 0)) ??
-    pick(
-      LOTTERY_BOONS.filter((one) => one.id !== 'method10' || owned.length > 0),
-      random,
-    );
+  const drawable = drawableBoons(state, now);
+  const chosen = drawable.find((one) => one.id === forced) ?? pick(drawable, random);
   draw.boon = chosen.id;
-  if (chosen.id === 'method10') draw.method = owned[Math.floor(random() * owned.length)];
+  if (chosen.id === 'method10') {
+    const owned = ownedMethods(state);
+    draw.method = owned[Math.floor(random() * owned.length)];
+  }
   startLotteryEffect(state, chosen.id, BOON_SECONDS, now, draw.method);
 };
 
@@ -121,9 +129,9 @@ const curse = (state: GameState, draw: Draw, random: () => number, now: number):
   startLotteryEffect(state, chosen.id, CURSE_SECONDS, now, draw.method);
 };
 
-/** On joue un jeton : rien sans jeton (renvoie undefined). */
+/** On joue un jeton : rien sans jeton, ni tous les bonus en cours (renvoie undefined). */
 export const drawLottery = (state: GameState, random: () => number = Math.random, now = Date.now()): Draw | undefined => {
-  if (state.lottery.tokens <= 0) return undefined;
+  if (state.lottery.tokens <= 0 || lotteryBlocked(state, now)) return undefined;
   state.lottery.tokens -= 1;
   state.lottery.draws += 1;
   let outcome = OUTCOMES.find((one) => one.id === forced)?.id ?? pick(OUTCOMES, random).id;

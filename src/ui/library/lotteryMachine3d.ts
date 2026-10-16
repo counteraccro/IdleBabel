@@ -128,7 +128,7 @@ const reelEase = (k: number): number => {
 
 /**
  * La machine, son socle en y = 0. `labels` : ses deux textes, dans la langue du jeu ; `environment` : le reflet de la pièce,
- * pour le métal (comme dans la maquette, à 0,25) ; `tokens` : les jetons à l'écran ; `play` : joue un jeton (rien sans jeton).
+ * pour le métal (comme dans la maquette, à 0,25) ; `tokens` : les jetons à l'écran ; `play` : joue un jeton (rien sans jeton, ni tous les bonus en cours).
  */
 export const createLotteryMachine = (
   labels: { sign: () => string; jackpot: () => string },

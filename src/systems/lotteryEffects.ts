@@ -1,10 +1,12 @@
-import { HALF, LOTTERY_BOONS, type LotteryEffectId } from '../data/lottery';
+import { HALF, LOTTERY_BOONS, LOTTERY_CURSES, type LotteryEffectId } from '../data/lottery';
+import { goldenHere } from './goldenMimic';
 import type { ToolId } from '../data/tools';
 import type { GameState, LotteryEffect } from '../core/state';
 
 /**
  * Ce que font les bonus et les malus de la Loterie en cours (systems/lottery.ts les tire). Ils se cumulent : un nouveau
- * tirage n'en efface aucun (l'auteur, 16/10). Ils comptent en temps réel et restent au prestige.
+ * tirage n'en efface aucun (l'auteur, 16/10) ; un bonus déjà en cours ne se tire plus (systems/lottery.ts). Ils comptent
+ * en temps réel et restent au prestige.
  */
 
 /** Ceux qui durent encore. */
@@ -31,7 +33,12 @@ export const lotteryMethod = (state: GameState, id: ToolId, now = Date.now()): n
   return factor;
 };
 
-/** Un bonus ou un malus commence ; le même (et la même méthode) déjà en cours : sa durée s'ajoute à ce qui restait. */
+/** Tous les bonus à la fois, tous les malus (la Mimic dorée comprise) : deux sceaux secrets, et les deux ensemble un troisième. */
+export const allLotteryBoons = (state: GameState, now = Date.now()): boolean => LOTTERY_BOONS.every((boon) => on(state, boon.id, now));
+export const allLotteryCurses = (state: GameState, now = Date.now()): boolean =>
+  LOTTERY_CURSES.every((curse) => (curse.id === 'golden' ? goldenHere(state, now) : on(state, curse.id, now)));
+
+/** Un bonus ou un malus commence ; le même malus (et la même méthode) déjà en cours : sa durée s'ajoute à ce qui restait. */
 export const startLotteryEffect = (state: GameState, id: LotteryEffectId, seconds: number, now = Date.now(), method?: ToolId): void => {
   state.lottery.effects = lotteryEffects(state, now);
   const same = state.lottery.effects.find((effect) => effect.id === id && effect.method === method);

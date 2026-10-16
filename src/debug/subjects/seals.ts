@@ -14,6 +14,7 @@ const PLATE_NAMES: Record<PlateId, string> = {
   etherium: 'Etherium',
   mimic: 'La Mimic',
   relics: 'Les reliques',
+  lottery: 'La Loterie',
   rare: 'Livres rares',
   secrets: 'Secrets',
   mods: 'Mods',

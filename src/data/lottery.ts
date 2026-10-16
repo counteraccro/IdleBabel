@@ -27,7 +27,10 @@ export const JACKPOT_READY = false;
 /** Le gain : autant de secondes de lecture d'absence (pages et Connaissance). */
 export const GAIN_SECONDS = 30 * 60;
 
-/** Les bonus de la Loterie, une heure chacun : la production de toutes les méthodes, ou d'une seule (×10). */
+/**
+ * Les bonus de la Loterie, une heure chacun : la production de toutes les méthodes, ou d'une seule (×10). Un seul de chaque
+ * à la fois ; tous en cours, la machine se bloque (l'auteur, 16/10).
+ */
 export const LOTTERY_BOONS = [
   { id: 'all15', weight: 40, factor: 1.5 },
   { id: 'all2', weight: 30, factor: 2 },
@@ -64,3 +67,6 @@ export const GOLDEN_STRIKES = 10;
 /** Le chiffre de Babel des rouleaux pour le gros lot, et pour le malus. */
 export const JACKPOT_DIGIT = 7;
 export const CURSE_DIGIT = 0;
+
+/** Les paliers des jetons joués (sceaux de la planche « La Loterie »). */
+export const TOKENS_SPENT_STEPS = [1, 10, 50, 150, 410, 1000];

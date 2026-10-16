@@ -1,6 +1,7 @@
-import { LOTTERY_BOONS, LOTTERY_CURSES, OUTCOMES } from '../../data/lottery';
+import { BOON_SECONDS, LOTTERY_BOONS, LOTTERY_CURSES, OUTCOMES } from '../../data/lottery';
+import { TOOLS } from '../../data/tools';
 import { forceDraw } from '../../systems/lottery';
-import { lotteryEffects } from '../../systems/lotteryEffects';
+import { lotteryEffects, startLotteryEffect } from '../../systems/lotteryEffects';
 import { goldenHere, spawnGolden } from '../../systems/goldenMimic';
 import { chips } from '../debugControls';
 import { duration, type DebugSubject } from './subject';
@@ -33,6 +34,16 @@ export const LOTTERY_SUBJECT: DebugSubject = {
       'Tout de suite',
       chips([
         ['La Mimic dorée', () => spawnGolden(state)],
+        // Tous les bonus d'une heure (le ×10 sur la première méthode qu'on a) : la machine se bloque.
+        [
+          'Tous les bonus',
+          () => {
+            const method = TOOLS.find((tool) => state.tools[tool.id] > 0)?.id;
+            for (const boon of LOTTERY_BOONS)
+              if (boon.id !== 'method10' || method)
+                startLotteryEffect(state, boon.id, BOON_SECONDS, Date.now(), boon.id === 'method10' ? method : undefined);
+          },
+        ],
         ['Effacer bonus et malus', () => ((state.lottery.effects = []), (state.lottery.golden = null))],
       ]),
     );

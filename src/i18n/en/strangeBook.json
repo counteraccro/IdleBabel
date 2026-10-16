@@ -66,6 +66,7 @@
     "etherium": "Etherium",
     "mimic": "The Mimic",
     "relics": "Relics",
+    "lottery": "The Lottery",
     "rare": "Rare books",
     "secrets": "Secrets",
     "mods": "Mods"
@@ -101,6 +102,7 @@
     "etherReceived": "Gather your first Ether",
     "starsLit": "Light one star",
     "mimicsCaught": "Catch a Mimic",
+    "tokensSpent": "Play a token",
     "mimicHours": "Let it eat for an hour"
   },
   "seals": {
@@ -262,7 +264,11 @@
     "babelWord": "I read the Library’s name, letter by letter.",
     "notThisOne": "Not this one.",
     "tenTimes": "Ten times. For nothing.",
+    "allCurses": "Every misfortune at once.",
+    "allBoons": "All the luck in the world.",
+    "allEffects": "The best and the worst, at the same time.",
     "cheat": "Slip into the Library a page it did not write",
+    "tokensSpent": "Play {n} tokens",
     "mimicsCaught": "Catch {n} Mimics",
     "mimicBonus": "Take back {n} more Knowledge from it",
     "mimicHours": "Let it eat for {n} hours",

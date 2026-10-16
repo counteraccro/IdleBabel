@@ -130,6 +130,9 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintBabelWord',
     'hintNotThisOne',
     'hintTenTimes',
+    'hintAllCurses',
+    'hintAllBoons',
+    'hintAllEffects',
     'hintCheat',
     // Les reliques (12/10) : chaque phrase pose sa relique dans sa salle (systems/relics.ts) ; elle ne se lit qu'avec
     // l'Ouest de l'Exploration, et sa salle déjà vue.
@@ -171,5 +174,5 @@ export const hintSeal = (id: string): string | undefined => (id.startsWith('hint
 /** Les indices des secrets de l'Etherium ne tombent qu'après un premier prestige : avant, ils ne voudraient rien dire. */
 export const HINTS_AFTER_PRESTIGE: readonly string[] = ['hintEmptyEtherium', 'hintNoHands', 'hintNotThisOne'];
 
-/** L'indice de la Mimic dorée ne tombe qu'après un premier tirage de la Loterie. */
-export const HINTS_AFTER_DRAW: readonly string[] = ['hintTenTimes'];
+/** Les indices de la Loterie (la Mimic dorée, ses bonus et malus) ne tombent qu'après un premier tirage. */
+export const HINTS_AFTER_DRAW: readonly string[] = ['hintTenTimes', 'hintAllCurses', 'hintAllBoons', 'hintAllEffects'];

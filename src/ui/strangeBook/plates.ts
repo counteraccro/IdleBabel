@@ -38,12 +38,14 @@ export interface PlatePage {
 
 /**
  * La planche de l'Etherium n'existe qu'après un premier prestige, comme le chapitre Éther : avant, rien ne le laisse deviner.
- * Celle de la Mimic, une fois la Mimic débloquée dans l'Etherium ; celle des reliques, une fois l'Ouest allumé.
+ * Celle de la Mimic, une fois la Mimic débloquée dans l'Etherium ; celle des reliques, une fois l'Ouest allumé ; celle de
+ * la Loterie, après un premier tirage.
  */
 const plateShown = (state: GameState, plate: PlateId): boolean => {
   if (plate === 'etherium') return state.etherReceived > 0 || statsRevealed();
   if (plate === 'mimic') return mimicUnlocked(state) || state.mimic.caught > 0 || statsRevealed();
   if (plate === 'mods') return plateSeals('mods').length > 0;
+  if (plate === 'lottery') return state.lottery.draws > 0 || statsRevealed();
   if (plate === 'relics') return relicsUnlocked(state) || Object.keys(state.relics.found).length > 0 || statsRevealed();
   return true;
 };

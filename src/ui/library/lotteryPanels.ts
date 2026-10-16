@@ -122,15 +122,20 @@ export const signPanel = (title: () => string): Panel =>
     });
   });
 
-/** L'écran des jetons : leur nombre, en deux chiffres de Babel. */
+/** L'écran des jetons : leur nombre, en chiffres ordinaires (l'auteur, 16/10). */
 export const tokensPanel = (tokens: () => number): Panel =>
   panel(
     0.34,
     0.08,
     (context, w, h) => {
-      [...String(tokens()).padStart(2, '0')].forEach((digit, i) =>
-        halo(context, () => drawBabelDigit(context, Number(digit), w / 2 + (i - 0.5) * h * 0.95, h / 2, h * 0.72, 8)),
-      );
+      const text = String(tokens());
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      halo(context, () => {
+        context.fillStyle = goldText(context);
+        fitFont(context, text, h * 0.78, CINZEL, w * 0.86);
+        context.fillText(text, w / 2, h * 0.54);
+      });
     },
     true,
   );

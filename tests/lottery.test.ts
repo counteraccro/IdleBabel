@@ -2,8 +2,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { loadGame, saveGame } from '../src/core/save';
 import { CURSE_SECONDS, GOLDEN_SECONDS, GOLDEN_STRIKES } from '../src/data/lottery';
-import { drawLottery, forceDraw, reelsFor } from '../src/systems/lottery';
-import { lotteryMethod, lotteryReading } from '../src/systems/lotteryEffects';
+import { drawLottery, drawableBoons, forceDraw, lotteryBlocked, reelsFor } from '../src/systems/lottery';
+import { allLotteryBoons, lotteryMethod, lotteryReading } from '../src/systems/lotteryEffects';
+import { SEALS } from '../src/data/seals';
 import { goldenGone, goldenHere, spawnGolden, strikeGolden } from '../src/systems/goldenMimic';
 import { catchMimic, spawnMimic } from '../src/systems/mimic';
 import { gainPages, pagesPerSecond, toolRate } from '../src/systems/production';
@@ -63,7 +64,7 @@ describe('La Loterie', () => {
     expect(draw.pages).toBeCloseTo(state.pages);
   });
 
-  it('les bonus d’une heure se cumulent : ×2 puis ×3 = ×6 ; le même retiré, sa durée s’ajoute', () => {
+  it('les bonus d’une heure se cumulent : ×2 puis ×3 = ×6', () => {
     const state = reading();
     const base = pagesPerSecond(state);
     forceDraw('all2');
@@ -74,11 +75,62 @@ describe('La Loterie', () => {
     vi.useFakeTimers({ now: 1000 });
     expect(pagesPerSecond(state)).toBeCloseTo(base * 6);
     vi.useRealTimers();
+    expect(lotteryReading(state, 3_600_000 + 1)).toBe(1);
+  });
+
+  it('un bonus en cours ne se tire plus ; tous en cours, la machine se bloque (le jeton reste)', () => {
+    const state = reading();
+    state.lottery.tokens = 10;
     forceDraw('all2');
     drawLottery(state, Math.random, 0);
-    expect(state.lottery.effects.find((effect) => effect.id === 'all2')!.end).toBe(2 * 3_600_000);
-    expect(lotteryReading(state, 3_600_000 + 1)).toBe(2);
-    expect(lotteryReading(state, 2 * 3_600_000 + 1)).toBe(1);
+    forceDraw('all2');
+    const again = drawLottery(state, Math.random, 0)!;
+    expect(again.boon).not.toBe('all2');
+    expect(state.lottery.effects.find((effect) => effect.id === 'all2')!.end).toBe(3_600_000);
+    expect(drawableBoons(state, 0)).toHaveLength(2);
+    forceDraw('boon');
+    drawLottery(state, Math.random, 0);
+    forceDraw('boon');
+    drawLottery(state, Math.random, 0);
+    expect(allLotteryBoons(state, 0)).toBe(true);
+    expect(lotteryBlocked(state, 0)).toBe(true);
+    expect(drawLottery(state, Math.random, 0)).toBeUndefined();
+    expect(state.lottery.tokens).toBe(6);
+    // Une heure plus tard, tout est fini : la machine reprend.
+    expect(lotteryBlocked(state, 3_600_001)).toBe(false);
+  });
+
+  it('sans méthode, pas de ×10 : les trois autres suffisent à bloquer la machine', () => {
+    const state = createInitialState('fr');
+    state.lottery.tokens = 5;
+    for (let i = 0; i < 3; i++) {
+      forceDraw('boon');
+      expect(drawLottery(state, Math.random, 0)!.boon).not.toBe('method10');
+    }
+    expect(lotteryBlocked(state, 0)).toBe(true);
+  });
+
+  it('les sceaux : tous les malus, tous les bonus, tout ensemble ; les jetons joués', () => {
+    const state = reading();
+    state.lottery.tokens = 20;
+    const now = Date.now();
+    const reached = (id: string) => SEALS.find((seal) => seal.id === id)!.reached(state);
+    for (const curse of ['half', 'stopped', 'golden'] as const) {
+      forceDraw(curse);
+      drawLottery(state, Math.random, now);
+    }
+    expect(reached('allCurses')).toBe(true);
+    expect(reached('allEffects')).toBe(false);
+    for (const boon of ['all15', 'all2', 'all3', 'method10'] as const) {
+      forceDraw(boon);
+      drawLottery(state, Math.random, now);
+    }
+    expect(reached('allBoons')).toBe(true);
+    expect(reached('allEffects')).toBe(true);
+    expect(reached('tokensSpent-1')).toBe(true);
+    expect(reached('tokensSpent-10')).toBe(false);
+    state.lottery.draws = 1000;
+    expect(reached('tokensSpent-1000')).toBe(true);
   });
 
   it('×10 pour une méthode qu’on a ; la méthode qui lit le plus s’arrête (malus)', () => {
