@@ -412,7 +412,7 @@
             <tr data-hook="lottery">
               <td><code>lottery</code></td>
               <td>Un jeton joué à la Loterie.</td>
-              <td><code>{ outcome, reels, pages, knowledge, boon, curse, method, seconds }</code> : le résultat (<code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code>), les trois chiffres des rouleaux ; selon lui, ce que le gain a rapporté (0 si la Mimic dorée l’a mangé), le bonus ou le malus tiré, la méthode qu’il vise et sa durée en secondes.</td>
+              <td><code>{ outcome, reels, pages, knowledge, boon, curse, method, seconds, crushed }</code>, à l’arrêt des rouleaux : le résultat (<code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code>), les trois chiffres des rouleaux ; selon lui, ce que le gain a rapporté (0 si la Mimic dorée l’a mangé), le bonus ou le malus tiré, la méthode qu’il vise et sa durée en secondes ; <code>crushed</code> : ce qu’a rendu la Mimic écrasée par la Mimic dorée (<code>{ knowledge, token }</code>).</td>
               <td>—</td>
             </tr>
           </table>
@@ -944,7 +944,7 @@ IdleBabel.registerMod('word-count', {
             <tr data-hook="lottery">
               <td><code>lottery</code></td>
               <td>A token played at the Lottery.</td>
-              <td><code>{ outcome, reels, pages, knowledge, boon, curse, method, seconds }</code>: the outcome (<code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code>), the three reel digits; depending on it, what the win brought (0 if the Golden Mimic ate it), the bonus or penalty drawn, the method it targets and its length in seconds.</td>
+              <td><code>{ outcome, reels, pages, knowledge, boon, curse, method, seconds, crushed }</code>, once the reels stop: the outcome (<code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code>), the three reel digits; depending on it, what the win brought (0 if the Golden Mimic ate it), the bonus or penalty drawn, the method it targets and its length in seconds; <code>crushed</code>: what the Mimic crushed by the Golden Mimic gave back (<code>{ knowledge, token }</code>).</td>
               <td>—</td>
             </tr>
           </table>

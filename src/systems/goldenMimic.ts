@@ -15,17 +15,21 @@ export const goldenHere = (state: GameState, now = Date.now()): boolean => (stat
 /**
  * Elle arrive : la Mimic ordinaire, si elle est là, est écrasée et rend ce qu'elle doit (comme attrapée, l'auteur, 16/10).
  * Déjà là (débogage seulement : un malus ne se tire pas deux fois), elle reste cinq minutes de plus. Rend ces secondes
- * (mods compris).
+ * (mods compris), et ce qu'a rendu la Mimic écrasée (la Connaissance, un jeton ou non).
  */
-export const spawnGolden = (state: GameState, random: () => number = Math.random, now = Date.now()): number => {
+export const spawnGolden = (
+  state: GameState,
+  random: () => number = Math.random,
+  now = Date.now(),
+): { seconds: number; crushed?: { knowledge: number; token: boolean } } => {
   const golden = state.lottery.golden;
   const length = GOLDEN_SECONDS * 1000 * modded('lotteryCurse');
   if (golden && golden.until > now) {
     golden.until += length;
     golden.total = golden.until - now;
-    return length / 1000;
+    return { seconds: length / 1000 };
   }
-  catchMimic(state, now, random);
+  const given = catchMimic(state, now, random);
   state.lottery.golden = {
     until: now + length,
     total: length,
@@ -35,7 +39,10 @@ export const spawnGolden = (state: GameState, random: () => number = Math.random
     knowledge: 0,
     strikes: 0,
   };
-  return length / 1000;
+  return {
+    seconds: length / 1000,
+    ...(given ? { crushed: { knowledge: Math.ceil(given.eaten + given.bonus), token: given.token } } : {}),
+  };
 };
 
 /** Des pages gagnées : mangées si elle est là (renvoie true). */

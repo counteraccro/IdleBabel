@@ -50,6 +50,8 @@ export const LOTTERY_CURSES = [
 ] as const;
 export const CURSE_SECONDS = 10 * 60;
 export const GOLDEN_SECONDS = 5 * 60;
+/** Les rouleaux tournent tant (ms) : le tirage ne compte qu'à l'arrêt du dernier (ui/library/lotteryMachine3d.ts). */
+export const LOTTERY_SPIN_MS = 2700;
 export type LotteryBoonId = (typeof LOTTERY_BOONS)[number]['id'];
 export type LotteryCurseId = (typeof LOTTERY_CURSES)[number]['id'];
 /** Ce qui dure, avec son médaillon : les bonus, et les malus sauf la Mimic dorée (elle est dans la salle). */

@@ -6,6 +6,7 @@ import {
   JACKPOT_DIGIT,
   JACKPOT_READY,
   LOTTERY_BOONS,
+  LOTTERY_SPIN_MS,
   LOTTERY_CURSES,
   OUTCOMES,
   type LotteryBoonId,
@@ -20,7 +21,7 @@ import { lotteryEffects, startLotteryEffect } from './lotteryEffects';
 import { goldenHere, spawnGolden } from './goldenMimic';
 import { modded } from '../mods/quantities';
 import { runHooks } from '../mods/hooks';
-import type { GameState } from '../core/state';
+import type { GameState, PendingDraw } from '../core/state';
 
 /**
  * Un tirage de la Loterie (data/lottery.ts) : un jeton part, les rouleaux s'arrêtent sur trois chiffres de Babel qui
@@ -43,6 +44,8 @@ export interface Draw {
   method?: ToolId;
   /** La durée qu'il donne (secondes, mods compris). */
   seconds?: number;
+  /** La Mimic dorée a écrasé la Mimic ordinaire : ce que celle-ci a rendu (Connaissance, un jeton ou non). */
+  crushed?: { knowledge: number; token: boolean };
 }
 
 /** Débogage : le prochain tirage donnera ceci (un résultat, ou un bonus, ou un malus précis). */
@@ -114,18 +117,6 @@ export const drawableBoons = (state: GameState, now = Date.now()): (typeof LOTTE
 /** Tous les bonus en cours : la machine ne prend plus de jeton (le levier descend à peine, comme sans jeton). */
 export const lotteryBlocked = (state: GameState, now = Date.now()): boolean => drawableBoons(state, now).length === 0;
 
-const boon = (state: GameState, draw: Draw, random: () => number, now: number): void => {
-  const drawable = drawableBoons(state, now);
-  const chosen = drawable.find((one) => one.id === forced) ?? pick(drawable, random);
-  draw.boon = chosen.id;
-  if (chosen.id === 'method10') {
-    const owned = ownedMethods(state);
-    draw.method = owned[Math.floor(random() * owned.length)];
-  }
-  draw.seconds = BOON_SECONDS * modded('lotteryBoon');
-  startLotteryEffect(state, chosen.id, draw.seconds, now, draw.method);
-};
-
 /** Les malus qu'un tirage peut encore donner : ceux qui ne sont pas en cours (l'auteur, 16/10) ; pas d'arrêt sans méthode. */
 export const drawableCurses = (state: GameState, now = Date.now()): (typeof LOTTERY_CURSES)[number][] => {
   const running = lotteryEffects(state, now);
@@ -135,22 +126,30 @@ export const drawableCurses = (state: GameState, now = Date.now()): (typeof LOTT
   );
 };
 
-const curse = (state: GameState, draw: Draw, random: () => number, now: number): void => {
-  const drawable = drawableCurses(state, now);
-  const chosen = drawable.find((one) => one.id === forced) ?? pick(drawable, random);
-  draw.curse = chosen.id;
-  if (chosen.id === 'golden') {
-    draw.seconds = spawnGolden(state, random, now);
-    return;
+/** Le bonus que donnera le tirage (et la méthode du ×10). */
+const pickBoon = (state: GameState, plan: PendingDraw, random: () => number, now: number): void => {
+  const drawable = drawableBoons(state, now);
+  plan.boon = (drawable.find((one) => one.id === forced) ?? pick(drawable, random)).id;
+  if (plan.boon === 'method10') {
+    const owned = ownedMethods(state);
+    plan.method = owned[Math.floor(random() * owned.length)];
   }
-  if (chosen.id === 'stopped') draw.method = ownedMethods(state)[0];
-  draw.seconds = CURSE_SECONDS * modded('lotteryCurse');
-  startLotteryEffect(state, chosen.id, draw.seconds, now, draw.method);
 };
 
-/** On joue un jeton : rien sans jeton, ni tous les bonus en cours (renvoie undefined). */
-export const drawLottery = (state: GameState, random: () => number = Math.random, now = Date.now()): Draw | undefined => {
-  if (state.lottery.tokens <= 0 || lotteryBlocked(state, now)) return undefined;
+/** Le malus que donnera le tirage (et la méthode qu'il arrête : la mieux lisante). */
+const pickCurse = (state: GameState, plan: PendingDraw, random: () => number, now: number): void => {
+  const drawable = drawableCurses(state, now);
+  plan.curse = (drawable.find((one) => one.id === forced) ?? pick(drawable, random)).id;
+  if (plan.curse === 'stopped') plan.method = ownedMethods(state)[0];
+};
+
+/**
+ * On tire le levier : un jeton part, le résultat est choisi (les rouleaux savent où s'arrêter), mais il ne compte qu'à
+ * leur arrêt (settleLottery ; l'auteur, 16/10 : le bonus apparaissait avant). Rien sans jeton, ni tous les bonus en
+ * cours, ni pendant qu'un tirage tourne (renvoie undefined).
+ */
+export const startLottery = (state: GameState, random: () => number = Math.random, now = Date.now()): PendingDraw | undefined => {
+  if (state.lottery.pending || state.lottery.tokens <= 0 || lotteryBlocked(state, now)) return undefined;
   state.lottery.tokens -= 1;
   state.lottery.draws += 1;
   // Les mods peuvent changer les chances de chaque résultat (lotteryOdds:<résultat>).
@@ -162,12 +161,51 @@ export const drawLottery = (state: GameState, random: () => number = Math.random
   if (outcome === 'jackpot' && !JACKPOT_READY) outcome = 'nothing';
   // Tous les malus en cours : un malus ne se tire pas deux fois, ses chances vont à « rien ».
   if (outcome === 'curse' && drawableCurses(state, now).length === 0) outcome = 'nothing';
-  const draw: Draw = { outcome, reels: reelsFor(outcome, random) };
-  if (outcome === 'gain') gain(state, draw, random);
-  else if (outcome === 'boon') boon(state, draw, random, now);
-  else if (outcome === 'curse') curse(state, draw, random, now);
+  const plan: PendingDraw = { at: now, outcome, reels: reelsFor(outcome, random) };
+  if (outcome === 'boon') pickBoon(state, plan, random, now);
+  else if (outcome === 'curse') pickCurse(state, plan, random, now);
   forced = null;
+  state.lottery.pending = plan;
+  return plan;
+};
+
+/** Le dernier tirage compté : la machine le relit si la boucle du jeu l'a compté avant la fin de son animation. */
+let last: Draw | undefined;
+export const lastLotteryDraw = (): Draw | undefined => last;
+
+/**
+ * Les rouleaux sont arrêtés : le tirage compte (gain, bonus, malus, sceaux, crochet `lottery`). La machine le demande à
+ * la fin de son animation (`force`) ; sinon (bibliothèque quittée, onglet caché, jeu rechargé), la boucle du jeu le fait
+ * une seconde après. Renvoie le tirage, ou undefined s'il n'y en a pas (ou pas encore).
+ */
+export const settleLottery = (state: GameState, random: () => number = Math.random, now = Date.now(), force = false): Draw | undefined => {
+  const plan = state.lottery.pending;
+  if (!plan || (!force && now < plan.at + LOTTERY_SPIN_MS + 1000)) return undefined;
+  state.lottery.pending = null;
+  const draw: Draw = { outcome: plan.outcome, reels: [...plan.reels] };
+  if (plan.outcome === 'gain') gain(state, draw, random);
+  else if (plan.boon) {
+    draw.boon = plan.boon;
+    if (plan.method) draw.method = plan.method;
+    draw.seconds = BOON_SECONDS * modded('lotteryBoon');
+    startLotteryEffect(state, plan.boon, draw.seconds, now, draw.method);
+  } else if (plan.curse === 'golden') {
+    draw.curse = 'golden';
+    const golden = spawnGolden(state, random, now);
+    draw.seconds = golden.seconds;
+    if (golden.crushed) draw.crushed = golden.crushed;
+  } else if (plan.curse) {
+    draw.curse = plan.curse;
+    if (plan.method) draw.method = plan.method;
+    draw.seconds = CURSE_SECONDS * modded('lotteryCurse');
+    startLotteryEffect(state, plan.curse, draw.seconds, now, draw.method);
+  }
   checkSeals(state, now);
   runHooks('lottery', { ...draw, reels: [...draw.reels] });
+  last = draw;
   return draw;
 };
+
+/** Un tirage d'un coup, sans attendre les rouleaux (les tests, le débogage). */
+export const drawLottery = (state: GameState, random: () => number = Math.random, now = Date.now()): Draw | undefined =>
+  startLottery(state, random, now) && settleLottery(state, random, now, true);

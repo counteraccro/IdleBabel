@@ -3,6 +3,7 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import { canvasTexture } from '../book3d/textures';
 import { drawBabelDigit } from '../babelDigits';
 import { jackpotPanel, signPanel, tokensPanel, type Panel } from './lotteryPanels';
+import { LOTTERY_SPIN_MS } from '../../data/lottery';
 
 /**
  * La machine de la Loterie (maquette validée le 16/10, .ai/maquette-meuble-des-fins.html ; mesures reprises telles quelles) :
@@ -39,17 +40,27 @@ const BLINK_MS = 480;
 /** Avec un jeton : le levier tout en bas, plus lentement. */
 const FULL_PULL_MS = 700;
 /** Les rouleaux s'arrêtent l'un après l'autre, à ces instants (ms après le levier) ; au moins tant de tours. */
-const REEL_STOPS = [1500, 2100, 2700];
+const REEL_STOPS = [1500, 2100, LOTTERY_SPIN_MS];
 const REEL_TURNS = 4;
-/** Le résultat reste sur le panneau tant (ms), puis le gros lot revient. */
+/** Le résultat reste sur le panneau tant (ms), puis le gros lot revient ; suivi d'un autre (la Mimic écrasée), moins. */
 const RESULT_MS = 9000;
+const FIRST_RESULT_MS = 5000;
 
 export type LotteryHandle = 'lever' | 'button';
 
-/** Un tirage joué : les chiffres où s'arrêtent les rouleaux, et ce que le panneau en dit. */
+/** Ce que dit le panneau du gros lot. */
+export interface MachineResult {
+  title: string;
+  line: string;
+}
+
+/**
+ * Un tirage joué : les chiffres où s'arrêtent les rouleaux, et `settle`, appelé à leur arrêt : le tirage compte, et
+ * rend ce que le panneau en dit, l'un après l'autre (le malus, puis la Mimic écrasée).
+ */
 export interface MachineDraw {
   reels: readonly [number, number, number];
-  result: { title: string; line: string };
+  settle: () => MachineResult[];
 }
 
 export interface LotteryMachine {
@@ -151,7 +162,9 @@ export const createLotteryMachine = (
   add(rounded(W + 0.06, 0.08, 0.78, 0.03, copper), 0, 0.16, 0);
   add(rounded(W, BOX_H, 0.7, 0.06, copper), 0, LOW_Y0 + BOX_H / 2, 0);
   add(rounded(0.96, 0.56, 0.04, 0.03, gold), 0, LOW_Y0 + 0.5, 0.35);
-  let result: MachineDraw['result'] | null = null;
+  let result: MachineResult | null = null;
+  /** Les résultats qui suivent celui du panneau. */
+  let queued: MachineResult[] = [];
   const panels: Panel[] = [jackpotPanel(labels.jackpot, () => result), tokensPanel(tokens)];
   add(panels[0].mesh, 0, LOW_Y0 + 0.5, 0.374);
   add(panels[1].mesh, 0, LOW_Y0 + 0.13, 0.36);
@@ -277,6 +290,7 @@ export const createLotteryMachine = (
       });
       spin = { start: now, from: reels.map((reel) => reel.rotation.x), to, draw };
       result = null;
+      queued = [];
       resultUntil = -1;
       panels.forEach((one) => one.redraw());
     },
@@ -291,15 +305,15 @@ export const createLotteryMachine = (
         });
         if (!spinning(now)) {
           spin = null;
-          result = current.draw.result;
-          resultUntil = now + RESULT_MS;
-          panels[0].redraw();
+          [result = null, ...queued] = current.draw.settle();
+          resultUntil = now + (queued.length > 0 ? FIRST_RESULT_MS : RESULT_MS);
+          panels.forEach((one) => one.redraw());
         }
         changed = true;
       }
       if (resultUntil >= 0 && now >= resultUntil) {
-        result = null;
-        resultUntil = -1;
+        result = queued.shift() ?? null;
+        resultUntil = result ? now + (queued.length > 0 ? FIRST_RESULT_MS : RESULT_MS) : -1;
         panels[0].redraw();
         changed = true;
       }

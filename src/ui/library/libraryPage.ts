@@ -48,8 +48,8 @@ import {
 } from './endingsShelf3d';
 import { createTome, type Tome } from './endingsTome';
 import { createLotteryMachine } from './lotteryMachine3d';
-import { machineDraw } from './lotteryText';
-import { drawLottery } from '../../systems/lottery';
+import { drawResults } from './lotteryText';
+import { lastLotteryDraw, settleLottery, startLottery } from '../../systems/lottery';
 import { GLIDE_MS, glideEase, rememberView, rememberedView, shotOf, type LibraryView, type Shot } from './libraryViews';
 
 /**
@@ -219,8 +219,17 @@ export const createLibraryPage = (
     environment,
     () => state.lottery.tokens,
     () => {
-      const draw = drawLottery(state);
-      return draw && machineDraw(draw);
+      const plan = startLottery(state);
+      return (
+        plan && {
+          reels: plan.reels,
+          // Les rouleaux sont arrêtés : le tirage compte (la boucle du jeu l'a peut-être compté juste avant).
+          settle: () => {
+            const draw = settleLottery(state, Math.random, Date.now(), true) ?? lastLotteryDraw();
+            return draw ? drawResults(draw) : [];
+          },
+        }
+      );
     },
   );
   machine.root.position.copy(MACHINE_AT);

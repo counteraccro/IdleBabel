@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { loadGame, saveGame } from '../src/core/save';
-import { CURSE_SECONDS, GOLDEN_SECONDS, GOLDEN_STRIKES } from '../src/data/lottery';
-import { drawLottery, drawableBoons, forceDraw, lotteryBlocked, reelsFor } from '../src/systems/lottery';
+import { CURSE_SECONDS, GOLDEN_SECONDS, GOLDEN_STRIKES, LOTTERY_SPIN_MS } from '../src/data/lottery';
+import { drawLottery, drawableBoons, forceDraw, lotteryBlocked, reelsFor, settleLottery, startLottery } from '../src/systems/lottery';
 import { allLotteryBoons, lotteryMethod, lotteryReading } from '../src/systems/lotteryEffects';
 import { SEALS } from '../src/data/seals';
 import { goldenGone, goldenHere, spawnGolden, strikeGolden } from '../src/systems/goldenMimic';
@@ -242,13 +242,30 @@ describe('Les jetons de la Mimic', () => {
     expect(drawLottery(state, Math.random, 0)!.outcome).toBe('nothing');
   });
 
+  it('le tirage ne compte qu’à l’arrêt des rouleaux ; la boucle le compte si la machine ne l’a pas vu finir', () => {
+    const state = reading();
+    forceDraw('all2');
+    const plan = startLottery(state, Math.random, 0)!;
+    expect(plan.boon).toBe('all2');
+    expect(state.lottery.tokens).toBe(4);
+    expect(lotteryReading(state, 1)).toBe(1);
+    // Pas deux tirages à la fois.
+    expect(startLottery(state, Math.random, 1)).toBeUndefined();
+    expect(settleLottery(state, Math.random, LOTTERY_SPIN_MS)).toBeUndefined();
+    expect(settleLottery(state, Math.random, LOTTERY_SPIN_MS + 1000)!.boon).toBe('all2');
+    expect(state.lottery.pending).toBeNull();
+    expect(lotteryReading(state, LOTTERY_SPIN_MS + 1001)).toBe(2);
+  });
+
   it('la Mimic dorée écrase la Mimic ordinaire, qui rend ce qu’elle doit', () => {
     const state = reading();
     spawnMimic(state);
     state.mimic.eaten = 100;
     const before = state.knowledge;
     forceDraw('golden');
-    expect(drawLottery(state, () => 0.5)!.seconds).toBe(GOLDEN_SECONDS);
+    const draw = drawLottery(state, () => 0.5)!;
+    expect(draw.seconds).toBe(GOLDEN_SECONDS);
+    expect(draw.crushed).toEqual({ knowledge: Math.ceil(100 + 100 * mimicBonusShare(state)), token: false });
     expect(mimicHere(state)).toBe(false);
     expect(state.mimic.caught).toBe(1);
     expect(state.knowledge - before).toBe(Math.ceil(100 + 100 * mimicBonusShare(state)));

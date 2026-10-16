@@ -8,7 +8,7 @@ import type { PartId } from '../data/decipher';
 import { newGameSeed } from './random';
 import type { SceneId } from '../scene/scenes';
 import type { RelicId } from '../data/relics';
-import type { LotteryEffectId } from '../data/lottery';
+import type { LotteryBoonId, LotteryCurseId, LotteryEffectId, OutcomeId } from '../data/lottery';
 
 export const SAVE_VERSION = 1;
 
@@ -102,6 +102,20 @@ export interface GoldenMimic {
   strikes: number;
 }
 
+/**
+ * Un tirage dont les rouleaux tournent encore (systems/lottery.ts) : le jeton est parti, le résultat est choisi ; il
+ * compte à l'arrêt des rouleaux, même si on a quitté la bibliothèque ou le jeu entre-temps.
+ */
+export interface PendingDraw {
+  /** Le levier a été tiré à ce moment (ms). */
+  at: number;
+  outcome: OutcomeId;
+  reels: [number, number, number];
+  boon?: LotteryBoonId;
+  curse?: LotteryCurseId;
+  method?: ToolId;
+}
+
 /** La Loterie (systems/lottery.ts) : gardée au prestige ; les jetons ne s'achètent jamais. */
 export interface LotteryState {
   tokens: number;
@@ -109,9 +123,11 @@ export interface LotteryState {
   golden: GoldenMimic | null;
   /** Tirages, depuis toujours. */
   draws: number;
+  /** Le tirage en cours (absent des sauvegardes d'avant le 16/10). */
+  pending?: PendingDraw | null;
 }
 
-export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0 };
+export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0, pending: null };
 
 export const NO_RELICS: RelicsState = { found: {}, active: null, lockedUntil: 0, changes: 0 };
 

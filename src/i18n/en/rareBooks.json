@@ -1057,7 +1057,9 @@
             {
               "heading": "Fixes",
               "items": [
-                "Update notes fill their pages before moving on to the next."
+                "Update notes fill their pages before moving on to the next.",
+                "The Lottery: a draw’s result counts once the reels stop, no longer before.",
+                "The Lottery: in French, texts agree with the method’s name."
               ]
             }
           ]
