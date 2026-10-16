@@ -1057,10 +1057,10 @@
             {
               "heading": "Nouveautés",
               "items": [
-                "Le meuble des fins, à gauche de la bibliothèque (une flèche y mène, une autre en revient) : « Mon histoire vraie » y déménage : tome 1 de la collection « La Vraie Fin » (onze places), dès qu’on commence à la lire ; en haut, sur le chevalet, la place du vrai livre. À côté, la machine de la Loterie.",
-                "La Loterie : une Mimic attrapée sur trois lâche un jeton (gardé au prestige). Un tirage donne rien (40 %), un gain de 30 min de lecture, pages et Connaissance (28 %), un bonus d’une heure (18 % : production ×1,5, ×2 ou ×3, ou une méthode ×10) ou un malus (12 % : production ÷2 ou meilleure méthode arrêtée 10 min, ou la Mimic dorée). Un même bonus ou malus ne se cumule pas avec lui-même : déjà en cours, il ne se tire plus ; tous les bonus en cours, la machine se bloque ; tous les malus en cours, un malus tiré ne donne rien. Des bonus et malus différents agissent ensemble ; un nouveau tirage n’efface rien. L’écran compte les jetons en chiffres ordinaires. Une planche « La Loterie » dans le Grand Livre (1, 10, 50, 150, 410 et 1 000 jetons joués) et trois sceaux secrets, avec leur phrase. Médaillons des bonus et malus à côté du compteur.",
-                "La Mimic dorée : on ne peut pas la tuer ; elle écrase la Mimic ordinaire, qui rend ce qu’elle a avalé avec son bonus ; cinq minutes, elle mange tout ce qui est gagné, puis s’en va sans rien rendre. Un sceau secret, avec sa phrase.",
-                "Les mods et la Loterie : un moment où se brancher (chaque jeton joué), ce que la machine montre (jetons, bonus et malus en cours, machine bloquée, Mimic dorée), les chances de chaque résultat, la durée du gain, des bonus et des malus, et la chance qu’une Mimic lâche un jeton."
+                "Le meuble des fins, à gauche de la bibliothèque (une flèche y mène, une autre en revient).",
+                "La Loterie, à côté du meuble. Attraper la Mimic rapporte parfois un jeton.",
+                "De nouveaux sceaux, dont des secrets.",
+                "Mods : un moment où se brancher à chaque jeton joué, et les chiffres de la Loterie."
               ]
             },
             {
