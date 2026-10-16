@@ -185,8 +185,8 @@ const fontsPage = (context: CanvasRenderingContext2D): void => {
 /** Les notes de mise à jour : où elles commencent (sous le titre de la partie), et sur les pages suivantes. */
 const NOTES_TOP = 230;
 const NOTES_NEXT_TOP = 110;
-/** Elles s'arrêtent au-dessus du folio. */
-const NOTES_BOTTOM = HEIGHT - 90;
+/** Les lignes s'arrêtent au-dessus du folio. */
+const NOTES_BOTTOM = HEIGHT - 84;
 
 type Note = ReturnType<typeof text>['notes'][number];
 
@@ -196,10 +196,13 @@ const NOTES_INDENT = 22;
 const NOTES_WIDTH = WIDTH - 2 * NOTES_LEFT - NOTES_INDENT;
 const NOTES_FONT = `19px ${GARAMOND}`;
 const NOTES_LINE = 26;
-/** Sous le nom et la date ; entre deux intertitres ; entre deux puces. */
+/** D'une version à la suivante ; sous le nom et la date ; avant un intertitre ; entre deux puces. */
+const NOTES_NEXT = 60;
 const NOTES_HEAD = 72;
-const NOTES_SECTION = 40;
+const NOTES_SECTION = 46;
 const NOTES_ITEM = 6;
+/** Une page qui commence par la suite d'une version : sa première ligne de base. */
+const NOTES_CONTINUED = NOTES_NEXT_TOP + NOTES_LINE - 6;
 
 /** Les lignes d'une puce, coupées à la largeur du texte. */
 const wrapItem = (context: CanvasRenderingContext2D, item: string): string[] => {
@@ -217,89 +220,92 @@ const wrapItem = (context: CanvasRenderingContext2D, item: string): string[] => 
 };
 
 /**
- * Une version posée à partir de `top` : son nom et sa date au milieu, puis ses parties (« Nouveautés »,
- * « Corrections »… ; sans intertitre, la liste seule) et leurs puces. Sans `draw`, elle est seulement mesurée.
- * `continued` : la suite d'une version commencée à la page d'avant, sans son nom ni sa date. Rend sa hauteur.
+ * Une ligne du journal : le nom et la date d'une version, un intertitre (« Nouveautés », « Corrections »…) ou une
+ * ligne de puce (`first` : celle qui porte la puce ; `last` : la dernière de la puce). `gap` : l'écart depuis la ligne
+ * de base d'avant, sur la même page. `heading` : l'intertitre de sa partie (repris en haut d'une page qui commence
+ * par une puce de cette partie).
  */
-const placeNote = (context: CanvasRenderingContext2D, note: Note, top: number, draw: boolean, continued = false): number => {
-  if (draw && !continued) {
-    write(context, note.title.toLocaleUpperCase(), CENTER, top, { font: `600 20px ${TITLE}`, color: INK, spacing: 4 });
-    write(context, note.date, CENTER, top + 30, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-  }
-  let y = continued ? top + NOTES_LINE - 6 : top + NOTES_HEAD;
-  note.sections.forEach((section, index) => {
-    if (index > 0) y += NOTES_SECTION - NOTES_LINE;
-    if (section.heading) {
-      if (draw) write(context, section.heading, NOTES_LEFT, y, { font: `italic 19px ${GARAMOND}`, color: SOFT, align: 'left' });
-      y += NOTES_LINE + 2;
-    }
-    for (const item of section.items) {
-      if (draw) write(context, '•', NOTES_LEFT + 4, y, { font: NOTES_FONT, color: INK, align: 'left' });
-      for (const line of wrapItem(context, item)) {
-        if (draw) write(context, line, NOTES_LEFT + NOTES_INDENT, y, { font: NOTES_FONT, color: INK, align: 'left' });
-        y += NOTES_LINE;
+type Row =
+  | { kind: 'title'; gap: number; note: Note }
+  | { kind: 'heading'; gap: number; text: string }
+  | { kind: 'line'; gap: number; text: string; first: boolean; last: boolean; heading: string };
+
+/** Toutes les versions, ligne par ligne, la plus récente d'abord. */
+const noteRows = (context: CanvasRenderingContext2D): Row[] => {
+  const rows: Row[] = [];
+  text().notes.forEach((note, index) => {
+    rows.push({ kind: 'title', gap: index === 0 ? 0 : NOTES_NEXT, note });
+    let gap = NOTES_HEAD;
+    note.sections.forEach((section, i) => {
+      if (i > 0) gap = NOTES_ITEM + NOTES_SECTION;
+      const heading = section.heading ?? '';
+      if (heading) {
+        rows.push({ kind: 'heading', gap, text: heading });
+        gap = NOTES_LINE + 2;
       }
-      y += NOTES_ITEM;
-    }
+      section.items.forEach((item, j) => {
+        if (j > 0) gap = NOTES_LINE + NOTES_ITEM;
+        const lines = wrapItem(context, item);
+        lines.forEach((line, k) => {
+          rows.push({ kind: 'line', gap: k === 0 ? gap : NOTES_LINE, text: line, first: k === 0, last: k === lines.length - 1, heading });
+        });
+      });
+    });
   });
-  return y - NOTES_LINE - NOTES_ITEM - top + 10;
+  return rows;
 };
 
-type Placed = { note: Note; y: number; continued: boolean };
-
-/** Les premières puces d'une version, `count` en tout, parties comprises (une partie coupée garde son intertitre). */
-const firstItems = (note: Note, count: number): Note => {
-  let left = count;
-  const sections = note.sections.flatMap((section) => {
-    const items = section.items.slice(0, Math.max(0, left));
-    left -= items.length;
-    return items.length > 0 ? [{ ...section, items }] : [];
-  });
-  return { ...note, sections };
-};
-const afterItems = (note: Note, count: number): Note => {
-  let skip = count;
-  const sections = note.sections.flatMap((section) => {
-    const items = section.items.slice(Math.min(skip, section.items.length));
-    skip -= section.items.length - items.length;
-    return items.length > 0 ? [{ ...section, items }] : [];
-  });
-  return { ...note, sections };
-};
-const itemCount = (note: Note): number => note.sections.reduce((total, section) => total + section.items.length, 0);
+type Placed = { row: Row; y: number };
 
 /**
- * Les versions, page par page, la plus récente en haut : une page pleine, la suite passe à la page blanche d'après.
- * Une version coupée en deux seulement si elle ne tient pas sur une page entière : ses puces continuent sur la
- * suivante (jamais sur le folio).
+ * Les versions, page par page, la plus récente en haut (demande de l'auteur, 16/10 : remplir les pages) : chaque page
+ * se remplit jusqu'au folio, une version ou une puce continue sur la suivante. Jamais un nom de version ou un intertitre
+ * seul en bas de page (il garde au moins deux lignes avec lui), ni la première ligne d'une puce seule. Une page qui
+ * commence par une nouvelle puce reprend l'intertitre de sa partie.
  */
 const notesSheets = (context: CanvasRenderingContext2D): Placed[][] => {
+  const rows = noteRows(context);
   const sheets: Placed[][] = [[]];
   let y = NOTES_TOP;
-  const newSheet = (): void => {
-    sheets.push([]);
-    y = NOTES_NEXT_TOP;
+  /** Ce que la ligne `index` doit garder avec elle sur la page : elle-même et les suivantes. */
+  const keep = (index: number): number => {
+    const row = rows[index];
+    if (row.kind === 'line') return row.first && !row.last ? 2 : 1;
+    return 3;
   };
-  for (const whole of text().notes) {
-    let note = whole;
-    let continued = false;
-    while (itemCount(note) > 0) {
-      const fits = (part: Note): boolean => y + placeNote(context, part, 0, false, continued) <= NOTES_BOTTOM;
-      if (!fits(note) && sheets[sheets.length - 1].length > 0 && !continued) {
-        newSheet();
-        continue;
+  const fits = (index: number): boolean => {
+    let bottom = y;
+    for (let i = index; i < Math.min(rows.length, index + keep(index)); i++) bottom += i === index ? 0 : rows[i].gap;
+    return bottom <= NOTES_BOTTOM;
+  };
+  rows.forEach((row, index) => {
+    const page = sheets[sheets.length - 1];
+    if (page.length > 0) {
+      y += row.gap;
+      if (!fits(index)) {
+        sheets.push([]);
+        y = row.kind === 'title' ? NOTES_NEXT_TOP : NOTES_CONTINUED;
+        if (row.kind === 'line' && row.first && row.heading) {
+          sheets[sheets.length - 1].push({ row: { kind: 'heading', gap: 0, text: row.heading }, y });
+          y += NOTES_LINE + 2;
+        }
       }
-      let count = itemCount(note);
-      while (count > 1 && !fits(firstItems(note, count))) count--;
-      const part = firstItems(note, count);
-      sheets[sheets.length - 1].push({ note: part, y, continued });
-      y += placeNote(context, part, 0, false, continued) + 50;
-      note = afterItems(note, count);
-      continued = true;
-      if (itemCount(note) > 0) newSheet();
     }
-  }
+    sheets[sheets.length - 1].push({ row, y });
+  });
   return sheets;
+};
+
+const drawRow = (context: CanvasRenderingContext2D, { row, y }: Placed): void => {
+  if (row.kind === 'title') {
+    write(context, row.note.title.toLocaleUpperCase(), CENTER, y, { font: `600 20px ${TITLE}`, color: INK, spacing: 4 });
+    write(context, row.note.date, CENTER, y + 30, { font: `italic 18px ${GARAMOND}`, color: SOFT });
+  } else if (row.kind === 'heading') {
+    write(context, row.text, NOTES_LEFT, y, { font: `italic 19px ${GARAMOND}`, color: SOFT, align: 'left' });
+  } else {
+    if (row.first) write(context, '•', NOTES_LEFT + 4, y, { font: NOTES_FONT, color: INK, align: 'left' });
+    write(context, row.text, NOTES_LEFT + NOTES_INDENT, y, { font: NOTES_FONT, color: INK, align: 'left' });
+  }
 };
 
 /**
@@ -310,7 +316,7 @@ const notesPage = (context: CanvasRenderingContext2D, page: number): void => {
   const sheet = notesSheets(context)[page - NOTES_PAGE];
   if (!sheet) return;
   if (page === NOTES_PAGE) heading(context, text().parts[4]);
-  for (const { note, y, continued } of sheet) placeNote(context, note, y, true, continued);
+  for (const placed of sheet) drawRow(context, placed);
   folio(context, page);
 };
 
