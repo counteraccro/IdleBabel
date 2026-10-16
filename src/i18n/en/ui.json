@@ -98,7 +98,7 @@
     "gain": {"title": "WIN", "line": "+ {p} pages · + {k} Knowledge"},
     "boon": "BONUS",
     "curse": "PENALTY",
-    "hour": "1 h",
+    "hours": "{n} h",
     "minutes": "{n} min",
     "effects": {"all15": "Production ×1.5", "all2": "Production ×2", "all3": "Production ×3", "method10": "{m} ×10", "half": "Production ÷2", "stopped": "{m} stopped", "golden": "The Golden Mimic"},
     "medal": "Lottery · {e}",

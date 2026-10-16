@@ -87,7 +87,7 @@ export const createBoonMedals = (state: GameState): Component => {
         icon: textIcon(LOTTERY_ICONS.golden),
         text: t('ui.lottery.golden.name'),
         left,
-        total: Math.max(left, GOLDEN_SECONDS * 1000),
+        total: Math.max(left, state.lottery.golden!.total ?? GOLDEN_SECONDS * 1000),
         curse: true,
       });
     }

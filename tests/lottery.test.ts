@@ -6,7 +6,7 @@ import { drawLottery, drawableBoons, forceDraw, lotteryBlocked, reelsFor } from 
 import { allLotteryBoons, lotteryMethod, lotteryReading } from '../src/systems/lotteryEffects';
 import { SEALS } from '../src/data/seals';
 import { goldenGone, goldenHere, spawnGolden, strikeGolden } from '../src/systems/goldenMimic';
-import { catchMimic, spawnMimic } from '../src/systems/mimic';
+import { catchMimic, mimicReading, spawnMimic } from '../src/systems/mimic';
 import { gainPages, pagesPerSecond, toolRate } from '../src/systems/production';
 import { gainFind } from '../src/systems/knowledge';
 import { prestige } from '../src/systems/prestige';
@@ -226,5 +226,38 @@ describe('Les jetons de la Mimic', () => {
     spawnMimic(state);
     expect(catchMimic(state, Date.now(), () => 0.2)!.token).toBe(true);
     expect(state.lottery.tokens).toBe(1);
+  });
+
+  it('revue du 16/10 : un 2e « méthode arrêtée » allonge la même ; la Mimic cachée par la dorée ne ralentit plus', () => {
+    const state = reading();
+    forceDraw('stopped');
+    const first = drawLottery(state, Math.random, 0)!.method;
+    forceDraw('stopped');
+    expect(drawLottery(state, Math.random, 0)!.method).toBe(first);
+    expect(state.lottery.effects.filter((effect) => effect.id === 'stopped')).toHaveLength(1);
+    expect(state.lottery.effects[0].end).toBe(2 * CURSE_SECONDS * 1000);
+    const other = reading();
+    spawnMimic(other);
+    expect(mimicReading(other)).toBeLessThan(1);
+    spawnGolden(other);
+    expect(mimicReading(other)).toBe(1);
+  });
+
+  it('revue du 16/10 : la Mimic dorée prolongée garde sa durée entière ; le tirage dit sa durée', () => {
+    const state = reading();
+    forceDraw('golden');
+    expect(drawLottery(state, Math.random, 0)!.seconds).toBe(GOLDEN_SECONDS);
+    forceDraw('golden');
+    drawLottery(state, Math.random, 1000);
+    expect(state.lottery.golden!.total).toBe(2 * GOLDEN_SECONDS * 1000 - 1000);
+  });
+
+  it('revue du 16/10 : un gain avalé par la Mimic ordinaire compte (elle le rendra)', () => {
+    const state = reading();
+    state.settings.autoTurn = true;
+    spawnMimic(state);
+    forceDraw('gain');
+    const draw = drawLottery(state, () => 0.5)!;
+    expect(draw.knowledge).toBe(state.mimic.eaten);
   });
 });

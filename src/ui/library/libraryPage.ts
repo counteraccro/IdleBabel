@@ -244,7 +244,7 @@ export const createLibraryPage = (
   });
   const cellLights = addCellLights(bookcase.root, bookcase.cells);
   // Les reliques trouvées, dans leurs petites cases (12/10).
-  const relics = createRelicShelf(state, scene, bookcase.cells, cellLights, renderer, () => (dirty = true));
+  const relics = createRelicShelf(state, scene, bookcase.cells, cellLights, environment, () => (dirty = true));
 
   const thickness = (id: string): number => (id === LIBRARY_FIRST_BOOK ? THICKNESS : (rareBookArt(id).thickness ?? THICKNESS));
   // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre. Le livre des
@@ -459,6 +459,7 @@ export const createLibraryPage = (
     toLibrary.hidden = view !== 'endings';
   };
   showArrows();
+  let glideEnd: ReturnType<typeof setTimeout> | undefined;
   /** Glisse d'un meuble à l'autre : la caméra file de côté et se pose devant le nouveau. */
   const go = (name: LibraryView): void => {
     if (view === name) return;
@@ -467,8 +468,10 @@ export const createLibraryPage = (
     view = name;
     rememberView(name);
     showArrows();
-    // La fin du glissement à la minuterie (onglet caché : requestAnimationFrame y est gelé).
-    setTimeout(() => {
+    // La fin du glissement à la minuterie (onglet caché : requestAnimationFrame y est gelé) ; un demi-tour avant la fin
+    // annule celle du glissement d'avant.
+    clearTimeout(glideEnd);
+    glideEnd = setTimeout(() => {
       if (!glide || !root.isConnected) return;
       glide = null;
       fit();
@@ -641,6 +644,8 @@ export const createLibraryPage = (
   };
   requestAnimationFrame(frame);
 
+  /** Ce que montrent la machine et le tome, au dernier dessin (update). */
+  let shownLabels = '';
   return {
     root,
     setBackdrop: (backdrop, id) => {
@@ -654,10 +659,16 @@ export const createLibraryPage = (
       back.textContent = `← ${t('ui.back')}`;
       cartouche.write(shelfText());
       endings.cartouche.write(endingsText());
-      machine.relabel();
-      tome?.rename(t('ui.endings.collection'));
+      // La boucle appelle update dix fois par seconde : la machine et le tome ne se redessinent (la scène avec) que si
+      // leurs textes ou les jetons ont changé.
+      const labels = `${t('ui.lottery.sign')}|${t('ui.endings.collection')}|${state.lottery.tokens}`;
+      if (labels !== shownLabels) {
+        shownLabels = labels;
+        machine.relabel();
+        tome?.rename(t('ui.endings.collection'));
+        dirty = true;
+      }
       arrowTitles();
-      dirty = true;
       if (hovered) caption.textContent = label(hovered);
     },
   };

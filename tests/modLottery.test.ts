@@ -73,4 +73,9 @@ describe('la Loterie pour les mods', () => {
     expect(lottery.effects[0].id).toBe('all3');
     expect(lottery.effects[0].left).toBeGreaterThan(3590);
   });
+
+  it('toutes les chances à 0 : le jeton donne « rien »', () => {
+    for (const outcome of ['nothing', 'gain', 'boon', 'curse', 'jackpot']) modify(`lotteryOdds:${outcome}`, () => 0);
+    expect(drawLottery(reading())!.outcome).toBe('nothing');
+  });
 });

@@ -4,7 +4,7 @@ import { openModal } from '../modal/modal';
 import { FRONT, type BookcaseCell } from '../library/bookcase3d';
 import { RELICS, type RelicId } from '../../data/relics';
 import { relicFound, relicLockHours, relicWait, setRelic } from '../../systems/relics';
-import { relicEnvironment, relicModel } from './relicModels';
+import { relicModel } from './relicModels';
 import { relicBonusText, relicName, waitText } from './relicText';
 import type { CellLights } from '../library/cellLights';
 import type { GameState } from '../../core/state';
@@ -40,10 +40,10 @@ export const createRelicShelf = (
   scene: THREE.Scene,
   cells: BookcaseCell[],
   lights: CellLights,
-  renderer: THREE.WebGLRenderer,
+  /** Le reflet de la pièce (relicEnvironment), partagé avec le meuble des fins : un seul PMREM par bibliothèque. */
+  envMap: THREE.Texture,
   onChange: () => void,
 ): RelicShelf => {
-  const envMap = relicEnvironment(renderer);
   const holders = new Map<RelicId, THREE.Group>();
   for (const relic of RELICS) {
     if (!relicFound(state, relic.id)) continue;

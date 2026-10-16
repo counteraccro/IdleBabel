@@ -13,7 +13,7 @@ import {
   type OutcomeId,
 } from '../data/lottery';
 import { TOOLS, type ToolId } from '../data/tools';
-import { gainPages, pagesPerSecond, toolRate } from './production';
+import { creditMethods, gainPages, pagesPerSecond, toolRate } from './production';
 import { findWhileAway } from './knowledge';
 import { checkSeals } from './seals';
 import { lotteryEffects, startLotteryEffect } from './lotteryEffects';
@@ -40,6 +40,8 @@ export interface Draw {
   boon?: LotteryBoonId;
   curse?: LotteryCurseId;
   method?: ToolId;
+  /** La durée qu'il donne (secondes, mods compris) ; un malus déjà en cours s'allonge d'autant. */
+  seconds?: number;
 }
 
 /** Débogage : le prochain tirage donnera ceci (un résultat, ou un bonus, ou un malus précis). */
@@ -48,8 +50,11 @@ export const forceDraw = (what: typeof forced): void => {
   forced = what;
 };
 
+/** Au hasard, selon les poids ; tous à 0 (un mod), le premier (pour les résultats : « rien »). */
 const pick = <T extends { weight: number }>(list: readonly T[], random: () => number): T => {
-  let roll = random() * list.reduce((total, item) => total + item.weight, 0);
+  const total = list.reduce((sum, item) => sum + item.weight, 0);
+  if (!(total > 0)) return list[0];
+  let roll = random() * total;
   for (const item of list) if ((roll -= item.weight) < 0) return item;
   return list[list.length - 1];
 };
@@ -88,12 +93,14 @@ const ownedMethods = (state: GameState): ToolId[] =>
 
 /** Le gain : trente minutes de lecture d'absence, d'un coup (les pages de la production, les trouvailles de leurs feuilles). */
 const gain = (state: GameState, draw: Draw, random: () => number): void => {
-  const before = { pages: state.pages, knowledge: state.knowledge };
+  // Ce qu'avale la Mimic ordinaire compte : elle le rendra. Ce que mange la dorée, non.
+  const before = { pages: state.pages, knowledge: state.knowledge + state.mimic.eaten };
   const seconds = GAIN_SECONDS * modded('lotteryGain');
   gainPages(state, pagesPerSecond(state) * seconds);
+  creditMethods(state, seconds);
   findWhileAway(state, seconds, random);
   draw.pages = state.pages - before.pages;
-  draw.knowledge = state.knowledge - before.knowledge;
+  draw.knowledge = state.knowledge + state.mimic.eaten - before.knowledge;
 };
 
 /** Les bonus qu'un tirage peut encore donner : ceux qui ne sont pas en cours ; pas de ×10 sans méthode. */
@@ -114,11 +121,13 @@ const boon = (state: GameState, draw: Draw, random: () => number, now: number): 
     const owned = ownedMethods(state);
     draw.method = owned[Math.floor(random() * owned.length)];
   }
-  startLotteryEffect(state, chosen.id, BOON_SECONDS * modded('lotteryBoon'), now, draw.method);
+  draw.seconds = BOON_SECONDS * modded('lotteryBoon');
+  startLotteryEffect(state, chosen.id, draw.seconds, now, draw.method);
 };
 
 const curse = (state: GameState, draw: Draw, random: () => number, now: number): void => {
-  const best = ownedMethods(state)[0];
+  // Une méthode déjà arrêtée le reste plus longtemps (sinon, à 0, elle laisserait la suivante s'arrêter aussi).
+  const best = lotteryEffects(state, now).find((effect) => effect.id === 'stopped')?.method ?? ownedMethods(state)[0];
   // Sans méthode, rien à arrêter : la production ÷ 2 (qui ne fait rien non plus), ou la Mimic dorée.
   const chosen =
     LOTTERY_CURSES.find((one) => one.id === forced && (one.id !== 'stopped' || best)) ??
@@ -127,9 +136,13 @@ const curse = (state: GameState, draw: Draw, random: () => number, now: number):
       random,
     );
   draw.curse = chosen.id;
-  if (chosen.id === 'golden') return spawnGolden(state, random, now);
+  if (chosen.id === 'golden') {
+    draw.seconds = spawnGolden(state, random, now);
+    return;
+  }
   if (chosen.id === 'stopped') draw.method = best;
-  startLotteryEffect(state, chosen.id, CURSE_SECONDS * modded('lotteryCurse'), now, draw.method);
+  draw.seconds = CURSE_SECONDS * modded('lotteryCurse');
+  startLotteryEffect(state, chosen.id, draw.seconds, now, draw.method);
 };
 
 /** On joue un jeton : rien sans jeton, ni tous les bonus en cours (renvoie undefined). */

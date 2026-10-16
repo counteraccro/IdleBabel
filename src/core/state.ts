@@ -89,6 +89,8 @@ export interface LotteryEffect {
 export interface GoldenMimic {
   /** Elle s'en va à ce moment (ms). */
   until: number;
+  /** Sa durée entière (ms), ajouts compris : le cercle du médaillon (absente des sauvegardes d'avant le 16/10). */
+  total?: number;
   /** Sa reliure (un livre ordinaire, doré). */
   book: number;
   /** Sa place (« salle:numéro »), comme la Mimic. */

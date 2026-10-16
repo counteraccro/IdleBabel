@@ -12,8 +12,13 @@ import type { MachineDraw } from './lotteryMachine3d';
 export const effectText = (id: LotteryBoonId | LotteryCurseId, method?: ToolId): string =>
   t(`ui.lottery.effects.${id}`).replace('{m}', method ? t(`tools.${method}.name`) : '');
 
-const length = (seconds: number): string =>
-  seconds >= 3600 ? t('ui.lottery.hour') : t('ui.lottery.minutes').replace('{n}', String(seconds / 60));
+/** Une durée courte : « 1 h », « 1 h 30 », « 10 min » (arrondie à la minute). */
+const length = (seconds: number): string => {
+  const minutes = Math.max(1, Math.round(seconds / 60));
+  if (minutes < 60) return t('ui.lottery.minutes').replace('{n}', String(minutes));
+  const rest = minutes % 60;
+  return t('ui.lottery.hours').replace('{n}', String(Math.floor(minutes / 60))) + (rest ? ` ${String(rest).padStart(2, '0')}` : '');
+};
 
 const short = (value: number): string => formatNumber(Math.floor(value), getLocale(), 'short');
 
@@ -25,11 +30,12 @@ const resultOf = (draw: Draw): MachineDraw['result'] => {
         .replace('{p}', short(draw.pages ?? 0))
         .replace('{k}', short(draw.knowledge ?? 0)),
     };
-  if (draw.boon) return { title: t('ui.lottery.boon'), line: `${effectText(draw.boon, draw.method)} · ${length(BOON_SECONDS)}` };
+  if (draw.boon)
+    return { title: t('ui.lottery.boon'), line: `${effectText(draw.boon, draw.method)} · ${length(draw.seconds ?? BOON_SECONDS)}` };
   if (draw.curse)
     return {
       title: t('ui.lottery.curse'),
-      line: `${effectText(draw.curse, draw.method)} · ${length(draw.curse === 'golden' ? GOLDEN_SECONDS : CURSE_SECONDS)}`,
+      line: `${effectText(draw.curse, draw.method)} · ${length(draw.seconds ?? (draw.curse === 'golden' ? GOLDEN_SECONDS : CURSE_SECONDS))}`,
     };
   return { title: t('ui.lottery.nothing.title'), line: t('ui.lottery.nothing.line') };
 };

@@ -90,6 +90,8 @@ export interface ModDraw {
   boon?: string;
   curse?: string;
   method?: string;
+  /** La durée du bonus ou du malus, en secondes (un malus déjà en cours s'allonge d'autant). */
+  seconds?: number;
 }
 
 /** Une lettre à l'écran : `letter` (un bonus) ou une lettre du mot BABEL (`word`). */

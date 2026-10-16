@@ -11,22 +11,25 @@ import type { GameState } from '../core/state';
 
 export const goldenHere = (state: GameState, now = Date.now()): boolean => (state.lottery.golden?.until ?? 0) > now;
 
-/** Elle arrive ; déjà là, elle reste cinq minutes de plus. */
-export const spawnGolden = (state: GameState, random: () => number = Math.random, now = Date.now()): void => {
+/** Elle arrive ; déjà là, elle reste cinq minutes de plus. Rend ces secondes (mods compris). */
+export const spawnGolden = (state: GameState, random: () => number = Math.random, now = Date.now()): number => {
   const golden = state.lottery.golden;
   const length = GOLDEN_SECONDS * 1000 * modded('lotteryCurse');
   if (golden && golden.until > now) {
     golden.until += length;
-    return;
+    golden.total = golden.until - now;
+    return length / 1000;
   }
   state.lottery.golden = {
     until: now + length,
+    total: length,
     book: 1 + Math.floor(random() * 1_000_000),
     spot: null,
     pages: 0,
     knowledge: 0,
     strikes: 0,
   };
+  return length / 1000;
 };
 
 /** Des pages gagnées : mangées si elle est là (renvoie true). */
