@@ -5,6 +5,7 @@ import { createPile3d } from './book3d/pile3d';
 import { createGameTitle } from './gameTitle';
 import { libraryKey } from './library/libraryKey';
 import type { Book3d } from './book3d/book3dBook';
+import type { PileOrnament } from './book3d/pile3d';
 import type { Component } from './dom';
 
 /** Le contour de l'Etherium : le violet de sa goutte. */
@@ -36,6 +37,10 @@ export interface HeaderHandlers {
   libraryKey: () => boolean;
   /** Un livre nouveau attend dans la bibliothèque : la clé brille. */
   libraryNews: () => boolean;
+  /** Le jeton des tâches, collé à la clé (dès le Nord allumé) : son modèle, s'il est là, s'il brille. */
+  taskToken: PileOrnament;
+  tasksShown: () => boolean;
+  tasksNews: () => boolean;
   /** Morceaux écrits dans le livre blanc : quand il y en a un de plus, le livre sursaute. */
   writtenCount: () => number;
 }
@@ -95,7 +100,7 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
         : []),
     ],
     // La clé de la bibliothèque, posée sur la pile dès le premier livre rare trouvé.
-    [libraryKey(handlers.onLibrary)],
+    [libraryKey(handlers.onLibrary), handlers.taskToken],
   );
   // Déjà trouvé à l'affichage : le livre est là. Trouvé pendant la partie : il tombe sur la pile.
   let found = handlers.strangeBookFound();
@@ -103,6 +108,7 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
   pile.show('etherium', true);
   let written = handlers.writtenCount();
   pile.show('library', handlers.libraryKey());
+  pile.show('tasks', handlers.tasksShown());
   const update = (): void => {
     const now = handlers.strangeBookFound();
     if (now !== found) pile.show('strange', now, true);
@@ -117,6 +123,8 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     pile.relabel();
     pile.show('library', handlers.libraryKey());
     pile.news('library', handlers.libraryNews());
+    pile.show('tasks', handlers.tasksShown());
+    pile.news('tasks', handlers.tasksNews());
   };
   root.append(createGameTitle(), pile.root);
   return { root, update };

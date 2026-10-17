@@ -11,7 +11,8 @@
     "permanent": "Intuitions permanentes",
     "manualAge": "L’Âge Manuel",
     "automaticAge": "L’Âge Automatique",
-    "digitalAge": "L’Âge Numérique"
+    "digitalAge": "L’Âge Numérique",
+    "task": "Tâches"
   },
   "partDescriptions": {
     "method": "Des façons de lire que j'ai retrouvées. Chacune me fait aller un peu plus vite.",
@@ -22,7 +23,8 @@
     "permanent": "Celles-là, je les garde. Quoi qu'il arrive.",
     "manualAge": "Mes mains, mes yeux. Rien d’autre.",
     "automaticAge": "Maintenant, des choses lisent pour moi. Je ne sais pas si c’est mieux.",
-    "digitalAge": "Des machines qui ne lisent que des chiffres. Et pourtant, elles lisent tout."
+    "digitalAge": "Des machines qui ne lisent que des chiffres. Et pourtant, elles lisent tout.",
+    "task": "Des mots de ma main. Je ne me souviens pas de les avoir écrits."
   },
   "anomaliesCompletion": "phrases retrouvées · {percent}",
   "anomalyFamilies": {
@@ -448,5 +450,67 @@
       "source": "souvenir d'avant le réveil"
     }
   },
-  "stat": "Chacune : +{n} page/s · possédées : {count}"
+  "stat": "Chacune : +{n} page/s · possédées : {count}",
+  "tasks": {
+    "lines": "Des mots de ma main.\nJe ne me souviens pas\nde les avoir écrits.",
+    "today": "Aujourd'hui",
+    "todayCount": "AUJOURD'HUI {n} / {total}",
+    "onceCount": "une seule fois · {n} / {total}",
+    "once": "Une seule fois",
+    "midnight": "Ce qui n’est pas fait s’efface à minuit.",
+    "allDone": "C’est tout pour aujourd’hui.",
+    "token": "Le jeton.",
+    "tokens": "Les jetons.",
+    "keepGoing": "Ne t’arrête pas.",
+    "daily": {
+      "pages": "Lis encore {n} pages.",
+      "clicks": "Tourne {n} pages à la main.",
+      "finds": "Trouve {n} morceaux de phrases.",
+      "findsOne": "Trouve un morceau de phrase.",
+      "knowledge": "Trouve {n} de Connaissance.",
+      "books": "Finis {n} livres.",
+      "booksOne": "Finis un livre.",
+      "mimic": "Attrape {n} fois la Mimic.",
+      "mimicOne": "Attrape la Mimic.",
+      "wait": "Lis encore. Je compterai bientôt."
+    },
+    "onceTasks": {
+      "1": "Lis 10 000 livres sans tourner une page à la main.",
+      "2": "Tourne 10 000 pages à la main.",
+      "3": "Complète 10 phrases du livre blanc.",
+      "4": "Attrape 100 fois la Mimic.",
+      "5": "Range 10 livres rares dans la vitrine.",
+      "6": "Joue 100 jetons.",
+      "7": "Possède 500 fois la même méthode.",
+      "8": "Laisse le jeu ouvert 1 h sans rien toucher.",
+      "9": "Reviens après une absence de 24 h.",
+      "10": "Nourris-le 10 fois.",
+      "11": "Trouve les trois reliques.",
+      "12": "Allume 50 étoiles de l'Etherium.",
+      "13": "Finis tous les livres qui se jouent.",
+      "14": "Colorie les neuf dessins du cahier.",
+      "15": "Fais 30 tâches du jour.",
+      "16": "Lis 100 000 livres à vie.",
+      "17": "Lis 10 000 livres en une seule partie.",
+      "18": "Allume trois figures entières de l'Etherium.",
+      "19": "Remplis une planche entière de sceaux.",
+      "20": "Gagne 10 fois de suite à la Loterie sans jamais tomber sur un malus."
+    },
+    "rewards": {
+      "tokens": "{n} jetons",
+      "hours": "{n} h de lecture",
+      "days": "{n} jours de lecture",
+      "day": "1 jour de lecture",
+      "kHours": "{n} h de Connaissance",
+      "kDays": "{n} jours de Connaissance",
+      "kDay": "1 jour de Connaissance",
+      "reading": "Lecture +{n} %, pour toujours",
+      "knowledge": "Connaissance +{n} %, pour toujours",
+      "relic": "une relique"
+    },
+    "progress": "{n} / {total}",
+    "running": "{n} tâches en cours",
+    "runningOne": "1 tâche en cours",
+    "allDoneShort": "C’est tout pour aujourd’hui"
+  }
 }

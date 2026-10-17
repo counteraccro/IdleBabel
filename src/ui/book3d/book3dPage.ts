@@ -248,7 +248,10 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     if (!canvas.clientWidth || !canvas.clientHeight) return void requestAnimationFrame(() => !signal.aborted && arrive());
     resize();
     spec.openAt = undefined;
-    swing('front', 1, undefined, () => turner?.go(Math.floor(page / 2)));
+    const jump = spec.openJump;
+    spec.openJump = undefined;
+    if (jump) turner.jump(Math.floor(page / 2));
+    swing('front', 1, undefined, () => !jump && turner?.go(Math.floor(page / 2)));
   };
   /** Un livre scellé : sa couverture s'ouvre quand même, ou s'entrouvre à peine et retombe. */
   const cover = {

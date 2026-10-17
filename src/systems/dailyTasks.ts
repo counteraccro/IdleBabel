@@ -84,13 +84,13 @@ const drawable = (state: GameState, kind: DailyKind): boolean => {
 };
 
 /**
- * Le but d'une tâche, au rythme de la partie (MINUTES_PER_TOKEN par jeton) ; 0 tant qu'il ne peut pas se calculer : juste
- * après un prestige (la partie repart de zéro), ou sans rythme du tout.
+ * Le but d'une tâche, au rythme de la partie (MINUTES_PER_TOKEN par jeton) ; 0 tant qu'il ne peut pas se calculer : « Lis
+ * encore N pages » juste après un prestige (la partie repart de zéro), ou sans rythme du tout.
  */
 const goalFor = (state: GameState, kind: DailyKind, value: number): number => {
   const rate = RATE[kind];
   if (!rate) return CLICKS_PER_TOKEN * value;
-  if (state.tasks.sinceWake < RECALC_AFTER_WAKE) return 0;
+  if (kind === 'pages' && state.tasks.sinceWake < RECALC_AFTER_WAKE) return 0;
   const perSecond = rate(state);
   return perSecond > 0 ? round(perSecond * MINUTES_PER_TOKEN * 60 * value) : 0;
 };

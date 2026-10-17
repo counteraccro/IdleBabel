@@ -76,7 +76,13 @@ export type Item =
       focus?: boolean;
     }
   /** Bâtons au crayon, comptés par cinq (tally.ts). */
-  | TallyItem;
+  | TallyItem
+  /**
+   * Un dessin à la main, dans le repère de la page (les tâches du livre blanc : bouts de papier, jetons, traits de crayon) :
+   * le même tracé sur un canevas posé sur la page HTML et sur la texture de la feuille. `key` dit ce qu'il montre : il
+   * n'est redessiné que si elle change.
+   */
+  | { kind: 'drawing'; key: string; draw: (context: CanvasRenderingContext2D) => void };
 
 /** Ce que les éléments d'une page peuvent déclencher. */
 export interface ItemActions {
@@ -227,7 +233,26 @@ const placeText = (node: HTMLElement, item: TextItem): void => {
   node.style.right = item.align === 'right' ? unit(PAGE_TEXTURE.width - item.x) : '0';
 };
 
+/** Le canevas d'un dessin, à la finesse de la texture (deux fois la mise en page). */
+const DRAWING_SCALE = 2;
+const paintDrawing = (node: HTMLCanvasElement, item: Extract<Item, { kind: 'drawing' }>): void => {
+  const context = node.getContext('2d')!;
+  context.setTransform(DRAWING_SCALE, 0, 0, DRAWING_SCALE, 0, 0);
+  context.clearRect(0, 0, PAGE_TEXTURE.width, PAGE_TEXTURE.height);
+  context.save();
+  item.draw(context);
+  context.restore();
+  node.dataset.key = item.key;
+};
+
 const createNode = (item: Item, { goTo, hover, act }: ItemActions): HTMLElement => {
+  if (item.kind === 'drawing') {
+    const node = el('canvas', 'sb-drawing') as HTMLCanvasElement;
+    node.width = PAGE_TEXTURE.width * DRAWING_SCALE;
+    node.height = PAGE_TEXTURE.height * DRAWING_SCALE;
+    paintDrawing(node, item);
+    return node;
+  }
   if (item.kind === 'stem') {
     const node = el('span', `sb-stem${item.gold ? ' taken' : ''}`);
     node.style.left = unit(item.x - STEM_WIDTH / 2);
@@ -387,6 +412,7 @@ export const createItemsView = (target: HTMLElement, actions: ItemActions): ((it
       return;
     }
     items.forEach((item, index) => {
+      if (item.kind === 'drawing' && nodes[index].dataset.key !== item.key) paintDrawing(nodes[index] as HTMLCanvasElement, item);
       if (item.kind !== 'text') return;
       // Chiffres de Babel : dessinés dans l'élément, ils ne se comparent pas à son texte.
       if (hasBabelDigits(item.text) || nodes[index].dataset.number !== undefined) {
@@ -480,6 +506,10 @@ export const drawItems = (canvas: HTMLCanvasElement, items: Item[], spineOnLeft:
         context.lineTo(stroke.x2, stroke.y2);
         context.stroke();
       }
+    } else if (item.kind === 'drawing') {
+      context.save();
+      item.draw(context);
+      context.restore();
     } else if (item.kind === 'seal') {
       drawSeal(
         context,

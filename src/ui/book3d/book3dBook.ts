@@ -71,4 +71,6 @@ export interface Book3d {
   tremble?: () => void;
   /** Ouvert dès qu'il est posé, puis feuilleté jusqu'à cette page (le Grand Livre, quand on clique une vision de sceau). */
   openAt?: number;
+  /** Ouvert directement à `openAt`, sans feuilleter (le jeton des tâches : sa page est loin dans le livre blanc). */
+  openJump?: boolean;
 }

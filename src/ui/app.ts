@@ -47,6 +47,9 @@ import { etherium3d } from './etherium/etherium3d';
 import { ETHERIUM_HASH, askCloseEtherium } from './etherium/prestigeStory';
 import { createFeedButton } from './etherium/feedButton';
 import { takeStrangeBookPage } from './strangeBook/openAt';
+import { taskToken } from './whiteBook/taskToken';
+import { openWhiteBookOnTasks, takeWhiteBookTasks, whiteBookTasksPage } from './whiteBook/pages';
+import { tasksOpen, taskWaiting } from '../systems/tasks';
 import { NOTES_PAGE } from './rareBooks/credits/creditsPages';
 import { closeEtherium, etheriumOpens, prestigeReady } from '../systems/prestige';
 import { ETHERIUM_NAMED_PAGES } from '../data/etherium';
@@ -176,6 +179,12 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     onLibrary: open(LIBRARY_HASH),
     libraryKey: () => debugging || firstBookKept(state) || Object.keys(state.rareBooks).length > 0,
     libraryNews: () => libraryHasNews(state),
+    taskToken: taskToken(state, () => {
+      openWhiteBookOnTasks();
+      open(WHITE_BOOK_HASH)();
+    }),
+    tasksShown: () => tasksOpen(state),
+    tasksNews: () => taskWaiting(state),
   });
 
   // Le compteur aussi : au-dessus du jeu comme des livres ouverts, il ne clignote pas d'un écran à l'autre.
@@ -300,7 +309,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
         tellLore(state, 'firstBook');
         back();
       };
-      return pileBook(createBook3dPage(whiteBook3d(state), leave, first ? t('ui.lookAround') : backLabel()));
+      const book = whiteBook3d(state);
+      // Le jeton de la clé : le livre s'ouvre sur les tâches.
+      if (takeWhiteBookTasks()) Object.assign(book, { openAt: whiteBookTasksPage(), openJump: true });
+      return pileBook(createBook3dPage(book, leave, first ? t('ui.lookAround') : backLabel()));
     }
     // L'Etherium, pris en main : il se consulte dès le premier Éther (avant, sa couverture résiste) ; le prestige se fait
     // par le bouton sous l'Éther (feedButton.ts), et l'Éther ne se dépense que juste après (l'auteur, 14/10). Le quitter

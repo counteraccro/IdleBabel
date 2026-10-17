@@ -22,6 +22,13 @@
   height: 0.234cqw;
   background: repeating-linear-gradient(90deg, #5d5f66 0 0.234cqw, transparent 0.234cqw 0.9375cqw);
 }
+.sb-drawing {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 .sb-tally {
   position: absolute;
   pointer-events: none;

@@ -11,7 +11,8 @@
     "permanent": "Lasting intuitions",
     "manualAge": "The Manual Age",
     "automaticAge": "The Automatic Age",
-    "digitalAge": "The Digital Age"
+    "digitalAge": "The Digital Age",
+    "task": "Tasks"
   },
   "partDescriptions": {
     "method": "Ways of reading I found again. Each one takes me a little faster.",
@@ -22,7 +23,8 @@
     "permanent": "These ones I keep. Whatever happens.",
     "manualAge": "My hands, my eyes. Nothing else.",
     "automaticAge": "Now things read for me. I don’t know if that is better.",
-    "digitalAge": "Machines that read nothing but numbers. And yet they read everything."
+    "digitalAge": "Machines that read nothing but numbers. And yet they read everything.",
+    "task": "Words in my hand. I do not remember writing them."
   },
   "anomaliesCompletion": "sentences found · {percent}",
   "anomalyFamilies": {
@@ -448,5 +450,67 @@
       "source": "a memory from before waking"
     }
   },
-  "stat": "Each: +{n} page/s · owned: {count}"
+  "stat": "Each: +{n} page/s · owned: {count}",
+  "tasks": {
+    "lines": "Words in my hand.\nI do not remember\nwriting them.",
+    "today": "Today",
+    "todayCount": "TODAY {n} / {total}",
+    "onceCount": "just once · {n} / {total}",
+    "once": "Just once",
+    "midnight": "What is not done fades at midnight.",
+    "allDone": "That is all for today.",
+    "token": "The token.",
+    "tokens": "The tokens.",
+    "keepGoing": "Do not stop.",
+    "daily": {
+      "pages": "Read {n} more pages.",
+      "clicks": "Turn {n} pages by hand.",
+      "finds": "Find {n} pieces of sentences.",
+      "findsOne": "Find a piece of a sentence.",
+      "knowledge": "Find {n} Knowledge.",
+      "books": "Finish {n} books.",
+      "booksOne": "Finish a book.",
+      "mimic": "Catch the Mimic {n} times.",
+      "mimicOne": "Catch the Mimic.",
+      "wait": "Read on. I will count soon."
+    },
+    "onceTasks": {
+      "1": "Read 10,000 books without turning a page by hand.",
+      "2": "Turn 10,000 pages by hand.",
+      "3": "Complete 10 sentences of the white book.",
+      "4": "Catch the Mimic 100 times.",
+      "5": "Shelve 10 rare books in the display case.",
+      "6": "Play 100 tokens.",
+      "7": "Own 500 of the same method.",
+      "8": "Leave the game open for 1 h without touching anything.",
+      "9": "Come back after 24 h away.",
+      "10": "Feed it 10 times.",
+      "11": "Find the three relics.",
+      "12": "Light 50 stars of the Etherium.",
+      "13": "Finish every book that can be played.",
+      "14": "Colour the nine drawings of the book.",
+      "15": "Do 30 tasks of the day.",
+      "16": "Read 100,000 books in all.",
+      "17": "Read 10,000 books in a single game.",
+      "18": "Light three whole figures of the Etherium.",
+      "19": "Fill a whole plate of seals.",
+      "20": "Win the Lottery 10 times in a row without ever drawing a curse."
+    },
+    "rewards": {
+      "tokens": "{n} tokens",
+      "hours": "{n} h of reading",
+      "days": "{n} days of reading",
+      "day": "1 day of reading",
+      "kHours": "{n} h of Knowledge",
+      "kDays": "{n} days of Knowledge",
+      "kDay": "1 day of Knowledge",
+      "reading": "Reading +{n} %, for good",
+      "knowledge": "Knowledge +{n} %, for good",
+      "relic": "a relic"
+    },
+    "progress": "{n} / {total}",
+    "running": "{n} tasks under way",
+    "runningOne": "1 task under way",
+    "allDoneShort": "That is all for today"
+  }
 }

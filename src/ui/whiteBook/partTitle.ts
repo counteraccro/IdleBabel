@@ -7,7 +7,7 @@ import { roman, type Item } from '../strangeBook/pageItems';
 import type { GameState } from '../../core/state';
 
 /** Parties du livre blanc : celles des phrases, et les intuitions (achetées, sans phrase). */
-export type WhiteBookPart = SentenceKind | 'intuition';
+export type WhiteBookPart = SentenceKind | 'intuition' | 'task';
 
 /**
  * Page de titre d'une partie du livre blanc (méthodes, souvenirs, anomalies), toujours sur une page de

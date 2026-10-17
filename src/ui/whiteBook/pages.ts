@@ -16,6 +16,8 @@ import { babelize, seedOf } from './babelMask';
 import { sentenceBody } from './sentencePage';
 import { folio, type Item, type TextItem } from '../strangeBook/pageItems';
 import { createLeafPage, pencilOffer, priceNote, type LeafPage, type PageHooks } from '../strangeBook/pages';
+import { tasksOpen } from '../../systems/tasks';
+import { actOnTask, onceItems, oncePageCount, taskTitleItems, todayItems } from './taskPages';
 import type { GameState } from '../../core/state';
 
 /** Sceau de la phrase, et nom de la méthode dessous (repère de la page : 640 × 800). */
@@ -130,7 +132,23 @@ const ofKind = (kind: SentenceKind): SentenceDef[] => SENTENCES.filter((sentence
  * droite, son contenu commençant en face ; et de nouveau l'intérieur de la
  * couverture si la dernière page tombe à gauche.
  */
+/** La page « Aujourd'hui » du dernier livre blanc fait (undefined : pas de tâches). */
+let tasksPage: number | undefined;
+export const whiteBookTasksPage = (): number | undefined => tasksPage;
+
+/** Le jeton de la clé cliqué : le livre blanc s'ouvrira sur les tâches (pris une fois, à son ouverture). */
+let tasksWanted = false;
+export const openWhiteBookOnTasks = (): void => {
+  tasksWanted = true;
+};
+export const takeWhiteBookTasks = (): boolean => {
+  const wanted = tasksWanted;
+  tasksWanted = false;
+  return wanted;
+};
+
 export const createWhiteBookPages = (state: GameState, goTo: (page: number) => void): (LeafPage | null)[] => {
+  tasksPage = undefined;
   const trackers = new Map<string, (segment: number) => boolean>();
   const freshOf = (sentence: SentenceDef) => {
     if (!trackers.has(sentence.id)) trackers.set(sentence.id, freshTracker(state, sentence));
@@ -232,5 +250,18 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
     })),
   );
   pages.push(...anomalyPart.pages.map((layout) => createLeafPage(layout, goTo)));
+  // Les tâches, dès le Nord de la Rose des vents : leur page de titre, « Aujourd'hui » à gauche, « Une seule fois » en face.
+  if (tasksOpen(state)) {
+    const onTasks = { onAct: (id: string) => actOnTask(state, id) };
+    const title = pages.length + (pages.length % 2 === 0 ? 1 : 0);
+    partTitle('task', 5, () => taskTitleItems(state, title));
+    const today = pages.length;
+    tasksPage = today;
+    pages.push(createLeafPage(() => todayItems(state, today), goTo, onTasks));
+    for (let part = 0; part < oncePageCount(state); part++) {
+      const number = pages.length;
+      pages.push(createLeafPage(() => onceItems(state, part, number), goTo, onTasks));
+    }
+  }
   return pages.length % 2 === 1 ? [...pages, null] : pages;
 };

@@ -8,7 +8,7 @@ import type { PartId } from '../data/decipher';
 import { newGameSeed } from './random';
 import type { SceneId } from '../scene/scenes';
 import type { RelicId } from '../data/relics';
-import type { DailyKind } from '../data/tasks';
+import { RECALC_AFTER_WAKE, type DailyKind } from '../data/tasks';
 import type { LotteryBoonId, LotteryCurseId, LotteryEffectId, OutcomeId } from '../data/lottery';
 
 export const SAVE_VERSION = 1;
@@ -195,7 +195,8 @@ export const noTasks = (): TasksState => ({
   dailyDone: 0,
   once: {},
   bonus: { reading: 0, knowledge: 0 },
-  sinceWake: 0,
+  // Une partie qui n'a pas encore fait de prestige depuis les tâches : son rythme est déjà là.
+  sinceWake: RECALC_AFTER_WAKE,
   counters: { noHandFrom: 0, clicks: 0, untouched: 0, longestAway: 0, streak: 0, bought: {}, owned: {} },
 });
 

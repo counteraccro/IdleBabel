@@ -41,6 +41,11 @@ export interface PileOrnament {
   /** Penché de tant (radians) contre la pile ; avancé de tant vers le lecteur (unités de scène). */
   lean: number;
   dz: number;
+  /**
+   * Collé à un autre objet posé (le jeton des tâches, contre la clé) : il le suit, penché comme lui, à cette place dans son
+   * repère ; il ne compte pas pour le rangement contre la pile.
+   */
+  glued?: { to: string; at: THREE.Vector3 };
 }
 
 /** Un objet posé sur la pile, et où il en est. */
@@ -280,7 +285,7 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
     scene.updateMatrixWorld(true);
     for (const item of placed) {
       item.pivot.visible = item.shown && !item.away && stacked.length > 0;
-      if (stacked.length === 0) continue;
+      if (stacked.length === 0 || item.spec.glued) continue;
       const { lean, dz } = item.spec;
       item.pivot.rotation.set(0, 0, 0);
       item.pivot.position.set(0, 0, 0);
@@ -308,6 +313,14 @@ export const createPile3d = (books: PileBook[], ornaments: PileOrnament[] = []):
       if (!Number.isFinite(foot)) foot = Math.min(...stacked.map((slot) => slot.base.x - slot.size.x / 2)) - height * sin;
       item.pivot.position.set(foot, 0, dz);
       item.pivot.rotation.set(0, 0, -lean);
+    }
+    for (const item of placed) {
+      const glued = item.spec.glued;
+      const host = glued && placed.find((other) => other.spec.id === glued.to);
+      if (!glued || !host) continue;
+      item.pivot.visible &&= host.pivot.visible;
+      item.pivot.rotation.copy(host.pivot.rotation);
+      item.pivot.position.copy(glued.at).applyEuler(host.pivot.rotation).add(host.pivot.position);
     }
   };
 
