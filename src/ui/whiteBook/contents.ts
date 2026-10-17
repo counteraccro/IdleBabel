@@ -16,12 +16,33 @@ const SUB_STEP = 40;
 /** Bas du sommaire, au-dessus du numéro de page : au-delà, les lignes se resserrent. */
 const BOTTOM = 700;
 
-/** Sommaire du livre blanc : chaque partie et son numéro de page, un clic mène à sa page. */
+const heightOf = (entries: readonly ContentsEntry[]): number =>
+  entries.reduce((sum, entry) => sum + (entry.sub ? SUB_STEP : STEP), 0);
+
+/** Le sommaire tient sur une page sans se tasser. */
+export const contentsFit = (entries: readonly ContentsEntry[]): boolean => heightOf(entries) <= BOTTOM - TOP;
+
+/**
+ * Le sommaire sur deux pages, face à face (demande de l'auteur, 17/10 : il était « trop tassé ») : la première se remplit
+ * sans se tasser, la suite va en face ; une partie garde ses sous-parties avec elle (la coupe tombe avant une partie).
+ */
+export const splitContents = (entries: readonly ContentsEntry[]): [ContentsEntry[], ContentsEntry[]] => {
+  let cut = 0;
+  for (let index = 1; index <= entries.length; index++) {
+    if (heightOf(entries.slice(0, index)) > BOTTOM - TOP) break;
+    if (index === entries.length || !entries[index].sub) cut = index;
+  }
+  // Une seule partie trop longue pour une page : coupée là où la page est pleine.
+  if (cut === 0) while (cut < entries.length && heightOf(entries.slice(0, cut + 1)) <= BOTTOM - TOP) cut++;
+  return [entries.slice(0, cut), entries.slice(cut)];
+};
+
+/** Sommaire du livre blanc (ou une de ses deux pages) : chaque partie et son numéro de page, un clic mène à sa page. */
 export const contentsItems = (state: GameState, entries: ContentsEntry[], number: number): Item[] => {
-  const height = entries.reduce((sum, entry) => sum + (entry.sub ? SUB_STEP : STEP), 0);
-  const squeeze = Math.min(1, (BOTTOM - TOP) / height);
+  const squeeze = Math.min(1, (BOTTOM - TOP) / Math.max(1, heightOf(entries)));
   let y = TOP;
   return [
+    // Sur deux pages, chacune a son titre, comme le sommaire du Grand Livre.
     ...heading(t('whiteBook.contents')),
     ...entries.flatMap((entry): Item[] => {
       const size = entry.sub ? 20 : 26;

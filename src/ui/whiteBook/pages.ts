@@ -3,7 +3,7 @@ import { t } from '../../i18n';
 import { SENTENCES, type SentenceDef, type SentenceKind } from '../../data/sentences';
 import { ANOMALY_FAMILIES } from '../../data/anomalies';
 import { anomalyPages, familyTitle, ofFamily } from './anomalyPages';
-import { contentsItems, type ContentsEntry } from './contents';
+import { contentsFit, contentsItems, splitContents, type ContentsEntry } from './contents';
 import { partTitleItems, partTitleLayout, subPartLayout, type WhiteBookPart } from './partTitle';
 import { intuitionItems, reminiscenceNote } from './intuitionPage';
 import { TECHNOLOGIES } from '../../data/technologies';
@@ -147,7 +147,20 @@ export const takeWhiteBookTasks = (): boolean => {
   return wanted;
 };
 
+/**
+ * Les pages du livre blanc. Le sommaire tient sur une page tant qu'il ne se tasse pas ; sinon, le livre se refait avec un
+ * sommaire sur deux pages, face à face (2 et 3) : les parties qui suivent sont décalées.
+ */
 export const createWhiteBookPages = (state: GameState, goTo: (page: number) => void): (LeafPage | null)[] => {
+  const book = buildWhiteBook(state, goTo, false);
+  return contentsFit(book.entries) ? book.pages : buildWhiteBook(state, goTo, true).pages;
+};
+
+const buildWhiteBook = (
+  state: GameState,
+  goTo: (page: number) => void,
+  twoContents: boolean,
+): { pages: (LeafPage | null)[]; entries: ContentsEntry[] } => {
   tasksPage = undefined;
   const trackers = new Map<string, (segment: number) => boolean>();
   const freshOf = (sentence: SentenceDef) => {
@@ -159,7 +172,12 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
   const pages: (LeafPage | null)[] = [
     null,
     createLeafPage(() => titleItems(state), goTo),
-    createLeafPage(() => contentsItems(state, entries, CONTENTS), goTo),
+    ...(twoContents
+      ? [
+          createLeafPage(() => contentsItems(state, splitContents(entries)[0], CONTENTS), goTo),
+          createLeafPage(() => contentsItems(state, splitContents(entries)[1], CONTENTS + 1), goTo),
+        ]
+      : [createLeafPage(() => contentsItems(state, entries, CONTENTS), goTo)]),
   ];
   // Page de titre d'une partie, sur une page de droite (une page blanche avant si besoin) : son contenu
   // commence en face, à gauche.
@@ -263,5 +281,5 @@ export const createWhiteBookPages = (state: GameState, goTo: (page: number) => v
       pages.push(createLeafPage(() => onceItems(state, part, number), goTo, onTasks));
     }
   }
-  return pages.length % 2 === 1 ? [...pages, null] : pages;
+  return { pages: pages.length % 2 === 1 ? [...pages, null] : pages, entries };
 };
