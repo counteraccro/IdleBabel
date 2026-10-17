@@ -14,6 +14,7 @@ import { DIGITAL_AGE } from '../src/data/tools';
 import { relicById } from '../src/data/relics';
 import { PLAYER } from './config';
 import { etherNeeded } from '../src/systems/etherium';
+import { countLast, newTasks, openTaskStars, type Tasks } from './taches';
 
 /** Ce qui survit au prestige : les pages à vie, l'Éther, les étoiles allumées, la Page Cornée une fois retrouvée. */
 export interface Life {
@@ -51,6 +52,8 @@ export interface Life {
    * premier l'a été (la page de la Loterie s'ouvre). Ses tirages ne changent pas la lecture dans le simulateur.
    */
   lottery: { tokens: number; draws: number; openedAt?: number };
+  /** Les tâches (simulateur/taches.ts). */
+  tasks: Tasks;
 }
 
 export const newLife = (): Life => ({
@@ -76,6 +79,7 @@ export const newLife = (): Life => ({
   relicChanges: 0,
   mimic: { caught: 0, bonus: 0, seconds: 0 },
   lottery: { tokens: 0, draws: 0 },
+  tasks: newTasks(),
 });
 
 /** Conception §4.1 : floor(∛(pages à vie / 1 Md)), moins ce qui est déjà reçu. */
@@ -110,6 +114,7 @@ const open = (life: Life): Buyable[] => [
       (!PAGE_NEEDS_DRAW.has(star.page) || life.lottery.draws > 0) &&
       life.etherReceived >= etherNeeded(star.page),
   ),
+  ...openTaskStars(life),
 ];
 
 type Buyable = { id: string; cost: number };
@@ -128,6 +133,8 @@ export const spendEther = (life: Life): string[] => {
       return bought;
     }
     life.etherFree -= starCost(star);
+    countLast(life, 'ether', starCost(star));
+    life.tasks.boughtAt[star.id] = life.clock;
     life.stars.add(star.id);
     bought.push(star.id);
   }

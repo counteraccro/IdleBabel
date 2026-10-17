@@ -33,6 +33,7 @@ import { lit, product, relicBonus, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
 import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../src/data/mimic';
 import { LOTTERY_BOONS, LOTTERY_CURSES, LOTTERY_STARS } from '../src/data/lottery';
+import { countLast, drawn, tickTasks } from './taches';
 
 /** Une partie, du réveil au prestige. */
 export interface Run {
@@ -58,6 +59,10 @@ export interface Run {
   methodPages: Record<string, number>;
   /** Quand chaque méthode a été achetée la première fois (secondes depuis le réveil). */
   firstBought: Record<string, number>;
+  /** Pages tournées depuis le dernier clic (la tâche « 41 livres sans tourner à la main »). */
+  turnedNoHand: number;
+  /** Connaissance trouvée par seconde, la dernière fois (ce que rend « 1 jour de Connaissance »). */
+  knowledgeRate: number;
 }
 
 export const newRun = (life: Life): Run => {
@@ -77,6 +82,8 @@ export const newRun = (life: Life): Run => {
     turned: 0,
     methodPages: {},
     firstBought: {},
+    turnedNoHand: 0,
+    knowledgeRate: 0,
   };
   if (life.secretFound) run.unlocked.add(SECRET.id);
   if (life.bitFound) run.unlocked.add(BIT.id);
@@ -128,6 +135,7 @@ const rate = (run: Run, method: Method, away = false): number =>
   (method.age === DIGITAL_AGE ? product(run.life, EFFECT.digitalReading) : 1) *
   (1 + sum(run.life, EFFECT.storyReading)) *
   etherReading(run) *
+  (1 + run.life.tasks.readingBonus) *
   (away ? 1 : letterAverage(run).reading * mimicSlow(run.life));
 
 export const pagesPerSecond = (run: Run, away = false): number =>
@@ -193,7 +201,8 @@ const find = (run: Run, turned: number, away = false): void => {
     finds * (product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0));
   const mimicBonus = away ? 0 : found * mimicGives(run.life) * mimicPresence(run.life);
   run.life.mimic.bonus += mimicBonus;
-  const knowledge = found + mimicBonus;
+  const knowledge = (found + mimicBonus) * (1 + run.life.tasks.knowledgeBonus);
+  countLast(run.life, 'knowledge', knowledge);
   run.knowledge += knowledge;
   run.knowledgeGained += knowledge;
   run.life.finds += finds;
@@ -222,6 +231,33 @@ const find = (run: Run, turned: number, away = false): void => {
 const gain = (run: Run, pages: number): void => {
   run.pages += pages;
   run.read += pages;
+  countLast(run.life, 'pages', pages);
+};
+
+/** Des jetons de plus (la Mimic, les tâches), joués dès qu'il y en a un entier : ce que rapportent les tirages, en moyenne. */
+const addTokens = (run: Run, tokens: number, pps: number): void => {
+  const lottery = run.life.lottery;
+  const before = lottery.draws;
+  lottery.tokens += tokens;
+  lottery.draws = Math.floor(lottery.tokens);
+  if (lottery.draws > 0) lottery.openedAt ??= run.life.clock;
+  for (let i = before; i < lottery.draws; i++) drawn(run.life);
+  // Autant de secondes de la production du moment.
+  gain(run, pps * lotteryAverage(run.life) * (lottery.draws - before));
+};
+
+/** Ce que les tâches rendent : des jetons, des heures de lecture, des heures de Connaissance (au rythme du moment). */
+const tasksFor = (run: Run, seconds: number, onScreen: boolean): void => {
+  const pps = pagesPerSecond(run, !onScreen);
+  tickTasks(run, seconds, onScreen, {
+    tokens: (n) => addTokens(run, n, pps),
+    pages: (s) => gain(run, pps * s),
+    knowledge: (s) => {
+      run.knowledge += run.knowledgeRate * s;
+      run.knowledgeGained += run.knowledgeRate * s;
+      run.life.knowledge += run.knowledgeRate * s;
+    },
+  });
 };
 
 /** Ce que chaque méthode a lu pendant `seconds` (part `share` de sa lecture) : les sceaux de ses pages. */
@@ -250,24 +286,24 @@ export const play = (run: Run, seconds: number): void => {
   run.life.handPages += clicking * perClick * seconds;
   run.life.bestSpeed = Math.max(run.life.bestSpeed, pps);
   // L'Annulaire : ×2 chance de trouvaille sur les pages tournées à la main (comme deux fois plus de pages).
-  find(run, (Math.min(pps, turnsCap(run) * 2) + clicking * 2 * (lit(run.life, S.ring) ? 2 : 1)) * seconds);
+  const knownBefore = run.knowledgeGained;
+  const sheets = (Math.min(pps, turnsCap(run) * 2) + clicking * 2 * (lit(run.life, S.ring) ? 2 : 1)) * seconds;
+  find(run, sheets);
+  run.knowledgeRate = (run.knowledgeGained - knownBefore) / seconds;
+  run.turnedNoHand = clicking > 0 ? 0 : run.turnedNoHand + sheets;
+  run.life.tasks.untouched = clicking > 0 ? 0 : run.life.tasks.untouched + seconds;
   if (lit(run.life, S.mimic)) {
     const caught = seconds / (mimicEvery(run.life) + mimicStay());
-    const drawn = run.life.lottery.draws;
     run.life.mimic.caught += caught;
     run.life.mimic.seconds += seconds * mimicPresence(run.life);
     // Ses jetons (le levier de la Loterie : plus souvent), joués dès qu'il y en a un entier.
     const level = Math.max(0, ...Object.entries(EFFECT.lotteryToken).map(([id, v]) => (lit(run.life, id) ? v : 0)));
-    const lottery = run.life.lottery;
-    lottery.tokens += caught * LOTTERY_STARS.token[level];
-    lottery.draws = Math.floor(lottery.tokens);
-    if (lottery.draws > 0) lottery.openedAt ??= run.life.clock;
-    // Ce que rapportent ces tirages, en moyenne : autant de secondes de la production du moment.
-    gain(run, pps * lotteryAverage(run.life) * (lottery.draws - drawn));
+    addTokens(run, caught * LOTTERY_STARS.token[level], pps);
   }
   run.t += seconds;
   run.played += seconds;
   run.life.clock += seconds;
+  tasksFor(run, seconds, true);
 };
 
 /** Part de la production que lit la méthode visée par « une méthode ×10 » (au hasard) ou arrêtée (la meilleure). */
@@ -314,6 +350,8 @@ export const away = (run: Run, seconds: number): void => {
   find(run, sheets * (lit(run.life, S.awayFinds) ? 1 : share) * counted, true);
   run.t += seconds;
   run.life.clock += seconds;
+  run.life.tasks.longestAway = Math.max(run.life.tasks.longestAway, seconds);
+  tasksFor(run, seconds, false);
 };
 
 const price = (run: Run, method: Method): number =>
@@ -334,6 +372,7 @@ export const buyMethods = (run: Run): void => {
     if (!best || price(run, best) > run.pages) return;
     run.pages -= price(run, best);
     run.owned[best.id] = (run.owned[best.id] ?? 0) + 1;
+    run.life.tasks.bought[best.id] = (run.life.tasks.bought[best.id] ?? 0) + 1;
     run.firstBought[best.id] ??= run.t;
   }
 };

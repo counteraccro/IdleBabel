@@ -13,6 +13,7 @@
  *   npm run simule -- --sans-poids             sans le poids de la Bibliothèque (lecture de l'Éther freinée au-delà de 5 000)
  *   npm run simule -- --lecture=auto:0.1       la lecture des méthodes d'un Âge multipliée (manual, auto, num)
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
+ *   npm run simule -- --sans-taches          sans les tâches (simulateur/taches.ts, pas encore dans le jeu)
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
@@ -21,6 +22,7 @@ import { away, buyMethods, newRun, pagesPerSecond, play, type Run } from './part
 import { buyIntuitions } from './intuitions';
 import { etherGain, litPerPage, newLife, spendEther } from './vie';
 import { checkSeals, sealCount, sealsPerPlate } from './sceaux';
+import { LAST_TASK, ONCE_TASKS, TASK_STARS } from './taches';
 
 const option = (name: string): string | undefined =>
   process.argv.find((arg) => arg === `--${name}` || arg.startsWith(`--${name}=`))?.split('=')[1] ??
@@ -38,6 +40,7 @@ if (option('sans-poids') !== undefined) PLAYER.weight = false;
 if (option('lettres') !== undefined) PLAYER.letters = Number(option('lettres'));
 if (option('numerique')) PLAYER.digitalAge = Number(option('numerique'));
 if (option('sans-bit') !== undefined) PLAYER.bit = false;
+if (option('sans-taches') !== undefined) PLAYER.tasks = false;
 // L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
 if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
 
@@ -153,3 +156,30 @@ console.log(
   `Loterie : ${life.lottery.draws} jetons joués · page ouverte : ${duration(life.lottery.openedAt)} · étoiles achetées : ${[...life.stars].filter((id) => id.startsWith('lottery.')).join(', ') || 'aucune'}`,
 );
 console.log(`Éther reçu : ${life.etherReceived} · non dépensé : ${life.etherFree} · étoiles : ${litPerPage(life)}`);
+
+const tasks = life.tasks;
+if (PLAYER.tasks) {
+  console.log(
+    `Tâches : étoiles ${TASK_STARS.map((star) => `${star.id} ${duration(tasks.boughtAt[star.id])}`).join(' · ')}`,
+  );
+  console.log(
+    `Tâches du jour faites : ${tasks.dailyDone} · jetons des tâches du jour : ${tasks.dailyTokens} · des tâches « une seule fois » : ${tasks.onceTokens} · jetons joués en tout : ${life.lottery.draws}`,
+  );
+  console.log(
+    `Bonus pour toujours : lecture +${Math.round(tasks.readingBonus * 100)} %, Connaissance +${Math.round(tasks.knowledgeBonus * 100)} % · Crayon : ${duration(tasks.crayonAt)}`,
+  );
+  for (const task of ONCE_TASKS) {
+    const shown = tasks.shown[task.n];
+    const done = tasks.done[task.n];
+    const followed = task.count ? '' : ' (pas suivie)';
+    console.log(
+      `  ${String(task.n).padStart(2)}. ${task.label.padEnd(36)} apparue ${duration(shown?.at).padEnd(7)} faite ${done === undefined ? '—' : `${duration(done)} (en ${duration(done - shown.at)})`}${followed}`,
+    );
+  }
+  const last = tasks.last;
+  console.log(
+    last
+      ? `Une dernière pour la route : apparue ${duration(last.at)} · Éther dépensé ${big(last.ether)} / ${big(LAST_TASK.ether)} · pages ${big(last.pages)} / ${big(LAST_TASK.pages)} · Connaissance ${big(last.knowledge)} / ${big(LAST_TASK.knowledge)} · faite ${duration(last.doneAt)}`
+      : 'Une dernière pour la route : pas apparue',
+  );
+}

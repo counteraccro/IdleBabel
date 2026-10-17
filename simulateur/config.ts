@@ -62,6 +62,8 @@ export const PLAYER = {
   digitalAge: 0,
   /** Le Bit, méthode secrète de l'Âge Numérique : --sans-bit pour s'en passer. */
   bit: true,
+  /** Les tâches (17/10, simulateur/taches.ts, pas encore dans le jeu) : --sans-taches pour s'en passer. */
+  tasks: true,
   /**
    * Lecture des méthodes de chaque Âge, multipliée (essais du 13/10 : adoucir le gain d'un Âge à l'autre) :
    * --lecture=auto:0.1,num:0.01 ; 1 partout, les chiffres du jeu.
