@@ -94,41 +94,53 @@
 }
 /*
  * Les flèches d'un meuble à l'autre (maquette du meuble des fins, 16/10) : un chevron doré, au bord de la scène, à
- * mi-hauteur ; à gauche sur la vitrine, à droite sur le meuble des fins.
+ * mi-hauteur ; à gauche sur la vitrine, à droite sur le meuble des fins. Dans une pastille sombre cerclée d'or, pour se
+ * voir sur le noir de la pièce (l'auteur, 17/10 : « elles ne se voient pas assez »).
  */
 .library-arrow,
 .library-arrow:hover {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: 0;
-  box-shadow: none;
-  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  padding: 0 0 10px;
+  border-radius: 50%;
+  background: rgba(20, 14, 10, 0.75);
+  border: 2px solid rgba(224, 184, 112, 0.8);
+  box-shadow:
+    0 0 18px rgba(224, 184, 112, 0.35),
+    0 4px 10px rgba(0, 0, 0, 0.6);
   cursor: pointer;
   font-family: 'Cinzel', Georgia, serif;
-  font-size: 64px;
+  font-size: 96px;
+  font-weight: 700;
   line-height: 1;
   color: var(--accent);
-  opacity: 0.7;
-  text-shadow:
-    0 0 10px rgba(224, 184, 112, 0.45),
-    0 2px 4px #000;
+  opacity: 0.9;
+  text-shadow: 0 0 10px rgba(224, 184, 112, 0.6);
   transition:
     opacity 0.25s,
-    transform 0.25s;
+    transform 0.25s,
+    box-shadow 0.25s;
 }
 .library-arrow:hover {
   opacity: 1;
+  box-shadow:
+    0 0 26px rgba(224, 184, 112, 0.6),
+    0 4px 10px rgba(0, 0, 0, 0.6);
 }
 .library-arrow.right {
-  right: 8px;
+  right: 16px;
 }
 .library-arrow.right:hover {
   transform: translate(4px, -50%);
 }
 .library-arrow.left {
-  left: 8px;
+  left: 16px;
 }
 .library-arrow.left:hover {
   transform: translate(-4px, -50%);
