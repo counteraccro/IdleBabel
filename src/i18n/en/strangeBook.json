@@ -8,7 +8,8 @@
     "methods": "Ways",
     "knowledge": "Revelations",
     "rareBooks": "Rarities",
-    "ether": "Ether"
+    "ether": "Ether",
+    "bonus": "Boosts"
   },
   "figures": {
     "totalPages": "pages your eyes have crossed",
@@ -283,5 +284,49 @@
     "constellation-weight": "Lift the weight of the Library",
     "constellation-screen": "Light up the whole Minitel",
     "intuition-lightSleep": "Hear a book sleeping"
+  },
+  "groups": {
+    "reading": "What your methods read",
+    "click": "What a click reads",
+    "finds": "Your chance of a find",
+    "knowledge": "The Knowledge of a find",
+    "rare": "Your chance of a rare book",
+    "price": "The price of methods",
+    "letterWait": "The wait for the letter",
+    "boonLength": "How long its boosts last"
+  },
+  "bonuses": {
+    "readingIntuitions": "your intuitions",
+    "readingEtherium": "the Etherium",
+    "readingDigital": "the Etherium, the Digital Age",
+    "readingEther": "your Ether",
+    "readingStory": "The Story of Babel",
+    "readingLetter": "the letter",
+    "readingLottery": "the Lottery",
+    "lotteryMethod": "the Lottery, {method}",
+    "readingMimic": "the Mimic",
+    "readingMods": "mods",
+    "clickShare": "one second of your reading",
+    "clickEtherium": "the Etherium",
+    "clickEther": "your Ether",
+    "clickLetter": "the letter",
+    "clickMods": "mods",
+    "findIntuitions": "your intuitions",
+    "findSeals": "your seals",
+    "findEtherium": "the Etherium",
+    "findHand": "the Etherium, by hand",
+    "findLetter": "the letter",
+    "findMods": "mods",
+    "knowledgeEtherium": "the Etherium",
+    "knowledgeLetter": "the letter",
+    "knowledgeMods": "mods",
+    "rareIntuitions": "your intuitions",
+    "rareEtherium": "the Etherium",
+    "rareMods": "mods",
+    "priceIntuitions": "your intuitions",
+    "priceLetter": "the letter",
+    "priceMods": "mods",
+    "letterWaitEtherium": "the Etherium",
+    "boonLength": "the Etherium"
   }
 }

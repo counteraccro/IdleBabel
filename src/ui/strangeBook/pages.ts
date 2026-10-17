@@ -231,7 +231,8 @@ const ROW_BOTTOM = 690;
 /** Un sous-titre d'Âge : de l'air au-dessus, sa ligne, et un peu d'air avant la première méthode. */
 const AGE_STEP = 60;
 
-type Slot = { kind: 'age'; key: string } | { kind: 'row'; figure: Chapter['figures'][number] };
+/** `path` : le sous-titre (un Âge, ou ce que booste un bonus) dans les traductions ; `key` : sa graine en symboles de Babel. */
+type Slot = { kind: 'age'; key: string; path: string } | { kind: 'row'; figure: Chapter['figures'][number] };
 
 /** Les lignes du relevé, page par page ; un sous-titre ne reste jamais seul en bas d'une page. */
 const rowPages = (state: GameState, chapter: Chapter): Slot[][] => {
@@ -239,8 +240,10 @@ const rowPages = (state: GameState, chapter: Chapter): Slot[][] => {
   const slots: Slot[] = [];
   let age: string | null = null;
   for (const figure of chapter.figures.filter((candidate) => candidate.row && figureShown(state, candidate))) {
-    const key = figure.age === DIGITAL_AGE ? 'digitalAge' : figure.age === AUTOMATIC_AGE ? 'automaticAge' : 'manualAge';
-    if (byAge && key !== age) slots.push({ kind: 'age', key });
+    // Un bonus est toujours sous ce qu'il booste.
+    const key = figure.group ?? (figure.age === DIGITAL_AGE ? 'digitalAge' : figure.age === AUTOMATIC_AGE ? 'automaticAge' : 'manualAge');
+    const path = figure.group ? `strangeBook.groups.${key}` : `whiteBook.parts.${key}`;
+    if ((byAge || figure.group) && key !== age) slots.push({ kind: 'age', key, path });
     age = key;
     slots.push({ kind: 'row', figure });
   }
@@ -258,16 +261,17 @@ const rowPages = (state: GameState, chapter: Chapter): Slot[][] => {
   return pages;
 };
 
-const rowsItems = (state: GameState, chapter: Chapter, slots: Slot[], number: number): Item[] => {
+/** `chapterNumber` : la première page d'un chapitre sans grands chiffres (les bonus) porte son numéro. */
+const rowsItems = (state: GameState, chapter: Chapter, slots: Slot[], number: number, chapterNumber?: number): Item[] => {
   const readable = isDeciphered(state, chapter.id);
   let y = ROW_TOP;
   return [
-    ...heading(chapterTitle(state, chapter)),
+    ...heading(chapterTitle(state, chapter), chapterNumber),
     ...slots.flatMap((slot): Item[] => {
       const top = y;
       if (slot.kind === 'age') {
         y += AGE_STEP;
-        const name = t(`whiteBook.parts.${slot.key}`);
+        const name = t(slot.path);
         const text = readable ? name : babelize(name, seedOf(slot.key));
         return [{ kind: 'text', text, x: 320, y: top + 14, size: 22, align: 'center', italic: true, faded: true, spacing: 3 }];
       }
@@ -364,13 +368,16 @@ export const createLeafPage = (layout: (view: PageView) => Item[], goTo: (page: 
  * 2D ; 1 : à droite, le livre 3D gardant la gauche pour l'intérieur de la couverture). Les numéros de
  * page restent ceux de la liste.
  */
+/** Le chapitre a sa page de grands chiffres ; sans eux (les bonus), son relevé commence tout de suite. */
+const hasFigures = (chapter: Chapter): boolean => chapter.figures.some((figure) => !figure.row);
+
 /** Où tombe chaque partie du livre : chapitres (et leur relevé), puis les sceaux (introduction, planches). */
 const layout = (state: GameState, offset: number) => {
   const chapters = CHAPTERS.filter((chapter) => chapterShown(state, chapter));
   const first = 2;
   // Chaque chapitre : sa page de grands chiffres, puis celles de son relevé.
   const listPages = chapters.map((chapter) => rowPages(state, chapter));
-  const chapterPages = listPages.map((list) => 1 + list.length);
+  const chapterPages = listPages.map((list, index) => (hasFigures(chapters[index]) ? 1 : 0) + list.length);
   const chapterStart = chapters.map((_, index) => first + chapterPages.slice(0, index).reduce((total, count) => total + count, 0));
   // Les sceaux commencent sur une page de gauche, face à leur première page de contenu : sinon, une page
   // blanche est laissée avant eux.
@@ -421,8 +428,17 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
     createLeafPage(() => contentsItems(state, entries), goTo),
     ...chapters.flatMap((chapter, index) => {
       const start = chapterStart[index];
+      const read = { onShown: () => markPartRead(state, chapter.id) };
+      if (!hasFigures(chapter))
+        return listPages[index].map((slots, part) =>
+          createLeafPage(
+            () => rowsItems(state, chapter, slots, start + part + 1, part === 0 ? CHAPTERS.indexOf(chapter) + 1 : undefined),
+            goTo,
+            read,
+          ),
+        );
       return [
-        createLeafPage(() => chapterItems(state, chapter, start + 1), goTo, { onShown: () => markPartRead(state, chapter.id) }),
+        createLeafPage(() => chapterItems(state, chapter, start + 1), goTo, read),
         ...listPages[index].map((slots, part) => createLeafPage(() => rowsItems(state, chapter, slots, start + part + 2), goTo)),
       ];
     }),

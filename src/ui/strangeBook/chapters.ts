@@ -28,6 +28,7 @@ import { nextEtherPages, nextEtherProgress, prestigeGain } from '../../systems/p
 import { relicBonus, relicReading } from '../../systems/relics';
 import { mimicReading } from '../../systems/mimic';
 import { relicName } from '../relics/relicText';
+import { anyBonus, BONUS_FIGURES } from './bonuses';
 import type { PartId } from '../../data/decipher';
 import type { GameState } from '../../core/state';
 
@@ -46,6 +47,10 @@ export interface Figure {
   row?: boolean;
   /** L'Âge d'une ligne du relevé (aucun : l'Âge Manuel), pour son sous-titre. */
   age?: string;
+  /** Ce que booste une ligne du relevé des bonus : son sous-titre (strangeBook.groups.<group>), toujours écrit. */
+  group?: string;
+  /** Sa légende en clair, quand elle ne se lit pas toute seule dans les traductions (« la Loterie · le Doigt »). */
+  label?: () => string;
   /**
    * De quoi il est fait, en petit (les mots, une fois le chapitre déchiffré) : une ligne entre le chiffre et sa légende,
    * ou plusieurs, sous la légende, pour ce qui grandit sans fin (la vitesse de lecture).
@@ -318,6 +323,13 @@ export const CHAPTERS: readonly Chapter[] = [
       },
     ],
   },
+  {
+    id: 'bonus',
+    title: 'bonarel',
+    // Rien que le relevé : tout ce qui multiplie quelque chose, sous ce que ça booste (17/10).
+    shown: anyBonus,
+    figures: BONUS_FIGURES,
+  },
 ];
 
 /** Débogage : « statistiques visibles » montre tous les chapitres, tous les chiffres, et les légendes en clair. */
@@ -329,5 +341,7 @@ export const chapterTitle = (state: GameState, chapter: Chapter): string =>
   isDeciphered(state, 'contents') ? t(`strangeBook.chapters.${chapter.id}`) : chapter.title;
 export const figureCaption = (state: GameState, chapter: Chapter, figure: Figure): string => {
   if (!isDeciphered(state, chapter.id)) return figure.caption;
+  if (figure.label) return figure.label();
+  if (figure.group) return t(`strangeBook.bonuses.${figure.id}`);
   return figure.id in TOOL_CAPTIONS ? t(`tools.${figure.id}.name`) : t(`strangeBook.figures.${figure.id}`);
 };

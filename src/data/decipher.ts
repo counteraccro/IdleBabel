@@ -3,7 +3,7 @@
  * vie atteint son palier. Une fois lue, pour toujours. (Elles s'achetaient aussi : retiré le 03/10/2026,
  * décision de l'auteur, le palier venait presque aussitôt.)
  */
-export type PartId = 'contents' | 'pages' | 'books' | 'time' | 'methods' | 'knowledge' | 'rareBooks' | 'ether' | 'seals';
+export type PartId = 'contents' | 'pages' | 'books' | 'time' | 'methods' | 'knowledge' | 'rareBooks' | 'ether' | 'bonus' | 'seals';
 
 /** Connaissance trouvée à vie à partir de laquelle chaque partie se lit. */
 export const READABLE_AT: Record<PartId, number> = {
@@ -17,6 +17,8 @@ export const READABLE_AT: Record<PartId, number> = {
   rareBooks: 8,
   // Le chapitre de l'Éther n'existe qu'après le premier prestige : la Connaissance a toujours assez grandi.
   ether: 12,
+  // Le relevé des bonus : dès les premières intuitions.
+  bonus: 8,
   seals: 12,
 };
 
