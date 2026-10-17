@@ -107,7 +107,7 @@
   justify-content: center;
   width: 72px;
   height: 72px;
-  padding: 0 0 10px;
+  padding: 0;
   border-radius: 50%;
   background: rgba(20, 14, 10, 0.75);
   border: 2px solid rgba(224, 184, 112, 0.8);
@@ -115,13 +115,10 @@
     0 0 18px rgba(224, 184, 112, 0.35),
     0 4px 10px rgba(0, 0, 0, 0.6);
   cursor: pointer;
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 96px;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--accent);
+  /* Le caractère (‹ ›) reste pour les lecteurs d'écran ; on voit le chevron dessiné dessous, centré au pixel près. */
+  font-size: 0;
+  color: transparent;
   opacity: 0.9;
-  text-shadow: 0 0 10px rgba(224, 184, 112, 0.6);
   transition:
     opacity 0.25s,
     transform 0.25s,
@@ -132,6 +129,22 @@
   box-shadow:
     0 0 26px rgba(224, 184, 112, 0.6),
     0 4px 10px rgba(0, 0, 0, 0.6);
+}
+/* Le chevron : deux traits dorés en équerre, tournés ; décalé d'un quart de sa diagonale pour que sa masse soit au centre. */
+.library-arrow::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border-left: 5px solid var(--accent);
+  border-bottom: 5px solid var(--accent);
+  border-radius: 2px;
+  filter: drop-shadow(0 0 6px rgba(224, 184, 112, 0.6));
+}
+.library-arrow.left::before {
+  transform: translateX(4px) rotate(45deg);
+}
+.library-arrow.right::before {
+  transform: translateX(-4px) rotate(-135deg);
 }
 .library-arrow.right {
   right: 16px;
