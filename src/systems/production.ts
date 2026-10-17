@@ -1,3 +1,4 @@
+import { taskReading } from './taskBonus';
 import { DIGITAL_AGE, TOOLS, type ToolId } from '../data/tools';
 import { gestureMultiplier } from './technologies';
 import { digitalMultiplier, etherReading, readingMultiplier, storyMultiplier } from './etherium';
@@ -32,6 +33,7 @@ const shared = (state: GameState): Shared => ({
     mimicReading(state) *
     storyMultiplier(state) *
     lotteryReading(state) *
+    taskReading(state) *
     hookProduct('reading') *
     modded('reading'),
   digital: digitalMultiplier(state),

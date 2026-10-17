@@ -6,6 +6,7 @@ import { chronicle } from '../systems/chronicle';
 import { remember } from '../systems/reminiscence';
 import { runHooks } from '../mods/hooks';
 import { settleLottery } from '../systems/lottery';
+import { tickTasks } from '../systems/tasks';
 
 /** La partie avance par pas de tant (le compteur aussi : les pages qui tournent seules, ui/book3d/autoTurn3d.ts). */
 export const TICK_MS = 100;
@@ -25,12 +26,14 @@ export const startLoop = (state: GameState, onTick: () => void): void => {
     if (document.hidden && now - previous < HIDDEN_TICK_MS) return;
     produce(state, (now - state.lastTick) / 1000);
     state.lastTick = now;
-    trackPlay(state, (now - previous) / 1000);
-    runHooks('tick', (now - previous) / 1000);
+    const elapsed = (now - previous) / 1000;
+    trackPlay(state, elapsed);
+    runHooks('tick', elapsed);
     previous = now;
     remember(state);
     // Un tirage de la Loterie dont la machine n'a pas vu la fin (bibliothèque quittée, onglet caché, jeu rechargé).
     settleLottery(state, Math.random, now);
+    tickTasks(state, elapsed, !document.hidden, now);
     checkSeals(state, now);
     chronicle(state, now);
     if (document.hidden) return;

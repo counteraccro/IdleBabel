@@ -8,6 +8,7 @@ import type { PartId } from '../data/decipher';
 import { newGameSeed } from './random';
 import type { SceneId } from '../scene/scenes';
 import type { RelicId } from '../data/relics';
+import type { DailyKind } from '../data/tasks';
 import type { LotteryBoonId, LotteryCurseId, LotteryEffectId, OutcomeId } from '../data/lottery';
 
 export const SAVE_VERSION = 1;
@@ -127,6 +128,77 @@ export interface LotteryState {
   pending?: PendingDraw | null;
 }
 
+/** Une tâche du jour (systems/dailyTasks.ts) : ce qu'elle compte, d'où, jusqu'où. */
+export interface DailyTask {
+  kind: DailyKind;
+  /** Ce qu'elle vaut : 1, 2 ou 3 jetons. */
+  value: number;
+  /** Ce qu'il faut compter ; 0 : pas encore calculé (une tâche au rythme de la partie, juste après un prestige). */
+  goal: number;
+  /** Ce que valait son compte quand elle a commencé (ou quand son but a été recalculé). */
+  base: number;
+  /** La part déjà faite quand son but attend d'être recalculé (après un prestige). */
+  carry?: number;
+  /** Faite à ce moment (ms) ; son jeton attend le clic (`taken`). */
+  done?: number;
+  taken?: boolean;
+}
+
+/** Une tâche « une seule fois » apparue (systems/onceTasks.ts) : son compte part de là. */
+export interface OnceTask {
+  /** Apparue (écrite en clair) à ce moment (ms). */
+  at: number;
+  /** Ce que valait son compte alors. */
+  base: number;
+  /** Les phrases complétées depuis (tâche 3), celles qui l'étaient déjà ; la partie et ses livres (tâche 17). */
+  ids?: string[];
+  skip?: string[];
+  wakeBook?: number;
+  done?: number;
+  /** Sa récompense prise (au clic). */
+  taken?: boolean;
+}
+
+/** Les tâches (systems/tasks.ts), gardées au prestige. */
+export interface TasksState {
+  /** Le jour des tâches du jour (date locale « AAAA-MM-JJ ») ; null : jamais tirées. */
+  day: string | null;
+  today: DailyTask[];
+  /** Tâches du jour faites, depuis toujours. */
+  dailyDone: number;
+  /** Les tâches « une seule fois » apparues, par numéro. */
+  once: Record<string, OnceTask>;
+  /** Bonus pour toujours gagnés : part de lecture, part de Connaissance en plus. */
+  bonus: { reading: number; knowledge: number };
+  /** Secondes de la partie depuis le dernier réveil (les tâches au rythme de la partie s'y recalculent). */
+  sinceWake: number;
+  /** Ce que suivent les tâches « une seule fois » (comptés depuis leur apparition). */
+  counters: TaskCounters;
+}
+
+export interface TaskCounters {
+  /** Livres finis à la dernière page tournée à la main, et les feuilles tournées à la main alors (tâche 1). */
+  noHandFrom: number;
+  clicks: number;
+  /** Secondes à l'écran sans rien toucher (tâche 8), plus longue absence (tâche 9), gains de suite sans malus (tâche 20). */
+  untouched: number;
+  longestAway: number;
+  streak: number;
+  /** Exemplaires achetés de chaque méthode (tâche 7), et ce qu'on en avait au dernier regard. */
+  bought: Partial<Record<ToolId, number>>;
+  owned: Partial<Record<ToolId, number>>;
+}
+
+export const noTasks = (): TasksState => ({
+  day: null,
+  today: [],
+  dailyDone: 0,
+  once: {},
+  bonus: { reading: 0, knowledge: 0 },
+  sinceWake: 0,
+  counters: { noHandFrom: 0, clicks: 0, untouched: 0, longestAway: 0, streak: 0, bought: {}, owned: {} },
+});
+
 export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0, pending: null };
 
 export const NO_RELICS: RelicsState = { found: {}, active: null, lockedUntil: 0, changes: 0 };
@@ -211,6 +283,8 @@ export interface GameState {
   relics: RelicsState;
   /** La Loterie : jetons, bonus et malus en cours, la Mimic dorée. */
   lottery: LotteryState;
+  /** Les tâches : celles du jour, celles « une seule fois », leurs bonus pour toujours. */
+  tasks: TasksState;
   /**
    * Les tomes 2 à 11 de « L'histoire de Babel » trouvés (leur numéro), gardés au prestige. Le tome 1 vient du Rideau
    * (storyBribes). Aucun ne se trouve encore en jouant : seulement par le débogage (« Tout débloquer »).
@@ -313,6 +387,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   mimic: { ...NO_MIMIC },
   relics: { ...NO_RELICS, found: {} },
   lottery: { ...NO_LOTTERY, effects: [] },
+  tasks: noTasks(),
   sagaTomes: [],
   newSeals: [],
   libraryBooksSeen: 0,

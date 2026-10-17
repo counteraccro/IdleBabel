@@ -17,6 +17,7 @@ import { checkSeals } from './seals';
 import { lotteryEffects, startLotteryEffect } from './lotteryEffects';
 import { goldenHere, spawnGolden } from './goldenMimic';
 import { lotteryOdds, lotterySeconds } from './lotteryStars';
+import { taskDraw } from './tasks';
 import { runHooks } from '../mods/hooks';
 import type { GameState, PendingDraw } from '../core/state';
 
@@ -197,6 +198,7 @@ export const settleLottery = (state: GameState, random: () => number = Math.rand
     draw.seconds = lotterySeconds(state, 'curse');
     startLotteryEffect(state, plan.curse, draw.seconds, now, draw.method);
   }
+  taskDraw(state, draw.outcome);
   checkSeals(state, now);
   runHooks('lottery', { ...draw, reels: [...draw.reels] });
   last = draw;

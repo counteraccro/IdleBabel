@@ -7,6 +7,7 @@ import { meetStrangeBook } from '../systems/decipher';
 import { awayShare, maxAwaySeconds } from '../systems/technologies';
 import { awayFindsShare, awayTurnsMultiplier } from '../systems/etherium';
 import { etherDeserved } from '../systems/prestige';
+import { taskAbsence } from '../systems/tasks';
 import { gameRandom } from './random';
 import { recordOnce } from './history';
 import type { GameState } from './state';
@@ -45,7 +46,12 @@ export interface AwayReport {
 export const passTime = (state: GameState, seconds: number, mode: 'away' | 'pause'): AwayReport => {
   const share = mode === 'away' ? awayShare(state) : 1;
   const counted = maxAwaySeconds(state);
-  const before = { pages: state.totalPagesRead, ether: etherDeserved(state), rareBooks: Object.keys(state.rareBooks).length, seals: Object.keys(state.seals).length };
+  const before = {
+    pages: state.totalPagesRead,
+    ether: etherDeserved(state),
+    rareBooks: Object.keys(state.rareBooks).length,
+    seals: Object.keys(state.seals).length,
+  };
   const book = { index: state.booksFinished, page: state.bookPage };
   if (mode === 'away') {
     gainPages(state, pagesPerSecond(state) * Math.min(seconds, counted) * share);
@@ -67,6 +73,7 @@ export const passTime = (state: GameState, seconds: number, mode: 'away' | 'paus
   // Les récits des livres refermés sans être vus : le premier gardé, le Grand Livre arrivé en main.
   if (state.booksFinished > 0) tellLore(state, 'firstBookKept');
   meetStrangeBook(state);
+  if (mode === 'away') taskAbsence(state, seconds);
   if (mode === 'away' && seconds >= FULL_NIGHT) sealEvent(state, 'fullNight');
   checkSeals(state);
   if (state.settings.autoTurn && seconds >= TOLD_ABSENCE) recordOnce(state, 'firstAbsence');

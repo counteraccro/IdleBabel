@@ -17,6 +17,19 @@ export type ColoringZones = Readonly<Record<string, readonly string[]>>;
 export const drawingDone = (state: GameState, drawing: string, zones: ColoringZones): boolean =>
   (zones[drawing] ?? []).every((zone) => state.coloring[drawing]?.[zone] !== undefined);
 
+/** Les zones des dessins, données par la bibliothèque (ui/rareBooks/coloring) : de quoi compter ceux qui sont finis. */
+let zonesSource: (() => ColoringZones) | null = null;
+export const setColoringZones = (source: () => ColoringZones): void => {
+  zonesSource = source;
+};
+
+/** Les dessins coloriés en entier (la tâche « Colorie les neuf dessins ») ; sans leurs zones, tous ou aucun (son sceau). */
+export const drawingsDone = (state: GameState): number => {
+  if (!zonesSource) return 'coloringAll' in state.seals ? COLORING_DRAWINGS.length : 0;
+  const zones = zonesSource();
+  return COLORING_DRAWINGS.filter(({ id }) => drawingDone(state, id, zones)).length;
+};
+
 /** La zone `zone` du dessin `drawing` prend la couleur `color` (null : la gomme). Renvoie true si elle a changé. */
 export const colorZone = (state: GameState, drawing: string, zone: string, color: string | null, zones: ColoringZones): boolean => {
   const colors = (state.coloring[drawing] ??= {});

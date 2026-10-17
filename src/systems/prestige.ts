@@ -9,6 +9,7 @@ import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor, starAffor
 import { levelOf, maxLevel } from './technologies';
 import { sealEvent } from './seals';
 import { catchMimic } from './mimic';
+import { tasksAfterPrestige } from './tasks';
 import { runHooks } from '../mods/hooks';
 import { rule } from '../mods/quantities';
 import type { GameState } from '../core/state';
@@ -101,6 +102,7 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   // Une méthode secrète, elle, ne s'oublie jamais.
   for (const sentence of SENTENCES)
     if (sentence.kind === 'method' && !sentence.secret && !kept.includes(sentence.id)) delete state.written[sentence.id];
+  tasksAfterPrestige(state);
   state.etheriumInHand = true;
   if (counted) recordOnce(state, 'prestige', String(state.exiles), now);
   runHooks('prestige');

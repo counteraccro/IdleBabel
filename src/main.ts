@@ -21,6 +21,9 @@ import { readGameSeedWith } from './core/random';
 import { mountModApi } from './mods/api';
 import { loadSavedMods } from './mods/loader';
 import { loadCatalog } from './mods/catalog';
+import { taskTouched } from './systems/tasks';
+import { setColoringZones } from './systems/coloring';
+import { coloringZones } from './ui/rareBooks/coloring/coloringDrawings';
 
 const AUTOSAVE_MS = 10_000;
 
@@ -35,6 +38,10 @@ chronicle(state);
 readStrangeTitleWith(() => isDeciphered(state, 'contents'));
 readBonusesWith(anyBonus);
 readReaderNameWith(() => state.playerName);
+setColoringZones(coloringZones);
+// « Laisse le jeu ouvert 1 h sans rien toucher » : la moindre touche ou le moindre geste la fait repartir de zéro.
+for (const type of ['pointerdown', 'keydown', 'wheel'] as const)
+  window.addEventListener(type, () => taskTouched(state), { passive: true, capture: true });
 
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);
 mountSealVisions(state);
