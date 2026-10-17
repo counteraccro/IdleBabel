@@ -22,9 +22,9 @@ const SHELF_SCALE = 2.4;
 const LOUPE_SCALE = 0.88;
 /** Un peu en avant du milieu de la case, tournée vers le lecteur comme dans la maquette. */
 const SET_BACK = 0.42;
-const YAW: Record<RelicId, number> = { loupe: 0.75, astrolabe: 0.12, hourglass: 0.3, pencil: 0.5 };
-/** Le Crayon, un bout de 8 cm, presque rien : un peu plus grand pour qu'on le voie dans sa case. */
-const PENCIL_SCALE = 1.4;
+const YAW: Record<RelicId, number> = { loupe: 0.75, astrolabe: 0.12, hourglass: 0.3, pencil: 0.35 };
+/** Le Crayon, un bout de 8 cm, presque rien : plus grand, pour qu'on le voie dans sa case (les deux tiers de sa largeur). */
+const PENCIL_SCALE = 2.2;
 
 export interface RelicShelf {
   /** La relique sous le rayon (null : aucune). */
