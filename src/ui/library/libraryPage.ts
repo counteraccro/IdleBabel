@@ -30,7 +30,6 @@ import type { GameState } from '../../core/state';
 import { animationNow } from '../animationClock';
 import { TRUE_STORY_BOOK } from '../../data/trueStory';
 import { storyBribes } from '../../systems/etherium';
-import { trueStoryOpensAt } from '../rareBooks/trueStory/trueStoryPages';
 import { writeDigits } from '../../core/format';
 import { ENDING_TOMES, fakeEndingsFound } from '../../systems/endings';
 import { relicEnvironment } from '../relics/relicModels';
@@ -41,12 +40,12 @@ import {
   ENDINGS_HEIGHT,
   LOW_FLOOR,
   STAND_FLOOR,
-  TOMES,
   TOME_FLOOR,
   TOME_FRONT,
   createEndingsShelf,
 } from './endingsShelf3d';
 import { createTome, type Tome } from './endingsTome';
+import { TOMES } from '../../data/sagaTomes';
 import { createLotteryMachine } from './lotteryMachine3d';
 import { drawResults } from './lotteryText';
 import { lastLotteryDraw, settleLottery, startLottery } from '../../systems/lottery';
@@ -67,9 +66,9 @@ export const LIBRARY_CREDITS_BOOK = 'credits';
  */
 export const LIBRARY_FINAL_BOOK = 'final';
 /**
- * « Mon histoire vraie », la fausse fin (14/10) : dès la première étoile du Rideau, elle est le tome 1 du meuble des fins,
- * sur la tranche, qu'on la lise encore ou qu'elle soit finie (le haut est au vrai livre, l'auteur, 16/10). Elle s'ouvre sur
- * sa dernière bribe.
+ * « Qui j'étais » (d'abord « Mon histoire vraie »), la fausse fin (14/10) : dès la première étoile du Rideau, elle est le
+ * tome 1 du meuble des fins, sur la tranche, qu'on la lise encore ou qu'elle soit finie (le haut est au vrai livre, l'auteur,
+ * 16/10). Prise, elle arrive fermée, comme les autres livres (l'auteur, 17/10).
  */
 export const LIBRARY_STORY_BOOK = TRUE_STORY_BOOK;
 /** « Mon histoire vraie » est dans le meuble des fins : une étoile du Rideau au moins est allumée. */
@@ -86,10 +85,7 @@ export const shelfBook3d = (state: GameState, id: string, debugging: boolean): B
       ? debugBook3d()
       : id === LIBRARY_FINAL_BOOK
         ? finalBook3d(state)
-        : id === LIBRARY_STORY_BOOK
-          ? // Le livre lui-même, pas une copie : la page 3D y branche `navigate`, que ses signets et ‹ › appellent.
-            Object.assign(rareBook3d(state, id), { openAt: trueStoryOpensAt(storyBribes(state)) })
-          : rareBook3d(state, id);
+        : rareBook3d(state, id);
 
 /** Le livre qui vole de la vitrine à sa page (et retour) : son nom dans bookFlight. */
 export const libraryFlightId = (id: string): string => `library:${id}`;

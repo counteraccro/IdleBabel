@@ -124,6 +124,3 @@ export const trueStoryLinks = (page: number, count: number): PageLink[] => {
     ...(right !== undefined ? [{ ...band, x: PAGE_TEXTURE.width - ARROW_IN - ARROW_W, target: right }] : []),
   ];
 };
-
-/** La page où le livre s'ouvre : la dernière bribe remontée (la page de titre, sans aucune). */
-export const trueStoryOpensAt = (count: number): number => (count > 0 ? BRIBE_PAGES[Math.min(count, BRIBE_PAGES.length) - 1] : TITLE_PAGE);

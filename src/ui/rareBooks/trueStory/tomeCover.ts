@@ -4,7 +4,7 @@ import '@fontsource/great-vibes/400.css';
 import { messages, t } from '../../../i18n';
 import { seeded } from '../../../core/random';
 import { SCENES } from '../../../scene/scenes';
-import { TOME_SHOTS, tomeIsbn } from '../../../data/sagaTomes';
+import { ROW, TOMES, TOME_SHOTS, tomeIsbn } from '../../../data/sagaTomes';
 import { canvasTexture } from '../../book3d/textures';
 import { CQW, HEIGHT, SANS, SERIF, TITLE, WIDTH, wrap } from '../draw';
 import { canvas } from '../../book3d/leatherCover';
@@ -246,8 +246,8 @@ export const tomeBack = async (index: number): Promise<THREE.CanvasTexture> => {
 /** La toile seule, sans rien (les plats d'un tome rangé sur la tranche, qu'on ne voit pas). */
 export const tomeCloth = (): THREE.CanvasTexture => canvasTexture(cloth(5)[0]);
 
-/** Le dos du tome `index` : son titre couché dans la longueur, élargi pour un dos étroit (`thickness`, la hauteur du livre faisant 1). */
-export const tomeSpine = (index: number, thickness: number): THREE.CanvasTexture => {
+/** La toile du dos et le titre du tome `index` couché dans la longueur, élargi pour un dos étroit (`thickness`, la hauteur du livre faisant 1). */
+const titledCloth = (index: number, thickness: number): HTMLCanvasElement => {
   const [node, context] = cloth(7);
   const stretch = WIDTH / (thickness * 1.4) / HEIGHT;
   context.save();
@@ -260,5 +260,57 @@ export const tomeSpine = (index: number, thickness: number): THREE.CanvasTexture
   context.font = `${7 * CQW}px ${SERIF}`;
   context.fillText(messages().ui.endings.titles[index], 0, 0);
   context.restore();
+  return node;
+};
+
+/** Le dos d'un tome en texture : PX pour la hauteur du livre (sa largeur : l'épaisseur du tome). */
+export const PX = 512;
+/** Le nom de la saga : 0,15 de la hauteur du livre, un peu plus bas que le milieu du bandeau (l'anglaise). */
+const NAME_SIZE = 0.15;
+const NAME_DROP = 10;
+
+/**
+ * Le dos du tome `index` (maquette validée le 16/10, .ai/maquette-meuble-des-fins.html), le même dans le meuble et en main :
+ * comme les dos d'une série de BD, chaque dos porte sa part du nom de la saga (`name`, dans la langue du jeu), écrit d'un
+ * trait sur toute la rangée du meuble, dans un bandeau doré (Great Vibes) ; en bas, le numéro du tome.
+ */
+export const paintTomeSpine = (context: CanvasRenderingContext2D, index: number, name: string): void => {
+  const { x, t } = TOMES[index];
+  const [w, h] = [context.canvas.width, context.canvas.height];
+  context.drawImage(titledCloth(index, t), 0, 0, w, h);
+  // Ce qui court sur toute la rangée : le bandeau sombre, ses deux filets dorés, le nom de la saga.
+  const bandTop = 0.53 * h;
+  const bandHeight = 0.19 * h;
+  context.fillStyle = 'rgba(20, 14, 10, 0.55)';
+  context.fillRect(0, bandTop, w, bandHeight);
+  context.fillStyle = GILT;
+  context.fillRect(0, bandTop - 6, w, 3);
+  context.fillRect(0, bandTop + bandHeight + 3, w, 3);
+  context.save();
+  context.translate(-(x + ROW / 2) * PX + (ROW * PX) / 2, bandTop + bandHeight / 2);
+  context.font = `400 ${NAME_SIZE * PX}px ${SCRIPT}`;
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.scale(Math.min(1, (ROW * PX * 0.9) / context.measureText(name).width), 1);
+  context.fillText(name, 0, NAME_DROP);
+  context.restore();
+  // Le numéro du tome, en bas, dans un petit cercle doré.
+  context.strokeStyle = GILT;
+  context.lineWidth = 2.5;
+  context.beginPath();
+  context.arc(w / 2, h * 0.9, Math.min(w * 0.32, 22), 0, Math.PI * 2);
+  context.stroke();
+  context.font = `600 ${Math.min(w * 0.36, 26)}px ${TITLE}`;
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText(String(index + 1), w / 2, h * 0.9 + 2);
+};
+
+/** Le dos du tome `index` en texture, pour le livre en main : le même que dans le meuble. */
+export const tomeSpine = (index: number): THREE.CanvasTexture => {
+  const node = document.createElement('canvas');
+  node.width = Math.round(TOMES[index].t * PX);
+  node.height = PX;
+  paintTomeSpine(node.getContext('2d')!, index, t('ui.endings.collection'));
   return canvasTexture(node);
 };

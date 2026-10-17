@@ -31,6 +31,17 @@ export const TOME_SHOTS: readonly TomeShot[] = [
   { scene: 'verriere', x: 0.5, y: 0.5, zoom: 0.9 },
 ];
 
+/**
+ * Les onze dos (places fixes, de gauche à droite) : leur épaisseur, et leur bord gauche (depuis le milieu du meuble), comme
+ * dans la maquette. Les tomes sont tous de la même hauteur (1, celle d'un livre debout).
+ */
+const SPINES = [0.15, 0.13, 0.16, 0.12, 0.14, 0.15, 0.12, 0.14, 0.13, 0.16, 0.13];
+const GAP = 0.012;
+export const ROW = SPINES.reduce((sum, t) => sum + t, 0) + GAP * (SPINES.length - 1);
+export const TOMES: { x: number; t: number }[] = SPINES.reduce<{ x: number; t: number }[]>(
+  (tomes, t) => [...tomes, { x: tomes.length ? tomes.at(-1)!.x + tomes.at(-1)!.t + GAP : -ROW / 2, t }],
+  [],
+);
 /** Le faux ISBN du tome `index` (0 : le tome 1), imprimé sous son code-barres : 978-2-410-… */
 export const tomeIsbn = (index: number): string => {
   const n = String(index + 1).padStart(2, '0');

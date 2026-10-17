@@ -31,17 +31,6 @@ export const LOW_FLOOR = PLINTH;
 export const STAND_FLOOR = TOP_FLOOR;
 export const ENDINGS_FRONT = FRONT;
 
-/**
- * Les onze dos (places fixes, de gauche à droite) : leur épaisseur, et leur bord gauche (depuis le milieu du meuble), comme
- * dans la maquette. Les tomes sont tous de la même hauteur (1, celle d'un livre debout).
- */
-const SPINES = [0.15, 0.13, 0.16, 0.12, 0.14, 0.15, 0.12, 0.14, 0.13, 0.16, 0.13];
-const GAP = 0.012;
-export const ROW = SPINES.reduce((sum, t) => sum + t, 0) + GAP * (SPINES.length - 1);
-export const TOMES: { x: number; t: number }[] = SPINES.reduce<{ x: number; t: number }[]>(
-  (tomes, t) => [...tomes, { x: tomes.length ? tomes.at(-1)!.x + tomes.at(-1)!.t + GAP : -ROW / 2, t }],
-  [],
-);
 /** Les tomes, posés au fond de l'étage du bas, un doigt en retrait du bord. */
 export const TOME_FLOOR = PLINTH;
 export const TOME_FRONT = FRONT - 0.03;
