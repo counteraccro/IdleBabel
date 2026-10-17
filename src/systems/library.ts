@@ -1,10 +1,10 @@
 import { firstBookKept } from './books';
-import { storyBribes } from './etherium';
+import { fakeEndingsFound } from './endings';
 import type { GameState } from '../core/state';
 
-/** Les livres rangés dans la bibliothèque : le premier livre gardé, les livres rares trouvés, et « Mon histoire vraie ». */
+/** Les livres rangés dans la bibliothèque : le premier livre gardé, les livres rares trouvés, et les tomes de « L'histoire de Babel ». */
 export const libraryBookCount = (state: GameState): number =>
-  (firstBookKept(state) ? 1 : 0) + Object.keys(state.rareBooks).length + (storyBribes(state) > 0 ? 1 : 0);
+  (firstBookKept(state) ? 1 : 0) + Object.keys(state.rareBooks).length + fakeEndingsFound(state);
 
 /** Un livre y attend que le joueur vienne le voir : la clé brille. */
 export const libraryHasNews = (state: GameState): boolean => libraryBookCount(state) > state.libraryBooksSeen;

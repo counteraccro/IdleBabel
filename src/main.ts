@@ -13,7 +13,8 @@ import { beyond } from './systems/perception';
 import { mountDebugPanel } from './debug/debugPanel';
 import { isDebugEnabled } from './debug/enabled';
 import { readStrangeTitleWith } from './systems/coverTitle';
-import { isDeciphered } from './systems/decipher';
+import { anyBonus } from './ui/strangeBook/bonuses';
+import { isDeciphered, readBonusesWith } from './systems/decipher';
 import { readReaderNameWith } from './systems/readerName';
 import { chronicle } from './systems/chronicle';
 import { readGameSeedWith } from './core/random';
@@ -32,6 +33,7 @@ onResume((seconds) => pauseEnded(state, seconds));
 // Le livre de la fin est à jour avant qu'une vue ne le lise (sauvegarde d'avant ses moments, absence).
 chronicle(state);
 readStrangeTitleWith(() => isDeciphered(state, 'contents'));
+readBonusesWith(anyBonus);
 readReaderNameWith(() => state.playerName);
 
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);

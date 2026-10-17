@@ -32,9 +32,15 @@ import type { GameState } from '../core/state';
 
 // Ce que font la Plume et les intuitions, au niveau `level` (le sien par défaut).
 
+/** Le Guet seul : ce qu'il fait à l'attente entre deux lettres (le chapitre « Bonus » du Grand Livre le montre). */
+export const watchFactor = (state: GameState, level = levelOf(state, 'watch')): number => 1 - WATCH_STEP * level;
+
+/** La Lettre comprise seule : ce qu'elle fait à la durée des bonus. */
+export const understoodFactor = (state: GameState, level = levelOf(state, 'letterUnderstood')): number => 1 + UNDERSTOOD_STEP * level;
+
 /** Le Guet, la Plume et l'Astrolabe : l'attente entre deux lettres, en secondes. */
 export const letterWait = (state: GameState, level = levelOf(state, 'watch')): { min: number; max: number } => {
-  const factor = letterWaitFactor(state) * (1 - WATCH_STEP * level) * relicLetterWait(state) * modded('letterWait');
+  const factor = letterWaitFactor(state) * watchFactor(state, level) * relicLetterWait(state) * modded('letterWait');
   return { min: LETTER_WAIT.min * factor, max: LETTER_WAIT.max * factor };
 };
 
@@ -44,7 +50,7 @@ export const letterStays = (state: GameState, level = levelOf(state, 'heldBreath
 
 /** La Lettre comprise et la Plume : ce qu'elles font à la durée des bonus. */
 export const boonLength = (state: GameState, level = levelOf(state, 'letterUnderstood')): number =>
-  boonLengthFactor(state) * (1 + UNDERSTOOD_STEP * level) * modded('boonLength');
+  boonLengthFactor(state) * understoodFactor(state, level) * modded('boonLength');
 
 /** La durée d'un bonus, en secondes ; aucune s'il agit d'un coup. */
 export const boonSeconds = (state: GameState, id: BoonId, level?: number): number | undefined => {

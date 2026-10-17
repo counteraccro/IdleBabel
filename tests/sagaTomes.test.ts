@@ -3,6 +3,10 @@ import { createInitialState } from '../src/core/state';
 import { SAGA_TOMES, tomeIndex } from '../src/data/sagaTomes';
 import { TRUE_STORY_BOOK } from '../src/data/trueStory';
 import { ENDING_TOMES, fakeEndingsFound, tomeFound } from '../src/systems/endings';
+import { SENTENCES } from '../src/data/sentences';
+import { SEALS } from '../src/data/seals';
+import { HINTS_LATER } from '../src/data/anomalies';
+import { isComplete, segments, write } from '../src/systems/sentences';
 import fr from '../src/i18n/fr/ui.json';
 import en from '../src/i18n/en/ui.json';
 
@@ -26,5 +30,20 @@ describe('« L’histoire de Babel » : les onze tomes', () => {
     expect(tomeFound(state, 10)).toBe(true);
     expect(tomeFound(state, 1)).toBe(false);
     expect(fakeEndingsFound(state)).toBe(2);
+  });
+});
+
+describe('« Pas celui-ci. » attend le tome 11', () => {
+  it('son indice ne tombe pas, et les sceaux « tout écrire » s’obtiennent sans lui', () => {
+    const state = createInitialState('fr', 0, 1);
+    for (const sentence of SENTENCES)
+      if (!HINTS_LATER.includes(sentence.id))
+        write(
+          state,
+          sentence.id,
+          segments(sentence.id).map((_, index) => index),
+        );
+    expect(isComplete(state, 'hintNotThisOne')).toBe(false);
+    for (const id of ['whiteBookFull', 'anomalies-hints']) expect(SEALS.find((seal) => seal.id === id)!.reached(state)).toBe(true);
   });
 });

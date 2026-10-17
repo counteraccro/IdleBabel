@@ -4,13 +4,22 @@ import { loreTold, tellLore } from './lore';
 import type { GameState } from '../core/state';
 
 /**
+ * Le chapitre « Bonus » paraît dès qu'un bonus agit (ui/strangeBook/bonuses.ts, anyBonus) : branché au démarrage (comme
+ * readStrangeTitleWith), pour que son étoile et sa lecture suivent le chapitre lui-même (revue de code, 17/10).
+ */
+let bonusesShown: (state: GameState) => boolean = () => true;
+export const readBonusesWith = (shown: (state: GameState) => boolean): void => {
+  bonusesShown = shown;
+};
+
+/**
  * Les chapitres « Raretés » et « Éther » n'existent qu'une fois le premier livre rare trouvé, le premier Éther reçu ; « Bonus »,
- * une fois un premier sceau ou une première intuition (ce qui fait d'abord paraître son relevé) : pas d'étoile avant.
+ * qu'une fois un bonus en action : pas d'étoile avant.
  */
 const exists = (state: GameState, part: PartId): boolean => {
   if (part === 'rareBooks') return Object.keys(state.rareBooks).length > 0;
   if (part === 'ether') return state.etherReceived > 0;
-  if (part === 'bonus') return Object.keys(state.seals).length > 0 || Object.values(state.technologies).some((level) => (level ?? 0) > 0);
+  if (part === 'bonus') return bonusesShown(state);
   return true;
 };
 

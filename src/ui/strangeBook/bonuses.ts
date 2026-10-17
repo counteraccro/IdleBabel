@@ -1,6 +1,6 @@
 import { getLocale, t } from '../../i18n';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
-import { TOOLS } from '../../data/tools';
+import { DIGITAL_AGE, TOOLS } from '../../data/tools';
 import { FLAIR_LEVELS } from '../../data/technologies';
 import { filterMultiplier, gestureMultiplier, levelOf, rareChance, toolPriceFactor, clickShare } from '../../systems/technologies';
 import {
@@ -25,12 +25,11 @@ import { hookProduct } from '../../mods/hooks';
 import { modded } from '../../mods/quantities';
 import { relicName } from '../relics/relicText';
 import { pagesPerSecond } from '../../systems/production';
-import { pagesPerClick } from '../../systems/click';
+import { clickParts, pagesPerClick } from '../../systems/click';
 import { findChance, findKnowledge } from '../../systems/knowledge';
 import { nextRareChance } from '../../systems/rareBooks';
 import { RARE_BOOKS } from '../../data/rareBooks';
-import { boonLength, letterWait } from '../../systems/letter';
-import { UNDERSTOOD_STEP, WATCH_STEP } from '../../data/letter';
+import { boonLength, letterWait, understoodFactor, watchFactor } from '../../systems/letter';
 import type { Figure } from './chapters';
 import type { GameState } from '../../core/state';
 
@@ -42,16 +41,41 @@ import type { GameState } from '../../core/state';
  */
 
 /** ×1,05 · ×0,98 · ×410 · ×1,2e12 : deux décimales tant que le facteur est petit (sinon un sceau ferait ×1). */
-const boost = (value: number): string =>
+export const boost = (value: number): string =>
   `×${value < 1000 ? writeDigits(new Intl.NumberFormat(getLocale(), { maximumFractionDigits: 2 }).format(value)) : formatNumber(value, getLocale())}`;
 const plusPercent = (value: number): string =>
   `+${writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(value))}`;
 
-/** Les intuitions des méthodes, en moyenne pesée par ce que lit chacune (comme la décomposition de la vitesse de lecture). */
+/**
+ * Ce que lisent les méthodes d'elles-mêmes, avec leurs intuitions, et avec en plus le Minitel pour celles de l'Âge Numérique :
+ * les intuitions et le Minitel en moyenne, pesés par ce que lit chacune. La décomposition de la vitesse de lecture
+ * (chapters.ts) s'en sert aussi.
+ */
+export const methodReading = (state: GameState): { base: number; gestures: number; digital: number } => {
+  const rate = (tool: (typeof TOOLS)[number]): number => state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id);
+  return {
+    base: TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0),
+    gestures: TOOLS.reduce((total, tool) => total + rate(tool), 0),
+    digital: TOOLS.reduce((total, tool) => total + rate(tool) * (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1), 0),
+  };
+};
 const gestures = (state: GameState): number => {
-  const base = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
-  const read = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id), 0);
+  const { base, gestures: read } = methodReading(state);
   return base > 0 ? read / base : 1;
+};
+/** Le Minitel ne fait lire plus vite que les méthodes de l'Âge Numérique : sa part de toute la lecture. */
+const digitalShare = (state: GameState): number => {
+  const { gestures: read, digital } = methodReading(state);
+  return read > 0 ? digital / read : 1;
+};
+
+/**
+ * Ce que fait au clic entier un facteur qui ne multiplie que la feuille (l'Éther, le Sablier, Quatre cent dix) : la part de la
+ * production d'une seconde, elle, ne bouge pas (revue de code, 17/10).
+ */
+const onLeaf = (state: GameState, factor: number): number => {
+  const { leaf, share } = clickParts(state);
+  return leaf + share > 0 ? (leaf + share) / (leaf / factor + share) : factor;
 };
 
 const flair = (state: GameState): number => FLAIR_LEVELS[0] / FLAIR_LEVELS[Math.min(levelOf(state, 'flair'), FLAIR_LEVELS.length - 1)];
@@ -87,7 +111,7 @@ const addRow = (
 export const BONUS_FIGURES: Figure[] = [
   factorRow('reading', 'readingIntuitions', 'tedu ralvi', gestures),
   factorRow('reading', 'readingEtherium', 'etra lomi', readingMultiplier),
-  factorRow('reading', 'readingDigital', 'etra numel', digitalMultiplier),
+  factorRow('reading', 'readingDigital', 'etra numel', digitalShare),
   factorRow('reading', 'readingEther', 'etra dulvo', etherReading),
   factorRow('reading', 'readingStory', 'vuntal babel', storyMultiplier),
   factorRow('reading', 'readingLetter', 'lettra vimo', readingBoon),
@@ -103,9 +127,9 @@ export const BONUS_FIGURES: Figure[] = [
 
   addRow('click', 'clickShare', 'zo selim mao', clickShare, plusPercent),
   factorRow('click', 'clickEtherium', 'etra mano', handsMultiplier),
-  factorRow('click', 'clickEther', 'etra dulvo', etherReading),
-  { ...factorRow('click', 'clickRelic', 'relva sablo', relicReading), label: () => relicName('hourglass') },
-  factorRow('click', 'clickLetter', 'lettra vimo', () => clickBoon() * fourTen()),
+  factorRow('click', 'clickEther', 'etra dulvo', (s) => onLeaf(s, etherReading(s))),
+  { ...factorRow('click', 'clickRelic', 'relva sablo', (s) => onLeaf(s, relicReading(s))), label: () => relicName('hourglass') },
+  factorRow('click', 'clickLetter', 'lettra vimo', (s) => clickBoon() * onLeaf(s, fourTen())),
   factorRow('click', 'clickMods', 'modo vel', () => hookProduct('click') * modded('click')),
 
   factorRow('finds', 'findIntuitions', 'tedu ralvi', filterMultiplier),
@@ -131,7 +155,7 @@ export const BONUS_FIGURES: Figure[] = [
   factorRow('price', 'priceLetter', 'lettra vimo', () => priceBoon()),
   factorRow('price', 'priceMods', 'modo vel', () => modded('methodCost')),
 
-  factorRow('letterWait', 'letterWaitIntuitions', 'tedu ralvi', (s) => 1 - WATCH_STEP * levelOf(s, 'watch')),
+  factorRow('letterWait', 'letterWaitIntuitions', 'tedu ralvi', watchFactor),
   factorRow('letterWait', 'letterWaitEtherium', 'etra pluma', letterWaitFactor),
   {
     ...factorRow('letterWait', 'letterWaitRelic', 'relva astro', relicLetterWait),
@@ -139,7 +163,7 @@ export const BONUS_FIGURES: Figure[] = [
   },
   factorRow('letterWait', 'letterWaitMods', 'modo vel', () => modded('letterWait')),
 
-  factorRow('boonLength', 'boonLengthIntuitions', 'tedu ralvi', (s) => 1 + UNDERSTOOD_STEP * levelOf(s, 'letterUnderstood')),
+  factorRow('boonLength', 'boonLengthIntuitions', 'tedu ralvi', understoodFactor),
   factorRow('boonLength', 'boonLength', 'etra pluma dur', boonLengthFactor),
   factorRow('boonLength', 'boonLengthMods', 'modo vel', () => modded('boonLength')),
 ];

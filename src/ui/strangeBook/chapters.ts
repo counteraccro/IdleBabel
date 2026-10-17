@@ -1,14 +1,13 @@
 import { getLocale, t } from '../../i18n';
 import { formatNumber, writeDigits } from '../../core/format';
-import { DIGITAL_AGE, TOOLS } from '../../data/tools';
+import { TOOLS } from '../../data/tools';
 import { PAGES_PER_BOOK } from '../../systems/books';
 import { pagesPerSecond } from '../../systems/production';
 import { meaningfulCovers } from '../../systems/stats';
 import { findChance } from '../../systems/knowledge';
 import { BASE_FIND_CHANCE, type FindKind } from '../../data/knowledge';
-import { filterMultiplier, gestureMultiplier, rareChance } from '../../systems/technologies';
+import { filterMultiplier, rareChance } from '../../systems/technologies';
 import {
-  digitalMultiplier,
   etherCounted,
   etherReading,
   findsMultiplier,
@@ -28,7 +27,7 @@ import { nextEtherPages, nextEtherProgress, prestigeGain } from '../../systems/p
 import { relicBonus, relicReading } from '../../systems/relics';
 import { mimicReading } from '../../systems/mimic';
 import { relicName } from '../relics/relicText';
-import { anyBonus, BONUS_FIGURES } from './bonuses';
+import { anyBonus, BONUS_FIGURES, boost, methodReading } from './bonuses';
 import type { PartId } from '../../data/decipher';
 import type { GameState } from '../../core/state';
 
@@ -83,7 +82,8 @@ const percent = (value: number): string =>
 /** Les très petites chances gardent leurs chiffres : 0,0037 %, pas 0 %. */
 const smallPercent = (value: number): string =>
   writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumSignificantDigits: 2 }).format(value));
-const factor = (value: number): string => `×${formatNumber(value, getLocale())}`;
+/** Les facteurs de la vitesse de lecture et de la chance de trouvaille, à deux décimales comme dans le chapitre « Bonus » (×1,15, pas ×1,1). */
+const factor = boost;
 
 /**
  * La chance de trouvaille, décomposée : le hasard, × les intuitions (le filtre sémantique), × les sceaux ; puis, après un
@@ -106,10 +106,7 @@ const findChanceParts = (state: GameState, readable: boolean): string | string[]
  * Rideau entier allumé (« Qui j'étais », le tome 1 : +15 %, à part, 17/10 ; d'abord ×2, 14/10).
  */
 const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
-  const base = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
-  const rate = (tool: (typeof TOOLS)[number]): number => state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id);
-  const gestures = TOOLS.reduce((total, tool) => total + rate(tool), 0);
-  const digital = TOOLS.reduce((total, tool) => total + rate(tool) * (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1), 0);
+  const { base, gestures, digital } = methodReading(state);
   const prestiged = state.etherReceived > 0;
   const parts = [
     formatNumber(base, getLocale()),

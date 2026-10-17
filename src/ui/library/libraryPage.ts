@@ -1,14 +1,14 @@
 import './library.css';
 import * as THREE from 'three';
 import { el, type Component } from '../dom';
-import { messages, t } from '../../i18n';
+import { getLocale, messages, t } from '../../i18n';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { isRareBookFound } from '../../systems/rareBooks';
 import { firstBookKept } from '../../systems/books';
 import { sealEvent } from '../../systems/seals';
 import { keptBook3d } from '../book3d/handBook3d';
 import { createBookMesh } from '../book3d/bookMesh';
-import { createBookRenderer } from '../book3d/renderer3d';
+import { createBookRenderer, disposeObject } from '../book3d/renderer3d';
 import { createLighting } from '../book3d/lighting';
 import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { visibleBox } from '../book3d/visibleBox';
@@ -18,7 +18,7 @@ import { CORNICE_FRONT, CORNICE_MIDDLE, DEBUG_CELL, FILL_ORDER, FRONT, MORE_FILL
 import { finalBook3d } from '../finalBook/finalBook3d';
 import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
-import { addCellLights } from './cellLights';
+import { addCellLights, type CellLights } from './cellLights';
 import { createRelicShelf } from '../relics/relicShelf';
 import { createCartouche, cartoucheText } from './cartouche';
 import { RELICS } from '../../data/relics';
@@ -332,45 +332,21 @@ export const createLibraryPage = (
       : [],
   );
   const places = [...shelfPlaces, ...easelPlaces, ...tomePlaces];
-  // Un tome rangé : son vrai modèle, comme les livres de la vitrine (l'auteur, 17/10), debout, le dos vers le lecteur ; son
-  // coin bas-droit-avant à sa place. Sans voisin d'un côté, on voit ses plats de biais (sinon, ils restent en petit).
-  for (const place of tomePlaces) {
-    const index = tomeIndex(place.id);
-    const alone = !tomeFound(state, index - 1) || !tomeFound(state, index + 1);
-    const book = shelfBook3d(state, place.id, debugging);
-    place.tick = book.tick;
-    const tomeSpot: ShelfPlace = { id: place.id, cell: -1, pose: 'stand', x: 0, y: 0, width: 0, depth: 0, yaw: 0, lean: 0 };
-    void book.look().then((look) => {
-      if (!root.isConnected && mounted) return;
-      const mesh = createBookMesh(book.shape, shelfLook(look, tomeSpot, alone));
-      mesh.setOpen(0);
-      const turn = new THREE.Group();
-      mesh.root.rotation.y = Math.PI / 2;
-      turn.add(mesh.root);
-      turn.updateMatrixWorld(true);
-      const box = visibleBox(mesh.root);
-      turn.position.set(-box.max.x, -box.min.y, -box.max.z);
-      mesh.root.traverse((object) => {
-        if (object instanceof THREE.Mesh) object.castShadow = object.receiveShadow = true;
-      });
-      const holder = new THREE.Group();
-      holder.add(turn);
-      holder.position.copy(place.pivot);
-      endings.cellLights.light(holder);
-      scene.add(holder);
-      place.holder = holder;
-      place.book = mesh.root;
-      dirty = true;
-    });
-  }
-  // Les livres trouvés : leur vrai modèle, chargé à part (couvertures, polices).
-  for (const place of shelfPlaces) {
-    const spot = place.spot!;
+  /**
+   * Un livre posé à sa place `spot` : son vrai modèle, chargé à part (couvertures, polices), le dos vers le lecteur, éclairé
+   * par les spots de son meuble (`lights`). `flanks` : un tome sans voisin d'un côté, dont on voit les plats de biais. Reposé
+   * (la langue a changé), ce qui arrive encore de la pose d'avant est jeté.
+   */
+  const tickets = new Map<Place, number>();
+  const placeBook = (place: Place, spot: ShelfPlace, lights: CellLights, flanks = false): void => {
+    const ticket = (tickets.get(place) ?? 0) + 1;
+    tickets.set(place, ticket);
     const book = shelfBook3d(state, spot.id, debugging);
     place.tick = book.tick;
     void book.look().then((look) => {
       if (!root.isConnected && mounted) return;
-      const mesh = createBookMesh(book.shape, shelfLook(look, spot));
+      const mesh = createBookMesh(book.shape, shelfLook(look, spot, flanks));
+      if (tickets.get(place) !== ticket) return disposeObject(mesh.root);
       mesh.setOpen(0);
       const standing = spot.pose === 'stand';
       // Le dos vers le lecteur : debout, ou couché sur le plat (tourné d'un quart de tour dans son plan).
@@ -391,13 +367,39 @@ export const createLibraryPage = (
       const holder = new THREE.Group();
       holder.add(tilt);
       holder.position.copy(place.pivot);
-      cellLights.light(holder);
+      lights.light(holder);
       scene.add(holder);
       place.holder = holder;
       place.book = mesh.root;
       dirty = true;
     });
-  }
+  };
+  // Les livres trouvés de la vitrine.
+  for (const place of shelfPlaces) placeBook(place, place.spot!, cellLights);
+  // Les tomes rangés, comme les livres de la vitrine (l'auteur, 17/10), debout ; leurs plats et leur dos sont écrits dans la
+  // langue du jeu : ils sont reposés quand elle change (sauf celui qu'on a pris).
+  let tomesLocale = getLocale();
+  const placeTome = (place: Place): void => {
+    const index = tomeIndex(place.id);
+    const alone = !tomeFound(state, index - 1) || !tomeFound(state, index + 1);
+    const spot: ShelfPlace = { id: place.id, cell: -1, pose: 'stand', x: 0, y: 0, width: 0, depth: 0, yaw: 0, lean: 0 };
+    placeBook(place, spot, endings.cellLights, alone);
+  };
+  tomePlaces.forEach(placeTome);
+  const relabelTomes = (): void => {
+    if (getLocale() === tomesLocale) return;
+    tomesLocale = getLocale();
+    for (const place of tomePlaces) {
+      if (place.id === opened) continue;
+      if (place.holder) {
+        scene.remove(place.holder);
+        disposeObject(place.holder);
+      }
+      place.holder = null;
+      place.book = null;
+      placeTome(place);
+    }
+  };
   // Le vrai livre : de face, sa couverture vers le lecteur, penché contre le chevalet, sur sa lèvre.
   if (easelPlaces[0]) {
     const place = easelPlaces[0];
@@ -686,6 +688,7 @@ export const createLibraryPage = (
         machine.relabel();
         dirty = true;
       }
+      relabelTomes();
       arrowTitles();
       if (hovered) caption.textContent = label(hovered);
     },
