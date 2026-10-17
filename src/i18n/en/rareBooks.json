@@ -1081,9 +1081,7 @@
             },
             {
               "heading": "Fixes",
-              "items": [
-                "Erasing the save also removes the mods: the new game starts without any."
-              ]
+              "items": ["Erasing the save also removes the mods: the new game starts without any."]
             }
           ]
         },
@@ -2597,6 +2595,14 @@
             "With them, the game moved to Alpha 2.3."
           ]
         },
+        "babelStory": {
+          "head": "The Story of Babel",
+          "text": [
+            "The collection changed its name. “The True Ending” said too plainly what it was. It is now called “The Story of Babel”: eleven volumes, a single story, told in fragments, like the first one. The more of them you shelve, the more you believe you hold it.",
+            "“My True Story” became volume 1, “Who I Was”. At the top of each cover, a single word: “Truth”. An author, or a subtitle: no one knows.",
+            "From the front, they are old books: brown cloth, a gilt title, the spine’s band running across the cover, the number in Roman numerals. From the back, they are books of today: a room of the Library printed full-bleed, a blurb, a barcode. Two other covers were set aside: the title in cream above the band, and the collection’s name as a label, at the very top."
+          ]
+        },
         "thisBook": {
           "head": "This book",
           "text": [
@@ -2653,6 +2659,8 @@
         "endlessBook-c": "The maze of numbers",
         "coloring-b": "The school exercise book",
         "coloring-c": "The cover to colour in",
+        "trueStory-a": "The title in cream",
+        "trueStory-c": "The label at the top",
         "credits-a": "The colophon",
         "credits-b": "The ledger",
         "idleBabel-a": "The seal",
@@ -2714,8 +2722,8 @@
     "cover": ["Debug"]
   },
   "trueStory": {
-    "name": "My True Story",
-    "cover": ["My True", "Story"],
+    "name": "Who I Was",
+    "cover": ["Who I Was"],
     "page": "page {n}",
     "bribes": [
       "…I was seven… a cup, the left rim… it slipped from my hands by the window, because of the lime tree tapping on the glass… Mum kept it anyway. Ever since, I always drink from the chipped side.",

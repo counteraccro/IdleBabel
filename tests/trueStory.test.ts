@@ -61,3 +61,23 @@ describe('« Mon histoire vraie », la fausse fin', () => {
     expect(starById('curtain.br')?.after).toBe('curtain.r');
   });
 });
+
+describe('« L’histoire de Babel », la saga (17/10)', () => {
+  it('onze tomes : un titre, un résumé (phrase + éditeur), une salle chacun, en français et en anglais', async () => {
+    const { TOME_SHOTS, tomeIsbn } = await import('../src/data/sagaTomes');
+    const { ENDING_TOMES } = await import('../src/systems/endings');
+    const uiFr = (await import('../src/i18n/fr/ui.json')).default.endings;
+    const uiEn = (await import('../src/i18n/en/ui.json')).default.endings;
+    expect(TOME_SHOTS).toHaveLength(ENDING_TOMES);
+    for (const ui of [uiFr, uiEn]) {
+      expect(ui.titles).toHaveLength(ENDING_TOMES);
+      expect(ui.blurbs).toHaveLength(ENDING_TOMES);
+      for (const blurb of ui.blurbs) expect(blurb).toHaveLength(2);
+    }
+    // Le tome 1 est « Qui j'étais » : le même titre partout.
+    expect(fr.trueStory.name).toBe(uiFr.titles[0]);
+    expect(en.trueStory.name).toBe(uiEn.titles[0]);
+    expect(tomeIsbn(0)).toBe('978-2-410-00014-1');
+    expect(new Set(TOME_SHOTS.map((_, i) => tomeIsbn(i))).size).toBe(ENDING_TOMES);
+  });
+});

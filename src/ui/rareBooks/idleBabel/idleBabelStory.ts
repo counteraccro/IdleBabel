@@ -58,6 +58,7 @@ export const BOOK_DRAFTS: Record<string, string[]> = {
   rabbit: ['rabbit-a2', 'rabbit-a3'],
   endlessBook: ['endlessBook-b', 'endlessBook-c'],
   coloring: ['coloring-b', 'coloring-c'],
+  trueStory: ['trueStory-a', 'trueStory-c'],
 };
 
 /** Les pistes écartées hors livres : les fenêtres, les méthodes, la vitrine… */
@@ -163,6 +164,7 @@ export const STORY: StoryChapter[] = [
       { key: 'feeding' },
       { key: 'falseEnding' },
       { key: 'endingsShelf' },
+      { key: 'babelStory', plates: ['trueStory'] },
     ],
   },
 ];

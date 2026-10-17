@@ -1090,9 +1090,7 @@
             },
             {
               "heading": "Corrections",
-              "items": [
-                "Effacer la sauvegarde supprime aussi les mods : la nouvelle partie commence sans aucun."
-              ]
+              "items": ["Effacer la sauvegarde supprime aussi les mods : la nouvelle partie commence sans aucun."]
             }
           ]
         },
@@ -2597,6 +2595,14 @@
             "Avec eux, le jeu est passé en Alpha 2.3."
           ]
         },
+        "babelStory": {
+          "head": "L’histoire de Babel",
+          "text": [
+            "La collection a changé de nom. « La Vraie Fin » disait trop bien ce qu’elle était. Elle s’appelle désormais « L’histoire de Babel » : onze tomes, une seule histoire, racontée en bribes, comme le premier. Plus on en range, plus on croit la tenir.",
+            "« Mon histoire vraie » est devenue le tome 1, « Qui j’étais ». En haut de chaque plat, un seul mot : « Vérité ». Un auteur, ou un sous-titre : on ne sait pas.",
+            "De face, ce sont des livres anciens : la toile brune, le titre doré, le bandeau du dos qui traverse le plat, le numéro en chiffres romains. Derrière, ce sont des livres d’aujourd’hui : une salle de la Bibliothèque imprimée à fond perdu, un résumé, un code-barres. Deux autres plats ont été écartés : le titre en crème au-dessus du bandeau, et le nom de la collection en étiquette, tout en haut."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [
@@ -2653,6 +2659,8 @@
         "endlessBook-c": "Le labyrinthe de numéros",
         "coloring-b": "Le cahier d’écolier",
         "coloring-c": "La couverture à colorier",
+        "trueStory-a": "Le titre en crème",
+        "trueStory-c": "L’étiquette en haut",
         "credits-a": "L’achevé d’imprimer",
         "credits-b": "Le registre",
         "idleBabel-a": "Le sceau",
@@ -2714,8 +2722,8 @@
     "cover": ["Débogage"]
   },
   "trueStory": {
-    "name": "Mon histoire vraie",
-    "cover": ["Mon histoire", "vraie"],
+    "name": "Qui j’étais",
+    "cover": ["Qui j’étais"],
     "page": "page {n}",
     "bribes": [
       "…j’avais sept ans… une tasse, le bord gauche… elle m’a glissé des mains devant la fenêtre, à cause du tilleul qui frappait la vitre… Maman l’a gardée quand même. Depuis, je bois toujours du côté de l’ébréchure.",

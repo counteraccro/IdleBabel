@@ -766,47 +766,47 @@
     "curtain": {
       "c0": {
         "name": "Le milieu de la tringle",
-        "value": "Mon histoire vraie ·",
+        "value": "Qui j’étais ·",
         "effect": "une bribe de plus"
       },
       "lm": {
         "name": "La tringle, à gauche",
-        "value": "Mon histoire vraie ·",
+        "value": "Qui j’étais ·",
         "effect": "une bribe de plus"
       },
       "rm": {
         "name": "La tringle, à droite",
-        "value": "Mon histoire vraie ·",
+        "value": "Qui j’étais ·",
         "effect": "une bribe de plus"
       },
       "l": {
         "name": "Le bout gauche de la tringle",
-        "value": "Mon histoire vraie ·",
+        "value": "Qui j’étais ·",
         "effect": "une bribe de plus"
       },
       "r": {
         "name": "Le bout droit de la tringle",
-        "value": "Mon histoire vraie ·",
+        "value": "Qui j’étais ·",
         "effect": "une bribe de plus"
       },
       "blm": {
         "name": "Le bas d’un pli, à gauche",
-        "value": "Mon histoire vraie ·",
+        "value": "Qui j’étais ·",
         "effect": "une bribe de plus"
       },
       "brm": {
         "name": "Le bas d’un pli, à droite",
-        "value": "Mon histoire vraie ·",
+        "value": "Qui j’étais ·",
         "effect": "une bribe de plus"
       },
       "bl": {
         "name": "L’ourlet, à gauche",
-        "value": "Mon histoire vraie ·",
+        "value": "Qui j’étais ·",
         "effect": "une bribe de plus"
       },
       "br": {
         "name": "L’ourlet, à droite",
-        "value": "Mon histoire vraie ·",
+        "value": "Qui j’étais ·",
         "effect": "la dernière page"
       }
     }
@@ -836,7 +836,7 @@
   },
   "readingWeight": "+{n} % de lecture : un par Éther reçu, moins au-delà de 5 000",
   "trueStory": {
-    "vision": "Mon histoire vraie · page {n}",
+    "vision": "Qui j’étais · page {n}",
     "end": {
       "title": "Pas celui-ci",
       "text": [

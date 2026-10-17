@@ -2,13 +2,13 @@ import '@fontsource/great-vibes/400.css';
 import '@fontsource/cinzel/600.css';
 import * as THREE from 'three';
 import { canvasTexture } from '../book3d/textures';
-import { trueStoryBack, trueStorySpine } from '../rareBooks/trueStory/trueStoryCover';
+import { tomeCloth, tomeSpine } from '../rareBooks/trueStory/tomeCover';
 import { ROW, TOMES, TOME_FLOOR, TOME_FRONT } from './endingsShelf3d';
 
 /**
- * Un tome de la collection « La Vraie Fin » (maquette validée le 16/10, .ai/maquette-meuble-des-fins.html) : comme les dos
+ * Un tome de la collection « L'histoire de Babel » (d'abord « La Vraie Fin ») (maquette validée le 16/10, .ai/maquette-meuble-des-fins.html) : comme les dos
  * d'une série de BD, chaque dos porte sa part du nom de la collection, écrit d'un trait sur toute la rangée, dans un
- * bandeau doré (Great Vibes) ; en bas, le numéro du tome. Toute la collection a la reliure de « Mon histoire vraie ».
+ * bandeau doré (Great Vibes) ; en bas, le numéro du tome. Toute la collection a la reliure du tome 1.
  */
 const PX = 512;
 const GILT = 'rgb(222, 188, 112)';
@@ -17,11 +17,11 @@ const FONT = "'Great Vibes', cursive";
 const NAME_SIZE = 0.15;
 const NAME_DROP = 10;
 
-/** Le dos du tome `index` (0 : « Mon histoire vraie ») ; `name` : le nom de la collection, dans la langue du jeu. */
+/** Le dos du tome `index` (0 : le tome 1, « Qui j'étais ») ; `name` : le nom de la collection, dans la langue du jeu. */
 const paintSpine = (context: CanvasRenderingContext2D, index: number, name: string): void => {
   const { x, t } = TOMES[index];
   const [w, h] = [context.canvas.width, context.canvas.height];
-  const spine = trueStorySpine(t);
+  const spine = tomeSpine(index, t);
   context.drawImage(spine.image as CanvasImageSource, 0, 0, w, h);
   spine.dispose();
   // Ce qui court sur toute la rangée : le bandeau sombre, ses deux filets dorés, le nom de la collection.
@@ -70,7 +70,7 @@ export const createTome = (index: number, name: string): Tome => {
   const context = canvas.getContext('2d')!;
   paintSpine(context, index, name);
   const spine = canvasTexture(canvas);
-  const cover = new THREE.MeshStandardMaterial({ map: trueStoryBack(), roughness: 0.85 });
+  const cover = new THREE.MeshStandardMaterial({ map: tomeCloth(), roughness: 0.85 });
   const pages = new THREE.MeshStandardMaterial({ color: 0xe2d1ab, roughness: 0.9 });
   const geometry = new THREE.BoxGeometry(t, 1, 0.8).translate(t / 2, 0.5, -0.4);
   const mesh = new THREE.Mesh(geometry, [

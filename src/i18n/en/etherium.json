@@ -766,47 +766,47 @@
     "curtain": {
       "c0": {
         "name": "The middle of the rod",
-        "value": "My True Story ·",
+        "value": "Who I Was ·",
         "effect": "one more memory"
       },
       "lm": {
         "name": "The rod, left",
-        "value": "My True Story ·",
+        "value": "Who I Was ·",
         "effect": "one more memory"
       },
       "rm": {
         "name": "The rod, right",
-        "value": "My True Story ·",
+        "value": "Who I Was ·",
         "effect": "one more memory"
       },
       "l": {
         "name": "The left end of the rod",
-        "value": "My True Story ·",
+        "value": "Who I Was ·",
         "effect": "one more memory"
       },
       "r": {
         "name": "The right end of the rod",
-        "value": "My True Story ·",
+        "value": "Who I Was ·",
         "effect": "one more memory"
       },
       "blm": {
         "name": "The foot of a fold, left",
-        "value": "My True Story ·",
+        "value": "Who I Was ·",
         "effect": "one more memory"
       },
       "brm": {
         "name": "The foot of a fold, right",
-        "value": "My True Story ·",
+        "value": "Who I Was ·",
         "effect": "one more memory"
       },
       "bl": {
         "name": "The hem, left",
-        "value": "My True Story ·",
+        "value": "Who I Was ·",
         "effect": "one more memory"
       },
       "br": {
         "name": "The hem, right",
-        "value": "My True Story ·",
+        "value": "Who I Was ·",
         "effect": "the last page"
       }
     }
@@ -836,7 +836,7 @@
   },
   "readingWeight": "+{n}% reading: one per Ether received, less beyond 5,000",
   "trueStory": {
-    "vision": "My True Story · page {n}",
+    "vision": "Who I Was · page {n}",
     "end": {
       "title": "Not this one",
       "text": [

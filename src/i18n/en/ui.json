@@ -89,22 +89,69 @@
   "nextPage": "Next page",
   "knowledge": "Knowledge",
   "library": "The library",
-  "shelfCount": {"books": "{n} books", "booksOne": "1 book", "relics": "{n} relics", "relicsOne": "1 relic"},
-  "endings": {"collection": "The True Ending", "toLibrary": "To the library", "toEndings": "To the shelf of endings"},
+  "shelfCount": { "books": "{n} books", "booksOne": "1 book", "relics": "{n} relics", "relicsOne": "1 relic" },
+  "endings": {
+    "collection": "The Story of Babel",
+    "toLibrary": "To the library",
+    "toEndings": "To the shelf of endings",
+    "author": "Truth",
+    "tome": "Volume {n}",
+    "titles": [
+      "Who I Was",
+      "Whispered About",
+      "The Door",
+      "Inside",
+      "The Way Out",
+      "Like Before",
+      "It Waits for Me",
+      "Once More",
+      "An Answer Without a Question",
+      "Found",
+      "Like Before?"
+    ],
+    "blurbs": [
+      [
+        "“A chipped cup. A key never returned. A voice, at night, on the edge of the bed.”",
+        "Before the Library, there was a childhood. The first volume of The Story of Babel."
+      ],
+      ["“No one said its name. They said: over there.”", "A rumour. People who never come back. A library that does not exist."],
+      ["“It was not there the day before.”", "A door at the end of a hallway known by heart. All it took was to open it."],
+      ["“Hexagons. More hexagons. And books, everywhere.”", "The first day in the Library. Then all the others."],
+      ["“Everyone says there is no way out.”", "There is a path. You only have to accept what it costs."],
+      ["“The coffee tasted the same. The street sounded the same.”", "Coming back. Taking your place again. Pretending."],
+      ["“I see it as soon as I close my eyes.”", "The shelves come back at night. Then by day."],
+      ["“This time, I knew where the door was.”", "Going back where no one returns from. A second time."],
+      ["“Somewhere, a book holds the answer. I never knew the question.”", "Read. Search. Read again."],
+      ["“It fit on a single line.”", "The answer. At last."],
+      ["“The coffee tastes the same. I think.”", "The last volume of The Story of Babel."]
+    ]
+  },
   "lottery": {
     "sign": "LOTTERY",
     "jackpot": "JACKPOT",
-    "nothing": {"title": "NOTHING", "line": "The token is lost."},
-    "gain": {"title": "WIN", "line": "+ {p} pages · + {k} Knowledge", "knowledge": "+ {k} Knowledge"},
+    "nothing": { "title": "NOTHING", "line": "The token is lost." },
+    "gain": { "title": "WIN", "line": "+ {p} pages · + {k} Knowledge", "knowledge": "+ {k} Knowledge" },
     "crushed": "MIMIC CRUSHED",
     "boon": "BONUS",
     "curse": "PENALTY",
     "hours": "{n} h",
     "minutes": "{n} min",
-    "effects": {"all15": "Production ×1.5", "all2": "Production ×2", "all3": "Production ×3", "method10": "{m} ×10", "half": "Production ÷2", "stopped": "{m} stopped", "golden": "The Golden Mimic"},
+    "effects": {
+      "all15": "Production ×1.5",
+      "all2": "Production ×2",
+      "all3": "Production ×3",
+      "method10": "{m} ×10",
+      "half": "Production ÷2",
+      "stopped": "{m} stopped",
+      "golden": "The Golden Mimic"
+    },
     "medal": "Lottery · {e}",
     "token": "+ 1 token",
-    "golden": {"name": "The Golden Mimic", "line": "It cannot be killed. It eats everything you gain, then leaves without giving anything back.", "gone": "Gone, giving nothing back."}
+    "golden": {
+      "name": "The Golden Mimic",
+      "line": "It cannot be killed. It eats everything you gain, then leaves without giving anything back.",
+      "gone": "Gone, giving nothing back."
+    }
   },
   "shelveBook": "Put the book back",
   "firstBook": "My first book",

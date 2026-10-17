@@ -42,7 +42,7 @@
     "nextEther": "pages to read before the next Ether",
     "pagesPerSecondRelic": "the Hourglass {relic}",
     "pagesPerSecondMimic": "the Mimic {mimic}",
-    "pagesPerSecondStory": "My True Story {story}",
+    "pagesPerSecondStory": "Who I Was {story}",
     "relic": "what your relic gives you",
     "relicParts": {
       "loupe": "{name} · Knowledge with every find",

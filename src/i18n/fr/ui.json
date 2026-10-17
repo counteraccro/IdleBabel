@@ -89,22 +89,72 @@
   "nextPage": "Page suivante",
   "knowledge": "Connaissance",
   "library": "La bibliothèque",
-  "shelfCount": {"books": "{n} livres", "booksOne": "1 livre", "relics": "{n} reliques", "relicsOne": "1 relique"},
-  "endings": {"collection": "La Vraie Fin", "toLibrary": "Vers la bibliothèque", "toEndings": "Vers le meuble des fins"},
+  "shelfCount": { "books": "{n} livres", "booksOne": "1 livre", "relics": "{n} reliques", "relicsOne": "1 relique" },
+  "endings": {
+    "collection": "L’histoire de Babel",
+    "toLibrary": "Vers la bibliothèque",
+    "toEndings": "Vers le meuble des fins",
+    "author": "Vérité",
+    "tome": "Tome {n}",
+    "titles": [
+      "Qui j’étais",
+      "On en parlait tout bas",
+      "La porte",
+      "Dedans",
+      "La sortie",
+      "Comme avant",
+      "Elle m’attend",
+      "Encore une fois",
+      "Une réponse sans question",
+      "Trouvée",
+      "Comme avant ?"
+    ],
+    "blurbs": [
+      [
+        "« Une tasse ébréchée. Une clé jamais rendue. Une voix, le soir, au bord du lit. »",
+        "Avant la Bibliothèque, il y avait une enfance. Le premier tome de L’histoire de Babel."
+      ],
+      [
+        "« Personne ne disait son nom. On disait : là-bas. »",
+        "Une rumeur. Des gens qui ne reviennent pas. Une bibliothèque qui n’existe pas."
+      ],
+      ["« Elle n’était pas là la veille. »", "Une porte au fond d’un couloir connu par cœur. Il suffisait de l’ouvrir."],
+      ["« Des hexagones. Encore des hexagones. Et partout, des livres. »", "Le premier jour dans la Bibliothèque. Puis tous les autres."],
+      ["« Tout le monde dit qu’on n’en sort pas. »", "Il existe un chemin. Il faut seulement accepter ce qu’il coûte."],
+      ["« Le café avait le même goût. La rue, le même bruit. »", "Revenir. Reprendre sa place. Faire comme si."],
+      ["« Je la vois dès que je ferme les yeux. »", "Les étagères reviennent la nuit. Puis le jour."],
+      ["« Cette fois, je savais où était la porte. »", "Retourner là d’où personne ne revient. Une deuxième fois."],
+      ["« Quelque part, un livre contient la réponse. Je n’ai jamais su la question. »", "Lire. Chercher. Lire encore."],
+      ["« Elle tenait en une ligne. »", "La réponse. Enfin."],
+      ["« Le café a le même goût. Je crois. »", "Le dernier tome de L’histoire de Babel."]
+    ]
+  },
   "lottery": {
     "sign": "LOTERIE",
     "jackpot": "GROS LOT",
-    "nothing": {"title": "RIEN", "line": "Le jeton est perdu."},
-    "gain": {"title": "GAIN", "line": "+ {p} pages · + {k} de Connaissance", "knowledge": "+ {k} de Connaissance"},
+    "nothing": { "title": "RIEN", "line": "Le jeton est perdu." },
+    "gain": { "title": "GAIN", "line": "+ {p} pages · + {k} de Connaissance", "knowledge": "+ {k} de Connaissance" },
     "crushed": "MIMIC ÉCRASÉE",
     "boon": "BONUS",
     "curse": "MALUS",
     "hours": "{n} h",
     "minutes": "{n} min",
-    "effects": {"all15": "Production ×1,5", "all2": "Production ×2", "all3": "Production ×3", "method10": "{m} ×10", "half": "Production ÷2", "stopped": "{m} arrêté{e}", "golden": "La Mimic dorée"},
+    "effects": {
+      "all15": "Production ×1,5",
+      "all2": "Production ×2",
+      "all3": "Production ×3",
+      "method10": "{m} ×10",
+      "half": "Production ÷2",
+      "stopped": "{m} arrêté{e}",
+      "golden": "La Mimic dorée"
+    },
     "medal": "Loterie · {e}",
     "token": "+ 1 jeton",
-    "golden": {"name": "La Mimic dorée", "line": "On ne peut pas la tuer. Elle mange tout ce qui est gagné, puis s’en va sans rien rendre.", "gone": "Partie, sans rien rendre."}
+    "golden": {
+      "name": "La Mimic dorée",
+      "line": "On ne peut pas la tuer. Elle mange tout ce qui est gagné, puis s’en va sans rien rendre.",
+      "gone": "Partie, sans rien rendre."
+    }
   },
   "shelveBook": "Ranger le livre",
   "firstBook": "Mon premier livre",
