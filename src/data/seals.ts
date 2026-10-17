@@ -14,6 +14,7 @@ import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS, type ToolId } from './tools';
 import { mimicSeconds } from '../systems/mimic';
 import { RELICS } from './relics';
 import { TOKENS_SPENT_STEPS } from './lottery';
+import { ONCE_TASKS } from './tasks';
 import { allLotteryBoons, allLotteryCurses } from '../systems/lotteryEffects';
 import type { ModText } from '../mods/modSeals';
 
@@ -33,6 +34,7 @@ export const PLATES = [
   'mimic',
   'relics',
   'lottery',
+  'tasks',
   'rare',
   'secrets',
   // Les sceaux des mods (src/mods/modSeals.ts) : la planche n'existe qu'avec eux.
@@ -75,6 +77,9 @@ const series = (id: string, plate: PlateId, value: (state: GameState) => number,
 
 /** Les chiffres d'un nombre de pages, tous écrits (jamais « 1e+21 »). */
 const wholeDigits = (value: number): string => (Number.isFinite(value) ? BigInt(Math.floor(value)).toString() : '');
+
+/** Les tâches « une seule fois » faites. */
+const onceDone = (state: GameState): number => Object.values(state.tasks.once).filter((task) => task.done !== undefined).length;
 
 /** Un sceau seul. */
 const seal = (id: string, plate: PlateId, reached: (state: GameState) => boolean): SealDef => ({ id, plate, text: id, reached });
@@ -230,6 +235,13 @@ export const SEALS: readonly SealDef[] = [
 
   // La Loterie (16/10) : les jetons joués, depuis toujours.
   ...series('tokensSpent', 'lottery', (s) => s.lottery.draws, TOKENS_SPENT_STEPS),
+
+  // Les tâches (17/10, .ai/plan-taches.md) : celles du jour faites, depuis toujours ; celles qui ne se font qu'une fois, une,
+  // la moitié, toutes (une phrase par palier).
+  ...series('dailyTasks', 'tasks', (s) => s.tasks.dailyDone, [1, 10, 50, 100, 410, 1000]),
+  ...series('onceTasks', 'tasks', onceDone, [1, ONCE_TASKS.length / 2, ONCE_TASKS.length]).map(
+    (seal): SealDef => ({ ...seal, phrases: true }),
+  ),
 
   // Un sceau par livre rare, apposé quand il arrive en main.
   ...RARE_BOOKS.map((book): SealDef => ({

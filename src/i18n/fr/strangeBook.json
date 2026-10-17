@@ -68,6 +68,7 @@
     "mimic": "La Mimic",
     "relics": "Les reliques",
     "lottery": "La Loterie",
+    "tasks": "Les tâches",
     "rare": "Livres rares",
     "secrets": "Secrets",
     "mods": "Mods"
@@ -104,6 +105,7 @@
     "starsLit": "Allume une étoile",
     "mimicsCaught": "Attrape une Mimic",
     "tokensSpent": "Joue un jeton",
+    "dailyTasks": "Fais une tâche du jour",
     "mimicHours": "Laisse-la manger une heure"
   },
   "seals": {
@@ -271,6 +273,8 @@
     "allEffects": "Le meilleur et le pire, en même temps.",
     "cheat": "Glisse dans la Bibliothèque une page qu'elle n'a pas écrite",
     "tokensSpent": "Joue {n} jetons",
+    "dailyTasks": "Fais {n} tâches du jour",
+    "onceTasks": ["Fais une chose pour de bon", "La moitié : {n} choses faites pour de bon", "Tout : {n} choses faites pour de bon"],
     "mimicsCaught": "Attrape {n} Mimics",
     "mimicBonus": "Reprends-lui {n} de Connaissance de plus",
     "mimicHours": "Laisse-la manger {n} heures",

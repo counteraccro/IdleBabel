@@ -68,6 +68,7 @@
     "mimic": "The Mimic",
     "relics": "Relics",
     "lottery": "The Lottery",
+    "tasks": "Tasks",
     "rare": "Rare books",
     "secrets": "Secrets",
     "mods": "Mods"
@@ -104,6 +105,7 @@
     "starsLit": "Light one star",
     "mimicsCaught": "Catch a Mimic",
     "tokensSpent": "Play a token",
+    "dailyTasks": "Do a task of the day",
     "mimicHours": "Let it eat for an hour"
   },
   "seals": {
@@ -271,6 +273,8 @@
     "allEffects": "The best and the worst, at the same time.",
     "cheat": "Slip into the Library a page it did not write",
     "tokensSpent": "Play {n} tokens",
+    "dailyTasks": "Do {n} tasks of the day",
+    "onceTasks": ["Do one thing for good", "Half of it: {n} things done for good", "All of it: {n} things done for good"],
     "mimicsCaught": "Catch {n} Mimics",
     "mimicBonus": "Take back {n} more Knowledge from it",
     "mimicHours": "Let it eat for {n} hours",

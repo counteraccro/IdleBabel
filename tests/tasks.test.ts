@@ -9,6 +9,7 @@ import { pagesPerSecond } from '../src/systems/production';
 import { findKnowledge } from '../src/systems/knowledge';
 import { pageOpen, starOpen } from '../src/systems/etherium';
 import { starById } from '../src/data/etheriumStars';
+import { checkSeals } from '../src/systems/seals';
 
 vi.stubGlobal('window', new EventTarget());
 
@@ -209,5 +210,16 @@ describe("La page « Les Tâches » de l'Etherium", () => {
     expect(starOpen(state, 'tasks.n5')).toBe(false);
     state.etherium.push('tasks.p1', 'tasks.p2');
     expect(starOpen(state, 'tasks.p3')).toBe(false);
+  });
+});
+
+describe('Les sceaux des tâches', () => {
+  it('tâches du jour faites 1, 10… 1 000 ; une seule fois : une, la moitié, toutes', () => {
+    const state = withNorth();
+    state.tasks.dailyDone = 50;
+    for (let n = 1; n <= 10; n++) state.tasks.once[n] = { at: DAY, base: 0, done: DAY };
+    checkSeals(state, DAY);
+    expect(['dailyTasks-1', 'dailyTasks-10', 'dailyTasks-50', 'onceTasks-1', 'onceTasks-10'].every((id) => id in state.seals)).toBe(true);
+    expect('dailyTasks-100' in state.seals || 'onceTasks-20' in state.seals).toBe(false);
   });
 });
