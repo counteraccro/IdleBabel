@@ -129,6 +129,7 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintLastInstant',
     'hintBabelWord',
     'hintNotThisOne',
+    'hintToBeContinued',
     'hintTenTimes',
     'hintAllCurses',
     'hintAllBoons',
@@ -172,7 +173,10 @@ export const HINT_BOOKS: Readonly<Record<string, readonly string[]>> = {
 export const hintSeal = (id: string): string | undefined => (id.startsWith('hint') ? id[4].toLowerCase() + id.slice(5) : undefined);
 
 /** Les indices des secrets de l'Etherium ne tombent qu'après un premier prestige : avant, ils ne voudraient rien dire. */
-export const HINTS_AFTER_PRESTIGE: readonly string[] = ['hintEmptyEtherium', 'hintNoHands', 'hintNotThisOne'];
+export const HINTS_AFTER_PRESTIGE: readonly string[] = ['hintEmptyEtherium', 'hintNoHands', 'hintToBeContinued'];
+
+/** Les indices dont le sceau attend un livre pas encore écrit (« Pas celui-ci. », le tome 11) : ils ne tombent pas. */
+export const HINTS_LATER: readonly string[] = ['hintNotThisOne'];
 
 /** Les indices de la Loterie (la Mimic dorée, ses bonus et malus) ne tombent qu'après un premier tirage. */
 export const HINTS_AFTER_DRAW: readonly string[] = ['hintTenTimes', 'hintAllCurses', 'hintAllBoons', 'hintAllEffects'];

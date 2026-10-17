@@ -13,8 +13,8 @@ let shown: HTMLElement | null = null;
 
 /**
  * Une étoile du Rideau vient de s'allumer (maquette .ai/maquette-faux-livre.html) : sa bribe s'annonce en haut de l'écran,
- * comme une vision, sans ouvrir le livre (la vitrine sert à la relire). La dernière raconte aussi la fin, une seule fois :
- * « Pas celui-ci » (texte validé par l'auteur le 14/10, version B), et la lecture double.
+ * comme une vision, sans ouvrir le livre (la vitrine sert à la relire). La dernière raconte aussi la fin du tome 1, une
+ * seule fois : « Il y a une suite » (l'auteur, 17/10 ; l'aveu « Pas celui-ci » attend le tome 11), et +15 % de lecture.
  */
 export const announceBribe = (state: GameState): void => {
   const index = storyBribes(state) - 1;

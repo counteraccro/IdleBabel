@@ -838,14 +838,10 @@
   "trueStory": {
     "vision": "Who I Was · page {n}",
     "end": {
-      "title": "Not this one",
-      "text": [
-        "Do I remember,\nor did I read it?",
-        "The Library has written every life.\nThis one too.",
-        "The answer is in another book.\nI read faster."
-      ],
-      "gain": "Reading ×2, forever",
-      "button": "Keep searching"
+      "title": "Who I Was",
+      "text": ["I remember everything, now.", "There is more to it.\nI know it."],
+      "gain": "Reading +15%, forever",
+      "button": "Look for the rest"
     }
   }
 }

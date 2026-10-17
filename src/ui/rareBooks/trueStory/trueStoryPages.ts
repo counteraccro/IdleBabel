@@ -3,19 +3,19 @@ import { hashText, seeded } from '../../../core/random';
 import { LETTERS } from '../../../systems/babelText';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { BRIBE_PAGES } from '../../../data/trueStory';
-import { HAND, PAGE_CENTER, SERIF, wrap, write } from '../draw';
+import { PAGE_CENTER, SERIF, wrap, write } from '../draw';
 import type { PageLink } from '../rareBookArt';
 
 /**
  * Les pages de « Mon histoire vraie » (maquette .ai/maquette-faux-livre.html, mesures reprises de sa page de 370 × 500) :
  * du charabia pâle, comme dans tous les livres de la Bibliothèque, et sur sa page, chaque bribe remontée, en clair,
- * surlignée comme une trouvaille. La page 410 s'arrête après la sienne, et quelqu'un y a écrit au crayon. On ne tourne
+ * surlignée comme une trouvaille. La page 410 s'arrête après la sienne : « Fin du tome I », et le titre du tome 2 (l'auteur,
+ * 17/10 ; d'abord « Pas celui-ci. » au crayon, gardé pour le tome 11). On ne tourne
  * jamais de charabia : la page de titre mène à chaque bribe, et ‹ › d'une bribe à l'autre.
  */
 const INK = 'rgb(48, 38, 30)';
 const PALE = 'rgba(48, 38, 30, 0.36)';
 const HIGHLIGHT = 'rgba(232, 196, 96, 0.38)';
-const PENCIL = 'rgba(80, 70, 62, 0.78)';
 /** De la page de la maquette (370 × 500) à la texture (640 × 800) : en largeur, et pour le reste. */
 const KX = PAGE_TEXTURE.width / 370;
 const K = PAGE_TEXTURE.height / 500;
@@ -93,12 +93,14 @@ export const paintTrueStoryPage = (context: CanvasRenderingContext2D, page: numb
       write(context, text, LEFT, y, { font: `${SIZE}px ${SERIF}`, color: INK, align: 'left' });
     } else write(context, filler[f++] ?? '', LEFT, y, { font: `${SIZE}px ${SERIF}`, color: PALE, align: 'left' });
   }
-  if (last)
-    write(context, messages().rareBooks.trueStory.pencil, PAGE_TEXTURE.width - 40 * KX, TOP + (lines + 2) * LINE, {
-      font: `${24 * K}px ${HAND}`,
-      color: PENCIL,
-      align: 'right',
+  if (last) {
+    const { endOfTome, next } = messages().rareBooks.trueStory;
+    write(context, endOfTome, PAGE_CENTER, TOP + (lines + 2) * LINE, { font: `italic ${SIZE}px ${SERIF}`, color: INK });
+    write(context, next.replace('{title}', messages().ui.endings.titles[1]), PAGE_CENTER, TOP + (lines + 3.5) * LINE, {
+      font: `${12 * K}px ${SERIF}`,
+      color: PALE,
     });
+  }
   write(context, String(page), PAGE_CENTER, FOLIO, { font: `${11 * K}px ${SERIF}`, color: PALE });
   if (index < 0) return;
   const { left, right } = arrows(index, count);

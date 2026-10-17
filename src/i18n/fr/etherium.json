@@ -838,14 +838,10 @@
   "trueStory": {
     "vision": "Qui j’étais · page {n}",
     "end": {
-      "title": "Pas celui-ci",
-      "text": [
-        "Est-ce que je me souviens,\nou est-ce que je l’ai lu ?",
-        "La Bibliothèque a écrit toutes les vies.\nCelle-ci aussi.",
-        "La réponse est dans un autre livre.\nJe lis plus vite."
-      ],
-      "gain": "Lecture ×2, pour toujours",
-      "button": "Chercher encore"
+      "title": "Qui j’étais",
+      "text": ["Je me souviens de tout, maintenant.", "Il y a une suite.\nJe le sais."],
+      "gain": "Lecture +15 %, pour toujours",
+      "button": "Chercher la suite"
     }
   }
 }

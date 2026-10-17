@@ -6,6 +6,7 @@ import { ANOMALIES, HINTS_AFTER_PRESTIGE, hintSeal } from '../src/data/anomalies
 import { BRIBE_PAGES } from '../src/data/trueStory';
 import { lightStar, pageOpen, starOpen, storyBribes } from '../src/systems/etherium';
 import { pagesPerSecond } from '../src/systems/production';
+import { hintFindable } from '../src/systems/findable';
 import { libraryBookCount } from '../src/systems/library';
 import fr from '../src/i18n/fr/rareBooks.json';
 import en from '../src/i18n/en/rareBooks.json';
@@ -31,22 +32,29 @@ describe('« Mon histoire vraie », la fausse fin', () => {
     expect(starOpen(state, 'curtain.br')).toBe(true);
   });
 
-  it('le Rideau entier : la lecture double, à part ; le sceau secret « Pas celui-ci. »', () => {
+  it('le Rideau entier, le tome 1 fini : +15 % de lecture, à part ; le sceau secret « À suivre. »', () => {
     const state = createInitialState('fr', 0, 1);
     state.tools.diagonal = 10;
     state.etherium = CURTAIN.filter((star) => star.id !== 'curtain.br').map((star) => star.id);
     const before = pagesPerSecond(state);
-    expect(SEALS.find((seal) => seal.id === 'notThisOne')!.reached!(state)).toBe(false);
+    const seal = (id: string) => SEALS.find((one) => one.id === id)!.reached!(state);
+    expect(seal('toBeContinued')).toBe(false);
     state.etherium.push('curtain.br');
-    expect(pagesPerSecond(state)).toBeCloseTo(before * 2);
-    expect(SEALS.find((seal) => seal.id === 'notThisOne')!.reached!(state)).toBe(true);
-    expect(SEALS.some((seal) => seal.id === 'constellation-curtain')).toBe(false);
+    expect(pagesPerSecond(state)).toBeCloseTo(before * 1.15);
+    expect(seal('toBeContinued')).toBe(true);
+    // L'aveu « Pas celui-ci. » attend le tome 11.
+    expect(seal('notThisOne')).toBe(false);
+    expect(SEALS.some((one) => one.id === 'constellation-curtain')).toBe(false);
   });
 
-  it('son indice existe, et ne tombe qu’après un premier prestige', () => {
-    expect(ANOMALIES.some((sentence) => sentence.id === 'hintNotThisOne')).toBe(true);
-    expect(hintSeal('hintNotThisOne')).toBe('notThisOne');
-    expect(HINTS_AFTER_PRESTIGE).toContain('hintNotThisOne');
+  it('son indice existe, et ne tombe qu’après un premier prestige ; celui de « Pas celui-ci. » ne tombe pas', () => {
+    expect(ANOMALIES.some((sentence) => sentence.id === 'hintToBeContinued')).toBe(true);
+    expect(hintSeal('hintToBeContinued')).toBe('toBeContinued');
+    expect(HINTS_AFTER_PRESTIGE).toContain('hintToBeContinued');
+    const state = createInitialState('fr', 0, 1);
+    state.etherReceived = 1;
+    expect(hintFindable(state, 'hintNotThisOne')).toBe(false);
+    expect(hintFindable(state, 'hintToBeContinued')).toBe(true);
   });
 
   it('le livre entre dans la bibliothèque à la première étoile', () => {

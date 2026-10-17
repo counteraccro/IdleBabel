@@ -339,8 +339,11 @@ export const EFFECT = {
     'weight.w6': 0.1,
     'weight.w7': 0.1,
   },
-  /** ×pages/s, à part (le Rideau entier : « Mon histoire vraie » était fausse, il lit plus vite). */
-  storyReading: { 'curtain.br': 2 },
+  /**
+   * +pages/s par tome de « L'histoire de Babel » fini, ajoutés entre eux, à part (l'auteur, 17/10 : +15 % par tome, au lieu
+   * du ×2 de « Mon histoire vraie ») : le Rideau entier, le tome 1.
+   */
+  storyReading: { 'curtain.br': 0.15 },
   /** Le niveau du bonus de chaque relique (data/relics.ts, RelicDef.bonus) : ses deux étoiles ; la plus haute compte. */
   relicLevel: { 'relics.l1': 1, 'relics.l2': 2, 'relics.a1': 1, 'relics.a2': 2, 'relics.h1': 1, 'relics.h2': 2 },
 } as const satisfies Record<string, Record<string, number>>;

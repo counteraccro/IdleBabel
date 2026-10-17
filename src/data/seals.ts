@@ -292,8 +292,11 @@ export const SEALS: readonly SealDef[] = [
   seal('allCurses', 'secrets', (s) => allLotteryCurses(s)),
   seal('allBoons', 'secrets', (s) => allLotteryBoons(s)),
   seal('allEffects', 'secrets', (s) => allLotteryBoons(s) && allLotteryCurses(s)),
-  // « Mon histoire vraie » lue jusqu'à sa dernière bribe : le Rideau entier allumé (la fausse fin, 14/10).
-  seal('notThisOne', 'secrets', (s) => s.etherium.includes(S.storyEnd)),
+  // « Qui j'étais », le tome 1, lu jusqu'à sa dernière bribe : le Rideau entier allumé (l'auteur, 17/10).
+  seal('toBeContinued', 'secrets', (s) => s.etherium.includes(S.storyEnd)),
+  // « Pas celui-ci. » : l'aveu que la saga est fausse, qui vient avec le tome 11 (l'auteur, 17/10). D'abord donné par
+  // « Mon histoire vraie » (14/10) : ceux qui l'ont le gardent. En attendant, il ne s'obtient pas.
+  seal('notThisOne', 'secrets', () => false),
   // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).
   seal('cheat', 'secrets', (s) => s.modded !== null),
 ];

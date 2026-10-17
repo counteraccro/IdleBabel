@@ -2600,7 +2600,8 @@
           "text": [
             "La collection a changé de nom. « La Vraie Fin » disait trop bien ce qu’elle était. Elle s’appelle désormais « L’histoire de Babel » : onze tomes, une seule histoire, racontée en bribes, comme le premier. Plus on en range, plus on croit la tenir.",
             "« Mon histoire vraie » est devenue le tome 1, « Qui j’étais ». En haut de chaque plat, un seul mot : « Vérité ». Un auteur, ou un sous-titre : on ne sait pas.",
-            "De face, ce sont des livres anciens : la toile brune, le titre doré, le bandeau du dos qui traverse le plat, le numéro en chiffres romains. Derrière, ce sont des livres d’aujourd’hui : une salle de la Bibliothèque imprimée à fond perdu, un résumé, un code-barres. Deux autres plats ont été écartés : le titre en crème au-dessus du bandeau, et le nom de la collection en étiquette, tout en haut."
+            "De face, ce sont des livres anciens : la toile brune, le titre doré, le bandeau du dos qui traverse le plat, le numéro en chiffres romains. Derrière, ce sont des livres d’aujourd’hui : une salle de la Bibliothèque imprimée à fond perdu, un résumé, un code-barres. Deux autres plats ont été écartés : le titre en crème au-dessus du bandeau, et le nom de la collection en étiquette, tout en haut.",
+            "Le premier tome n’avoue plus rien. Ses deux dernières bribes, celles qui doutaient, et le « Pas celui-ci. » au crayon attendent le dernier tome. Il s’achève sur « Fin du tome I » et le titre du suivant. Chaque tome fini fera lire 15 % plus vite : le premier ne double plus la lecture."
           ]
         },
         "thisBook": {
@@ -2733,9 +2734,10 @@
       "…nous habitions au 410… quatre cent dix… je l’écrivais partout, sur mes cahiers, sur les murs…",
       "…mon nom, c’est ma grand-mère qui l’avait choisi… elle le brodait au col de tous mes vêtements… quand je mentais, elle disait : « Je sais qui tu es. »",
       "…j’écrivais dans la marge de tous mes livres… une écriture qui penche… la maîtresse disait qu’elle allait tomber…",
-      "…la tasse, le bord droit… ou le gauche ?… et devant la fenêtre, ce n’était pas un tilleul. Un chêne. Je crois.",
-      "…je n’ai jamais quitté la ville… jamais vu de bibliothèque plus grande que celle de l’école…"
+      "…le jardin derrière la maison… sous le tilleul, je lisais jusqu’à ce qu’il fasse noir… Maman criait mon nom depuis la porte.",
+      "…un soir, ma grand-mère a parlé d’une bibliothèque… elle a baissé la voix… elle a dit qu’on n’en revenait pas…"
     ],
-    "pencil": "« Pas celui-ci. »"
+    "endOfTome": "Fin du tome I",
+    "next": "À suivre : {title}"
   }
 }

@@ -98,7 +98,7 @@ const findChanceParts = (state: GameState, readable: boolean): string | string[]
  * par ce que lit chacune) ; puis, après un premier prestige, une seconde ligne : × l'Etherium (le Livre ouvert, et le
  * Minitel pesé par ce que lisent les méthodes Numériques) et × l'Éther reçu ; une troisième quand le Sablier agit
  * (demande de l'auteur, 12/10), une quand la Mimic ralentit la lecture (revue de code, 13/10), et une dernière une fois le
- * Rideau entier allumé (« Mon histoire vraie » ×2, à part, 14/10).
+ * Rideau entier allumé (« Qui j'étais », le tome 1 : +15 %, à part, 17/10 ; d'abord ×2, 14/10).
  */
 const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
   const base = TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0);
