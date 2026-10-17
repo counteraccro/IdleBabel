@@ -1051,6 +1051,27 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.4",
+          "date": "17 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Une nouvelle page dans l’Etherium, après les reliques.",
+                "Les tomes de « L’histoire de Babel » ont une nouvelle couverture.",
+                "Le Grand Livre a un chapitre « Bonus » : chaque bonus, et ce qu’il booste."
+              ]
+            },
+            {
+              "heading": "Corrections",
+              "items": [
+                "Bibliothèque : les flèches d’un meuble à l’autre se voient mieux.",
+                "Deux sceaux qu’on ne pouvait plus obtenir s’obtiennent de nouveau."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.3",
           "date": "16 octobre 2026",
           "sections": [
@@ -2612,7 +2633,8 @@
             "La machine a sa page de nuit, après les reliques : « La Loterie », la figure du Bandit manchot. Elle reste blanche tant qu’aucun jeton n’a été joué. La machine y est tracée de face, en pointillés : le haut en arc, trois fenêtres, le plateau, le levier et sa boule.",
             "L’étoile offerte est la fente, en bas, où entre le jeton. Elle devait d’abord être le levier ; mais les trois rouleaux partent mieux de la fente, sans croiser de trait, et le levier porte maintenant la branche du jeton : la Mimic en lâche un une fois sur deux, puis deux fois sur trois.",
             "Chaque rouleau a deux étoiles, et chacune donne et reprend : c’est écrit sur deux lignes, ce qu’elle donne, puis son « …mais… ». Le temps allonge le gain, les bonus, les malus et la Mimic dorée (jusqu’à 10 minutes). La valeur double ce qu’ajoutent les bonus, mais la production tombe jusqu’au quart pendant le malus. La chance fait passer « rien » de 40 % à 20 %, et les malus de 12 % à 24 % ; le reste va aux gains et aux bonus, le gros lot ne bouge pas.",
-            "Le Nord de la Rose des vents est gardé pour les billets, les quêtes qui donneront des jetons ; il reste fermé jusqu’à ce qu’ils existent. Les textes de la machine disent maintenant le vrai facteur d’un bonus (« Production ×1,75 »)."
+            "Le Nord de la Rose des vents est gardé pour les billets, les quêtes qui donneront des jetons ; il reste fermé jusqu’à ce qu’ils existent. Les textes de la machine disent maintenant le vrai facteur d’un bonus (« Production ×1,75 »).",
+            "Avec elle, le jeu est passé en Alpha 2.4."
           ]
         },
         "thisBook": {
