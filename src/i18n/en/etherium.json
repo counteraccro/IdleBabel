@@ -39,6 +39,7 @@
   "reading": "+{n}% reading: one per Ether received",
   "next": "Next Ether: in {n} pages",
   "contents": "Contents",
+  "groups": { "methods": "Methods", "reading": "Reading", "time": "Time", "rooms": "The rooms", "end": "At the very end" },
   "pages": {
     "reading": {
       "name": "Reading",

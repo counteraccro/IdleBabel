@@ -39,6 +39,7 @@
   "reading": "+{n} % de lecture : un par Éther reçu",
   "next": "Prochain Éther : dans {n} pages",
   "contents": "Sommaire",
+  "groups": { "methods": "Les méthodes", "reading": "Lire", "time": "Le temps", "rooms": "Les salles", "end": "Tout au bout" },
   "pages": {
     "reading": {
       "name": "Lecture",

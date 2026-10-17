@@ -1,4 +1,4 @@
-import { ETHERIUM_PAGES } from '../../data/etheriumStars';
+import { ETHERIUM_GROUPS, ETHERIUM_PAGES, type PageId } from '../../data/etheriumStars';
 import { etherSpendable, nextEtherPages } from '../../systems/prestige';
 import { etherReading, weightPresses } from '../../systems/etherium';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
@@ -61,31 +61,60 @@ const drawTitle = (ctx: Ctx, state: GameState): void => {
   write(ctx, t('etherium.next').replace('{n}', missing), 320, 620, { size: 18, italic: true, color: C.faded, align: 'center', fit: 560 });
 };
 
-const ENTRY_TOP = 240;
-const ENTRY_STEP = 56;
+const ENTRY_TOP = 214;
+const ENTRY_STEP = 50;
+/** Le nom d'un groupe, au-dessus de ses pages. */
+const GROUP_STEP = 34;
 /** Le sommaire tient sur deux pages (demande de l'auteur, 11/10 : avec la Mimic, une seule était trop tassée). */
 const CONTENTS_PAGES = 2;
+/** Les groupes de la première page du sommaire (les méthodes, lire) ; les autres sont en face. */
+const FIRST_PAGE_GROUPS = 2;
 
-/** Les pages au sommaire : une page qu'une autre débloque (la Mimic) n'y entre qu'une fois débloquée. */
-const listed = (state: GameState) => ETHERIUM_PAGES.filter((page) => !pageLocked(state, page));
-/** Les entrées de la page `part` du sommaire : la première moitié, puis le reste. */
-const entries = (state: GameState, part: number) => {
-  const pages = listed(state);
-  const half = Math.ceil(pages.length / CONTENTS_PAGES);
-  return pages.slice(part * half, (part + 1) * half);
+type Row = { kind: 'group'; id: string; y: number } | { kind: 'page'; page: PageId; y: number };
+
+/**
+ * Les lignes de la page `part` du sommaire : le nom de chaque groupe, puis ses pages ; une page qu'une autre débloque (la
+ * Mimic) n'y entre qu'une fois débloquée, et un groupe sans page ouverte n'y est pas.
+ */
+const rows = (state: GameState, part: number): Row[] => {
+  const groups = part === 0 ? ETHERIUM_GROUPS.slice(0, FIRST_PAGE_GROUPS) : ETHERIUM_GROUPS.slice(FIRST_PAGE_GROUPS);
+  const result: Row[] = [];
+  let y = ENTRY_TOP;
+  for (const group of groups) {
+    const pages = group.pages.filter((page) => !pageLocked(state, page));
+    if (pages.length === 0) continue;
+    result.push({ kind: 'group', id: group.id, y });
+    y += GROUP_STEP;
+    for (const page of pages) {
+      result.push({ kind: 'page', page, y });
+      y += ENTRY_STEP;
+    }
+  }
+  return result;
 };
 
-/** Le sommaire : chaque page, ses étoiles allumées sur le total (l'Escalier : les marches connues), son numéro. */
+/** Le sommaire : chaque groupe, puis chaque page, ses étoiles allumées sur le total (l'Escalier : les marches connues), son numéro. */
 const drawContents = (ctx: Ctx, state: GameState, first: number, part: number): void => {
   heading(ctx, t('etherium.contents'));
   if (part === 0) write(ctx, t('etherium.contentsLine'), 320, 168, { size: 20, italic: true, color: C.faded, align: 'center' });
-  entries(state, part).forEach((page, i) => {
+  for (const row of rows(state, part)) {
+    const { y } = row;
+    if (row.kind === 'group') {
+      write(ctx, t(`etherium.groups.${row.id}`).toLocaleUpperCase(), 320, y, {
+        size: 14,
+        face: TITLE,
+        color: C.gold,
+        align: 'center',
+        spacing: 4,
+      });
+      continue;
+    }
+    const { page } = row;
     const stars = starViews(state, page).filter((star) => star.status !== 'hidden' && star.status !== 'unknown');
     const done = stars.filter((star) => star.status === 'done').length;
     const full = done === stars.length;
-    const y = ENTRY_TOP + i * ENTRY_STEP;
     write(ctx, t(`etherium.pages.${page}.name`), 110, y, { size: 21, color: C.ink });
-    write(ctx, t(`etherium.pages.${page}.figure`), 110, y + 26, { size: 15, italic: true, color: C.faded });
+    write(ctx, t(`etherium.pages.${page}.figure`), 110, y + 25, { size: 15, italic: true, color: C.faded });
     ctx.save();
     ctx.strokeStyle = C.deco;
     ctx.setLineDash([1, 5]);
@@ -97,7 +126,7 @@ const drawContents = (ctx: Ctx, state: GameState, first: number, part: number): 
     write(ctx, writeDigits(`${done} / ${stars.length}`), 500, y, { size: 21, color: full ? C.gold : C.faded, align: 'right' });
     if (full) litStar(ctx, 528, y + 12, 9);
     write(ctx, writeDigits(String(first + ETHERIUM_PAGES.indexOf(page) + 1)), 560, y + 2, { size: 18, color: C.faded });
-  });
+  }
   nightFolio(ctx, 2 + part);
 };
 
@@ -108,14 +137,9 @@ export const createEtheriumPages = (state: GameState, goTo: (page: number) => vo
     nightLeaf({
       draw: (ctx) => drawContents(ctx, state, first, part),
       spots: () =>
-        entries(state, part).map((page, i) => ({
-          id: page,
-          x: 100,
-          y: ENTRY_TOP + i * ENTRY_STEP - 6,
-          w: 480,
-          h: ENTRY_STEP - 4,
-          pointer: true,
-        })),
+        rows(state, part).flatMap((row) =>
+          row.kind === 'page' ? [{ id: row.page, x: 100, y: row.y - 6, w: 480, h: ENTRY_STEP - 4, pointer: true }] : [],
+        ),
       press: (id) => goTo(first + ETHERIUM_PAGES.indexOf(id as (typeof ETHERIUM_PAGES)[number])),
     });
   return [

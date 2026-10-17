@@ -9,29 +9,23 @@ import { AUTOMATIC_AGE, DIGITAL_AGE } from './tools';
  * (simulateur/vie.ts). Textes : etherium.pages.<page> et etherium.stars.<page>.<étoile>.
  */
 /**
- * L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10), puis le Poids, qui les touche tous ; la
- * page de chaque Âge à la fin, après les reliques (13/10), la Loterie et les Tâches (17/10) ; tout au bout, le Rideau, la fausse fin (14/10).
+ * Les pages du livre, en groupes (demande de l'auteur, 17/10 : « c'est brouillon, les méthodes sont mélangées avec d'autres
+ * choses ») : les méthodes (les Âges d'abord, 07/10, puis tout ce qui les fait lire, revenir au réveil ou rester), lire
+ * (la main, la lettre, la Connaissance, les trouvailles), le temps (l'absence, le poids de l'Éther), les salles (ce que
+ * l'Exploration y fait apparaître), et tout au bout le Rideau, la fausse fin (14/10). Le sommaire écrit le nom de chaque
+ * groupe (etherium.groups.<groupe>).
  */
-export const ETHERIUM_PAGES = [
-  'ages',
-  'weight',
-  'reading',
-  'hands',
-  'knowledge',
-  'finds',
-  'away',
-  'start',
-  'memory',
-  'quill',
-  'explore',
-  'mimic',
-  'relics',
-  'lottery',
-  'tasks',
-  'screen',
-  'curtain',
+export const ETHERIUM_GROUPS = [
+  { id: 'methods', pages: ['ages', 'reading', 'start', 'memory', 'screen'] },
+  { id: 'reading', pages: ['hands', 'quill', 'knowledge', 'finds'] },
+  { id: 'time', pages: ['away', 'weight'] },
+  { id: 'rooms', pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks'] },
+  { id: 'end', pages: ['curtain'] },
 ] as const;
-export type PageId = (typeof ETHERIUM_PAGES)[number];
+
+/** L'ordre des pages dans le livre : celui des groupes. */
+export const ETHERIUM_PAGES = ETHERIUM_GROUPS.flatMap((group) => group.pages);
+export type PageId = (typeof ETHERIUM_GROUPS)[number]['pages'][number];
 
 export interface Star {
   /** « page.étoile » (les noms de la maquette). */
