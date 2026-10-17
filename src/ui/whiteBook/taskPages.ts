@@ -1,6 +1,8 @@
 import { getLocale, t } from '../../i18n';
 import { currentNotation, formatCount, formatNumber, writeDigits } from '../../core/format';
-import { ONCE_TASKS, type OnceTaskDef, type TaskReward } from '../../data/tasks';
+import { ONCE_TASKS, type TaskReward } from '../../data/tasks';
+import { modTasks, takeModTask } from '../../mods/modTasks';
+import { modText } from '../../mods/modSeals';
 import { dailyLeft, dailyProgress } from '../../systems/dailyTasks';
 import { onceMet, onceShown } from '../../systems/onceTasks';
 import { takeDaily, takeOnce } from '../../systems/tasks';
@@ -230,7 +232,8 @@ export const rewardText = (reward: TaskReward): string => {
 type RowState = 'done' | 'waiting' | 'now' | 'ghost';
 
 interface Row {
-  def: OnceTaskDef;
+  /** Son nom, pour le hasard de ses traits (« once:7 », « mod:<mod>:<id> »), et celui de son clic. */
+  key: string;
   state: RowState;
   lines: string[];
   reward: string;
@@ -258,17 +261,35 @@ const wrap = (text: string, width: number): string[] => {
   return lines;
 };
 
-/** Les lignes de la liste : celles dont l'étoile est allumée ; en Babel tant que ce dont elles parlent n'est pas rencontré. */
-const onceRows = (state: GameState): Row[] =>
-  ONCE_TASKS.filter((def) => onceShown(state, def)).map((def) => {
+/** Une ligne de la liste : sa consigne coupée pour laisser la place à sa récompense. */
+const row = (key: string, rowState: RowState, text: string, reward: string): Row => {
+  const room = REWARD_RIGHT - TEXT_LEFT - (reward ? handWidth(measure(), reward, 22) + 18 : 0);
+  const lines = wrap(text, room);
+  return { key, state: rowState, lines, reward, height: lines.length * ROW_LINE + 10 };
+};
+
+/**
+ * Les lignes de la liste : celles dont l'étoile est allumée, en Babel tant que ce dont elles parlent n'est pas rencontré ;
+ * puis celles des mods (src/mods/modTasks.ts), avec la récompense qu'ils donnent.
+ */
+const onceRows = (state: GameState): Row[] => [
+  ...ONCE_TASKS.filter((def) => onceShown(state, def)).map((def) => {
     const task = state.tasks.once[def.n];
     const rowState: RowState = task?.done !== undefined ? (task.taken ? 'done' : 'waiting') : onceMet(state, def) ? 'now' : 'ghost';
     const text = t(`whiteBook.tasks.onceTasks.${def.n}`);
-    const reward = rowState === 'ghost' ? '' : rewardText(def.reward);
-    const room = REWARD_RIGHT - TEXT_LEFT - (reward ? handWidth(measure(), reward, 22) + 18 : 0);
-    const lines = wrap(rowState === 'ghost' ? babelize(text, seedOf(`task:${def.n}`)) : text, room);
-    return { def, state: rowState, lines, reward, height: lines.length * ROW_LINE + 10 };
-  });
+    const ghost = rowState === 'ghost';
+    return row(`once:${def.n}`, rowState, ghost ? babelize(text, seedOf(`task:${def.n}`)) : text, ghost ? '' : rewardText(def.reward));
+  }),
+  ...modTasks().map((task) => {
+    const done = state.tasks.mods[task.key];
+    return row(
+      task.key,
+      done ? (done.taken ? 'done' : 'waiting') : 'now',
+      modText(task.text, getLocale()),
+      modText(task.reward, getLocale()),
+    );
+  }),
+];
 
 /** La liste coupée en pages : autant qu'il en faut entre le titre et le folio. */
 const rowPages = (rows: Row[]): Row[][] => {
@@ -290,7 +311,7 @@ export const oncePageCount = (state: GameState): number => rowPages(onceRows(sta
 
 /** Une ligne : sa case (cochée ✓ une fois faite), sa consigne au crayon, sa récompense au bout (entourée tant qu'elle attend). */
 const drawRow = (context: CanvasRenderingContext2D, row: Row, y: number): void => {
-  const random = seeded(seedOf(`row:${row.def.n}`));
+  const random = seeded(seedOf(`row:${row.key}`));
   const ghost = row.state === 'ghost';
   row.lines.forEach((line, index) =>
     handText(context, line, TEXT_LEFT, y + index * ROW_LINE, { size: ROW_SIZE, color: ghost ? GHOST_INK : PENCIL }),
@@ -322,14 +343,12 @@ export const onceItems = (state: GameState, part: number, number: number): Item[
   const rows = rowPages(onceRows(state))[part] ?? [];
   const tops: number[] = [];
   rows.reduce((y, row) => (tops.push(y), y + row.height), ROWS_TOP);
-  const key = JSON.stringify([getLocale(), rows.map((row) => [row.def.n, row.state, row.lines, row.reward])]);
+  const key = JSON.stringify([getLocale(), rows.map((row) => [row.key, row.state, row.lines, row.reward])]);
   return [
     ...heading(t('whiteBook.tasks.once')),
     { kind: 'drawing', key, draw: (context) => rows.forEach((row, index) => drawRow(context, row, tops[index])) },
     ...rows.flatMap((row, index): Item[] =>
-      row.state === 'waiting'
-        ? [{ kind: 'action', id: `once:${row.def.n}`, x: 50, width: 560, y: tops[index] - 4, height: row.height }]
-        : [],
+      row.state === 'waiting' ? [{ kind: 'action', id: row.key, x: 50, width: 560, y: tops[index] - 4, height: row.height }] : [],
     ),
     folio(number),
   ];
@@ -340,4 +359,5 @@ export const actOnTask = (state: GameState, id: string): void => {
   const [kind, value] = id.split(':');
   if (kind === 'daily') takeDaily(state, Number(value));
   else if (kind === 'once') takeOnce(state, Number(value));
+  else if (kind === 'mod') takeModTask(state, id);
 };

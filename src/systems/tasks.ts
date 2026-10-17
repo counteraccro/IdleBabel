@@ -6,6 +6,8 @@ import { creditMethods, gainPages, pagesPerSecond } from './production';
 import { addKnowledge, findKnowledge, findChance, maxTurnsPerSecond, MAX_FINDS_PER_PAGE } from './knowledge';
 import { PAGES_PER_LEAF } from './books';
 import { findRelic } from './relics';
+import { runHooks } from '../mods/hooks';
+import { advanceModTasks, modTaskWaiting } from '../mods/modTasks';
 import type { GameState } from '../core/state';
 
 /**
@@ -53,10 +55,16 @@ export const tickTasks = (
   if (seconds > 0) state.tasks.sinceWake += seconds;
   state.lottery.tokens += refreshDay(state, random, now);
   follow(state, seconds, onScreen);
-  let finished = advanceDaily(state, now).length;
+  const daily = advanceDaily(state, now);
+  for (const task of daily) runHooks('task', { kind: 'daily', id: task.kind, value: task.value });
+  let finished = daily.length;
   if (now - onceAt >= ONCE_EVERY_MS || now < onceAt) {
     onceAt = now;
-    finished += advanceOnce(state, now).length;
+    const once = advanceOnce(state, now);
+    for (const def of once) runHooks('task', { kind: 'once', id: String(def.n) });
+    const mods = advanceModTasks(state, now);
+    for (const task of mods) runHooks('task', { kind: 'mod', id: task.key });
+    finished += once.length + mods.length;
   }
   return finished;
 };
@@ -127,7 +135,8 @@ export const takeOnce = (state: GameState, n: number): boolean => {
 /** Une tâche faite attend qu'on prenne ce qu'elle rapporte : le jeton de la clé brille. */
 export const taskWaiting = (state: GameState): boolean =>
   state.tasks.today.some((task) => task.done !== undefined && !task.taken) ||
-  Object.values(state.tasks.once).some((task) => task.done !== undefined && !task.taken);
+  Object.values(state.tasks.once).some((task) => task.done !== undefined && !task.taken) ||
+  modTaskWaiting(state);
 
 /** Les tâches du jour pas encore faites (la légende de la pile : « 2 tâches en cours »). */
 export const dailyRunning = (state: GameState): number => state.tasks.today.filter((task) => task.done === undefined).length;

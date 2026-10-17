@@ -82,6 +82,7 @@ export const removeMod = (state: GameState, entry: string): void => {
   const prefix = modSealId(id, '');
   for (const seal of Object.keys(state.seals)) if (seal.startsWith(prefix)) delete state.seals[seal];
   state.newSeals = state.newSeals.filter((seal) => !seal.startsWith(prefix));
+  for (const task of Object.keys(state.tasks.mods)) if (task.startsWith(prefix)) delete state.tasks.mods[task];
 };
 
 /** Désactiver un mod (il reste dans la liste, plus chargé), ou le réactiver : la page se recharge aussi. */

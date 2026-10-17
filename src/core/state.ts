@@ -174,6 +174,8 @@ export interface TasksState {
   sinceWake: number;
   /** Ce que suivent les tâches « une seule fois » (comptés depuis leur apparition). */
   counters: TaskCounters;
+  /** Les tâches des mods faites (src/mods/modTasks.ts), par « mod:<mod>:<id> » ; effacées si le mod est supprimé. */
+  mods: Record<string, { done: number; taken?: boolean }>;
 }
 
 export interface TaskCounters {
@@ -198,6 +200,7 @@ export const noTasks = (): TasksState => ({
   // Une partie qui n'a pas encore fait de prestige depuis les tâches : son rythme est déjà là.
   sinceWake: RECALC_AFTER_WAKE,
   counters: { noHandFrom: 0, clicks: 0, untouched: 0, longestAway: 0, streak: 0, bought: {}, owned: {} },
+  mods: {},
 });
 
 export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0, pending: null };

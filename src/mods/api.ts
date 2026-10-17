@@ -4,6 +4,7 @@ import { loadMod } from './loader';
 import { notify } from './notify';
 import { replaceHeldBook, type HeldBookFactory } from './heldBook';
 import { addModSeal, type ModSealInput } from './modSeals';
+import { addModTask, type ModTaskInput } from './modTasks';
 import { modOption } from './modOptions';
 import { modGame, type ModGame } from './game';
 import { modify, tune } from './quantities';
@@ -24,6 +25,8 @@ export interface IdleBabelApi {
   loadMod: (address: string) => Promise<boolean>;
   notify: (title: string, text?: string) => void;
   addSeal: (seal: ModSealInput) => boolean;
+  /** Une tâche à vous, au bout de la liste « Une seule fois » du livre blanc (src/mods/modTasks.ts). */
+  addTask: (task: ModTaskInput) => boolean;
   format: (value: number) => string;
   /** Remplace le livre en main (livres ordinaires seulement) par la vue que rend `factory`. */
   replaceHeldBook: (factory: HeldBookFactory) => void;
@@ -73,6 +76,7 @@ export const mountModApi = (state: GameState): IdleBabelApi => {
     loadMod: (address) => loadMod(state, String(address)),
     notify,
     addSeal: (seal) => addModSeal(lastMod, seal),
+    addTask: (task) => addModTask(lastMod, task),
     format: (value) => formatNumber(value, getLocale(), state.settings.notation),
     replaceHeldBook,
     option: (mod, id) => modOption(state, String(mod), String(id)),

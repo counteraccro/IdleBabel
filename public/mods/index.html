@@ -266,6 +266,18 @@
                 chaque pas du jeu). Il prend le nom du mod qui l’ajoute : appelez-le dans <code>init</code>.
               </td>
             </tr>
+            <tr>
+              <td><code>addTask({ id, text, reward, goal, progress, give })</code></td>
+              <td>
+                Une tâche à vous, au bout de la liste « Une seule fois » du livre blanc (elle n’y paraît qu’une fois le Nord de
+                la Rose des vents allumé). <code>text</code> : la consigne ; <code>reward</code> : ce qu’elle rapporte, écrit au
+                bout de sa ligne (une chaîne, ou <code>{ fr, en }</code>). Elle est faite quand <code>progress(state)</code>
+                atteint <code>goal</code> (regardé chaque seconde) ; un clic du joueur prend sa récompense et appelle
+                <code>give(state)</code>, une fois. Elle se fait une seule fois, ne donne jamais de jeton de la Loterie et ne
+                compte nulle part dans le jeu. Supprimer le mod efface son avancement ; le désactiver le garde. Appelez-la dans
+                <code>init</code>.
+              </td>
+            </tr>
             <tr><td><code>format(nombre)</code></td><td>Un nombre écrit dans la notation choisie par le joueur (« 1,23 million »…).</td></tr>
             <tr><td><code>locale</code></td><td>La langue du jeu : <code>'fr'</code> ou <code>'en'</code>.</td></tr>
             <tr><td><code>game</code></td><td>Ce que le jeu calcule (production, prix, Éther, lettre, Mimic), en lecture seule : voir <a href="#fr-game">plus bas</a>.</td></tr>
@@ -415,6 +427,12 @@
               <td><code>{ outcome, reels, pages, knowledge, boon, curse, method, seconds, crushed }</code>, à l’arrêt des rouleaux : le résultat (<code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code>), les trois chiffres des rouleaux ; selon lui, ce que le gain a rapporté (0 si la Mimic dorée l’a mangé), le bonus ou le malus tiré, la méthode qu’il vise et sa durée en secondes ; <code>crushed</code> : ce qu’a rendu la Mimic écrasée par la Mimic dorée (<code>{ knowledge, token }</code>).</td>
               <td>—</td>
             </tr>
+            <tr data-hook="task">
+              <td><code>task</code></td>
+              <td>Une tâche faite (sa récompense attend le clic du joueur).</td>
+              <td><code>{ kind, id, value }</code> : <code>daily</code> (une tâche du jour : <code>id</code> est son modèle, <code>value</code> ce qu’elle vaut en jetons), <code>once</code> (son numéro), ou <code>mod</code> (<code>mod:&lt;mod&gt;:&lt;id&gt;</code>).</td>
+              <td>—</td>
+            </tr>
           </table>
         </div>
 
@@ -522,6 +540,7 @@ IdleBabel.option('my-mod', 'size');   <span class="comment">// 'large' : la vale
             <tr data-game="ether"><td><code>ether()</code></td><td><code>{ gain, total, next }</code> : l’Éther que rapporterait le prestige maintenant, les pages lues depuis toujours, et celles qu’il faut pour un Éther de plus.</td></tr>
             <tr data-game="relics"><td><code>relics()</code></td><td><code>{ active, name, found, changeIn }</code> : la relique qui agit (son id et son nom, <code>null</code> : aucune), combien sont trouvées, et les secondes avant de pouvoir en changer (0 : on peut). Le délai compte en temps réel, absences comprises.</td></tr>
             <tr data-game="lottery"><td><code>lottery()</code></td><td><code>{ tokens, draws, blocked, effects, golden }</code> : les jetons, ceux déjà joués, la machine bloquée (tous ses bonus en cours : elle ne prend plus de jeton), chaque bonus ou malus en cours (<code>{ id, method, left }</code> : la méthode visée ou <code>null</code>, les secondes qui lui restent), et les secondes qui restent à la Mimic dorée (0 : absente). Tout compte en temps réel, absences comprises.</td></tr>
+            <tr data-game="tasks"><td><code>tasks()</code></td><td><code>{ open, today, once, mods, dailyDone }</code> : les tâches (<code>open</code> : le Nord allumé). <code>today</code> : celles du jour (<code>{ kind, text, value, goal, count, done, taken }</code> : leur modèle, leur consigne, ce qu’elles valent en jetons, leur but et où elles en sont ; un but de 0 : pas encore calculé) ; <code>once</code> : celles qui ne se font qu’une fois, apparues (<code>{ n, text, met, goal, count, done, taken }</code> ; <code>met</code> : écrite en clair) ; <code>mods</code> : celles des mods (<code>{ id, text, goal, count, done, taken }</code>) ; <code>dailyDone</code> : les tâches du jour faites depuis toujours. <code>done</code> : faite ; <code>taken</code> : sa récompense prise.</td></tr>
           </table>
         </div>
         <p>Chaque sceau de la ruche porte <code>data-method="&lt;id&gt;"</code> : un mod sait quel hexagone est quelle méthode. Le jeu ne touche à aucun autre attribut <code>data-*</code> d’un sceau : un mod peut y écrire.</p>
@@ -799,6 +818,17 @@ IdleBabel.registerMod('word-count', {
                 step of the game). It takes the name of the mod adding it: call it in <code>init</code>.
               </td>
             </tr>
+            <tr>
+              <td><code>addTask({ id, text, reward, goal, progress, give })</code></td>
+              <td>
+                A task of your own, at the end of the “Only once” list of the white book (it only appears once the North of the
+                Compass Rose is lit). <code>text</code>: the instruction; <code>reward</code>: what it brings, written at the end
+                of its line (a string, or <code>{ fr, en }</code>). It is done when <code>progress(state)</code> reaches
+                <code>goal</code> (checked every second); a click from the player takes its reward and calls
+                <code>give(state)</code>, once. It is done only once, never gives a Lottery token and counts nowhere in the
+                game. Deleting the mod erases its progress; turning it off keeps it. Call it in <code>init</code>.
+              </td>
+            </tr>
             <tr><td><code>format(number)</code></td><td>A number written in the player’s chosen notation (“1.23 million”…).</td></tr>
             <tr><td><code>locale</code></td><td>The game’s language: <code>'fr'</code> or <code>'en'</code>.</td></tr>
             <tr><td><code>game</code></td><td>What the game computes (production, prices, Ether, letter, Mimic), read-only: see <a href="#en-game">below</a>.</td></tr>
@@ -947,6 +977,12 @@ IdleBabel.registerMod('word-count', {
               <td><code>{ outcome, reels, pages, knowledge, boon, curse, method, seconds, crushed }</code>, once the reels stop: the outcome (<code>nothing</code>, <code>gain</code>, <code>boon</code>, <code>curse</code>, <code>jackpot</code>), the three reel digits; depending on it, what the win brought (0 if the Golden Mimic ate it), the bonus or penalty drawn, the method it targets and its length in seconds; <code>crushed</code>: what the Mimic crushed by the Golden Mimic gave back (<code>{ knowledge, token }</code>).</td>
               <td>—</td>
             </tr>
+            <tr data-hook="task">
+              <td><code>task</code></td>
+              <td>A task done (its reward waits for the player’s click).</td>
+              <td><code>{ kind, id, value }</code>: <code>daily</code> (a task of the day: <code>id</code> is its model, <code>value</code> what it is worth in tokens), <code>once</code> (its number), or <code>mod</code> (<code>mod:&lt;mod&gt;:&lt;id&gt;</code>).</td>
+              <td>—</td>
+            </tr>
           </table>
         </div>
 
@@ -1054,6 +1090,7 @@ IdleBabel.option('my-mod', 'size');   <span class="comment">// 'large': the valu
             <tr data-game="ether"><td><code>ether()</code></td><td><code>{ gain, total, next }</code>: the Ether a prestige would bring now, the pages read since forever, and those needed for one more Ether.</td></tr>
             <tr data-game="relics"><td><code>relics()</code></td><td><code>{ active, name, found, changeIn }</code>: the active relic (its id and name, <code>null</code>: none), how many are found, and the seconds before it can be changed (0: now). The wait counts in real time, absences included.</td></tr>
             <tr data-game="lottery"><td><code>lottery()</code></td><td><code>{ tokens, draws, blocked, effects, golden }</code>: the tokens, those already played, whether the machine is locked (all its bonuses running: it takes no more tokens), each running bonus or penalty (<code>{ id, method, left }</code>: the targeted method or <code>null</code>, its seconds left), and the seconds left to the Golden Mimic (0: gone). Everything counts in real time, absences included.</td></tr>
+            <tr data-game="tasks"><td><code>tasks()</code></td><td><code>{ open, today, once, mods, dailyDone }</code>: the tasks (<code>open</code>: the North is lit). <code>today</code>: the tasks of the day (<code>{ kind, text, value, goal, count, done, taken }</code>: their model, their instruction, what they are worth in tokens, their goal and how far along they are; a goal of 0: not computed yet); <code>once</code>: those done only once, once they have appeared (<code>{ n, text, met, goal, count, done, taken }</code>; <code>met</code>: written in clear); <code>mods</code>: the mods’ tasks (<code>{ id, text, goal, count, done, taken }</code>); <code>dailyDone</code>: tasks of the day done, ever. <code>done</code>: done; <code>taken</code>: its reward taken.</td></tr>
           </table>
         </div>
         <p>Each seal of the hive has <code>data-method="&lt;id&gt;"</code>: a mod knows which hexagon is which method. The game touches no other <code>data-*</code> attribute of a seal: a mod may write there.</p>

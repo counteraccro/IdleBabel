@@ -13,7 +13,14 @@ import { nextEtherPages, prestigeGain } from '../systems/prestige';
 import { lotteryBlocked } from '../systems/lottery';
 import { lotteryEffects } from '../systems/lotteryEffects';
 import { goldenHere } from '../systems/goldenMimic';
-import { t } from '../i18n';
+import { getLocale, t } from '../i18n';
+import { formatCount } from '../core/format';
+import { ONCE_TASKS } from '../data/tasks';
+import { tasksOpen } from '../systems/tasks';
+import { dailyLeft } from '../systems/dailyTasks';
+import { onceCount, onceMet, onceShown } from '../systems/onceTasks';
+import { modTaskCount, modTasks } from './modTasks';
+import { modText } from './modSeals';
 import type { GameState } from '../core/state';
 
 /** Une méthode de lecture, telle qu'un mod la voit. */
@@ -107,6 +114,42 @@ export const modGame = (state: GameState) => ({
       golden: goldenHere(state, now) ? (state.lottery.golden!.until - now) / 1000 : 0,
     };
   },
+  /**
+   * Les tâches (le Nord allumé : `open`) : celles du jour (leur modèle, leur consigne, ce qu'elles valent en jetons, leur
+   * but et où elles en sont ; but 0 : pas encore calculé), celles qui ne se font qu'une fois (apparues seulement ; `met` :
+   * écrites en clair), celles des mods, et les tâches du jour faites depuis toujours. `done` : faite ; `taken` : sa
+   * récompense prise.
+   */
+  tasks: () => ({
+    open: tasksOpen(state),
+    today: state.tasks.today.map((task) => ({
+      kind: task.kind,
+      text: task.goal > 0 ? t(`whiteBook.tasks.daily.${task.kind}`).replace('{n}', formatCount(task.goal, getLocale())) : '',
+      value: task.value,
+      goal: task.goal,
+      count: task.goal > 0 ? task.goal - dailyLeft(state, task) : 0,
+      done: task.done !== undefined,
+      taken: !!task.taken,
+    })),
+    once: ONCE_TASKS.filter((def) => onceShown(state, def)).map((def) => ({
+      n: def.n,
+      text: t(`whiteBook.tasks.onceTasks.${def.n}`),
+      met: onceMet(state, def),
+      goal: def.goal,
+      count: onceCount(state, def),
+      done: state.tasks.once[def.n]?.done !== undefined,
+      taken: !!state.tasks.once[def.n]?.taken,
+    })),
+    mods: modTasks().map((task) => ({
+      id: task.key,
+      text: modText(task.text, getLocale()),
+      goal: task.goal,
+      count: modTaskCount(state, task),
+      done: !!state.tasks.mods[task.key],
+      taken: !!state.tasks.mods[task.key]?.taken,
+    })),
+    dailyDone: state.tasks.dailyDone,
+  }),
 });
 
 export type ModGame = ReturnType<typeof modGame>;

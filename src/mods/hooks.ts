@@ -43,6 +43,11 @@ export interface Hooks {
   boon: (boon: { id: string; seconds?: number }) => void;
   /** Un jeton joué à la Loterie : son résultat, ses trois rouleaux, et ce qu'il a donné. */
   lottery: (draw: ModDraw) => void;
+  /**
+   * Une tâche faite (sa récompense attend le clic) : du jour (son modèle, ce qu'elle vaut en jetons), une seule fois (son
+   * numéro), ou d'un mod (« mod:<mod>:<id> »).
+   */
+  task: (task: { kind: 'daily' | 'once' | 'mod'; id: string; value?: number }) => void;
 }
 
 export type HookName = keyof Hooks;
@@ -67,6 +72,7 @@ export const HOOK_NAMES: readonly HookName[] = [
   'mimicCaught',
   'boon',
   'lottery',
+  'task',
 ];
 
 /** Une trouvaille, telle qu'un mod la voit. */
@@ -123,6 +129,7 @@ const hooks: { [N in HookName]: Hooks[N][] } = {
   mimicCaught: [],
   boon: [],
   lottery: [],
+  task: [],
 };
 
 export const isHookName = (name: string): name is HookName => (HOOK_NAMES as readonly string[]).includes(name);

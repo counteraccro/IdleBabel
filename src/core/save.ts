@@ -40,6 +40,7 @@ const readSave = (raw: string, defaultLocale: Locale): GameState | null => {
               ...saved.tasks,
               bonus: { ...initial.tasks.bonus, ...saved.tasks?.bonus },
               counters: { ...initial.tasks.counters, ...saved.tasks?.counters },
+              mods: { ...saved.tasks?.mods },
             },
             // Les nœuds des anciens arbres, ou les étoiles : core/etheriumTrees.ts ; les étoiles fermées : core/closedStars.ts.
             etherium: saved.etherium ?? [],
