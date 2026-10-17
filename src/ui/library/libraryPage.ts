@@ -344,7 +344,7 @@ export const createLibraryPage = (
   let tome: Tome | null = null;
   if (storyPlaces[0]) {
     const place = storyPlaces[0];
-    tome = createTome(0, t('ui.endings.collection'));
+    tome = createTome(0, t('ui.endings.collection'), () => (dirty = true));
     tome.mesh.position.set(0, 0, 0);
     const holder = new THREE.Group();
     holder.add(tome.mesh);
