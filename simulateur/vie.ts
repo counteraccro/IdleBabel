@@ -14,7 +14,7 @@ import { DIGITAL_AGE } from '../src/data/tools';
 import { relicById } from '../src/data/relics';
 import { PLAYER } from './config';
 import { etherNeeded } from '../src/systems/etherium';
-import { countLast, newTasks, openTaskStars, type Tasks } from './taches';
+import { TASK_STAR_IDS, countLast, newTasks, openTaskStars, type Tasks } from './taches';
 
 /** Ce qui survit au prestige : les pages à vie, l'Éther, les étoiles allumées, la Page Cornée une fois retrouvée. */
 export interface Life {
@@ -107,6 +107,8 @@ const open = (life: Life): Buyable[] => [
       !life.stars.has(star.id) &&
       PLAYER.pages.includes(star.page) &&
       !CLOSED.has(star.id) &&
+      // Les étoiles des tâches : openTaskStars (--sans-taches).
+      !TASK_STAR_IDS.has(star.id) &&
       afterLit(star, (id) => life.stars.has(id)) &&
       (!neededFor(star.id) || life.stars.has(neededFor(star.id)!)) &&
       (PLAYER.cornee || star.id !== S.cornee) &&

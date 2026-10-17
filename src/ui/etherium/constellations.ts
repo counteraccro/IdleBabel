@@ -79,6 +79,14 @@ const PIVOT = [474, 520] as const;
 const BALL = [500, 334] as const;
 const REELS = [220, 310, 400] as const;
 
+// Les Tâches, le cadran solaire vu d'en haut (17/10, .ai/maquette-etherium-taches.html) : le pied du style, le rayon du
+// jour ; un point du cadran, à tant de degrés (270 : le style, midi) et tant du pied.
+const DIAL = [320, 615] as const;
+const DIAL_R = 255;
+const dial = (deg: number, r: number) => ring(DIAL, r, deg);
+/** Un arc du jour, de gauche à droite par le haut, en lignes brisées (un point tous les 3 degrés). */
+const dayArc = (r: number) => Array.from({ length: 61 }, (_, i) => dial(180 + i * 3, r));
+
 // La Rose des vents : le centre, et la longueur de chaque pointe (longues pour les quatre directions).
 const ROSE = [320, 480] as const;
 const ROSE_R = 40;
@@ -587,6 +595,52 @@ export const FIGURES: Record<PageId, Figure> = {
       ],
       strong: true,
       labelKeys: 'etherium.pages.lottery.reels',
+      labelSize: 11,
+      labelSpacing: 1.5,
+    },
+  },
+  // Les Tâches, « Le Cadran solaire » : le pied du style offert ; le style porte le nombre, la ligne d'heure de gauche le
+  // gain, celle de droite « une seule fois » ; le nom de chaque branche au bord du cadran.
+  tasks: {
+    spots: {
+      o: DIAL,
+      n4: dial(270, 110),
+      n5: dial(270, 205),
+      g2: dial(210, 120),
+      g3: dial(210, 210),
+      p1: dial(330, 90),
+      p2: dial(330, 155),
+      p3: dial(330, 220),
+    },
+    deco: [],
+    given: { id: 'o', opens: ['n4', 'g2', 'p1'] },
+    sketch: {
+      lines: [
+        // Le demi-cercle du jour et son bord intérieur ; les lignes d'heures ; le style, en triangle fin ; la pierre dessous.
+        dayArc(DIAL_R),
+        dayArc(DIAL_R - 22),
+        ...Array.from({ length: 13 }, (_, i) => [dial(180 + i * 15, 40), dial(180 + i * 15, DIAL_R - 22)]),
+        [
+          [DIAL[0] - 10, DIAL[1]],
+          [DIAL[0], DIAL[1] - DIAL_R + 30],
+          [DIAL[0] + 10, DIAL[1]],
+        ],
+        [
+          [DIAL[0] - DIAL_R - 20, DIAL[1]],
+          [DIAL[0] + DIAL_R + 20, DIAL[1]],
+        ],
+        [
+          [DIAL[0] - DIAL_R - 10, DIAL[1] + 18],
+          [DIAL[0] + DIAL_R + 10, DIAL[1] + 18],
+        ],
+      ],
+      labels: [
+        ['gain', dial(210, DIAL_R + 30)],
+        ['count', dial(270, DIAL_R + 26)],
+        ['once', dial(330, DIAL_R + 30)],
+      ],
+      strong: true,
+      labelKeys: 'etherium.pages.tasks.branches',
       labelSize: 11,
       labelSpacing: 1.5,
     },

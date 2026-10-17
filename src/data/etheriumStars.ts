@@ -10,7 +10,7 @@ import { AUTOMATIC_AGE, DIGITAL_AGE } from './tools';
  */
 /**
  * L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10), puis le Poids, qui les touche tous ; la
- * page de chaque Âge à la fin, après les reliques (13/10) et la Loterie (17/10) ; tout au bout, le Rideau, la fausse fin (14/10).
+ * page de chaque Âge à la fin, après les reliques (13/10), la Loterie et les Tâches (17/10) ; tout au bout, le Rideau, la fausse fin (14/10).
  */
 export const ETHERIUM_PAGES = [
   'ages',
@@ -27,6 +27,7 @@ export const ETHERIUM_PAGES = [
   'mimic',
   'relics',
   'lottery',
+  'tasks',
   'screen',
   'curtain',
 ] as const;
@@ -166,12 +167,13 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['quill', 'r5', 'r4', 120],
   ['quill', 'r6', 'r5', 250],
   // L'Exploration, la Rose des vents (11/10, .ai/maquette-etherium-mimic.html) : le centre est offert, chaque pointe en part
-  // et fait apparaître une chose nouvelle dans les salles. L'Est, la Mimic ; l'Ouest, les reliques (12/10) ; les
-  // autres, des idées à venir (CLOSED).
+  // et fait apparaître une chose nouvelle dans les salles. L'Est, la Mimic ; l'Ouest, les reliques (12/10) ; le Nord, les
+  // tâches (17/10, 2 Éther : l'auteur, « ça doit être quelque chose de rapide à avoir ») ; les autres, des idées à venir
+  // (CLOSED).
   // L'Est, à 2 : la Mimic s'achète au 3e réveil (simulateur/vie.ts : 4 Éther reçus, l'Âge Automatique en premier).
   ['explore', 'e', null, 2],
   ['explore', 'w', null, 5],
-  ['explore', 'n', null, 0],
+  ['explore', 'n', null, 2],
   ['explore', 's', null, 0],
   ['explore', 'd0', null, 0],
   ['explore', 'd1', null, 0],
@@ -208,6 +210,16 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['lottery', 'm2', 'm1', 80],
   ['lottery', 'd1', null, 30],
   ['lottery', 'd2', 'd1', 100],
+  // Les Tâches, « Le Cadran solaire » (17/10, .ai/maquette-etherium-taches.html, prix gardés après le simulateur) : le pied
+  // du style est offert quand le Nord s'allume ; le style porte le nombre de tâches du jour, la ligne de gauche le gain, celle
+  // de droite les tâches « une seule fois » (data/tasks.ts). « Une dernière pour la route » attend son livre de fin (CLOSED).
+  ['tasks', 'n4', null, 30],
+  ['tasks', 'n5', 'n4', 100],
+  ['tasks', 'g2', null, 40],
+  ['tasks', 'g3', 'g2', 150],
+  ['tasks', 'p1', null, 20],
+  ['tasks', 'p2', 'p1', 60],
+  ['tasks', 'p3', 'p2', 200],
   // Le Rideau, la fausse fin (14/10, .ai/maquette-faux-livre.html, conception §9.2) : la tringle depuis son milieu, puis le
   // bas des plis et l'ourlet ; chaque étoile fait remonter une bribe de « Mon histoire vraie ». La dernière, l'ourlet de
   // droite, attend toutes les autres (WAITS_FOR_PAGE).
@@ -241,7 +253,9 @@ export const CLOSED: ReadonlySet<string> = new Set([
   'ages.inf',
   'memory.a0',
   // Les pointes de la Rose des vents qui n'ouvrent encore rien.
-  ...['n', 's', 'd0', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
+  ...['s', 'd0', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
+  // « Une dernière pour la route », tant que son livre de fin n'est pas écrit (l'auteur, 17/10).
+  'tasks.p3',
 ]);
 
 /** Fermées, mais sans bloquer la suite : les étoiles d'après la Goutte attendent celle d'avant elle. */
@@ -277,10 +291,15 @@ export const NEEDS_AGE: ReadonlyMap<string, string> = new Map(
 );
 
 /**
- * Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration ; le Minitel,
- * par l'Âge Numérique).
+ * Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration ; les
+ * Tâches, par le Nord ; le Minitel, par l'Âge Numérique).
  */
-export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e', relics: 'explore.w', screen: DIGITAL_AGE };
+export const PAGE_NEEDS: Partial<Record<PageId, string>> = {
+  mimic: 'explore.e',
+  relics: 'explore.w',
+  tasks: 'explore.n',
+  screen: DIGITAL_AGE,
+};
 
 /** Une page qui attend un premier jeton joué : la Loterie (blanche jusque-là, absente du sommaire). */
 export const PAGE_NEEDS_DRAW: ReadonlySet<PageId> = new Set(['lottery']);

@@ -113,6 +113,13 @@
       "locked": "Cette page attend\nqu’un jeton soit joué.",
       "reels": { "time": "LE TEMPS", "value": "LA VALEUR", "luck": "LA CHANCE" }
     },
+    "tasks": {
+      "name": "Les Tâches",
+      "figure": "Le Cadran solaire",
+      "description": "Un jour, puis un autre.",
+      "locked": "Cette page attend\nque le Nord s’allume.",
+      "branches": { "gain": "LE GAIN", "count": "LE NOMBRE", "once": "UNE SEULE FOIS" }
+    },
     "screen": {
       "name": "Numérique",
       "figure": "Le Minitel",
@@ -568,8 +575,9 @@
         "effect": "se cachent dans les salles (leurs phrases, dans le livre blanc), et leur page s’ouvre"
       },
       "n": {
-        "name": "Plus tard",
-        "note": "une direction, plus tard"
+        "name": "Nord",
+        "value": "Les tâches :",
+        "effect": "elles se glissent dans le livre blanc, et leur page s’ouvre"
       },
       "s": {
         "name": "Plus tard",
@@ -737,6 +745,48 @@
         "value": "La chance :",
         "effect": "« rien » 20 %…",
         "but": "mais malus 24 %"
+      }
+    },
+    "tasks": {
+      "o": {
+        "name": "Le pied du style",
+        "value": "Les Tâches :",
+        "effect": "trois par jour, un jeton chacune"
+      },
+      "n4": {
+        "name": "Le style, en bas",
+        "value": "Le nombre :",
+        "effect": "4 tâches par jour"
+      },
+      "n5": {
+        "name": "Le style, en haut",
+        "value": "Le nombre :",
+        "effect": "5 tâches par jour"
+      },
+      "g2": {
+        "name": "L’heure de gauche, près du style",
+        "value": "Le gain :",
+        "effect": "des tâches à 2 jetons, deux fois plus longues"
+      },
+      "g3": {
+        "name": "L’heure de gauche, au bord",
+        "value": "Le gain :",
+        "effect": "des tâches à 3 jetons, trois fois plus longues"
+      },
+      "p1": {
+        "name": "L’heure de droite, près du style",
+        "value": "Une seule fois :",
+        "effect": "4 nouvelles tâches s’écrivent"
+      },
+      "p2": {
+        "name": "L’heure de droite, au milieu",
+        "value": "Une seule fois :",
+        "effect": "4 autres tâches s’écrivent"
+      },
+      "p3": {
+        "name": "L’heure de droite, au bord",
+        "value": "Une dernière pour la route",
+        "effect": ""
       }
     },
     "weight": {

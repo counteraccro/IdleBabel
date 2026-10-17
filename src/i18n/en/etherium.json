@@ -113,6 +113,13 @@
       "locked": "This page is waiting\nfor a token to be played.",
       "reels": { "time": "TIME", "value": "VALUE", "luck": "LUCK" }
     },
+    "tasks": {
+      "name": "Tasks",
+      "figure": "The Sundial",
+      "description": "One day, then another.",
+      "locked": "This page is waiting\nfor the North to light up.",
+      "branches": { "gain": "THE GAIN", "count": "THE NUMBER", "once": "ONLY ONCE" }
+    },
     "screen": {
       "name": "Digital",
       "figure": "The Minitel",
@@ -568,8 +575,9 @@
         "effect": "hide in the rooms (their lines, in the white book), and their page opens"
       },
       "n": {
-        "name": "Later",
-        "note": "a direction, for later"
+        "name": "North",
+        "value": "Tasks:",
+        "effect": "they slip into the white book, and their page opens"
       },
       "s": {
         "name": "Later",
@@ -737,6 +745,48 @@
         "value": "Luck:",
         "effect": "“nothing” 20%…",
         "but": "but penalties 24%"
+      }
+    },
+    "tasks": {
+      "o": {
+        "name": "The foot of the gnomon",
+        "value": "Tasks:",
+        "effect": "three a day, one token each"
+      },
+      "n4": {
+        "name": "The gnomon, low",
+        "value": "The number:",
+        "effect": "4 tasks a day"
+      },
+      "n5": {
+        "name": "The gnomon, high",
+        "value": "The number:",
+        "effect": "5 tasks a day"
+      },
+      "g2": {
+        "name": "The left hour, near the gnomon",
+        "value": "The gain:",
+        "effect": "tasks worth 2 tokens, twice as long"
+      },
+      "g3": {
+        "name": "The left hour, at the edge",
+        "value": "The gain:",
+        "effect": "tasks worth 3 tokens, three times as long"
+      },
+      "p1": {
+        "name": "The right hour, near the gnomon",
+        "value": "Only once:",
+        "effect": "4 new tasks are written"
+      },
+      "p2": {
+        "name": "The right hour, in the middle",
+        "value": "Only once:",
+        "effect": "4 more tasks are written"
+      },
+      "p3": {
+        "name": "The right hour, at the edge",
+        "value": "One for the road",
+        "effect": ""
       }
     },
     "weight": {

@@ -7,6 +7,8 @@ import { ONCE_TASKS } from '../src/data/tasks';
 import { takeDaily, takeOnce, taskDraw, taskTouched, tasksAfterPrestige, taskWaiting, tickTasks } from '../src/systems/tasks';
 import { pagesPerSecond } from '../src/systems/production';
 import { findKnowledge } from '../src/systems/knowledge';
+import { pageOpen, starOpen } from '../src/systems/etherium';
+import { starById } from '../src/data/etheriumStars';
 
 vi.stubGlobal('window', new EventTarget());
 
@@ -189,5 +191,23 @@ describe('Les tâches « une seule fois »', () => {
     state.wake.book = 401;
     state.booksFinished = 420;
     expect(onceCount(state, def(17))).toBe(20);
+  });
+});
+
+describe("La page « Les Tâches » de l'Etherium", () => {
+  it('le Nord coûte 2 Éther et ouvre la page ; « Une dernière pour la route » reste fermée', () => {
+    const state = createInitialState('fr', DAY);
+    state.ether = 1000;
+    state.etherReceived = 1000;
+    expect(pageOpen(state, 'tasks')).toBe(false);
+    expect(starOpen(state, 'tasks.n4')).toBe(false);
+    expect(starById('explore.n')?.cost).toBe(2);
+    expect(starOpen(state, 'explore.n')).toBe(true);
+    state.etherium.push('explore.n');
+    expect(pageOpen(state, 'tasks')).toBe(true);
+    expect(['tasks.n4', 'tasks.g2', 'tasks.p1'].every((id) => starOpen(state, id))).toBe(true);
+    expect(starOpen(state, 'tasks.n5')).toBe(false);
+    state.etherium.push('tasks.p1', 'tasks.p2');
+    expect(starOpen(state, 'tasks.p3')).toBe(false);
   });
 });

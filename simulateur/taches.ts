@@ -1,4 +1,5 @@
-import { CLOSED, STARS, type PageId } from '../src/data/etheriumStars';
+import { CLOSED, STARS, neededFor, starById, type PageId, type Star } from '../src/data/etheriumStars';
+import { TASK_STAR } from '../src/data/tasks';
 import { DIGITAL_AGE } from '../src/data/tools';
 import { PAGES_PER_BOOK } from '../src/systems/books';
 import { LOTTERY_STARS } from '../src/data/lottery';
@@ -15,17 +16,12 @@ import { sealsPerPlate } from './sceaux';
  * sa relique (le Crayon n'agit pas).
  */
 
-/** Les étoiles des tâches, avec leurs prix proposés : le Nord de la Rose des vents, puis la page « Les Tâches ». */
-export const TASK_STARS: readonly { id: string; after?: string; cost: number }[] = [
-  { id: 'explore.n', cost: 2 },
-  { id: 'tasks.n1', after: 'explore.n', cost: 30 },
-  { id: 'tasks.n2', after: 'tasks.n1', cost: 100 },
-  { id: 'tasks.g1', after: 'explore.n', cost: 40 },
-  { id: 'tasks.g2', after: 'tasks.g1', cost: 150 },
-  { id: 'tasks.o1', after: 'explore.n', cost: 20 },
-  { id: 'tasks.o2', after: 'tasks.o1', cost: 60 },
-  { id: 'tasks.last', after: 'tasks.o2', cost: 200 },
-];
+/**
+ * Les étoiles des tâches, celles du jeu (data/etheriumStars.ts) : le Nord de la Rose des vents, puis la page « Les Tâches ».
+ * « Une dernière pour la route » (tasks.p3) y est, même fermée en jeu tant que son livre de fin n'est pas écrit.
+ */
+export const TASK_STARS: readonly Star[] = [starById(TASK_STAR.north)!, ...STARS.filter((star) => star.page === 'tasks')];
+export const TASK_STAR_IDS: ReadonlySet<string> = new Set(TASK_STARS.map((star) => star.id));
 
 /** Minutes de jeu à l'écran que demande une tâche du jour, par jeton qu'elle vaut. */
 export const MINUTES_PER_TOKEN = 20;
@@ -60,7 +56,7 @@ const fullFigures = (life: Life): number =>
   ALL_PAGES.filter((page: PageId) => {
     const stars = STARS.filter((star) => star.page === page && !CLOSED.has(star.id));
     return stars.length > 0 && stars.every((star) => life.stars.has(star.id));
-  }).length + (TASK_STARS.slice(1).every((star) => life.stars.has(star.id)) ? 1 : 0);
+  }).length;
 const fullPlates = (life: Life): number =>
   sealsPerPlate(life.seals)
     .split(', ')
@@ -90,14 +86,14 @@ export const ONCE_TASKS: readonly OnceTask[] = [
   { n: 10, label: 'Nourris-le 10 fois', star: 'explore.n', goal: 10, count: (run) => run.life.prestiges, reward: { tokens: 25 } },
   { n: 11, label: 'Les trois reliques', star: 'explore.n', goal: 3, before: true, count: (run) => run.life.relics.size + (digitalLit(run.life) ? 1 : 0), reward: { knowledge: 48 } },
   { n: 12, label: '50 étoiles allumées', star: 'explore.n', goal: 50, count: (run) => run.life.stars.size, reward: { knowledgeBonus: 0.05 } },
-  { n: 13, label: 'Tous les livres qui se jouent', star: 'tasks.o1', goal: 1, reward: { reading: 48 } },
-  { n: 14, label: 'Colorie 10 pages', star: 'tasks.o1', goal: 10, reward: { knowledge: 24 } },
-  { n: 15, label: '30 tâches du jour', star: 'tasks.o1', goal: 30, count: (run) => run.life.tasks.dailyDone, reward: { crayon: true } },
-  { n: 16, label: '100 000 livres à vie', star: 'tasks.o1', goal: 100_000, count: (run) => books(run.life.turned), reward: { tokens: 30 } },
-  { n: 17, label: '10 000 livres en une partie', star: 'tasks.o2', goal: 10_000, start: (run) => (run.life.tasks.runBase = { prestige: run.life.prestiges, turned: run.turned }), count: runBooksSince, reward: { reading: 72 } },
-  { n: 18, label: 'Trois figures entières', star: 'tasks.o2', goal: 3, count: (run) => fullFigures(run.life), reward: { tokens: 40 } },
-  { n: 19, label: 'Une planche entière de sceaux', star: 'tasks.o2', goal: 1, count: (run) => fullPlates(run.life), reward: { readingBonus: 0.1 } },
-  { n: 20, label: '10 gains de suite sans malus', star: 'tasks.o2', goal: 10, start: (run) => (run.life.tasks.winStreak = 0), count: (run) => run.life.tasks.winStreak, reward: { tokens: 50 } },
+  { n: 13, label: 'Tous les livres qui se jouent', star: 'tasks.p1', goal: 1, reward: { reading: 48 } },
+  { n: 14, label: 'Colorie 10 pages', star: 'tasks.p1', goal: 10, reward: { knowledge: 24 } },
+  { n: 15, label: '30 tâches du jour', star: 'tasks.p1', goal: 30, count: (run) => run.life.tasks.dailyDone, reward: { crayon: true } },
+  { n: 16, label: '100 000 livres à vie', star: 'tasks.p1', goal: 100_000, count: (run) => books(run.life.turned), reward: { tokens: 30 } },
+  { n: 17, label: '10 000 livres en une partie', star: 'tasks.p2', goal: 10_000, start: (run) => (run.life.tasks.runBase = { prestige: run.life.prestiges, turned: run.turned }), count: runBooksSince, reward: { reading: 72 } },
+  { n: 18, label: 'Trois figures entières', star: 'tasks.p2', goal: 3, count: (run) => fullFigures(run.life), reward: { tokens: 40 } },
+  { n: 19, label: 'Une planche entière de sceaux', star: 'tasks.p2', goal: 1, count: (run) => fullPlates(run.life), reward: { readingBonus: 0.1 } },
+  { n: 20, label: '10 gains de suite sans malus', star: 'tasks.p2', goal: 10, start: (run) => (run.life.tasks.winStreak = 0), count: (run) => run.life.tasks.winStreak, reward: { tokens: 50 } },
 ];
 
 export interface Tasks {
@@ -204,7 +200,7 @@ export const tickTasks = (run: Run, seconds: number, onScreen: boolean, to: Give
     tasks.today = Array.from({ length: dailyCount(life) }, () => drawValue(life));
   }
   if (onScreen) tasks.screen += seconds;
-  if (life.stars.has('tasks.last')) tasks.last ??= { at: life.clock, ether: 0, pages: 0, knowledge: 0 };
+  if (life.stars.has('tasks.p3')) tasks.last ??= { at: life.clock, ether: 0, pages: 0, knowledge: 0 };
   tasks.today = tasks.today.map((value) => {
     if (value < 0 || tasks.screen < value * MINUTES_PER_TOKEN * 60) return value;
     tasks.dailyDone += 1;
@@ -236,7 +232,14 @@ export const countLast = (life: Life, what: 'ether' | 'pages' | 'knowledge', amo
 
 /** Les étoiles des tâches que le bot peut allumer maintenant (--sans-taches : aucune). */
 export const openTaskStars = (life: Life): { id: string; cost: number }[] =>
-  PLAYER.tasks ? TASK_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after))) : [];
+  PLAYER.tasks
+    ? TASK_STARS.filter(
+        (star) =>
+          !life.stars.has(star.id) &&
+          (!star.after || life.stars.has(star.after)) &&
+          (!neededFor(star.id) || life.stars.has(neededFor(star.id)!)),
+      )
+    : [];
 
 /** L'Âge Numérique est allumé : le Sablier se trouve (le 3e Âge). */
 export const digitalLit = (life: Life): boolean => life.stars.has(DIGITAL_AGE);

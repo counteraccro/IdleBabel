@@ -2637,6 +2637,14 @@
             "Avec elle, le jeu est passé en Alpha 2.4."
           ]
         },
+        "tasks": {
+          "head": "Les tâches",
+          "text": [
+            "Le Nord de la Rose des vents s’allume enfin, pour 2 Éther : il ouvre les tâches. On les a d’abord appelées billets, puis quêtes ; « tâches » est le seul mot resté clair. Elles s’écrivent dans le livre blanc, une cinquième partie après les autres, et un petit jeton collé à la clé, sur la pile, brille quand l’une d’elles attend qu’on le prenne.",
+            "Chaque jour, trois tâches, calées sur la partie : lire tant de pages, tourner tant de feuilles à la main, trouver des morceaux de phrases. Ce qui n’est pas fait s’efface à minuit. D’autres ne se font qu’une fois, longues, comptées à partir du jour où elles s’écrivent, et elles rapportent davantage.",
+            "Elles ont leur page de nuit, après la Loterie : « Les Tâches », la figure du Cadran solaire, vu d’en haut, le jour en demi-cercle et ses lignes d’heures. Le pied du style est offert ; le style porte le nombre de tâches par jour, la ligne de gauche ce qu’elles valent, celle de droite les tâches qui ne se font qu’une fois. Sa dernière étoile reste fermée pour l’instant."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [
