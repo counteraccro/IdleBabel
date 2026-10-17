@@ -327,6 +327,20 @@
     "priceLetter": "la lettre",
     "priceMods": "les mods",
     "letterWaitEtherium": "l’Etherium",
-    "boonLength": "l’Etherium"
+    "boonLength": "l’Etherium",
+    "letterWaitIntuitions": "tes intuitions",
+    "letterWaitMods": "les mods",
+    "boonLengthIntuitions": "tes intuitions",
+    "boonLengthMods": "les mods"
+  },
+  "groupValues": {
+    "reading": "{n} pages par seconde",
+    "click": "{n} pages à chaque clic",
+    "finds": "{n} de chance à chaque page",
+    "knowledge": "{n} de Connaissance par trouvaille",
+    "rare": "un livre sur {n}",
+    "price": "les méthodes coûtent {n}",
+    "letterWait": "une lettre toutes les {min} à {max} minutes",
+    "boonLength": "{n} la durée de chaque bonus"
   }
 }

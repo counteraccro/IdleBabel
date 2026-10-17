@@ -1,8 +1,8 @@
 import { getLocale, t } from '../../i18n';
-import { formatNumber, writeDigits } from '../../core/format';
+import { formatCount, formatNumber, writeDigits } from '../../core/format';
 import { TOOLS } from '../../data/tools';
 import { FLAIR_LEVELS } from '../../data/technologies';
-import { filterMultiplier, gestureMultiplier, levelOf, toolPriceFactor, clickShare } from '../../systems/technologies';
+import { filterMultiplier, gestureMultiplier, levelOf, rareChance, toolPriceFactor, clickShare } from '../../systems/technologies';
 import {
   boonLengthFactor,
   digitalMultiplier,
@@ -24,6 +24,13 @@ import { lotteryMethod, lotteryReading } from '../../systems/lotteryEffects';
 import { hookProduct } from '../../mods/hooks';
 import { modded } from '../../mods/quantities';
 import { relicName } from '../relics/relicText';
+import { pagesPerSecond } from '../../systems/production';
+import { pagesPerClick } from '../../systems/click';
+import { findChance, findKnowledge } from '../../systems/knowledge';
+import { nextRareChance } from '../../systems/rareBooks';
+import { RARE_BOOKS } from '../../data/rareBooks';
+import { boonLength, letterWait } from '../../systems/letter';
+import { UNDERSTOOD_STEP, WATCH_STEP } from '../../data/letter';
 import type { Figure } from './chapters';
 import type { GameState } from '../../core/state';
 
@@ -124,13 +131,49 @@ export const BONUS_FIGURES: Figure[] = [
   factorRow('price', 'priceLetter', 'lettra vimo', () => priceBoon()),
   factorRow('price', 'priceMods', 'modo vel', () => modded('methodCost')),
 
+  factorRow('letterWait', 'letterWaitIntuitions', 'tedu ralvi', (s) => 1 - WATCH_STEP * levelOf(s, 'watch')),
   factorRow('letterWait', 'letterWaitEtherium', 'etra pluma', letterWaitFactor),
   {
     ...factorRow('letterWait', 'letterWaitRelic', 'relva astro', relicLetterWait),
     label: () => relicName('astrolabe'),
   },
+  factorRow('letterWait', 'letterWaitMods', 'modo vel', () => modded('letterWait')),
+
+  factorRow('boonLength', 'boonLengthIntuitions', 'tedu ralvi', (s) => 1 + UNDERSTOOD_STEP * levelOf(s, 'letterUnderstood')),
   factorRow('boonLength', 'boonLength', 'etra pluma dur', boonLengthFactor),
+  factorRow('boonLength', 'boonLengthMods', 'modo vel', () => modded('boonLength')),
 ];
+
+const minutes = (seconds: number): string =>
+  writeDigits(new Intl.NumberFormat(getLocale(), { maximumFractionDigits: 1 }).format(seconds / 60));
+
+/**
+ * Sous chaque sous-titre, ce que ça donne en ce moment, tous bonus compris (demande de l'auteur, 17/10 : « pour donner un
+ * ordre d'idée ») : les pages par seconde, d'un clic, la chance de trouvaille… Illisible : le nombre seul.
+ */
+const GROUP_VALUES: Record<Group, (state: GameState) => Record<string, string>> = {
+  reading: (s) => ({ n: formatCount(pagesPerSecond(s), getLocale()) }),
+  click: (s) => ({ n: formatCount(pagesPerClick(s), getLocale()) }),
+  finds: (s) => ({
+    n: writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumSignificantDigits: 3 }).format(findChance(s))),
+  }),
+  knowledge: (s) => ({ n: formatNumber(findKnowledge(s), getLocale()) }),
+  rare: (s) => ({ n: formatNumber(Math.round(1 / nextRareChance(Object.keys(s.rareBooks).length, rareChance(s))), getLocale()) }),
+  price: (s) => ({ n: boost(toolPriceFactor(s) * priceBoon() * modded('methodCost')) }),
+  letterWait: (s) => {
+    const { min, max } = letterWait(s);
+    return { min: minutes(min), max: minutes(max) };
+  },
+  boonLength: (s) => ({ n: boost(boonLength(s)) }),
+};
+
+export const groupValue = (state: GameState, group: string, readable: boolean): string => {
+  const values = GROUP_VALUES[group as Group](state);
+  if (!readable) return Object.values(values).join(' · ');
+  // Tous les livres rares trouvés : plus de chance à dire.
+  if (group === 'rare' && Object.keys(state.rareBooks).length >= RARE_BOOKS.length) return t('strangeBook.figures.rareAll');
+  return Object.entries(values).reduce((text, [key, value]) => text.replace(`{${key}}`, value), t(`strangeBook.groupValues.${group}`));
+};
 
 /** Le chapitre paraît dès qu'un bonus agit. */
 export const anyBonus = (state: GameState): boolean => BONUS_FIGURES.some((figure) => figure.shown?.(state));

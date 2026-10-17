@@ -18,13 +18,16 @@ export const PAGES_PER_CLICK = PAGES_PER_LEAF;
  * reçu, le Sablier et Quatre cent dix multiplient la feuille elle-même (la production l'est déjà : sinon, ×410 deux fois) ;
  * la Main légère de la lettre et les mods (crochet `click`, grandeur `click`), le tout.
  */
+export const pagesPerClick = (state: GameState): number =>
+  (PAGES_PER_CLICK * etherReading(state) * relicReading(state) * fourTen() + pagesPerSecond(state) * clickShare(state)) *
+  handsMultiplier(state) *
+  clickBoon() *
+  hookProduct('click') *
+  modded('click');
+
+/** Un clic : la feuille tournée, et ce qu'elle rapporte (pagesPerClick). */
 export const readPage = (state: GameState): void => {
-  const read =
-    (PAGES_PER_CLICK * etherReading(state) * relicReading(state) * fourTen() + pagesPerSecond(state) * clickShare(state)) *
-    handsMultiplier(state) *
-    clickBoon() *
-    hookProduct('click') *
-    modded('click');
+  const read = pagesPerClick(state);
   gainPages(state, read);
   state.pagesByHand += read;
   state.stats.clicks += 1;

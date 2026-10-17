@@ -5,6 +5,7 @@ import { babelize, seedOf } from '../whiteBook/babelMask';
 import { isDeciphered } from '../../systems/decipher';
 import { coverDesign, shelfMarkText } from '../../systems/coverDesign';
 import { STRANGE_BOOK_INDEX } from '../../systems/strangeBook';
+import { groupValue } from './bonuses';
 import { CHAPTERS, chapterShown, chapterTitle, contentsTitle, figureCaption, figureShown, type Chapter } from './chapters';
 import {
   createItemsView,
@@ -90,10 +91,19 @@ interface Entry {
   sub?: boolean;
 }
 
-const contentsItems = (state: GameState, entries: Entry[]): Item[] => {
+const entriesHeight = (entries: readonly { sub?: boolean }[]): number =>
+  entries.reduce((sum, entry) => sum + (entry.sub ? SUB_STEP : ENTRY_STEP), 0);
+
+/**
+ * Le sommaire tient sur une page tant qu'il ne se tasse pas ; au-delà, deux pages (demande de l'auteur, 17/10 : il était
+ * « trop tassé ») : les chapitres sur la première, les sceaux et leurs planches sur la seconde, face à face dans le livre 3D.
+ */
+const splitContents = <T extends { sub?: boolean }>(chapters: T[], seals: T[]): T[][] =>
+  entriesHeight([...chapters, ...seals]) <= ENTRY_BOTTOM - ENTRY_TOP ? [[...chapters, ...seals]] : [chapters, seals];
+
+const contentsItems = (state: GameState, entries: Entry[], number: number): Item[] => {
   let y = ENTRY_TOP;
-  const height = entries.reduce((sum, entry) => sum + (entry.sub ? SUB_STEP : ENTRY_STEP), 0);
-  const squeeze = Math.min(1, (ENTRY_BOTTOM - ENTRY_TOP) / height);
+  const squeeze = Math.min(1, (ENTRY_BOTTOM - ENTRY_TOP) / entriesHeight(entries));
   return [
     ...heading(contentsTitle(state)),
     ...entries.flatMap((entry): Item[] => {
@@ -110,7 +120,7 @@ const contentsItems = (state: GameState, entries: Entry[]): Item[] => {
         { kind: 'link', y: top - 10, height: step - 4, target: entry.page },
       ];
     }),
-    folio(2),
+    folio(number),
   ];
 };
 
@@ -230,9 +240,13 @@ const ROW_STEP = 36;
 const ROW_BOTTOM = 690;
 /** Un sous-titre d'Âge : de l'air au-dessus, sa ligne, et un peu d'air avant la première méthode. */
 const AGE_STEP = 60;
+/** La valeur du moment, sous le sous-titre d'un groupe de bonus. */
+const VALUE_STEP = 32;
 
 /** `path` : le sous-titre (un Âge, ou ce que booste un bonus) dans les traductions ; `key` : sa graine en symboles de Babel. */
-type Slot = { kind: 'age'; key: string; path: string } | { kind: 'row'; figure: Chapter['figures'][number] };
+type Slot = { kind: 'age'; key: string; path: string; group?: string } | { kind: 'row'; figure: Chapter['figures'][number] };
+
+const slotHeight = (slot: Slot): number => (slot.kind === 'row' ? ROW_STEP : AGE_STEP + (slot.group ? VALUE_STEP : 0));
 
 /** Les lignes du relevé, page par page ; un sous-titre ne reste jamais seul en bas d'une page. */
 const rowPages = (state: GameState, chapter: Chapter): Slot[][] => {
@@ -243,7 +257,7 @@ const rowPages = (state: GameState, chapter: Chapter): Slot[][] => {
     // Un bonus est toujours sous ce qu'il booste.
     const key = figure.group ?? (figure.age === DIGITAL_AGE ? 'digitalAge' : figure.age === AUTOMATIC_AGE ? 'automaticAge' : 'manualAge');
     const path = figure.group ? `strangeBook.groups.${key}` : `whiteBook.parts.${key}`;
-    if ((byAge || figure.group) && key !== age) slots.push({ kind: 'age', key, path });
+    if ((byAge || figure.group) && key !== age) slots.push({ kind: 'age', key, path, group: figure.group });
     age = key;
     slots.push({ kind: 'row', figure });
   }
@@ -251,12 +265,12 @@ const rowPages = (state: GameState, chapter: Chapter): Slot[][] => {
   let y = ROW_BOTTOM;
   for (const slot of slots) {
     // Un sous-titre passe à la page suivante s'il n'a pas sa première méthode sous lui.
-    if (y + (slot.kind === 'age' ? AGE_STEP + ROW_STEP : ROW_STEP) > ROW_BOTTOM) {
+    if (y + slotHeight(slot) + (slot.kind === 'age' ? ROW_STEP : 0) > ROW_BOTTOM) {
       pages.push([]);
       y = ROW_TOP;
     }
     pages[pages.length - 1].push(slot);
-    y += slot.kind === 'age' ? AGE_STEP : ROW_STEP;
+    y += slotHeight(slot);
   }
   return pages;
 };
@@ -270,10 +284,14 @@ const rowsItems = (state: GameState, chapter: Chapter, slots: Slot[], number: nu
     ...slots.flatMap((slot): Item[] => {
       const top = y;
       if (slot.kind === 'age') {
-        y += AGE_STEP;
+        y += slotHeight(slot);
         const name = t(slot.path);
         const text = readable ? name : babelize(name, seedOf(slot.key));
-        return [{ kind: 'text', text, x: 320, y: top + 14, size: 22, align: 'center', italic: true, faded: true, spacing: 3 }];
+        const title: Item = { kind: 'text', text, x: 320, y: top + 14, size: 22, align: 'center', italic: true, faded: true, spacing: 3 };
+        if (!slot.group) return [title];
+        // Ce que ça donne en ce moment, tous bonus compris : un ordre d'idée.
+        const value = groupValue(state, slot.group, readable);
+        return [title, fitCaption({ kind: 'text', text: value, x: 320, y: top + 14 + VALUE_STEP, size: 20, align: 'center', spacing: 2 })];
       }
       y += ROW_STEP;
       const { figure } = slot;
@@ -374,7 +392,13 @@ const hasFigures = (chapter: Chapter): boolean => chapter.figures.some((figure) 
 /** Où tombe chaque partie du livre : chapitres (et leur relevé), puis les sceaux (introduction, planches). */
 const layout = (state: GameState, offset: number) => {
   const chapters = CHAPTERS.filter((chapter) => chapterShown(state, chapter));
-  const first = 2;
+  // Le sommaire : une entrée par chapitre, puis les sceaux et une sous-entrée par planche.
+  const plateCount = platePages(state, 0).filter((plate) => plate.part === 0).length;
+  const contentsPages = splitContents(
+    chapters.map(() => ({})),
+    [{}, ...Array.from({ length: plateCount }, () => ({ sub: true }))],
+  ).length;
+  const first = 1 + contentsPages;
   // Chaque chapitre : sa page de grands chiffres, puis celles de son relevé.
   const listPages = chapters.map((chapter) => rowPages(state, chapter));
   const chapterPages = listPages.map((list, index) => (hasFigures(chapters[index]) ? 1 : 0) + list.length);
@@ -403,12 +427,12 @@ export const sealPage = (state: GameState, id: string | null, offset = 1): numbe
 export const createPages = (state: GameState, goTo: (page: number) => void, offset = 0, focus?: string): LeafPage[] => {
   const { chapters, listPages, chapterStart, afterChapters, sealsPage, sealsPages, plates } = layout(state, offset);
   const blankPage = (page: number): LeafPage => createLeafPage(() => [folio(page + 1)], goTo);
-  const entries: Entry[] = [
-    ...chapters.map((chapter, index) => ({
-      title: () => chapterTitle(state, chapter),
-      page: chapterStart[index],
-      news: () => partHasNews(state, chapter.id),
-    })),
+  const chapterEntries: Entry[] = chapters.map((chapter, index) => ({
+    title: () => chapterTitle(state, chapter),
+    page: chapterStart[index],
+    news: () => partHasNews(state, chapter.id),
+  }));
+  const sealEntries: Entry[] = [
     { title: sealsTitle, page: sealsPage, news: () => state.newSeals.length > 0 || partHasNews(state, 'seals') },
     ...plates
       .filter((plate) => plate.part === 0)
@@ -425,7 +449,9 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
   const isFresh = (id: string): boolean => fresh.has(id) || state.newSeals.includes(id);
   return [
     createLeafPage(titleItems, goTo),
-    createLeafPage(() => contentsItems(state, entries), goTo),
+    ...splitContents(chapterEntries, sealEntries).map((entries, index) =>
+      createLeafPage(() => contentsItems(state, entries, index + 2), goTo),
+    ),
     ...chapters.flatMap((chapter, index) => {
       const start = chapterStart[index];
       const read = { onShown: () => markPartRead(state, chapter.id) };
