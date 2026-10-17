@@ -65,12 +65,22 @@ export const createCartouche = (onChange: () => void): Cartouche => {
 
   const shape = new THREE.Shape();
   outline(
-    { moveTo: (x, y) => shape.moveTo(x, y), lineTo: (x, y) => shape.lineTo(x, y), arc: (x, y, r, from, to) => shape.absarc(x, y, r, from, to, true) },
+    {
+      moveTo: (x, y) => shape.moveTo(x, y),
+      lineTo: (x, y) => shape.lineTo(x, y),
+      arc: (x, y, r, from, to) => shape.absarc(x, y, r, from, to, true),
+    },
     WIDTH,
     HEIGHT,
     NOTCH,
   );
-  const geometry = new THREE.ExtrudeGeometry(shape, { depth: DEPTH, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.004, bevelSegments: 2 });
+  const geometry = new THREE.ExtrudeGeometry(shape, {
+    depth: DEPTH,
+    bevelEnabled: true,
+    bevelThickness: 0.004,
+    bevelSize: 0.004,
+    bevelSegments: 2,
+  });
   const face = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.55, metalness: 0.1 });
   const edge = new THREE.MeshStandardMaterial({ color: 0xb8893a, roughness: 0.35, metalness: 0.45 });
   const mesh = new THREE.Mesh(geometry, [face, edge]);

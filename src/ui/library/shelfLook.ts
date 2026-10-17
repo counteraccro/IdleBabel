@@ -26,11 +26,12 @@ const INSIDE_SIZE = { width: 64, height: 80 };
  * L'habillage d'un livre pour la vitrine, à sa place `spot` : seul ce qu'on y voit garde de quoi être net (le
  * dos ; le plat du dessus d'un livre couché ; ceux d'un livre penché, vus de biais), le reste est réduit à
  * presque rien. Un livre y pesait jusqu'à ~17 Mo sur la carte graphique ; la vitrine en tient 33. Une
- * couverture qui vit (`liveCover`) est redessinée sur ses textures : elles restent telles quelles.
+ * couverture qui vit (`liveCover`) est redessinée sur ses textures : elles restent telles quelles. `flanks` : un livre debout
+ * sans voisin, dont on voit les plats de biais (un tome seul dans le meuble des fins).
  */
-export const shelfLook = (look: BookLook, { pose, lean }: ShelfPlace): BookLook => {
+export const shelfLook = (look: BookLook, { pose, lean }: ShelfPlace, flanks = false): BookLook => {
   if (look.liveCover) return { ...look, inside: shrink(look.inside, INSIDE_SIZE) };
-  const leaning = pose === 'stand' && lean !== 0;
+  const leaning = (pose === 'stand' && lean !== 0) || flanks;
   return {
     ...look,
     cover: shrink(look.cover, pose === 'lie' || leaning ? PLATE_SIZE : HIDDEN_PLATE),

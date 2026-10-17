@@ -243,9 +243,6 @@ export const tomeBack = async (index: number): Promise<THREE.CanvasTexture> => {
   return canvasTexture(node);
 };
 
-/** La toile seule, sans rien (les plats d'un tome rangé sur la tranche, qu'on ne voit pas). */
-export const tomeCloth = (): THREE.CanvasTexture => canvasTexture(cloth(5)[0]);
-
 /** La toile du dos et le titre du tome `index` couché dans la longueur, élargi pour un dos étroit (`thickness`, la hauteur du livre faisant 1). */
 const titledCloth = (index: number, thickness: number): HTMLCanvasElement => {
   const [node, context] = cloth(7);
@@ -264,7 +261,7 @@ const titledCloth = (index: number, thickness: number): HTMLCanvasElement => {
 };
 
 /** Le dos d'un tome en texture : PX pour la hauteur du livre (sa largeur : l'épaisseur du tome). */
-export const PX = 512;
+const PX = 512;
 /** Le nom de la saga : 0,15 de la hauteur du livre, un peu plus bas que le milieu du bandeau (l'anglaise). */
 const NAME_SIZE = 0.15;
 const NAME_DROP = 10;
@@ -274,7 +271,7 @@ const NAME_DROP = 10;
  * comme les dos d'une série de BD, chaque dos porte sa part du nom de la saga (`name`, dans la langue du jeu), écrit d'un
  * trait sur toute la rangée du meuble, dans un bandeau doré (Great Vibes) ; en bas, le numéro du tome.
  */
-export const paintTomeSpine = (context: CanvasRenderingContext2D, index: number, name: string): void => {
+const paintTomeSpine = (context: CanvasRenderingContext2D, index: number, name: string): void => {
   const { x, t } = TOMES[index];
   const [w, h] = [context.canvas.width, context.canvas.height];
   context.drawImage(titledCloth(index, t), 0, 0, w, h);

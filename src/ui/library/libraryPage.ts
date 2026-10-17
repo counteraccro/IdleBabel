@@ -44,7 +44,6 @@ import {
   TOME_FRONT,
   createEndingsShelf,
 } from './endingsShelf3d';
-import { createTome, type Tome } from './endingsTome';
 import { TOMES } from '../../data/sagaTomes';
 import { createLotteryMachine } from './lotteryMachine3d';
 import { drawResults } from './lotteryText';
@@ -307,7 +306,7 @@ export const createLibraryPage = (
       aim: 0,
     };
   });
-  // Le meuble des fins : en haut sur le chevalet, le vrai livre (?debug) ; en bas, « Mon histoire vraie », tome 1.
+  // Le meuble des fins : en haut sur le chevalet, le vrai livre (?debug) ; en bas, « Qui j'étais », tome 1.
   const endingsAt = (local: THREE.Vector3): THREE.Vector3 => local.clone().add(endings.root.position);
   const easelPlaces: Place[] = debugging
     ? [
@@ -328,7 +327,7 @@ export const createLibraryPage = (
     ? [
         {
           id: LIBRARY_STORY_BOOK,
-          pivot: endingsAt(new THREE.Vector3(TOMES[0].x, TOME_FLOOR, TOME_FRONT)),
+          pivot: endingsAt(new THREE.Vector3(TOMES[0].x + TOMES[0].t, TOME_FLOOR, TOME_FRONT)),
           tip: true,
           reach: PULL,
           floor: LOW_FLOOR,
@@ -340,21 +339,35 @@ export const createLibraryPage = (
       ]
     : [];
   const places = [...shelfPlaces, ...easelPlaces, ...storyPlaces];
-  // Le tome 1, rangé : un dos de la collection (son bandeau, son numéro), comme dans la maquette.
-  let tome: Tome | null = null;
+  // Le tome 1, rangé : son vrai modèle, comme les livres de la vitrine (l'auteur, 17/10), debout, le dos vers le lecteur ; son
+  // coin bas-droit-avant à sa place. Seul dans sa rangée, on voit ses plats de biais.
   if (storyPlaces[0]) {
     const place = storyPlaces[0];
-    tome = createTome(0, t('ui.endings.collection'), () => (dirty = true));
-    tome.mesh.position.set(0, 0, 0);
-    const holder = new THREE.Group();
-    holder.add(tome.mesh);
-    holder.position.copy(place.pivot);
-    endings.cellLights.light(holder);
-    scene.add(holder);
-    place.holder = holder;
-    place.book = tome.anchor;
-    // Great Vibes peut arriver après le premier dessin.
-    void document.fonts?.load("400 40px 'Great Vibes'").then(() => tome?.rename(t('ui.endings.collection')));
+    const book = shelfBook3d(state, LIBRARY_STORY_BOOK, debugging);
+    place.tick = book.tick;
+    const tomeSpot: ShelfPlace = { id: LIBRARY_STORY_BOOK, cell: -1, pose: 'stand', x: 0, y: 0, width: 0, depth: 0, yaw: 0, lean: 0 };
+    void book.look().then((look) => {
+      if (!root.isConnected && mounted) return;
+      const mesh = createBookMesh(book.shape, shelfLook(look, tomeSpot, true));
+      mesh.setOpen(0);
+      const turn = new THREE.Group();
+      mesh.root.rotation.y = Math.PI / 2;
+      turn.add(mesh.root);
+      turn.updateMatrixWorld(true);
+      const box = visibleBox(mesh.root);
+      turn.position.set(-box.max.x, -box.min.y, -box.max.z);
+      mesh.root.traverse((object) => {
+        if (object instanceof THREE.Mesh) object.castShadow = object.receiveShadow = true;
+      });
+      const holder = new THREE.Group();
+      holder.add(turn);
+      holder.position.copy(place.pivot);
+      endings.cellLights.light(holder);
+      scene.add(holder);
+      place.holder = holder;
+      place.book = mesh.root;
+      dirty = true;
+    });
   }
   // Les livres trouvés : leur vrai modèle, chargé à part (couvertures, polices).
   for (const place of shelfPlaces) {
@@ -649,7 +662,7 @@ export const createLibraryPage = (
   };
   requestAnimationFrame(frame);
 
-  /** Ce que montrent la machine et le tome, au dernier dessin (update). */
+  /** Ce que montre la machine, au dernier dessin (update). */
   let shownLabels = '';
   return {
     root,
@@ -664,13 +677,12 @@ export const createLibraryPage = (
       back.textContent = `← ${t('ui.back')}`;
       cartouche.write(shelfText());
       endings.cartouche.write(endingsText());
-      // La boucle appelle update dix fois par seconde : la machine et le tome ne se redessinent (la scène avec) que si
+      // La boucle appelle update dix fois par seconde : la machine ne se redessine (la scène avec) que si
       // leurs textes ou les jetons ont changé.
       const labels = `${t('ui.lottery.sign')}|${t('ui.endings.collection')}|${state.lottery.tokens}`;
       if (labels !== shownLabels) {
         shownLabels = labels;
         machine.relabel();
-        tome?.rename(t('ui.endings.collection'));
         dirty = true;
       }
       arrowTitles();
