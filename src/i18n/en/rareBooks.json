@@ -1042,6 +1042,27 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.5",
+          "date": "October 17, 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "The North of the Compass Rose lights up in the Etherium.",
+                "The white book has a fifth part.",
+                "A fourth relic.",
+                "The Great Book has a new plate of seals.",
+                "The Etherium is sorted into groups, named in its contents.",
+                "Mods: new functions (documentation updated)."
+              ]
+            },
+            {
+              "heading": "Fixes",
+              "items": ["The white book’s contents, too cramped, now spread over two pages."]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.4",
           "date": "October 17, 2026",
           "sections": [
@@ -2647,7 +2668,8 @@
             "A fourth relic comes with them, the only one no room hides: the Pencil, a stub of red wood sharpened with a knife. It is earned by doing thirty tasks of the day. It goes into a small low cell, in the middle of the bookcase; when it works, new tasks of the day ask a quarter less, then a third and half with its branch of the Cabinet, a pencil lying at the bottom right.",
             "Mods can read the tasks and add their own: theirs are written at the end of the list, with the reward they give, and count nowhere in the game.",
             "With this fifth part, the white book’s contents were too cramped: they move onto two facing pages, like those of the Great Book, as soon as they no longer fit on one.",
-            "The Etherium had grown messy too: the method pages were mixed in with everything else. They are now sorted into groups, named in the contents: methods (the Ages first), reading, time, the rooms, and at the very end the Curtain."
+            "The Etherium had grown messy too: the method pages were mixed in with everything else. They are now sorted into groups, named in the contents: methods (the Ages first), reading, time, the rooms, and at the very end the Curtain.",
+            "With them, the game moved to Alpha 2.5."
           ]
         },
         "thisBook": {
