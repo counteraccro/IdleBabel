@@ -692,6 +692,16 @@
         "name": "La patience",
         "value": "La patience :",
         "effect": "6 h pour changer de relique (au lieu de 12 h)"
+      },
+      "p1": {
+        "name": "Crayon 1",
+        "value": "Le Crayon :",
+        "effect": "tâches du jour −35 % (au lieu de −25 %)"
+      },
+      "p2": {
+        "name": "Crayon 2",
+        "value": "Le Crayon :",
+        "effect": "tâches du jour −50 %"
       }
     },
     "lottery": {

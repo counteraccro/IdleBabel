@@ -39,6 +39,11 @@ const RELIC_SIGILS: Record<string, Shape[]> = {
     { kind: 'path', d: 'M58.4 30.4 Q58.4 43 50 50 Q41.6 57 41.6 69.6' },
     { kind: 'path', d: 'M45.2 65.7 Q50 60.1 54.7 65.7' },
   ],
+  relicPencil: [
+    { kind: 'path', d: 'M30.4 69.6 L38.8 52.8 L61.2 30.4 L69.6 38.8 L47.2 61.2 Z' },
+    { kind: 'path', d: 'M38.8 52.8 L47.2 61.2' },
+    { kind: 'path', d: 'M30.4 69.6 L33.8 62.9 L37.1 66.2 Z' },
+  ],
 };
 
 export const sigil = (series: string, tier = 0): Shape[] => {

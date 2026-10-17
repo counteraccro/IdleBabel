@@ -17,6 +17,7 @@ const TRIGGERS: Record<LoreId, string> = {
   relicLoupe: 'la Loupe trouvée dans le désert (relu sur son sceau)',
   relicAstrolabe: 'l’Astrolabe trouvé dans la salle de nuit (relu sur son sceau)',
   relicHourglass: 'le Sablier trouvé sous la verrière (relu sur son sceau)',
+  relicPencil: 'le Crayon, gagné par « Fais 30 tâches du jour » (relu sur son sceau)',
 };
 
 const status = (state: GameState, id: LoreId): string => {

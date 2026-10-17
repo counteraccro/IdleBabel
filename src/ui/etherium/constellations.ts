@@ -120,6 +120,28 @@ const glassSide = (side: number): (readonly [number, number])[] =>
     [-35, 450],
   ].map(([dx, y]) => [480 + side * dx, y] as const);
 
+// Le Crayon (17/10), couché en bas à droite du Cabinet : son bout coupé, sa pointe ; le bois s'amincit à partir de PENCIL_CONE.
+const PENCIL_END = [380, 650] as const;
+const PENCIL_TIP = [570, 575] as const;
+const PENCIL_CONE = 0.78;
+/** Le crayon en lignes brisées : le corps et sa pointe, la base de la pointe, la mine. */
+const pencilSketch = (): (readonly [number, number])[][] => {
+  const [ex, ey] = PENCIL_END;
+  const [tx, ty] = PENCIL_TIP;
+  const length = Math.hypot(tx - ex, ty - ey);
+  const [ux, uy] = [(tx - ex) / length, (ty - ey) / length];
+  const at = (k: number, side: number): readonly [number, number] => [
+    Math.round(ex + ux * length * k - uy * side),
+    Math.round(ey + uy * length * k + ux * side),
+  ];
+  const lead = 1 - 12 / length;
+  return [
+    [at(0, 15), at(PENCIL_CONE, 15), PENCIL_TIP, at(PENCIL_CONE, -15), at(0, -15), at(0, 15)],
+    [at(PENCIL_CONE, 15), at(PENCIL_CONE, -15)],
+    [at(lead, 4), PENCIL_TIP, at(lead, -4)],
+  ];
+};
+
 // La Ruche, piste A de la maquette (.ai/maquette-etherium-numerique.html, choix de l'auteur, 13/10) : trois alvéoles en
 // ligne, un peu plus petites pour tenir côte à côte.
 // L'Atlas, piste B (.ai/maquette-etherium-numerique.html, choix de l'auteur, 13/10) : un géant agenouillé, qui porte une
@@ -517,9 +539,11 @@ export const FIGURES: Record<PageId, Figure> = {
       h1: [480, 430],
       h2: [480, 300],
       d: [320, 630],
+      p1: along(PENCIL_END, PENCIL_TIP, 0.22),
+      p2: along(PENCIL_END, PENCIL_TIP, 0.62),
     },
     deco: [],
-    given: { id: 'hub', opens: ['l1', 'a1', 'h1', 'd'] },
+    given: { id: 'hub', opens: ['l1', 'a1', 'h1', 'd', 'p1'] },
     sketch: {
       lines: [
         // Le manche de la loupe ; l'alidade de l'astrolabe ; les plateaux du sablier, et ses deux bulbes de chaque côté.
@@ -541,6 +565,7 @@ export const FIGURES: Record<PageId, Figure> = {
         ],
         glassSide(-1),
         glassSide(1),
+        ...pencilSketch(),
       ],
       rings: [
         [160, 360, 54],

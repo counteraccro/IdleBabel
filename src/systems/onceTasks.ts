@@ -2,7 +2,7 @@ import { ONCE_TASKS, type OnceTaskDef } from '../data/tasks';
 import { CLOSED, STARS } from '../data/etheriumStars';
 import { SENTENCES } from '../data/sentences';
 import { SEALS } from '../data/seals';
-import { RELIC_IDS } from '../data/relics';
+import { ROOM_RELICS } from '../data/relics';
 import { isComplete } from './sentences';
 import { drawingsDone } from './coloring';
 import { mimicUnlocked, relicsUnlocked } from './etherium';
@@ -94,7 +94,7 @@ const COUNTING: Record<number, Counting> = {
   9: { count: (state) => state.tasks.counters.longestAway, start: (state) => (state.tasks.counters.longestAway = 0), before: true },
   10: { count: (state) => state.exiles },
   11: {
-    count: (state) => RELIC_IDS.filter((id) => state.relics.found[id] !== undefined).length,
+    count: (state) => ROOM_RELICS.filter(({ id }) => state.relics.found[id] !== undefined).length,
     before: true,
     met: (state) => relicsUnlocked(state) || Object.keys(state.relics.found).length > 0,
   },

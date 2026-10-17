@@ -224,18 +224,21 @@
     "names": {
       "loupe": "The Magnifying Glass",
       "astrolabe": "The Astrolabe",
-      "hourglass": "The Hourglass"
+      "hourglass": "The Hourglass",
+      "pencil": "The Pencil"
     },
     "put": {
       "loupe": "Set out the magnifying glass?",
       "astrolabe": "Set out the astrolabe?",
-      "hourglass": "Set out the hourglass?"
+      "hourglass": "Set out the hourglass?",
+      "pencil": "Set out the pencil?"
     },
     "bonus": {
       "loupe": "+{n} guaranteed Knowledge per find",
       "loupeOne": "+1 guaranteed Knowledge per find",
       "astrolabe": "letter +{n}%",
-      "hourglass": "pages read +{n}%"
+      "hourglass": "pages read +{n}%",
+      "pencil": "tasks of the day −{n}%"
     },
     "acts": "at work",
     "choose": "set it out?",

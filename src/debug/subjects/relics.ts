@@ -1,4 +1,4 @@
-import { RELICS } from '../../data/relics';
+import { RELICS, ROOM_RELICS } from '../../data/relics';
 import { S } from '../../data/etheriumStars';
 import { callRelic, findRelic, relicFound, relicWait, relicWaiting, setRelic, unlockRelicChange } from '../../systems/relics';
 import { relicsUnlocked } from '../../systems/etherium';
@@ -7,7 +7,12 @@ import { refreshLibrary } from '../refresh';
 import { chips } from '../debugControls';
 import { duration, type DebugSubject } from './subject';
 
-const NAMES: Record<string, string> = { loupe: 'La Loupe (désert)', astrolabe: 'L’Astrolabe (nuit)', hourglass: 'Le Sablier (verrière)' };
+const NAMES: Record<string, string> = {
+  loupe: 'La Loupe (désert)',
+  astrolabe: 'L’Astrolabe (nuit)',
+  hourglass: 'Le Sablier (verrière)',
+  pencil: 'Le Crayon (tâche 15)',
+};
 
 /** Les reliques (systems/relics.ts) : les faire apparaître, les ranger dans la vitrine, remettre le délai à zéro (validé le 11/10). */
 export const RELIC_SUBJECT: DebugSubject = {
@@ -19,7 +24,7 @@ export const RELIC_SUBJECT: DebugSubject = {
   build: (kit, state) => {
     kit.row(
       'Faire apparaître',
-      chips(RELICS.map((relic): [string, () => void] => [NAMES[relic.id], () => callRelic(relic.id)])),
+      chips(ROOM_RELICS.map((relic): [string, () => void] => [NAMES[relic.id], () => callRelic(relic.id)])),
       'Posée dans sa salle, sans l’Ouest ni sa phrase. Elle ne se voit que si ce fond est affiché (Affichage › Le décor).',
     );
     kit.row(

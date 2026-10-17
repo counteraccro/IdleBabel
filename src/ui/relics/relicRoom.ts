@@ -6,7 +6,7 @@ import { modalOpen } from '../modal/modal';
 import { shownScene } from '../../scene';
 import { SCENES, type SceneId } from '../../scene/scenes';
 import { EYE_HEIGHT, FOCAL, ROOM_IMAGE } from '../../data/mimic';
-import { RELICS, RELIC_LIGHT, type RelicDef } from '../../data/relics';
+import { ROOM_RELICS, RELIC_LIGHT, type RoomRelic } from '../../data/relics';
 import { findRelic, relicWaiting } from '../../systems/relics';
 import { cover, hiveTop, screenBox as toScreen, shaderLight, type RoomView } from '../roomView';
 import { leaveWith, sweepLeftovers } from '../leftovers';
@@ -74,7 +74,7 @@ interface Shot {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   envMap: THREE.Texture;
-  relic: RelicDef | null;
+  relic: RoomRelic | null;
   holder: THREE.Group | null;
   /** Le carré de l'objet, en pixels d'image (sans la marge). */
   box: { x0: number; y0: number; x1: number; y1: number } | null;
@@ -146,7 +146,7 @@ export const createRelicRoom = (state: GameState): Component => {
   };
 
   /** L'objet de `relic`, à sa place, éclairé comme la salle à cet endroit de l'écran. */
-  const stage = (current: Shot, relic: RelicDef, view: RoomView): void => {
+  const stage = (current: Shot, relic: RoomRelic, view: RoomView): void => {
     emptyScene(current);
     const { X, Y, Z, yaw, pose } = relic.spot;
     const frame = frameOf(relic.room);
@@ -220,7 +220,7 @@ export const createRelicRoom = (state: GameState): Component => {
   const visibleBox = (box: Shot['box'], view: RoomView) => (box ? toScreen(box, view) : null);
 
   /** Trouvée : elle s'efface (ou son sceau), puis elle est dans la vitrine. */
-  const take = (relic: RelicDef): void => {
+  const take = (relic: RoomRelic): void => {
     if (leaving || !findRelic(state, relic.id)) return;
     leaving = true;
     document.documentElement.classList.remove('relic-hover');
@@ -232,7 +232,7 @@ export const createRelicRoom = (state: GameState): Component => {
     }, FADE_MS);
   };
 
-  const showSide = (relic: RelicDef): void => {
+  const showSide = (relic: RoomRelic): void => {
     release();
     screenBox = null;
     if (side?.id === relic.id) return;
@@ -292,7 +292,7 @@ export const createRelicRoom = (state: GameState): Component => {
     sweepLeftovers();
     if (leaving) return;
     const scene = shownScene();
-    const relic = RELICS.find((candidate) => candidate.room === scene && relicWaiting(state, candidate.id));
+    const relic = ROOM_RELICS.find((candidate) => candidate.room === scene && relicWaiting(state, candidate.id));
     if (!relic) {
       if (shot || side) clear();
       return;

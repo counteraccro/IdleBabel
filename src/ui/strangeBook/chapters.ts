@@ -150,7 +150,9 @@ const relicValue = (state: GameState): string => {
   const id = state.relics.active;
   if (!id) return '';
   const bonus = relicBonus(state, id);
-  return id === 'loupe' ? writeDigits(`+${number(bonus)}`) : `+${percent(bonus)}`;
+  if (id === 'loupe') return writeDigits(`+${number(bonus)}`);
+  // Le Crayon raccourcit : « −25 % ».
+  return `${id === 'pencil' ? '−' : '+'}${percent(bonus)}`;
 };
 const relicParts = (state: GameState, readable: boolean): string[] => {
   const id = state.relics.active;

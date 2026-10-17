@@ -364,6 +364,40 @@ const hourglass = (look: Look): THREE.Group => {
   return group;
 };
 
+/**
+ * Le Crayon (17/10) : un bout de crayon, presque rien. Six pans peints d'un rouge passé, la pointe taillée au couteau
+ * (le bois nu, la mine), l'autre bout coupé net. Couché, la pointe vers +x ; long de 7,5 cm.
+ */
+const pencil = (): THREE.Group => {
+  const group = new THREE.Group();
+  const R = 0.0042;
+  const BODY = 0.056;
+  const CONE = 0.017;
+  const LEAD = 0.004;
+  const paint = new THREE.MeshStandardMaterial({ color: 0x6e2a1e, roughness: 0.55 });
+  const bare = new THREE.MeshStandardMaterial({ color: 0xd9b48a, roughness: 0.8 });
+  const graphite = new THREE.MeshStandardMaterial({ color: 0x2e2e30, metalness: 0.3, roughness: 0.4 });
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(R, R, BODY, 6), paint);
+  // Le bout coupé : le bois, et la mine au milieu.
+  const end = new THREE.Mesh(new THREE.CircleGeometry(R * 0.96, 6), bare);
+  end.rotation.x = Math.PI / 2;
+  end.position.y = -BODY / 2 - 0.0002;
+  const core = new THREE.Mesh(new THREE.CircleGeometry(R * 0.32, 12), graphite);
+  core.rotation.x = Math.PI / 2;
+  core.position.y = -BODY / 2 - 0.0004;
+  const cone = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.36, R, CONE, 6), bare);
+  cone.position.y = BODY / 2 + CONE / 2;
+  const lead = new THREE.Mesh(new THREE.ConeGeometry(R * 0.36, LEAD, 12), graphite);
+  lead.position.y = BODY / 2 + CONE + LEAD / 2;
+  const inner = new THREE.Group();
+  inner.add(body, end, core, cone, lead);
+  // Couché sur un pan, la pointe vers +x.
+  inner.rotation.set(0, 0, -Math.PI / 2);
+  inner.rotateY(Math.PI / 6);
+  group.add(inner);
+  return group;
+};
+
 /** Pose l'objet : son dessous en y = 0, centré en x et z. */
 const settle = (inner: THREE.Object3D): THREE.Group => {
   const group = new THREE.Group();
@@ -380,5 +414,6 @@ export const relicModel = (id: RelicId, pose: RelicPose, envMap: THREE.Texture |
   const look = { envMap, envMapIntensity };
   if (id === 'loupe') return settle(pose === 'lean' ? leaningLoupe(look) : loupe(look));
   if (id === 'astrolabe') return settle(astrolabe(look, pose));
+  if (id === 'pencil') return settle(pencil());
   return settle(hourglass(look));
 };

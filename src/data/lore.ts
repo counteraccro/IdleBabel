@@ -29,6 +29,8 @@ export const LORE = [
   'relicLoupe',
   'relicAstrolabe',
   'relicHourglass',
+  /** Le Crayon, gagné par les tâches (17/10). */
+  'relicPencil',
 ] as const;
 
 export type LoreId = (typeof LORE)[number];

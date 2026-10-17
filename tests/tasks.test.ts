@@ -10,6 +10,7 @@ import { findKnowledge } from '../src/systems/knowledge';
 import { pageOpen, starOpen } from '../src/systems/etherium';
 import { starById } from '../src/data/etheriumStars';
 import { checkSeals } from '../src/systems/seals';
+import { relicTaskLength } from '../src/systems/relics';
 
 vi.stubGlobal('window', new EventTarget());
 
@@ -221,5 +222,36 @@ describe('Les sceaux des tâches', () => {
     checkSeals(state, DAY);
     expect(['dailyTasks-1', 'dailyTasks-10', 'dailyTasks-50', 'onceTasks-1', 'onceTasks-10'].every((id) => id in state.seals)).toBe(true);
     expect('dailyTasks-100' in state.seals || 'onceTasks-20' in state.seals).toBe(false);
+  });
+});
+
+describe('Le Crayon', () => {
+  it('se gagne avec « Fais 30 tâches du jour » : rangé, il agit s’il est le premier', () => {
+    const state = withNorth(['tasks.p1']);
+    state.tasks.once[15] = { at: DAY, base: 0, done: DAY };
+    expect(takeOnce(state, 15)).toBe(true);
+    expect(state.relics.found.pencil).toBeDefined();
+    expect(state.relics.active).toBe('pencil');
+  });
+
+  it('raccourcit les nouvelles tâches du jour : −25 %, puis −35 % et −50 % avec ses étoiles', () => {
+    const plain = withNorth();
+    tickTasks(plain, 0.1, true, DAY, clicksOnly);
+    const withPencil = withNorth();
+    withPencil.relics.found.pencil = DAY;
+    withPencil.relics.active = 'pencil';
+    tickTasks(withPencil, 0.1, true, DAY, clicksOnly);
+    const clicks = (state: typeof plain) => state.tasks.today.find((task) => task.kind === 'clicks')!.goal;
+    expect(clicks(withPencil)).toBe(clicks(plain) * 0.75);
+    withPencil.etherium.push('relics.p1', 'relics.p2');
+    expect(relicTaskLength(withPencil)).toBe(0.5);
+  });
+
+  it('ne compte pas dans « Trouve les trois reliques »', () => {
+    const state = withNorth();
+    state.relics.found = { loupe: DAY, pencil: DAY };
+    // Les tâches « une seule fois » se regardent au plus une fois par seconde.
+    tickTasks(state, 0.1, true, DAY + 60_000);
+    expect(onceCount(state, def(11))).toBe(1);
   });
 });

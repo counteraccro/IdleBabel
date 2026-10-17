@@ -48,7 +48,8 @@
     "relicParts": {
       "loupe": "{name} · Connaissance à chaque trouvaille",
       "astrolabe": "{name} · la lettre vient plus souvent",
-      "hourglass": "{name} · pages lues, méthodes et clics"
+      "hourglass": "{name} · pages lues, méthodes et clics",
+      "pencil": "{name} · ce que demande une tâche du jour"
     },
     "etherWeight": "Éther que compte la lecture",
     "etherWeightParts": "le poids de la Bibliothèque : chaque Éther au-delà de {n} compte moins",
@@ -281,6 +282,7 @@
     "relicLoupe": "La Loupe",
     "relicAstrolabe": "L’Astrolabe",
     "relicHourglass": "Le Sablier",
+    "relicPencil": "Le Crayon",
     "relicsAll": "Le Cabinet : toutes les reliques",
     "relicChanges": ["Changer d’avis", "Hésiter : {n} changements de relique", "Ne jamais choisir : {n} changements de relique"],
     "constellation-mimic": "Compte-lui toutes ses dents",

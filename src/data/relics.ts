@@ -7,7 +7,7 @@ import type { SceneId } from '../scene/scenes';
  * dans sa salle. Un clic : son récit, son sceau, et elle rejoint sa petite case de la vitrine, pour toujours. Une seule
  * agit à la fois ; en changer la fait agir tout de suite, puis plus de changement pendant un temps.
  */
-export const RELIC_IDS = ['loupe', 'astrolabe', 'hourglass'] as const;
+export const RELIC_IDS = ['loupe', 'astrolabe', 'hourglass', 'pencil'] as const;
 export type RelicId = (typeof RELIC_IDS)[number];
 
 /** Comment l'objet est posé : couché à plat, ou appuyé (debout, un peu penché en arrière). */
@@ -15,21 +15,21 @@ export type RelicPose = 'flat' | 'lean';
 
 export interface RelicDef {
   id: RelicId;
-  /** Sa salle (le fond où elle est posée). */
-  room: SceneId;
-  /** Sa phrase-indice (famille « hints » du livre blanc). */
-  hint: string;
+  /** Sa salle (le fond où elle est posée) ; aucune pour le Crayon, qui se gagne (la tâche 15, data/tasks.ts). */
+  room?: SceneId;
+  /** Sa phrase-indice (famille « hints » du livre blanc) ; aucune pour le Crayon. */
+  hint?: string;
   /** Son sceau (le même nom que l'indice, sans « hint » : data/anomalies.ts, hintSeal). */
   seal: string;
   /** Son moment de lore : le récit, à la trouvaille (data/lore.ts). */
-  lore: 'relicLoupe' | 'relicAstrolabe' | 'relicHourglass';
+  lore: 'relicLoupe' | 'relicAstrolabe' | 'relicHourglass' | 'relicPencil';
   /** Sa petite case de la vitrine (ui/library/bookcase3d.ts : les cases basses et étroites). */
   cell: number;
   /**
    * Sa place dans la salle (choisie par l'auteur le 12/10), en mètres, avec l'appareil photo du fond (data/mimic.ts) :
    * X à droite, Y la hauteur de la surface, Z la distance ; tournée de `yaw` degrés depuis le regard du joueur.
    */
-  spot: { X: number; Y: number; Z: number; yaw: number; pose: RelicPose };
+  spot?: { X: number; Y: number; Z: number; yaw: number; pose: RelicPose };
   /** Son bonus, sans étoile, puis avec la 1re et la 2e étoile de sa branche (page « Les reliques » de l'Etherium). */
   bonus: readonly [number, number, number];
 }
@@ -75,7 +75,21 @@ export const RELICS: readonly RelicDef[] = [
     // + part de pages lues (méthodes et clics).
     bonus: [0.2, 0.35, 0.5],
   },
+  // Le Crayon (17/10, .ai/plan-taches.md) : la récompense de « Fais 30 tâches du jour », sans salle ni phrase-indice ;
+  // il rejoint une petite case basse de la colonne du milieu.
+  {
+    id: 'pencil',
+    seal: 'relicPencil',
+    lore: 'relicPencil',
+    cell: 12,
+    // − part de ce que demande une tâche du jour.
+    bonus: [0.25, 0.35, 0.5],
+  },
 ];
+
+/** Les reliques qui se trouvent dans une salle (la Loupe, l'Astrolabe, le Sablier) : « Trouve les trois reliques ». */
+export type RoomRelic = RelicDef & Required<Pick<RelicDef, 'room' | 'hint' | 'spot'>>;
+export const ROOM_RELICS: readonly RoomRelic[] = RELICS.filter((relic): relic is RoomRelic => relic.room !== undefined);
 
 export const relicById = (id: string): RelicDef | undefined => RELICS.find((relic) => relic.id === id);
 

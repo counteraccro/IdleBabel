@@ -14,6 +14,7 @@ import { pagesPerSecond } from './production';
 import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { mimicUnlocked } from './etherium';
 import { mimicEvery } from './mimic';
+import { relicTaskLength } from './relics';
 import type { DailyTask, GameState } from '../core/state';
 
 /**
@@ -89,10 +90,12 @@ const drawable = (state: GameState, kind: DailyKind): boolean => {
  */
 const goalFor = (state: GameState, kind: DailyKind, value: number): number => {
   const rate = RATE[kind];
-  if (!rate) return CLICKS_PER_TOKEN * value;
+  // Le Crayon, s'il agit, raccourcit les nouvelles tâches.
+  const length = relicTaskLength(state);
+  if (!rate) return round(CLICKS_PER_TOKEN * value * length);
   if (kind === 'pages' && state.tasks.sinceWake < RECALC_AFTER_WAKE) return 0;
   const perSecond = rate(state);
-  return perSecond > 0 ? round(perSecond * MINUTES_PER_TOKEN * 60 * value) : 0;
+  return perSecond > 0 ? round(perSecond * MINUTES_PER_TOKEN * 60 * value * length) : 0;
 };
 
 /** Une nouvelle tâche, d'un modèle pas encore tiré aujourd'hui si possible. */

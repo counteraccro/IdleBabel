@@ -5,6 +5,7 @@ import { advanceOnce } from './onceTasks';
 import { creditMethods, gainPages, pagesPerSecond } from './production';
 import { addKnowledge, findKnowledge, findChance, maxTurnsPerSecond, MAX_FINDS_PER_PAGE } from './knowledge';
 import { PAGES_PER_LEAF } from './books';
+import { findRelic } from './relics';
 import type { GameState } from '../core/state';
 
 /**
@@ -100,6 +101,8 @@ const give = (state: GameState, reward: TaskReward): void => {
   if (reward.knowledgeHours) addKnowledge(state, Math.ceil(knowledgePerSecond(state) * reward.knowledgeHours * 3600));
   state.tasks.bonus.reading += reward.readingBonus ?? 0;
   state.tasks.bonus.knowledge += reward.knowledgeBonus ?? 0;
+  // Le Crayon : rangé dans la vitrine, son récit (une fois), son sceau.
+  if (reward.crayon) findRelic(state, 'pencil');
 };
 
 /** Le jeton d'une tâche du jour faite, pris au clic. Renvoie ce qu'elle valait (0 : rien à prendre). */

@@ -91,6 +91,15 @@
     ],
     "button": "Keep it"
   },
+  "relicPencil": {
+    "title": "The Pencil",
+    "text": [
+      "A stub of pencil, almost nothing.",
+      "He gave himself tasks, one by one,",
+      "so as not to think about the only one that mattered."
+    ],
+    "button": "Keep it"
+  },
   "away": {
     "title": "A dream",
     "text": [

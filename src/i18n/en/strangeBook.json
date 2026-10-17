@@ -48,7 +48,8 @@
     "relicParts": {
       "loupe": "{name} · Knowledge with every find",
       "astrolabe": "{name} · the letter comes more often",
-      "hourglass": "{name} · pages read, methods and clicks"
+      "hourglass": "{name} · pages read, methods and clicks",
+      "pencil": "{name} · what a task of the day asks"
     },
     "etherWeight": "Ether that reading counts",
     "etherWeightParts": "the weight of the Library: each Ether beyond {n} counts for less",
@@ -281,6 +282,7 @@
     "relicLoupe": "The Magnifying Glass",
     "relicAstrolabe": "The Astrolabe",
     "relicHourglass": "The Hourglass",
+    "relicPencil": "The Pencil",
     "relicsAll": "The Cabinet: every relic",
     "relicChanges": ["A change of heart", "Hesitate: {n} changes of relic", "Never choose: {n} changes of relic"],
     "constellation-mimic": "Count all its teeth",

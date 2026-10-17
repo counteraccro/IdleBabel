@@ -230,18 +230,21 @@
     "names": {
       "loupe": "La Loupe",
       "astrolabe": "L’Astrolabe",
-      "hourglass": "Le Sablier"
+      "hourglass": "Le Sablier",
+      "pencil": "Le Crayon"
     },
     "put": {
       "loupe": "Poser la loupe ?",
       "astrolabe": "Poser l’astrolabe ?",
-      "hourglass": "Poser le sablier ?"
+      "hourglass": "Poser le sablier ?",
+      "pencil": "Poser le crayon ?"
     },
     "bonus": {
       "loupe": "+{n} de Connaissance garantie à chaque trouvaille",
       "loupeOne": "+1 de Connaissance garantie à chaque trouvaille",
       "astrolabe": "lettre +{n} %",
-      "hourglass": "pages lues +{n} %"
+      "hourglass": "pages lues +{n} %",
+      "pencil": "tâches du jour −{n} %"
     },
     "acts": "elle agit",
     "choose": "la poser ?",

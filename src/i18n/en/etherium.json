@@ -692,6 +692,16 @@
         "name": "Patience",
         "value": "Patience:",
         "effect": "6 h to change relics (instead of 12 h)"
+      },
+      "p1": {
+        "name": "Pencil 1",
+        "value": "The Pencil:",
+        "effect": "tasks of the day −35% (instead of −25%)"
+      },
+      "p2": {
+        "name": "Pencil 2",
+        "value": "The Pencil:",
+        "effect": "tasks of the day −50%"
       }
     },
     "lottery": {

@@ -20,7 +20,7 @@ export const relicFound = (state: GameState, id: RelicId): boolean => state.reli
 /** La phrase-indice d'une relique peut se lire : l'Ouest de l'Exploration allumé, et sa salle déjà vue. */
 export const relicHintFindable = (state: GameState, hint: string): boolean => {
   const relic = RELICS.find((candidate) => candidate.hint === hint);
-  return !relic || (relicsUnlocked(state) && sceneSeen(state, relic.room));
+  return !relic?.room || (relicsUnlocked(state) && sceneSeen(state, relic.room));
 };
 
 /** Débogage : les reliques posées dans leur salle quoi qu'il arrive (sans l'Ouest ni leur phrase). */
@@ -34,7 +34,8 @@ export const relicWaiting = (state: GameState, id: RelicId): boolean => {
   if (relicFound(state, id)) return false;
   if (called.has(id)) return true;
   const relic = relicById(id)!;
-  return relicsUnlocked(state) && isComplete(state, relic.hint);
+  // Le Crayon ne se pose dans aucune salle : il se gagne.
+  return relic.hint !== undefined && relicsUnlocked(state) && isComplete(state, relic.hint);
 };
 
 /**
@@ -82,6 +83,8 @@ export const relicKnowledge = (state: GameState): number => activeBonus(state, '
 export const relicLetterWait = (state: GameState): number => 1 / (1 + activeBonus(state, 'astrolabe', 0));
 /** Le Sablier : ×pages lues, des méthodes et des clics. */
 export const relicReading = (state: GameState): number => 1 + activeBonus(state, 'hourglass', 0);
+/** Le Crayon : ×ce que demande une nouvelle tâche du jour (−25 % : ×0,75). */
+export const relicTaskLength = (state: GameState): number => 1 - activeBonus(state, 'pencil', 0);
 
 /** Débogage : remettre le délai à zéro. */
 export const unlockRelicChange = (state: GameState): void => {
