@@ -27,6 +27,8 @@ import { saragossaArt } from './saragossa/saragossa';
 import { sandArt } from './sand/sand';
 import { voynichArt } from './voynich/voynich';
 import { trueStoryArt } from './trueStory/trueStory';
+import { sagaTomeArt } from './trueStory/sagaTome';
+import { SAGA_TOMES } from '../../data/sagaTomes';
 import { defaultArt } from './defaultArt';
 import { debugBookArt } from './debugBook/debugBook';
 import type { RareBookArt } from './rareBookArt';
@@ -61,6 +63,8 @@ const ARTS: Record<string, RareBookArt> = {
   saragossa: saragossaArt,
   sand: sandArt,
   trueStory: trueStoryArt,
+  // Les tomes 2 à 11 de « L'histoire de Babel », vides pour l'instant.
+  ...Object.fromEntries(SAGA_TOMES.slice(1).map((id, index) => [id, sagaTomeArt(index + 1)])),
   voynich: voynichArt,
   debug: debugBookArt,
 };

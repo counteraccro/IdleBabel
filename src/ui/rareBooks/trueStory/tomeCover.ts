@@ -255,7 +255,10 @@ const titledCloth = (index: number, thickness: number): HTMLCanvasElement => {
   context.fillStyle = CREAM;
   context.textBaseline = 'middle';
   context.font = `${7 * CQW}px ${SERIF}`;
-  context.fillText(messages().ui.endings.titles[index], 0, 0);
+  // Un titre long (« Une réponse sans question ») se resserre pour s'arrêter avant le bandeau (paintTomeSpine, à 0,53).
+  const title = messages().ui.endings.titles[index];
+  context.scale(Math.min(1, (0.5 * HEIGHT - 14 * CQW) / context.measureText(title).width), 1);
+  context.fillText(title, 0, 0);
   context.restore();
   return node;
 };

@@ -1,7 +1,7 @@
 import './library.css';
 import * as THREE from 'three';
 import { el, type Component } from '../dom';
-import { t } from '../../i18n';
+import { messages, t } from '../../i18n';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { isRareBookFound } from '../../systems/rareBooks';
 import { firstBookKept } from '../../systems/books';
@@ -28,10 +28,8 @@ import { layoutBookcase, type ShelfPlace } from './shelfLayout';
 import { shelfLook } from './shelfLook';
 import type { GameState } from '../../core/state';
 import { animationNow } from '../animationClock';
-import { TRUE_STORY_BOOK } from '../../data/trueStory';
-import { storyBribes } from '../../systems/etherium';
 import { writeDigits } from '../../core/format';
-import { ENDING_TOMES, fakeEndingsFound } from '../../systems/endings';
+import { ENDING_TOMES, fakeEndingsFound, tomeFound } from '../../systems/endings';
 import { relicEnvironment } from '../relics/relicModels';
 import {
   EASEL_LEAN,
@@ -44,7 +42,7 @@ import {
   TOME_FRONT,
   createEndingsShelf,
 } from './endingsShelf3d';
-import { TOMES } from '../../data/sagaTomes';
+import { SAGA_TOMES, TOMES, tomeIndex } from '../../data/sagaTomes';
 import { createLotteryMachine } from './lotteryMachine3d';
 import { drawResults } from './lotteryText';
 import { lastLotteryDraw, settleLottery, startLottery } from '../../systems/lottery';
@@ -64,14 +62,6 @@ export const LIBRARY_CREDITS_BOOK = 'credits';
  * des fins, de face sur le chevalet (l'auteur, 16/10) ; il n'est pas de la collection « La Vraie Fin ».
  */
 export const LIBRARY_FINAL_BOOK = 'final';
-/**
- * « Qui j'étais » (d'abord « Mon histoire vraie »), la fausse fin (14/10) : dès la première étoile du Rideau, elle est le
- * tome 1 du meuble des fins, sur la tranche, qu'on la lise encore ou qu'elle soit finie (le haut est au vrai livre, l'auteur,
- * 16/10). Prise, elle arrive fermée, comme les autres livres (l'auteur, 17/10).
- */
-export const LIBRARY_STORY_BOOK = TRUE_STORY_BOOK;
-/** « Mon histoire vraie » est dans le meuble des fins : une étoile du Rideau au moins est allumée. */
-export const storyShelved = (state: GameState): boolean => storyBribes(state) > 0;
 
 /**
  * Le livre de la vitrine `id` : le premier livre lu, ou un livre rare. Le livre de débogage, en mode ?debug :
@@ -323,32 +313,36 @@ export const createLibraryPage = (
         },
       ]
     : [];
-  const storyPlaces: Place[] = storyShelved(state)
-    ? [
-        {
-          id: LIBRARY_STORY_BOOK,
-          pivot: endingsAt(new THREE.Vector3(TOMES[0].x + TOMES[0].t, TOME_FLOOR, TOME_FRONT)),
-          tip: true,
-          reach: PULL,
-          floor: LOW_FLOOR,
-          holder: null,
-          book: null,
-          pull: 0,
-          aim: 0,
-        },
-      ]
-    : [];
-  const places = [...shelfPlaces, ...easelPlaces, ...storyPlaces];
-  // Le tome 1, rangé : son vrai modèle, comme les livres de la vitrine (l'auteur, 17/10), debout, le dos vers le lecteur ; son
-  // coin bas-droit-avant à sa place. Seul dans sa rangée, on voit ses plats de biais.
-  if (storyPlaces[0]) {
-    const place = storyPlaces[0];
-    const book = shelfBook3d(state, LIBRARY_STORY_BOOK, debugging);
+  // Les tomes trouvés de « L'histoire de Babel », chacun à sa place ; les tomes 2 à 11 ne viennent encore que du débogage.
+  const tomePlaces: Place[] = SAGA_TOMES.flatMap((id, index): Place[] =>
+    tomeFound(state, index)
+      ? [
+          {
+            id,
+            pivot: endingsAt(new THREE.Vector3(TOMES[index].x + TOMES[index].t, TOME_FLOOR, TOME_FRONT)),
+            tip: true,
+            reach: PULL,
+            floor: LOW_FLOOR,
+            holder: null,
+            book: null,
+            pull: 0,
+            aim: 0,
+          },
+        ]
+      : [],
+  );
+  const places = [...shelfPlaces, ...easelPlaces, ...tomePlaces];
+  // Un tome rangé : son vrai modèle, comme les livres de la vitrine (l'auteur, 17/10), debout, le dos vers le lecteur ; son
+  // coin bas-droit-avant à sa place. Sans voisin d'un côté, on voit ses plats de biais (sinon, ils restent en petit).
+  for (const place of tomePlaces) {
+    const index = tomeIndex(place.id);
+    const alone = !tomeFound(state, index - 1) || !tomeFound(state, index + 1);
+    const book = shelfBook3d(state, place.id, debugging);
     place.tick = book.tick;
-    const tomeSpot: ShelfPlace = { id: LIBRARY_STORY_BOOK, cell: -1, pose: 'stand', x: 0, y: 0, width: 0, depth: 0, yaw: 0, lean: 0 };
+    const tomeSpot: ShelfPlace = { id: place.id, cell: -1, pose: 'stand', x: 0, y: 0, width: 0, depth: 0, yaw: 0, lean: 0 };
     void book.look().then((look) => {
       if (!root.isConnected && mounted) return;
-      const mesh = createBookMesh(book.shape, shelfLook(look, tomeSpot, true));
+      const mesh = createBookMesh(book.shape, shelfLook(look, tomeSpot, alone));
       mesh.setOpen(0);
       const turn = new THREE.Group();
       mesh.root.rotation.y = Math.PI / 2;
@@ -532,7 +526,14 @@ export const createLibraryPage = (
     return shown.find((place) => hit && place.holder!.getObjectById(hit.object.id)) ?? null;
   };
   const label = ({ id }: Place): string =>
-    id === LIBRARY_FIRST_BOOK ? t('ui.firstBook') : id === LIBRARY_FINAL_BOOK ? t('finalBook.title') : t(`rareBooks.${id}.name`);
+    id === LIBRARY_FIRST_BOOK
+      ? t('ui.firstBook')
+      : id === LIBRARY_FINAL_BOOK
+        ? t('finalBook.title')
+        : // Les tomes 2 à 11 : leur titre dans la saga (le tome 1 a le sien, comme un livre rare).
+          tomeIndex(id) > 0
+          ? messages().ui.endings.titles[tomeIndex(id)]
+          : t(`rareBooks.${id}.name`);
   const hover = (place: Place | null): void => {
     if (hovered === place) return;
     if (hovered) hovered.aim = 0;

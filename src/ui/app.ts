@@ -33,13 +33,13 @@ import {
   LIBRARY_DEBUG_BOOK,
   LIBRARY_FINAL_BOOK,
   LIBRARY_FIRST_BOOK,
-  LIBRARY_STORY_BOOK,
   createLibraryPage,
   shelfBook3d,
-  storyShelved,
   type LibraryPage,
 } from './library/libraryPage';
 import { firstBookKept } from '../systems/books';
+import { tomeFound } from '../systems/endings';
+import { tomeIndex } from '../data/sagaTomes';
 import { libraryHasNews, visitLibrary } from '../systems/library';
 import { showDebugBookError } from './library/debugBookError';
 import { isRareBookFound } from '../systems/rareBooks';
@@ -130,7 +130,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     return isRareBookFound(state, id) ||
       id === LIBRARY_CREDITS_BOOK ||
       ((id === LIBRARY_DEBUG_BOOK || id === LIBRARY_FINAL_BOOK) && debugging) ||
-      (id === LIBRARY_STORY_BOOK && storyShelved(state)) ||
+      // Un tome de « L'histoire de Babel » rangé (le tome 1 : « Qui j'étais »).
+      (tomeIndex(id) >= 0 && tomeFound(state, tomeIndex(id))) ||
       (id === LIBRARY_FIRST_BOOK && firstBookKept(state))
       ? id
       : null;

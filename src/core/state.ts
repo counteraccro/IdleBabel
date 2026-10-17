@@ -211,6 +211,11 @@ export interface GameState {
   relics: RelicsState;
   /** La Loterie : jetons, bonus et malus en cours, la Mimic dorée. */
   lottery: LotteryState;
+  /**
+   * Les tomes 2 à 11 de « L'histoire de Babel » trouvés (leur numéro), gardés au prestige. Le tome 1 vient du Rideau
+   * (storyBribes). Aucun ne se trouve encore en jouant : seulement par le débogage (« Tout débloquer »).
+   */
+  sagaTomes: number[];
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
@@ -308,6 +313,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   mimic: { ...NO_MIMIC },
   relics: { ...NO_RELICS, found: {} },
   lottery: { ...NO_LOTTERY, effects: [] },
+  sagaTomes: [],
   newSeals: [],
   libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],

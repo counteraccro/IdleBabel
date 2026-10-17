@@ -9,13 +9,14 @@ import { rebuildScreen, refreshBook, refreshLibrary, rewriteBigBook } from '../r
 import { writeAll } from './allSentences';
 import { maxIntuitions } from './intuitions';
 import { findAllRareBooks } from './rareBooks';
+import { SAGA_TOMES } from '../../data/sagaTomes';
 import type { GameState } from '../../core/state';
 import type { DebugSubject } from './subject';
 
 /**
  * Tout d'un coup, comme une partie finie : un prestige fait (avec de quoi lire l'Éther), toutes les étoiles de
  * l'Etherium (l'Âge Automatique compris), toutes les phrases (méthodes, souvenirs, anomalies), les intuitions au
- * maximum, le Grand Livre trouvé et déchiffré, les livres rares, tout le lore lu, la pièce éclairée, les sceaux.
+ * maximum, le Grand Livre trouvé et déchiffré, les livres rares (et les tomes de la saga), tout le lore lu, la pièce éclairée, les sceaux.
  * Rien n'est repris : pages, Connaissance, Éther et niveaux des méthodes restent tels quels.
  */
 export const unlockAll = (state: GameState): void => {
@@ -29,6 +30,8 @@ export const unlockAll = (state: GameState): void => {
   state.booksFinished = Math.max(state.booksFinished, STRANGE_BOOK_INDEX + 1);
   state.deciphered = [...PARTS];
   findAllRareBooks(state);
+  // Les tomes 2 à 11 de « L'histoire de Babel », vides, qui ne se trouvent pas encore en jouant.
+  state.sagaTomes = SAGA_TOMES.slice(1).map((_, index) => index + 2);
   state.loreSeen = [...new Set([...state.loreSeen, ...LORE])];
   state.lorePending = [];
   sealAll(state);

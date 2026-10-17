@@ -1,4 +1,5 @@
 import type { SceneId } from '../scene/scenes';
+import { TRUE_STORY_BOOK } from './trueStory';
 
 /**
  * Les onze tomes de « L'histoire de Babel » (l'auteur, 17/10, .ai/maquette-couverture-vraie-fin.html) : une seule histoire
@@ -47,3 +48,12 @@ export const tomeIsbn = (index: number): string => {
   const n = String(index + 1).padStart(2, '0');
   return `978-2-410-00${n}4-${(index + 1) % 10}`;
 };
+
+/**
+ * Le nom de chaque tome dans la bibliothèque : le tome 1 est « Qui j'étais » (trueStory) ; les dix autres, « tome2 » à
+ * « tome11 », existent déjà, vides et cachés, en attendant leurs pages et leur façon de paraître (l'auteur, 17/10).
+ */
+export const SAGA_TOMES: readonly string[] = TOME_SHOTS.map((_, index) => (index === 0 ? TRUE_STORY_BOOK : `tome${index + 1}`));
+
+/** La place du tome `id` dans la saga (0 : le tome 1) ; -1 : pas un tome. */
+export const tomeIndex = (id: string): number => SAGA_TOMES.indexOf(id);
