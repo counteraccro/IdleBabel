@@ -165,6 +165,7 @@ export const STORY: StoryChapter[] = [
       { key: 'falseEnding' },
       { key: 'endingsShelf' },
       { key: 'babelStory', plates: ['trueStory'] },
+      { key: 'lotteryStars' },
     ],
   },
 ];

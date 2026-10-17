@@ -57,11 +57,34 @@ export type LotteryCurseId = (typeof LOTTERY_CURSES)[number]['id'];
 /** Ce qui dure, avec son médaillon : les bonus, et les malus sauf la Mimic dorée (elle est dans la salle). */
 export type LotteryEffectId = LotteryBoonId | Exclude<LotteryCurseId, 'golden'>;
 
-/** La part de la production qui reste, production ÷ 2. */
-export const HALF = 0.5;
-
 /** Une Mimic attrapée lâche un jeton, une fois sur trois. */
 export const MIMIC_TOKEN_CHANCE = 1 / 3;
+
+/**
+ * Ce que changent les étoiles de la page « La Loterie » de l'Etherium (l'auteur, 17/10, .ai/maquette-etherium-loterie.html),
+ * par niveau de leur branche (0 : sans étoile, puis 1 et 2). Chaque rouleau rend la machine plus généreuse, et plus cruelle.
+ */
+export const LOTTERY_STARS = {
+  /** Le levier : la chance qu'une Mimic attrapée lâche un jeton. */
+  token: [MIMIC_TOKEN_CHANCE, 1 / 2, 2 / 3],
+  /** Le rouleau du temps : les secondes du gain, des bonus, des malus et de la Mimic dorée. */
+  time: {
+    gain: [GAIN_SECONDS, 45 * 60, 60 * 60],
+    boon: [BOON_SECONDS, 90 * 60, 120 * 60],
+    curse: [CURSE_SECONDS, 15 * 60, 20 * 60],
+    golden: [GOLDEN_SECONDS, 8 * 60, 10 * 60],
+  },
+  /** Le rouleau de la valeur : ce que les bonus ajoutent, multiplié ; la production divisée par tant pendant le malus. */
+  value: { boost: [1, 1.5, 2], half: [2, 3, 4] },
+  /** Le rouleau de la chance : la part de chaque résultat (sur 100) ; « rien » baisse, les malus montent. */
+  luck: {
+    nothing: [40, 30, 20],
+    gain: [28, 30, 32],
+    boon: [18, 20, 22],
+    curse: [12, 18, 24],
+    jackpot: [2, 2, 2],
+  } satisfies Record<OutcomeId, readonly number[]>,
+} as const;
 
 /** Frappée tant de fois, la Mimic dorée (qu'on ne peut pas tuer) : un sceau secret. */
 export const GOLDEN_STRIKES = 10;

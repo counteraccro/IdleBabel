@@ -281,6 +281,7 @@
     "relicChanges": ["A change of heart", "Hesitate: {n} changes of relic", "Never choose: {n} changes of relic"],
     "constellation-mimic": "Count all its teeth",
     "constellation-relics": "Light the whole Cabinet",
+    "constellation-lottery": "Light up the whole machine",
     "constellation-weight": "Lift the weight of the Library",
     "constellation-screen": "Light up the whole Minitel",
     "intuition-lightSleep": "Hear a book sleeping"

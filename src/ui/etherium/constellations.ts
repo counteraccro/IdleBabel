@@ -31,6 +31,14 @@ export interface Sketch {
   rings?: readonly (readonly [number, number, number])[];
   /** Des lettres posées sur la figure (les points cardinaux) : clé de texte, place. */
   labels?: readonly (readonly [string, readonly [number, number]])[];
+  /** Où sont leurs textes (etherium.compass par défaut), et leur taille (14 par défaut), espacées de tant. */
+  labelKeys?: string;
+  labelSize?: number;
+  labelSpacing?: number;
+  /** Tracé plus appuyé (la machine de la Loterie, comme dans sa maquette). */
+  strong?: boolean;
+  /** Des cadres aux coins arrondis (les fenêtres des rouleaux, la fente) : gauche, haut, largeur, hauteur, rayon. */
+  boxes?: readonly (readonly [number, number, number, number, number])[];
   /** Un œil en amande, la fente du chat au milieu : centre, demi-largeur, angle (degrés). */
   eye?: readonly [number, number, number, number];
 }
@@ -48,6 +56,28 @@ const along = (a: readonly [number, number], b: readonly [number, number], t: nu
   Math.round(a[0] + (b[0] - a[0]) * t),
   Math.round(a[1] + (b[1] - a[1]) * t),
 ];
+
+/** Les points d'une courbe du second degré a → b (passant par le contrôle c), pour la tracer en lignes brisées. */
+const curve = (
+  a: readonly [number, number],
+  c: readonly [number, number],
+  b: readonly [number, number],
+  steps = 16,
+): (readonly [number, number])[] =>
+  Array.from({ length: steps + 1 }, (_, i) => {
+    const k = i / steps;
+    return [
+      Math.round((1 - k) ** 2 * a[0] + 2 * (1 - k) * k * c[0] + k ** 2 * b[0]),
+      Math.round((1 - k) ** 2 * a[1] + 2 * (1 - k) * k * c[1] + k ** 2 * b[1]),
+    ] as const;
+  });
+
+// La Loterie, la machine de face (17/10, .ai/maquette-etherium-loterie.html) : la fente, le pivot du levier et sa boule,
+// les trois rouleaux.
+const SLOT = [310, 632] as const;
+const PIVOT = [474, 520] as const;
+const BALL = [500, 334] as const;
+const REELS = [220, 310, 400] as const;
 
 // La Rose des vents : le centre, et la longueur de chaque pointe (longues pour les quatre directions).
 const ROSE = [320, 480] as const;
@@ -510,6 +540,55 @@ export const FIGURES: Record<PageId, Figure> = {
         [320, 336, 44],
         [320, 259, 10],
       ],
+    },
+  },
+  // La Loterie, « Le Bandit manchot » : la fente offerte ; le levier porte le jeton ; deux étoiles dans la fenêtre de chaque
+  // rouleau (le temps, la valeur, la chance), leur nom au-dessus.
+  lottery: {
+    spots: {
+      slot: SLOT,
+      j1: PIVOT,
+      j2: BALL,
+      ...Object.fromEntries(
+        ['g', 'm', 'd'].flatMap((branch, i) => [
+          [`${branch}1`, [REELS[i], 560]],
+          [`${branch}2`, [REELS[i], 430]],
+        ]),
+      ),
+    },
+    deco: [],
+    given: { id: 'slot', opens: ['j1', 'g1', 'm1', 'd1'] },
+    sketch: {
+      lines: [
+        // Le corps, le haut en arc ; le plateau ; le pied du levier et sa tige.
+        [[170, 660], [170, 330], ...curve([170, 330], [310, 262], [450, 330]), [450, 660], [170, 660]],
+        [
+          [150, 660],
+          [470, 660],
+        ],
+        [
+          [156, 676],
+          [464, 676],
+        ],
+        [
+          [450, 540],
+          [PIVOT[0], 540],
+          [PIVOT[0], 500],
+          [450, 500],
+        ],
+        [PIVOT, [BALL[0], BALL[1] + 16]],
+      ],
+      rings: [[BALL[0], BALL[1], 16]],
+      boxes: [...REELS.map((x) => [x - 34, 390, 68, 210, 8] as const), [SLOT[0] - 18, SLOT[1] - 4, 36, 8, 3]],
+      labels: [
+        ['time', [REELS[0], 372]],
+        ['value', [REELS[1], 372]],
+        ['luck', [REELS[2], 372]],
+      ],
+      strong: true,
+      labelKeys: 'etherium.pages.lottery.reels',
+      labelSize: 11,
+      labelSpacing: 1.5,
     },
   },
 };

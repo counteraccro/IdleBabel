@@ -211,7 +211,7 @@ export const createLibraryPage = (
           // Les rouleaux sont arrêtés : le tirage compte (la boucle du jeu l'a peut-être compté juste avant).
           settle: () => {
             const draw = settleLottery(state, Math.random, Date.now(), true) ?? lastLotteryDraw();
-            return draw ? drawResults(draw) : [];
+            return draw ? drawResults(state, draw) : [];
           },
         }
       );

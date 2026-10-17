@@ -117,6 +117,12 @@ const starText = (page: PageId, star: StarView): string => {
   return writeDigits(`${t(`etherium.stars.${page}.${star.id}.value`)} ${t(`etherium.stars.${page}.${star.id}.effect`)}`.trim());
 };
 
+/** Ce que coûte l'étoile, en plus de ce qu'elle donne (la Loterie : « mais malus 15 min ») ; vide pour les autres. */
+const butText = (page: PageId, star: StarView): string => {
+  const key = `etherium.stars.${page}.${star.id}.but`;
+  return t(key) === key ? '' : writeDigits(t(key));
+};
+
 const noteOf = (page: PageId, star: StarView): string => {
   // L'Âge Manuel est là dès le début ; le centre de la Rose, la charnière de la Mimic sont offerts.
   if (star.given) return t(page === 'ages' ? 'etherium.given' : 'etherium.offered');
@@ -159,11 +165,11 @@ const stairs = (ctx: Ctx, stars: StarView[]): void => {
 };
 
 /** Le dessin de la figure, à peine tracé sous les étoiles : la Rose et ses points cardinaux, la Mimic et son œil. */
-const sketch = (ctx: Ctx, { lines, circle, rings, labels, eye }: Sketch): void => {
+const sketch = (ctx: Ctx, { lines, circle, rings, labels, eye, boxes, strong, labelKeys, labelSize, labelSpacing }: Sketch): void => {
   ctx.save();
-  ctx.strokeStyle = C.sketch;
-  ctx.lineWidth = 1;
-  ctx.setLineDash([2, 5]);
+  ctx.strokeStyle = strong ? C.sketchStrong : C.sketch;
+  ctx.lineWidth = strong ? 1.4 : 1;
+  ctx.setLineDash(strong ? [3, 4] : [2, 5]);
   for (const points of lines) {
     ctx.beginPath();
     points.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
@@ -192,9 +198,20 @@ const sketch = (ctx: Ctx, { lines, circle, rings, labels, eye }: Sketch): void =
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.stroke();
   }
+  for (const [x, y, w, h, r] of boxes ?? []) {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+    ctx.stroke();
+  }
   ctx.restore();
   for (const [key, [x, y]] of labels ?? [])
-    write(ctx, t(`etherium.compass.${key}`), x, y - 10, { size: 14, face: TITLE, color: C.faded, align: 'center' });
+    write(ctx, t(`${labelKeys ?? 'etherium.compass'}.${key}`), x, y - 10, {
+      size: labelSize ?? 14,
+      face: TITLE,
+      color: C.faded,
+      align: 'center',
+      spacing: labelSpacing ?? 0,
+    });
 };
 
 /**
@@ -321,16 +338,18 @@ const drawConstellation = (
     });
   } else if (shown) {
     const text = starText(page, shown);
-    write(ctx, text, 320, 210, {
-      size: text.length > 53 ? 18 : 21,
-      align: 'center',
-      color: shown.status === 'far' || shown.status === 'hidden' ? C.faded : C.ink,
-      fit: 580,
-    });
+    const pale = shown.status === 'far' || shown.status === 'hidden';
+    // Une étoile de la Loterie dit aussi ce qu'elle coûte (« …mais malus 15 min ») : deux lignes, puis le prix plus bas.
+    const but = butText(page, shown);
+    if (but) {
+      write(ctx, text, 320, 196, { size: 20, align: 'center', color: pale ? C.faded : C.ink, fit: 580 });
+      write(ctx, but, 320, 222, { size: 19, italic: true, align: 'center', color: pale ? C.faded : C.but, fit: 580 });
+    } else write(ctx, text, 320, 210, { size: text.length > 53 ? 18 : 21, align: 'center', color: pale ? C.faded : C.ink, fit: 580 });
+    const top = but ? 250 : 240;
     // L'étoile touchée qui attend : la phrase à la place du prix, tant qu'on ne la quitte pas.
     if (shown.id === refused)
-      write(ctx, t('etherium.refused'), 320, 240, { size: 26, face: HAND, align: 'center', color: C.gold, fit: 580 });
-    else write(ctx, noteOf(page, shown), 320, 240, { size: 26, face: HAND, align: 'center', color: shown.affordable ? C.gold : C.faded });
+      write(ctx, t('etherium.refused'), 320, top, { size: 26, face: HAND, align: 'center', color: C.gold, fit: 580 });
+    else write(ctx, noteOf(page, shown), 320, top, { size: 26, face: HAND, align: 'center', color: shown.affordable ? C.gold : C.faded });
   } else write(ctx, t('etherium.complete'), 320, 226, { size: 26, face: HAND, align: 'center', color: C.faded });
   nightFolio(ctx, number);
 };

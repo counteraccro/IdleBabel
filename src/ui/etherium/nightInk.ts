@@ -45,6 +45,10 @@ export const C = {
   ring: 'rgba(232,199,118,0.7)',
   /** Le dessin d'une figure, sous ses étoiles (la Rose des vents, la Mimic). */
   sketch: 'rgba(200,185,230,0.34)',
+  /** Le même, plus appuyé (la machine de la Loterie). */
+  sketchStrong: 'rgba(200,185,230,0.5)',
+  /** Ce que coûte une étoile de la Loterie (son « …mais… »). */
+  but: 'rgb(224,170,160)',
 } as const;
 
 /** Hasard reproductible (Park-Miller) : la poussière est toujours la même. */

@@ -75,7 +75,7 @@ export const createBoonMedals = (state: GameState): Component => {
       list.push({
         key: `lottery:${effect.id}:${effect.method ?? ''}`,
         icon: textIcon(LOTTERY_ICONS[effect.id]),
-        text: t('ui.lottery.medal').replace('{e}', effectText(effect.id, effect.method)),
+        text: t('ui.lottery.medal').replace('{e}', effectText(state, effect.id, effect.method)),
         left: effect.end - now,
         total: effect.total,
         curse: effect.id === 'half' || effect.id === 'stopped',

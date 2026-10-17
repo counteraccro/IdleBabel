@@ -10,7 +10,7 @@ import { AUTOMATIC_AGE, DIGITAL_AGE } from './tools';
  */
 /**
  * L'ordre des pages dans le livre : les Âges d'abord (demande de l'auteur, 07/10), puis le Poids, qui les touche tous ; la
- * page de chaque Âge à la fin, après les reliques (13/10) ; tout au bout, le Rideau, la fausse fin (14/10).
+ * page de chaque Âge à la fin, après les reliques (13/10) et la Loterie (17/10) ; tout au bout, le Rideau, la fausse fin (14/10).
  */
 export const ETHERIUM_PAGES = [
   'ages',
@@ -26,6 +26,7 @@ export const ETHERIUM_PAGES = [
   'explore',
   'mimic',
   'relics',
+  'lottery',
   'screen',
   'curtain',
 ] as const;
@@ -196,6 +197,17 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['relics', 'h1', null, 15],
   ['relics', 'h2', 'h1', 45],
   ['relics', 'd', null, 60],
+  // La Loterie, « Le Bandit manchot » (17/10, .ai/maquette-etherium-loterie.html) : la fente est offerte quand un premier
+  // jeton est joué ; le levier (le jeton), puis les trois rouleaux : le temps, la valeur, la chance. Chaque étoile d'un
+  // rouleau rend la machine plus généreuse et plus cruelle (data/lottery.ts, LOTTERY_STARS).
+  ['lottery', 'j1', null, 15],
+  ['lottery', 'j2', 'j1', 50],
+  ['lottery', 'g1', null, 20],
+  ['lottery', 'g2', 'g1', 60],
+  ['lottery', 'm1', null, 25],
+  ['lottery', 'm2', 'm1', 80],
+  ['lottery', 'd1', null, 30],
+  ['lottery', 'd2', 'd1', 100],
   // Le Rideau, la fausse fin (14/10, .ai/maquette-faux-livre.html, conception §9.2) : la tringle depuis son milieu, puis le
   // bas des plis et l'ourlet ; chaque étoile fait remonter une bribe de « Mon histoire vraie ». La dernière, l'ourlet de
   // droite, attend toutes les autres (WAITS_FOR_PAGE).
@@ -269,6 +281,9 @@ export const NEEDS_AGE: ReadonlyMap<string, string> = new Map(
  * par l'Âge Numérique).
  */
 export const PAGE_NEEDS: Partial<Record<PageId, string>> = { mimic: 'explore.e', relics: 'explore.w', screen: DIGITAL_AGE };
+
+/** Une page qui attend un premier jeton joué : la Loterie (blanche jusque-là, absente du sommaire). */
+export const PAGE_NEEDS_DRAW: ReadonlySet<PageId> = new Set(['lottery']);
 
 /** Une page qui attend l'Éther reçu : le Poids, quand l'Éther commence à peser (blanche jusque-là, absente du sommaire). */
 export const PAGE_NEEDS_ETHER: Partial<Record<PageId, number>> = { weight: ETHER_WEIGHT.from };
@@ -344,6 +359,11 @@ export const EFFECT = {
    * du ×2 de « Mon histoire vraie ») : le Rideau entier, le tome 1.
    */
   storyReading: { 'curtain.br': 0.15 },
+  /** Les branches de la Loterie (data/lottery.ts, LOTTERY_STARS) : le niveau de chacune, la plus haute allumée compte. */
+  lotteryToken: { 'lottery.j1': 1, 'lottery.j2': 2 },
+  lotteryTime: { 'lottery.g1': 1, 'lottery.g2': 2 },
+  lotteryValue: { 'lottery.m1': 1, 'lottery.m2': 2 },
+  lotteryLuck: { 'lottery.d1': 1, 'lottery.d2': 2 },
   /** Le niveau du bonus de chaque relique (data/relics.ts, RelicDef.bonus) : ses deux étoiles ; la plus haute compte. */
   relicLevel: { 'relics.l1': 1, 'relics.l2': 2, 'relics.a1': 1, 'relics.a2': 2, 'relics.h1': 1, 'relics.h2': 2 },
 } as const satisfies Record<string, Record<string, number>>;

@@ -281,6 +281,7 @@
     "relicChanges": ["Changer d’avis", "Hésiter : {n} changements de relique", "Ne jamais choisir : {n} changements de relique"],
     "constellation-mimic": "Compte-lui toutes ses dents",
     "constellation-relics": "Allume tout le Cabinet",
+    "constellation-lottery": "Allume toute la machine",
     "constellation-weight": "Lève le poids de la Bibliothèque",
     "constellation-screen": "Allume tout le Minitel",
     "intuition-lightSleep": "Entends dormir un livre"

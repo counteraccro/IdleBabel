@@ -3,7 +3,7 @@ import { mimicComesFactor, mimicGivesBonus, mimicUnlocked } from './etherium';
 import { hookAllows, runHooks } from '../mods/hooks';
 import { modded } from '../mods/quantities';
 import { goldenEatsKnowledge, goldenHere } from './goldenMimic';
-import { MIMIC_TOKEN_CHANCE } from '../data/lottery';
+import { tokenChance } from './lotteryStars';
 import type { GameState } from '../core/state';
 
 /**
@@ -98,7 +98,7 @@ export const catchMimic = (
   state.mimic.at = null;
   state.mimic.spot = null;
   state.mimic.eaten = 0;
-  const token = random() < MIMIC_TOKEN_CHANCE * modded('tokenChance');
+  const token = random() < tokenChance(state);
   if (token) state.lottery.tokens += 1;
   runHooks('mimicCaught', given);
   return { ...given, token };

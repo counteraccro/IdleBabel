@@ -32,6 +32,7 @@ import { SENTENCES } from '../src/data/sentences';
 import { lit, product, relicBonus, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
 import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../src/data/mimic';
+import { LOTTERY_BOONS, LOTTERY_CURSES, LOTTERY_STARS } from '../src/data/lottery';
 
 /** Une partie, du réveil au prestige. */
 export interface Run {
@@ -251,12 +252,54 @@ export const play = (run: Run, seconds: number): void => {
   // L'Annulaire : ×2 chance de trouvaille sur les pages tournées à la main (comme deux fois plus de pages).
   find(run, (Math.min(pps, turnsCap(run) * 2) + clicking * 2 * (lit(run.life, S.ring) ? 2 : 1)) * seconds);
   if (lit(run.life, S.mimic)) {
-    run.life.mimic.caught += seconds / (mimicEvery(run.life) + mimicStay());
+    const caught = seconds / (mimicEvery(run.life) + mimicStay());
+    const drawn = run.life.lottery.draws;
+    run.life.mimic.caught += caught;
     run.life.mimic.seconds += seconds * mimicPresence(run.life);
+    // Ses jetons (le levier de la Loterie : plus souvent), joués dès qu'il y en a un entier.
+    const level = Math.max(0, ...Object.entries(EFFECT.lotteryToken).map(([id, v]) => (lit(run.life, id) ? v : 0)));
+    const lottery = run.life.lottery;
+    lottery.tokens += caught * LOTTERY_STARS.token[level];
+    lottery.draws = Math.floor(lottery.tokens);
+    if (lottery.draws > 0) lottery.openedAt ??= run.life.clock;
+    // Ce que rapportent ces tirages, en moyenne : autant de secondes de la production du moment.
+    gain(run, pps * lotteryAverage(run.life) * (lottery.draws - drawn));
   }
   run.t += seconds;
   run.played += seconds;
   run.life.clock += seconds;
+};
+
+/** Part de la production que lit la méthode visée par « une méthode ×10 » (au hasard) ou arrêtée (la meilleure). */
+const ONE_METHOD = 0.2;
+const BEST_METHOD = 0.5;
+
+/**
+ * Un jeton joué (17/10), en moyenne : les secondes de production qu'il rapporte, ou coûte. Le gain (lecture d'absence),
+ * ce que les bonus ajoutent pendant leur durée, ce que les malus ôtent (÷2, la meilleure méthode arrêtée, la Mimic dorée
+ * qui mange tout), avec les étoiles de la page « La Loterie ». Approché : les bonus en cours qui ne se retirent pas, et
+ * la Connaissance du gain, n'y sont pas.
+ */
+const lotteryAverage = (life: Life): number => {
+  const level = (effect: Record<string, number>): number =>
+    Math.max(0, ...Object.entries(effect).map(([id, v]) => (lit(life, id) ? v : 0)));
+  const time = level(EFFECT.lotteryTime);
+  const value = level(EFFECT.lotteryValue);
+  const luck = level(EFFECT.lotteryLuck);
+  const odds = Object.fromEntries(Object.entries(LOTTERY_STARS.luck).map(([id, by]) => [id, by[luck] / 100]));
+  const weights = (list: readonly { weight: number }[]) => list.reduce((total, one) => total + one.weight, 0);
+  const boost = LOTTERY_STARS.value.boost[value];
+  const boons =
+    LOTTERY_BOONS.reduce((total, one) => total + one.weight * (one.factor - 1) * boost * (one.id === 'method10' ? ONE_METHOD : 1), 0) /
+    weights(LOTTERY_BOONS);
+  const half = 1 - 1 / LOTTERY_STARS.value.half[value];
+  const { gain: gainSeconds, boon, curse, golden } = LOTTERY_STARS.time;
+  const curses =
+    LOTTERY_CURSES.reduce(
+      (total, one) => total + one.weight * (one.id === 'golden' ? golden[time] : curse[time] * (one.id === 'half' ? half : BEST_METHOD)),
+      0,
+    ) / weights(LOTTERY_CURSES);
+  return odds.gain * gainSeconds[time] + odds.boon * boon[time] * boons - odds.curse * curses;
 };
 
 /** Le jeu fermé pendant `seconds` : la lecture comptée en partie, sur 8 h au plus (et le Sommeil profond). */

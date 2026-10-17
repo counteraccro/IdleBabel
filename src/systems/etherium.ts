@@ -4,6 +4,7 @@ import {
   EFFECT,
   KEEPS,
   PAGE_NEEDS,
+  PAGE_NEEDS_DRAW,
   PAGE_NEEDS_ETHER,
   RELIC_BRANCH,
   S,
@@ -27,7 +28,7 @@ export const starLit = (state: GameState, id: string): boolean => state.etherium
 
 /**
  * L'étoile peut s'allumer : pas encore allumée ni fermée (CLOSED), son étoile d'avant l'est (et l'Âge de son alvéole,
- * dans la Ruche ; l'Est de l'Exploration, pour la page de la Mimic).
+ * dans la Ruche ; l'Est de l'Exploration, pour la page de la Mimic ; un jeton joué, pour celle de la Loterie).
  */
 export const starOpen = (state: GameState, id: string): boolean => {
   const star = starById(id);
@@ -36,17 +37,24 @@ export const starOpen = (state: GameState, id: string): boolean => {
   return (
     afterLit(star, (before) => starLit(state, before)) &&
     (!needed || starLit(state, needed)) &&
-    state.etherReceived >= etherNeeded(star.page)
+    state.etherReceived >= etherNeeded(star.page) &&
+    drawnFor(state, star.page)
   );
 };
+
+/** La page n'attend pas de jeton joué, ou un jeton l'a été (la Loterie). */
+const drawnFor = (state: GameState, page: PageId): boolean => !PAGE_NEEDS_DRAW.has(page) || state.lottery.draws > 0;
 
 /** L'Éther reçu qu'attend une page pour s'ouvrir (le Poids : 5 000), 0 sinon. */
 export const etherNeeded = (page: PageId): number => PAGE_NEEDS_ETHER[page] ?? 0;
 
-/** La page est ouverte : rien ne la débloque (sinon, son étoile est allumée), et l'Éther reçu suffit (le Poids). */
+/**
+ * La page est ouverte : rien ne la débloque (sinon, son étoile est allumée), l'Éther reçu suffit (le Poids), et un jeton a
+ * été joué (la Loterie).
+ */
 export const pageOpen = (state: GameState, page: PageId): boolean => {
   const needed = PAGE_NEEDS[page];
-  return (!needed || starLit(state, needed)) && state.etherReceived >= etherNeeded(page);
+  return (!needed || starLit(state, needed)) && state.etherReceived >= etherNeeded(page) && drawnFor(state, page);
 };
 
 /** Allume une étoile ouverte, s'il y a assez d'Éther. Renvoie true si elle s'allume. */
@@ -179,6 +187,18 @@ export const relicStarLevel = (state: GameState, relic: string): number =>
       id.startsWith(`relics.${RELIC_BRANCH[relic]}`) && starLit(state, id) ? level : 0,
     ),
   );
+
+/** Le niveau d'une branche (0 sans étoile) : la plus haute allumée. */
+const levelOf = (state: GameState, effect: Record<string, number>): number =>
+  Math.max(0, ...Object.entries(effect).map(([id, level]) => (starLit(state, id) ? level : 0)));
+/** La Loterie, le levier : la chance qu'une Mimic attrapée lâche un jeton (data/lottery.ts, LOTTERY_STARS.token). */
+export const lotteryTokenLevel = (state: GameState): number => levelOf(state, EFFECT.lotteryToken);
+/** Le rouleau du temps : la durée du gain, des bonus, des malus et de la Mimic dorée. */
+export const lotteryTimeLevel = (state: GameState): number => levelOf(state, EFFECT.lotteryTime);
+/** Le rouleau de la valeur : ce que les bonus ajoutent, et la production divisée pendant le malus. */
+export const lotteryValueLevel = (state: GameState): number => levelOf(state, EFFECT.lotteryValue);
+/** Le rouleau de la chance : la part de chaque résultat. */
+export const lotteryLuckLevel = (state: GameState): number => levelOf(state, EFFECT.lotteryLuck);
 
 /** La partie qui s'achève au prestige : ce dont la Porte se souvient. */
 export interface PreviousRun {

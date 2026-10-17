@@ -1,20 +1,20 @@
-import { GOLDEN_SECONDS, GOLDEN_STRIKES } from '../data/lottery';
+import { GOLDEN_STRIKES } from '../data/lottery';
 import { sealEvent } from './seals';
 import { catchMimic } from './mimic';
-import { modded } from '../mods/quantities';
+import { lotterySeconds } from './lotteryStars';
 import type { GameState } from '../core/state';
 
 /**
  * La Mimic dorée (un malus de la Loterie, l'auteur, 16/10) : on ne peut pas la tuer. Tant qu'elle est là, elle mange
  * tout ce qui est gagné, pages et Connaissance (pas ce qu'on a déjà), avant la Mimic ordinaire ; au bout de cinq
- * minutes, elle s'en va sans rien rendre. Un gain de la Loterie tiré pendant ce temps y passe aussi.
+ * minutes (plus, avec le rouleau du temps de l'Etherium), elle s'en va sans rien rendre. Un gain de la Loterie tiré pendant ce temps y passe aussi.
  */
 
 export const goldenHere = (state: GameState, now = Date.now()): boolean => (state.lottery.golden?.until ?? 0) > now;
 
 /**
  * Elle arrive : la Mimic ordinaire, si elle est là, est écrasée et rend ce qu'elle doit (comme attrapée, l'auteur, 16/10).
- * Déjà là (débogage seulement : un malus ne se tire pas deux fois), elle reste cinq minutes de plus. Rend ces secondes
+ * Déjà là (débogage seulement : un malus ne se tire pas deux fois), elle reste encore autant. Rend ces secondes
  * (mods compris), et ce qu'a rendu la Mimic écrasée (la Connaissance, un jeton ou non).
  */
 export const spawnGolden = (
@@ -23,7 +23,7 @@ export const spawnGolden = (
   now = Date.now(),
 ): { seconds: number; crushed?: { knowledge: number; token: boolean } } => {
   const golden = state.lottery.golden;
-  const length = GOLDEN_SECONDS * 1000 * modded('lotteryCurse');
+  const length = lotterySeconds(state, 'golden') * 1000;
   if (golden && golden.until > now) {
     golden.until += length;
     golden.total = golden.until - now;

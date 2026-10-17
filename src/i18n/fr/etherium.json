@@ -106,6 +106,13 @@
       "figure": "Le Cabinet",
       "description": "Quelqu’un est passé avant moi."
     },
+    "lottery": {
+      "name": "La Loterie",
+      "figure": "Le Bandit manchot",
+      "description": "Elle donne. Elle reprend.",
+      "locked": "Cette page attend\nqu’un jeton soit joué.",
+      "reels": { "time": "LE TEMPS", "value": "LA VALEUR", "luck": "LA CHANCE" }
+    },
     "screen": {
       "name": "Numérique",
       "figure": "Le Minitel",
@@ -677,6 +684,59 @@
         "name": "La patience",
         "value": "La patience :",
         "effect": "6 h pour changer de relique (au lieu de 12 h)"
+      }
+    },
+    "lottery": {
+      "slot": {
+        "name": "La fente",
+        "value": "La Loterie :",
+        "effect": "chaque étoile la rend plus généreuse, et plus cruelle"
+      },
+      "j1": {
+        "name": "Le pied du levier",
+        "value": "Le jeton :",
+        "effect": "la Mimic en lâche un une fois sur 2 (au lieu de 3)"
+      },
+      "j2": {
+        "name": "La boule du levier",
+        "value": "Le jeton :",
+        "effect": "la Mimic en lâche un 2 fois sur 3"
+      },
+      "g1": {
+        "name": "Le temps, en bas",
+        "value": "Le temps :",
+        "effect": "bonus 1 h 30, gain 45 min…",
+        "but": "mais malus 15 min, Mimic dorée 8 min"
+      },
+      "g2": {
+        "name": "Le temps, en haut",
+        "value": "Le temps :",
+        "effect": "bonus 2 h, gain 1 h…",
+        "but": "mais malus 20 min, Mimic dorée 10 min"
+      },
+      "m1": {
+        "name": "La valeur, en bas",
+        "value": "La valeur :",
+        "effect": "bonus +50 %…",
+        "but": "mais production ÷3"
+      },
+      "m2": {
+        "name": "La valeur, en haut",
+        "value": "La valeur :",
+        "effect": "bonus +100 %…",
+        "but": "mais production ÷4"
+      },
+      "d1": {
+        "name": "La chance, en bas",
+        "value": "La chance :",
+        "effect": "« rien » 30 %…",
+        "but": "mais malus 18 %"
+      },
+      "d2": {
+        "name": "La chance, en haut",
+        "value": "La chance :",
+        "effect": "« rien » 20 %…",
+        "but": "mais malus 24 %"
       }
     },
     "weight": {

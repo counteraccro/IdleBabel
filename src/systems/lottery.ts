@@ -1,8 +1,5 @@
 import {
-  BOON_SECONDS,
   CURSE_DIGIT,
-  CURSE_SECONDS,
-  GAIN_SECONDS,
   JACKPOT_DIGIT,
   JACKPOT_READY,
   LOTTERY_BOONS,
@@ -19,7 +16,7 @@ import { findWhileAway } from './knowledge';
 import { checkSeals } from './seals';
 import { lotteryEffects, startLotteryEffect } from './lotteryEffects';
 import { goldenHere, spawnGolden } from './goldenMimic';
-import { modded } from '../mods/quantities';
+import { lotteryOdds, lotterySeconds } from './lotteryStars';
 import { runHooks } from '../mods/hooks';
 import type { GameState, PendingDraw } from '../core/state';
 
@@ -99,7 +96,7 @@ const ownedMethods = (state: GameState): ToolId[] =>
 const gain = (state: GameState, draw: Draw, random: () => number): void => {
   // Ce qu'avale la Mimic ordinaire compte : elle le rendra. Ce que mange la dorée, non.
   const before = { pages: state.pages, knowledge: state.knowledge + state.mimic.eaten };
-  const seconds = GAIN_SECONDS * modded('lotteryGain');
+  const seconds = lotterySeconds(state, 'gain');
   gainPages(state, pagesPerSecond(state) * seconds);
   creditMethods(state, seconds);
   findWhileAway(state, seconds, random);
@@ -152,8 +149,8 @@ export const startLottery = (state: GameState, random: () => number = Math.rando
   if (state.lottery.pending || state.lottery.tokens <= 0 || lotteryBlocked(state, now)) return undefined;
   state.lottery.tokens -= 1;
   state.lottery.draws += 1;
-  // Les mods peuvent changer les chances de chaque résultat (lotteryOdds:<résultat>).
-  const odds = OUTCOMES.map((one) => ({ id: one.id, weight: one.weight * modded(`lotteryOdds:${one.id}`) }));
+  // Le rouleau de la chance, et les mods, changent les chances de chaque résultat (lotteryOdds:<résultat>).
+  const odds = lotteryOdds(state);
   let outcome = OUTCOMES.find((one) => one.id === forced)?.id ?? pick(odds, random).id;
   if (LOTTERY_BOONS.some((one) => one.id === forced)) outcome = 'boon';
   if (LOTTERY_CURSES.some((one) => one.id === forced)) outcome = 'curse';
@@ -187,7 +184,7 @@ export const settleLottery = (state: GameState, random: () => number = Math.rand
   else if (plan.boon) {
     draw.boon = plan.boon;
     if (plan.method) draw.method = plan.method;
-    draw.seconds = BOON_SECONDS * modded('lotteryBoon');
+    draw.seconds = lotterySeconds(state, 'boon');
     startLotteryEffect(state, plan.boon, draw.seconds, now, draw.method);
   } else if (plan.curse === 'golden') {
     draw.curse = 'golden';
@@ -197,7 +194,7 @@ export const settleLottery = (state: GameState, random: () => number = Math.rand
   } else if (plan.curse) {
     draw.curse = plan.curse;
     if (plan.method) draw.method = plan.method;
-    draw.seconds = CURSE_SECONDS * modded('lotteryCurse');
+    draw.seconds = lotterySeconds(state, 'curse');
     startLotteryEffect(state, plan.curse, draw.seconds, now, draw.method);
   }
   checkSeals(state, now);

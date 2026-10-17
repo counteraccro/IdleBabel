@@ -1,4 +1,15 @@
-import { afterLit, CLOSED, EFFECT, ETHERIUM_PAGES, RELIC_BRANCH, S, STARS, neededFor, type PageId } from '../src/data/etheriumStars';
+import {
+  afterLit,
+  CLOSED,
+  EFFECT,
+  ETHERIUM_PAGES,
+  PAGE_NEEDS_DRAW,
+  RELIC_BRANCH,
+  S,
+  STARS,
+  neededFor,
+  type PageId,
+} from '../src/data/etheriumStars';
 import { DIGITAL_AGE } from '../src/data/tools';
 import { relicById } from '../src/data/relics';
 import { PLAYER } from './config';
@@ -35,6 +46,11 @@ export interface Life {
   relicChanges: number;
   /** La Mimic, depuis toujours (ses sceaux) : attrapées, connaissances rendues en plus, secondes à manger. */
   mimic: { caught: number; bonus: number; seconds: number };
+  /**
+   * La Loterie (17/10) : les jetons lâchés par la Mimic (une part, comme ses prises), joués aussitôt par le bot ; quand le
+   * premier l'a été (la page de la Loterie s'ouvre). Ses tirages ne changent pas la lecture dans le simulateur.
+   */
+  lottery: { tokens: number; draws: number; openedAt?: number };
 }
 
 export const newLife = (): Life => ({
@@ -59,6 +75,7 @@ export const newLife = (): Life => ({
   relic: null,
   relicChanges: 0,
   mimic: { caught: 0, bonus: 0, seconds: 0 },
+  lottery: { tokens: 0, draws: 0 },
 });
 
 /** Conception §4.1 : floor(∛(pages à vie / 1 Md)), moins ce qui est déjà reçu. */
@@ -77,7 +94,8 @@ export const sum = (life: Life, effect: Record<string, number>): number =>
 
 /**
  * Les étoiles qu'on peut allumer maintenant, comme en jeu : pas fermées, leur étoile d'avant est allumée (et l'Âge, pour
- * son alvéole et la page du Minitel ; l'Est de l'Exploration, pour la Mimic ; 5 000 Éther reçus, pour l'Atlas).
+ * son alvéole et la page du Minitel ; l'Est de l'Exploration, pour la Mimic ; 5 000 Éther reçus, pour l'Atlas ; un jeton
+ * joué, pour la Loterie).
  */
 const open = (life: Life): Buyable[] => [
   ...STARS.filter(
@@ -89,6 +107,7 @@ const open = (life: Life): Buyable[] => [
       (!neededFor(star.id) || life.stars.has(neededFor(star.id)!)) &&
       (PLAYER.cornee || star.id !== S.cornee) &&
       (PLAYER.weight || star.page !== 'weight') &&
+      (!PAGE_NEEDS_DRAW.has(star.page) || life.lottery.draws > 0) &&
       life.etherReceived >= etherNeeded(star.page),
   ),
 ];

@@ -106,6 +106,13 @@
       "figure": "The Cabinet",
       "description": "Someone came here before me."
     },
+    "lottery": {
+      "name": "The Lottery",
+      "figure": "The One-Armed Bandit",
+      "description": "It gives. It takes back.",
+      "locked": "This page is waiting\nfor a token to be played.",
+      "reels": { "time": "TIME", "value": "VALUE", "luck": "LUCK" }
+    },
     "screen": {
       "name": "Digital",
       "figure": "The Minitel",
@@ -677,6 +684,59 @@
         "name": "Patience",
         "value": "Patience:",
         "effect": "6 h to change relics (instead of 12 h)"
+      }
+    },
+    "lottery": {
+      "slot": {
+        "name": "The slot",
+        "value": "The Lottery:",
+        "effect": "each star makes it more generous, and more cruel"
+      },
+      "j1": {
+        "name": "The foot of the lever",
+        "value": "The token:",
+        "effect": "the Mimic drops one 1 time in 2 (instead of 3)"
+      },
+      "j2": {
+        "name": "The knob of the lever",
+        "value": "The token:",
+        "effect": "the Mimic drops one 2 times in 3"
+      },
+      "g1": {
+        "name": "Time, low",
+        "value": "Time:",
+        "effect": "bonuses 1 h 30, wins 45 min…",
+        "but": "but penalties 15 min, Golden Mimic 8 min"
+      },
+      "g2": {
+        "name": "Time, high",
+        "value": "Time:",
+        "effect": "bonuses 2 h, wins 1 h…",
+        "but": "but penalties 20 min, Golden Mimic 10 min"
+      },
+      "m1": {
+        "name": "Value, low",
+        "value": "Value:",
+        "effect": "bonuses +50%…",
+        "but": "but production ÷3"
+      },
+      "m2": {
+        "name": "Value, high",
+        "value": "Value:",
+        "effect": "bonuses +100%…",
+        "but": "but production ÷4"
+      },
+      "d1": {
+        "name": "Luck, low",
+        "value": "Luck:",
+        "effect": "“nothing” 30%…",
+        "but": "but penalties 18%"
+      },
+      "d2": {
+        "name": "Luck, high",
+        "value": "Luck:",
+        "effect": "“nothing” 20%…",
+        "but": "but penalties 24%"
       }
     },
     "weight": {

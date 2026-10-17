@@ -149,4 +149,7 @@ console.log(
 console.log(line(header));
 rows.forEach((row) => console.log(line(row)));
 console.log(`Sceaux : ${sealsPerPlate(life.seals)} (+ ${PLAYER.otherSeals} livres rares et secrets)`);
+console.log(
+  `Loterie : ${life.lottery.draws} jetons joués · page ouverte : ${duration(life.lottery.openedAt)} · étoiles achetées : ${[...life.stars].filter((id) => id.startsWith('lottery.')).join(', ') || 'aucune'}`,
+);
 console.log(`Éther reçu : ${life.etherReceived} · non dépensé : ${life.etherFree} · étoiles : ${litPerPage(life)}`);

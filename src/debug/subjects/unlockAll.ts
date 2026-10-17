@@ -25,6 +25,8 @@ export const unlockAll = (state: GameState): void => {
   state.totalPagesRead = Math.max(state.totalPagesRead, ETHER_PAGES, ETHERIUM_NAMED_PAGES);
   state.etherReceived = Math.max(1, state.etherReceived);
   state.etherium = OPEN_STARS.map((star) => star.id);
+  // La page de la Loterie attend un jeton joué.
+  state.lottery.draws = Math.max(1, state.lottery.draws);
   writeAll(state, SENTENCES);
   maxIntuitions(state);
   state.booksFinished = Math.max(state.booksFinished, STRANGE_BOOK_INDEX + 1);

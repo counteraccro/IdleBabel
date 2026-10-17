@@ -1,5 +1,6 @@
-import { HALF, LOTTERY_BOONS, LOTTERY_CURSES, type LotteryEffectId } from '../data/lottery';
+import { LOTTERY_BOONS, LOTTERY_CURSES, type LotteryEffectId } from '../data/lottery';
 import { goldenHere } from './goldenMimic';
+import { boonFactor, halfFactor } from './lotteryStars';
 import type { ToolId } from '../data/tools';
 import type { GameState, LotteryEffect } from '../core/state';
 
@@ -16,11 +17,11 @@ export const lotteryEffects = (state: GameState, now = Date.now()): LotteryEffec
 const on = (state: GameState, id: LotteryEffectId, now: number): boolean =>
   state.lottery.effects.some((effect) => effect.id === id && effect.end > now);
 
-/** La production de toutes les méthodes : ×1,5, ×2, ×3 (qui se multiplient), ÷ 2. */
+/** La production de toutes les méthodes : ×1,5, ×2, ×3 (qui se multiplient), ÷ 2 (le rouleau de la valeur les change). */
 export const lotteryReading = (state: GameState, now = Date.now()): number => {
   if (state.lottery.effects.length === 0) return 1;
-  let factor = on(state, 'half', now) ? HALF : 1;
-  for (const boon of LOTTERY_BOONS) if (boon.id !== 'method10' && on(state, boon.id, now)) factor *= boon.factor;
+  let factor = on(state, 'half', now) ? halfFactor(state) : 1;
+  for (const boon of LOTTERY_BOONS) if (boon.id !== 'method10' && on(state, boon.id, now)) factor *= boonFactor(state, boon.id);
   return factor;
 };
 
@@ -28,8 +29,7 @@ export const lotteryReading = (state: GameState, now = Date.now()): number => {
 export const lotteryMethod = (state: GameState, id: ToolId, now = Date.now()): number => {
   let factor = 1;
   for (const effect of state.lottery.effects)
-    if (effect.method === id && effect.end > now)
-      factor *= effect.id === 'stopped' ? 0 : LOTTERY_BOONS.find((boon) => boon.id === 'method10')!.factor;
+    if (effect.method === id && effect.end > now) factor *= effect.id === 'stopped' ? 0 : boonFactor(state, 'method10');
   return factor;
 };
 
