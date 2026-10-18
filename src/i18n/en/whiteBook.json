@@ -204,6 +204,7 @@
     "hintToBeContinued": "Between North / and East, / a book is waiting.",
     "hintTomeJackpot": "Three 7s / at the machine, / and a book drops.",
     "hintTomeMimic": "What swallows / sometimes gives back / more than it took.",
+    "hintTomeTask": "At the end of the road, / there is always / a book.",
     "hintTenTimes": "What glitters / does not die. / Strike anyway.",
     "hintAllCurses": "When everything goes wrong, / play again. / It can get worse.",
     "hintAllBoons": "All the luck at once, / and the machine / wants no more of you.",
@@ -495,7 +496,8 @@
       "17": "Read 10,000 books in a single game.",
       "18": "Light three whole figures of the Etherium.",
       "19": "Fill a whole plate of seals.",
-      "20": "Win the Lottery 10 times in a row without ever drawing a curse."
+      "20": "Win the Lottery 10 times in a row without ever drawing a curse.",
+      "21": "Pour 15,000 Ether into the Etherium, read 5 sextillion pages and find 400 million Knowledge."
     },
     "rewards": {
       "tokens": "{n} tokens",
@@ -507,7 +509,8 @@
       "kDay": "1 day of Knowledge",
       "reading": "Reading +{n} %, for good",
       "knowledge": "Knowledge +{n} %, for good",
-      "relic": "a relic"
+      "relic": "a relic",
+      "unknown": "?"
     },
     "progress": "{n} / {total}",
     "running": "{n} tasks under way",

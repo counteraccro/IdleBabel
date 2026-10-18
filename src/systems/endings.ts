@@ -30,8 +30,8 @@ export const nextTome = (state: GameState): number | undefined => {
   return index > 0 && index < TOME_BRIBE_PAGES.length ? index : undefined;
 };
 
-/** Ce qui fait gagner un tome : trois 7 à la Loterie, une Mimic attrapée. */
-export type TomeSource = 'jackpot' | 'mimic';
+/** Ce qui fait gagner un tome : trois 7 à la Loterie, une Mimic attrapée, « Une dernière pour la route » (la tâche 21). */
+export type TomeSource = 'jackpot' | 'mimic' | 'task';
 
 /**
  * Le tome `index` (1 pour le tome 2) rejoint le meuble des fins ; il sera montré, en main (state.tomeToShow). La source
@@ -52,3 +52,6 @@ export const automaticAgeMultiplier = (state: GameState): number => (tomeFound(s
 
 /** Le tome 3, « La porte » : les méthodes de l'Âge Numérique lisent 15 % plus vite. */
 export const digitalAgeMultiplier = (state: GameState): number => (tomeFound(state, 2) ? 1 + TOME_READING : 1);
+
+/** Le tome 4, « Dedans » : 15 % de Connaissance de plus par trouvaille (l'auteur, 18/10). */
+export const tomeKnowledgeMultiplier = (state: GameState): number => (tomeFound(state, 3) ? 1 + TOME_READING : 1);

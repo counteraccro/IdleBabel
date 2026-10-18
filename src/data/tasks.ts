@@ -35,6 +35,8 @@ export interface TaskReward {
   knowledgeBonus?: number;
   /** La relique du Crayon. */
   crayon?: true;
+  /** Le tome suivant de « L'histoire de Babel » (« Une dernière pour la route ») ; la liste ne le dit pas : « ? ». */
+  tome?: true;
 }
 
 /** Les étoiles de la branche « le nombre » (une tâche du jour de plus chacune) et de la branche « le gain » (son niveau). */
@@ -77,4 +79,13 @@ export const ONCE_TASKS: readonly OnceTaskDef[] = [
   { n: 18, star: TASK_STAR.once2, goal: 3, reward: { tokens: 40 } },
   { n: 19, star: TASK_STAR.once2, goal: 1, reward: { readingBonus: 0.1 } },
   { n: 20, star: TASK_STAR.once2, goal: 10, reward: { tokens: 50 } },
+  // « Une dernière pour la route » (l'auteur, 18/10) : ses trois buts (LAST_TASK) ; son compte, ceux qui sont atteints.
+  { n: 21, star: TASK_STAR.last, goal: 3, reward: { tome: true } },
 ];
+
+/**
+ * Les trois buts de « Une dernière pour la route », comptés depuis son apparition, à travers les prestiges (validés par
+ * l'auteur le 18/10, d'après la simulation du 17/10 : milieu de partie, fin de l'Âge Numérique) : l'Éther versé dans
+ * l'Etherium, les pages lues, la Connaissance trouvée.
+ */
+export const LAST_TASK = { ether: 15_000, pages: 5e21, knowledge: 400e6 } as const;

@@ -131,6 +131,7 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintToBeContinued',
     'hintTomeJackpot',
     'hintTomeMimic',
+    'hintTomeTask',
     'hintTenTimes',
     'hintAllCurses',
     'hintAllBoons',
@@ -180,7 +181,10 @@ export const HINTS_AFTER_PRESTIGE: readonly string[] = ['hintEmptyEtherium', 'hi
 export const HINTS_AFTER_DRAW: readonly string[] = ['hintTenTimes', 'hintAllCurses', 'hintAllBoons', 'hintAllEffects', 'hintTomeJackpot'];
 
 /** Les indices des tomes qui se gagnent (le gros lot, la Mimic) ne tombent qu'une fois le tome 1 acheté : avant, rien ne se gagne. */
-export const HINTS_AFTER_FIRST_TOME: readonly string[] = ['hintTomeJackpot', 'hintTomeMimic'];
+export const HINTS_AFTER_FIRST_TOME: readonly string[] = ['hintTomeJackpot', 'hintTomeMimic', 'hintTomeTask'];
 
 /** L'indice du tome de la Mimic ne tombe qu'une fois la Mimic achetée (l'Est de l'Exploration). */
 export const HINTS_AFTER_MIMIC: readonly string[] = ['hintTomeMimic'];
+
+/** L'indice du tome de « Une dernière pour la route » ne tombe qu'une fois son étoile allumée. */
+export const HINTS_AFTER_LAST_TASK: readonly string[] = ['hintTomeTask'];

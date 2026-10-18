@@ -1,4 +1,4 @@
-import { ONCE_TASKS, type OnceTaskDef } from '../data/tasks';
+import { LAST_TASK, ONCE_TASKS, type OnceTaskDef } from '../data/tasks';
 import { CLOSED, STARS } from '../data/etheriumStars';
 import { SENTENCES } from '../data/sentences';
 import { SEALS } from '../data/seals';
@@ -48,6 +48,19 @@ export const fullPlates = (state: GameState): number => {
   const plates = new Map<string, boolean>();
   for (const seal of SEALS) plates.set(seal.plate, (plates.get(seal.plate) ?? true) && seal.id in state.seals);
   return [...plates.values()].filter(Boolean).length;
+};
+
+/** Ce que compte « Une dernière pour la route », depuis toujours : l'Éther versé, les pages lues, la Connaissance trouvée. */
+const roadTotals = (state: GameState): number[] => [
+  Math.max(0, state.etherReceived - state.ether),
+  state.totalPagesRead,
+  state.lifetimeKnowledge,
+];
+
+/** Les buts de « Une dernière pour la route » atteints depuis son apparition (0 à 3). */
+export const roadReached = (state: GameState, task: OnceTask): number => {
+  const goals = [LAST_TASK.ether, LAST_TASK.pages, LAST_TASK.knowledge];
+  return roadTotals(state).filter((total, index) => total - (task.bases?.[index] ?? total) >= goals[index]).length;
 };
 
 interface Counting {
@@ -124,6 +137,8 @@ const COUNTING: Record<number, Counting> = {
     before: true,
     met: (state) => state.lottery.draws > 0,
   },
+  // « Une dernière pour la route » : ses trois buts, comptés depuis son apparition, à travers les prestiges.
+  21: { count: roadReached, start: (state, task) => (task.bases = roadTotals(state)), before: true },
 };
 
 /** La tâche est là (son étoile allumée), en Babel ou en clair. */

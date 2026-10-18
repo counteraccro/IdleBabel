@@ -1,3 +1,4 @@
+import { tomeKnowledgeMultiplier } from './endings';
 import { taskKnowledge } from './taskBonus';
 import { SENTENCES } from '../data/sentences';
 import { BASE_FIND_CHANCE, EXTRA_FIND_SHARES, FIND_WEIGHTS, LUCK_PAGES, type Find, type FindKind } from '../data/knowledge';
@@ -190,7 +191,10 @@ export const findText = (find: Find): string => {
 
 /** La Connaissance d'une trouvaille. Les bonus multiplient : arrondi au supérieur, la Connaissance se compte en entiers. */
 export const findKnowledge = (state: GameState): number =>
-  Math.ceil(knowledgePerFind(state) * taskKnowledge(state) * knowledgeBoon() * modded('knowledge') + relicKnowledge(state));
+  Math.ceil(
+    knowledgePerFind(state) * taskKnowledge(state) * tomeKnowledgeMultiplier(state) * knowledgeBoon() * modded('knowledge') +
+      relicKnowledge(state),
+  );
 
 /**
  * Une trouvaille lue : 1 point de Connaissance (plus, avec l'Etherium et la Mémoire vive de la lettre ; et ceux, garantis,

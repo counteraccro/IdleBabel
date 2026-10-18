@@ -239,8 +239,6 @@ export const CLOSED: ReadonlySet<string> = new Set([
   'memory.a0',
   // Les pointes de la Rose des vents qui n'ouvrent encore rien.
   ...['s', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
-  // « Une dernière pour la route », tant que son livre de fin n'est pas écrit (l'auteur, 17/10).
-  'tasks.p3',
 ]);
 
 /** Fermées, mais sans bloquer la suite : les étoiles d'après la Goutte attendent celle d'avant elle. */

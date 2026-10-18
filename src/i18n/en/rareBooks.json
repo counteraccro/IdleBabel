@@ -2648,7 +2648,8 @@
             "The other ten volumes now exist, each in its place, under its cover. Their pages are blank, and nobody can find them yet: each will get its story along with the way it appears. On their spines, long titles narrow so they stop before the band.",
             "Each volume now has everything a real book has: endpapers strewn with gilt hexagons, a half-title, “By the same author” and the eleven titles, a title page from Four Hundred Ten Press, a copyright page (“Based on a true story.”), a dedication to someone in the book, a contents page, and at the foot of the last page, the printer’s colophon.",
             "Volume 2, “Whispered About”, is the first to be won: three 7s at the Lottery bring it, whole, and the next volumes will come the same way, always the next one, whatever their source. Nothing can be won before the first has been bought. It tells of a library that exists, somewhere: people speak of it in low voices, and those who go there do not come back. It makes the Automatic Age methods read 15% faster. Every volume won, the first one too, arrives in hand, closed, as soon as one is back in the game or before the shelves: it can be read, and once put away, it takes its place in the endings shelf.",
-            "Volume 3, “The Door”, can also drop from a caught Mimic, one time in twenty: the Mimic and the jackpot each give the next volume, in the order they are won. An iron door appears at the end of a cellar corridor known by heart, and it is pushed open by mistake. It makes the Digital Age methods read 15% faster. Each source has its own secret seal, which takes the name of the first volume it gave."
+            "Volume 3, “The Door”, can also drop from a caught Mimic, one time in twenty: the Mimic and the jackpot each give the next volume, in the order they are won. An iron door appears at the end of a cellar corridor known by heart, and it is pushed open by mistake. It makes the Digital Age methods read 15% faster. Each source has its own secret seal, which takes the name of the first volume it gave.",
+            "Volume 4, “Inside”, tells of the first day in the Library, then all the others, up to the first book opened. It gives 15% more Knowledge per find. The last star of the Sundial, “One for the road”, can finally be lit: its task asks a lot, and the list does not say what it brings."
           ]
         },
         "lotteryStars": {
@@ -2831,6 +2832,17 @@
         "…I thought of my grandmother… no one comes back, she had said… I went back up to bed…",
         "…weeks without going down… then a power cut… I was feeling for the fuse box in the dark… I pushed the wrong door…",
         "…it was open… I hadn’t even taken out the key… behind me, it closed without a sound…"
+      ],
+      [
+        "…behind the door, no cellar… a room with six sides, shelves up to the ceiling… then another room, and another…",
+        "…I looked for the iron door… there were only shelves now… the key was no use, there were no locks…",
+        "…the books were all the same size… four hundred and ten pages, I counted… so it was true, what they whispered…",
+        "…I opened the first one… letters with no meaning at all… like the sheet under my grandmother’s mattress…",
+        "…I called out, for a long time… my voice came back up the wells, all on its own…",
+        "…I was neither hungry nor sleepy… I no longer knew if it was the first day or the hundredth…",
+        "…to recognise the shelves I had already read, I tore the collar of my shirt… the one where my grandmother had embroidered my name…",
+        "…in my pocket, there was still the white notebook… I wanted to write my name in it… I could no longer remember it…",
+        "…so I took a book, any book… and I began to read…"
       ]
     ]
   }

@@ -66,7 +66,8 @@ describe('« La porte », le tome 3 (18/10)', () => {
     expect(state.tomeToShow).toBe(2);
     expect(toolRate(state, 'minitel')).toBeCloseTo(digital * 1.15);
     expect(toolRate(state, 'metronome')).toBeCloseTo(automatic);
-    // Le tome 4 n'est pas encore écrit : la Mimic ne lâche plus rien.
+    // Tous les tomes écrits rangés : la Mimic ne lâche plus rien.
+    state.sagaTomes.push(...Array.from({ length: TOME_BRIBE_PAGES.length - 3 }, (_, index) => index + 4));
     expect(nextTome(state)).toBeUndefined();
     expect(catchOne(state, true).tome).toBeUndefined();
   });

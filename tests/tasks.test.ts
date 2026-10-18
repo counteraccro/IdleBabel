@@ -197,7 +197,7 @@ describe('Les tâches « une seule fois »', () => {
 });
 
 describe("La page « Les Tâches » de l'Etherium", () => {
-  it('le Nord coûte 2 Éther et ouvre la page ; « Une dernière pour la route » reste fermée', () => {
+  it('le Nord coûte 2 Éther et ouvre la page ; « Une dernière pour la route » s’ouvre après p2 (18/10)', () => {
     const state = createInitialState('fr', DAY);
     state.ether = 1000;
     state.etherReceived = 1000;
@@ -209,8 +209,10 @@ describe("La page « Les Tâches » de l'Etherium", () => {
     expect(pageOpen(state, 'tasks')).toBe(true);
     expect(['tasks.n4', 'tasks.g2', 'tasks.p1'].every((id) => starOpen(state, id))).toBe(true);
     expect(starOpen(state, 'tasks.n5')).toBe(false);
-    state.etherium.push('tasks.p1', 'tasks.p2');
+    state.etherium.push('tasks.p1');
     expect(starOpen(state, 'tasks.p3')).toBe(false);
+    state.etherium.push('tasks.p2');
+    expect(starOpen(state, 'tasks.p3')).toBe(true);
   });
 });
 
@@ -221,7 +223,7 @@ describe('Les sceaux des tâches', () => {
     for (let n = 1; n <= 10; n++) state.tasks.once[n] = { at: DAY, base: 0, done: DAY };
     checkSeals(state, DAY);
     expect(['dailyTasks-1', 'dailyTasks-10', 'dailyTasks-50', 'onceTasks-1', 'onceTasks-10'].every((id) => id in state.seals)).toBe(true);
-    expect('dailyTasks-100' in state.seals || 'onceTasks-20' in state.seals).toBe(false);
+    expect('dailyTasks-100' in state.seals || 'onceTasks-21' in state.seals).toBe(false);
   });
 });
 

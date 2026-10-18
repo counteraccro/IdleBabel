@@ -226,6 +226,8 @@ export const rewardText = (reward: TaskReward): string => {
         : n('kDays', reward.knowledgeHours / 24);
   if (reward.readingBonus) return n('reading', Math.round(reward.readingBonus * 100));
   if (reward.knowledgeBonus) return n('knowledge', Math.round(reward.knowledgeBonus * 100));
+  // Le tome de « Une dernière pour la route » : rien ne dit ce qu'elle donne (l'auteur, 17/10).
+  if (reward.tome) return t('whiteBook.tasks.rewards.unknown');
   return t('whiteBook.tasks.rewards.relic');
 };
 

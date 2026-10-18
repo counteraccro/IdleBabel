@@ -6,6 +6,7 @@ import { creditMethods, gainPages, pagesPerSecond } from './production';
 import { addKnowledge, findKnowledge, findChance, maxTurnsPerSecond, MAX_FINDS_PER_PAGE } from './knowledge';
 import { PAGES_PER_LEAF } from './books';
 import { findRelic } from './relics';
+import { giveTome, nextTome } from './endings';
 import { runHooks } from '../mods/hooks';
 import { advanceModTasks, modTaskWaiting } from '../mods/modTasks';
 import type { GameState } from '../core/state';
@@ -111,7 +112,16 @@ const give = (state: GameState, reward: TaskReward): void => {
   state.tasks.bonus.knowledge += reward.knowledgeBonus ?? 0;
   // Le Crayon : rangé dans la vitrine, son récit (une fois), son sceau.
   if (reward.crayon) findRelic(state, 'pencil');
+  // Le tome suivant (takeOnce attend qu'il y en ait un).
+  const tome = nextTome(state);
+  if (reward.tome && tome !== undefined) giveTome(state, tome, 'task');
 };
+
+/**
+ * La récompense d'une tâche faite peut être prise : toujours, sauf le tome de « Une dernière pour la route » tant qu'aucun
+ * ne peut venir (le tome 1 pas acheté, ou plus de tome écrit à gagner) : elle attend.
+ */
+const takeable = (state: GameState, reward: TaskReward): boolean => !reward.tome || nextTome(state) !== undefined;
 
 /** Le jeton d'une tâche du jour faite, pris au clic. Renvoie ce qu'elle valait (0 : rien à prendre). */
 export const takeDaily = (state: GameState, index: number): number => {
@@ -126,7 +136,7 @@ export const takeDaily = (state: GameState, index: number): number => {
 export const takeOnce = (state: GameState, n: number): boolean => {
   const task = state.tasks.once[n];
   const def = ONCE_TASKS.find((one) => one.n === n);
-  if (!def || !task || task.done === undefined || task.taken) return false;
+  if (!def || !task || task.done === undefined || task.taken || !takeable(state, def.reward)) return false;
   task.taken = true;
   give(state, def.reward);
   return true;
@@ -135,7 +145,10 @@ export const takeOnce = (state: GameState, n: number): boolean => {
 /** Une tâche faite attend qu'on prenne ce qu'elle rapporte : le jeton de la clé brille. */
 export const taskWaiting = (state: GameState): boolean =>
   state.tasks.today.some((task) => task.done !== undefined && !task.taken) ||
-  Object.values(state.tasks.once).some((task) => task.done !== undefined && !task.taken) ||
+  ONCE_TASKS.some((def) => {
+    const task = state.tasks.once[def.n];
+    return task?.done !== undefined && !task.taken && takeable(state, def.reward);
+  }) ||
   modTaskWaiting(state);
 
 /** Les tâches du jour pas encore faites (la légende de la pile : « 2 tâches en cours »). */

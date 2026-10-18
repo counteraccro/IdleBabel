@@ -1,7 +1,7 @@
 import { getLocale, t } from '../../i18n';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
 import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS } from '../../data/tools';
-import { automaticAgeMultiplier, digitalAgeMultiplier } from '../../systems/endings';
+import { automaticAgeMultiplier, digitalAgeMultiplier, tomeKnowledgeMultiplier } from '../../systems/endings';
 import { FLAIR_LEVELS } from '../../data/technologies';
 import { filterMultiplier, gestureMultiplier, levelOf, rareChance, toolPriceFactor, clickShare } from '../../systems/technologies';
 import {
@@ -159,6 +159,7 @@ export const BONUS_FIGURES: Figure[] = [
 
   factorRow('knowledge', 'knowledgeEtherium', 'etra semav', knowledgePerFind),
   factorRow('knowledge', 'knowledgeLetter', 'lettra vimo', () => knowledgeBoon()),
+  factorRow('knowledge', 'knowledgeStory', 'vuntal babel', tomeKnowledgeMultiplier),
   {
     ...addRow('knowledge', 'knowledgeRelic', 'relva lupa', relicKnowledge, (value) => writeDigits(`+${formatNumber(value, getLocale())}`)),
     label: () => relicName('loupe'),

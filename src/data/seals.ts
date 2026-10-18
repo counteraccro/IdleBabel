@@ -235,7 +235,7 @@ export const SEALS: readonly SealDef[] = [
   // Les tâches (17/10, .ai/plan-taches.md) : celles du jour faites, depuis toujours ; celles qui ne se font qu'une fois, une,
   // la moitié, toutes (une phrase par palier).
   ...series('dailyTasks', 'tasks', (s) => s.tasks.dailyDone, [1, 10, 50, 100, 410, 1000]),
-  ...series('onceTasks', 'tasks', onceDone, [1, ONCE_TASKS.length / 2, ONCE_TASKS.length]).map((seal): SealDef => ({
+  ...series('onceTasks', 'tasks', onceDone, [1, 10, ONCE_TASKS.length]).map((seal): SealDef => ({
     ...seal,
     phrases: true,
   })),
@@ -314,6 +314,7 @@ export const SEALS: readonly SealDef[] = [
   // fonction des ordres d'acquisition ») ; strangeBook.tomeSeals.<numéro du tome>.
   { ...seal('tomeJackpot', 'secrets', (s) => s.tomeFrom.jackpot !== undefined), tomeFrom: 'jackpot' },
   { ...seal('tomeMimic', 'secrets', (s) => s.tomeFrom.mimic !== undefined), tomeFrom: 'mimic' },
+  { ...seal('tomeTask', 'secrets', (s) => s.tomeFrom.task !== undefined), tomeFrom: 'task' },
   // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).
   seal('cheat', 'secrets', (s) => s.modded !== null),
 ];

@@ -111,7 +111,8 @@
   },
   "tomeSeals": {
     "2": "Là-bas.",
-    "3": "La huitième."
+    "3": "La huitième.",
+    "4": "Encore une salle."
   },
   "seals": {
     "pagesRead": "Traverse {n} pages",
@@ -273,6 +274,7 @@
     "toBeContinued": "À suivre.",
     "tomeJackpot": "Un livre est tombé.",
     "tomeMimic": "Un livre est tombé.",
+    "tomeTask": "Un livre est tombé.",
     "tenTimes": "Dix fois. Pour rien.",
     "allCurses": "Tous les malheurs à la fois.",
     "allBoons": "Toute la chance du monde.",
@@ -314,6 +316,7 @@
     "readingDigital": "l’Etherium, l’Âge Numérique",
     "readingEther": "ton Éther",
     "readingStory": "L’histoire de Babel",
+    "knowledgeStory": "L’histoire de Babel",
     "readingLetter": "la lettre",
     "readingLottery": "la Loterie",
     "lotteryMethod": "la Loterie, {method}",

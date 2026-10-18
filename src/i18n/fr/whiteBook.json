@@ -204,6 +204,7 @@
     "hintToBeContinued": "Entre le Nord / et l’Est, / un livre attend.",
     "hintTomeJackpot": "Trois 7 / à la machine, / et un livre tombe.",
     "hintTomeMimic": "Ce qui avale / rend parfois / plus qu’il n’a pris.",
+    "hintTomeTask": "Au bout de la route, / il y a toujours / un livre.",
     "hintTenTimes": "Ce qui brille / ne meurt pas. / Frappe quand même.",
     "hintAllCurses": "Quand tout va mal, / rejoue. / Ça peut aller plus mal.",
     "hintAllBoons": "Toute la chance à la fois, / et la machine / ne veut plus de toi.",
@@ -495,7 +496,8 @@
       "17": "Lis 10 000 livres en une seule partie.",
       "18": "Allume trois figures entières de l'Etherium.",
       "19": "Remplis une planche entière de sceaux.",
-      "20": "Gagne 10 fois de suite à la Loterie sans jamais tomber sur un malus."
+      "20": "Gagne 10 fois de suite à la Loterie sans jamais tomber sur un malus.",
+      "21": "Verse 15 000 d’Éther dans l’Etherium, lis 5 trilliards de pages et trouve 400 millions de Connaissance."
     },
     "rewards": {
       "tokens": "{n} jetons",
@@ -507,7 +509,8 @@
       "kDay": "1 jour de Connaissance",
       "reading": "Lecture +{n} %, pour toujours",
       "knowledge": "Connaissance +{n} %, pour toujours",
-      "relic": "une relique"
+      "relic": "une relique",
+      "unknown": "?"
     },
     "progress": "{n} / {total}",
     "running": "{n} tâches en cours",

@@ -155,6 +155,8 @@ export interface OnceTask {
   ids?: string[];
   skip?: string[];
   wakeBook?: number;
+  /** « Une dernière pour la route » (tâche 21) : l'Éther versé, les pages lues, la Connaissance trouvée à son apparition. */
+  bases?: number[];
   done?: number;
   /** Sa récompense prise (au clic). */
   taken?: boolean;

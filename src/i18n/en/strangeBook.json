@@ -111,7 +111,8 @@
   },
   "tomeSeals": {
     "2": "Over there.",
-    "3": "The eighth."
+    "3": "The eighth.",
+    "4": "Another room."
   },
   "seals": {
     "pagesRead": "Cross {n} pages",
@@ -273,6 +274,7 @@
     "toBeContinued": "To be continued.",
     "tomeJackpot": "A book dropped.",
     "tomeMimic": "A book dropped.",
+    "tomeTask": "A book dropped.",
     "tenTimes": "Ten times. For nothing.",
     "allCurses": "Every misfortune at once.",
     "allBoons": "All the luck in the world.",
@@ -314,6 +316,7 @@
     "readingDigital": "the Etherium, the Digital Age",
     "readingEther": "your Ether",
     "readingStory": "The Story of Babel",
+    "knowledgeStory": "The Story of Babel",
     "readingLetter": "the letter",
     "readingLottery": "the Lottery",
     "lotteryMethod": "the Lottery, {method}",
