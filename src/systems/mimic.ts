@@ -1,4 +1,5 @@
-import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../data/mimic';
+import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP, MIMIC_TOME_CHANCE } from '../data/mimic';
+import { giveTome, nextTome } from './endings';
 import { mimicComesFactor, mimicGivesBonus, mimicUnlocked } from './etherium';
 import { hookAllows, runHooks } from '../mods/hooks';
 import { modded } from '../mods/quantities';
@@ -77,14 +78,15 @@ export const mimicSeconds = (state: GameState, now = Date.now()): number =>
   state.mimic.seconds + (state.mimic.at === null ? 0 : Math.max(0, now - state.mimic.at) / 1000);
 
 /**
- * Elle disparaît (le second clic, ou juste avant un prestige) : elle rend tout, avec le bonus, et une fois sur trois un
- * jeton de la Loterie (`token`). Renvoie ce qu'elle a rendu (rien s'il n'y avait pas de Mimic).
+ * Elle disparaît (le second clic, ou juste avant un prestige) : elle rend tout, avec le bonus, une fois sur trois un
+ * jeton de la Loterie (`token`), et une fois sur vingt le tome suivant de « L'histoire de Babel » (`tome`, s'il y en a un
+ * à gagner). Renvoie ce qu'elle a rendu (rien s'il n'y avait pas de Mimic).
  */
 export const catchMimic = (
   state: GameState,
   now = Date.now(),
   random: () => number = Math.random,
-): { eaten: number; bonus: number; token: boolean } | undefined => {
+): { eaten: number; bonus: number; token: boolean; tome?: number } | undefined => {
   if (!mimicHere(state)) return undefined;
   const given = mimicReturn(state);
   // Son bonus est une part : arrondi au supérieur, la Connaissance se compte en entiers.
@@ -100,6 +102,9 @@ export const catchMimic = (
   state.mimic.eaten = 0;
   const token = random() < tokenChance(state);
   if (token) state.lottery.tokens += 1;
+  const tome = nextTome(state);
+  const dropsTome = tome !== undefined && random() < MIMIC_TOME_CHANCE;
+  if (dropsTome) giveTome(state, tome, 'mimic');
   runHooks('mimicCaught', given);
-  return { ...given, token };
+  return { ...given, token, ...(dropsTome ? { tome } : {}) };
 };

@@ -12,6 +12,12 @@ export const MIMIC_EVERY = 3600;
 export const MIMIC_BONUS = 0.1;
 
 /**
+ * La chance qu'une Mimic attrapée lâche le tome suivant de « L'histoire de Babel » (l'auteur, 18/10 : 1 sur 20, environ
+ * un toutes les 20 h de jeu ; les dents n'y changent rien).
+ */
+export const MIMIC_TOME_CHANCE = 0.05;
+
+/**
  * Tant qu'elle est là, la lecture des méthodes ralentit du pourcentage qu'elle rendra en plus (l'auteur, 13/10), mais
  * jamais de plus de moitié (avec les dents du bas, elle rend jusqu'à +110 %).
  */

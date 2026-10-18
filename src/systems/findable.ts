@@ -1,5 +1,6 @@
 import { METHOD_GATE } from '../data/knowledge';
-import { HINT_BOOKS, HINTS_AFTER_DRAW, HINTS_AFTER_FIRST_TOME, HINTS_AFTER_PRESTIGE } from '../data/anomalies';
+import { HINT_BOOKS, HINTS_AFTER_DRAW, HINTS_AFTER_FIRST_TOME, HINTS_AFTER_MIMIC, HINTS_AFTER_PRESTIGE } from '../data/anomalies';
+import { mimicUnlocked } from './etherium';
 import { tomeFound } from './endings';
 import { SENTENCES } from '../data/sentences';
 import { METHOD_CHAIN, type ToolId } from '../data/tools';
@@ -35,13 +36,14 @@ export const waitingFor = (state: GameState, id: string): ToolId | undefined => 
 
 /**
  * Un indice qui mène à un livre rare attend que ce livre soit trouvé (data/anomalies.ts, HINT_BOOKS) ; celui d'un
- * secret de l'Etherium, un premier prestige ; celui de la Mimic dorée, un premier tirage de la Loterie (et celui du tome 2, le
- * tome 1 aussi) ; celui d'une relique, l'Ouest de l'Exploration et sa salle déjà vue.
+ * secret de l'Etherium, un premier prestige ; celui de la Mimic dorée, un premier tirage de la Loterie (et celui du tome du gros
+ * lot, le tome 1 aussi) ; celui du tome de la Mimic, la Mimic et le tome 1 ; celui d'une relique, l'Ouest de l'Exploration et sa salle déjà vue.
  */
 export const hintFindable = (state: GameState, id: string): boolean => {
   if (HINTS_AFTER_PRESTIGE.includes(id) && state.etherReceived === 0) return false;
   if (HINTS_AFTER_DRAW.includes(id) && state.lottery.draws === 0) return false;
   if (HINTS_AFTER_FIRST_TOME.includes(id) && !tomeFound(state, 0)) return false;
+  if (HINTS_AFTER_MIMIC.includes(id) && !mimicUnlocked(state)) return false;
   if (!relicHintFindable(state, id)) return false;
   const books = HINT_BOOKS[id];
   return !books || books.some((book) => book in state.rareBooks);

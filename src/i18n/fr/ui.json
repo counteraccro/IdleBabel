@@ -103,7 +103,8 @@
     "colophon": ["Achevé d’imprimer sur les presses", "des Éditions Quatre Cent Dix."],
     "contents": "Sommaire",
     "memory": "Souvenir {n}",
-    "dedications": ["À ma grand-mère,\nqui savait qui j’étais.", "Au fils du boulanger,\nqui est parti lire."],
+    "dedications": ["À ma grand-mère,\nqui savait qui j’étais.", "Au fils du boulanger,\nqui est parti lire.",
+      "À Maman,\nqui m’appelait depuis la porte."],
     "titles": [
       "Qui j’étais",
       "On en parlait tout bas",

@@ -10,6 +10,7 @@ import type { SceneId } from '../scene/scenes';
 import type { RelicId } from '../data/relics';
 import { RECALC_AFTER_WAKE, type DailyKind } from '../data/tasks';
 import type { LotteryBoonId, LotteryCurseId, LotteryEffectId, OutcomeId } from '../data/lottery';
+import type { TomeSource } from '../systems/endings';
 
 export const SAVE_VERSION = 1;
 
@@ -296,6 +297,8 @@ export interface GameState {
   sagaTomes: number[];
   /** Le tome qui vient d'être gagné (0 : le tome 1), pas encore montré : il arrive en main, fermé (ui/app.ts). */
   tomeToShow: number | null;
+  /** Le premier tome (son numéro) donné par chaque source : le nom de son sceau (systems/endings.ts, giveTome). */
+  tomeFrom: Partial<Record<TomeSource, number>>;
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
@@ -396,6 +399,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   tasks: noTasks(),
   sagaTomes: [],
   tomeToShow: null,
+  tomeFrom: {},
   newSeals: [],
   libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],

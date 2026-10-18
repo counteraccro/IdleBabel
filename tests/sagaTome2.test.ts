@@ -58,28 +58,32 @@ describe('« On en parlait tout bas », le tome 2 (18/10)', () => {
     expect(toolRate(state, 'metronome')).toBeCloseTo(automatic * 1.15);
     expect(toolRate(state, 'diagonal')).toBeCloseTo(manual);
     expect(drawResults(state, draw)[0].line).toBe('Tome II · On en parlait tout bas');
-    // Le tome 3 n'est pas encore écrit : plus rien à gagner.
-    expect(nextTome(state)).toBeUndefined();
+    // Le suivant, encore au gros lot : le tome 3.
     forceDraw('jackpot');
-    expect(drawLottery(state)?.outcome).toBe('nothing');
-    expect(state.sagaTomes).toEqual([2]);
+    expect(drawLottery(state)?.tome).toBe(2);
+    expect(state.sagaTomes).toEqual([2, 3]);
   });
 
-  it('son sceau secret « Là-bas. », au tome 2 rangé ; son indice tombe après un tirage, le tome 1 acheté', () => {
+  it('le sceau du gros lot, nommé d’après son premier tome ; son indice tombe après un tirage, le tome 1 acheté', () => {
     const state = reading();
-    const seal = SEALS.find((one) => one.id === 'overThere')!;
+    const seal = SEALS.find((one) => one.id === 'tomeJackpot')!;
     expect(seal.plate).toBe('secrets');
+    expect(seal.tomeFrom).toBe('jackpot');
     expect(seal.reached(state)).toBe(false);
-    expect(ANOMALIES.some((sentence) => sentence.id === 'hintOverThere')).toBe(true);
-    expect(hintSeal('hintOverThere')).toBe('overThere');
-    expect(hintFindable(state, 'hintOverThere')).toBe(false);
+    expect(ANOMALIES.some((sentence) => sentence.id === 'hintTomeJackpot')).toBe(true);
+    expect(hintSeal('hintTomeJackpot')).toBe('tomeJackpot');
+    expect(hintFindable(state, 'hintTomeJackpot')).toBe(false);
     state.lottery.draws = 1;
-    expect(hintFindable(state, 'hintOverThere')).toBe(false);
+    expect(hintFindable(state, 'hintTomeJackpot')).toBe(false);
     state.etherium.push(S.trueStory);
-    expect(hintFindable(state, 'hintOverThere')).toBe(true);
+    expect(hintFindable(state, 'hintTomeJackpot')).toBe(true);
     forceDraw('jackpot');
     drawLottery(state);
+    forceDraw('jackpot');
+    drawLottery(state);
+    // Le premier tome donné reste son nom.
+    expect(state.tomeFrom).toEqual({ jackpot: 2 });
     expect(seal.reached(state)).toBe(true);
-    expect('overThere' in state.seals).toBe(true);
+    expect('tomeJackpot' in state.seals).toBe(true);
   });
 });

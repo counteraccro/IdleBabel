@@ -11,7 +11,11 @@ export const BRIBE_PAGES = [7, 31, 58, 102, 164, 233, 271, 317, 410] as const;
  * 18/10 : « 9, comme le tome 1 »). Un tome qui n'est pas ici n'est pas encore écrit : il ne se trouve pas. Textes :
  * rareBooks.trueStory.tomes, un tableau par tome après le premier.
  */
-export const TOME_BRIBE_PAGES: readonly (readonly number[])[] = [BRIBE_PAGES, [9, 44, 81, 127, 176, 219, 268, 330, 410]];
+export const TOME_BRIBE_PAGES: readonly (readonly number[])[] = [
+  BRIBE_PAGES,
+  [9, 44, 81, 127, 176, 219, 268, 330, 410],
+  [12, 53, 88, 141, 187, 240, 296, 352, 410],
+];
 
 /** Le livre dans la vitrine (ui/library/libraryPage.ts), et ses textes (rareBooks.trueStory). */
 export const TRUE_STORY_BOOK = 'trueStory';

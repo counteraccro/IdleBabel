@@ -103,7 +103,8 @@
     "colophon": ["Printed on the presses", "of Four Hundred Ten Press."],
     "contents": "Contents",
     "memory": "Memory {n}",
-    "dedications": ["For my grandmother,\nwho knew who I was.", "For the baker’s son,\nwho went off to read."],
+    "dedications": ["For my grandmother,\nwho knew who I was.", "For the baker’s son,\nwho went off to read.",
+      "For Mum,\nwho called me from the door."],
     "titles": [
       "Who I Was",
       "Whispered About",

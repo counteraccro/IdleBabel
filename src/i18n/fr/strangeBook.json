@@ -109,6 +109,10 @@
     "dailyTasks": "Fais une tâche du jour",
     "mimicHours": "Laisse-la manger une heure"
   },
+  "tomeSeals": {
+    "2": "Là-bas.",
+    "3": "La huitième."
+  },
   "seals": {
     "pagesRead": "Traverse {n} pages",
     "clicks": "Tourne {n} fois la page de ta main",
@@ -267,7 +271,8 @@
     "lastInstant": "Je l’ai rattrapée au moment où elle s’éteignait.",
     "babelWord": "J’ai lu le nom de la Bibliothèque, lettre par lettre.",
     "toBeContinued": "À suivre.",
-    "overThere": "Là-bas.",
+    "tomeJackpot": "Un livre est tombé.",
+    "tomeMimic": "Un livre est tombé.",
     "tenTimes": "Dix fois. Pour rien.",
     "allCurses": "Tous les malheurs à la fois.",
     "allBoons": "Toute la chance du monde.",

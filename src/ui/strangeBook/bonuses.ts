@@ -1,7 +1,7 @@
 import { getLocale, t } from '../../i18n';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
 import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS } from '../../data/tools';
-import { automaticAgeMultiplier } from '../../systems/endings';
+import { automaticAgeMultiplier, digitalAgeMultiplier } from '../../systems/endings';
 import { FLAIR_LEVELS } from '../../data/technologies';
 import { filterMultiplier, gestureMultiplier, levelOf, rareChance, toolPriceFactor, clickShare } from '../../systems/technologies';
 import {
@@ -52,9 +52,15 @@ const plusPercent = (value: number): string =>
  * puis les tomes pour celles de leur Âge : les intuitions, le Minitel et le tome en moyenne, pesés par ce que lit chacune. La décomposition de la vitesse de lecture
  * (chapters.ts) s'en sert aussi.
  */
-/** Ce que les tomes font lire de plus à une méthode : le tome 1 au premier Âge, le tome 2 à l'Âge Automatique. */
+/** Ce que les tomes font lire de plus à une méthode : le tome 1 au premier Âge, le tome 2 à l'Âge Automatique, le tome 3 à l'Âge Numérique. */
 const storyFactor = (state: GameState, tool: (typeof TOOLS)[number]): number =>
-  tool.age === undefined ? firstAgeMultiplier(state) : tool.age === AUTOMATIC_AGE ? automaticAgeMultiplier(state) : 1;
+  tool.age === undefined
+    ? firstAgeMultiplier(state)
+    : tool.age === AUTOMATIC_AGE
+      ? automaticAgeMultiplier(state)
+      : tool.age === DIGITAL_AGE
+        ? digitalAgeMultiplier(state)
+        : 1;
 
 export const methodReading = (state: GameState): { base: number; gestures: number; digital: number; story: number } => {
   const rate = (tool: (typeof TOOLS)[number]): number => state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id);

@@ -2647,7 +2647,8 @@
             "Les bonus s’étaient multipliés : l’Etherium, l’Éther, les reliques, la lettre, la Loterie, les tomes. Plus personne ne savait ce qui faisait quoi. Le Grand Livre a reçu un chapitre de plus, « Bonus » : chaque source, son chiffre, rangés sous ce qu’ils boostent. Les malus y sont aussi, la Mimic, la Loterie : ils se multiplient avec le reste.",
             "Les dix autres tomes existent désormais, rangés à leur place, sous leurs couvertures. Leurs pages sont blanches, et on ne les trouve pas encore : chacun recevra son histoire avec sa façon de paraître. Sur leurs dos, les titres longs se resserrent pour s’arrêter avant le bandeau.",
             "Chaque tome a maintenant tout d’un vrai livre : des gardes semées d’hexagones dorés, un faux-titre, « Du même auteur » et les onze titres, la page de titre des Éditions Quatre Cent Dix, les mentions (« Tiré d’une histoire vraie. »), une dédicace à quelqu’un du livre, un sommaire, et en bas de la dernière page, l’achevé d’imprimer.",
-            "Le tome 2, « On en parlait tout bas », est le premier à se gagner : trois 7 à la Loterie le donnent, entier, et les tomes suivants viendront de même, toujours le suivant, quelle que soit leur source. Rien ne se gagne avant d’avoir acheté le premier. On y apprend qu’une bibliothèque existe, quelque part : on en parle à voix basse, et ceux qui y vont ne reviennent pas. Il fait lire 15 % plus vite les méthodes de l’Âge Automatique, et il a son sceau secret, comme le premier. Chaque tome gagné, le premier aussi, arrive en main, fermé, dès qu’on revient au jeu ou devant les meubles : on peut le lire, et rangé, il rejoint sa place dans le meuble des fins."
+            "Le tome 2, « On en parlait tout bas », est le premier à se gagner : trois 7 à la Loterie le donnent, entier, et les tomes suivants viendront de même, toujours le suivant, quelle que soit leur source. Rien ne se gagne avant d’avoir acheté le premier. On y apprend qu’une bibliothèque existe, quelque part : on en parle à voix basse, et ceux qui y vont ne reviennent pas. Il fait lire 15 % plus vite les méthodes de l’Âge Automatique. Chaque tome gagné, le premier aussi, arrive en main, fermé, dès qu’on revient au jeu ou devant les meubles : on peut le lire, et rangé, il rejoint sa place dans le meuble des fins.",
+            "Le tome 3, « La porte », peut aussi tomber d’une Mimic qu’on attrape, une fois sur vingt : la Mimic et le gros lot donnent chacun le tome suivant, dans l’ordre où on les gagne. Une porte en fer apparaît au fond d’un couloir de cave connu par cœur, et on la pousse par erreur. Il fait lire 15 % plus vite les méthodes de l’Âge Numérique. Chaque source a son sceau secret, qui prend le nom du premier tome qu’elle a donné."
           ]
         },
         "lotteryStars": {
@@ -2819,6 +2820,17 @@
         "…quatre cent dix pages, toujours, c’est ce qu’on racontait… j’ai compté celles de tous les livres de la maison… aucun n’en avait autant…",
         "…la nuit, j’entendais des pages tourner dans le mur… Maman disait que c’était le tilleul…",
         "…la petite clé de laiton ne m’avait jamais servi… cette nuit-là, je l’ai essayée sur toutes les portes de la ville…"
+      ],
+      [
+        "…des années plus tard, je l’avais toujours sur moi, la petite clé… elle n’ouvrait rien… je ne savais plus pourquoi je la gardais…",
+        "…au 410, je connaissais le couloir de la cave par cœur… sept portes, toutes en bois… je les comptais les yeux fermés…",
+        "…un matin, il y en avait huit… la dernière était en fer… elle n’était pas là la veille…",
+        "…la concierge a dit qu’il y avait toujours eu sept portes… elle ne descendait plus à la cave depuis longtemps…",
+        "…le soir, je descendais la regarder… pas de poignée, pas de nom… juste une serrure, toute petite…",
+        "…une nuit, j’ai entendu des pages tourner derrière… le même bruit que dans le mur de ma chambre…",
+        "…j’ai repensé à ma grand-mère… on n’en revient pas, elle avait dit… je suis remonté me coucher…",
+        "…des semaines sans y descendre… puis une coupure de courant… je cherchais le compteur à tâtons… j’ai poussé la mauvaise porte…",
+        "…elle était ouverte… je n’avais même pas sorti la clé… derrière moi, elle s’est refermée sans un bruit…"
       ]
     ]
   }

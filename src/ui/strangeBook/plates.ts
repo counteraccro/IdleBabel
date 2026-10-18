@@ -93,8 +93,11 @@ export const sealsTitle = (state: GameState): string =>
 export const plateTitle = (state: GameState, plate: PlateId): string =>
   isDeciphered(state, 'contents') ? t(`strangeBook.plates.${plate}`) : babelName(`plate:${plate}`, 1);
 
-const sealText = (seal: SealDef): string => {
+const sealText = (state: GameState, seal: SealDef): string => {
   if (seal.mod) return modText(seal.mod.text, getLocale());
+  // Une source de tomes : la phrase du premier tome qu'elle a donné.
+  const tome = seal.tomeFrom && state.tomeFrom[seal.tomeFrom];
+  if (tome) return t(`strangeBook.tomeSeals.${tome}`);
   const title = seal.rareBook ? t(`rareBooks.${seal.rareBook}.name`) : seal.tool ? t(`tools.${seal.tool}.name`) : '';
   // Une phrase à lui, à son palier ; le nombre, dans la notation choisie au cahier d'options comme les autres.
   const key = seal.phrases && seal.tier ? `${seal.text}.${seal.tier.index}` : seal.text;
@@ -121,7 +124,7 @@ export const sealLegend = (state: GameState, id: string | null): { name: string;
   // Lisible : ce que le sceau récompense, puis sa date.
   // Celui d'un mod : son nom devant la date.
   if (isDeciphered(state, 'seals'))
-    return { name: sealText(seal), text: seal.mod ? `${modText(seal.mod.name, getLocale())} — ${when}` : when };
+    return { name: sealText(state, seal), text: seal.mod ? `${modText(seal.mod.name, getLocale())} — ${when}` : when };
   // Illisible comme le reste du livre (en symboles de Babel) ; la date, en chiffres.
   return { name: babelName(seal.id), text: obtained ? `${babelName(`${seal.id}:text`, 4)} — ${when}` : when };
 };

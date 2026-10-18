@@ -187,7 +187,7 @@ export const settleLottery = (state: GameState, random: () => number = Math.rand
   else if (plan.outcome === 'jackpot') {
     const tome = nextTome(state);
     if (tome !== undefined) {
-      giveTome(state, tome);
+      giveTome(state, tome, 'jackpot');
       draw.tome = tome;
     }
   } else if (plan.boon) {
