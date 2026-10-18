@@ -17,6 +17,7 @@ import { TOKENS_SPENT_STEPS } from './lottery';
 import { ONCE_TASKS } from './tasks';
 import { allLotteryBoons, allLotteryCurses } from '../systems/lotteryEffects';
 import type { ModText } from '../mods/modSeals';
+import { tomeFound } from '../systems/endings';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
@@ -306,6 +307,8 @@ export const SEALS: readonly SealDef[] = [
   seal('allEffects', 'secrets', (s) => allLotteryBoons(s) && allLotteryCurses(s)),
   // « Qui j'étais », le tome 1 : acheté au Nord-Est de la Rose des vents (l'auteur, 18/10 : « le livre + le sceau »).
   seal('toBeContinued', 'secrets', (s) => s.etherium.includes(S.trueStory)),
+  // « On en parlait tout bas », le tome 2 : gagné au gros lot de la Loterie (l'auteur, 18/10 : « le tome 2 a son sceau »).
+  seal('overThere', 'secrets', (s) => tomeFound(s, 1)),
   // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).
   seal('cheat', 'secrets', (s) => s.modded !== null),
 ];

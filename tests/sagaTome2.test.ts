@@ -5,6 +5,9 @@ import { TOME_BRIBE_PAGES } from '../src/data/trueStory';
 import { drawLottery, forceDraw } from '../src/systems/lottery';
 import { nextTome, tomeFound } from '../src/systems/endings';
 import { toolRate } from '../src/systems/production';
+import { SEALS } from '../src/data/seals';
+import { ANOMALIES, hintSeal } from '../src/data/anomalies';
+import { hintFindable } from '../src/systems/findable';
 import { drawResults } from '../src/ui/library/lotteryText';
 import fr from '../src/i18n/fr/rareBooks.json';
 import en from '../src/i18n/en/rareBooks.json';
@@ -58,5 +61,23 @@ describe('« On en parlait tout bas », le tome 2 (18/10)', () => {
     forceDraw('jackpot');
     expect(drawLottery(state)?.outcome).toBe('nothing');
     expect(state.sagaTomes).toEqual([2]);
+  });
+
+  it('son sceau secret « Là-bas. », au tome 2 rangé ; son indice tombe après un tirage, le tome 1 acheté', () => {
+    const state = reading();
+    const seal = SEALS.find((one) => one.id === 'overThere')!;
+    expect(seal.plate).toBe('secrets');
+    expect(seal.reached(state)).toBe(false);
+    expect(ANOMALIES.some((sentence) => sentence.id === 'hintOverThere')).toBe(true);
+    expect(hintSeal('hintOverThere')).toBe('overThere');
+    expect(hintFindable(state, 'hintOverThere')).toBe(false);
+    state.lottery.draws = 1;
+    expect(hintFindable(state, 'hintOverThere')).toBe(false);
+    state.etherium.push(S.trueStory);
+    expect(hintFindable(state, 'hintOverThere')).toBe(true);
+    forceDraw('jackpot');
+    drawLottery(state);
+    expect(seal.reached(state)).toBe(true);
+    expect('overThere' in state.seals).toBe(true);
   });
 });
