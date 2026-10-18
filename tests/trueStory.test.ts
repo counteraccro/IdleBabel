@@ -21,8 +21,11 @@ describe('« Qui j’étais », le tome 1 (18/10 : le Rideau supprimé)', () => 
     expect(STARS.some((star) => star.id.startsWith('curtain.'))).toBe(false);
     const state = createInitialState('fr', 0, 1);
     state.ether = 5;
+    expect(state.tomeToShow).toBeNull();
     expect(lightStar(state, TOME)).toBe(true);
     expect(state.ether).toBe(0);
+    // Il sera montré, en main, l'Etherium refermé (ui/app.ts).
+    expect(state.tomeToShow).toBe(0);
   });
 
   it('acheté : le livre, le sceau « À suivre. », et +15 % aux méthodes de l’Âge Manuel seulement', () => {

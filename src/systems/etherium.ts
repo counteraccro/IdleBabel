@@ -63,6 +63,8 @@ export const lightStar = (state: GameState, id: string): boolean => {
   if (!star || !starOpen(state, id) || state.ether < star.cost) return false;
   state.ether -= star.cost;
   state.etherium.push(id);
+  // Le tome 1 de « L'histoire de Babel » : montré en main, l'Etherium refermé (ui/app.ts).
+  if (id === S.trueStory) state.tomeToShow = 0;
   runHooks('star', { id, cost: star.cost });
   return true;
 };

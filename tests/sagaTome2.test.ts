@@ -53,6 +53,8 @@ describe('« On en parlait tout bas », le tome 2 (18/10)', () => {
     expect(draw.tome).toBe(1);
     expect(tomeFound(state, 1)).toBe(true);
     expect(state.sagaTomes).toEqual([2]);
+    // Il sera montré, en main (ui/app.ts).
+    expect(state.tomeToShow).toBe(1);
     expect(toolRate(state, 'metronome')).toBeCloseTo(automatic * 1.15);
     expect(toolRate(state, 'diagonal')).toBeCloseTo(manual);
     expect(drawResults(state, draw)[0].line).toBe('Tome II · On en parlait tout bas');

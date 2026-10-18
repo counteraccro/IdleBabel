@@ -681,6 +681,9 @@ export const createLibraryPage = (
       if (backdrop) hover(null);
       // Au retour, le livre est déjà en vol vers sa place (flyingHome) : elle reste vide jusqu'à son arrivée.
       opened = id ?? null;
+      // Un tome gagné, qu'on vient de ranger (ou de prendre en main) : sa place est prête, le cartouche le compte.
+      addFoundTomes();
+      endings.cartouche.write(endingsText());
       root.classList.toggle('backdrop', backdrop);
       dirty = true;
     },

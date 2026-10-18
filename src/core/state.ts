@@ -291,9 +291,11 @@ export interface GameState {
   tasks: TasksState;
   /**
    * Les tomes 2 à 11 de « L'histoire de Babel » trouvés (leur numéro), gardés au prestige. Le tome 1 s'achète dans
-   * l'Etherium (S.trueStory). Aucun ne se trouve encore en jouant : seulement par le débogage (« Tout débloquer »).
+   * l'Etherium (S.trueStory) ; les autres se gagnent, toujours le suivant (systems/endings.ts).
    */
   sagaTomes: number[];
+  /** Le tome qui vient d'être gagné (0 : le tome 1), pas encore montré : il arrive en main, fermé (ui/app.ts). */
+  tomeToShow: number | null;
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
@@ -393,6 +395,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   lottery: { ...NO_LOTTERY, effects: [] },
   tasks: noTasks(),
   sagaTomes: [],
+  tomeToShow: null,
   newSeals: [],
   libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],

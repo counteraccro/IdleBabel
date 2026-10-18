@@ -30,9 +30,11 @@ export const nextTome = (state: GameState): number | undefined => {
   return index > 0 && index < TOME_BRIBE_PAGES.length ? index : undefined;
 };
 
-/** Le tome `index` (1 pour le tome 2) rejoint le meuble des fins. */
+/** Le tome `index` (1 pour le tome 2) rejoint le meuble des fins ; il sera montré, en main (state.tomeToShow). */
 export const giveTome = (state: GameState, index: number): void => {
-  if (!tomeFound(state, index)) state.sagaTomes.push(index + 1);
+  if (tomeFound(state, index)) return;
+  state.sagaTomes.push(index + 1);
+  state.tomeToShow = index;
 };
 
 /** Ce que fait lire de plus chaque tome, aux méthodes de son Âge : le tome 2 à l'Âge Automatique (l'auteur, 18/10). */

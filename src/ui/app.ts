@@ -39,7 +39,8 @@ import {
 } from './library/libraryPage';
 import { firstBookKept } from '../systems/books';
 import { tomeFound } from '../systems/endings';
-import { tomeIndex } from '../data/sagaTomes';
+import { SAGA_TOMES, tomeIndex } from '../data/sagaTomes';
+import { rememberView } from './library/libraryViews';
 import { libraryHasNews, visitLibrary } from '../systems/library';
 import { showDebugBookError } from './library/debugBookError';
 import { isRareBookFound } from '../systems/rareBooks';
@@ -64,6 +65,8 @@ const WHITE_BOOK_HASH = '#blanc';
 /** La bibliothèque personnelle, et un de ses livres ouvert en grand (#bibliotheque:<id>). */
 const LIBRARY_HASH = '#bibliotheque';
 const LIBRARY_BOOK_HASH = '#bibliotheque:';
+/** Un tome gagné arrive en main après ce délai (le temps de lire le panneau du gros lot, de voir le jeu revenir). */
+const TOME_DELAY_MS = 1800;
 /** Changement d'écran : l'ancien s'efface en fondu pendant que le nouveau apparaît (voir .screen-out). */
 const SCREEN_FADE_MS = 800;
 
@@ -425,5 +428,33 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       render();
       tellPendingLore();
     });
-  return () => components.forEach((c) => c.update());
+  /**
+   * Un tome gagné (l'auteur, 18/10 : « dès que l'on gagne un livre, du tome 1 au dernier, celui-ci apparaît en 3D fermé, on
+   * peut alors le consulter, et si on range le livre il se met à sa place ») : il arrive en main, fermé, comme un livre pris
+   * dans le meuble des fins, dès que le joueur est au jeu ou devant les meubles. Pas dans un livre ouvert, ni dans
+   * l'Etherium : le tome 1, acheté là, attend qu'on le referme. Le gros lot laisse d'abord lire son panneau. Rangé, le tome
+   * retourne au meuble des fins, à sa place.
+   */
+  let tomeWaitingSince = 0;
+  const showWonTome = (): void => {
+    const index = state.tomeToShow;
+    const free = window.location.hash === LIBRARY_HASH || openBook() === null;
+    if (index === null || !free || !state.playerName) {
+      tomeWaitingSince = 0;
+      return;
+    }
+    const now = performance.now();
+    if (!tomeWaitingSince) tomeWaitingSince = now;
+    if (now - tomeWaitingSince < TOME_DELAY_MS) return;
+    tomeWaitingSince = 0;
+    state.tomeToShow = null;
+    rememberView('endings');
+    openedFromLibrary = window.location.hash === LIBRARY_HASH;
+    window.location.hash = `${LIBRARY_BOOK_HASH}${encodeURIComponent(SAGA_TOMES[index])}`;
+  };
+
+  return () => {
+    showWonTome();
+    components.forEach((c) => c.update());
+  };
 };
