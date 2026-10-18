@@ -11,7 +11,7 @@ import type { PageLink } from '../rareBookArt';
  * Les pages de « Mon histoire vraie » (maquette .ai/maquette-faux-livre.html, mesures reprises de sa page de 370 × 500) :
  * du charabia pâle, comme dans tous les livres de la Bibliothèque, et sur sa page, chaque bribe remontée, en clair,
  * surlignée comme une trouvaille. La page 410 s'arrête après la sienne : « Fin du tome I », et le titre du tome 2 (l'auteur,
- * 17/10 ; d'abord « Pas celui-ci. » au crayon, gardé pour le tome 11), puis l'achevé d'imprimer. Avant le texte, les pages
+ * 17/10 ; d'abord « Pas celui-ci. » au crayon, supprimé le 18/10), puis l'achevé d'imprimer. Avant le texte, les pages
  * de toute la collection (tomePages.ts). Le livre arrive entier, ses neuf bribes remontées (l'auteur, 18/10 : acheté
  * « tout d'un coup » au Nord-Est de la Rose des vents). On ne tourne jamais de charabia : le sommaire mène à chaque bribe,
  * et ‹ › d'une bribe à l'autre.

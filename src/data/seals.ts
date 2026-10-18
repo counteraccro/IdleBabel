@@ -6,7 +6,7 @@ import { fullyDeciphered } from '../systems/decipher';
 import { pagesPerSecond } from '../systems/production';
 import { SENTENCES } from './sentences';
 import { ETHERIUM_PAGES, OPEN_STARS, S } from './etheriumStars';
-import { ANOMALIES, ANOMALY_FAMILIES, HINTS_LATER } from './anomalies';
+import { ANOMALIES, ANOMALY_FAMILIES } from './anomalies';
 import { RARE_BOOKS } from './rareBooks';
 import { TECHNOLOGIES } from './technologies';
 import { levelOf, lockOf, maxLevel } from '../systems/technologies';
@@ -66,12 +66,6 @@ export interface SealDef {
 export const sealSeries = (seal: SealDef): string => (seal.rareBook || seal.tool ? seal.id : seal.text);
 
 /** Une série : un sceau par palier, atteint quand `value` dépasse le palier. */
-/**
- * Une phrase que les sceaux « tout écrire » attendent : écrite, ou un indice qui ne tombe pas encore (HINTS_LATER, son livre
- * n'existe pas) ; sinon, ces sceaux ne s'obtiendraient plus (revue de code, 17/10).
- */
-const sentenceCounted = (state: GameState, id: string): boolean => HINTS_LATER.includes(id) || isComplete(state, id);
-
 const series = (id: string, plate: PlateId, value: (state: GameState) => number, steps: number[]): SealDef[] =>
   steps.map((n, index) => ({ id: `${id}-${n}`, plate, text: id, tier: { n, index }, reached: (state) => value(state) >= n }));
 
@@ -161,12 +155,12 @@ export const SEALS: readonly SealDef[] = [
   // Une famille d'anomalies complète (data/anomalies.ts).
   ...ANOMALY_FAMILIES.map((family) =>
     seal(`anomalies-${family}`, 'fragments', (s) =>
-      ANOMALIES.filter((anomaly) => anomaly.family === family).every((anomaly) => sentenceCounted(s, anomaly.id)),
+      ANOMALIES.filter((anomaly) => anomaly.family === family).every((anomaly) => isComplete(s, anomaly.id)),
     ),
   ),
   // Le livre blanc : une première phrase entière, puis toutes à la fois (les phrases des méthodes s'oublient au prestige).
   seal('firstSentence', 'fragments', (s) => SENTENCES.some((sentence) => isComplete(s, sentence.id))),
-  seal('whiteBookFull', 'fragments', (s) => SENTENCES.every((sentence) => sentenceCounted(s, sentence.id))),
+  seal('whiteBookFull', 'fragments', (s) => SENTENCES.every((sentence) => isComplete(s, sentence.id))),
   // La lettre qui s'échappe (Alpha 1.1, 08/10) : lettres attrapées depuis toujours, une phrase par palier ; trois bonus
   // en cours à la fois (systems/letter.ts). La Volée (12/10) : deux, puis trois lettres d'une même volée attrapées.
   ...series('letters', 'fragments', (s) => s.letters, [1, 10, 50, 200, K]).map((seal): SealDef => ({ ...seal, phrases: true })),
@@ -312,9 +306,6 @@ export const SEALS: readonly SealDef[] = [
   seal('allEffects', 'secrets', (s) => allLotteryBoons(s) && allLotteryCurses(s)),
   // « Qui j'étais », le tome 1 : acheté au Nord-Est de la Rose des vents (l'auteur, 18/10 : « le livre + le sceau »).
   seal('toBeContinued', 'secrets', (s) => s.etherium.includes(S.trueStory)),
-  // « Pas celui-ci. » : l'aveu que la saga est fausse, qui vient avec le tome 11 (l'auteur, 17/10). D'abord donné par
-  // « Mon histoire vraie » (14/10) : ceux qui l'ont le gardent. En attendant, il ne s'obtient pas.
-  seal('notThisOne', 'secrets', () => false),
   // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).
   seal('cheat', 'secrets', (s) => s.modded !== null),
 ];

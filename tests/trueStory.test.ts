@@ -39,8 +39,6 @@ describe('« Qui j’étais », le tome 1 (18/10 : le Rideau supprimé)', () => 
     expect(toolRate(state, 'metronome')).toBeCloseTo(automatic);
     expect(seal('toBeContinued')).toBe(true);
     expect(libraryBookCount(state)).toBe(count + 1);
-    // L'aveu « Pas celui-ci. » attend le tome 11.
-    expect(seal('notThisOne')).toBe(false);
   });
 
   it('une partie qui avait allumé le Rideau récupère son Éther, et garde son tome', () => {
@@ -70,13 +68,23 @@ describe('« Qui j’étais », le tome 1 (18/10 : le Rideau supprimé)', () => 
     vi.unstubAllGlobals();
   });
 
-  it('son indice existe, et ne tombe qu’après un premier prestige ; celui de « Pas celui-ci. » ne tombe pas', () => {
+  it('l’aveu « Pas celui-ci. » supprimé : son sceau et son indice n’existent plus, une partie qui avait le sceau le perd', () => {
+    expect(SEALS.some((seal) => seal.id === 'notThisOne')).toBe(false);
+    expect(ANOMALIES.some((sentence) => sentence.id === 'hintNotThisOne')).toBe(false);
+    const state = createInitialState('fr', 0, 1);
+    state.seals = { notThisOne: 1, toBeContinued: 2 };
+    state.newSeals = ['notThisOne'];
+    const after = refundCurtain(state);
+    expect(after.seals).toEqual({ toBeContinued: 2 });
+    expect(after.newSeals).toEqual([]);
+  });
+
+  it('son indice existe, et ne tombe qu’après un premier prestige', () => {
     expect(ANOMALIES.some((sentence) => sentence.id === 'hintToBeContinued')).toBe(true);
     expect(hintSeal('hintToBeContinued')).toBe('toBeContinued');
     expect(HINTS_AFTER_PRESTIGE).toContain('hintToBeContinued');
     const state = createInitialState('fr', 0, 1);
     state.etherReceived = 1;
-    expect(hintFindable(state, 'hintNotThisOne')).toBe(false);
     expect(hintFindable(state, 'hintToBeContinued')).toBe(true);
   });
 
