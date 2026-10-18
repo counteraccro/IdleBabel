@@ -121,7 +121,7 @@ const edgeMaps = (): [THREE.CanvasTexture, THREE.CanvasTexture] => {
 };
 
 /** Le Jeton, debout, la face vers +z, posé en y = 0 (en mètres). */
-export const tokenModel = (envMap: THREE.Texture | null): THREE.Group => {
+export const tokenModel = (envMap: THREE.Texture | null, envMapIntensity: number): THREE.Group => {
   const material = (map: THREE.Texture, bumpMap: THREE.Texture) =>
     new THREE.MeshStandardMaterial({
       color: COLOR,
@@ -131,7 +131,7 @@ export const tokenModel = (envMap: THREE.Texture | null): THREE.Group => {
       bumpMap,
       bumpScale: 1.4,
       envMap,
-      envMapIntensity: 0.55,
+      envMapIntensity,
     });
   const coin = new THREE.Group();
   const edge = new THREE.Mesh(new THREE.CylinderGeometry(R, R, T, 128, 1, true), material(...edgeMaps()));
@@ -151,9 +151,10 @@ export const tokenModel = (envMap: THREE.Texture | null): THREE.Group => {
 
 /**
  * Le Jeton sur son chevalet (piste A du présentoir), à l'échelle des livres, `k` fois sa taille : deux montants penchés,
- * une traverse où il repose, une béquille derrière. Posé en y = 0, centré.
+ * une traverse où il repose, une béquille derrière. Posé en y = 0, centré. Reflet de la pièce à 0,1 par défaut, comme
+ * les autres reliques de la vitrine (à 0,55, il sortait trop clair : l'auteur, 18/10).
  */
-export const tokenOnEasel = (envMap: THREE.Texture | null, k = TOKEN_SHELF_SCALE): THREE.Group => {
+export const tokenOnEasel = (envMap: THREE.Texture | null, k = TOKEN_SHELF_SCALE, envMapIntensity = 0.1): THREE.Group => {
   const group = new THREE.Group();
   const wood = new THREE.MeshStandardMaterial({ color: 0x5a3418, roughness: 0.62 });
   const r = R * k;
@@ -172,7 +173,7 @@ export const tokenOnEasel = (envMap: THREE.Texture | null, k = TOKEN_SHELF_SCALE
   back.rotation.x = 0.42;
   const ledge = new THREE.Mesh(new THREE.BoxGeometry(w, th * 1.2, th * 3.2), wood);
   ledge.position.set(0, r * 0.5, th * 1.1);
-  const token = tokenModel(envMap);
+  const token = tokenModel(envMap, envMapIntensity);
   token.scale.setScalar(k);
   token.position.set(0, r * 0.5 + th * 0.6, th * 1.4);
   token.rotation.x = -0.18;
