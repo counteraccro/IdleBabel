@@ -1042,6 +1042,25 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.6",
+          "date": "18 October 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "The Curtain leaves the Etherium; the Ether poured into it is given back.",
+                "A new point of the Compass Rose can be lit.",
+                "The books on the endings shelf now have everything a real book has: title page, dedication, contents…",
+                "New books to find for the endings shelf.",
+                "A book won arrives in hand, closed, and goes back to its place.",
+                "The last star of the Sundial can be lit.",
+                "New secret seals.",
+                "The Great Book counts new bonuses."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.5",
           "date": "October 17, 2026",
           "sections": [
@@ -2649,7 +2668,8 @@
             "Each volume now has everything a real book has: endpapers strewn with gilt hexagons, a half-title, “By the same author” and the eleven titles, a title page from Four Hundred Ten Press, a copyright page (“Based on a true story.”), a dedication to someone in the book, a contents page, and at the foot of the last page, the printer’s colophon.",
             "Volume 2, “Whispered About”, is the first to be won: three 7s at the Lottery bring it, whole, and the next volumes will come the same way, always the next one, whatever their source. Nothing can be won before the first has been bought. It tells of a library that exists, somewhere: people speak of it in low voices, and those who go there do not come back. It makes the Automatic Age methods read 15% faster. Every volume won, the first one too, arrives in hand, closed, as soon as one is back in the game or before the shelves: it can be read, and once put away, it takes its place in the endings shelf.",
             "Volume 3, “The Door”, can also drop from a caught Mimic, one time in twenty: the Mimic and the jackpot each give the next volume, in the order they are won. An iron door appears at the end of a cellar corridor known by heart, and it is pushed open by mistake. It makes the Digital Age methods read 15% faster. Each source has its own secret seal, which takes the name of the first volume it gave.",
-            "Volume 4, “Inside”, tells of the first day in the Library, then all the others, up to the first book opened. It gives 15% more Knowledge per find. The last star of the Sundial, “One for the road”, can finally be lit: its task asks a lot, and the list does not say what it brings."
+            "Volume 4, “Inside”, tells of the first day in the Library, then all the others, up to the first book opened. It gives 15% more Knowledge per find. The last star of the Sundial, “One for the road”, can finally be lit: its task asks a lot, and the list does not say what it brings.",
+            "With them, the game moved on to Alpha 2.6."
           ]
         },
         "lotteryStars": {

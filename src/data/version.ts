@@ -4,6 +4,6 @@
  * version annoncée, 10/10 ; l'Alpha 1.4 : la Volée et Quatre cent dix, 12/10 ; l'Alpha 1.5 : « Colorie la Bibliothèque »,
  * 13/10 ; l'Alpha 2 : l'Âge Numérique, le même jour ; l'Alpha 2.1 : le prestige « Le nourrir » et la fausse fin, 14/10 ;
  * l'Alpha 2.2 : les mods, 15/10 ; l'Alpha 2.3 : le meuble des fins et la Loterie, 16/10 ; l'Alpha 2.4 : la Loterie dans l'Etherium, 17/10 ;
- * l'Alpha 2.5 : les tâches, le même jour).
+ * l'Alpha 2.5 : les tâches, le même jour ; l'Alpha 2.6 : les tomes de « L'histoire de Babel », 18/10).
  */
-export const VERSION = 'Alpha 2.5';
+export const VERSION = 'Alpha 2.6';
