@@ -43,7 +43,7 @@
     "nextEther": "pages to read before the next Ether",
     "pagesPerSecondRelic": "the Hourglass {relic}",
     "pagesPerSecondMimic": "the Mimic {mimic}",
-    "pagesPerSecondStory": "Who I Was {story}",
+    "pagesPerSecondStory": "The Story of Babel {story}",
     "relic": "what your relic gives you",
     "relicParts": {
       "loupe": "{name} · Knowledge with every find",
@@ -307,7 +307,7 @@
     "readingEtherium": "the Etherium",
     "readingDigital": "the Etherium, the Digital Age",
     "readingEther": "your Ether",
-    "readingStory": "The Story of Babel, the Manual Age",
+    "readingStory": "The Story of Babel",
     "readingLetter": "the letter",
     "readingLottery": "the Lottery",
     "lotteryMethod": "the Lottery, {method}",

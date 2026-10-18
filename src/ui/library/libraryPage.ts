@@ -313,24 +313,20 @@ export const createLibraryPage = (
         },
       ]
     : [];
-  // Les tomes trouvés de « L'histoire de Babel », chacun à sa place ; les tomes 2 à 11 ne viennent encore que du débogage.
-  const tomePlaces: Place[] = SAGA_TOMES.flatMap((id, index): Place[] =>
-    tomeFound(state, index)
-      ? [
-          {
-            id,
-            pivot: endingsAt(new THREE.Vector3(TOMES[index].x + TOMES[index].t, TOME_FLOOR, TOME_FRONT)),
-            tip: true,
-            reach: PULL,
-            floor: LOW_FLOOR,
-            holder: null,
-            book: null,
-            pull: 0,
-            aim: 0,
-          },
-        ]
-      : [],
-  );
+  // Les tomes trouvés de « L'histoire de Babel », chacun à sa place ; un tome gagné devant la machine (le gros lot) y arrive
+  // aussitôt (addFoundTomes).
+  const tomePlace = (id: string, index: number): Place => ({
+    id,
+    pivot: endingsAt(new THREE.Vector3(TOMES[index].x + TOMES[index].t, TOME_FLOOR, TOME_FRONT)),
+    tip: true,
+    reach: PULL,
+    floor: LOW_FLOOR,
+    holder: null,
+    book: null,
+    pull: 0,
+    aim: 0,
+  });
+  const tomePlaces: Place[] = SAGA_TOMES.flatMap((id, index): Place[] => (tomeFound(state, index) ? [tomePlace(id, index)] : []));
   const places = [...shelfPlaces, ...easelPlaces, ...tomePlaces];
   /**
    * Un livre posé à sa place `spot` : son vrai modèle, chargé à part (couvertures, polices), le dos vers le lecteur, éclairé
@@ -386,20 +382,32 @@ export const createLibraryPage = (
     placeBook(place, spot, endings.cellLights, alone);
   };
   tomePlaces.forEach(placeTome);
+  /** Un tome reposé : sa langue a changé, ou un voisin est arrivé (on ne voit plus ses plats de ce côté). */
+  const replaceTome = (place: Place): void => {
+    if (place.id === opened) return;
+    if (place.holder) {
+      scene.remove(place.holder);
+      disposeObject(place.holder);
+    }
+    place.holder = null;
+    place.book = null;
+    placeTome(place);
+  };
   const relabelTomes = (): void => {
     if (getLocale() === tomesLocale) return;
     tomesLocale = getLocale();
-    for (const place of tomePlaces) {
-      if (place.id === opened) continue;
-      if (place.holder) {
-        scene.remove(place.holder);
-        disposeObject(place.holder);
-      }
-      place.holder = null;
-      place.book = null;
-      placeTome(place);
-    }
+    tomePlaces.forEach(replaceTome);
   };
+  /** Un tome gagné pendant qu'on est là (le gros lot de la Loterie) : il rejoint sa place, et ses voisins se reposent. */
+  const addFoundTomes = (): void =>
+    SAGA_TOMES.forEach((id, index) => {
+      if (!tomeFound(state, index) || tomePlaces.some((place) => place.id === id)) return;
+      const place = tomePlace(id, index);
+      tomePlaces.push(place);
+      places.push(place);
+      placeTome(place);
+      for (const other of tomePlaces) if (Math.abs(tomeIndex(other.id) - index) === 1) replaceTome(other);
+    });
   // Le vrai livre : de face, sa couverture vers le lecteur, penché contre le chevalet, sur sa lèvre.
   if (easelPlaces[0]) {
     const place = easelPlaces[0];
@@ -689,6 +697,7 @@ export const createLibraryPage = (
         dirty = true;
       }
       relabelTomes();
+      addFoundTomes();
       arrowTitles();
       if (hovered) caption.textContent = label(hovered);
     },

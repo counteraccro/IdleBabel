@@ -49,7 +49,7 @@ describe('La Loterie', () => {
     expect(reelsFor('jackpot', Math.random)).toEqual([7, 7, 7]);
   });
 
-  it('le gros lot donne « rien » tant que son livre n’est pas écrit', () => {
+  it('le gros lot donne « rien » tant que le tome 1 n’est pas acheté', () => {
     const state = reading();
     forceDraw('jackpot');
     expect(drawLottery(state)?.outcome).toBe('nothing');

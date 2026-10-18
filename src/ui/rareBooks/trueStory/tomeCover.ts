@@ -4,7 +4,7 @@ import '@fontsource/great-vibes/400.css';
 import { messages, t } from '../../../i18n';
 import { seeded } from '../../../core/random';
 import { SCENES } from '../../../scene/scenes';
-import { ROW, TOMES, TOME_SHOTS, tomeIsbn } from '../../../data/sagaTomes';
+import { ROMAN, ROW, TOMES, TOME_SHOTS, tomeIsbn } from '../../../data/sagaTomes';
 import { canvasTexture } from '../../book3d/textures';
 import { CQW, HEIGHT, SANS, SERIF, TITLE, WIDTH, wrap } from '../draw';
 import { canvas } from '../../book3d/leatherCover';
@@ -26,7 +26,6 @@ const SX = WIDTH / W;
 const SY = HEIGHT / H;
 /** L'ombre de la charnière, côté dos : 14 de large. */
 const HINGE = 14;
-export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'];
 
 /** Les polices des couvertures : chargées avant de les dessiner. */
 export const loadTomeFonts = (): Promise<unknown> =>

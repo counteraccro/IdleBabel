@@ -1,6 +1,7 @@
 import { getLocale, t } from '../../i18n';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
-import { DIGITAL_AGE, TOOLS } from '../../data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS } from '../../data/tools';
+import { automaticAgeMultiplier } from '../../systems/endings';
 import { FLAIR_LEVELS } from '../../data/technologies';
 import { filterMultiplier, gestureMultiplier, levelOf, rareChance, toolPriceFactor, clickShare } from '../../systems/technologies';
 import {
@@ -48,9 +49,13 @@ const plusPercent = (value: number): string =>
 
 /**
  * Ce que lisent les méthodes d'elles-mêmes, avec leurs intuitions, avec en plus le Minitel pour celles de l'Âge Numérique,
- * puis le tome 1 pour celles du premier Âge : les intuitions, le Minitel et le tome en moyenne, pesés par ce que lit chacune. La décomposition de la vitesse de lecture
+ * puis les tomes pour celles de leur Âge : les intuitions, le Minitel et le tome en moyenne, pesés par ce que lit chacune. La décomposition de la vitesse de lecture
  * (chapters.ts) s'en sert aussi.
  */
+/** Ce que les tomes font lire de plus à une méthode : le tome 1 au premier Âge, le tome 2 à l'Âge Automatique. */
+const storyFactor = (state: GameState, tool: (typeof TOOLS)[number]): number =>
+  tool.age === undefined ? firstAgeMultiplier(state) : tool.age === AUTOMATIC_AGE ? automaticAgeMultiplier(state) : 1;
+
 export const methodReading = (state: GameState): { base: number; gestures: number; digital: number; story: number } => {
   const rate = (tool: (typeof TOOLS)[number]): number => state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id);
   const digitalRate = (tool: (typeof TOOLS)[number]): number => rate(tool) * (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1);
@@ -58,7 +63,7 @@ export const methodReading = (state: GameState): { base: number; gestures: numbe
     base: TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0),
     gestures: TOOLS.reduce((total, tool) => total + rate(tool), 0),
     digital: TOOLS.reduce((total, tool) => total + digitalRate(tool), 0),
-    story: TOOLS.reduce((total, tool) => total + digitalRate(tool) * (tool.age === undefined ? firstAgeMultiplier(state) : 1), 0),
+    story: TOOLS.reduce((total, tool) => total + digitalRate(tool) * storyFactor(state, tool), 0),
   };
 };
 const gestures = (state: GameState): number => {
@@ -70,7 +75,7 @@ const digitalShare = (state: GameState): number => {
   const { gestures: read, digital } = methodReading(state);
   return read > 0 ? digital / read : 1;
 };
-/** Le tome 1 de « L'histoire de Babel » ne fait lire plus vite que les méthodes du premier Âge : sa part de toute la lecture. */
+/** Les tomes de « L'histoire de Babel » ne font lire plus vite que les méthodes de leur Âge : leur part de toute la lecture. */
 export const storyShare = (state: GameState): number => {
   const { digital, story } = methodReading(state);
   return digital > 0 ? story / digital : 1;

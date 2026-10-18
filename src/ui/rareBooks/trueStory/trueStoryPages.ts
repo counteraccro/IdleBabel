@@ -2,8 +2,9 @@ import { messages } from '../../../i18n';
 import { hashText, seeded } from '../../../core/random';
 import { LETTERS } from '../../../systems/babelText';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
-import { BRIBE_PAGES } from '../../../data/trueStory';
+import { TOME_BRIBE_PAGES } from '../../../data/trueStory';
 import { PAGE_CENTER, SERIF, wrap, write } from '../draw';
+import { ROMAN } from '../../../data/sagaTomes';
 import { CONTENTS_PAGE, FOLIO, INK, PALE, colophon, contentsLinks, paintTomeFront } from './tomePages';
 import type { PageLink } from '../rareBookArt';
 
@@ -14,7 +15,8 @@ import type { PageLink } from '../rareBookArt';
  * 17/10 ; d'abord « Pas celui-ci. » au crayon, supprimé le 18/10), puis l'achevé d'imprimer. Avant le texte, les pages
  * de toute la collection (tomePages.ts). Le livre arrive entier, ses neuf bribes remontées (l'auteur, 18/10 : acheté
  * « tout d'un coup » au Nord-Est de la Rose des vents). On ne tourne jamais de charabia : le sommaire mène à chaque bribe,
- * et ‹ › d'une bribe à l'autre.
+ * et ‹ › d'une bribe à l'autre. Les autres tomes écrits (data/trueStory.ts, TOME_BRIBE_PAGES) sont faits pareil : `index`
+ * est le tome (0 : le tome 1).
  */
 const HIGHLIGHT = 'rgba(232, 196, 96, 0.38)';
 /** De la page de la maquette (370 × 500) à la texture (640 × 800) : en largeur, et pour le reste. */
@@ -28,8 +30,9 @@ const LEFT = 35 * KX;
 const WIDTH = PAGE_TEXTURE.width - 70 * KX;
 
 /** Du charabia : des mots de une à neuf lettres, parfois une virgule ou un point (toujours les mêmes pour une page). */
-const gibberish = (page: number, count: number): string[] => {
-  const random = seeded(hashText(`trueStory:${page}`));
+const gibberish = (index: number, page: number, count: number): string[] => {
+  // Le tome 1 garde son charabia d'avant les autres tomes.
+  const random = seeded(hashText(index ? `tome${index + 1}:${page}` : `trueStory:${page}`));
   return Array.from({ length: count }, () => {
     let word = '';
     const length = 1 + Math.floor(random() * 9);
@@ -38,29 +41,33 @@ const gibberish = (page: number, count: number): string[] => {
   });
 };
 
-/** La bribe de la page `page`, ou -1. */
-const bribeAt = (page: number): number => BRIBE_PAGES.indexOf(page as (typeof BRIBE_PAGES)[number]);
-const LAST = BRIBE_PAGES.length - 1;
+/** Les bribes du tome `index`, dans l'ordre de ses pages. */
+const bribesOf = (index: number): readonly string[] =>
+  index ? messages().rareBooks.trueStory.tomes[index - 1] : messages().rareBooks.trueStory.bribes;
+
+/** La bribe de la page `page` du tome `index`, ou -1. */
+const bribeAt = (index: number, page: number): number => TOME_BRIBE_PAGES[index].indexOf(page);
 
 /** ‹ et › : vers la bribe d'avant, celle d'après, en bas de la page, de part et d'autre du folio. */
 const ARROW_Y = FOLIO - 10;
 const ARROW_W = 60;
 /** Le bord de chaque flèche, en retrait : un lien de livre rare ne se prend pas dans les 10 % du bord (rareBook3d.ts). */
 const ARROW_IN = 100;
-const arrows = (index: number): { left?: number; right?: number } => ({
-  left: index > 0 ? BRIBE_PAGES[index - 1] : undefined,
-  right: index < LAST ? BRIBE_PAGES[index + 1] : undefined,
+const arrows = (pages: readonly number[], bribe: number): { left?: number; right?: number } => ({
+  left: bribe > 0 ? pages[bribe - 1] : undefined,
+  right: bribe < pages.length - 1 ? pages[bribe + 1] : undefined,
 });
 
 /** Une page : celles d'avant le texte, ou du charabia ; sur la page d'une bribe, ses lignes en clair, surlignées. */
-export const paintTrueStoryPage = (context: CanvasRenderingContext2D, page: number): void => {
-  if (paintTomeFront(context, 0, page, BRIBE_PAGES)) return;
-  if (page < BRIBE_PAGES[0]) return;
-  const index = bribeAt(page);
-  const last = index === LAST;
+export const paintTomePage = (context: CanvasRenderingContext2D, tome: number, page: number): void => {
+  const pages = TOME_BRIBE_PAGES[tome];
+  if (paintTomeFront(context, tome, page, pages)) return;
+  if (page < pages[0]) return;
+  const index = bribeAt(tome, page);
+  const last = index === pages.length - 1;
   context.font = `${SIZE}px ${SERIF}`;
-  const filler = wrap(context, gibberish(page, 400).join(' '), WIDTH);
-  const clear = index >= 0 ? wrap(context, messages().rareBooks.trueStory.bribes[index], WIDTH) : [];
+  const filler = wrap(context, gibberish(tome, page, 400).join(' '), WIDTH);
+  const clear = index >= 0 ? wrap(context, bribesOf(tome)[index], WIDTH) : [];
   const from = index < 0 ? LINES : last ? 9 : 7 + (page % 6);
   const lines = last ? from + clear.length : LINES;
   for (let i = 0, f = 0; i < lines; i++) {
@@ -75,27 +82,33 @@ export const paintTrueStoryPage = (context: CanvasRenderingContext2D, page: numb
   }
   if (last) {
     const { endOfTome, next } = messages().rareBooks.trueStory;
-    write(context, endOfTome, PAGE_CENTER, TOP + (lines + 2) * LINE, { font: `italic ${SIZE}px ${SERIF}`, color: INK });
-    write(context, next.replace('{title}', messages().ui.endings.titles[1]), PAGE_CENTER, TOP + (lines + 3.5) * LINE, {
-      font: `${12 * K}px ${SERIF}`,
-      color: PALE,
+    write(context, endOfTome.replace('{n}', ROMAN[tome]), PAGE_CENTER, TOP + (lines + 2) * LINE, {
+      font: `italic ${SIZE}px ${SERIF}`,
+      color: INK,
     });
+    const following = messages().ui.endings.titles[tome + 1];
+    if (following)
+      write(context, next.replace('{title}', following), PAGE_CENTER, TOP + (lines + 3.5) * LINE, {
+        font: `${12 * K}px ${SERIF}`,
+        color: PALE,
+      });
     colophon(context);
   }
   write(context, String(page), PAGE_CENTER, FOLIO, { font: `${11 * K}px ${SERIF}`, color: PALE });
   if (index < 0) return;
-  const { left, right } = arrows(index);
+  const { left, right } = arrows(pages, index);
   const arrow = { font: `${34}px ${SERIF}`, color: INK };
   if (left !== undefined) write(context, '‹', ARROW_IN + ARROW_W / 2, ARROW_Y, arrow);
   if (right !== undefined) write(context, '›', PAGE_TEXTURE.width - ARROW_IN - ARROW_W / 2, ARROW_Y, arrow);
 };
 
 /** Les lignes du sommaire, et ‹ › sur la page d'une bribe. */
-export const trueStoryLinks = (page: number): PageLink[] => {
-  if (page === CONTENTS_PAGE) return contentsLinks(BRIBE_PAGES);
-  const index = bribeAt(page);
+export const tomeLinks = (tome: number, page: number): PageLink[] => {
+  const pages = TOME_BRIBE_PAGES[tome];
+  if (page === CONTENTS_PAGE) return contentsLinks(pages);
+  const index = bribeAt(tome, page);
   if (index < 0) return [];
-  const { left, right } = arrows(index);
+  const { left, right } = arrows(pages, index);
   const band = { y: ARROW_Y - 12, height: 56, width: ARROW_W };
   return [
     ...(left !== undefined ? [{ ...band, x: ARROW_IN, target: left }] : []),

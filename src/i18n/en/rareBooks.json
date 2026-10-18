@@ -2646,7 +2646,8 @@
             "The first volume no longer confesses anything. Its last two fragments, the ones that doubted, and the pencilled “Not this one.” are gone. It ends on “End of volume I” and the title of the next. It makes the Manual Age methods read 15% faster: it no longer doubles reading.",
             "Boosts had piled up: the Etherium, Ether, relics, the letter, the Lottery, the tomes. Nobody knew any more what did what. The Ledger gained one more chapter, “Boosts”: every source, its number, filed under what it boosts. The penalties are there too, the Mimic, the Lottery: they multiply with the rest.",
             "The other ten volumes now exist, each in its place, under its cover. Their pages are blank, and nobody can find them yet: each will get its story along with the way it appears. On their spines, long titles narrow so they stop before the band.",
-            "Each volume now has everything a real book has: endpapers strewn with gilt hexagons, a half-title, “By the same author” and the eleven titles, a title page from Four Hundred Ten Press, a copyright page (“Based on a true story.”), a dedication to someone in the book, a contents page, and at the foot of the last page, the printer’s colophon."
+            "Each volume now has everything a real book has: endpapers strewn with gilt hexagons, a half-title, “By the same author” and the eleven titles, a title page from Four Hundred Ten Press, a copyright page (“Based on a true story.”), a dedication to someone in the book, a contents page, and at the foot of the last page, the printer’s colophon.",
+            "Volume 2, “Whispered About”, is the first to be won: three 7s at the Lottery bring it, whole, and the next volumes will come the same way, always the next one, whatever their source. Nothing can be won before the first has been bought. It tells of a library that exists, somewhere: people speak of it in low voices, and those who go there do not come back. It makes the Automatic Age methods read 15% faster."
           ]
         },
         "lotteryStars": {
@@ -2805,7 +2806,20 @@
       "…the garden behind the house… under the lime tree, I read until it got dark… Mum called my name from the door.",
       "…one evening, my grandmother spoke of a library… she lowered her voice… she said no one came back from it…"
     ],
-    "endOfTome": "End of volume I",
-    "next": "To be continued: {title}"
+    "endOfTome": "End of volume {n}",
+    "next": "To be continued: {title}",
+    "tomes": [
+      [
+        "…when we cleared out my grandmother’s room, there was a sheet of paper under the mattress… letters that made no sense, not a single word… she had kept it like a love letter…",
+        "…at the market, two old women were talking about “over there”… they fell silent as soon as they saw me…",
+        "…the baker’s son never came back… his mother said he had gone off to read… on Sundays, she still set a place for him…",
+        "…I asked the teacher… she said libraries close in the evening, all of them… then she shut the window, though it was hot…",
+        "…my father stopped reading aloud… he said you mustn’t call it… I never knew if he meant a book…",
+        "…they said it had no walls, only shelves… that every room had six sides… I drew hexagons in all my margins…",
+        "…four hundred and ten pages, always, that’s what people said… I counted the pages of every book in the house… none had that many…",
+        "…at night, I heard pages turning inside the wall… Mum said it was the lime tree…",
+        "…the little brass key had never been any use to me… that night, I tried it on every door in town…"
+      ]
+    ]
   }
 }

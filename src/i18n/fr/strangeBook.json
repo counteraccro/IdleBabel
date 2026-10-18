@@ -43,7 +43,7 @@
     "nextEther": "pages à lire avant le prochain Éther",
     "pagesPerSecondRelic": "le Sablier {relic}",
     "pagesPerSecondMimic": "la Mimic {mimic}",
-    "pagesPerSecondStory": "Qui j’étais {story}",
+    "pagesPerSecondStory": "L’histoire de Babel {story}",
     "relic": "ce que ta relique t'apporte",
     "relicParts": {
       "loupe": "{name} · Connaissance à chaque trouvaille",
@@ -307,7 +307,7 @@
     "readingEtherium": "l’Etherium",
     "readingDigital": "l’Etherium, l’Âge Numérique",
     "readingEther": "ton Éther",
-    "readingStory": "L’histoire de Babel, l’Âge Manuel",
+    "readingStory": "L’histoire de Babel",
     "readingLetter": "la lettre",
     "readingLottery": "la Loterie",
     "lotteryMethod": "la Loterie, {method}",

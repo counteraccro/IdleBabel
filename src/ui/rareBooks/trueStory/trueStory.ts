@@ -3,7 +3,7 @@ import { headbandTexture } from '../../book3d/headband';
 import { edgeTexture } from '../../book3d/textures';
 import { TOMES } from '../../../data/sagaTomes';
 import { loadTomeFonts, tomeBack, tomeFront, tomeSpine } from './tomeCover';
-import { paintTrueStoryPage, trueStoryLinks } from './trueStoryPages';
+import { paintTomePage, tomeLinks } from './trueStoryPages';
 import { CONTENTS_PAGE, tomeEndpaper } from './tomePages';
 import type { RareBookArt } from '../rareBookArt';
 
@@ -33,9 +33,9 @@ export const trueStoryArt: RareBookArt = {
     };
   },
   paint: (page, canvas, spineOnLeft) => {
-    paintTrueStoryPage(preparePageTexture(canvas, spineOnLeft, PAPER), page);
+    paintTomePage(preparePageTexture(canvas, spineOnLeft, PAPER), 0, page);
     return true;
   },
   bookmark: CONTENTS_PAGE,
-  links: (page) => trueStoryLinks(page),
+  links: (page) => tomeLinks(0, page),
 };

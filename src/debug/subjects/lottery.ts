@@ -28,7 +28,7 @@ export const LOTTERY_SUBJECT: DebugSubject = {
         ...LOTTERY_BOONS.map((one): [string, () => void] => [one.id, () => forceDraw(one.id)]),
         ...LOTTERY_CURSES.map((one): [string, () => void] => [one.id, () => forceDraw(one.id)]),
       ]),
-      'Un résultat (le gros lot donne « rien » tant que son livre n’existe pas), ou un bonus, ou un malus précis.',
+      'Un résultat (le gros lot donne « rien » sans le tome 1, ou sans tome écrit à gagner), ou un bonus, ou un malus précis.',
     );
     kit.row(
       'Tout de suite',

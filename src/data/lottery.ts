@@ -13,16 +13,10 @@ export const OUTCOMES = [
   { id: 'boon', weight: 18 },
   // Trois 0 : un malus.
   { id: 'curse', weight: 12 },
-  // Trois 7 : la fausse fin de la Loterie (une seule fois).
+  // Trois 7 : le tome suivant de « L'histoire de Babel » (systems/endings.ts, nextTome).
   { id: 'jackpot', weight: 2 },
 ] as const;
 export type OutcomeId = (typeof OUTCOMES)[number]['id'];
-
-/**
- * Le livre du gros lot n'est pas encore écrit (l'auteur, 16/10) : d'ici là, ses chances vont à « rien ». Le passer à true
- * avec le livre.
- */
-export const JACKPOT_READY = false;
 
 /** Le gain : autant de secondes de lecture d'absence (pages et Connaissance). */
 export const GAIN_SECONDS = 30 * 60;

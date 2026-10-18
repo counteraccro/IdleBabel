@@ -1,10 +1,11 @@
-import { getLocale, t } from '../../i18n';
+import { getLocale, messages, t } from '../../i18n';
 import { formatNumber } from '../../core/format';
 import { BOON_SECONDS, CURSE_SECONDS, GOLDEN_SECONDS, type LotteryBoonId, type LotteryCurseId } from '../../data/lottery';
 import type { ToolId } from '../../data/tools';
 import type { Draw } from '../../systems/lottery';
 import { boonFactor, halfFactor } from '../../systems/lotteryStars';
 import type { MachineResult } from './lotteryMachine3d';
+import { ROMAN } from '../../data/sagaTomes';
 import type { GameState } from '../../core/state';
 
 /**
@@ -37,6 +38,11 @@ const length = (seconds: number): string => {
 const short = (value: number): string => formatNumber(Math.floor(value), getLocale(), 'short');
 
 const resultOf = (state: GameState, draw: Draw): MachineResult => {
+  // Le gros lot : le tome gagné (« Tome II · On en parlait tout bas »).
+  if (draw.tome !== undefined) {
+    const { tome, titles } = messages().ui.endings;
+    return { title: t('ui.lottery.jackpot'), line: `${tome.replace('{n}', ROMAN[draw.tome])} · ${titles[draw.tome]}` };
+  }
   if (draw.outcome === 'gain')
     return {
       title: t('ui.lottery.gain.title'),

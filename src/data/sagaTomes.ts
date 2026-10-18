@@ -43,6 +43,9 @@ export const TOMES: { x: number; t: number }[] = SPINES.reduce<{ x: number; t: n
   (tomes, t) => [...tomes, { x: tomes.length ? tomes.at(-1)!.x + tomes.at(-1)!.t + GAP : -ROW / 2, t }],
   [],
 );
+/** Le numéro de chaque tome, en chiffres romains (« Tome II »). */
+export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'];
+
 /** Le faux ISBN du tome `index` (0 : le tome 1), imprimé sous son code-barres : 978-2-410-… */
 export const tomeIsbn = (index: number): string => {
   const n = String(index + 1).padStart(2, '0');

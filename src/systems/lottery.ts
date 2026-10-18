@@ -1,7 +1,6 @@
 import {
   CURSE_DIGIT,
   JACKPOT_DIGIT,
-  JACKPOT_READY,
   LOTTERY_BOONS,
   LOTTERY_SPIN_MS,
   LOTTERY_CURSES,
@@ -18,6 +17,7 @@ import { lotteryEffects, startLotteryEffect } from './lotteryEffects';
 import { goldenHere, spawnGolden } from './goldenMimic';
 import { lotteryOdds, lotterySeconds } from './lotteryStars';
 import { taskDraw } from './tasks';
+import { giveTome, nextTome } from './endings';
 import { runHooks } from '../mods/hooks';
 import type { GameState, PendingDraw } from '../core/state';
 
@@ -42,6 +42,8 @@ export interface Draw {
   method?: ToolId;
   /** La durée qu'il donne (secondes, mods compris). */
   seconds?: number;
+  /** Le gros lot : le tome gagné (1 pour le tome 2). */
+  tome?: number;
   /** La Mimic dorée a écrasé la Mimic ordinaire : ce que celle-ci a rendu (Connaissance, un jeton ou non). */
   crushed?: { knowledge: number; token: boolean };
 }
@@ -155,8 +157,8 @@ export const startLottery = (state: GameState, random: () => number = Math.rando
   let outcome = OUTCOMES.find((one) => one.id === forced)?.id ?? pick(odds, random).id;
   if (LOTTERY_BOONS.some((one) => one.id === forced)) outcome = 'boon';
   if (LOTTERY_CURSES.some((one) => one.id === forced)) outcome = 'curse';
-  // Le livre du gros lot n'est pas encore écrit : ses chances vont à « rien ».
-  if (outcome === 'jackpot' && !JACKPOT_READY) outcome = 'nothing';
+  // Le gros lot donne le tome suivant : sans tome 1, ou sans tome écrit à gagner, ses chances vont à « rien » (l'auteur, 18/10).
+  if (outcome === 'jackpot' && nextTome(state) === undefined) outcome = 'nothing';
   // Tous les malus en cours : un malus ne se tire pas deux fois, ses chances vont à « rien ».
   if (outcome === 'curse' && drawableCurses(state, now).length === 0) outcome = 'nothing';
   const plan: PendingDraw = { at: now, outcome, reels: reelsFor(outcome, random) };
@@ -182,7 +184,13 @@ export const settleLottery = (state: GameState, random: () => number = Math.rand
   state.lottery.pending = null;
   const draw: Draw = { outcome: plan.outcome, reels: [...plan.reels] };
   if (plan.outcome === 'gain') gain(state, draw, random);
-  else if (plan.boon) {
+  else if (plan.outcome === 'jackpot') {
+    const tome = nextTome(state);
+    if (tome !== undefined) {
+      giveTome(state, tome);
+      draw.tome = tome;
+    }
+  } else if (plan.boon) {
     draw.boon = plan.boon;
     if (plan.method) draw.method = plan.method;
     draw.seconds = lotterySeconds(state, 'boon');

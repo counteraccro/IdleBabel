@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { messages } from '../../../i18n';
-import { tomeIsbn } from '../../../data/sagaTomes';
+import { ROMAN, tomeIsbn } from '../../../data/sagaTomes';
 import { PAGES_PER_BOOK } from '../../../systems/books';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { canvasTexture } from '../../book3d/textures';
 import { canvas } from '../../book3d/leatherCover';
 import { HEIGHT, PAGE_CENTER, SERIF, TITLE, WIDTH, write } from '../draw';
-import { CLOTH_EDGE, ROMAN, SCRIPT } from './tomeCover';
+import { CLOTH_EDGE, SCRIPT } from './tomeCover';
 import type { PageLink } from '../rareBookArt';
 
 /**
