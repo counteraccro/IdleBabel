@@ -39,7 +39,7 @@
   "reading": "+{n} % de lecture : un par Éther reçu",
   "next": "Prochain Éther : dans {n} pages",
   "contents": "Sommaire",
-  "groups": { "methods": "Les méthodes", "reading": "Lire", "time": "Le temps", "rooms": "Les salles", "end": "Tout au bout" },
+  "groups": { "methods": "Les méthodes", "reading": "Lire", "time": "Le temps", "rooms": "Les salles" },
   "pages": {
     "reading": {
       "name": "Lecture",
@@ -126,11 +126,6 @@
       "figure": "Le Minitel",
       "description": "L’écran s’allume quand je m’approche.",
       "locked": "Cette page attend\nun Âge nouveau."
-    },
-    "curtain": {
-      "name": "Le Rideau",
-      "figure": "Le Rideau",
-      "description": "Le sens de tout cela."
     }
   },
   "stars": {
@@ -585,8 +580,9 @@
         "note": "une direction, plus tard"
       },
       "d0": {
-        "name": "Plus tard",
-        "note": "une direction, plus tard"
+        "name": "Nord-Est",
+        "value": "Qui j’étais :",
+        "effect": "le tome 1 rejoint le meuble des fins ; l’Âge Manuel lit 15 % plus vite"
       },
       "d1": {
         "name": "Plus tard",
@@ -883,53 +879,6 @@
         "value": "×2",
         "effect": "Connaissance par trouvaille"
       }
-    },
-    "curtain": {
-      "c0": {
-        "name": "Le milieu de la tringle",
-        "value": "Qui j’étais ·",
-        "effect": "une bribe de plus"
-      },
-      "lm": {
-        "name": "La tringle, à gauche",
-        "value": "Qui j’étais ·",
-        "effect": "une bribe de plus"
-      },
-      "rm": {
-        "name": "La tringle, à droite",
-        "value": "Qui j’étais ·",
-        "effect": "une bribe de plus"
-      },
-      "l": {
-        "name": "Le bout gauche de la tringle",
-        "value": "Qui j’étais ·",
-        "effect": "une bribe de plus"
-      },
-      "r": {
-        "name": "Le bout droit de la tringle",
-        "value": "Qui j’étais ·",
-        "effect": "une bribe de plus"
-      },
-      "blm": {
-        "name": "Le bas d’un pli, à gauche",
-        "value": "Qui j’étais ·",
-        "effect": "une bribe de plus"
-      },
-      "brm": {
-        "name": "Le bas d’un pli, à droite",
-        "value": "Qui j’étais ·",
-        "effect": "une bribe de plus"
-      },
-      "bl": {
-        "name": "L’ourlet, à gauche",
-        "value": "Qui j’étais ·",
-        "effect": "une bribe de plus"
-      },
-      "br": {
-        "name": "L’ourlet, à droite",
-        "value": "Qui j’étais ·",
-        "effect": "la dernière page"
-      }
     }
   },
   "keep": "sa phrase reste au prestige",
@@ -955,14 +904,5 @@
     "north": "N",
     "south": "S"
   },
-  "readingWeight": "+{n} % de lecture : un par Éther reçu, moins au-delà de 5 000",
-  "trueStory": {
-    "vision": "Qui j’étais · page {n}",
-    "end": {
-      "title": "Qui j’étais",
-      "text": ["Je me souviens de tout, maintenant.", "Il y a une suite.\nJe le sais."],
-      "gain": "Lecture +15 %, pour toujours",
-      "button": "Chercher la suite"
-    }
-  }
+  "readingWeight": "+{n} % de lecture : un par Éther reçu, moins au-delà de 5 000"
 }

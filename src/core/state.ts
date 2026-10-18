@@ -290,8 +290,8 @@ export interface GameState {
   /** Les tâches : celles du jour, celles « une seule fois », leurs bonus pour toujours. */
   tasks: TasksState;
   /**
-   * Les tomes 2 à 11 de « L'histoire de Babel » trouvés (leur numéro), gardés au prestige. Le tome 1 vient du Rideau
-   * (storyBribes). Aucun ne se trouve encore en jouant : seulement par le débogage (« Tout débloquer »).
+   * Les tomes 2 à 11 de « L'histoire de Babel » trouvés (leur numéro), gardés au prestige. Le tome 1 s'achète dans
+   * l'Etherium (S.trueStory). Aucun ne se trouve encore en jouant : seulement par le débogage (« Tout débloquer »).
    */
   sagaTomes: number[];
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */

@@ -12,7 +12,6 @@ import {
   etherReading,
   findsMultiplier,
   readingMultiplier,
-  storyMultiplier,
   weightLifted,
   weightPresses,
   weightShown,
@@ -27,7 +26,7 @@ import { nextEtherPages, nextEtherProgress, prestigeGain } from '../../systems/p
 import { relicBonus, relicReading } from '../../systems/relics';
 import { mimicReading } from '../../systems/mimic';
 import { relicName } from '../relics/relicText';
-import { anyBonus, BONUS_FIGURES, boost, methodReading } from './bonuses';
+import { anyBonus, BONUS_FIGURES, boost, methodReading, storyShare } from './bonuses';
 import type { PartId } from '../../data/decipher';
 import type { GameState } from '../../core/state';
 
@@ -103,7 +102,7 @@ const findChanceParts = (state: GameState, readable: boolean): string | string[]
  * par ce que lit chacune) ; puis, après un premier prestige, une seconde ligne : × l'Etherium (le Livre ouvert, et le
  * Minitel pesé par ce que lisent les méthodes Numériques) et × l'Éther reçu ; une troisième quand le Sablier agit
  * (demande de l'auteur, 12/10), une quand la Mimic ralentit la lecture (revue de code, 13/10), et une dernière une fois le
- * Rideau entier allumé (« Qui j'étais », le tome 1 : +15 %, à part, 17/10 ; d'abord ×2, 14/10).
+ * tome 1 acheté (« Qui j'étais » : +15 % aux méthodes du premier Âge, pesé comme le Minitel, 18/10).
  */
 const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
   const { base, gestures, digital } = methodReading(state);
@@ -116,7 +115,7 @@ const pagesPerSecondParts = (state: GameState, readable: boolean): string[] => {
   const [methods, intuitions, stars, ether] = parts;
   const hourglass = relicReading(state) > 1 ? factor(relicReading(state)) : null;
   const slowed = mimicReading(state) < 1 ? factor(mimicReading(state)) : null;
-  const story = storyMultiplier(state) > 1 ? factor(storyMultiplier(state)) : null;
+  const story = storyShare(state) > 1 ? factor(storyShare(state)) : null;
   const extra = [
     ...(hourglass ? [readable ? t('strangeBook.figures.pagesPerSecondRelic').replace('{relic}', hourglass) : hourglass] : []),
     ...(slowed ? [readable ? t('strangeBook.figures.pagesPerSecondMimic').replace('{mimic}', slowed) : slowed] : []),

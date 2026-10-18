@@ -1,50 +1,73 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { loadGame, saveGame } from '../src/core/save';
 import { createInitialState } from '../src/core/state';
 import { STARS, starById } from '../src/data/etheriumStars';
 import { SEALS } from '../src/data/seals';
 import { ANOMALIES, HINTS_AFTER_PRESTIGE, hintSeal } from '../src/data/anomalies';
 import { BRIBE_PAGES } from '../src/data/trueStory';
-import { lightStar, pageOpen, starOpen, storyBribes } from '../src/systems/etherium';
-import { pagesPerSecond } from '../src/systems/production';
+import { lightStar } from '../src/systems/etherium';
+import { toolRate } from '../src/systems/production';
+import { refundCurtain } from '../src/core/removedCurtain';
 import { hintFindable } from '../src/systems/findable';
 import { libraryBookCount } from '../src/systems/library';
 import fr from '../src/i18n/fr/rareBooks.json';
 import en from '../src/i18n/en/rareBooks.json';
 
-const CURTAIN = STARS.filter((star) => star.page === 'curtain');
+const TOME = 'explore.d0';
 
-describe('« Mon histoire vraie », la fausse fin', () => {
-  it('le Rideau : neuf étoiles, de 10 à 100 000 Éther, ouvert dès le début', () => {
-    expect(CURTAIN.map((star) => star.cost)).toEqual([10, 25, 60, 150, 400, 1000, 3000, 10_000, 100_000]);
-    expect(pageOpen(createInitialState('fr', 0, 1), 'curtain')).toBe(true);
-    expect(BRIBE_PAGES).toHaveLength(CURTAIN.length);
-  });
-
-  it('l’ourlet de droite attend toutes les autres étoiles ; une bribe par étoile allumée', () => {
+describe('« Qui j’étais », le tome 1 (18/10 : le Rideau supprimé)', () => {
+  it('une petite pointe de la Rose des vents, le Nord-Est, à 5 Éther ; plus de Rideau', () => {
+    expect(starById(TOME)?.cost).toBe(5);
+    expect(STARS.some((star) => star.id.startsWith('curtain.'))).toBe(false);
     const state = createInitialState('fr', 0, 1);
-    state.ether = 1e7;
-    for (const star of CURTAIN.filter((one) => one.id !== 'curtain.br' && one.id !== 'curtain.bl'))
-      expect(lightStar(state, star.id)).toBe(true);
-    expect(storyBribes(state)).toBe(7);
-    // Son étoile d'avant (le bout droit de la tringle) est allumée, mais pas l'ourlet de gauche.
-    expect(starOpen(state, 'curtain.br')).toBe(false);
-    expect(lightStar(state, 'curtain.bl')).toBe(true);
-    expect(starOpen(state, 'curtain.br')).toBe(true);
+    state.ether = 5;
+    expect(lightStar(state, TOME)).toBe(true);
+    expect(state.ether).toBe(0);
   });
 
-  it('le Rideau entier, le tome 1 fini : +15 % de lecture, à part ; le sceau secret « À suivre. »', () => {
+  it('acheté : le livre, le sceau « À suivre. », et +15 % aux méthodes de l’Âge Manuel seulement', () => {
     const state = createInitialState('fr', 0, 1);
     state.tools.diagonal = 10;
-    state.etherium = CURTAIN.filter((star) => star.id !== 'curtain.br').map((star) => star.id);
-    const before = pagesPerSecond(state);
+    state.tools.metronome = 1;
+    const manual = toolRate(state, 'diagonal');
+    const automatic = toolRate(state, 'metronome');
     const seal = (id: string) => SEALS.find((one) => one.id === id)!.reached!(state);
     expect(seal('toBeContinued')).toBe(false);
-    state.etherium.push('curtain.br');
-    expect(pagesPerSecond(state)).toBeCloseTo(before * 1.15);
+    const count = libraryBookCount(state);
+    state.etherium.push(TOME);
+    expect(toolRate(state, 'diagonal')).toBeCloseTo(manual * 1.15);
+    expect(toolRate(state, 'metronome')).toBeCloseTo(automatic);
     expect(seal('toBeContinued')).toBe(true);
+    expect(libraryBookCount(state)).toBe(count + 1);
     // L'aveu « Pas celui-ci. » attend le tome 11.
     expect(seal('notThisOne')).toBe(false);
-    expect(SEALS.some((one) => one.id === 'constellation-curtain')).toBe(false);
+  });
+
+  it('une partie qui avait allumé le Rideau récupère son Éther, et garde son tome', () => {
+    const state = createInitialState('fr', 0, 1);
+    state.ether = 3;
+    state.etherium = ['explore.c', 'curtain.c0', 'curtain.lm', 'curtain.rm'];
+    const after = refundCurtain(state);
+    expect(after.ether).toBe(3 + 10 + 25 + 60);
+    expect(after.etherium).toEqual(['explore.c', TOME]);
+    const untouched = createInitialState('fr', 0, 1);
+    expect(refundCurtain(untouched)).toBe(untouched);
+  });
+
+  it('au chargement d’une sauvegarde, avant que les étoiles inconnues ne soient oubliées', () => {
+    const store: Record<string, string> = {};
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => store[key] ?? null,
+      setItem: (key: string, value: string) => (store[key] = value),
+    });
+    const state = createInitialState('fr', 0, 1);
+    state.ether = 3;
+    state.etherium = ['explore.e', 'curtain.c0'];
+    saveGame(state);
+    const loaded = loadGame('fr');
+    expect(loaded.ether).toBe(13);
+    expect(loaded.etherium).toEqual(['explore.e', TOME]);
+    vi.unstubAllGlobals();
   });
 
   it('son indice existe, et ne tombe qu’après un premier prestige ; celui de « Pas celui-ci. » ne tombe pas', () => {
@@ -57,16 +80,10 @@ describe('« Mon histoire vraie », la fausse fin', () => {
     expect(hintFindable(state, 'hintToBeContinued')).toBe(true);
   });
 
-  it('le livre entre dans la bibliothèque à la première étoile', () => {
-    const state = createInitialState('fr', 0, 1);
-    const count = libraryBookCount(state);
-    state.etherium.push('curtain.c0');
-    expect(libraryBookCount(state)).toBe(count + 1);
-  });
-
-  it('une bribe par page, dans chaque langue', () => {
+  it('une bribe par page, dans chaque langue ; une dédicace pour le tome 1', async () => {
     for (const texts of [fr, en]) expect(texts.trueStory.bribes).toHaveLength(BRIBE_PAGES.length);
-    expect(starById('curtain.br')?.after).toBe('curtain.r');
+    for (const ui of [(await import('../src/i18n/fr/ui.json')).default, (await import('../src/i18n/en/ui.json')).default])
+      expect(ui.endings.dedications[0]).toBeTruthy();
   });
 });
 

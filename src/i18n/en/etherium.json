@@ -39,7 +39,7 @@
   "reading": "+{n}% reading: one per Ether received",
   "next": "Next Ether: in {n} pages",
   "contents": "Contents",
-  "groups": { "methods": "Methods", "reading": "Reading", "time": "Time", "rooms": "The rooms", "end": "At the very end" },
+  "groups": { "methods": "Methods", "reading": "Reading", "time": "Time", "rooms": "The rooms" },
   "pages": {
     "reading": {
       "name": "Reading",
@@ -126,11 +126,6 @@
       "figure": "The Minitel",
       "description": "The screen lights up when I come near.",
       "locked": "This page is waiting\nfor a new Age."
-    },
-    "curtain": {
-      "name": "The Curtain",
-      "figure": "The Curtain",
-      "description": "The meaning of it all."
     }
   },
   "stars": {
@@ -585,8 +580,9 @@
         "note": "a direction, for later"
       },
       "d0": {
-        "name": "Later",
-        "note": "a direction, for later"
+        "name": "North-East",
+        "value": "Who I Was:",
+        "effect": "volume 1 joins the endings shelf; the Manual Age reads 15% faster"
       },
       "d1": {
         "name": "Later",
@@ -883,53 +879,6 @@
         "value": "×2",
         "effect": "Knowledge per find"
       }
-    },
-    "curtain": {
-      "c0": {
-        "name": "The middle of the rod",
-        "value": "Who I Was ·",
-        "effect": "one more memory"
-      },
-      "lm": {
-        "name": "The rod, left",
-        "value": "Who I Was ·",
-        "effect": "one more memory"
-      },
-      "rm": {
-        "name": "The rod, right",
-        "value": "Who I Was ·",
-        "effect": "one more memory"
-      },
-      "l": {
-        "name": "The left end of the rod",
-        "value": "Who I Was ·",
-        "effect": "one more memory"
-      },
-      "r": {
-        "name": "The right end of the rod",
-        "value": "Who I Was ·",
-        "effect": "one more memory"
-      },
-      "blm": {
-        "name": "The foot of a fold, left",
-        "value": "Who I Was ·",
-        "effect": "one more memory"
-      },
-      "brm": {
-        "name": "The foot of a fold, right",
-        "value": "Who I Was ·",
-        "effect": "one more memory"
-      },
-      "bl": {
-        "name": "The hem, left",
-        "value": "Who I Was ·",
-        "effect": "one more memory"
-      },
-      "br": {
-        "name": "The hem, right",
-        "value": "Who I Was ·",
-        "effect": "the last page"
-      }
     }
   },
   "keep": "its sentence stays through prestige",
@@ -955,14 +904,5 @@
     "north": "N",
     "south": "S"
   },
-  "readingWeight": "+{n}% reading: one per Ether received, less beyond 5,000",
-  "trueStory": {
-    "vision": "Who I Was · page {n}",
-    "end": {
-      "title": "Who I Was",
-      "text": ["I remember everything, now.", "There is more to it.\nI know it."],
-      "gain": "Reading +15%, forever",
-      "button": "Look for the rest"
-    }
-  }
+  "readingWeight": "+{n}% reading: one per Ether received, less beyond 5,000"
 }

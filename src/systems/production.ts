@@ -1,7 +1,7 @@
 import { taskReading } from './taskBonus';
 import { DIGITAL_AGE, TOOLS, type ToolId } from '../data/tools';
 import { gestureMultiplier } from './technologies';
-import { digitalMultiplier, etherReading, readingMultiplier, storyMultiplier } from './etherium';
+import { digitalMultiplier, etherReading, firstAgeMultiplier, readingMultiplier } from './etherium';
 import { readingBoon } from './boons';
 import { relicReading } from './relics';
 import { mimicReading } from './mimic';
@@ -20,10 +20,10 @@ export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== u
 
 /**
  * Ce qui multiplie la lecture de toutes les méthodes : la Lecture de l'Etherium, l'Éther reçu, la Transe de la lettre (en
- * cours), le Sablier (s'il agit), la Mimic qui la ralentit (si elle est là), le Rideau entier (×2), les bonus et malus de la Loterie et les mods (crochet `reading`, grandeur `reading`) ; et le Minitel,
- * pour celles de l'Âge Numérique. Calculés une fois pour toutes les méthodes (revue de code, 13/10).
+ * cours), le Sablier (s'il agit), la Mimic qui la ralentit (si elle est là), les bonus et malus de la Loterie et les mods (crochet `reading`, grandeur `reading`) ; et le Minitel,
+ * pour celles de l'Âge Numérique ; le tome 1 de « L'histoire de Babel », pour celles du premier Âge. Calculés une fois pour toutes les méthodes (revue de code, 13/10).
  */
-type Shared = { all: number; digital: number };
+type Shared = { all: number; digital: number; firstAge: number };
 const shared = (state: GameState): Shared => ({
   all:
     readingMultiplier(state) *
@@ -31,18 +31,19 @@ const shared = (state: GameState): Shared => ({
     readingBoon(state) *
     relicReading(state) *
     mimicReading(state) *
-    storyMultiplier(state) *
     lotteryReading(state) *
     taskReading(state) *
     hookProduct('reading') *
     modded('reading'),
   digital: digitalMultiplier(state),
+  firstAge: firstAgeMultiplier(state),
 });
 
 const rateOf = (state: GameState, tool: (typeof TOOLS)[number], factors: Shared): number =>
   tool.pagesPerSecond *
   gestureMultiplier(state, tool.id) *
   (tool.age === DIGITAL_AGE ? factors.digital : 1) *
+  (tool.age === undefined ? factors.firstAge : 1) *
   factors.all *
   lotteryMethod(state, tool.id) *
   modded(`method:${tool.id}`);

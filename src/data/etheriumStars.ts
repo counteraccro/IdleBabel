@@ -12,15 +12,14 @@ import { AUTOMATIC_AGE, DIGITAL_AGE } from './tools';
  * Les pages du livre, en groupes (demande de l'auteur, 17/10 : « c'est brouillon, les méthodes sont mélangées avec d'autres
  * choses ») : les méthodes (les Âges d'abord, 07/10, puis tout ce qui les fait lire, revenir au réveil ou rester), lire
  * (la main, la lettre, la Connaissance, les trouvailles), le temps (l'absence, le poids de l'Éther), les salles (ce que
- * l'Exploration y fait apparaître), et tout au bout le Rideau, la fausse fin (14/10). Le sommaire écrit le nom de chaque
- * groupe (etherium.groups.<groupe>).
+ * l'Exploration y fait apparaître). Le Rideau, la fausse fin (14/10), qui était tout au bout, est supprimé le 18/10 : le
+ * tome 1 s'achète au Nord-Est de la Rose des vents. Le sommaire écrit le nom de chaque groupe (etherium.groups.<groupe>).
  */
 export const ETHERIUM_GROUPS = [
   { id: 'methods', pages: ['ages', 'reading', 'start', 'memory', 'screen'] },
   { id: 'reading', pages: ['hands', 'quill', 'knowledge', 'finds'] },
   { id: 'time', pages: ['away', 'weight'] },
   { id: 'rooms', pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks'] },
-  { id: 'end', pages: ['curtain'] },
 ] as const;
 
 /** L'ordre des pages dans le livre : celui des groupes. */
@@ -162,14 +161,15 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['quill', 'r6', 'r5', 250],
   // L'Exploration, la Rose des vents (11/10, .ai/maquette-etherium-mimic.html) : le centre est offert, chaque pointe en part
   // et fait apparaître une chose nouvelle dans les salles. L'Est, la Mimic ; l'Ouest, les reliques (12/10) ; le Nord, les
-  // tâches (17/10, 2 Éther : l'auteur, « ça doit être quelque chose de rapide à avoir ») ; les autres, des idées à venir
-  // (CLOSED).
+  // tâches (17/10, 2 Éther : l'auteur, « ça doit être quelque chose de rapide à avoir ») ; le Nord-Est, une petite pointe,
+  // le tome 1 de « L'histoire de Babel » (18/10, 5 Éther : l'auteur, « c'est un petit bonus en plus », à la place du
+  // Rideau) ; les autres, des idées à venir (CLOSED).
   // L'Est, à 2 : la Mimic s'achète au 3e réveil (simulateur/vie.ts : 4 Éther reçus, l'Âge Automatique en premier).
   ['explore', 'e', null, 2],
   ['explore', 'w', null, 5],
   ['explore', 'n', null, 2],
   ['explore', 's', null, 0],
-  ['explore', 'd0', null, 0],
+  ['explore', 'd0', null, 5],
   ['explore', 'd1', null, 0],
   ['explore', 'd2', null, 0],
   ['explore', 'd3', null, 0],
@@ -217,18 +217,6 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['tasks', 'p1', null, 20],
   ['tasks', 'p2', 'p1', 60],
   ['tasks', 'p3', 'p2', 200],
-  // Le Rideau, la fausse fin (14/10, .ai/maquette-faux-livre.html, conception §9.2) : la tringle depuis son milieu, puis le
-  // bas des plis et l'ourlet ; chaque étoile fait remonter une bribe de « Mon histoire vraie ». La dernière, l'ourlet de
-  // droite, attend toutes les autres (WAITS_FOR_PAGE).
-  ['curtain', 'c0', null, 10],
-  ['curtain', 'lm', 'c0', 25],
-  ['curtain', 'rm', 'c0', 60],
-  ['curtain', 'l', 'lm', 150],
-  ['curtain', 'r', 'rm', 400],
-  ['curtain', 'blm', 'lm', 1000],
-  ['curtain', 'brm', 'rm', 3000],
-  ['curtain', 'bl', 'l', 10_000],
-  ['curtain', 'br', 'r', 100_000],
 ];
 
 export const STARS: readonly Star[] = RAW.map(([page, id, after, cost]) => ({
@@ -250,7 +238,7 @@ export const CLOSED: ReadonlySet<string> = new Set([
   'ages.inf',
   'memory.a0',
   // Les pointes de la Rose des vents qui n'ouvrent encore rien.
-  ...['s', 'd0', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
+  ...['s', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
   // « Une dernière pour la route », tant que son livre de fin n'est pas écrit (l'auteur, 17/10).
   'tasks.p3',
 ]);
@@ -261,16 +249,9 @@ const PASSABLE: ReadonlySet<string> = new Set(['memory.a0']);
 /** Les étoiles qui peuvent s'allumer aujourd'hui (les sceaux de l'Etherium les comptent). */
 export const OPEN_STARS: readonly Star[] = STARS.filter((star) => !CLOSED.has(star.id));
 
-/** Les étoiles qui attendent, en plus de la leur, toutes les autres étoiles de leur page : l'ourlet de droite du Rideau. */
-export const WAITS_FOR_PAGE: ReadonlySet<string> = new Set(['curtain.br']);
-
 /**
- * L'étoile d'avant est allumée (ou, pour la Goutte, celle d'avant elle), ou il n'y en a pas : `star` peut s'allumer. Une
- * étoile de WAITS_FOR_PAGE attend aussi toutes les autres de sa page.
- */
+ * L'étoile d'avant est allumée (ou, pour la Goutte, celle d'avant elle), ou il n'y en a pas : `star` peut s'allumer. */
 export const afterLit = (star: Star, lit: (id: string) => boolean): boolean => {
-  if (WAITS_FOR_PAGE.has(star.id) && STARS.some((other) => other.page === star.page && other.id !== star.id && !lit(other.id)))
-    return false;
   if (!star.after) return true;
   if (lit(star.after)) return true;
   const before = starById(star.after);
@@ -371,10 +352,10 @@ export const EFFECT = {
     'weight.w7': 0.1,
   },
   /**
-   * +pages/s par tome de « L'histoire de Babel » fini, ajoutés entre eux, à part (l'auteur, 17/10 : +15 % par tome, au lieu
-   * du ×2 de « Mon histoire vraie ») : le Rideau entier, le tome 1.
+   * +pages/s des méthodes du premier Âge, à part (l'auteur, 18/10 : le tome 1 de « L'histoire de Babel », acheté au
+   * Nord-Est de la Rose des vents, « + 15 % sur toutes les méthodes du premier âge »).
    */
-  storyReading: { 'curtain.br': 0.15 },
+  firstAgeReading: { 'explore.d0': 0.15 },
   /** Les branches de la Loterie (data/lottery.ts, LOTTERY_STARS) : le niveau de chacune, la plus haute allumée compte. */
   lotteryToken: { 'lottery.j1': 1, 'lottery.j2': 2 },
   lotteryTime: { 'lottery.g1': 1, 'lottery.g2': 2 },
@@ -441,7 +422,7 @@ export const S = {
   mimicEye: 'mimic.eye',
   relics: 'explore.w',
   patience: 'relics.d',
-  storyEnd: 'curtain.br',
+  trueStory: 'explore.d0',
 } as const;
 
 /** Les deux étoiles de chaque relique, sur la page « Les reliques » (leur lettre : la loupe, l'astrolabe, le sablier). */

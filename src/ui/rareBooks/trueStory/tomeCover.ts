@@ -15,11 +15,10 @@ import type * as THREE from 'three';
  * le 17/10, mesures reprises du plat de 300 × 420). Toute la collection a la toile brune du tome 1, « Qui j'étais ».
  * De face, un livre ancien, tout en doré ; derrière, un livre moderne : l'image de la Bibliothèque, le résumé, un code-barres.
  */
-export const CLOTH = '#4c3d30';
 export const CLOTH_EDGE = '#3e3226';
 const CREAM = 'rgb(232, 214, 178)';
 const GILT = 'rgb(222, 188, 112)';
-const SCRIPT = "'Great Vibes', cursive";
+export const SCRIPT = "'Great Vibes', cursive";
 /** Le plat de la maquette (300 × 420), et du plat de la maquette au plat du jeu (800 × 1000). */
 const W = 300;
 const H = 420;
@@ -27,7 +26,7 @@ const SX = WIDTH / W;
 const SY = HEIGHT / H;
 /** L'ombre de la charnière, côté dos : 14 de large. */
 const HINGE = 14;
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'];
+export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'];
 
 /** Les polices des couvertures : chargées avant de les dessiner. */
 export const loadTomeFonts = (): Promise<unknown> =>

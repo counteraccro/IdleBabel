@@ -4,6 +4,7 @@ import { renameRareBooks } from './renamedRareBooks';
 import { dropRemovedMethods } from './removedMethods';
 import { refundEtheriumTrees } from './etheriumTrees';
 import { refundClosedStars } from './closedStars';
+import { refundCurtain } from './removedCurtain';
 import { PAGES_PER_CLICK } from '../systems/click';
 import { countSavedFinds } from './countedFinds';
 import type { Find } from '../data/knowledge';
@@ -19,43 +20,46 @@ const readSave = (raw: string, defaultLocale: Locale): GameState | null => {
     const initial = createInitialState(defaultLocale);
     return refundClosedStars(
       refundEtheriumTrees(
-        dropRemovedMethods(
-          renameRareBooks({
-            ...initial,
-            ...saved,
-            settings: { ...initial.settings, ...saved.settings },
-            stats: { ...initial.stats, ...saved.stats },
-            tools: { ...initial.tools, ...saved.tools },
-            methodPages: { ...saved.methodPages },
-            technologies: { ...saved.technologies },
-            // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
-            technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
-            reminiscence: { ...initial.reminiscence, ...saved.reminiscence },
-            wake: { ...initial.wake, ...saved.wake },
-            mimic: { ...initial.mimic, ...saved.mimic },
-            relics: { ...initial.relics, ...saved.relics, found: { ...saved.relics?.found } },
-            lottery: { ...initial.lottery, ...saved.lottery, effects: [...(saved.lottery?.effects ?? [])] },
-            tasks: {
-              ...initial.tasks,
-              ...saved.tasks,
-              bonus: { ...initial.tasks.bonus, ...saved.tasks?.bonus },
-              counters: { ...initial.tasks.counters, ...saved.tasks?.counters },
-              mods: { ...saved.tasks?.mods },
-            },
-            // Les nœuds des anciens arbres, ou les étoiles : core/etheriumTrees.ts ; les étoiles fermées : core/closedStars.ts.
-            etherium: saved.etherium ?? [],
-            findCounts: countSavedFinds(saved.findCounts, finds),
-            totalPagesRead: saved.totalPagesRead ?? saved.pages,
-            // Une partie d'avant le 14/10 a pu garder des décimales de Connaissance : arrondies au supérieur.
-            knowledge: Math.ceil(saved.knowledge ?? 0),
-            cycleKnowledge: Math.ceil(saved.cycleKnowledge ?? 0),
-            lifetimeKnowledge: Math.ceil(saved.lifetimeKnowledge ?? 0),
-            // Une partie d'avant ces compteurs part de ce qu'elle sait : les pages de ses méthodes, ses clics.
-            pagesByMethods: saved.pagesByMethods ?? Object.values(saved.methodPages ?? {}).reduce((sum, read) => sum + (read ?? 0), 0),
-            pagesByHand: saved.pagesByHand ?? (saved.stats?.clicks ?? 0) * PAGES_PER_CLICK,
-            // Une partie d'avant les graines garde sa Bibliothèque.
-            seed: saved.seed ?? 0,
-          }),
+        // Le Rideau, supprimé le 18/10 (core/removedCurtain.ts) : avant que ses étoiles inconnues ne soient oubliées.
+        refundCurtain(
+          dropRemovedMethods(
+            renameRareBooks({
+              ...initial,
+              ...saved,
+              settings: { ...initial.settings, ...saved.settings },
+              stats: { ...initial.stats, ...saved.stats },
+              tools: { ...initial.tools, ...saved.tools },
+              methodPages: { ...saved.methodPages },
+              technologies: { ...saved.technologies },
+              // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
+              technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
+              reminiscence: { ...initial.reminiscence, ...saved.reminiscence },
+              wake: { ...initial.wake, ...saved.wake },
+              mimic: { ...initial.mimic, ...saved.mimic },
+              relics: { ...initial.relics, ...saved.relics, found: { ...saved.relics?.found } },
+              lottery: { ...initial.lottery, ...saved.lottery, effects: [...(saved.lottery?.effects ?? [])] },
+              tasks: {
+                ...initial.tasks,
+                ...saved.tasks,
+                bonus: { ...initial.tasks.bonus, ...saved.tasks?.bonus },
+                counters: { ...initial.tasks.counters, ...saved.tasks?.counters },
+                mods: { ...saved.tasks?.mods },
+              },
+              // Les nœuds des anciens arbres, ou les étoiles : core/etheriumTrees.ts ; les étoiles fermées : core/closedStars.ts.
+              etherium: saved.etherium ?? [],
+              findCounts: countSavedFinds(saved.findCounts, finds),
+              totalPagesRead: saved.totalPagesRead ?? saved.pages,
+              // Une partie d'avant le 14/10 a pu garder des décimales de Connaissance : arrondies au supérieur.
+              knowledge: Math.ceil(saved.knowledge ?? 0),
+              cycleKnowledge: Math.ceil(saved.cycleKnowledge ?? 0),
+              lifetimeKnowledge: Math.ceil(saved.lifetimeKnowledge ?? 0),
+              // Une partie d'avant ces compteurs part de ce qu'elle sait : les pages de ses méthodes, ses clics.
+              pagesByMethods: saved.pagesByMethods ?? Object.values(saved.methodPages ?? {}).reduce((sum, read) => sum + (read ?? 0), 0),
+              pagesByHand: saved.pagesByHand ?? (saved.stats?.clicks ?? 0) * PAGES_PER_CLICK,
+              // Une partie d'avant les graines garde sa Bibliothèque.
+              seed: saved.seed ?? 0,
+            }),
+          ),
         ),
       ),
       // Une sauvegarde d'avant le 08/10 : son Âge Quantique est fermé (core/closedStars.ts).

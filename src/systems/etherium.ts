@@ -113,10 +113,8 @@ export const etherReading = (state: GameState): number => 1 + etherCounted(state
 
 /** Le Livre ouvert (dos, page de gauche) : les pages/s de toutes les méthodes. */
 export const readingMultiplier = (state: GameState): number => product(state, EFFECT.readingRate);
-/** Les tomes de « L'histoire de Babel » finis (le Rideau entier : le tome 1) : +15 % de pages/s chacun, à part. */
-export const storyMultiplier = (state: GameState): number => 1 + sum(state, EFFECT.storyReading);
-/** Les bribes de « Qui j'étais » remontées : une par étoile du Rideau allumée. */
-export const storyBribes = (state: GameState): number => state.etherium.filter((id) => id.startsWith('curtain.')).length;
+/** Le tome 1 de « L'histoire de Babel » (le Nord-Est de la Rose des vents) : +15 % de pages/s aux méthodes du premier Âge. */
+export const firstAgeMultiplier = (state: GameState): number => 1 + sum(state, EFFECT.firstAgeReading);
 /** Le Minitel (la prise, l'écran) : les pages/s des méthodes de l'Âge Numérique. */
 export const digitalMultiplier = (state: GameState): number => product(state, EFFECT.digitalReading);
 /** La Main (poignet, paume, index) : les pages d'un clic. */

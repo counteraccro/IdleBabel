@@ -211,9 +211,8 @@ export const SEALS: readonly SealDef[] = [
   ...series('prestiges', 'etherium', (s) => s.exiles, [1, 5, 10, 25, 100]),
   ...series('etherReceived', 'etherium', (s) => s.etherReceived, [1, 10, 100, K, 10 * K, 100 * K, M]),
   ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, OPEN_STARS.length]),
-  // L'Exploration : l'Est et l'Ouest allumés (« La Rose des vents », 12/10 ; les autres pointes sont encore fermées). Le
-  // Rideau entier n'a pas le sien : c'est un secret (« Pas celui-ci. », plus bas).
-  ...ETHERIUM_PAGES.filter((page) => page !== 'curtain').map((page) =>
+  // L'Exploration : ses pointes ouvertes allumées (« La Rose des vents », 12/10 ; les autres sont encore fermées).
+  ...ETHERIUM_PAGES.map((page) =>
     seal(`constellation-${page}`, 'etherium', (s) =>
       OPEN_STARS.filter((star) => star.page === page).every((star) => s.etherium.includes(star.id)),
     ),
@@ -239,9 +238,10 @@ export const SEALS: readonly SealDef[] = [
   // Les tâches (17/10, .ai/plan-taches.md) : celles du jour faites, depuis toujours ; celles qui ne se font qu'une fois, une,
   // la moitié, toutes (une phrase par palier).
   ...series('dailyTasks', 'tasks', (s) => s.tasks.dailyDone, [1, 10, 50, 100, 410, 1000]),
-  ...series('onceTasks', 'tasks', onceDone, [1, ONCE_TASKS.length / 2, ONCE_TASKS.length]).map(
-    (seal): SealDef => ({ ...seal, phrases: true }),
-  ),
+  ...series('onceTasks', 'tasks', onceDone, [1, ONCE_TASKS.length / 2, ONCE_TASKS.length]).map((seal): SealDef => ({
+    ...seal,
+    phrases: true,
+  })),
 
   // Un sceau par livre rare, apposé quand il arrive en main.
   ...RARE_BOOKS.map((book): SealDef => ({
@@ -310,8 +310,8 @@ export const SEALS: readonly SealDef[] = [
   seal('allCurses', 'secrets', (s) => allLotteryCurses(s)),
   seal('allBoons', 'secrets', (s) => allLotteryBoons(s)),
   seal('allEffects', 'secrets', (s) => allLotteryBoons(s) && allLotteryCurses(s)),
-  // « Qui j'étais », le tome 1, lu jusqu'à sa dernière bribe : le Rideau entier allumé (l'auteur, 17/10).
-  seal('toBeContinued', 'secrets', (s) => s.etherium.includes(S.storyEnd)),
+  // « Qui j'étais », le tome 1 : acheté au Nord-Est de la Rose des vents (l'auteur, 18/10 : « le livre + le sceau »).
+  seal('toBeContinued', 'secrets', (s) => s.etherium.includes(S.trueStory)),
   // « Pas celui-ci. » : l'aveu que la saga est fausse, qui vient avec le tome 11 (l'auteur, 17/10). D'abord donné par
   // « Mon histoire vraie » (14/10) : ceux qui l'ont le gardent. En attendant, il ne s'obtient pas.
   seal('notThisOne', 'secrets', () => false),

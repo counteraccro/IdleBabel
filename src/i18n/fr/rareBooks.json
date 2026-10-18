@@ -2620,8 +2620,8 @@
         "falseEnding": {
           "head": "La fausse fin",
           "text": [
-            "Il fallait une fin à chercher. Il y en a une à acheter : une dernière page à l’Etherium, le Rideau, tracé en étoiles, qui promet « le sens de tout cela ». La première étoile coûte dix Éther ; la dernière, cent mille, et elle attend toutes les autres.",
-            "Chaque étoile allumée fait remonter un souvenir, surligné dans un livre de la vitrine, à la place gardée pour le livre de la fin : « Mon histoire vraie », le seul dont le titre se lit en clair. Une tasse, une clé, une voix, un carnet blanc, le 410, un nom brodé : chaque mystère du jeu y trouve sa réponse. Puis la tasse change de bord, et le tilleul devient un chêne.",
+            "Il fallait une fin à chercher. Il y en a une à acheter, et pour presque rien : une petite pointe de la rose des vents, entre le Nord et l’Est, cinq Éther.",
+            "Elle apporte un livre, où neuf souvenirs remontent, surlignés dans le charabia ; il prend la place gardée pour le livre de la fin : « Mon histoire vraie », le seul dont le titre se lit en clair. Une tasse, une clé, une voix, un carnet blanc, le 410, un nom brodé : chaque mystère du jeu y trouve sa réponse. Puis la tasse change de bord, et le tilleul devient un chêne.",
             "À la dernière page, quelqu’un a écrit au crayon : « Pas celui-ci. » Le chercheur ne sait plus s’il se souvient ou s’il l’a lu. La réponse est dans un autre livre ; en attendant, il lit deux fois plus vite.",
             "Avec elle, le jeu est passé en Alpha 2.1."
           ]
@@ -2643,9 +2643,10 @@
             "La collection a changé de nom. « La Vraie Fin » disait trop bien ce qu’elle était. Elle s’appelle désormais « L’histoire de Babel » : onze tomes, une seule histoire, racontée en bribes, comme le premier. Plus on en range, plus on croit la tenir.",
             "« Mon histoire vraie » est devenue le tome 1, « Qui j’étais ». En haut de chaque plat, un seul mot : « Vérité ». Un auteur, ou un sous-titre : on ne sait pas.",
             "De face, ce sont des livres anciens : la toile brune, le titre doré, le bandeau du dos qui traverse le plat, le numéro en chiffres romains. Derrière, ce sont des livres d’aujourd’hui : une salle de la Bibliothèque imprimée à fond perdu, un résumé, un code-barres. Deux autres plats ont été écartés : le titre en crème au-dessus du bandeau, et le nom de la collection en étiquette, tout en haut.",
-            "Le premier tome n’avoue plus rien. Ses deux dernières bribes, celles qui doutaient, et le « Pas celui-ci. » au crayon attendent le dernier tome. Il s’achève sur « Fin du tome I » et le titre du suivant. Chaque tome fini fera lire 15 % plus vite : le premier ne double plus la lecture.",
+            "Le premier tome n’avoue plus rien. Ses deux dernières bribes, celles qui doutaient, et le « Pas celui-ci. » au crayon attendent le dernier tome. Il s’achève sur « Fin du tome I » et le titre du suivant. Il fait lire 15 % plus vite les méthodes de l’Âge Manuel : il ne double plus la lecture.",
             "Les bonus s’étaient multipliés : l’Etherium, l’Éther, les reliques, la lettre, la Loterie, les tomes. Plus personne ne savait ce qui faisait quoi. Le Grand Livre a reçu un chapitre de plus, « Bonus » : chaque source, son chiffre, rangés sous ce qu’ils boostent. Les malus y sont aussi, la Mimic, la Loterie : ils se multiplient avec le reste.",
-            "Les dix autres tomes existent désormais, rangés à leur place, sous leurs couvertures. Leurs pages sont blanches, et on ne les trouve pas encore : chacun recevra son histoire avec sa façon de paraître. Sur leurs dos, les titres longs se resserrent pour s’arrêter avant le bandeau."
+            "Les dix autres tomes existent désormais, rangés à leur place, sous leurs couvertures. Leurs pages sont blanches, et on ne les trouve pas encore : chacun recevra son histoire avec sa façon de paraître. Sur leurs dos, les titres longs se resserrent pour s’arrêter avant le bandeau.",
+            "Chaque tome a maintenant tout d’un vrai livre : des gardes semées d’hexagones dorés, un faux-titre, « Du même auteur » et les onze titres, la page de titre des Éditions Quatre Cent Dix, les mentions (« Tiré d’une histoire vraie. »), une dédicace à quelqu’un du livre, un sommaire, et en bas de la dernière page, l’achevé d’imprimer."
           ]
         },
         "lotteryStars": {
@@ -2668,7 +2669,7 @@
             "Une quatrième relique arrive avec elles, la seule qu’aucune salle ne cache : le Crayon, un bout de bois rouge taillé au couteau. On le gagne en faisant trente tâches du jour. Il rejoint une petite case basse, au milieu de la vitrine ; s’il agit, les nouvelles tâches du jour demandent un quart de moins, puis un tiers et la moitié avec sa branche du Cabinet, un crayon couché en bas à droite.",
             "Les mods peuvent lire les tâches et en ajouter : les leurs s’écrivent au bout de la liste, avec la récompense qu’ils donnent, et ne comptent nulle part dans le jeu.",
             "Avec cette cinquième partie, le sommaire du livre blanc était trop tassé : il passe sur deux pages face à face, comme celui du Grand Livre, dès qu’il ne tient plus sur une seule.",
-            "L’Etherium, lui, était devenu brouillon : les pages des méthodes s’y mêlaient au reste. Elles sont maintenant rangées en groupes, nommés au sommaire : les méthodes (les Âges d’abord), lire, le temps, les salles, et tout au bout le Rideau.",
+            "L’Etherium, lui, était devenu brouillon : les pages des méthodes s’y mêlaient au reste. Elles sont maintenant rangées en groupes, nommés au sommaire : les méthodes (les Âges d’abord), lire, le temps, et les salles.",
             "Avec elles, le jeu est passé en Alpha 2.5."
           ]
         },
@@ -2793,7 +2794,6 @@
   "trueStory": {
     "name": "Qui j’étais",
     "cover": ["Qui j’étais"],
-    "page": "page {n}",
     "bribes": [
       "…j’avais sept ans… une tasse, le bord gauche… elle m’a glissé des mains devant la fenêtre, à cause du tilleul qui frappait la vitre… Maman l’a gardée quand même. Depuis, je bois toujours du côté de l’ébréchure.",
       "…une petite clé de laiton, pendue à un clou près de la porte… la clé de la maison… je ne l’ai jamais rendue.",

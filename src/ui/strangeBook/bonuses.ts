@@ -14,7 +14,7 @@ import {
   letterWaitFactor,
   rareMultiplier,
   readingMultiplier,
-  storyMultiplier,
+  firstAgeMultiplier,
 } from '../../systems/etherium';
 import { clickBoon, findsBoon, fourTen, knowledgeBoon, priceBoon, readingBoon } from '../../systems/boons';
 import { sealFindMultiplier } from '../../systems/seals';
@@ -47,16 +47,18 @@ const plusPercent = (value: number): string =>
   `+${writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(value))}`;
 
 /**
- * Ce que lisent les méthodes d'elles-mêmes, avec leurs intuitions, et avec en plus le Minitel pour celles de l'Âge Numérique :
- * les intuitions et le Minitel en moyenne, pesés par ce que lit chacune. La décomposition de la vitesse de lecture
+ * Ce que lisent les méthodes d'elles-mêmes, avec leurs intuitions, avec en plus le Minitel pour celles de l'Âge Numérique,
+ * puis le tome 1 pour celles du premier Âge : les intuitions, le Minitel et le tome en moyenne, pesés par ce que lit chacune. La décomposition de la vitesse de lecture
  * (chapters.ts) s'en sert aussi.
  */
-export const methodReading = (state: GameState): { base: number; gestures: number; digital: number } => {
+export const methodReading = (state: GameState): { base: number; gestures: number; digital: number; story: number } => {
   const rate = (tool: (typeof TOOLS)[number]): number => state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id);
+  const digitalRate = (tool: (typeof TOOLS)[number]): number => rate(tool) * (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1);
   return {
     base: TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0),
     gestures: TOOLS.reduce((total, tool) => total + rate(tool), 0),
-    digital: TOOLS.reduce((total, tool) => total + rate(tool) * (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1), 0),
+    digital: TOOLS.reduce((total, tool) => total + digitalRate(tool), 0),
+    story: TOOLS.reduce((total, tool) => total + digitalRate(tool) * (tool.age === undefined ? firstAgeMultiplier(state) : 1), 0),
   };
 };
 const gestures = (state: GameState): number => {
@@ -67,6 +69,11 @@ const gestures = (state: GameState): number => {
 const digitalShare = (state: GameState): number => {
   const { gestures: read, digital } = methodReading(state);
   return read > 0 ? digital / read : 1;
+};
+/** Le tome 1 de « L'histoire de Babel » ne fait lire plus vite que les méthodes du premier Âge : sa part de toute la lecture. */
+export const storyShare = (state: GameState): number => {
+  const { digital, story } = methodReading(state);
+  return digital > 0 ? story / digital : 1;
 };
 
 /**
@@ -113,7 +120,7 @@ export const BONUS_FIGURES: Figure[] = [
   factorRow('reading', 'readingEtherium', 'etra lomi', readingMultiplier),
   factorRow('reading', 'readingDigital', 'etra numel', digitalShare),
   factorRow('reading', 'readingEther', 'etra dulvo', etherReading),
-  factorRow('reading', 'readingStory', 'vuntal babel', storyMultiplier),
+  factorRow('reading', 'readingStory', 'vuntal babel', storyShare),
   factorRow('reading', 'readingLetter', 'lettra vimo', readingBoon),
   { ...factorRow('reading', 'readingRelic', 'relva sablo', relicReading), label: () => relicName('hourglass') },
   factorRow('reading', 'readingLottery', 'lotra fesk', (s) => lotteryReading(s)),

@@ -4,17 +4,18 @@ import { LETTERS } from '../../../systems/babelText';
 import { PAGE_TEXTURE } from '../../book/pageLayout';
 import { BRIBE_PAGES } from '../../../data/trueStory';
 import { PAGE_CENTER, SERIF, wrap, write } from '../draw';
+import { CONTENTS_PAGE, FOLIO, INK, PALE, colophon, contentsLinks, paintTomeFront } from './tomePages';
 import type { PageLink } from '../rareBookArt';
 
 /**
  * Les pages de « Mon histoire vraie » (maquette .ai/maquette-faux-livre.html, mesures reprises de sa page de 370 × 500) :
  * du charabia pâle, comme dans tous les livres de la Bibliothèque, et sur sa page, chaque bribe remontée, en clair,
  * surlignée comme une trouvaille. La page 410 s'arrête après la sienne : « Fin du tome I », et le titre du tome 2 (l'auteur,
- * 17/10 ; d'abord « Pas celui-ci. » au crayon, gardé pour le tome 11). On ne tourne
- * jamais de charabia : la page de titre mène à chaque bribe, et ‹ › d'une bribe à l'autre.
+ * 17/10 ; d'abord « Pas celui-ci. » au crayon, gardé pour le tome 11), puis l'achevé d'imprimer. Avant le texte, les pages
+ * de toute la collection (tomePages.ts). Le livre arrive entier, ses neuf bribes remontées (l'auteur, 18/10 : acheté
+ * « tout d'un coup » au Nord-Est de la Rose des vents). On ne tourne jamais de charabia : le sommaire mène à chaque bribe,
+ * et ‹ › d'une bribe à l'autre.
  */
-const INK = 'rgb(48, 38, 30)';
-const PALE = 'rgba(48, 38, 30, 0.36)';
 const HIGHLIGHT = 'rgba(232, 196, 96, 0.38)';
 /** De la page de la maquette (370 × 500) à la texture (640 × 800) : en largeur, et pour le reste. */
 const KX = PAGE_TEXTURE.width / 370;
@@ -25,7 +26,6 @@ const LINES = 23;
 const TOP = 34 * K;
 const LEFT = 35 * KX;
 const WIDTH = PAGE_TEXTURE.width - 70 * KX;
-const FOLIO = 470 * K;
 
 /** Du charabia : des mots de une à neuf lettres, parfois une virgule ou un point (toujours les mêmes pour une page). */
 const gibberish = (page: number, count: number): string[] => {
@@ -38,45 +38,25 @@ const gibberish = (page: number, count: number): string[] => {
   });
 };
 
-/** La bribe de la page `page`, si elle est remontée (`count` : les bribes remontées). */
-const bribeAt = (page: number, count: number): number => {
-  const index = BRIBE_PAGES.indexOf(page as (typeof BRIBE_PAGES)[number]);
-  return index >= 0 && index < count ? index : -1;
-};
+/** La bribe de la page `page`, ou -1. */
+const bribeAt = (page: number): number => BRIBE_PAGES.indexOf(page as (typeof BRIBE_PAGES)[number]);
 const LAST = BRIBE_PAGES.length - 1;
 
-/** La page de titre, et ses signets : chaque bribe remontée, un clic y mène. */
-const TITLE_PAGE = 1;
-const MARKS_TOP = 330;
-const MARKS_STEP = 44;
-
-const titlePage = (context: CanvasRenderingContext2D, count: number): void => {
-  const { name, page } = messages().rareBooks.trueStory;
-  write(context, name, PAGE_CENTER, 170, { font: `44px ${SERIF}`, color: INK });
-  context.fillStyle = PALE;
-  context.fillRect(PAGE_CENTER - 30, 250, 60, 1.5);
-  BRIBE_PAGES.slice(0, count).forEach((target, index) =>
-    write(context, page.replace('{n}', String(target)), PAGE_CENTER, MARKS_TOP + index * MARKS_STEP, {
-      font: `italic 24px ${SERIF}`,
-      color: INK,
-    }),
-  );
-};
-
-/** ‹ et › : vers la bribe d'avant, celle d'après (si elle est remontée), en bas de la page, de part et d'autre du folio. */
+/** ‹ et › : vers la bribe d'avant, celle d'après, en bas de la page, de part et d'autre du folio. */
 const ARROW_Y = FOLIO - 10;
 const ARROW_W = 60;
 /** Le bord de chaque flèche, en retrait : un lien de livre rare ne se prend pas dans les 10 % du bord (rareBook3d.ts). */
 const ARROW_IN = 100;
-const arrows = (index: number, count: number): { left?: number; right?: number } => ({
+const arrows = (index: number): { left?: number; right?: number } => ({
   left: index > 0 ? BRIBE_PAGES[index - 1] : undefined,
-  right: index + 1 < count ? BRIBE_PAGES[index + 1] : undefined,
+  right: index < LAST ? BRIBE_PAGES[index + 1] : undefined,
 });
 
-/** Une page : du charabia ; sur la page d'une bribe remontée, ses lignes en clair, surlignées. */
-export const paintTrueStoryPage = (context: CanvasRenderingContext2D, page: number, count: number): void => {
-  if (page === TITLE_PAGE) return titlePage(context, count);
-  const index = bribeAt(page, count);
+/** Une page : celles d'avant le texte, ou du charabia ; sur la page d'une bribe, ses lignes en clair, surlignées. */
+export const paintTrueStoryPage = (context: CanvasRenderingContext2D, page: number): void => {
+  if (paintTomeFront(context, 0, page, BRIBE_PAGES)) return;
+  if (page < BRIBE_PAGES[0]) return;
+  const index = bribeAt(page);
   const last = index === LAST;
   context.font = `${SIZE}px ${SERIF}`;
   const filler = wrap(context, gibberish(page, 400).join(' '), WIDTH);
@@ -100,26 +80,22 @@ export const paintTrueStoryPage = (context: CanvasRenderingContext2D, page: numb
       font: `${12 * K}px ${SERIF}`,
       color: PALE,
     });
+    colophon(context);
   }
   write(context, String(page), PAGE_CENTER, FOLIO, { font: `${11 * K}px ${SERIF}`, color: PALE });
   if (index < 0) return;
-  const { left, right } = arrows(index, count);
+  const { left, right } = arrows(index);
   const arrow = { font: `${34}px ${SERIF}`, color: INK };
   if (left !== undefined) write(context, '‹', ARROW_IN + ARROW_W / 2, ARROW_Y, arrow);
   if (right !== undefined) write(context, '›', PAGE_TEXTURE.width - ARROW_IN - ARROW_W / 2, ARROW_Y, arrow);
 };
 
-/** Les signets de la page de titre, et ‹ › sur la page d'une bribe. */
-export const trueStoryLinks = (page: number, count: number): PageLink[] => {
-  if (page === TITLE_PAGE)
-    return BRIBE_PAGES.slice(0, count).map((target, index) => ({
-      y: MARKS_TOP + index * MARKS_STEP - 8,
-      height: MARKS_STEP - 4,
-      target,
-    }));
-  const index = bribeAt(page, count);
+/** Les lignes du sommaire, et ‹ › sur la page d'une bribe. */
+export const trueStoryLinks = (page: number): PageLink[] => {
+  if (page === CONTENTS_PAGE) return contentsLinks(BRIBE_PAGES);
+  const index = bribeAt(page);
   if (index < 0) return [];
-  const { left, right } = arrows(index, count);
+  const { left, right } = arrows(index);
   const band = { y: ARROW_Y - 12, height: 56, width: ARROW_W };
   return [
     ...(left !== undefined ? [{ ...band, x: ARROW_IN, target: left }] : []),

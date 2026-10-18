@@ -133,7 +133,7 @@ const rate = (run: Run, method: Method, away = false): number =>
   (method.gesture ? GESTURE_BONUS ** level(run, method.gesture) : 1) *
   product(run.life, EFFECT.readingRate) *
   (method.age === DIGITAL_AGE ? product(run.life, EFFECT.digitalReading) : 1) *
-  (1 + sum(run.life, EFFECT.storyReading)) *
+  (method.age === undefined ? 1 + sum(run.life, EFFECT.firstAgeReading) : 1) *
   etherReading(run) *
   (1 + run.life.tasks.readingBonus) *
   (away ? 1 : letterAverage(run).reading * mimicSlow(run.life));
