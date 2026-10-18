@@ -124,6 +124,8 @@ const glassSide = (side: number): (readonly [number, number])[] =>
 const PENCIL_END = [380, 650] as const;
 const PENCIL_TIP = [570, 575] as const;
 const PENCIL_CONE = 0.78;
+/** Le Jeton (18/10), en bas à gauche du Cabinet : le centre de son cercle. */
+const TOKEN = [170, 640] as const;
 /** Le crayon en lignes brisées : le corps et sa pointe, la base de la pointe, la mine. */
 const pencilSketch = (): (readonly [number, number])[][] => {
   const [ex, ey] = PENCIL_END;
@@ -480,9 +482,12 @@ export const FIGURES: Record<PageId, Figure> = {
       d: [320, 630],
       p1: along(PENCIL_END, PENCIL_TIP, 0.22),
       p2: along(PENCIL_END, PENCIL_TIP, 0.62),
+      // Le Jeton (18/10, .ai/maquette-relique-jeton.html) : ses deux étoiles dans son cercle, en bas à gauche, sous la loupe.
+      t1: [TOKEN[0] - 34, TOKEN[1]],
+      t2: [TOKEN[0] + 34, TOKEN[1]],
     },
     deco: [],
-    given: { id: 'hub', opens: ['l1', 'a1', 'h1', 'd', 'p1'] },
+    given: { id: 'hub', opens: ['l1', 'a1', 'h1', 'd', 'p1', 't1'] },
     sketch: {
       lines: [
         // Le manche de la loupe ; l'alidade de l'astrolabe ; les plateaux du sablier, et ses deux bulbes de chaque côté.
@@ -511,6 +516,9 @@ export const FIGURES: Record<PageId, Figure> = {
         [320, 336, 66],
         [320, 336, 44],
         [320, 259, 10],
+        // Le Jeton et son listel.
+        [TOKEN[0], TOKEN[1], 58],
+        [TOKEN[0], TOKEN[1], 48],
       ],
     },
   },

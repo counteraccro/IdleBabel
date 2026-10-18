@@ -116,6 +116,8 @@ export interface PendingDraw {
   boon?: LotteryBoonId;
   curse?: LotteryCurseId;
   method?: ToolId;
+  /** Les rouleaux sur 4 · 1 · 0 : le Jeton (un « rien » qui donne la relique, 18/10). */
+  relic?: boolean;
 }
 
 /** La Loterie (systems/lottery.ts) : gardée au prestige ; les jetons ne s'achètent jamais. */
@@ -127,6 +129,11 @@ export interface LotteryState {
   draws: number;
   /** Le tirage en cours (absent des sauvegardes d'avant le 16/10). */
   pending?: PendingDraw | null;
+  /**
+   * Les jetons offerts par le Jeton (systems/tokenRelic.ts) : le jour (« 2026-10-18 »), ceux qui restent, et combien ce jour
+   * en a donné (une étoile allumée dans la journée ajoute la différence). Absent des sauvegardes d'avant le 18/10.
+   */
+  daily?: { day: string; left: number; given: number };
 }
 
 /** Une tâche du jour (systems/dailyTasks.ts) : ce qu'elle compte, d'où, jusqu'où. */

@@ -142,6 +142,7 @@
     "nothing": { "title": "NOTHING", "line": "The token is lost." },
     "gain": { "title": "WIN", "line": "+ {p} pages · + {k} Knowledge", "knowledge": "+ {k} Knowledge" },
     "crushed": "MIMIC CRUSHED",
+    "relic": { "title": "A RELIC", "line": "The Token" },
     "boon": "BONUS",
     "curse": "PENALTY",
     "hours": "{n} h",
@@ -235,21 +236,25 @@
       "loupe": "The Magnifying Glass",
       "astrolabe": "The Astrolabe",
       "hourglass": "The Hourglass",
-      "pencil": "The Pencil"
+      "pencil": "The Pencil",
+      "token": "The Token"
     },
     "put": {
       "loupe": "Set out the magnifying glass?",
       "astrolabe": "Set out the astrolabe?",
       "hourglass": "Set out the hourglass?",
-      "pencil": "Set out the pencil?"
+      "pencil": "Set out the pencil?",
+      "token": "Set out the token?"
     },
     "bonus": {
       "loupe": "+{n} guaranteed Knowledge per find",
       "loupeOne": "+1 guaranteed Knowledge per find",
       "astrolabe": "letter +{n}%",
       "hourglass": "pages read +{n}%",
-      "pencil": "tasks of the day −{n}%"
+      "pencil": "tasks of the day −{n}%",
+      "token": "{n} free tokens every day"
     },
+    "tokensLeft": "{left} of today’s {n} tokens left",
     "acts": "at work",
     "choose": "set it out?",
     "wait": "can be set out in {t}",

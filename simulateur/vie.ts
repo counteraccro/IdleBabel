@@ -51,7 +51,7 @@ export interface Life {
    * La Loterie (17/10) : les jetons lâchés par la Mimic (une part, comme ses prises), joués aussitôt par le bot ; quand le
    * premier l'a été (la page de la Loterie s'ouvre). Ses tirages ne changent pas la lecture dans le simulateur.
    */
-  lottery: { tokens: number; draws: number; openedAt?: number };
+  lottery: { tokens: number; draws: number; openedAt?: number; tokenAt?: number; daily: number };
   /** Les tâches (simulateur/taches.ts). */
   tasks: Tasks;
 }
@@ -78,7 +78,7 @@ export const newLife = (): Life => ({
   relic: null,
   relicChanges: 0,
   mimic: { caught: 0, bonus: 0, seconds: 0 },
-  lottery: { tokens: 0, draws: 0 },
+  lottery: { tokens: 0, draws: 0, daily: 0 },
   tasks: newTasks(),
 });
 
@@ -151,7 +151,9 @@ export const takeRelics = (life: Life): void => {
   if (!life.stars.has(S.relics)) return;
   life.relics.add('loupe');
   if (life.stars.has(S.age)) life.relics.add('astrolabe');
-  const relic = life.relics.has('astrolabe') && PLAYER.letters > 0 ? 'astrolabe' : 'loupe';
+  // Le Jeton (18/10), s'il l'a et le veut : ses jetons du jour plutôt que la Loupe ou l'Astrolabe.
+  const relic =
+    PLAYER.tokenRelic && life.relics.has('token') ? 'token' : life.relics.has('astrolabe') && PLAYER.letters > 0 ? 'astrolabe' : 'loupe';
   if (life.relic !== null && life.relic !== relic) life.relicChanges += 1;
   life.relic = relic;
 };

@@ -46,6 +46,7 @@ import { SAGA_TOMES, TOMES, tomeIndex } from '../../data/sagaTomes';
 import { createLotteryMachine } from './lotteryMachine3d';
 import { drawResults } from './lotteryText';
 import { lastLotteryDraw, settleLottery, startLottery } from '../../systems/lottery';
+import { lotteryTokens } from '../../systems/tokenRelic';
 import { GLIDE_MS, glideEase, rememberView, rememberedView, shotOf, type LibraryView, type Shot } from './libraryViews';
 
 /**
@@ -202,7 +203,7 @@ export const createLibraryPage = (
   const machine = createLotteryMachine(
     { sign: () => t('ui.lottery.sign'), jackpot: () => t('ui.lottery.jackpot') },
     environment,
-    () => state.lottery.tokens,
+    () => lotteryTokens(state),
     () => {
       const plan = startLottery(state);
       return (
@@ -693,7 +694,7 @@ export const createLibraryPage = (
       endings.cartouche.write(endingsText());
       // La boucle appelle update dix fois par seconde : la machine ne se redessine (la scène avec) que si
       // leurs textes ou les jetons ont changé.
-      const labels = `${t('ui.lottery.sign')}|${t('ui.endings.collection')}|${state.lottery.tokens}`;
+      const labels = `${t('ui.lottery.sign')}|${t('ui.endings.collection')}|${lotteryTokens(state)}`;
       if (labels !== shownLabels) {
         shownLabels = labels;
         machine.relabel();

@@ -105,6 +105,15 @@
     ],
     "button": "Garder"
   },
+  "relicToken": {
+    "title": "Le Jeton",
+    "text": [
+      "Un jeton qui n’entre dans aucune fente.",
+      "Il le tournait entre ses doigts, chaque jour,",
+      "et chaque jour la machine lui en rendait d’autres."
+    ],
+    "button": "Garder"
+  },
   "away": {
     "title": "Un songe",
     "text": [

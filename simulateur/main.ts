@@ -14,6 +14,7 @@
  *   npm run simule -- --lecture=auto:0.1       la lecture des méthodes d'un Âge multipliée (manual, auto, num)
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
  *   npm run simule -- --sans-taches          sans les tâches (simulateur/taches.ts, pas encore dans le jeu)
+ *   npm run simule -- --sans-jeton           le bot ne pose pas le Jeton (la relique de la Loterie)
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
@@ -41,6 +42,7 @@ if (option('lettres') !== undefined) PLAYER.letters = Number(option('lettres'));
 if (option('numerique')) PLAYER.digitalAge = Number(option('numerique'));
 if (option('sans-bit') !== undefined) PLAYER.bit = false;
 if (option('sans-taches') !== undefined) PLAYER.tasks = false;
+if (option('sans-jeton') !== undefined) PLAYER.tokenRelic = false;
 // L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
 if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
 
@@ -153,7 +155,7 @@ console.log(line(header));
 rows.forEach((row) => console.log(line(row)));
 console.log(`Sceaux : ${sealsPerPlate(life.seals)} (+ ${PLAYER.otherSeals} livres rares et secrets)`);
 console.log(
-  `Loterie : ${life.lottery.draws} jetons joués · page ouverte : ${duration(life.lottery.openedAt)} · étoiles achetées : ${[...life.stars].filter((id) => id.startsWith('lottery.')).join(', ') || 'aucune'}`,
+  `Loterie : ${life.lottery.draws} jetons joués (dont ${Math.floor(life.lottery.daily)} du Jeton, trouvé : ${duration(life.lottery.tokenAt)}) · page ouverte : ${duration(life.lottery.openedAt)} · étoiles achetées : ${[...life.stars].filter((id) => id.startsWith('lottery.')).join(', ') || 'aucune'}`,
 );
 console.log(`Éther reçu : ${life.etherReceived} · non dépensé : ${life.etherFree} · étoiles : ${litPerPage(life)}`);
 

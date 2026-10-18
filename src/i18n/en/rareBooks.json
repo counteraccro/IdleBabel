@@ -2696,6 +2696,14 @@
             "With them, the game moved to Alpha 2.5."
           ]
         },
+        "relicToken": {
+          "head": "The Token",
+          "text": [
+            "The middle cell of the bookcase had stayed empty since the book of the ending moved to the endings shelf. It takes a fifth relic, given by the Lottery: the Token, when the reels stop on 4 · 1 · 0. Once in fifty while it has not been found, and those odds are taken from “nothing”: the token played would have been lost.",
+            "It is brass, its edge reeded, the hexagon of the galleries and 4 · 1 · 0 struck in the middle. Two other drafts were set aside: a pierced token, worn in the middle by fingers, and a bronze token whose edge bears a notch for each day. In the bookcase it stands on a small wooden easel, far bigger than life: it is a representation, at its true size it would be a mere dot.",
+            "While it works, it gives five tokens every day, played before the others and lost at midnight if they have not been. Its branch of the Cabinet, a circle at the bottom left, under the magnifying glass, gives seven, then ten."
+          ]
+        },
         "thisBook": {
           "head": "This book",
           "text": [
@@ -2788,6 +2796,8 @@
         "mimic-eyes-a": "Amber eyes",
         "mimic-eyes-b": "Green eyes",
         "mimic-side-b": "Half off the edge",
+        "token-b": "The pierced token",
+        "token-c": "The notched token",
         "new-version-a": "The Library has changed",
         "etherium-ink-d1": "The atlas",
         "etherium-ink-d3": "The restrained night",
@@ -2806,7 +2816,8 @@
         "newVersion": "The new version",
         "scenes": "The rooms",
         "sceneNotebook": "The setting in the notebook",
-        "mimic": "The Mimic"
+        "mimic": "The Mimic",
+        "relicToken": "The Token"
       }
     }
   },

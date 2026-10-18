@@ -39,6 +39,12 @@ const RELIC_SIGILS: Record<string, Shape[]> = {
     { kind: 'path', d: 'M58.4 30.4 Q58.4 43 50 50 Q41.6 57 41.6 69.6' },
     { kind: 'path', d: 'M45.2 65.7 Q50 60.1 54.7 65.7' },
   ],
+  // Le Jeton (18/10, maquette .ai/maquette-relique-jeton.html) : le cercle et son listel, l'hexagone au milieu.
+  relicToken: [
+    { kind: 'circle', cx: 50, cy: 50, r: 17.4 },
+    { kind: 'circle', cx: 50, cy: 50, r: 13 },
+    { kind: 'path', d: 'M50 41.5 L57.4 45.8 L57.4 54.2 L50 58.5 L42.6 54.2 L42.6 45.8 Z' },
+  ],
   relicPencil: [
     { kind: 'path', d: 'M30.4 69.6 L38.8 52.8 L61.2 30.4 L69.6 38.8 L47.2 61.2 Z' },
     { kind: 'path', d: 'M38.8 52.8 L47.2 61.2' },

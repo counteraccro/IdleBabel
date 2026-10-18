@@ -149,7 +149,9 @@ const relicValue = (state: GameState): string => {
   const id = state.relics.active;
   if (!id) return '';
   const bonus = relicBonus(state, id);
+  // La Loupe : « +3 » ; le Jeton : « 5 » (jetons par jour).
   if (id === 'loupe') return writeDigits(`+${number(bonus)}`);
+  if (id === 'token') return writeDigits(number(bonus));
   // Le Crayon raccourcit : « −25 % ».
   return `${id === 'pencil' ? '−' : '+'}${percent(bonus)}`;
 };

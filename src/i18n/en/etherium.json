@@ -699,6 +699,16 @@
         "name": "Pencil 2",
         "value": "The Pencil:",
         "effect": "tasks of the day −50%"
+      },
+      "t1": {
+        "name": "Token 1",
+        "value": "The Token:",
+        "effect": "7 tokens a day (instead of 5)"
+      },
+      "t2": {
+        "name": "Token 2",
+        "value": "The Token:",
+        "effect": "10 tokens a day"
       }
     },
     "lottery": {

@@ -11,6 +11,9 @@ export const RELIC_ICONS: Record<RelicId, string> = {
     '<circle cx="10" cy="11.5" r="6.2" fill="none" stroke="#e8c776" stroke-width="1.3"/><circle cx="10" cy="11.5" r="3.4" fill="none" stroke="#e8c776" stroke-width="0.8"/><circle cx="10" cy="3.4" r="1.5" fill="none" stroke="#e8c776" stroke-width="1"/><path d="M5 14.5l10-6" stroke="#e8c776" stroke-width="1.2"/>',
   hourglass:
     '<path d="M5.5 3h9M5.5 17h9M7 3q0 4.5 3 7q3 2.5 3 7M13 3q0 4.5-3 7q-3 2.5-3 7" fill="none" stroke="#e8c776" stroke-width="1.3" stroke-linecap="round"/><path d="M8.3 15.6q1.7-2 3.4 0z" fill="#e8c776"/>',
+  // Le Jeton (18/10) : un cercle, son listel, l'hexagone au milieu.
+  token:
+    '<circle cx="10" cy="10" r="6.2" fill="none" stroke="#e8c776" stroke-width="1.3"/><circle cx="10" cy="10" r="4.6" fill="none" stroke="#e8c776" stroke-width="0.7"/><path d="M10 7L12.6 8.5V11.5L10 13L7.4 11.5V8.5Z" fill="none" stroke="#e8c776" stroke-width="0.9" stroke-linejoin="round"/>',
   pencil:
     '<path d="M3 17L6 11L14 3L17 6L9 14Z M6 11L9 14" fill="none" stroke="#e8c776" stroke-width="1.3" stroke-linejoin="round"/><path d="M3 17L4.2 14.6L5.4 15.8Z" fill="#e8c776"/>',
 };

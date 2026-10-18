@@ -699,6 +699,16 @@
         "name": "Crayon 2",
         "value": "Le Crayon :",
         "effect": "tâches du jour −50 %"
+      },
+      "t1": {
+        "name": "Jeton 1",
+        "value": "Le Jeton :",
+        "effect": "7 jetons par jour (au lieu de 5)"
+      },
+      "t2": {
+        "name": "Jeton 2",
+        "value": "Le Jeton :",
+        "effect": "10 jetons par jour"
       }
     },
     "lottery": {

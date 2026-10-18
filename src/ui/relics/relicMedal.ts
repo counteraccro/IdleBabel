@@ -1,5 +1,9 @@
 import { el, type Component } from '../dom';
 import { relicBonusText, relicName } from './relicText';
+import { relicBonus } from '../../systems/relics';
+import { dailyTokensLeft } from '../../systems/tokenRelic';
+import { writeDigits } from '../../core/format';
+import { t } from '../../i18n';
 import { relicIcon } from './relicIcons';
 import type { RelicId } from '../../data/relics';
 import type { GameState } from '../../core/state';
@@ -28,7 +32,15 @@ export const createRelicMedal = (state: GameState, onOpen: () => void): Componen
       shown = active;
       icon.innerHTML = relicIcon(active);
     }
-    const line = `${relicName(active)} · ${relicBonusText(state, active)}`;
+    // Le Jeton : les jetons du jour qui restent (« 3 jetons du jour sur 5 »).
+    const line =
+      active === 'token'
+        ? `${relicName(active)} · ${writeDigits(
+            t('ui.relics.tokensLeft')
+              .replace('{left}', String(dailyTokensLeft(state)))
+              .replace('{n}', String(relicBonus(state, active))),
+          )}`
+        : `${relicName(active)} · ${relicBonusText(state, active)}`;
     if (line !== text) tip.textContent = text = line;
   };
   update();

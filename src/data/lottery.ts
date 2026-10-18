@@ -51,6 +51,13 @@ export type LotteryCurseId = (typeof LOTTERY_CURSES)[number]['id'];
 /** Ce qui dure, avec son médaillon : les bonus, et les malus sauf la Mimic dorée (elle est dans la salle). */
 export type LotteryEffectId = LotteryBoonId | Exclude<LotteryCurseId, 'golden'>;
 
+/**
+ * Le Jeton, la 5e relique (l'auteur, 18/10) : les rouleaux s'arrêtent sur 4 · 1 · 0, une fois sur 50 tant qu'il n'est
+ * pas trouvé (jamais ensuite). Ces chances sont prises sur « rien » : le jeton aurait été perdu.
+ */
+export const RELIC_REELS = [4, 1, 0] as const;
+export const RELIC_TOKEN_ODDS = 1 / 50;
+
 /** Une Mimic attrapée lâche un jeton, une fois sur trois. */
 export const MIMIC_TOKEN_CHANCE = 1 / 3;
 

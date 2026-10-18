@@ -12,6 +12,7 @@ const NAMES: Record<string, string> = {
   astrolabe: 'L’Astrolabe (nuit)',
   hourglass: 'Le Sablier (verrière)',
   pencil: 'Le Crayon (tâche 15)',
+  token: 'Le Jeton (Loterie, 4 · 1 · 0)',
 };
 
 /** Les reliques (systems/relics.ts) : les faire apparaître, les ranger dans la vitrine, remettre le délai à zéro (validé le 11/10). */

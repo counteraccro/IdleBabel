@@ -76,6 +76,7 @@ export const DRAFT_GROUPS = {
   scenes: ['scenes-balcony', 'scenes-nave'],
   sceneNotebook: ['scene-notebook-a', 'scene-notebook-c'],
   mimic: ['mimic-eyes-a', 'mimic-eyes-b', 'mimic-side-b'],
+  relicToken: ['token-b', 'token-c'],
 };
 
 export const STORY: StoryChapter[] = [
@@ -167,6 +168,7 @@ export const STORY: StoryChapter[] = [
       { key: 'babelStory', plates: ['trueStory'] },
       { key: 'lotteryStars' },
       { key: 'tasks' },
+      { key: 'relicToken', drafts: ['relicToken'] },
     ],
   },
 ];

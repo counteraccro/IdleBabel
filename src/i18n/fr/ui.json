@@ -145,6 +145,7 @@
     "nothing": { "title": "RIEN", "line": "Le jeton est perdu." },
     "gain": { "title": "GAIN", "line": "+ {p} pages · + {k} de Connaissance", "knowledge": "+ {k} de Connaissance" },
     "crushed": "MIMIC ÉCRASÉE",
+    "relic": { "title": "UNE RELIQUE", "line": "Le Jeton" },
     "boon": "BONUS",
     "curse": "MALUS",
     "hours": "{n} h",
@@ -241,21 +242,25 @@
       "loupe": "La Loupe",
       "astrolabe": "L’Astrolabe",
       "hourglass": "Le Sablier",
-      "pencil": "Le Crayon"
+      "pencil": "Le Crayon",
+      "token": "Le Jeton"
     },
     "put": {
       "loupe": "Poser la loupe ?",
       "astrolabe": "Poser l’astrolabe ?",
       "hourglass": "Poser le sablier ?",
-      "pencil": "Poser le crayon ?"
+      "pencil": "Poser le crayon ?",
+      "token": "Poser le jeton ?"
     },
     "bonus": {
       "loupe": "+{n} de Connaissance garantie à chaque trouvaille",
       "loupeOne": "+1 de Connaissance garantie à chaque trouvaille",
       "astrolabe": "lettre +{n} %",
       "hourglass": "pages lues +{n} %",
-      "pencil": "tâches du jour −{n} %"
+      "pencil": "tâches du jour −{n} %",
+      "token": "{n} jetons offerts chaque jour"
     },
+    "tokensLeft": "{left} jetons du jour sur {n}",
     "acts": "elle agit",
     "choose": "la poser ?",
     "wait": "on pourra la poser dans {t}",

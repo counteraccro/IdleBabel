@@ -2696,6 +2696,14 @@
             "Avec elles, le jeu est passé en Alpha 2.5."
           ]
         },
+        "relicToken": {
+          "head": "Le Jeton",
+          "text": [
+            "La case du milieu de la vitrine était restée vide depuis que le livre de la fin avait gagné le meuble des fins. Elle reçoit une cinquième relique, que donne la Loterie : le Jeton, quand les rouleaux s’arrêtent sur 4 · 1 · 0. Une fois sur cinquante tant qu’il n’est pas trouvé, et ces chances sont prises sur « rien » : le jeton joué aurait été perdu.",
+            "Il est en laiton, la tranche cannelée, l’hexagone des galeries et 4 · 1 · 0 frappés au milieu. Deux autres pistes ont été écartées : un jeton percé, usé au milieu par les doigts, et un jeton de bronze dont la tranche porte une encoche par jour. Dans la vitrine, il se tient debout sur un petit chevalet de bois, bien plus grand que nature : c’est une représentation, à sa vraie taille il ne serait qu’un point.",
+            "Tant qu’il agit, il offre cinq jetons chaque jour, joués avant les autres et perdus à minuit s’ils ne l’ont pas été. Sa branche du Cabinet, un cercle en bas à gauche, sous la loupe, en donne sept, puis dix."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [
@@ -2788,6 +2796,8 @@
         "mimic-eyes-a": "Les yeux d’ambre",
         "mimic-eyes-b": "Les yeux verts",
         "mimic-side-b": "À moitié sortie",
+        "token-b": "Le jeton percé",
+        "token-c": "Le jeton aux encoches",
         "new-version-a": "La Bibliothèque a changé",
         "etherium-ink-d1": "L’atlas",
         "etherium-ink-d3": "La nuit retenue",
@@ -2806,7 +2816,8 @@
         "newVersion": "La nouvelle version",
         "scenes": "Les salles",
         "sceneNotebook": "Le décor dans le cahier",
-        "mimic": "La Mimic"
+        "mimic": "La Mimic",
+        "relicToken": "Le Jeton"
       }
     }
   },

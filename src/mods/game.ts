@@ -11,6 +11,7 @@ import { relicFound, relicWait } from '../systems/relics';
 import { RELICS } from '../data/relics';
 import { nextEtherPages, prestigeGain } from '../systems/prestige';
 import { lotteryBlocked } from '../systems/lottery';
+import { dailyTokensLeft } from '../systems/tokenRelic';
 import { lotteryEffects } from '../systems/lotteryEffects';
 import { goldenHere } from '../systems/goldenMimic';
 import { getLocale, t } from '../i18n';
@@ -97,13 +98,14 @@ export const modGame = (state: GameState) => ({
     changeIn: relicWait(state) / 1000,
   }),
   /**
-   * La Loterie : les jetons, ceux déjà joués, la machine bloquée (tous les bonus en cours), les bonus et malus en cours
+   * La Loterie : les jetons gagnés, ceux offerts aujourd'hui par le Jeton (joués d'abord), ceux déjà joués, la machine bloquée (tous les bonus en cours), les bonus et malus en cours
    * (leur id, la méthode visée, les secondes qui leur restent), et les secondes qui restent à la Mimic dorée (0 : absente).
    */
   lottery: () => {
     const now = Date.now();
     return {
       tokens: state.lottery.tokens,
+      daily: dailyTokensLeft(state, now),
       draws: state.lottery.draws,
       blocked: lotteryBlocked(state, now),
       effects: lotteryEffects(state, now).map((effect) => ({

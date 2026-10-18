@@ -32,7 +32,7 @@ import { SENTENCES } from '../src/data/sentences';
 import { lit, product, relicBonus, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
 import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../src/data/mimic';
-import { LOTTERY_BOONS, LOTTERY_CURSES, LOTTERY_STARS } from '../src/data/lottery';
+import { LOTTERY_BOONS, LOTTERY_CURSES, LOTTERY_STARS, RELIC_TOKEN_ODDS } from '../src/data/lottery';
 import { countLast, drawn, tickTasks } from './taches';
 
 /** Une partie, du réveil au prestige. */
@@ -241,10 +241,27 @@ const addTokens = (run: Run, tokens: number, pps: number): void => {
   lottery.tokens += tokens;
   lottery.draws = Math.floor(lottery.tokens);
   if (lottery.draws > 0) lottery.openedAt ??= run.life.clock;
+  // Le Jeton : une chance sur 50 par tirage, compté trouvé au 50e (le bot le pose à son prochain réveil, takeRelics).
+  if (lottery.draws >= 1 / RELIC_TOKEN_ODDS && !run.life.relics.has('token')) {
+    run.life.relics.add('token');
+    lottery.tokenAt = run.life.clock;
+  }
   for (let i = before; i < lottery.draws; i++) drawn(run.life);
   // Autant de secondes de la production du moment.
   gain(run, pps * lotteryAverage(run.life) * (lottery.draws - before));
 };
+
+/**
+ * Les jetons du jour du Jeton (18/10), s'il agit : sa part de la journée ; une absence de plus d'un jour n'en donne
+ * qu'un (ceux d'un jour pas joué sont perdus à minuit).
+ */
+const dailyTokens = (run: Run, seconds: number, pps: number): void => {
+  if (run.life.relic !== 'token') return;
+  const tokens = (relicBonus(run.life, 'token', 0) * Math.min(seconds, DAY_SECONDS)) / DAY_SECONDS;
+  run.life.lottery.daily += tokens;
+  addTokens(run, tokens, pps);
+};
+const DAY_SECONDS = 86_400;
 
 /** Ce que les tâches rendent : des jetons, des heures de lecture, des heures de Connaissance (au rythme du moment). */
 const tasksFor = (run: Run, seconds: number, onScreen: boolean): void => {
@@ -300,6 +317,7 @@ export const play = (run: Run, seconds: number): void => {
     const level = Math.max(0, ...Object.entries(EFFECT.lotteryToken).map(([id, v]) => (lit(run.life, id) ? v : 0)));
     addTokens(run, caught * LOTTERY_STARS.token[level], pps);
   }
+  dailyTokens(run, seconds, pps);
   run.t += seconds;
   run.played += seconds;
   run.life.clock += seconds;
@@ -348,6 +366,7 @@ export const away = (run: Run, seconds: number): void => {
   // La Lune : les trouvailles de l'absence en entier (Pointe haute), deux fois plus de feuilles comptées (l'étoile voisine).
   const sheets = Math.min(pps, turnsCap(run) * 2 * (lit(run.life, S.awayTurns) ? 2 : 1));
   find(run, sheets * (lit(run.life, S.awayFinds) ? 1 : share) * counted, true);
+  dailyTokens(run, seconds, pps);
   run.t += seconds;
   run.life.clock += seconds;
   run.life.tasks.longestAway = Math.max(run.life.tasks.longestAway, seconds);

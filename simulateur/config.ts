@@ -65,6 +65,11 @@ export const PLAYER = {
   /** Les tâches (17/10, simulateur/taches.ts, pas encore dans le jeu) : --sans-taches pour s'en passer. */
   tasks: true,
   /**
+   * Le Jeton (18/10) : trouvé au 50e jeton joué (une chance sur 50 par tirage), le bot le pose à la place de sa relique
+   * et joue ses jetons du jour ; --sans-jeton pour garder la Loupe ou l'Astrolabe.
+   */
+  tokenRelic: true,
+  /**
    * Lecture des méthodes de chaque Âge, multipliée (essais du 13/10 : adoucir le gain d'un Âge à l'autre) :
    * --lecture=auto:0.1,num:0.01 ; 1 partout, les chiffres du jeu.
    */

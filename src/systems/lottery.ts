@@ -5,6 +5,8 @@ import {
   LOTTERY_SPIN_MS,
   LOTTERY_CURSES,
   OUTCOMES,
+  RELIC_REELS,
+  RELIC_TOKEN_ODDS,
   type LotteryBoonId,
   type LotteryCurseId,
   type OutcomeId,
@@ -18,6 +20,8 @@ import { goldenHere, spawnGolden } from './goldenMimic';
 import { lotteryOdds, lotterySeconds } from './lotteryStars';
 import { taskDraw } from './tasks';
 import { giveTome, nextTome } from './endings';
+import { findRelic, relicFound } from './relics';
+import { lotteryTokens, spendToken } from './tokenRelic';
 import { runHooks } from '../mods/hooks';
 import type { GameState, PendingDraw } from '../core/state';
 
@@ -46,10 +50,12 @@ export interface Draw {
   tome?: number;
   /** La Mimic dorée a écrasé la Mimic ordinaire : ce que celle-ci a rendu (Connaissance, un jeton ou non). */
   crushed?: { knowledge: number; token: boolean };
+  /** Les rouleaux sur 4 · 1 · 0 : le Jeton est trouvé. */
+  relic?: boolean;
 }
 
-/** Débogage : le prochain tirage donnera ceci (un résultat, ou un bonus, ou un malus précis). */
-let forced: OutcomeId | LotteryBoonId | LotteryCurseId | null = null;
+/** Débogage : le prochain tirage donnera ceci (un résultat, ou un bonus, ou un malus précis, ou le Jeton). */
+let forced: OutcomeId | LotteryBoonId | LotteryCurseId | 'relic' | null = null;
 export const forceDraw = (what: typeof forced): void => {
   forced = what;
 };
@@ -84,9 +90,25 @@ export const reelsFor = (outcome: OutcomeId, random: () => number): [number, num
     reels[Math.floor(random() * 3)] = other;
     return reels;
   }
-  const a = digit(random, []);
-  const b = digit(random, [a]);
-  return [a, b, digit(random, [a, b])];
+  // Trois différents, mais jamais 4 · 1 · 0 : ce tirage-là est celui du Jeton.
+  for (;;) {
+    const a = digit(random, []);
+    const b = digit(random, [a]);
+    const reels: [number, number, number] = [a, b, digit(random, [a, b])];
+    if (reels.some((value, i) => value !== RELIC_REELS[i])) return reels;
+  }
+};
+
+/**
+ * Le Jeton se tire sur « rien » (l'auteur, 18/10) : une fois sur 50 en tout tant qu'il n'est pas trouvé, quelles que soient
+ * les chances de « rien » (le rouleau de la chance les baisse ; elles vont alors toutes au Jeton s'il le faut).
+ */
+const relicDrawn = (state: GameState, odds: { id: OutcomeId; weight: number }[], random: () => number): boolean => {
+  if (relicFound(state, 'token')) return false;
+  if (forced === 'relic') return true;
+  const total = odds.reduce((sum, one) => sum + one.weight, 0);
+  const nothing = odds.find((one) => one.id === 'nothing')?.weight ?? 0;
+  return nothing > 0 && random() < Math.min(1, RELIC_TOKEN_ODDS / (nothing / total));
 };
 
 /** Les méthodes qu'on a, la mieux lisante d'abord. */
@@ -149,12 +171,12 @@ const pickCurse = (state: GameState, plan: PendingDraw, random: () => number, no
  * cours, ni pendant qu'un tirage tourne (renvoie undefined).
  */
 export const startLottery = (state: GameState, random: () => number = Math.random, now = Date.now()): PendingDraw | undefined => {
-  if (state.lottery.pending || state.lottery.tokens <= 0 || lotteryBlocked(state, now)) return undefined;
-  state.lottery.tokens -= 1;
+  if (state.lottery.pending || lotteryTokens(state, now) <= 0 || lotteryBlocked(state, now)) return undefined;
+  spendToken(state, now);
   state.lottery.draws += 1;
   // Le rouleau de la chance, et les mods, changent les chances de chaque résultat (lotteryOdds:<résultat>).
   const odds = lotteryOdds(state);
-  let outcome = OUTCOMES.find((one) => one.id === forced)?.id ?? pick(odds, random).id;
+  let outcome = OUTCOMES.find((one) => one.id === forced)?.id ?? (forced === 'relic' ? 'nothing' : pick(odds, random).id);
   if (LOTTERY_BOONS.some((one) => one.id === forced)) outcome = 'boon';
   if (LOTTERY_CURSES.some((one) => one.id === forced)) outcome = 'curse';
   // Le gros lot donne le tome suivant : sans tome 1, ou sans tome écrit à gagner, ses chances vont à « rien » (l'auteur, 18/10).
@@ -162,6 +184,10 @@ export const startLottery = (state: GameState, random: () => number = Math.rando
   // Tous les malus en cours : un malus ne se tire pas deux fois, ses chances vont à « rien ».
   if (outcome === 'curse' && drawableCurses(state, now).length === 0) outcome = 'nothing';
   const plan: PendingDraw = { at: now, outcome, reels: reelsFor(outcome, random) };
+  if (outcome === 'nothing' && relicDrawn(state, odds, random)) {
+    plan.relic = true;
+    plan.reels = [...RELIC_REELS];
+  }
   if (outcome === 'boon') pickBoon(state, plan, random, now);
   else if (outcome === 'curse') pickCurse(state, plan, random, now);
   forced = null;
@@ -183,7 +209,10 @@ export const settleLottery = (state: GameState, random: () => number = Math.rand
   if (!plan || (!force && now < plan.at + LOTTERY_SPIN_MS + 1000)) return undefined;
   state.lottery.pending = null;
   const draw: Draw = { outcome: plan.outcome, reels: [...plan.reels] };
-  if (plan.outcome === 'gain') gain(state, draw, random);
+  if (plan.relic) {
+    // Déjà trouvé entre-temps (le débogage) : un « rien » comme un autre.
+    draw.relic = findRelic(state, 'token', now);
+  } else if (plan.outcome === 'gain') gain(state, draw, random);
   else if (plan.outcome === 'jackpot') {
     const tome = nextTome(state);
     if (tome !== undefined) {

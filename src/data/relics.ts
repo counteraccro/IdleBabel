@@ -7,7 +7,7 @@ import type { SceneId } from '../scene/scenes';
  * dans sa salle. Un clic : son récit, son sceau, et elle rejoint sa petite case de la vitrine, pour toujours. Une seule
  * agit à la fois ; en changer la fait agir tout de suite, puis plus de changement pendant un temps.
  */
-export const RELIC_IDS = ['loupe', 'astrolabe', 'hourglass', 'pencil'] as const;
+export const RELIC_IDS = ['loupe', 'astrolabe', 'hourglass', 'pencil', 'token'] as const;
 export type RelicId = (typeof RELIC_IDS)[number];
 
 /** Comment l'objet est posé : couché à plat, ou appuyé (debout, un peu penché en arrière). */
@@ -15,14 +15,14 @@ export type RelicPose = 'flat' | 'lean';
 
 export interface RelicDef {
   id: RelicId;
-  /** Sa salle (le fond où elle est posée) ; aucune pour le Crayon, qui se gagne (la tâche 15, data/tasks.ts). */
+  /** Sa salle (le fond où elle est posée) ; aucune pour le Crayon (la tâche 15, data/tasks.ts) ni le Jeton (la Loterie), qui se gagnent. */
   room?: SceneId;
   /** Sa phrase-indice (famille « hints » du livre blanc) ; aucune pour le Crayon. */
   hint?: string;
   /** Son sceau (le même nom que l'indice, sans « hint » : data/anomalies.ts, hintSeal). */
   seal: string;
   /** Son moment de lore : le récit, à la trouvaille (data/lore.ts). */
-  lore: 'relicLoupe' | 'relicAstrolabe' | 'relicHourglass' | 'relicPencil';
+  lore: 'relicLoupe' | 'relicAstrolabe' | 'relicHourglass' | 'relicPencil' | 'relicToken';
   /** Sa petite case de la vitrine (ui/library/bookcase3d.ts : les cases basses et étroites). */
   cell: number;
   /**
@@ -84,6 +84,17 @@ export const RELICS: readonly RelicDef[] = [
     cell: 12,
     // − part de ce que demande une tâche du jour.
     bonus: [0.25, 0.35, 0.5],
+  },
+  // Le Jeton (18/10, .ai/maquette-relique-jeton.html, piste A) : la Loterie le donne, rouleaux arrêtés sur 4 · 1 · 0
+  // (systems/lottery.ts). Il prend la case haute du milieu, celle du livre de la fin parti sur le meuble des fins
+  // (FINAL_CELL de ui/library/bookcase3d.ts), debout sur un petit chevalet de bois.
+  {
+    id: 'token',
+    seal: 'relicToken',
+    lore: 'relicToken',
+    cell: 14,
+    // Jetons offerts chaque jour (systems/tokenRelic.ts).
+    bonus: [5, 7, 10],
   },
 ];
 

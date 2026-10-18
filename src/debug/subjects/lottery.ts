@@ -1,6 +1,7 @@
 import { BOON_SECONDS, LOTTERY_BOONS, LOTTERY_CURSES, OUTCOMES } from '../../data/lottery';
 import { TOOLS } from '../../data/tools';
 import { forceDraw } from '../../systems/lottery';
+import { dailyTokensLeft } from '../../systems/tokenRelic';
 import { lotteryEffects, startLotteryEffect } from '../../systems/lotteryEffects';
 import { goldenHere, spawnGolden } from '../../systems/goldenMimic';
 import { chips } from '../debugControls';
@@ -27,8 +28,9 @@ export const LOTTERY_SUBJECT: DebugSubject = {
         ...OUTCOMES.map((one): [string, () => void] => [one.id, () => forceDraw(one.id)]),
         ...LOTTERY_BOONS.map((one): [string, () => void] => [one.id, () => forceDraw(one.id)]),
         ...LOTTERY_CURSES.map((one): [string, () => void] => [one.id, () => forceDraw(one.id)]),
+        ['Le Jeton (4 · 1 · 0)', () => forceDraw('relic')],
       ]),
-      'Un résultat (le gros lot donne « rien » sans le tome 1, ou sans tome écrit à gagner), ou un bonus, ou un malus précis.',
+      'Un résultat (le gros lot donne « rien » sans le tome 1, ou sans tome écrit à gagner), ou un bonus, ou un malus précis, ou le Jeton (« rien » s’il est déjà trouvé).',
     );
     kit.row(
       'Tout de suite',
@@ -57,6 +59,7 @@ export const LOTTERY_SUBJECT: DebugSubject = {
           ...(goldenHere(state) ? [`Mimic dorée ${duration((state.lottery.golden!.until - Date.now()) / 1000)}`] : []),
         ].join(', ') || 'rien',
     );
+    kit.info('Jetons du jour (le Jeton)', () => String(dailyTokensLeft(state)));
     kit.info('Tirages', () => String(state.lottery.draws));
   },
 };

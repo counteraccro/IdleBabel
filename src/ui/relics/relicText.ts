@@ -12,6 +12,8 @@ export const relicBonusText = (state: GameState, id: RelicId): string => {
   const value = relicBonus(state, id);
   if (id === 'loupe')
     return writeDigits(value === 1 ? t('ui.relics.bonus.loupeOne') : t('ui.relics.bonus.loupe').replace('{n}', String(value)));
+  // Le Jeton : des jetons, pas un pourcentage.
+  if (id === 'token') return writeDigits(t('ui.relics.bonus.token').replace('{n}', String(value)));
   return writeDigits(t(`ui.relics.bonus.${id}`).replace('{n}', formatNumber(Math.round(value * 100), getLocale())));
 };
 

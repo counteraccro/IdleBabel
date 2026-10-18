@@ -38,6 +38,8 @@ const length = (seconds: number): string => {
 const short = (value: number): string => formatNumber(Math.floor(value), getLocale(), 'short');
 
 const resultOf = (state: GameState, draw: Draw): MachineResult => {
+  // Les rouleaux sur 4 · 1 · 0 : le Jeton (« UNE RELIQUE · Le Jeton »).
+  if (draw.relic) return { title: t('ui.lottery.relic.title'), line: t('ui.lottery.relic.line') };
   // Le gros lot : le tome gagné (« Tome II · On en parlait tout bas »).
   if (draw.tome !== undefined) {
     const { tome, titles } = messages().ui.endings;

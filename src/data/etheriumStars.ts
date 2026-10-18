@@ -196,6 +196,9 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   // Le Crayon (17/10) : ses deux étoiles, comme les autres reliques (tâches du jour −35 %, −50 %).
   ['relics', 'p1', null, 15],
   ['relics', 'p2', 'p1', 45],
+  // Le Jeton (18/10) : ses deux étoiles (7, puis 10 jetons offerts par jour).
+  ['relics', 't1', null, 15],
+  ['relics', 't2', 't1', 45],
   // La Loterie, « Le Bandit manchot » (17/10, .ai/maquette-etherium-loterie.html) : la fente est offerte quand un premier
   // jeton est joué ; le levier (le jeton), puis les trois rouleaux : le temps, la valeur, la chance. Chaque étoile d'un
   // rouleau rend la machine plus généreuse et plus cruelle (data/lottery.ts, LOTTERY_STARS).
@@ -369,6 +372,8 @@ export const EFFECT = {
     'relics.h2': 2,
     'relics.p1': 1,
     'relics.p2': 2,
+    'relics.t1': 1,
+    'relics.t2': 2,
   },
 } as const satisfies Record<string, Record<string, number>>;
 
@@ -424,7 +429,7 @@ export const S = {
 } as const;
 
 /** Les deux étoiles de chaque relique, sur la page « Les reliques » (leur lettre : la loupe, l'astrolabe, le sablier). */
-export const RELIC_BRANCH: Record<string, string> = { loupe: 'l', astrolabe: 'a', hourglass: 'h', pencil: 'p' };
+export const RELIC_BRANCH: Record<string, string> = { loupe: 'l', astrolabe: 'a', hourglass: 'h', pencil: 'p', token: 't' };
 
 /** Mémoire des méthodes : l'étoile qui garde la phrase de chaque méthode (Manuel, Automatique, puis Numérique). */
 export const KEEPS: Record<string, string> = {

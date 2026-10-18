@@ -6,6 +6,7 @@ import { chronicle } from '../systems/chronicle';
 import { remember } from '../systems/reminiscence';
 import { runHooks } from '../mods/hooks';
 import { settleLottery } from '../systems/lottery';
+import { refreshTokenDay } from '../systems/tokenRelic';
 import { tickTasks } from '../systems/tasks';
 
 /** La partie avance par pas de tant (le compteur aussi : les pages qui tournent seules, ui/book3d/autoTurn3d.ts). */
@@ -33,6 +34,8 @@ export const startLoop = (state: GameState, onTick: () => void): void => {
     remember(state);
     // Un tirage de la Loterie dont la machine n'a pas vu la fin (bibliothèque quittée, onglet caché, jeu rechargé).
     settleLottery(state, Math.random, now);
+    // Le Jeton qui agit : les jetons du jour, à minuit ou le jour où on le pose.
+    refreshTokenDay(state, now);
     tickTasks(state, elapsed, !document.hidden, now);
     checkSeals(state, now);
     chronicle(state, now);

@@ -100,6 +100,11 @@
     ],
     "button": "Keep it"
   },
+  "relicToken": {
+    "title": "The Token",
+    "text": ["A token that fits no slot.", "He turned it between his fingers, every day,", "and every day the machine gave him others."],
+    "button": "Keep it"
+  },
   "away": {
     "title": "A dream",
     "text": [
