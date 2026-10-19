@@ -2527,7 +2527,7 @@
         "away": {
           "head": "Absence",
           "text": [
-            "The game learned to go on without the player. A hidden tab is not an absence. The options notebook exports the game as a string of characters, and takes it back. Then the mods: each plugs into the game to change a piece of it. One of them turns the open book into an e-reader; rare books stay books. With mods, the game moved to Alpha 2.2.",
+            "The game learned to go on without the player. A hidden tab is not an absence. The options notebook exports the game as a string of characters, and takes it back. Then the mods: each plugs into the game to change a piece of it. One of them turns the open book into an e-reader; rare books stay books.",
             "On return, the seeker thinks they are waking from a dream. A modal sets them straight, and tells what their hands did without them."
           ]
         },
@@ -2627,16 +2627,14 @@
           "text": [
             "One more step on the Staircase: the Digital Age. It was meant to be called the Quantum Age; it was renamed, more in keeping with what comes before it. It opens five machines that the researcher describes without knowing them; the Floppy Disk, planned at first, gave its place to the Home Computer. Their prices were chosen with the simulator, out of three attempts, with a goal set for each Age: tens of Ether per prestige in the first, hundreds in the second, thousands in this one.",
             "Then the Ether began to weigh: in the Digital Age, it was a spiral. A new page of the Etherium eases it: Atlas, a kneeling giant carrying a room of the Library.",
-            "The Digital Age also received its own page in the Etherium: “Digital”, a Minitel drawn in stars.",
-            "With it, the game moved to Alpha 2."
+            "The Digital Age also received its own page in the Etherium: “Digital”, a Minitel drawn in stars."
           ]
         },
         "falseEnding": {
           "head": "The false ending",
           "text": [
             "There had to be an ending to look for. It was a last page in the Etherium, the Curtain, drawn in stars, which promises “the meaning of it all”.",
-            "Each star lit brings back a memory, highlighted in a book on the shelves: “My True Story”.",
-            "With it, the game moved to Alpha 2.1."
+            "Each star lit brings back a memory, highlighted in a book on the shelves: “My True Story”."
           ]
         },
         "endingsShelf": {
@@ -2645,8 +2643,7 @@
             "“My True Story” has left the shelves. Left of the library, an arrow leads to another piece of furniture, in the same wood, with two tiers. On top, on a stand, a brass easel waits for a book set face out; below, eleven places, each numbered, for a collection: “The True Ending”.",
             "At first it sat on top while being read, as if it were the true book; the top now belongs to the true book, and to it alone.",
             "Beside it, a casino machine, copper and gold: the Lottery. Three reels of Babel digits, a panel promising the jackpot, a lever, a red button. A wooden machine came first, then neon in every colour; both were set aside.",
-            "Tokens cannot be bought. A bonus, or a penalty, counts only once at a time: with many tokens, they would have broken the game. The token screen first counted in Babel digits; it now counts in ordinary digits.",
-            "With them, the game moved to Alpha 2.3."
+            "Tokens cannot be bought. A bonus, or a penalty, counts only once at a time: with many tokens, they would have broken the game. The token screen first counted in Babel digits; it now counts in ordinary digits."
           ]
         },
         "babelStory": {

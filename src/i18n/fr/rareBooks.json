@@ -2527,7 +2527,7 @@
         "away": {
           "head": "L’absence",
           "text": [
-            "Le jeu a appris à continuer sans le joueur. L’onglet caché n’est pas une absence. Le cahier d’options exporte la partie en une chaîne de caractères, et la reprend. Puis les mods : chacun se branche sur le jeu pour en changer un morceau. L’un d’eux change le livre ouvert en liseuse ; les livres rares, eux, restent des livres. Avec les mods, le jeu est passé en Alpha 2.2.",
+            "Le jeu a appris à continuer sans le joueur. L’onglet caché n’est pas une absence. Le cahier d’options exporte la partie en une chaîne de caractères, et la reprend. Puis les mods : chacun se branche sur le jeu pour en changer un morceau. L’un d’eux change le livre ouvert en liseuse ; les livres rares, eux, restent des livres.",
             "Au retour, le chercheur croit sortir d’un rêve. Une modale le détrompe, et dit ce que ses mains ont fait sans lui."
           ]
         },
@@ -2627,16 +2627,14 @@
           "text": [
             "Une marche de plus sur l’Escalier : l’Âge Numérique. Il devait s’appeler l’Âge Quantique ; il a été renommé, plus cohérent avec ce qui le précède. Il ouvre cinq machines que le chercheur décrit sans les connaître ; la Disquette, d’abord prévue, a laissé sa place au Micro-Ordinateur. Leurs prix ont été choisis au simulateur, parmi trois essais, avec un but posé pour chaque Âge : des dizaines d’Éther par prestige dans le premier, des centaines dans le deuxième, des milliers dans celui-ci.",
             "Puis l’Éther s’est mis à peser : dans l’Âge Numérique, c’était une spirale. Une page nouvelle de l’Etherium le soulage : l’Atlas, un géant agenouillé qui porte une salle de la Bibliothèque.",
-            "L’Âge Numérique a aussi reçu sa page de l’Etherium : « Numérique », un Minitel tracé en étoiles.",
-            "Avec lui, le jeu est passé en Alpha 2."
+            "L’Âge Numérique a aussi reçu sa page de l’Etherium : « Numérique », un Minitel tracé en étoiles."
           ]
         },
         "falseEnding": {
           "head": "La fausse fin",
           "text": [
             "Il fallait une fin à chercher. Ce fut une dernière page à l’Etherium, le Rideau, tracé en étoiles, qui promet « le sens de tout cela ».",
-            "Chaque étoile allumée fait remonter un souvenir, surligné dans un livre de la vitrine : « Mon histoire vraie ».",
-            "Avec elle, le jeu est passé en Alpha 2.1."
+            "Chaque étoile allumée fait remonter un souvenir, surligné dans un livre de la vitrine : « Mon histoire vraie »."
           ]
         },
         "endingsShelf": {
@@ -2645,8 +2643,7 @@
             "« Mon histoire vraie » a quitté la vitrine. À gauche de la bibliothèque, une flèche mène à un autre meuble, du même bois, à deux étages. En haut, sur un socle, un chevalet de laiton attend un livre posé de face ; en bas, onze places, chacune numérotée, pour une collection : « La Vraie Fin ».",
             "Elle a d’abord trôné en haut pendant sa lecture, comme si c’était le vrai livre ; le haut est maintenant au vrai livre, et à lui seul.",
             "À côté, une machine de casino, cuivre et or : la Loterie. Trois rouleaux aux chiffres de Babel, un panneau qui promet le gros lot, un levier, un bouton rouge. La machine d’abord en bois, et ses néons de toutes les couleurs, ont été écartés.",
-            "Les jetons ne s’achètent pas. Un bonus, ou un malus, ne vaut qu’une fois à la fois : avec beaucoup de jetons, ils auraient cassé le jeu. L’écran des jetons a d’abord compté en chiffres de Babel ; il compte maintenant en chiffres ordinaires.",
-            "Avec eux, le jeu est passé en Alpha 2.3."
+            "Les jetons ne s’achètent pas. Un bonus, ou un malus, ne vaut qu’une fois à la fois : avec beaucoup de jetons, ils auraient cassé le jeu. L’écran des jetons a d’abord compté en chiffres de Babel ; il compte maintenant en chiffres ordinaires."
           ]
         },
         "babelStory": {
