@@ -20,14 +20,15 @@ interface GearStar {
   every?: number;
 }
 
+/** Prix validés par l'auteur le 19/10 (22 500 en tout). */
 export const GEAR_STARS: GearStar[] = [
-  { id: 'gear.c', cost: 20, age: '', every: 10 },
-  { id: 'gear.a2', after: 'gear.c', cost: 30, age: AUTOMATIC_AGE },
-  { id: 'gear.a3', after: 'gear.a2', cost: 120, age: DIGITAL_AGE },
-  { id: 'gear.t1', after: 'gear.c', cost: 40, every: 5 },
-  { id: 'gear.t2', after: 'gear.t1', cost: 100, every: 2 },
-  { id: 'gear.t3', after: 'gear.t2', cost: 250, every: 1 },
-  { id: 'gear.t4', after: 'gear.t3', cost: 600, every: 0 },
+  { id: 'gear.c', cost: 500, age: '', every: 10 },
+  { id: 'gear.a2', after: 'gear.c', cost: 1000, age: AUTOMATIC_AGE },
+  { id: 'gear.a3', after: 'gear.a2', cost: 2500, age: DIGITAL_AGE },
+  { id: 'gear.t1', after: 'gear.c', cost: 1000, every: 5 },
+  { id: 'gear.t2', after: 'gear.t1', cost: 2500, every: 2 },
+  { id: 'gear.t3', after: 'gear.t2', cost: 5000, every: 1 },
+  { id: 'gear.t4', after: 'gear.t3', cost: 10000, every: 0 },
 ];
 
 // --rouage=c:20,a2:30,… : d'autres prix, pour essayer.
