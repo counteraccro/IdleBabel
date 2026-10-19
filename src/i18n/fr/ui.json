@@ -24,6 +24,7 @@
   "gearStart": "Clic : le remettre en marche",
   "lotCost": "×{k} : {n} pages",
   "lotMax": "max ({k}) : {n} pages",
+  "waitFor": "encore {time} de lecture",
   "lotMaxNone": "max (0) — prochaine : {n} pages",
   "reset": "Effacer la sauvegarde",
   "build": "Version du",

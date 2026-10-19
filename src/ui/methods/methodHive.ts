@@ -5,9 +5,10 @@ import { getLocale, t } from '../../i18n';
 import { formatNumber } from '../../core/format';
 import { TOOLS, type ToolId } from '../../data/tools';
 import { buyTools, chosenLot, lotCost, lotSize } from '../../systems/tools';
-import { armfulLots } from '../../systems/technologies';
+import { armfulLots, levelOf } from '../../systems/technologies';
 import { toolUnlocked } from '../../systems/sentences';
-import { toolRate } from '../../systems/production';
+import { pagesPerSecond, toolRate } from '../../systems/production';
+import { waitText } from '../letter/duration';
 import { createMethodSeal } from './methodSeal';
 import { createMethodLot } from './methodLot';
 import { createMethodGear } from './methodGear';
@@ -44,6 +45,16 @@ window.addEventListener('blur', () => {
 });
 
 /**
+ * La Patience (intuition permanente) : le temps de lecture qu'il faut encore pour payer `cost` pages, au rythme du moment
+ * (celui de l'en-tête) ; rien sans elle, ni quand rien ne se lit.
+ */
+const waitFor = (state: GameState, cost: number): string | undefined => {
+  const rate = pagesPerSecond(state);
+  if (levelOf(state, 'patience') === 0 || rate <= 0) return undefined;
+  return t('ui.waitFor').replace('{time}', waitText((cost - state.pages) / rate));
+};
+
+/**
  * Les méthodes de lecture, sur les étagères de gauche : leurs sceaux (ceux du livre blanc) en nid
  * d'abeille, qui grandit à chaque méthode découverte. Doré et luisant : on peut en acheter une de plus ;
  * éteint : pas assez de pages. Le nombre possédé est dans le sceau ; au survol (ou au clavier), le nom,
@@ -61,7 +72,8 @@ export const createMethodHive = (state: GameState): Component => {
   tipName.append(tipTitle, tipCount);
   const tipText = el('em');
   const tipPrice = el('span', 'method-tip-price');
-  tip.append(tipName, tipText, tipPrice);
+  const tipWait = el('span', 'method-tip-wait');
+  tip.append(tipName, tipText, tipPrice, tipWait);
   tip.setAttribute('aria-hidden', 'true');
   let pointed: ToolId | null = null;
   const lotMark = createMethodLot((chosen) => {
@@ -157,6 +169,9 @@ export const createMethodHive = (state: GameState): Component => {
         tipText.textContent = description;
         tipPrice.textContent = price;
         tipPrice.classList.toggle('short', !affordable);
+        const wait = waitFor(state, cost);
+        tipWait.textContent = affordable || !wait ? '' : wait;
+        tipWait.hidden = affordable || !wait;
         tip.style.top = seal.root.style.top;
       }
     }

@@ -227,7 +227,6 @@
     "nothingLeft": "There are none left to find.",
     "remembered": "I had understood it up to level {n}.",
     "rememberedAlone": "I had understood it up to level {n}. It comes back on its own, at this price.",
-    "wait": "{time} more reading",
     "units": {
       "days": "{n} d",
       "hours": "{n} h",
@@ -370,8 +369,8 @@
     },
     "patience": {
       "name": "Patience",
-      "description": "I know how long I must read before I understand.",
-      "effect": "the time before understanding",
+      "description": "I know how long I must read before the next method.",
+      "effect": "the time before the next method",
       "notes": ["It isn't long, when you know how long."],
       "unknown": "I don't know",
       "known": "I know"

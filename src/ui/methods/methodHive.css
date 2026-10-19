@@ -129,6 +129,13 @@
 .method-tip-price.short {
   color: #8b7a5c;
 }
+/* La Patience : le temps qu'il faut encore, sous le prix. */
+.method-tip-wait {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-style: italic;
+}
 @media (prefers-reduced-motion: reduce) {
   .method-seal,
   .method-seal.discovered {

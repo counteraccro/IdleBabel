@@ -9,7 +9,6 @@ import { settleLottery } from '../systems/lottery';
 import { refreshTokenDay } from '../systems/tokenRelic';
 import { tickTasks } from '../systems/tasks';
 import { turnGear } from '../systems/gear';
-import { trackKnowledgePace } from '../systems/knowledgePace';
 
 /** La partie avance par pas de tant (le compteur aussi : les pages qui tournent seules, ui/book3d/autoTurn3d.ts). */
 export const TICK_MS = 100;
@@ -31,7 +30,6 @@ export const startLoop = (state: GameState, onTick: () => void): void => {
     state.lastTick = now;
     const elapsed = (now - previous) / 1000;
     trackPlay(state, elapsed);
-    trackKnowledgePace(elapsed);
     runHooks('tick', elapsed);
     previous = now;
     remember(state);

@@ -24,6 +24,7 @@
   "gearStart": "Click: start it again",
   "lotCost": "×{k}: {n} pages",
   "lotMax": "max ({k}): {n} pages",
+  "waitFor": "{time} more reading",
   "lotMaxNone": "max (0) — next: {n} pages",
   "reset": "Erase save",
   "build": "Build of",

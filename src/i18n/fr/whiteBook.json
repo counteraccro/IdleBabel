@@ -227,7 +227,6 @@
     "nothingLeft": "Il n'en reste plus à trouver.",
     "remembered": "Je l'avais compris jusqu'au niveau {n}.",
     "rememberedAlone": "Je l'avais compris jusqu'au niveau {n}. Ça me revient seul, à ce prix.",
-    "wait": "encore {time} de lecture",
     "units": {
       "days": "{n} j",
       "hours": "{n} h",
@@ -370,8 +369,8 @@
     },
     "patience": {
       "name": "La Patience",
-      "description": "Je sais combien de temps il me faudra lire avant de comprendre.",
-      "effect": "le temps avant de comprendre",
+      "description": "Je sais combien de temps il me faudra lire avant la prochaine méthode.",
+      "effect": "le temps avant la prochaine méthode",
       "notes": ["Ce n'est pas long, quand on sait combien."],
       "unknown": "je ne sais pas",
       "known": "je le sais"
