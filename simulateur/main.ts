@@ -14,7 +14,7 @@
  *   npm run simule -- --lecture=auto:0.1       la lecture des méthodes d'un Âge multipliée (manual, auto, num)
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
  *   npm run simule -- --sans-taches          sans les tâches (simulateur/taches.ts, pas encore dans le jeu)
- *   npm run simule -- --sans-jeton           le bot ne pose pas le Jeton (la relique de la Loterie)
+ *   npm run simule -- --avec-jeton           le bot pose le Jeton (la relique de la Loterie) à la place de la Loupe
  *   npm run simule -- --reminiscence=gratuite  les intuitions reviennent gratuitement à leur meilleur niveau
  *   npm run simule -- --achat-main=300       le bot n'achète ses méthodes à la main que toutes les 300 s de jeu
  *   npm run simule -- --sans-rouage --lot=10 --rouage=c:20,a2:30   le Rouage (pas encore dans le jeu) : sans, son lot, ses prix
@@ -46,7 +46,7 @@ if (option('lettres') !== undefined) PLAYER.letters = Number(option('lettres'));
 if (option('numerique')) PLAYER.digitalAge = Number(option('numerique'));
 if (option('sans-bit') !== undefined) PLAYER.bit = false;
 if (option('sans-taches') !== undefined) PLAYER.tasks = false;
-if (option('sans-jeton') !== undefined) PLAYER.tokenRelic = false;
+if (option('avec-jeton') !== undefined) PLAYER.tokenRelic = true;
 if (option('reminiscence') === 'gratuite') PLAYER.reminiscence = 'gratuite';
 if (option('achat-main')) PLAYER.handBuyEvery = Number(option('achat-main'));
 if (option('sans-rouage') !== undefined) PLAYER.rouage = false;

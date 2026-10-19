@@ -65,10 +65,11 @@ export const PLAYER = {
   /** Les tâches (17/10, simulateur/taches.ts, pas encore dans le jeu) : --sans-taches pour s'en passer. */
   tasks: true,
   /**
-   * Le Jeton (18/10) : trouvé au 50e jeton joué (une chance sur 50 par tirage), le bot le pose à la place de sa relique
-   * et joue ses jetons du jour ; --sans-jeton pour garder la Loupe ou l'Astrolabe.
+   * Le Jeton (18/10) : trouvé au 50e jeton joué (une chance sur 50 par tirage) ; --avec-jeton : le bot le pose à la place
+   * de sa relique et joue ses jetons du jour. Par défaut il garde la Loupe ou l'Astrolabe (19/10 : poser le Jeton divise
+   * l'Éther par 15 ; l'auteur laisse ce choix au joueur).
    */
-  tokenRelic: true,
+  tokenRelic: false,
   /**
    * La Réminiscence (essai du 19/10) : 'payante', le bot rachète tout après chaque prestige, comme avant ; 'gratuite', une
    * fois comprise (10 000 de Connaissance, après le 1er prestige), les intuitions reviennent d'un coup à leur meilleur

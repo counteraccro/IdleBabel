@@ -2,7 +2,7 @@ import { AUTOMATIC_AGE, DIGITAL_AGE } from '../src/data/tools';
 import { PLAYER } from './config';
 import { BIT, SECRET, type Method } from './methodes';
 import type { Life } from './vie';
-import { allMethods, price, rate, type Run } from './partie';
+import { allMethods, pagesPerSecond, price, rate, type Run } from './partie';
 
 /**
  * Le Rouage (19/10, .ai/idee-rouage.md, maquette .ai/maquette-rouage.html), pas encore dans le jeu : une page de
@@ -54,18 +54,22 @@ const coveredAges = (life: Life): Set<string> =>
 const cadence = (life: Life): number =>
   Math.min(...GEAR_STARS.filter((star) => star.every !== undefined && life.stars.has(star.id)).map((star) => star.every!));
 
-/** Une fois : la méthode la plus rentable des Âges couverts (comme le bot), au lot du joueur ; false s'il n'a rien pu prendre. */
+/**
+ * Une fois : la méthode la plus rentable des Âges couverts, comme le bot (son prix sur ce qu'elle lit, plus l'attente pour
+ * se l'offrir), au lot du joueur ; si elle n'est pas encore payable, il attend (19/10 : prendre la moins chère de celles
+ * qu'il peut payer vidait les pages sur les vieilles méthodes, −45 % d'Éther). false s'il n'a rien pris.
+ */
 const buyOnce = (run: Run, ages: Set<string>): boolean => {
+  const income = Math.max(pagesPerSecond(run), 1);
   let best: Method | undefined;
   let bestScore = Infinity;
   for (const method of allMethods(run)) {
     if (method === SECRET || method === BIT || !run.unlocked.has(method.id) || !ages.has(method.age ?? '')) continue;
     const cost = price(run, method);
-    if (cost > run.pages) continue;
-    const score = cost / rate(run, method);
+    const score = cost / rate(run, method) + Math.max(0, cost - run.pages) / income;
     if (score < bestScore) [best, bestScore] = [method, score];
   }
-  if (!best) return false;
+  if (!best || price(run, best) > run.pages) return false;
   const lot = PLAYER.rouageLot;
   let count = 0;
   while ((lot === 'max' || count < lot) && price(run, best) <= run.pages) {
@@ -76,7 +80,7 @@ const buyOnce = (run: Run, ages: Set<string>): boolean => {
   }
   gearLog.bought += count;
   gearLog.lots += 1;
-  return count > 0;
+  return true;
 };
 
 /** Le Rouage tourne pendant `seconds` de jeu à l'écran. */
