@@ -9,8 +9,8 @@ import { BOOK_DRAFTS, DRAFT_GROUPS, STORY, pagesText, type DraftGroup } from './
 
 /**
  * La mise en page du livre « Idle Babel » (maquette .ai/maquette-idle-babel-pages.html, validée) : texte justifié
- * en Garamond, chaque chapitre ouvert sur une page de droite avec une lettrine, des intertitres par partie ; les
- * planches attendent que la page de texte en cours soit pleine. Mesures de la maquette (page 640 × 800 : celles
+ * en Garamond, chaque chapitre ouvert sur une page de droite avec une lettrine, des intertitres par partie ; une
+ * partie illustrée ferme sa page, ses planches la suivent, et la partie suivante commence sur une page neuve. Mesures de la maquette (page 640 × 800 : celles
  * de la texture). Le sommaire liste les chapitres et leurs parties.
  */
 
@@ -106,7 +106,7 @@ const heading = (context: CanvasRenderingContext2D, title: string, y: number): v
 };
 
 /** Ce que contient un chapitre, dans l'ordre : paragraphes, intertitres, et ce qui illustre une partie. */
-type Block = { paragraph: string } | { head: string; sub?: boolean } | { plates: string[]; drafts: DraftGroup[]; now?: boolean };
+type Block = { paragraph: string } | { head: string; sub?: boolean } | { plates: string[]; drafts: DraftGroup[] };
 
 interface Line {
   words: string[];
@@ -224,7 +224,7 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
     const extra = (titleLines.length - 1) * 40;
     let draws: Painter[] = [];
     let y = OPENER_TOP + extra;
-    // Les planches attendent que la page de texte en cours soit pleine : jamais de page à moitié vide.
+    // Les planches d'une partie, posées après sa dernière page de texte.
     let queue: ((at: number) => Painter)[] = [];
     const flush = () => {
       for (const make of queue) pages.set(page, make(page++));
@@ -252,7 +252,7 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
     for (const section of chapter.sections ?? []) {
       const part = text.sections[section.key];
       blocks.push({ head: part.head, sub: section.sub }, ...part.text.map((paragraph) => ({ paragraph })));
-      if (section.plates || section.drafts) blocks.push({ plates: section.plates ?? [], drafts: section.drafts ?? [], now: section.sub });
+      if (section.plates || section.drafts) blocks.push({ plates: section.plates ?? [], drafts: section.drafts ?? [] });
     }
     if (!blocks.length) {
       draws.push((target) => write(target, text.soon, CENTER, 330 + extra, { font: `italic 22px ${GARAMOND}`, color: SOFT }));
@@ -275,9 +275,9 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
         }
         for (const group of block.drafts)
           queue.push(withFolio((target) => art.drafts(target, DRAFT_GROUPS[group], text.draftGroups[group])));
-        // Les couvertures d'une sous-partie de « Les livres » la suivent tout de suite (la page reste courte) :
-        // la sous-partie suivante commence après elles.
-        if (block.now) close();
+        // Ses planches suivent la partie tout de suite (sa dernière page reste courte) : la partie suivante
+        // commence après elles, et ses images ne tombent jamais au milieu d'une autre.
+        close();
         continue;
       }
       if ('head' in block) {
@@ -316,7 +316,8 @@ export const layoutIdleBabel = (context: CanvasRenderingContext2D, art: PlateArt
       first = false;
       afterHead = false;
     }
-    close();
+    // Un chapitre qui finit sur des planches a déjà fermé sa dernière page.
+    if (draws.length) close();
     flush();
   });
 

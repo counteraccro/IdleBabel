@@ -149,7 +149,6 @@ export const STORY: StoryChapter[] = [
       { key: 'cornee' },
       { key: 'automaticAge' },
       { key: 'sealsReview', drafts: ['sealVision'] },
-      { key: 'thisBook' },
     ],
   },
   // Après l'Alpha 1 : ce qui vient avec l'Alpha 1.1.
@@ -169,6 +168,8 @@ export const STORY: StoryChapter[] = [
       { key: 'lotteryStars' },
       { key: 'tasks' },
       { key: 'relicToken', drafts: ['relicToken'] },
+      // Toujours la dernière partie du livre : il s'écrit encore.
+      { key: 'thisBook' },
     ],
   },
 ];
