@@ -164,9 +164,7 @@ console.log(`Éther reçu : ${life.etherReceived} · non dépensé : ${life.ethe
 
 const tasks = life.tasks;
 if (PLAYER.tasks) {
-  console.log(
-    `Tâches : étoiles ${TASK_STARS.map((star) => `${star.id} ${duration(tasks.boughtAt[star.id])}`).join(' · ')}`,
-  );
+  console.log(`Tâches : étoiles ${TASK_STARS.map((star) => `${star.id} ${duration(tasks.boughtAt[star.id])}`).join(' · ')}`);
   console.log(
     `Tâches du jour faites : ${tasks.dailyDone} · jetons des tâches du jour : ${tasks.dailyTokens} · des tâches « une seule fois » : ${tasks.onceTokens} · jetons joués en tout : ${life.lottery.draws}`,
   );
