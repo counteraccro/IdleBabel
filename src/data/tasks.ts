@@ -52,6 +52,8 @@ export interface OnceTaskDef {
   /** L'étoile qui la fait apparaître. */
   star: string;
   goal: number;
+  /** Son avancement se compte en minutes ou en heures (son but est en secondes) ; sinon tel quel. */
+  unit?: 'minutes' | 'hours';
   reward: TaskReward;
 }
 
@@ -64,8 +66,8 @@ export const ONCE_TASKS: readonly OnceTaskDef[] = [
   { n: 5, star: TASK_STAR.north, goal: 10, reward: { readingHours: 24 } },
   { n: 6, star: TASK_STAR.north, goal: 100, reward: { tokens: 20 } },
   { n: 7, star: TASK_STAR.north, goal: 500, reward: { readingBonus: 0.05 } },
-  { n: 8, star: TASK_STAR.north, goal: 3600, reward: { readingHours: 12 } },
-  { n: 9, star: TASK_STAR.north, goal: 24 * 3600, reward: { tokens: 15 } },
+  { n: 8, star: TASK_STAR.north, goal: 3600, unit: 'minutes', reward: { readingHours: 12 } },
+  { n: 9, star: TASK_STAR.north, goal: 24 * 3600, unit: 'hours', reward: { tokens: 15 } },
   { n: 10, star: TASK_STAR.north, goal: 10, reward: { tokens: 25 } },
   { n: 11, star: TASK_STAR.north, goal: 3, reward: { knowledgeHours: 48 } },
   { n: 12, star: TASK_STAR.north, goal: 50, reward: { knowledgeBonus: 0.05 } },

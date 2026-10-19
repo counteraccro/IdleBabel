@@ -3,6 +3,7 @@ import { SENTENCES } from '../data/sentences';
 import { TOOLS } from '../data/tools';
 import { recordOnce } from '../core/history';
 import { forgetIntuitions } from './reminiscence';
+import { resetGearTurn } from './gear';
 import { forgetPagesRest } from './production';
 import { forgetBoons } from './boons';
 import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor, starAffordable } from './etherium';
@@ -90,6 +91,7 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   state.cycleKnowledge = 0;
   openDoor(state, previous);
   forgetIntuitions(state);
+  resetGearTurn();
   if (keepsFirstLevels(state))
     for (const [id, level] of Object.entries(levels) as [keyof typeof levels, number][])
       if (level > 0) state.technologies[id] = Math.max(1, levelOf(state, id));

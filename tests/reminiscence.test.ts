@@ -79,4 +79,13 @@ describe('Réminiscence : ce qu’il reste à retrouver', () => {
     remember(state);
     expect(rememberStatus(state)).toEqual({ levels: 0, next: undefined });
   });
+
+  it('compte aussi les gestes d’une méthode pas encore retrouvée, sans les nommer comme prochains', () => {
+    const state = exiled();
+    state.technologies.reminiscence = 1;
+    state.knowledge = 1e6;
+    remember(state);
+    state.technologiesBest.diagonalGesture = 2;
+    expect(rememberStatus(state)).toEqual({ levels: 2, next: undefined });
+  });
 });

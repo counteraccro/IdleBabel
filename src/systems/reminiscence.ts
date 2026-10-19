@@ -1,5 +1,5 @@
 import { TECHNOLOGIES } from '../data/technologies';
-import { bestOf, levelOf, nextPrice, understand } from './technologies';
+import { bestOf, levelOf, lockOf, nextPrice, understand } from './technologies';
 import type { GameState } from '../core/state';
 import type { TechnologyId } from '../data/technologies';
 
@@ -19,11 +19,15 @@ export const nextRemembered = (state: GameState): number | undefined => {
   return prices.length > 0 ? Math.min(...prices) : undefined;
 };
 
-/** Ce qu'il reste à retrouver : les niveaux, et l'intuition qui reviendra la première (la moins chère), à son prix. */
+/**
+ * Ce qu'il reste à retrouver : les niveaux, et l'intuition qui reviendra la première (la moins chère), à son prix. Les
+ * gestes d'une méthode pas encore retrouvée comptent dans les niveaux, sans pouvoir être la prochaine.
+ */
 export const rememberStatus = (state: GameState): { levels: number; next?: { id: TechnologyId; price: number } } => {
-  const left = remembered(state);
-  const levels = left.reduce((sum, tech) => sum + bestOf(state, tech.id) - levelOf(state, tech.id), 0);
-  const cheapest = left.sort((a, b) => nextPrice(state, a.id)! - nextPrice(state, b.id)!)[0];
+  const levels = TECHNOLOGIES.filter(
+    (tech) => levelOf(state, tech.id) < bestOf(state, tech.id) && lockOf(state, tech.id) !== 'nothingLeft',
+  ).reduce((sum, tech) => sum + bestOf(state, tech.id) - levelOf(state, tech.id), 0);
+  const cheapest = remembered(state).sort((a, b) => nextPrice(state, a.id)! - nextPrice(state, b.id)!)[0];
   return { levels, next: cheapest && { id: cheapest.id, price: nextPrice(state, cheapest.id)! } };
 };
 

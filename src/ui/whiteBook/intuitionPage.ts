@@ -184,8 +184,8 @@ export const intuitionItems = (state: GameState, id: TechnologyId, number: numbe
               } satisfies Item,
             ]
           : []),
-        // La Réminiscence elle-même : ce qu'elle a encore à rendre.
-        ...(id === 'reminiscence' && level > 0 ? rememberLines(state, y + 112) : []),
+        // La Réminiscence elle-même : ce qu'elle a encore à rendre, ses deux lignes au-dessus de « compris » (y 640).
+        ...(id === 'reminiscence' && level > 0 ? rememberLines(state, Math.min(y + 112, 584)) : []),
       ];
   return [
     {
@@ -260,9 +260,11 @@ const rememberLines = (state: GameState, y: number): Item[] => {
     italic: true,
     faded: true,
   });
-  if (!next) return [line(t('whiteBook.reminiscence.done'), y)];
+  if (levels === 0) return [line(t('whiteBook.reminiscence.done'), y)];
   const left =
     levels === 1 ? t('whiteBook.reminiscence.leftOne') : t('whiteBook.reminiscence.left').replace('{n}', writeDigits(String(levels)));
+  // Il ne reste que des gestes d'une méthode pas encore retrouvée : rien ne reviendra avant elle.
+  if (!next) return [line(left, y)];
   const price = formatNumber(next.price, getLocale());
   return [line(left, y), line(t('whiteBook.reminiscence.next').replace('{name}', texts(next.id).name).replace('{price}', price), y + 24)];
 };

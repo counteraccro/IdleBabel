@@ -1,6 +1,6 @@
 import { getLocale, t } from '../../i18n';
 import { currentNotation, formatCount, formatNumber, writeDigits } from '../../core/format';
-import { ONCE_TASKS, type TaskReward } from '../../data/tasks';
+import { ONCE_TASKS, type OnceTaskDef, type TaskReward } from '../../data/tasks';
 import { modTaskCount, modTasks, takeModTask } from '../../mods/modTasks';
 import { modText } from '../../mods/modSeals';
 import { dailyLeft, dailyProgress } from '../../systems/dailyTasks';
@@ -295,7 +295,10 @@ const progressOf = (count: number, goal: number, unit = 1, key = 'progress'): Pr
         share: count / goal,
       };
 
-const UNITS: Record<number, [number, string]> = { 8: [60, 'progressMinutes'], 9: [3600, 'progressHours'] };
+const UNITS: Record<NonNullable<OnceTaskDef['unit']>, [number, string]> = {
+  minutes: [60, 'progressMinutes'],
+  hours: [3600, 'progressHours'],
+};
 
 /**
  * Les lignes de la liste : celles dont l'étoile est allumée, en Babel tant que ce dont elles parlent n'est pas rencontré ;
@@ -307,7 +310,7 @@ const onceRows = (state: GameState): Row[] => [
     const rowState: RowState = task?.done !== undefined ? (task.taken ? 'done' : 'waiting') : onceMet(state, def) ? 'now' : 'ghost';
     const text = t(`whiteBook.tasks.onceTasks.${def.n}`);
     const ghost = rowState === 'ghost';
-    const [unit, key] = UNITS[def.n] ?? [1, 'progress'];
+    const [unit, key] = def.unit ? UNITS[def.unit] : [1, 'progress'];
     return row(
       `once:${def.n}`,
       rowState,

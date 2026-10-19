@@ -1,7 +1,7 @@
 import { el } from '../dom';
 import { getLocale, t } from '../../i18n';
 import { formatNumber } from '../../core/format';
-import { AUTOMATIC_AGE, DIGITAL_AGE } from '../../data/tools';
+import { waitText } from '../letter/duration';
 import { gearAges, gearChoice, gearKnown, gearWait } from '../../systems/gear';
 import type { GameState } from '../../core/state';
 
@@ -43,13 +43,8 @@ const gearIcon = (): SVGSVGElement => {
   return svg;
 };
 
-/** Une attente en bref : 4 s, 3 min, 2 h. */
-const wait = (seconds: number): string =>
-  seconds < 60 ? `${Math.ceil(seconds)} s` : seconds < 3600 ? `${Math.ceil(seconds / 60)} min` : `${Math.ceil(seconds / 3600)} h`;
-
-/** Le nom de chaque Âge que le Rouage peut acheter. */
-const ageName = (age: string): string =>
-  age === '' ? t('ui.gearManual') : t(`etherium.stars.ages.${age === AUTOMATIC_AGE ? 'auto' : age === DIGITAL_AGE ? 'quantum' : age}.name`);
+/** Le nom de chaque Âge que le Rouage peut acheter (son étoile de l'Etherium : ages.auto, ages.quantum…). */
+const ageName = (age: string): string => (age === '' ? t('ui.gearManual') : t(`etherium.stars.${age}.name`));
 
 export interface MethodGear {
   root: HTMLElement;
@@ -87,14 +82,14 @@ export const createMethodGear = (state: GameState, changed: () => void): MethodG
     root.setAttribute('aria-pressed', String(on));
     tipTitle.textContent = `${t('ui.gear')} ${t(on ? 'ui.gearOn' : 'ui.gearOff')}`;
     const choice = on ? gearChoice(state) : undefined;
-    const seconds = choice && gearWait(state);
+    const seconds = choice && gearWait(state, choice);
     tipNext.hidden = !on;
     tipNext.textContent = !choice
       ? t('ui.gearNothing')
       : t(seconds && seconds >= 1 ? 'ui.gearNext' : 'ui.gearNextNow')
           .replace('{name}', t(`tools.${choice.id}.name`))
           .replace('{k}', formatNumber(choice.count, locale))
-          .replace('{s}', wait(seconds ?? 0));
+          .replace('{s}', waitText(seconds ?? 0));
     tipAges.textContent = t('ui.gearAges').replace('{ages}', gearAges(state).map(ageName).join(', '));
     tipClick.textContent = t(on ? 'ui.gearStop' : 'ui.gearStart');
     root.setAttribute('aria-label', `${tipTitle.textContent}. ${tipAges.textContent}. ${tipClick.textContent}`);

@@ -34,7 +34,11 @@ export const gearEvery = (state: GameState): number =>
       .map(([, every]) => every),
   );
 
-/** La méthode qu'il achètera ensuite, et le prix du lot ; rien s'il n'a aucune méthode à acheter. */
+/**
+ * La méthode qu'il achètera ensuite, et le prix du lot ; rien s'il n'a aucune méthode à acheter. Au lot « max », chaque
+ * méthode est jugée sur sa prochaine seule (le prix moyen d'un gros lot ne se compare pas à celui d'une seule) : `cost`
+ * est alors le prix de cette prochaine, `count` ce que les pages en paient.
+ */
 export const gearChoice = (state: GameState): { id: ToolId; count: number; cost: number } | undefined => {
   const ages = gearAges(state);
   const income = Math.max(pagesPerSecond(state), 1);
@@ -45,21 +49,33 @@ export const gearChoice = (state: GameState): { id: ToolId; count: number; cost:
     if (tool.secret || !ages.includes(tool.age ?? '') || !toolUnlocked(state, tool.id)) continue;
     const rate = toolRate(state, tool.id);
     if (rate <= 0) continue;
-    const count = lotSize(state, tool.id, lot);
+    const count = lot === 'max' ? 1 : lot;
     const cost = lotCost(state, tool.id, count);
     const score = cost / (rate * count) + Math.max(0, cost - state.pages) / income;
     if (score < bestScore) [best, bestScore] = [{ id: tool.id, count, cost }, score];
   }
-  return best;
+  return best && lot === 'max' ? { ...best, count: lotSize(state, best.id, lot) } : best;
 };
 
 /** Le temps depuis son dernier achat (pas gardé : au rechargement, il repart d'un tour entier). */
 let waited = 0;
 
-/** Il achète une fois ; false si la meilleure n'est pas encore payable (il attend). */
+/** Au prestige, il repart d'un tour entier. */
+export const resetGearTurn = (): void => {
+  waited = 0;
+};
+
+/**
+ * Il achète une fois ; false si la meilleure n'est pas encore payable (il attend). Au lot « max », il prend la meilleure
+ * une à une, tant qu'elle reste la meilleure : jamais toutes les pages sur une méthode devenue trop chère.
+ */
 const buyOnce = (state: GameState): boolean => {
   const choice = gearChoice(state);
-  return !!choice && buyTools(state, choice.id, chosenLot(state)) > 0;
+  if (!choice) return false;
+  if (chosenLot(state) !== 'max') return buyTools(state, choice.id, chosenLot(state)) > 0;
+  let bought = 0;
+  while (bought < GEAR_MAX_BUYS && gearChoice(state)?.id === choice.id && buyTools(state, choice.id, 1) > 0) bought += 1;
+  return bought > 0;
 };
 
 /** Le Rouage tourne pendant `seconds` : il achète à sa cadence ; rien s'il est arrêté. Rend le nombre d'achats. */
@@ -74,7 +90,9 @@ export const turnGear = (state: GameState, seconds: number): number => {
     while (bought < GEAR_MAX_BUYS && buyOnce(state)) bought += 1;
     return bought;
   }
-  waited += seconds;
+  // Au plus un tour d'avance : au réveil de l'ordinateur (ou d'un onglet très ralenti), il ne rattrape pas des heures
+  // d'achats d'un coup ; ce temps-là ne compte pas plus qu'une absence.
+  waited = Math.min(waited + seconds, every);
   while (waited >= every) {
     if (!buyOnce(state)) {
       // Il attend la bonne méthode : il la prendra dès qu'elle sera payable, sans refaire un tour.
@@ -88,8 +106,7 @@ export const turnGear = (state: GameState, seconds: number): number => {
 };
 
 /** Secondes avant son prochain achat (son tour, ou les pages qui manquent) ; pour la légende du rouage. */
-export const gearWait = (state: GameState): number | undefined => {
-  const choice = gearChoice(state);
+export const gearWait = (state: GameState, choice = gearChoice(state)): number | undefined => {
   if (!choice) return undefined;
   const missing = Math.max(0, choice.cost - state.pages) / Math.max(pagesPerSecond(state), 1);
   return Math.max(gearEvery(state) - waited, missing, 0);

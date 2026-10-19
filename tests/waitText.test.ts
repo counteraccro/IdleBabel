@@ -10,4 +10,8 @@ describe('le temps qu’il faut encore (la Patience)', () => {
     expect(waitText(2 * 86_400 + 30)).toBe('2 j');
     expect(waitText(0.2)).toBe('1 s');
   });
+
+  it('des jours sans fin s’écrivent comme les grands nombres du jeu, jamais en 1e+22', () => {
+    expect(waitText(1e27)).not.toMatch(/e\+/);
+  });
 });

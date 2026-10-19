@@ -1,5 +1,5 @@
-import { t } from '../../i18n';
-import { writeDigits } from '../../core/format';
+import { getLocale, t } from '../../i18n';
+import { formatNumber, writeDigits } from '../../core/format';
 
 /** Une durée lisible, à la seconde : « 45 secondes », « 2 minutes », « 1 min 30 ». */
 export const durationText = (seconds: number): string => {
@@ -36,7 +36,10 @@ export const waitText = (seconds: number): string => {
     parts
       .slice(first, first + 2)
       .filter(([value]) => value > 0)
-      .map(([value, unit]) => t(`whiteBook.intuition.units.${unit}`).replace('{n}', String(value)))
+      // Les jours peuvent être sans fin (un gros lot à petit rythme) : écrits comme tous les grands nombres du jeu.
+      .map(([value, unit]) =>
+        t(`whiteBook.intuition.units.${unit}`).replace('{n}', unit === 'days' ? formatNumber(value, getLocale()) : String(value)),
+      )
       .join(' '),
   );
 };

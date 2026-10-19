@@ -1,9 +1,10 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createInitialState, type GameState } from '../src/core/state';
 import { SENTENCES } from '../src/data/sentences';
 import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS, type ToolId } from '../src/data/tools';
 import { pageOpen, starOpen } from '../src/systems/etherium';
-import { gearChoice, gearKnown, turnGear } from '../src/systems/gear';
+import { gearChoice, gearKnown, resetGearTurn, turnGear } from '../src/systems/gear';
+import { lotCost } from '../src/systems/tools';
 import { segments, write } from '../src/systems/sentences';
 
 vi.stubGlobal('window', new EventTarget());
@@ -28,6 +29,15 @@ const withGear = (stars: string[] = []): GameState => {
 };
 
 const ageOf = (id: ToolId): string => TOOLS.find((tool) => tool.id === id)!.age ?? '';
+
+/** Le jeu qui tourne `seconds` secondes, par pas d'une seconde (la boucle, onglet caché) ; rend les achats. */
+const run = (state: GameState, seconds: number): number => {
+  let bought = 0;
+  for (let i = 0; i < seconds; i++) bought += turnGear(state, 1);
+  return bought;
+};
+
+beforeEach(resetGearTurn);
 
 describe('Le Rouage', () => {
   it('sa page attend l’Âge Numérique ; les dents des Âges suivants restent fermées', () => {
@@ -55,9 +65,9 @@ describe('Le Rouage', () => {
   it('l’axe seul : les méthodes de l’Âge Manuel, une toutes les 10 s, jamais une secrète', () => {
     const state = withGear();
     state.pages = 1e30;
-    expect(turnGear(state, 9)).toBe(0);
-    expect(turnGear(state, 1)).toBe(1);
-    expect(turnGear(state, 30)).toBe(3);
+    expect(run(state, 9)).toBe(0);
+    expect(run(state, 1)).toBe(1);
+    expect(run(state, 30)).toBe(3);
     const bought = TOOLS.filter((tool) => state.tools[tool.id] > 0);
     expect(bought.every((tool) => !tool.age && !tool.secret)).toBe(true);
   });
@@ -65,7 +75,7 @@ describe('Le Rouage', () => {
   it('un Âge allumé : il achète aussi ses méthodes ; la cadence la plus rapide compte', () => {
     const state = withGear(['gear.a2', 'gear.a3', 'gear.t1']);
     state.pages = 1e30;
-    expect(turnGear(state, 50)).toBe(10);
+    expect(run(state, 50)).toBe(10);
     expect(gearChoice(state)).toBeDefined();
     expect([AUTOMATIC_AGE, DIGITAL_AGE, '']).toContain(ageOf(gearChoice(state)!.id));
   });
@@ -89,6 +99,27 @@ describe('Le Rouage', () => {
     state.pages = best.cost;
     expect(turnGear(state, 0.1)).toBe(1);
     expect(state.tools[best.id]).toBeGreaterThan(best.id === 'diagonal' ? 200 : 0);
+  });
+
+  it('au réveil de l’ordinateur : un achat, pas des heures d’achats d’un coup', () => {
+    const state = withGear(['gear.t3']);
+    state.pages = 1e30;
+    expect(turnGear(state, 8 * 3600)).toBe(1);
+  });
+
+  it('lot « max » : la meilleure une à une, tant qu’elle reste la meilleure, pas toutes les pages sur elle', () => {
+    const state = withGear();
+    state.settings.buyLot = 'max';
+    state.technologies.armful = 3;
+    state.pages = 1e12;
+    expect(run(state, 10)).toBe(1);
+    const [first] = TOOLS.filter((tool) => state.tools[tool.id] > 0);
+    expect(state.tools[first.id]).toBeGreaterThan(1);
+    // Il s'arrête quand une autre devient meilleure, avec de quoi la payer.
+    expect(gearChoice(state)!.id).not.toBe(first.id);
+    expect(gearChoice(state)!.cost).toBeLessThanOrEqual(state.pages);
+    expect(run(state, 10)).toBe(1);
+    expect(TOOLS.filter((tool) => state.tools[tool.id] > 0).length).toBeGreaterThan(1);
   });
 
   it('arrêté sous la ruche : il ne fait rien, et l’interrupteur est gardé', () => {
