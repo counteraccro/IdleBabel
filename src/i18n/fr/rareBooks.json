@@ -1051,6 +1051,25 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.7",
+          "date": "19 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Une cinquième relique.",
+                "La Réminiscence dit ce qu’elle fait : les niveaux encore à retrouver, et la prochaine intuition qui reviendra, à son prix.",
+                "Le livre blanc ne donne plus de genre au chercheur.",
+                "Le livre « Idle Babel » est réécrit : les choix et les hésitations derrière le jeu."
+              ]
+            },
+            {
+              "heading": "Corrections",
+              "items": ["Les illustrations du livre « Idle Babel » ne tombent plus dans la partie suivante."]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.6",
           "date": "18 octobre 2026",
           "sections": [
