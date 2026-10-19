@@ -1047,7 +1047,17 @@
           "sections": [
             {
               "heading": "New",
-              "items": ["“Just once” tasks show how far along they are.", "A new permanent intuition."]
+              "items": [
+                "“Just once” tasks show how far along they are.",
+                "A new permanent intuition.",
+                "The relic and boon medals sit next to the title.",
+                "The counter turns red when a curse hits it.",
+                "The Mimic has its own medal while it is there."
+              ]
+            },
+            {
+              "heading": "Fixes",
+              "items": ["The medals no longer move with the counter."]
             }
           ]
         },

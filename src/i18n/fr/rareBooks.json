@@ -1056,7 +1056,17 @@
           "sections": [
             {
               "heading": "Nouveautés",
-              "items": ["Les tâches « une seule fois » montrent où elles en sont.", "Une nouvelle intuition permanente."]
+              "items": [
+                "Les tâches « une seule fois » montrent où elles en sont.",
+                "Une nouvelle intuition permanente.",
+                "Les médaillons de la relique et des bonus sont à côté du titre.",
+                "Le compteur rougit quand un malus le touche.",
+                "La Mimic a son médaillon tant qu’elle est là."
+              ]
+            },
+            {
+              "heading": "Corrections",
+              "items": ["Les médaillons ne bougent plus avec le compteur."]
             }
           ]
         },
