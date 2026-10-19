@@ -301,7 +301,8 @@
     "constellation-gear": "Turn the whole wheel",
     "constellation-weight": "Lift the weight of the Library",
     "constellation-screen": "Light up the whole Minitel",
-    "intuition-lightSleep": "Hear a book sleeping"
+    "intuition-lightSleep": "Hear a book sleeping",
+    "intuition-patience": "Know how long to wait"
   },
   "groups": {
     "reading": "What your methods read",

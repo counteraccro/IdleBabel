@@ -226,7 +226,14 @@
     "unknownGesture": "I do not know this gesture yet.",
     "nothingLeft": "There are none left to find.",
     "remembered": "I had understood it up to level {n}.",
-    "rememberedAlone": "I had understood it up to level {n}. It comes back on its own, at this price."
+    "rememberedAlone": "I had understood it up to level {n}. It comes back on its own, at this price.",
+    "wait": "{time} more reading",
+    "units": {
+      "days": "{n} d",
+      "hours": "{n} h",
+      "minutes": "{n} min",
+      "seconds": "{n} s"
+    }
   },
   "intuitions": {
     "semanticFilter": {
@@ -360,6 +367,14 @@
       "notes": ["I can hear it snore, now."],
       "silent": "nothing",
       "heard": "“z z z”"
+    },
+    "patience": {
+      "name": "Patience",
+      "description": "I know how long I must read before I understand.",
+      "effect": "the time before understanding",
+      "notes": ["It isn't long, when you know how long."],
+      "unknown": "I don't know",
+      "known": "I know"
     }
   },
   "reminiscence": {

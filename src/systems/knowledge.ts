@@ -15,6 +15,7 @@ import { findsBoon, knowledgeBoon } from './boons';
 import { swallow } from './mimic';
 import { runHooks } from '../mods/hooks';
 import { modded } from '../mods/quantities';
+import { noteKnowledge } from './knowledgePace';
 import type { GameState } from '../core/state';
 
 /** Mode débogage : chaque page tournée cache une trouvaille. */
@@ -207,6 +208,7 @@ export const gainFind = (state: GameState, find: Find): void => {
     state.knowledge += gained;
     state.cycleKnowledge += gained;
     state.lifetimeKnowledge += gained;
+    noteKnowledge(gained);
     // La toute première : le joueur comprend une phrase, pour la première fois.
     if (state.lifetimeKnowledge === gained) tellLore(state, 'firstKnowledge');
   }

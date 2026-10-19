@@ -23,7 +23,8 @@ import {
 import { rememberStatus, reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
 import { boonLength, flockChance, letterStays, letterWait } from '../../systems/letter';
 import { FLOCK_THIRD } from '../../data/letter';
-import { durationText } from '../letter/duration';
+import { durationText, waitText } from '../letter/duration';
+import { knowledgePace } from '../../systems/knowledgePace';
 import { nextRareChance } from '../../systems/rareBooks';
 import { sealFindMultiplier } from '../../systems/seals';
 import { babelize, seedOf } from './babelMask';
@@ -103,6 +104,8 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
       return t(level > 0 ? 'whiteBook.intuitions.lightSleep.heard' : 'whiteBook.intuitions.lightSleep.silent');
     case 'reminiscence':
       return t(level > 0 ? 'whiteBook.intuitions.reminiscence.alone' : 'whiteBook.intuitions.reminiscence.byHand');
+    case 'patience':
+      return t(level > 0 ? 'whiteBook.intuitions.patience.known' : 'whiteBook.intuitions.patience.unknown');
     case 'armful': {
       const lots = armfulLots(state, level);
       const most = lots[lots.length - 1];
@@ -111,6 +114,24 @@ const effectAt = (state: GameState, id: TechnologyId, level: number): string => 
     default:
       return '';
   }
+};
+
+/** Avec la Patience : le temps qu'il faut encore, au rythme de la dernière minute, pour payer `price` ; rien sans lecture. */
+const waitItems = (state: GameState, price: number): Item[] => {
+  const pace = knowledgePace();
+  if (levelOf(state, 'patience') === 0 || pace === undefined || pace <= 0) return [];
+  return [
+    {
+      kind: 'text',
+      text: t('whiteBook.intuition.wait').replace('{time}', waitText((price - state.knowledge) / pace)),
+      x: 320,
+      y: 684,
+      size: 19,
+      align: 'center',
+      italic: true,
+      faded: true,
+    },
+  ];
 };
 
 const levelText = (id: TechnologyId, level: number): string => {
@@ -213,6 +234,7 @@ export const intuitionItems = (state: GameState, id: TechnologyId, number: numbe
       steady: true,
     },
     ...(affordable ? [{ kind: 'action', id: 'pay', y: 632, height: 44 } satisfies Item] : []),
+    ...(!affordable && !lock && price !== undefined ? waitItems(state, price) : []),
     folio(number),
   ];
 };

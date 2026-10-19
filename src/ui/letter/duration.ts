@@ -21,3 +21,22 @@ export const clockText = (ms: number): string => {
   const whole = Math.ceil(ms / 1000);
   return writeDigits(`${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`);
 };
+
+/** Un temps d'attente, en ses deux plus grandes unités (l'auteur, 19/10 : « en jour / heure / minutes / secondes »). */
+export const waitText = (seconds: number): string => {
+  const whole = Math.max(1, Math.ceil(seconds));
+  const parts = [
+    [Math.floor(whole / 86_400), 'days'],
+    [Math.floor(whole / 3600) % 24, 'hours'],
+    [Math.floor(whole / 60) % 60, 'minutes'],
+    [whole % 60, 'seconds'],
+  ] as const;
+  const first = parts.findIndex(([value]) => value > 0);
+  return writeDigits(
+    parts
+      .slice(first, first + 2)
+      .filter(([value]) => value > 0)
+      .map(([value, unit]) => t(`whiteBook.intuition.units.${unit}`).replace('{n}', String(value)))
+      .join(' '),
+  );
+};

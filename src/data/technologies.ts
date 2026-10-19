@@ -70,6 +70,9 @@ export const TECHNOLOGIES = [
   { id: 'armful', prices: [100, 1_000, 5_000], permanent: true },
   // La Réminiscence : les intuitions oubliées à l'Exil reviennent seules (systems/reminiscence.ts).
   { id: 'reminiscence', prices: [10_000], permanent: true, afterExile: true },
+  // La Patience (l'auteur, 19/10) : sous le prix d'une intuition qu'on ne peut pas encore comprendre, le temps qu'il faut ;
+  // 50 000 : « c'est un confort qu'il faut mériter ».
+  { id: 'patience', prices: [50_000], permanent: true },
   { id: 'diagonalGesture', prices: gesture(50), tool: 'diagonal' },
   { id: 'fingerGesture', prices: gesture(125), tool: 'finger' },
   { id: 'voiceGesture', prices: gesture(750), tool: 'voice' },
