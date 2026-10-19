@@ -1042,6 +1042,16 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.8",
+          "date": "19 October 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": ["“Just once” tasks show how far along they are.", "A new permanent intuition."]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.7",
           "date": "19 October 2026",
           "sections": [
@@ -1049,7 +1059,7 @@
               "heading": "New",
               "items": [
                 "A fifth relic.",
-              "A new page in the Etherium, among the methods.",
+                "A new page in the Etherium, among the methods.",
                 "Reminiscence says what it does: the levels still to recover, and the next intuition to come back, at its price.",
                 "The white book no longer gives the seeker a gender.",
                 "The “Idle Babel” book is rewritten: the choices and doubts behind the game."
