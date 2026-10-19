@@ -2470,19 +2470,19 @@
         "rareBooks": {
           "head": "Rare books",
           "text": [
-            "One book in two hundred is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist.",
+            "Sometimes, a book is not like the others: a rare book, with a real title and a seal of its own. A black notebook where names get written, a directory where someone already holds your place, an essay on the blank page signed by an author who does not exist.",
             "Later, a sports almanac, straight off an eighties newsstand: fifty years of results, already written.",
-            "Then the Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read. Inside, a manuscript in a script no one reads; only a reader who came before left Lovecraft’s line in pencil.",
-            "Then Dad Jokes, a humour book of the kind people give on Father’s Day: bright yellow, glasses, a moustache, a question you have heard before. It takes the place of a Book of the Dead, planned at first. Inside, four hundred and seven jokes. There are only ninety: they keep coming back.",
-            "Then the Voynich Manuscript, the one book no one has ever been able to read. On its vellum cover grows a plant that does not exist. Inside, more plants, circles of stars, pools, apothecary jars, and an unknown script, drawn stroke by stroke.",
-            "Then the Catalogue of Catalogues, the one Borges’s librarians search for. On its midnight-blue leather cover, the book contains itself, until it is nothing but a point of gold. Inside, a register of books, one per line, each with its shelf mark.",
-            "Then the Book of Sand, from a story by Borges, with neither a first page nor a last. On its cover, a desert at dusk, and the word “Sand” blowing away grain by grain. Inside, endless verses, page numbers that follow no order, and not one page you can find again.",
-            "Then the Big Book of X, which tells the story of the letter X, from the caves to the Library. On its cream cover, a huge black X, like a type specimen. Inside, each chapter begins with a short story, and the rest is written in the X language.",
-            "Then they became harder to find: all of them could be had in a few hours. Each rare book found makes the next one a quarter rarer. The first comes quickly; the last, one book in forty-two thousand, takes hundreds of hours. They belong to no age: a very long-term reward. The Ledger gave them a chapter, “Rarities”: how many have been found, and, as a percentage, the chance that the next book is one. How many are left, it does not say; when none are left, a line says so.",
-            "Then Dark Patterns by Example, a bestseller of today for interface designers, with a foreword of the utmost seriousness. In the library, its examples are not read: they are endured. A cookie banner, a button that runs away, a countdown, an endless unsubscribe, a forced subscription, a basket that fills itself, disguised ads, an invented crowd, double-negative boxes, a feed that never ends: you have to find the way out. There is always one.",
-            "Then The Wild Rabbit, a natural history treatise from the century before, in green cloth and gold. On its cover, an engraved medallion: the grass, the hedge, the burrow, and the rabbit’s place, empty. Inside, twelve plates he is always missing from. That is because he runs: in the library, Alice’s White Rabbit sometimes bounds across the pages. He has to be caught three times; each time, he comes back faster.",
-            "Then The Book with No Ending… except one?, an 80s paperback gamebook from an invented series, “Forking Paths”. On its black cover, a tower that disappears into the clouds: nobody has ever seen the top. Inside, a hundred paragraphs; at the end of each, choices, and the number where to go next. You die often there, and almost every path leads back to 1. It has only one ending: to open it, you have to remember three numbers learned along the way, from one death to the next. After it, the book goes on all the same, in gibberish, to its very last page.",
-            "Then Colour the Library, a children’s colouring book from the 60s, from an invented publisher, Tower Books. On its yellow newsstand cover, the title in big round letters of every colour, and the tower, half coloured in. Inside, nine big pictures, one per spread: on the left, the box of pencils; on the right, the picture. In the library, you touch a pencil, then an area, and it fills in, with the grain of the pencil. The colours stay, even after prestige."
+            "The Necronomicon, the book Lovecraft made up, which the Library is bound to hold: the Arabic original, Al Azif, bound in morocco, a gold medallion full of signs that cannot be read.",
+            "Dad Jokes, a humour book of the kind people give on Father’s Day: bright yellow, glasses, a moustache, a question you have heard before. It takes the place of a Book of the Dead, planned at first.",
+            "The Voynich Manuscript, the one book no one has ever been able to read. On its vellum cover grows a plant that does not exist. Inside, more plants, circles of stars, pools, apothecary jars, and an unknown script, drawn stroke by stroke.",
+            "The Catalogue of Catalogues, the one Borges’s librarians search for. On its midnight-blue leather cover, the book contains itself, until it is nothing but a point of gold. Inside, a register of books, one per line, each with its shelf mark.",
+            "The Book of Sand, from a story by Borges, with neither a first page nor a last. On its cover, a desert at dusk, and the word “Sand” blowing away grain by grain. Inside, endless verses, page numbers that follow no order, and not one page you can find again.",
+            "The Big Book of X, which tells the story of the letter X, from the caves to the Library. On its cream cover, a huge black X, like a type specimen. Inside, each chapter begins with a short story, and the rest is written in the X language.",
+            "They became harder to find: all of them could be had in a few hours. They belong to no age: a very long-term reward.",
+            "Dark Patterns by Example, a bestseller of today for interface designers, with a foreword of the utmost seriousness. In the library, its examples are not read: they are endured.",
+            "The Wild Rabbit, a natural history treatise from the century before, in green cloth and gold. On its cover, an engraved medallion: the grass, the hedge, the burrow, and the rabbit’s place, empty. Inside, twelve plates he is always missing from. That is because he runs.",
+            "The Book with No Ending… except one?, an 80s paperback gamebook from an invented series, “Forking Paths”. On its black cover, a tower that disappears into the clouds: nobody has ever seen the top. You die often there, and almost every path leads back to 1.",
+            "Colour the Library, a children’s colouring book from the 60s, from an invented publisher, Tower Books. On its yellow newsstand cover, the title in big round letters of every colour, and the tower, half coloured in."
           ]
         },
         "library": {
@@ -2494,7 +2494,7 @@
         "classics": {
           "head": "The classics",
           "text": [
-            "Then the classics came. Alice in her red cloth, Moby-Dick in embossed slate, a family Bible, the Arabian Nights in burgundy morocco, the Odyssey under pebbled paper, Don Quixote in the red cloth of the great Doré edition, with the title page of Madrid, 1605, as a flyleaf, the Divine Comedy in midnight-blue morocco with the whole universe of the poem tooled in gold, Hell, Purgatory and the nine heavens, the Manuscript Found in Saragossa in the tree calf of its 1814 edition, which ends on the promise of a sequel that never came, and blank pages, A Journey into the Interior of the Earth in Hetzel’s red and gold boards, with Saknussemm’s parchment in real runes, the Encyclopédie of Diderot and d’Alembert in the mottled calf of its subscribers, the Preliminary Discourse, then, in two columns, the articles that speak of the Library: Babel, Library, Book. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
+            "Then the classics came: Alice, Moby-Dick, a family Bible, the Arabian Nights, the Odyssey, Don Quixote, the Divine Comedy, the Manuscript Found in Saragossa, A Journey into the Interior of the Earth, the Encyclopédie. Public domain texts, set line by line, in small pieces, so that the game would not run out of breath.",
             "Every book was given a silk ribbon that hangs and sways. The first one cracked like a whip. The second was calmer."
           ]
         },
@@ -2519,7 +2519,7 @@
         "bindings": {
           "head": "The bindings",
           "text": [
-            "The ordinary books got their details. Leather with a grain, gilt tools in the corners, a roll around the frame, and gold that wears away with the leather. One book in four is half-bound: leather on the spine and corners, marbled paper on the boards.",
+            "The ordinary books got their details. Leather with a grain, gilt tools in the corners, a roll around the frame, and gold that wears away with the leather. Some are half-bound: leather on the spine and corners, marbled paper on the boards.",
             "On the spine, raised bands, a title label, sometimes a volume number, and the shelf mark sticker. The edges took on colours: sprinkled, red, yellow, gilt, marbled. Inside, marbled endpapers and the Library’s bookplate.",
             "Among the modern books, two new kinds: autobiographies, where the faces stay blank, and comics, numbered like a series."
           ]
@@ -2527,20 +2527,17 @@
         "away": {
           "head": "Absence",
           "text": [
-            "The game learned to go on without the player. Game closed, pages are read at the pace of production, at half rate, eight hours at most. The book in hand moves on, finished books close, rare books met along the way are found, seals follow. A hidden tab is not an absence: the game keeps running there, slowed down so as not to weigh on the browser, and the counters stay right; the Mimic gets ready there, and waits for the return to appear. Its title shows the pages in store: you can watch them climb from another tab. The options notebook exports the game as a string of characters, and takes it back: options, progress, Ether, it all fits. One page further, the mods: take one from the list, or load one by its address; each plugs into the game to change a piece of it, and a tick box disables it; removed, it takes its data with it. One of them turns the open book into an e-reader, a grey ink screen and a page you touch to turn; rare books stay books. Another colours the hive’s methods, from the most profitable to the least, and keeps count of what is coming: the next letter, the Mimic, the next Ether, the moment the relic can be changed. A mod can also change the game’s numbers, the chance of a find, the price of methods, the wait for the letter, and even three of its rules; then those of the Lottery, from the odds of each draw to the length of its penalties. Contents, on the notebook’s first page, lead to each part, and to the page of each mod with options. With mods, the game moved to Alpha 2.2.",
-            "On return, the seeker thinks they are waking from a dream. A modal sets them straight, and tells what their hands did without them.",
-            "With the white book or the library open, the book in hand is gone: for a long time its pages stopped turning, and nothing was found in them. Back to the game, that time now counts like an open window. And pages turning on their own never went past ten leaves a second, whatever their cap: now they keep it."
+            "The game learned to go on without the player. A hidden tab is not an absence. The options notebook exports the game as a string of characters, and takes it back. Then the mods: each plugs into the game to change a piece of it. One of them turns the open book into an e-reader; rare books stay books. With mods, the game moved to Alpha 2.2.",
+            "On return, the seeker thinks they are waking from a dream. A modal sets them straight, and tells what their hands did without them."
           ]
         },
         "intuitions": {
           "head": "Intuitions",
           "text": [
             "Knowledge found a use. The white book got one more part, right after the methods: intuitions, things the seeker senses before understanding them.",
-            "The first is the semantic filter. Five levels, paid in Knowledge, and with each one finds come more often. Its page says it all: the level, the chance before and after, the price in pencil. A first attempt, notes in the margin, could not be understood. It was redone.",
-            "Then the others came: Ariadne’s thread, the memory of sentences, speed reading, muscle memory, the map of the return, flair, and one per reading method, which doubles what the method reads. The one for a method not yet found stays in symbols. Only one has no end: deep sleep, one more hour of absence counted at each level, each twice as dear. Then a second one without end, economy of gesture: methods cost a little less at each level. And because intuitions will be forgotten at the Exile, reminiscence is ready: they come back on their own up to the highest level already reached, and a pencil note lets it happen or not. It became a lasting intuition, which only appears after the first Exile.",
-            "Knowledge came too fast. Finds became rarer, prices higher: it now takes hundreds of hours to understand everything. In the white book and the hive of methods, each method shows what it really reads, intuition included. Under the hive, a gold mark tells how many a click buys: one, ten, a hundred, or as many as the pages allow. It unfolds when the mouse passes over it. Each lot opens with the armful, the first of the lasting intuitions: a comfort that the Exile will not take away. The Ledger got one more plate, “Intuitions”: a seal for each one understood to the end; for those with no end, at level ten. Each seal also makes finds more frequent, by one percent, and the chance can go beyond a hundred percent: at 554%, a page brings five finds, and a sixth at 54%. Only one is shown highlighted.",
-            "Then the first age slowed down. A method can only be found once the one before is owned twenty-five times; until then, pencil tally marks count them under its name, in fives. The last five cost twice as much: the ladder comes around the fourteenth hour. Beyond a hundred percent, the extra finds bring their Knowledge but write almost nothing: a little method, a little hint, a little memory. And a hint that leads to a rare book waits until that book is found.",
-            "Then the first age lost four methods: the thumb, the wide gaze, the double leafing and the mirror. Five per age, no more, so that each one counts. The prices were redone, and the ladder still comes around the fourteenth hour. A game that had them has forgotten them. Each method received its seals: one, twenty-five, fifty, a hundred, a hundred and fifty and five hundred copies, in a single game. Five hundred ladders cost a number of pages thirty-nine digits long: the last ones are meant for very long games. In the Great Book, each method now has its own page, its name as a subtitle, and a second series: the pages it has read since waking, from ten times its price to a trillion times. A last page gathers them all: every method bought in the game fills a volume of four hundred and ten, like the pages of a book of the Library. Nine volumes, nine seals. The “Pages” plate got a second page, for what is never forgotten, even when starting over: the pages read by the methods, a thousand at a time, from a single one to a number thirty-one digits long; and those read by hand, ten at a time, up to a hundred thousand. Each of these seals has its own sentence, its numbers written the way the player chose in the notebook. A third page follows, for the highest speed of a whole life: ten times more pages per second each time up to a hundred million, then a hundred times more, up to a number thirty-one digits long."
+            "The first is the semantic filter. A first attempt, notes in the margin, could not be understood. It was redone. Then the others came.",
+            "Knowledge came too fast. Finds became rarer, prices higher. Then the first age slowed down.",
+            "Then the first age lost four methods: the thumb, the wide gaze, the double leafing and the mirror. Five per age, no more, so that each one counts."
           ]
         },
         "prestige": {
@@ -2555,10 +2552,9 @@
         "constellations": {
           "head": "The constellations",
           "text": [
-            "Then the Etherium turned to night. Its single-stemmed trees were meant to branch; three ideas were drawn: the fork, the tree of Porphyry, the double page. None was kept. Instead, one invented constellation per page, its figure telling what it gives: an open book for reading, a hand, an owl for Knowledge, a magnifying glass for finds, a moon for absence, a door for waking, a hive for the memory of methods, a staircase for the Ages. Each star has only one star before it; it is lit with Ether, and what the stars give multiplies. The nodes of the old trees gave back their Ether. Then, one by one, the stars were given what they promised: leaves that turn faster, cheaper intuitions, a door that remembers the run before.",
+            "Then the Etherium turned to night. Its single-stemmed trees were meant to branch; three ideas were drawn: the fork, the tree of Porphyry, the double page. None was kept. Instead, one invented constellation per page, its figure telling what it gives.",
             "For the ink, four nights were tried: the atlas on paper, the night, the restrained night, the night that is earned. Plain night won: violet pages, a fixed dust of stars, gold lines that shine. In the room, the lamp turned it maroon; its pages were given what they need to keep their violet.",
-            "Then Ether began to count even once spent: every Ether ever received makes reading one percent faster, for methods and hands alike. The flyleaf says so beneath the Ether to spend, the return from an absence tells the Ether it earned, and the Ledger breaks reading speed down as it does the chance of a find: the methods, their intuitions, the Etherium, the Ether. The list of methods got pages of its own there, sorted by Age once the Automatic Age is bought: there will be dozens. Not enough to get past the wall: enough to make it lower.",
-            "Before the Alpha, a review of the whole game. The simulator learned the seals and the Ether that makes reading faster: in a month, the whole Etherium lights up; the next Ages will have their constellations, far dearer. Until then, their steps stay closed, like the Drop in the Hive: one sees them, without their name. The find chance got its share of the Etherium, and a few words were set straight. With the Etherium open, its cover lifted, the counter at the top shows the Ether to spend instead of pages: one could no longer tell how much was left."
+            "Before the Alpha, a review of the whole game. The simulator learned the seals and the Ether that makes reading faster."
           ]
         },
         "cornee": {
@@ -2570,36 +2566,36 @@
         "automaticAge": {
           "head": "The Automatic Age",
           "text": [
-            "A step of the Staircase was given its Age: the Automatic Age, for one star of Ether. Bought once and for all, it opens five mechanisms that read for the researcher, from the smallest to the whole gallery: the Metronome, the Book Wheel, the Book Lift, the Reading Automaton and the Gallery Clock. Each has its sentence, its intuition and its seals. The first one does not wait for twenty-five Ladders: buying the Age is enough. Their prices were chosen with the simulator, out of four attempts; later, their reading was halved, so that Ether rises in steps, one Age after another. In the Manual Age, the Silenced Voice and the Stone Lectern were brought closer: twenty-five Voices cost more than half a Lectern. In the white book, methods and intuitions are then sorted by Age, each under its own title."
+            "A step of the Staircase was given its Age: the Automatic Age. It opens five mechanisms that read for the researcher, from the smallest to the whole gallery. Their prices were chosen with the simulator, out of four attempts; later, their reading was halved, so that Ether rises in steps, one Age after another."
           ]
         },
         "sealsReview": {
           "head": "The seals catch up with the game",
           "text": [
-            "Prestige, the Etherium and the Automatic Age had arrived without a single seal. A review caught up with them: a plate for the Etherium, which only appears after a first awakening (prestiges, Ether gathered, stars lit, each whole constellation, the Automatic Age); knowledge understood, the white book filled, the Great Book read whole, a whole night away, the days since arriving. The seals of a method no longer show before it does: nothing of the Dog-Eared Page or the Automatic Age before they exist for the researcher. Series that were too short were extended to the numbers the game now reaches, and the pages turned by hand were given nine more sentences, up to the empty hand of the first day. Three secrets were added, each with its sentence in the white book; a solved hint carries in its margin, in gold, the seal it earned.",
-            "We were told that seals appeared without anyone knowing what they stood for. The vision now writes beneath the seal the name of its plate and its caption, in Babel symbols while the seals cannot be read yet, with a line that admits it; it waits while hovered, and a click opens the Great Book on its plate, where the seal waits, highlighted, its caption already written. The first seals fall before the Great Book and cannot be touched: the first three visions that can be touched say so. Three options were tried."
+            "Prestige, the Etherium and the Automatic Age had arrived without a single seal. A review caught up with them. Series that were too short were extended to the numbers the game now reaches.",
+            "We were told that seals appeared without anyone knowing what they stood for. The vision now writes beneath the seal the name of its plate and its caption. Three options were tried."
           ]
         },
         "letter": {
           "head": "The letter that escapes",
           "text": [
-            "After the Alpha, an idea from the author: boons that do not last. Four things were tried to carry them: a page flying off a shelf, a golden moth, a letter escaping the book, a book spine that glows. The letter won. From time to time, a letter of Babel rises from the book in hand; caught, it comes apart in golden dust and gives a boon, for a few seconds. What is running shows in a medallion, right of the counter, ringed with the time left.",
-            "At first it is rare, brief, and gives only the Trance. A ninth constellation, the Quill, makes it come more often, stay longer, and teaches it six other boons: the Sharp Eye, the Light Hand, the Quick Memory, the Windfall, the Flash, the Find. The prices were raised: in the long run, it is a very strong boon. From the first letter caught, three intuitions appear: the Watch, the Held Breath, the Letter Understood. And, very rarely, it is not a letter that comes but a word, letter by letter: BABEL. The white book, for its part, set apart the intuitions that belong to no method: once the Ages are separated, they have their own sub-part, before them.",
-            "Later, the author wanted the boons to add up. A fourth intuition, the Flight, means a caught letter sometimes calls another, and that one, more rarely, a third; their gifts add up. Then came a short, outsized boon, learned with it: Four Hundred Ten, the number of pages in a book of the Library; while it lasts, pages and finds are multiplied by that number. The word BABEL still comes alone."
+            "After the Alpha, an idea from the author: boons that do not last. Four things were tried to carry them: a page flying off a shelf, a golden moth, a letter escaping the book, a book spine that glows. The letter won. From time to time, a letter of Babel rises from the book in hand; caught, it comes apart in golden dust and gives a boon, for a few seconds.",
+            "At first it is rare and brief. The prices were raised: in the long run, it is a very strong boon.",
+            "Later, the author wanted the boons to add up."
           ]
         },
         "newVersion": {
           "head": "The new version",
           "text": [
-            "Then the game learned to notice it had grown old. Every five minutes, and each time you come back to the tab, it reads the name of the version online. If a new one is out, a window says so and offers to reload, the reading saved just before. Nothing reloads by itself: a trap or a hunt may be under way. Two tones were tried, one inside the world, one plain. The plain one won."
+            "Then the game learned to notice it had grown old. If a new one is out, a window says so and offers to reload, the reading saved just before. Nothing reloads by itself: a trap or a hunt may be under way. Two tones were tried, one inside the world, one plain. The plain one won."
           ]
         },
         "scenes": {
           "head": "The rooms",
           "text": [
-            "Then the setting was repainted. The first room, with its one window, did not say how vast Babel is. Three rough models were built in plain volumes, the eye at reading height: a balcony over an immense shaft, a nave running to the horizon, hexagons in a row. The hexagons won.",
-            "The models guided the painting: their depth map, handed to the painter, keeps the walls straight. Three rooms came out of it, one per Age: the hexagon with windows on the desert for the Manual Age, the room under the stars for the Automatic Age, the glass roof for the Age to come. The darkness that lifted page after page left with the old room.",
-            "The options notebook gained a page: the researcher drew every room he has seen, and you keep the one you like best. A list and small windows were tried before the sketches."
+            "The setting was repainted. The first room, with its one window, did not say how vast Babel is. Three rough models were built in plain volumes, the eye at reading height: a balcony over an immense shaft, a nave running to the horizon, hexagons in a row. The hexagons won.",
+            "The models guided the painting: their depth map, handed to the painter, keeps the walls straight. Three rooms came out of it, one per Age. The darkness that lifted page after page left with the old room.",
+            "The options notebook gained a page: the researcher drew every room seen, and you keep the one you like best. A list and small windows were tried before the sketches."
           ]
         },
         "mimic": {
@@ -2621,10 +2617,9 @@
         "digitalAge": {
           "head": "The Digital Age",
           "text": [
-            "One more step on the Staircase: the Digital Age, for fifteen hundred Ether. It was meant to be called the Quantum Age; it was renamed, more in keeping with what comes before it. It opens five machines that the researcher describes without knowing them: the Minitel, the Home Computer, the Search Engine, the Crawler and the Babel Algorithm; the Floppy Disk, planned at first, gave its place to the Home Computer. A secret method hides there, the Bit, modelled on the Dog-Eared Page. Their prices were chosen with the simulator, out of three attempts, with a goal set for each Age: tens of Ether per prestige in the first, hundreds in the second, thousands in this one. The intuitions of the last machines stay out of reach of a single run: a distant goal. Once the Age is bought, the room becomes the glass roof.",
-            "The Hive received its third cell, the Digital one; to fit side by side, all three shrank a little. The Gallery Clock leads to the Bit: lit, it brings back its blurry memory, like the Dog-Eared Page. Then each machine keeps its sentence there through prestige, ten times dearer than in the Automatic cell. Until the Age is bought, the cell cannot be seen.",
-            "Then the Ether began to weigh. Each Ether received makes reading one per cent faster: in the Digital Age, it was a spiral. Beyond five thousand, each one now counts a little less than the one before; this is the weight of the Library, and the Ledger says so in its “Ether” chapter. A new page of the Etherium, just after the Staircase, eases it: Atlas, a kneeling giant carrying a room of the Library. From the foot to the room, seven stars; the last one lifts the weight. The page stays blank until the Ether weighs.",
-            "The Digital Age also received its own page in the Etherium, the last in the book, after the relics: “Digital”, a Minitel drawn in stars. From the plug, the cord leads to the screen, whose four corners make its machines read faster, and to the keyboard, whose keys bring more Knowledge. Like the cell, it stays blank until the Age is bought.",
+            "One more step on the Staircase: the Digital Age. It was meant to be called the Quantum Age; it was renamed, more in keeping with what comes before it. It opens five machines that the researcher describes without knowing them; the Floppy Disk, planned at first, gave its place to the Home Computer. Their prices were chosen with the simulator, out of three attempts, with a goal set for each Age: tens of Ether per prestige in the first, hundreds in the second, thousands in this one.",
+            "Then the Ether began to weigh: in the Digital Age, it was a spiral. A new page of the Etherium eases it: Atlas, a kneeling giant carrying a room of the Library.",
+            "The Digital Age also received its own page in the Etherium: “Digital”, a Minitel drawn in stars.",
             "With it, the game moved to Alpha 2."
           ]
         },
@@ -2639,20 +2634,18 @@
         "falseEnding": {
           "head": "The false ending",
           "text": [
-            "There had to be an ending to look for. There is one to buy: a last page in the Etherium, the Curtain, drawn in stars, which promises “the meaning of it all”. The first star costs ten Ether; the last, a hundred thousand, and it waits for all the others.",
-            "Each star lit brings back a memory, highlighted in a book on the shelves, in the place kept for the book of the end: “My True Story”, the only one whose title can be read plainly. A cup, a key, a voice, a white notebook, 410, an embroidered name: every mystery of the game finds its answer there. Then the cup changes rims, and the lime tree becomes an oak.",
-            "On the last page, someone wrote in pencil: “Not this one.” Remembered, or read? The seeker can no longer tell. The answer is in another book; meanwhile, the reading goes twice as fast.",
+            "There had to be an ending to look for. It was a last page in the Etherium, the Curtain, drawn in stars, which promises “the meaning of it all”.",
+            "Each star lit brings back a memory, highlighted in a book on the shelves: “My True Story”.",
             "With it, the game moved to Alpha 2.1."
           ]
         },
         "endingsShelf": {
           "head": "The True Ending",
           "text": [
-            "“My True Story” has left the shelves. Left of the library, an arrow leads to another piece of furniture, in the same wood, with two tiers. On top, on a stand, a brass easel waits for a book set face out; below, eleven places, each numbered, for a collection: “The True Ending”. Its name runs from one spine to the next, in gilt script, and can only be read whole once the row is complete. The cartouche counts the volumes, out of eleven.",
-            "“My True Story” is volume 1 there, spine out, as soon as you start reading it. At first it sat on top while being read, as if it were the true book; the top now belongs to the true book, and to it alone. It belongs to no collection.",
-            "Beside it, a casino machine, copper and gold: the Lottery. Three reels of Babel digits, a panel promising the jackpot, three 7s, a lever, a red button. It takes a token: without one, the lever barely goes down, the button sinks, nothing turns. A wooden machine came first, then neon in every colour; both were set aside.",
-            "Tokens cannot be bought: a caught Mimic drops one, once in three. The lever goes all the way down, the reels stop one after another and the panel says what they are worth. Three different digits: nothing, the token is lost. Two alike: thirty minutes of reading, all at once. Three alike: an hour when everything reads faster, or a single method, ten times over. Three 0s: ten minutes when everything reads half as fast, or the best method stops, or the Golden Mimic. Three 7s: the jackpot, still waiting for its book.",
-            "The Golden Mimic does not die. If an ordinary Mimic is there, it crushes it, and the other gives back what it swallowed. Strike it and it bites, and it eats everything that comes in: pages, Knowledge, even a win from the machine. After five minutes it leaves, giving nothing back. Playing again erases nothing. But a bonus, or a penalty, counts only once at a time: if it is already there, the machine gives another; with all bonuses there, it takes no more tokens; with all penalties there, a penalty gives nothing. With many tokens, they would have broken the game. The token screen first counted in Babel digits; it now counts in ordinary digits.",
+            "“My True Story” has left the shelves. Left of the library, an arrow leads to another piece of furniture, in the same wood, with two tiers. On top, on a stand, a brass easel waits for a book set face out; below, eleven places, each numbered, for a collection: “The True Ending”.",
+            "At first it sat on top while being read, as if it were the true book; the top now belongs to the true book, and to it alone.",
+            "Beside it, a casino machine, copper and gold: the Lottery. Three reels of Babel digits, a panel promising the jackpot, a lever, a red button. A wooden machine came first, then neon in every colour; both were set aside.",
+            "Tokens cannot be bought. A bonus, or a penalty, counts only once at a time: with many tokens, they would have broken the game. The token screen first counted in Babel digits; it now counts in ordinary digits.",
             "With them, the game moved to Alpha 2.3."
           ]
         },
