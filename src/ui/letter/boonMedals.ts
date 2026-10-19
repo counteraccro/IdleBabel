@@ -7,6 +7,7 @@ import { BOON, type BoonId } from '../../data/letter';
 import { clockText } from './duration';
 import { lotteryEffects } from '../../systems/lotteryEffects';
 import { goldenHere } from '../../systems/goldenMimic';
+import { mimicHere, mimicReading } from '../../systems/mimic';
 import { effectText } from '../library/lotteryText';
 import { GOLDEN_SECONDS, type LotteryEffectId } from '../../data/lottery';
 import type { GameState } from '../../core/state';
@@ -31,6 +32,9 @@ const LOTTERY_ICONS: Record<LotteryEffectId | 'golden', string> = {
   stopped: '‖',
   golden: 'M',
 };
+/** La Mimic : une gueule dentée. */
+const MIMIC_ICON =
+  '<path d="M3 5h14M3 15h14M3 5l2.3 4.5 2.4-4.5 2.3 4.5 2.3-4.5 2.4 4.5 2.3-4.5M3 15l2.3-4.5 2.4 4.5 2.3-4.5 2.3 4.5 2.4-4.5 2.3 4.5" fill="none" stroke="#e8c776" stroke-width="1.5" stroke-linejoin="round"/>';
 const textIcon = (text: string): string =>
   `<text x="10" y="13.5" text-anchor="middle" font-size="${text.length > 3 ? 7 : 9.5}" font-family="Georgia,serif" fill="#e8c776">${text}</text>`;
 
@@ -43,6 +47,8 @@ interface Medal {
   total: number;
   /** Un malus : cerclé de rouge. */
   curse?: boolean;
+  /** Sans fin (la Mimic ne part pas d'elle-même) : cercle plein, pas d'horloge. */
+  endless?: boolean;
 }
 
 /** Ses dix dernières secondes, il clignote (s'il durait plus que ça). */
@@ -56,7 +62,8 @@ export const boonShort = (state: GameState, id: BoonId): string =>
 
 /**
  * Les médaillons des bonus en cours, à droite du compteur (maquette validée le 08/10) : un par bonus, cerclé du temps
- * qui reste ; au survol, ce qu'il fait et ce temps. Ceux de la Loterie aussi (16/10), les malus cerclés de rouge.
+ * qui reste ; au survol, ce qu'il fait et ce temps. Ceux de la Loterie aussi (16/10), les malus cerclés de rouge ; la Mimic
+ * tant qu'elle est là (19/10).
  */
 export const createBoonMedals = (state: GameState): Component => {
   const root = el('div', 'boon-medals');
@@ -91,6 +98,17 @@ export const createBoonMedals = (state: GameState): Component => {
         curse: true,
       });
     }
+    // La Mimic ordinaire, tant qu'elle est là (l'auteur, 19/10) : ce qu'elle enlève aux méthodes, la Connaissance dévorée.
+    if (mimicHere(state))
+      list.push({
+        key: 'mimic',
+        icon: MIMIC_ICON,
+        text: t('ui.mimic.medal').replace('{p}', String(Math.round((1 - mimicReading(state)) * 100))),
+        left: 1,
+        total: 1,
+        curse: true,
+        endless: true,
+      });
     return list;
   };
 
@@ -116,12 +134,12 @@ export const createBoonMedals = (state: GameState): Component => {
         shown.set(boon.key, view);
       }
       // Le texte refait à chaque tick (la langue, la Transe de la Plume peuvent changer) ; l'horloge à part.
-      const text = `${boon.text} · `;
+      const text = boon.endless ? boon.text : `${boon.text} · `;
       if (view.tip.firstChild?.textContent !== text) {
         view.tip.textContent = text;
-        view.tip.append(view.clock);
+        if (!boon.endless) view.tip.append(view.clock);
       }
-      view.clock.textContent = clockText(boon.left);
+      if (!boon.endless) view.clock.textContent = clockText(boon.left);
       view.medal.style.setProperty('--left', String(boon.left / boon.total));
       view.medal.classList.toggle('ending', boon.left < ENDING_MS && boon.total > ENDING_MS);
     }

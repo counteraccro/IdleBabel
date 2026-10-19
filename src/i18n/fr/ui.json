@@ -246,6 +246,7 @@
   },
   "mimic": {
     "name": "La Mimic",
+    "medal": "La Mimic · méthodes −{p} %, elle dévore la Connaissance",
     "eaten": "Elle a avalé {n} de Connaissance.",
     "gain": "+ {n} de Connaissance (+ {p} %)"
   },

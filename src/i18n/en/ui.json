@@ -240,6 +240,7 @@
   },
   "mimic": {
     "name": "The Mimic",
+    "medal": "The Mimic · methods −{p}%, it devours Knowledge",
     "eaten": "It has swallowed {n} Knowledge.",
     "gain": "+ {n} Knowledge (+ {p}%)"
   },
