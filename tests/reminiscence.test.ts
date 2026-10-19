@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../src/core/state';
-import { forgetIntuitions, remember, reminiscing } from '../src/systems/reminiscence';
+import { forgetIntuitions, rememberStatus, remember, reminiscing } from '../src/systems/reminiscence';
 import { bestOf, intuitionVisible, levelOf, understand } from '../src/systems/technologies';
 
 /** Une partie qui avait compris le filtre jusqu'au niveau 2 et l'Ariane au niveau 1, puis a tout oublié. */
@@ -67,5 +67,16 @@ describe('Réminiscence', () => {
     expect(reminiscing(state)).toBe(true);
     forgetIntuitions(state);
     expect(reminiscing(state)).toBe(true);
+  });
+});
+
+describe('Réminiscence : ce qu’il reste à retrouver', () => {
+  it('compte les niveaux oubliés et nomme la moins chère, puis dit que tout est revenu', () => {
+    const state = exiled();
+    state.technologies.reminiscence = 1;
+    expect(rememberStatus(state)).toEqual({ levels: 3, next: { id: 'semanticFilter', price: 25 } });
+    state.knowledge = 1e6;
+    remember(state);
+    expect(rememberStatus(state)).toEqual({ levels: 0, next: undefined });
   });
 });

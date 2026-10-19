@@ -1,6 +1,7 @@
 import { TECHNOLOGIES } from '../data/technologies';
 import { bestOf, levelOf, nextPrice, understand } from './technologies';
 import type { GameState } from '../core/state';
+import type { TechnologyId } from '../data/technologies';
 
 /** La Réminiscence est comprise (intuition permanente, 10 000 de Connaissance, après le premier Exil). */
 export const reminiscenceKnown = (state: GameState): boolean => levelOf(state, 'reminiscence') > 0;
@@ -16,6 +17,14 @@ const remembered = (state: GameState) =>
 export const nextRemembered = (state: GameState): number | undefined => {
   const prices = remembered(state).map((tech) => nextPrice(state, tech.id)!);
   return prices.length > 0 ? Math.min(...prices) : undefined;
+};
+
+/** Ce qu'il reste à retrouver : les niveaux, et l'intuition qui reviendra la première (la moins chère), à son prix. */
+export const rememberStatus = (state: GameState): { levels: number; next?: { id: TechnologyId; price: number } } => {
+  const left = remembered(state);
+  const levels = left.reduce((sum, tech) => sum + bestOf(state, tech.id) - levelOf(state, tech.id), 0);
+  const cheapest = left.sort((a, b) => nextPrice(state, a.id)! - nextPrice(state, b.id)!)[0];
+  return { levels, next: cheapest && { id: cheapest.id, price: nextPrice(state, cheapest.id)! } };
 };
 
 /**

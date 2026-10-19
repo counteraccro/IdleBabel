@@ -20,7 +20,7 @@ import {
   technology,
   turnsPerSecond,
 } from '../../systems/technologies';
-import { reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
+import { rememberStatus, reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
 import { boonLength, flockChance, letterStays, letterWait } from '../../systems/letter';
 import { FLOCK_THIRD } from '../../data/letter';
 import { durationText } from '../letter/duration';
@@ -164,12 +164,15 @@ export const intuitionItems = (state: GameState, id: TechnologyId, number: numbe
         { kind: 'text', text: raw.effect, x: 320, y: y + 44, size: 18, align: 'center', italic: true, faded: true, spacing: 2 },
         // Trop longue (le Guet : deux durées de chaque côté), elle se resserre pour tenir dans la page.
         fitCaption({ kind: 'text', text: effect, x: 320, y: y + 74, size: 28, align: 'center', spacing: 2, face: 'title' }),
-        // Oubliée à l'Exil : jusqu'où elle était allée (la Réminiscence y remonte seule).
+        // Oubliée au prestige : jusqu'où elle était allée, et, la Réminiscence laissée faire, qu'elle y remonte seule
+        // en payant le prix écrit dessous.
         ...(bestOf(state, id) > level
           ? [
               {
                 kind: 'text',
-                text: t('whiteBook.intuition.remembered').replace('{n}', writeDigits(String(bestOf(state, id)))),
+                text: t(
+                  reminiscing(state) && price !== undefined ? 'whiteBook.intuition.rememberedAlone' : 'whiteBook.intuition.remembered',
+                ).replace('{n}', writeDigits(String(bestOf(state, id)))),
                 x: 320,
                 y: y + 112,
                 size: 17,
@@ -179,6 +182,8 @@ export const intuitionItems = (state: GameState, id: TechnologyId, number: numbe
               } satisfies Item,
             ]
           : []),
+        // La Réminiscence elle-même : ce qu'elle a encore à rendre.
+        ...(id === 'reminiscence' && level > 0 ? rememberLines(state, y + 112) : []),
       ];
   return [
     {
@@ -214,12 +219,13 @@ export const intuitionItems = (state: GameState, id: TechnologyId, number: numbe
 
 /**
  * Réminiscence, une fois obtenue : une note au crayon en bas de la page de titre des intuitions, que l'on
- * coche ou décoche d'un clic (estompée quand on ne la laisse pas faire).
+ * coche ou décoche d'un clic (estompée quand on ne la laisse pas faire) ; dessous, ce qu'elle a encore à rendre.
  */
 export const reminiscenceNote = (state: GameState): Item[] => {
   if (!reminiscenceKnown(state)) return [];
   const on = reminiscing(state);
   return [
+    ...rememberLines(state, 718),
     {
       kind: 'text',
       text: t(on ? 'whiteBook.reminiscence.on' : 'whiteBook.reminiscence.off'),
@@ -233,4 +239,28 @@ export const reminiscenceNote = (state: GameState): Item[] => {
     },
     { kind: 'action', id: 'reminiscence', y: 672, height: 40 },
   ];
+};
+
+/**
+ * Ce que la Réminiscence a encore à rendre (deux lignes au crayon, à partir de `y`) : les niveaux à retrouver et le
+ * prochain, à son prix ; ou que tout est revenu. Rien quand on ne la laisse pas faire.
+ */
+const rememberLines = (state: GameState, y: number): Item[] => {
+  if (!reminiscing(state)) return [];
+  const { levels, next } = rememberStatus(state);
+  const line = (text: string, at: number): Item => ({
+    kind: 'text',
+    text,
+    x: 320,
+    y: at,
+    size: 17,
+    align: 'center',
+    italic: true,
+    faded: true,
+  });
+  if (!next) return [line(t('whiteBook.reminiscence.done'), y)];
+  const left =
+    levels === 1 ? t('whiteBook.reminiscence.leftOne') : t('whiteBook.reminiscence.left').replace('{n}', writeDigits(String(levels)));
+  const price = formatNumber(next.price, getLocale());
+  return [line(left, y), line(t('whiteBook.reminiscence.next').replace('{name}', texts(next.id).name).replace('{price}', price), y + 24)];
 };

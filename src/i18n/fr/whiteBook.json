@@ -225,7 +225,8 @@
     "levelEndless": "Niveau {n}",
     "unknownGesture": "Je ne connais pas encore ce geste.",
     "nothingLeft": "Il n'en reste plus à trouver.",
-    "remembered": "Je l'avais compris jusqu'au niveau {n}."
+    "remembered": "Je l'avais compris jusqu'au niveau {n}.",
+    "rememberedAlone": "Je l'avais compris jusqu'au niveau {n}. Ça me revient seul, à ce prix."
   },
   "intuitions": {
     "semanticFilter": {
@@ -324,7 +325,7 @@
     "reminiscence": {
       "name": "La Réminiscence",
       "description": "Ce que j'ai compris une fois me revient seul, jusqu'où j'en étais.",
-      "effect": "après un prestige, les intuitions reviennent",
+      "effect": "rachète seule les intuitions oubliées",
       "notes": ["Je l'avais déjà compris. Ça revient."],
       "byHand": "à la main",
       "alone": "seules"
@@ -363,7 +364,11 @@
   },
   "reminiscence": {
     "on": "Je laisse revenir ce que je savais.",
-    "off": "Je ne laisse plus rien revenir."
+    "off": "Je ne laisse plus rien revenir.",
+    "left": "Encore {n} niveaux à retrouver.",
+    "leftOne": "Encore un niveau à retrouver.",
+    "next": "La prochaine : « {name} », pour {price} de Connaissance.",
+    "done": "Tout ce que je savais est revenu."
   },
   "methods": {
     "diagonal": {

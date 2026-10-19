@@ -225,7 +225,8 @@
     "levelEndless": "Level {n}",
     "unknownGesture": "I do not know this gesture yet.",
     "nothingLeft": "There are none left to find.",
-    "remembered": "I had understood it up to level {n}."
+    "remembered": "I had understood it up to level {n}.",
+    "rememberedAlone": "I had understood it up to level {n}. It comes back on its own, at this price."
   },
   "intuitions": {
     "semanticFilter": {
@@ -324,7 +325,7 @@
     "reminiscence": {
       "name": "Reminiscence",
       "description": "What I once understood comes back on its own, as far as I had gone.",
-      "effect": "after a prestige, intuitions come back",
+      "effect": "buys back forgotten intuitions on its own",
       "notes": ["I had understood it before. It comes back."],
       "byHand": "by hand",
       "alone": "on their own"
@@ -363,7 +364,11 @@
   },
   "reminiscence": {
     "on": "I let what I knew come back.",
-    "off": "I no longer let anything come back."
+    "off": "I no longer let anything come back.",
+    "left": "{n} levels still to recover.",
+    "leftOne": "One level still to recover.",
+    "next": "Next: “{name}”, for {price} Knowledge.",
+    "done": "All I knew has come back."
   },
   "methods": {
     "diagonal": {
