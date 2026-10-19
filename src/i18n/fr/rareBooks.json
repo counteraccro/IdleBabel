@@ -2701,6 +2701,7 @@
             "On les a d’abord appelées billets ; le mot n’était pas compris. Ce sont devenues les tâches.",
             "Cela ne sert à rien de noyer le joueur. Elles s’effacent chaque nuit, pour éviter de se retrouver avec deux cents tâches à faire.",
             "D’autres ne se font qu’une fois : longues, avec des récompenses qui donnent envie. Un sentiment de progression sur le long terme.",
+            "Il était dommage de ne pas voir où elles en étaient : chacune a maintenant son avancement, au crayon.",
             "Elles s’écrivent dans le livre blanc : éviter de faire un nouveau livre, ne pas rajouter une bête liste de quêtes dans l’interface.",
             "Les mods peuvent en ajouter : donner plus de possibilités aux moddeurs."
           ]
@@ -2712,6 +2713,14 @@
             "C’est une technique forte, qui permet de soulager à terme. Elle arrive avec l’Âge Numérique.",
             "Chaque Âge s’achète à part, toujours pour avoir un sentiment de progression.",
             "Le joueur doit avoir le choix de jouer avec ou sans : un rouage sous la ruche dit qu’il tourne, et un clic l’arrête."
+          ]
+        },
+        "patience": {
+          "head": "La Patience",
+          "text": [
+            "Savoir combien de temps il faut encore lire avant de pouvoir s’offrir la prochaine méthode.",
+            "D’abord mise sous les intuitions, par erreur : c’était aux méthodes de lecture qu’il manquait.",
+            "C’est un confort qu’il faut mériter : une intuition permanente, qui se paie cher."
           ]
         },
         "relicToken": {

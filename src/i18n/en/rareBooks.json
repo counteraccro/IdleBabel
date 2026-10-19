@@ -2701,6 +2701,7 @@
             "At first we called them tickets; the word wasn’t understood. They became tasks.",
             "There’s no point drowning the player. They are wiped every night, so you don’t end up with two hundred tasks to do.",
             "Others can only be done once: long, with rewards that make you want them. A sense of progress over the long run.",
+            "It was a shame not to see how far along they were: each one now shows its progress, in pencil.",
             "They are written in the white book: to avoid making a new book, and not to add a plain quest list to the interface.",
             "Mods can add some: giving modders more possibilities."
           ]
@@ -2712,6 +2713,14 @@
             "It is a strong technique, one that eases things in the long run. It comes with the Digital Age.",
             "Each Age is bought separately, again for a sense of progress.",
             "The player must have the choice to play with it or without: a gear under the hive shows it is turning, and a click stops it."
+          ]
+        },
+        "patience": {
+          "head": "Patience",
+          "text": [
+            "Knowing how much longer you must read before you can afford the next method.",
+            "At first put under the intuitions, by mistake: it was the reading methods that needed it.",
+            "It is a comfort you have to earn: a permanent intuition, and an expensive one."
           ]
         },
         "relicToken": {
