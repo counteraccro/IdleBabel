@@ -2604,9 +2604,11 @@
         "mimic": {
           "head": "The Mimic",
           "text": [
-            "Then a book too many. An idea from the author: the Mimic, an ordinary book lying somewhere in the room. While it is there, it swallows all the Knowledge found, and it never leaves on its own. At the first click, it bites; at the second, it vanishes and gives it all back, ten percent more. It has its price: while it is there, the methods read slower, by as much as it will give back on top, never by more than half. Kill it fast to keep spending, or let it eat for a long time: that is the whole choice.",
-            "It has the binding of the Library’s books, and their size: a real box in perspective, set on the vanishing point of each room, the eye at reading height. Now and then, two eyes rise out of the leather, at the edge of the fore-edge, and the pages make the mouth. Amber eyes and green eyes were tried; the ember ones won. On an upright screen, where no spot in the room can be seen, it becomes a seal at the edge of the screen, a small sleeping book; half off the screen, it was set aside.",
-            "It is unlocked in the Etherium, on a new constellation, Exploration: a compass rose, each point of which will make something appear in the rooms. The East is the Mimic; the West waits for the relics. Its own page opens next: the eye shows what it has swallowed, the upper teeth make it come more often, the lower ones make it give back more. An intuition, Light Sleep, gives it away while it sleeps; a plate of seals counts the ones caught, what they give back on top, and how long they were left to eat. The Etherium’s contents now take two pages."
+            "We wanted to make the world more alive, with small events. The Mimic is the first one.",
+            "A mimic is a creature that takes the shape of an object. In a library, there is nothing but books: it had to look like a book. Two eyes open at the edge of the fore-edge, and the pages make the mouth, like the mimic chest. Flat, the eyes were crushed by the perspective: we made them stand out.",
+            "We wanted to give the player a sense of choice: let it grow, or kill it now.",
+            "It was too powerful. A choice has to be made, and that choice has a cost: gain more Knowledge but lose pages, or the other way round.",
+            "Exploration, a compass rose in the Etherium, unlocks the Mimic. It then has its own constellation."
           ]
         },
         "relics": {

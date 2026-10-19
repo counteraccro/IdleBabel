@@ -2604,9 +2604,11 @@
         "mimic": {
           "head": "La Mimic",
           "text": [
-            "Puis un livre de trop. Une idée de l’auteur : la Mimic, un livre ordinaire posé quelque part dans la salle. Tant qu’elle est là, elle avale toute la Connaissance trouvée, et ne part jamais d’elle-même. Au premier clic, elle mord ; au second, elle disparaît et rend tout, dix pour cent en plus. Elle a son prix : tant qu’elle est là, les méthodes lisent moins vite, d’autant qu’elle rendra en plus, jamais de plus de moitié. La tuer vite pour continuer à dépenser, ou la laisser manger longtemps : c’est tout le choix.",
-            "Elle a la reliure des livres de la Bibliothèque, et leur taille : une vraie boîte en perspective, calée sur le point de fuite de chaque salle, l’œil à hauteur de lecteur. De temps en temps, deux yeux sortent du cuir, au bord de la tranche, et les pages font la bouche. Des yeux d’ambre et des yeux verts ont été essayés ; ceux de braise l’ont emporté. Sur un écran en hauteur, où aucune place de la salle ne se voit, elle devient un sceau au bord de l’écran, un petit livre qui dort ; à moitié sorti de l’écran, il a été écarté.",
-            "Elle se débloque dans l’Etherium, sur une constellation nouvelle, l’Exploration : une rose des vents, dont chaque pointe fera apparaître quelque chose dans les salles. L’Est, c’est elle ; l’Ouest attend les reliques. Sa page à elle s’ouvre ensuite : l’œil montre ce qu’elle a avalé, les dents du haut la font venir plus souvent, celles du bas lui font rendre plus. Une intuition, le Sommeil léger, la trahit quand elle dort ; une planche de sceaux compte celles qu’on attrape, ce qu’elles rendent en plus, et le temps qu’on les laisse manger. Le sommaire de l’Etherium tient désormais sur deux pages."
+            "On voulait rendre le monde plus vivant, avec de petits évènements. La Mimic est le premier.",
+            "Une mimic est une créature qui prend l’apparence d’un objet. Dans une bibliothèque, on ne trouve que des livres : elle devait ressembler à un livre. Deux yeux s’ouvrent au bord de la tranche, et les pages font la bouche, comme le coffre-mimic. À plat, les yeux étaient écrasés par la perspective : on les a mis en relief.",
+            "On voulait donner au joueur un sentiment de choix : la laisser grossir, ou la tuer maintenant.",
+            "Elle était trop puissante. Il faut faire un choix, et ce choix a un coût : gagner plus de Connaissance mais perdre en pages, ou l’inverse.",
+            "L’Exploration, une rose des vents dans l’Etherium, permet de débloquer la Mimic. Elle a ensuite sa propre constellation."
           ]
         },
         "relics": {
