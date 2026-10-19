@@ -167,6 +167,7 @@ export const STORY: StoryChapter[] = [
       { key: 'lotteryStars' },
       { key: 'tasks' },
       { key: 'relicToken', drafts: ['relicToken'] },
+      { key: 'gear' },
       // Toujours la dernière partie du livre : il s'écrit encore.
       { key: 'thisBook' },
     ],

@@ -2695,6 +2695,15 @@
             "Mods can add some: giving modders more possibilities."
           ]
         },
+        "gear": {
+          "head": "The Gear",
+          "text": [
+            "Making the game more comfortable late on: the methods buy themselves.",
+            "It is a strong technique, one that eases things in the long run. It comes with the Digital Age.",
+            "Each Age is bought separately, again for a sense of progress.",
+            "The player must have the choice to play with it or without: a gear under the hive shows it is turning, and a click stops it."
+          ]
+        },
         "relicToken": {
           "head": "The Token",
           "text": [

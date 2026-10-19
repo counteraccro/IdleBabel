@@ -2695,6 +2695,15 @@
             "Les mods peuvent en ajouter : donner plus de possibilités aux moddeurs."
           ]
         },
+        "gear": {
+          "head": "Le Rouage",
+          "text": [
+            "Rendre le jeu plus confortable en fin de partie : les méthodes s’achètent seules.",
+            "C’est une technique forte, qui permet de soulager à terme. Elle arrive avec l’Âge Numérique.",
+            "Chaque Âge s’achète à part, toujours pour avoir un sentiment de progression.",
+            "Le joueur doit avoir le choix de jouer avec ou sans : un rouage sous la ruche dit qu’il tourne, et un clic l’arrête."
+          ]
+        },
         "relicToken": {
           "head": "Le Jeton",
           "text": [
