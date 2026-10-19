@@ -76,6 +76,15 @@ export const PLAYER = {
    */
   reminiscence: 'payante' as 'payante' | 'gratuite',
   /**
+   * Le joueur regarde la ruche toutes les `handBuyEvery` secondes de jeu pour acheter ses méthodes (19/10, pour le Rouage) ;
+   * 0 : il achète dès qu'il peut, comme avant. --achat-main=300.
+   */
+  handBuyEvery: 0,
+  /** Le Rouage (simulateur/rouage.ts, pas encore dans le jeu) : --sans-rouage pour s'en passer. */
+  rouage: true,
+  /** Le lot que le Rouage achète (celui choisi sous la ruche) : --lot=1, 10, 100 ou max. */
+  rouageLot: 'max' as number | 'max',
+  /**
    * Lecture des méthodes de chaque Âge, multipliée (essais du 13/10 : adoucir le gain d'un Âge à l'autre) :
    * --lecture=auto:0.1,num:0.01 ; 1 partout, les chiffres du jeu.
    */

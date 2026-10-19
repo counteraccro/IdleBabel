@@ -116,7 +116,7 @@ const level = (run: Run, id: string): number => run.levels[id] ?? 0;
 const BIT_STAR = SENTENCES.find((sentence) => sentence.id === 'bit')?.secret ?? '';
 const bitSought = (life: Life): boolean => PLAYER.bit && lit(life, BIT_STAR);
 
-const allMethods = (run: Run): Method[] => [...run.methods, SECRET, ...(bitSought(run.life) ? [BIT] : [])];
+export const allMethods = (run: Run): Method[] => [...run.methods, SECRET, ...(bitSought(run.life) ? [BIT] : [])];
 
 /** L'Éther reçu depuis toujours : +1 % de lecture chacun (méthodes et feuille tournée à la main). */
 const etherReading = (run: Run): number => (PLAYER.etherReading ? 1 + ETHER_READING * etherCounted(run.life) : 1);
@@ -128,7 +128,7 @@ const etherCounted = (life: Life): number => (PLAYER.weight ? weighed(life.ether
  * Ce que lit une méthode ; `away` : sans la Transe de la lettre ni la Mimic (ni l'une ni l'autre ne vient pendant
  * l'absence, et le bot attrape la Mimic avant de fermer le jeu). Tant qu'elle est là, la Mimic ralentit la lecture.
  */
-const rate = (run: Run, method: Method, away = false): number =>
+export const rate = (run: Run, method: Method, away = false): number =>
   method.pagesPerSecond *
   (method.gesture ? GESTURE_BONUS ** level(run, method.gesture) : 1) *
   product(run.life, EFFECT.readingRate) *
@@ -373,7 +373,7 @@ export const away = (run: Run, seconds: number): void => {
   tasksFor(run, seconds, false);
 };
 
-const price = (run: Run, method: Method): number =>
+export const price = (run: Run, method: Method): number =>
   method.baseCost * COST_GROWTH ** (run.owned[method.id] ?? 0) * BARGAIN_FACTOR ** level(run, 'bargain') * letterAverage(run).price;
 
 /** Le bot achète la méthode qui se rembourse le plus vite (en comptant l'attente pour se l'offrir), tant qu'il peut. */

@@ -15,6 +15,7 @@ import { relicById } from '../src/data/relics';
 import { PLAYER } from './config';
 import { etherNeeded } from '../src/systems/etherium';
 import { TASK_STAR_IDS, countLast, newTasks, openTaskStars, type Tasks } from './taches';
+import { openGearStars } from './rouage';
 
 /** Ce qui survit au prestige : les pages à vie, l'Éther, les étoiles allumées, la Page Cornée une fois retrouvée. */
 export interface Life {
@@ -122,6 +123,7 @@ const open = (life: Life): Buyable[] => [
       life.etherReceived >= etherNeeded(star.page),
   ),
   ...openTaskStars(life),
+  ...openGearStars(life),
 ];
 
 type Buyable = { id: string; cost: number };

@@ -16,6 +16,8 @@
  *   npm run simule -- --sans-taches          sans les tâches (simulateur/taches.ts, pas encore dans le jeu)
  *   npm run simule -- --sans-jeton           le bot ne pose pas le Jeton (la relique de la Loterie)
  *   npm run simule -- --reminiscence=gratuite  les intuitions reviennent gratuitement à leur meilleur niveau
+ *   npm run simule -- --achat-main=300       le bot n'achète ses méthodes à la main que toutes les 300 s de jeu
+ *   npm run simule -- --sans-rouage --lot=10 --rouage=c:20,a2:30   le Rouage (pas encore dans le jeu) : sans, son lot, ses prix
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
@@ -25,6 +27,7 @@ import { buyIntuitions } from './intuitions';
 import { etherGain, litPerPage, newLife, spendEther } from './vie';
 import { checkSeals, sealCount, sealsPerPlate } from './sceaux';
 import { LAST_TASK, ONCE_TASKS, TASK_STARS } from './taches';
+import { GEAR_STARS, gearLog, turnGear } from './rouage';
 
 const option = (name: string): string | undefined =>
   process.argv.find((arg) => arg === `--${name}` || arg.startsWith(`--${name}=`))?.split('=')[1] ??
@@ -45,6 +48,9 @@ if (option('sans-bit') !== undefined) PLAYER.bit = false;
 if (option('sans-taches') !== undefined) PLAYER.tasks = false;
 if (option('sans-jeton') !== undefined) PLAYER.tokenRelic = false;
 if (option('reminiscence') === 'gratuite') PLAYER.reminiscence = 'gratuite';
+if (option('achat-main')) PLAYER.handBuyEvery = Number(option('achat-main'));
+if (option('sans-rouage') !== undefined) PLAYER.rouage = false;
+if (option('lot')) PLAYER.rouageLot = option('lot') === 'max' ? 'max' : Number(option('lot'));
 // L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
 if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
 
@@ -66,14 +72,25 @@ const big = (n: number): string => (n < 1e6 ? String(Math.round(n)) : n.toExpone
 
 const [active, closed] = PLAYER.rhythm.map((hours) => hours * 3600);
 
+const handTick = new WeakMap<Run, number>();
+
 /** Joue jusqu'au prestige (rend l'Éther gagné), ou jusqu'à la fin du temps simulé (rend 0). */
 const playRun = (run: Run, end: number): number => {
   let bestRate = 0;
   while (run.life.clock < end) {
     const phase = run.life.clock % (active + closed);
     if (closed > 0 && phase >= active) away(run, active + closed - phase);
-    else play(run, run.t < 3600 ? 1 : 5);
-    buyMethods(run);
+    else {
+      const step = run.t < 3600 ? 1 : 5;
+      play(run, step);
+      turnGear(run, step);
+    }
+    // Le joueur regarde la ruche (toutes les handBuyEvery secondes, ou sans cesse) ; au retour d'une absence aussi.
+    const every = PLAYER.handBuyEvery;
+    if (every === 0 || Math.floor(run.t / every) !== handTick.get(run)) {
+      handTick.set(run, every === 0 ? 0 : Math.floor(run.t / every));
+      buyMethods(run);
+    }
     buyIntuitions(run);
     if (run.t % 60 >= 5) continue;
     checkSeals(run);
@@ -184,5 +201,11 @@ if (PLAYER.tasks) {
     last
       ? `Une dernière pour la route : apparue ${duration(last.at)} · Éther dépensé ${big(last.ether)} / ${big(LAST_TASK.ether)} · pages ${big(last.pages)} / ${big(LAST_TASK.pages)} · Connaissance ${big(last.knowledge)} / ${big(LAST_TASK.knowledge)} · faite ${duration(last.doneAt)}`
       : 'Une dernière pour la route : pas apparue',
+  );
+}
+
+if (PLAYER.rouage) {
+  console.log(
+    `Rouage (lot ${PLAYER.rouageLot}, achat à la main ${PLAYER.handBuyEvery ? `toutes les ${PLAYER.handBuyEvery} s` : 'sans cesse'}) : ${GEAR_STARS.map((star) => `${star.id.slice(5)} ${star.cost} ${duration(life.tasks.boughtAt[star.id])}`).join(' · ')} · ${gearLog.lots} achats (${big(gearLog.bought)} méthodes)`,
   );
 }
