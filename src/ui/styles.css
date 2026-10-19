@@ -147,9 +147,8 @@ button:disabled {
   transition: filter 1.2s;
 }
 /*
- * Un nombre du compteur qu'un malus de la Loterie touche : l'or tourne au rouge des malus (la vitesse pendant ÷ 2 ou une
- * méthode arrêtée, les pages pendant la Mimic dorée). Un filtre, pour les chiffres de Babel aussi et pour le fondu ;
- * jamais de clignotement.
+ * Un nombre du compteur qu'un malus touche (ui/counter.ts : la Loterie, la Mimic, la Mimic dorée) : l'or tourne au rouge
+ * des malus. Un filtre, pour les chiffres de Babel aussi et pour le fondu ; jamais de clignotement.
  */
 .number.cursed {
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9)) hue-rotate(-38deg) saturate(2.2) brightness(0.92)
