@@ -2614,9 +2614,12 @@
         "relics": {
           "head": "The relics",
           "text": [
-            "Then the West of the rose. The relics: the instruments of a searcher who came before him, one per room. Objects of ordinary life, a watch, a cup, glasses, were set aside: they said nothing of the search for meaning. What remained was a magnifying glass, an astrolabe, an hourglass.",
-            "With the West lit, each relic has its line in the white book, which can only be read once its room has been seen. Once the line is read, the object lies in its room, at its true size, in perspective, with no gleam and no sign: nothing must give away that it is there. One click: a piece of the other searcher’s story, its seal, and the object joins a small cell of the bookcase, one of those where no book would fit.",
-            "Only one works at a time: the magnifying glass guarantees Knowledge with every find, the astrolabe makes the letter come more often, the hourglass makes you read more. Changing it makes the new one work at once, then the bookcase refuses any change for twelve hours; a delay during which nothing worked was set aside. Their Etherium page, the Cabinet, strengthens each one and teaches patience: six hours instead of twelve. A medallion, left of the counter, tells which one is at work. On the bookcase's cornice, an ebony cartouche counts the books and relics kept there, in gold letters."
+            "Following on from the Mimic: making the world around the player more alive.",
+            "At first, the player’s own objects: a watch, a cup, glasses. They didn’t reflect what the player is looking for, a meaning to all this.",
+            "Relics are very strong objects: turning them all on at once would break the game.",
+            "Consistency in the game matters. No glint on the object: it has to stay natural.",
+            "Knowing that secrets exist makes you want to find them. For a room left behind, we added nothing: it is up to the player to be curious and to search.",
+            "Are the relics traces of the player’s past, of their future, of themselves?"
           ]
         },
         "digitalAge": {

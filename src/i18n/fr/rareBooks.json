@@ -2614,9 +2614,12 @@
         "relics": {
           "head": "Les reliques",
           "text": [
-            "Puis l’Ouest de la rose. Les reliques : les instruments d’un chercheur venu avant lui, une par salle. Des objets de la vie ordinaire, une montre, une tasse, des lunettes, ont été écartés : ils ne disaient rien de la quête de sens. Il en est resté une loupe, un astrolabe, un sablier.",
-            "L’Ouest allumé, chaque relique a sa phrase dans le livre blanc, qui ne se lit qu’une fois sa salle vue. La phrase lue, l’objet est posé dans sa salle, à sa vraie taille, en perspective, sans reflet ni signe : rien ne doit trahir qu’il est là. Un clic : un morceau du récit de l’autre chercheur, son sceau, et l’objet rejoint une petite case de la vitrine, de celles où aucun livre ne tenait.",
-            "Une seule agit à la fois : la loupe garantit de la Connaissance à chaque trouvaille, l’astrolabe fait venir la lettre plus souvent, le sablier fait lire plus. En changer la fait agir aussitôt, puis la vitrine refuse tout changement pendant douze heures ; un délai pendant lequel rien n’agissait a été écarté. Leur page de l’Etherium, le Cabinet, renforce chacune et apprend la patience : six heures au lieu de douze. Un médaillon, à gauche du compteur, dit laquelle agit. Sur la corniche de la vitrine, un cartouche d’ébène compte en lettres d’or les livres et les reliques rangés."
+            "Dans la continuité de la Mimic : rendre le monde autour du joueur plus vivant.",
+            "D’abord, des objets du joueur : une montre, une tasse, des lunettes. Ils ne reflétaient pas ce qu’il cherche, un sens à tout cela.",
+            "Les reliques sont des objets très forts : toutes les activer en même temps casserait le jeu.",
+            "La cohérence dans le jeu est importante. Pas de reflet sur l’objet : ça doit rester naturel.",
+            "Savoir que des secrets existent donne envie de les trouver. Pour une salle qu’on a quittée, on n’a rien ajouté : c’est au joueur d’être curieux et de chercher.",
+            "Les reliques sont-elles des traces du passé du joueur, de son futur, de lui-même ?"
           ]
         },
         "digitalAge": {
