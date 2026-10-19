@@ -2543,10 +2543,13 @@
         "prestige": {
           "head": "Le prestige",
           "text": [
-            "Au bout d’un milliard de pages, un livre violet arrive sur la pile, et luit. Le chercheur l’ouvre, et le sol se dérobe. Quand il rouvre les yeux, le livre est dans sa main : l’Etherium. Ce récit ne se raconte qu’une fois : les fois suivantes, une question courte ne dit plus que ce qui sera perdu.",
-            "Tout ce qu’il tenait est perdu : les pages, les méthodes, la Connaissance, les intuitions, et les phrases des méthodes, que le livre blanc oublie. Restent les pages lues depuis toujours, les sceaux, les livres rares et le reste du livre blanc. Elles rapportent l’Éther : la racine cubique des pages, en milliards. Il se dépense dans l’Etherium, une page par arbre, une tige qui se dore nœud après nœud : la lecture, les mains, la Connaissance, les trouvailles, le départ, la mémoire des méthodes. Refermé, le livre disparaît. Un rêve ? La Lecture Diagonale, elle, revient dès la première page.",
-            "Puis la couverture de l’Etherium a été refaite. Au début, un livre violet, sans rien. À un million de pages lues, son nom paraît, et une ruche. Une alvéole s’allume pour chaque chiffre de l’Éther que le prestige rapporterait ; la suivante se remplit vers la puissance de dix d’après. Avant le premier Éther, c’est celle du centre qui se remplit, son pourcentage écrit dedans. Le nombre exact est écrit dessous, comme le joueur l’a choisi ; au dos, l’Éther en réserve. Il fallait une ruche qui tienne des nombres de soixante chiffres. Le Grand Livre a reçu un chapitre, « Éther », après le premier prestige : l’Éther en réserve et ce qui a été versé dans l’Etherium, l’Éther reçu en tout, ce qu’un prestige rapporterait, et les pages qui manquent avant le prochain. Plus tard, le chapitre « Heures » a dit aussi combien de fois le chercheur avait rouvert les yeux.",
-            "Puis l’Etherium est venu sur la pile dès le début, un livre violet qui se nourrit des pages lues. On le prend en main comme les autres, on regarde sa couverture et son dos ; c’est ouvrir sa couverture qui fait le prestige. Tant que cela ne rapporte pas un Éther, elle résiste : elle se soulève à peine et retombe. Ensuite, il luit. Chaque fois, une question courte dit ce qui sera perdu et l’Éther gagné ; « Ouvrir » se clique. La première fois seulement, le sol se dérobe, et quand le chercheur rouvre les yeux, autour de lui, plus rien : le livre s’est nourri de tout. Reposé, il ne disparaît plus : il retourne sur la pile, scellé jusqu’au prochain prestige."
+            "Il fallait une histoire cohérente qui justifie un retour à zéro. On a réfléchi à plusieurs idées. La première : un livre violet, une chute dans un puits. Le puits n’était pas cohérent avec ce qu’on avait en tête : l’idée a été abandonnée, le soir même.",
+            "Il est resté un livre violet sur la pile, qui se nourrit des pages lues.",
+            "Dans tout idle, ce qui est grisant, c’est de voir que tout augmente. On voulait voir la progression. Sur la couverture, il y avait d’abord une goutte. Elle ne correspondait pas à cela, surtout sur de très grands nombres. La ruche, elle, fonctionne même sur des nombres immenses.",
+            "Des collègues testent le jeu et font des retours. L’un d’eux s’est fait prendre deux fois : il avait refermé le livre trop vite.",
+            "Il faut faire un choix : soit on dépense son Éther, mais il faut repartir de zéro, soit on regarde juste ce qu’on peut faire.",
+            "Le prestige se fait d’un bouton : le nourrir. En référence à l’Éther lui-même : le livre absorbe les pages lues pour les convertir en Éther.",
+            "On n’a pas trouvé de mot dans l’univers qui fasse comprendre ce qu’est un prestige. De plus, le retour à zéro se fait de façon « magique » : parler de prestige permet de faire avaler cela au joueur."
           ]
         },
         "constellations": {
@@ -2621,14 +2624,6 @@
             "Puis l’Éther s’est mis à peser : dans l’Âge Numérique, c’était une spirale. Une page nouvelle de l’Etherium le soulage : l’Atlas, un géant agenouillé qui porte une salle de la Bibliothèque.",
             "L’Âge Numérique a aussi reçu sa page de l’Etherium : « Numérique », un Minitel tracé en étoiles.",
             "Avec lui, le jeu est passé en Alpha 2."
-          ]
-        },
-        "feeding": {
-          "head": "Le nourrir",
-          "text": [
-            "Puis un joueur s’est fait prendre deux fois : l’Etherium refermé trop vite, son Éther restait sans emploi jusqu’au prestige suivant. Le prix a été gardé : l’Éther ne se dépense que juste après un prestige. Mais le livre se consulte désormais à tout moment, dès le premier Éther ; ses étoiles y montrent leur prix, en pâle.",
-            "Ouvrir sa couverture ne fait plus le prestige. Il se fait d’un bouton, sous le compteur, pour ne pas avoir à revenir à la première page : le nourrir. Le puits, abandonné depuis longtemps, a failli revenir dans le mot ; c’est le récit qui a tranché, celui d’un livre qui se nourrit des pages lues. Une étoile touchée trop tôt le rappelle : elle ne s’allume qu’une fois le livre nourri. S’il ne reste rien à gagner mais de quoi allumer une étoile, on peut le nourrir encore : une partie perdue, pour dépenser. Et le refermer juste après pose une question.",
-            "Le récit du premier prestige a suivi, à la relecture de l’histoire : il ne dit plus « J’ai ouvert le livre », puisqu’on l’ouvre à tout moment, mais « Je lui ai tout donné » ; à son réveil, ce sont ses étoiles qui attendent."
           ]
         },
         "falseEnding": {

@@ -2543,10 +2543,13 @@
         "prestige": {
           "head": "Prestige",
           "text": [
-            "After a billion pages, a violet book lands on the pile, glowing. The seeker opens it, and the floor gives way. When he opens his eyes again, the book is in his hand: the Etherium. The story is told only once: the times after, a short question only says what will be lost.",
-            "Everything he held is lost: pages, methods, Knowledge, intuitions, and the methods’ sentences, which the white book forgets. What remains: the pages read in all, the seals, the rare books and the rest of the white book. They are worth Ether: the cube root of the pages, in billions. It is spent in the Etherium, one page per tree, a stem gilded node after node: reading, hands, Knowledge, finds, head start, memory of methods. Once closed, the book disappears. A dream? Diagonal Reading, though, comes back on the very first page.",
-            "Then the Etherium’s cover was redone. At first, a violet book, bare. At a million pages read, its name appears, and a hive. A cell lights up for each digit of the Ether the prestige would bring; the next one fills towards the following power of ten. Before the first Ether, the middle one fills, its percentage written inside. The exact number is written below, the way the player chose; on the back, the Ether in reserve. The hive had to hold numbers sixty digits long. The Great Book got a chapter, “Ether”, after the first prestige: the Ether in reserve and what was poured into the Etherium, the Ether received in all, what a prestige would bring, and the pages still missing before the next one. Later, the “Hours” chapter also told how many times the researcher had opened their eyes again.",
-            "Then the Etherium came to the pile from the very start, a violet book that feeds on the pages read. It is taken in hand like the others, its cover and its back looked at; opening its cover is the prestige. Until that brings one Ether, the cover resists: it barely lifts and falls back. Then it glows. Each time, a short question says what will be lost and the Ether gained; “Open” must be clicked. The first time only, the floor gives way, and when the seeker opens his eyes again, nothing is left around him: the book has fed on everything. Put back, it no longer disappears: it goes back to the pile, sealed until the next prestige."
+            "We needed a consistent story to justify going back to zero. We thought through several ideas. The first: a violet book, a fall down a well. The well didn’t fit what we had in mind: the idea was dropped, that same evening.",
+            "What remained was a violet book on the pile, feeding on the pages read.",
+            "In any idle game, the thrill is seeing everything go up. We wanted to see the progress. On the cover, there was a drop at first. It didn’t fit that, especially with very large numbers. The hive, though, works even with huge numbers.",
+            "Colleagues test the game and give feedback. One of them got caught twice: they had closed the book too soon.",
+            "A choice has to be made: either you spend your Ether, but you have to start from zero, or you just look at what you could do.",
+            "The prestige is done with a button: feeding it. A nod to Ether itself: the book absorbs the pages read to turn them into Ether.",
+            "We found no word in the game’s world that makes clear what a prestige is. Besides, going back to zero happens “by magic”: calling it a prestige helps the player swallow it."
           ]
         },
         "constellations": {
@@ -2621,14 +2624,6 @@
             "Then the Ether began to weigh: in the Digital Age, it was a spiral. A new page of the Etherium eases it: Atlas, a kneeling giant carrying a room of the Library.",
             "The Digital Age also received its own page in the Etherium: “Digital”, a Minitel drawn in stars.",
             "With it, the game moved to Alpha 2."
-          ]
-        },
-        "feeding": {
-          "head": "Feeding it",
-          "text": [
-            "Then a player got caught twice: the Etherium closed too soon, their Ether sat unused until the next prestige. The price was kept: Ether can only be spent right after a prestige. But the book can now be looked through at any time, from the first Ether on; its stars show their price there, faded.",
-            "Opening its cover no longer makes the prestige. It is done with a button, under the counter, so as not to go back to the first page: feeding it. The well, abandoned long ago, nearly came back in the word; the story settled it, that of a book that feeds on the pages read. A star touched too soon says so: it only lights once the book is fed. With nothing left to gain but enough to light a star, it can be fed again: a run lost, to spend. And closing it right after asks a question.",
-            "The story of the first prestige followed, when the lore was reread: it no longer says “I opened the book”, since it opens at any time, but “I gave it everything”; on waking, it is its stars that are waiting."
           ]
         },
         "falseEnding": {
