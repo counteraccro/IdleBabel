@@ -70,6 +70,12 @@ export const PLAYER = {
    */
   tokenRelic: true,
   /**
+   * La Réminiscence (essai du 19/10) : 'payante', le bot rachète tout après chaque prestige, comme avant ; 'gratuite', une
+   * fois comprise (10 000 de Connaissance, après le 1er prestige), les intuitions reviennent d'un coup à leur meilleur
+   * niveau, sans rien coûter (celle d'une méthode : une fois la méthode retrouvée). --reminiscence=gratuite.
+   */
+  reminiscence: 'payante' as 'payante' | 'gratuite',
+  /**
    * Lecture des méthodes de chaque Âge, multipliée (essais du 13/10 : adoucir le gain d'un Âge à l'autre) :
    * --lecture=auto:0.1,num:0.01 ; 1 partout, les chiffres du jeu.
    */

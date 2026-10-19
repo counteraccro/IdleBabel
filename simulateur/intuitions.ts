@@ -1,6 +1,7 @@
 import { TECHNOLOGIES } from '../src/data/technologies';
 import { EFFECT, S } from '../src/data/etheriumStars';
 import type { Run } from './partie';
+import { PLAYER } from './config';
 import { lit, product } from './vie';
 
 /** Les intuitions du jeu (celles de l'Âge Numérique comprises). */
@@ -32,6 +33,18 @@ const priceAt = (id: string, level: number): number | undefined => {
 
 /** Le bot comprend l'intuition la moins chère qu'il peut s'offrir, tant qu'il peut (celle d'une méthode : une fois retrouvée). */
 export const buyIntuitions = (run: Run): void => {
+  const free = PLAYER.reminiscence === 'gratuite';
+  // La Réminiscence gratuite : tout revient à son meilleur niveau (celle d'une méthode, une fois la méthode retrouvée).
+  if (free && run.life.reminiscence)
+    for (const tech of ALL)
+      if ((!tech.tool || run.unlocked.has(tech.tool)) && (run.life.bestLevels[tech.id] ?? 0) > (run.levels[tech.id] ?? 0))
+        run.levels[tech.id] = run.life.bestLevels[tech.id];
+  // Le bot la comprend dès qu'il peut, après son premier prestige.
+  const factor = product(run.life, EFFECT.intuitions);
+  if (free && !run.life.reminiscence && run.life.prestiges > 0 && run.knowledge >= 10_000 * factor) {
+    run.knowledge -= 10_000 * factor;
+    run.life.reminiscence = true;
+  }
   for (;;) {
     let cheapest: string | undefined;
     let cheapestPrice = Infinity;

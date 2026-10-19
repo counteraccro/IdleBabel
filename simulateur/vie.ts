@@ -40,6 +40,9 @@ export interface Life {
   seals: Set<string>;
   /** La partie d'avant, pour la Porte : ses exemplaires, ses pages lues, sa Connaissance gagnée, ses intuitions. */
   previous: { owned: Record<string, number>; read: number; knowledge: number; levels: Record<string, number> };
+  /** Le meilleur niveau de chaque intuition, toutes parties confondues, et la Réminiscence comprise (config.ts). */
+  bestLevels: Record<string, number>;
+  reminiscence: boolean;
   /** Les reliques trouvées (pour toujours) et celle qui agit. */
   relics: Set<string>;
   relic: string | null;
@@ -74,6 +77,8 @@ export const newLife = (): Life => ({
   knowledge: 0,
   seals: new Set(),
   previous: { owned: {}, read: 0, knowledge: 0, levels: {} },
+  bestLevels: {},
+  reminiscence: false,
   relics: new Set(),
   relic: null,
   relicChanges: 0,

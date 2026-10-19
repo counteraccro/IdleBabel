@@ -15,6 +15,7 @@
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
  *   npm run simule -- --sans-taches          sans les tâches (simulateur/taches.ts, pas encore dans le jeu)
  *   npm run simule -- --sans-jeton           le bot ne pose pas le Jeton (la relique de la Loterie)
+ *   npm run simule -- --reminiscence=gratuite  les intuitions reviennent gratuitement à leur meilleur niveau
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
@@ -43,6 +44,7 @@ if (option('numerique')) PLAYER.digitalAge = Number(option('numerique'));
 if (option('sans-bit') !== undefined) PLAYER.bit = false;
 if (option('sans-taches') !== undefined) PLAYER.tasks = false;
 if (option('sans-jeton') !== undefined) PLAYER.tokenRelic = false;
+if (option('reminiscence') === 'gratuite') PLAYER.reminiscence = 'gratuite';
 // L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
 if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
 
@@ -120,6 +122,7 @@ for (let number = 1; life.clock < end; number++) {
   }
   life.pages += run.read;
   life.previous = { owned: { ...run.owned }, read: run.read, knowledge: run.knowledgeGained, levels: { ...run.levels } };
+  for (const [id, n] of Object.entries(run.levels)) life.bestLevels[id] = Math.max(life.bestLevels[id] ?? 0, n);
   life.etherReceived += gain;
   life.etherFree += gain;
   life.prestiges += 1;
