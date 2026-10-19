@@ -81,7 +81,7 @@ export const PLAYER = {
    * 0 : il achète dès qu'il peut, comme avant. --achat-main=300.
    */
   handBuyEvery: 0,
-  /** Le Rouage (simulateur/rouage.ts, pas encore dans le jeu) : --sans-rouage pour s'en passer. */
+  /** Le Rouage (simulateur/rouage.ts, page « gear » de l'Etherium) : --sans-rouage pour s'en passer. */
   rouage: true,
   /** Le lot que le Rouage achète (celui choisi sous la ruche) : --lot=1, 10, 100 ou max. */
   rouageLot: 'max' as number | 'max',

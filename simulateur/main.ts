@@ -17,7 +17,7 @@
  *   npm run simule -- --avec-jeton           le bot pose le Jeton (la relique de la Loterie) à la place de la Loupe
  *   npm run simule -- --reminiscence=gratuite  les intuitions reviennent gratuitement à leur meilleur niveau
  *   npm run simule -- --achat-main=300       le bot n'achète ses méthodes à la main que toutes les 300 s de jeu
- *   npm run simule -- --sans-rouage --lot=10 --rouage=c:20,a2:30   le Rouage (pas encore dans le jeu) : sans, son lot, ses prix
+ *   npm run simule -- --sans-rouage --lot=10   sans le Rouage, ou un autre lot que « max »
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
@@ -206,6 +206,6 @@ if (PLAYER.tasks) {
 
 if (PLAYER.rouage) {
   console.log(
-    `Rouage (lot ${PLAYER.rouageLot}, achat à la main ${PLAYER.handBuyEvery ? `toutes les ${PLAYER.handBuyEvery} s` : 'sans cesse'}) : ${GEAR_STARS.map((star) => `${star.id.slice(5)} ${star.cost} ${duration(life.tasks.boughtAt[star.id])}`).join(' · ')} · ${gearLog.lots} achats (${big(gearLog.bought)} méthodes)`,
+    `Rouage (lot ${PLAYER.rouageLot}, achat à la main ${PLAYER.handBuyEvery ? `toutes les ${PLAYER.handBuyEvery} s` : 'sans cesse'}) : ${GEAR_STARS.map((star) => `${star.id.slice(5)} ${duration(life.tasks.boughtAt[star.id])}`).join(' · ')} · ${gearLog.lots} achats (${big(gearLog.bought)} méthodes)`,
   );
 }

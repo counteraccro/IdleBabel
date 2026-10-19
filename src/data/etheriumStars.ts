@@ -10,13 +10,13 @@ import { AUTOMATIC_AGE, DIGITAL_AGE } from './tools';
  */
 /**
  * Les pages du livre, en groupes (demande de l'auteur, 17/10 : « c'est brouillon, les méthodes sont mélangées avec d'autres
- * choses ») : les méthodes (les Âges d'abord, 07/10, puis tout ce qui les fait lire, revenir au réveil ou rester), lire
+ * choses ») : les méthodes (les Âges d'abord, 07/10, puis le Rouage qui les achète, 19/10, et tout ce qui les fait lire, revenir au réveil ou rester), lire
  * (la main, la lettre, la Connaissance, les trouvailles), le temps (l'absence, le poids de l'Éther), les salles (ce que
  * l'Exploration y fait apparaître). Le Rideau, la fausse fin (14/10), qui était tout au bout, est supprimé le 18/10 : le
  * tome 1 s'achète au Nord-Est de la Rose des vents. Le sommaire écrit le nom de chaque groupe (etherium.groups.<groupe>).
  */
 export const ETHERIUM_GROUPS = [
-  { id: 'methods', pages: ['ages', 'reading', 'start', 'memory', 'screen'] },
+  { id: 'methods', pages: ['ages', 'gear', 'reading', 'start', 'memory', 'screen'] },
   { id: 'reading', pages: ['hands', 'quill', 'knowledge', 'finds'] },
   { id: 'time', pages: ['away', 'weight'] },
   { id: 'rooms', pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks'] },
@@ -123,6 +123,18 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['ages', 'quantum', 'auto', 1500],
   ['ages', 'dim', 'quantum', 100],
   ['ages', 'inf', 'dim', 1000],
+  // Le Rouage, « La Roue dentée » (19/10, .ai/maquette-rouage.html ; prix validés après le simulateur) : il achète seul les
+  // méthodes (data/gear.ts). L'axe : l'Âge Manuel, une toutes les 10 s ; à gauche, chaque Âge qu'il achète en plus (les deux
+  // derniers attendent leur Âge, CLOSED) ; à droite, la cadence. La page s'ouvre avec l'Âge Numérique.
+  ['gear', 'c', null, 500],
+  ['gear', 'a2', 'c', 1000],
+  ['gear', 'a3', 'a2', 2500],
+  ['gear', 'a4', 'a3', 0],
+  ['gear', 'a5', 'a4', 0],
+  ['gear', 't1', 'c', 1000],
+  ['gear', 't2', 't1', 2500],
+  ['gear', 't3', 't2', 5000],
+  ['gear', 't4', 't3', 10_000],
   // Le Poids, l'Atlas (13/10, piste B de .ai/maquette-etherium-numerique.html) : du pied à la salle qu'il porte, chaque
   // étoile allège le poids de la Bibliothèque ; la dernière le lève.
   ['weight', 'w1', null, 10_000],
@@ -242,6 +254,9 @@ export const CLOSED: ReadonlySet<string> = new Set([
   'memory.a0',
   // Les pointes de la Rose des vents qui n'ouvrent encore rien.
   ...['s', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
+  // Les dents du Rouage des Âges Dimensionnel et Infini, tant que ces Âges n'existent pas.
+  'gear.a4',
+  'gear.a5',
 ]);
 
 /** Fermées, mais sans bloquer la suite : les étoiles d'après la Goutte attendent celle d'avant elle. */
@@ -271,9 +286,10 @@ export const NEEDS_AGE: ReadonlyMap<string, string> = new Map(
 
 /**
  * Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration ; les
- * Tâches, par le Nord ; le Minitel, par l'Âge Numérique).
+ * Tâches, par le Nord ; le Minitel et le Rouage, par l'Âge Numérique).
  */
 export const PAGE_NEEDS: Partial<Record<PageId, string>> = {
+  gear: DIGITAL_AGE,
   mimic: 'explore.e',
   relics: 'explore.w',
   tasks: 'explore.n',

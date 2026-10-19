@@ -10,6 +10,7 @@ import { toolUnlocked } from '../../systems/sentences';
 import { toolRate } from '../../systems/production';
 import { createMethodSeal } from './methodSeal';
 import { createMethodLot } from './methodLot';
+import { createMethodGear } from './methodGear';
 import type { GameState } from '../../core/state';
 
 /** Taille d'un sceau (largeur ; hexagone pointe en haut), et l'écart entre deux. */
@@ -84,7 +85,11 @@ export const createMethodHive = (state: GameState): Component => {
     root.append(seal.root);
     return { id: tool.id, seal, shown: toolUnlocked(state, tool.id) };
   });
-  root.append(tip, lotMark.root);
+  // Sous la ruche, sur une ligne : le lot, puis le Rouage (une fois acheté dans l'Etherium).
+  const gear = createMethodGear(state, () => update());
+  const under = el('div', 'method-under');
+  under.append(lotMark.root, gear.root);
+  root.append(tip, under);
 
   /**
    * Place laissée à la ruche en hauteur : la rangée du milieu de la grille de l'écran (entre l'en-tête et
@@ -118,6 +123,7 @@ export const createMethodHive = (state: GameState): Component => {
     }
     const chosen = chosenLot(state, shift);
     lotMark.show(chosen, armfulLots(state));
+    gear.update();
     let place = 0;
     for (const entry of seals) {
       const { id, seal } = entry;

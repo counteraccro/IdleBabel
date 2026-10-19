@@ -37,6 +37,7 @@ const readSave = (raw: string, defaultLocale: Locale): GameState | null => {
                 // Parties d'avant la Réminiscence : le meilleur niveau, c'est celui d'aujourd'hui.
                 technologiesBest: { ...saved.technologies, ...saved.technologiesBest },
                 reminiscence: { ...initial.reminiscence, ...saved.reminiscence },
+                gear: { ...initial.gear, ...saved.gear },
                 wake: { ...initial.wake, ...saved.wake },
                 mimic: { ...initial.mimic, ...saved.mimic },
                 relics: { ...initial.relics, ...saved.relics, found: { ...saved.relics?.found } },

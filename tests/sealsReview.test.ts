@@ -52,8 +52,9 @@ describe('revue des sceaux (08/10)', () => {
     expect(state.seals['constellation-memory']).toBe(1);
     expect(state.seals[`starsLit-${OPEN_STARS.length}`]).toBe(1);
     // Les Âges d'après le Numérique, la Goutte, les quatre pointes de la Rose des vents qui n'ouvrent encore rien (le Nord-Est
-    // donne le tome 1 depuis le 18/10) ; « Une dernière pour la route » s'ouvre le 18/10 (le tome 4).
-    expect(OPEN_STARS.length).toBe(STARS.length - 7);
+    // donne le tome 1 depuis le 18/10) ; « Une dernière pour la route » s'ouvre le 18/10 (le tome 4) ; les deux dents du
+    // Rouage qui attendent leur Âge (19/10).
+    expect(OPEN_STARS.length).toBe(STARS.length - 9);
   });
 
   it('scelle la Connaissance trouvée, et le livre blanc', () => {

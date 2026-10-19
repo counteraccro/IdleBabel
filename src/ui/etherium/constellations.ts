@@ -87,6 +87,23 @@ const dial = (deg: number, r: number) => ring(DIAL, r, deg);
 /** Un arc du jour, de gauche à droite par le haut, en lignes brisées (un point tous les 3 degrés). */
 const dayArc = (r: number) => Array.from({ length: 61 }, (_, i) => dial(180 + i * 3, r));
 
+// Le Rouage, une roue dentée de face (19/10, .ai/maquette-rouage.html) : l'axe au centre, les étoiles sur la jante (à
+// gauche les Âges, à droite la cadence) ; seize dents autour.
+const GEAR = [320, 492] as const;
+const GEAR_R = 192;
+const GEAR_RING = 160;
+const gear = (deg: number, r = GEAR_RING) => ring(GEAR, r, deg);
+/** Le bord denté : chaque dent monte, file, redescend, puis le creux jusqu'à la suivante. */
+const gearTeeth = (): (readonly [number, number])[] => {
+  const teeth = 16;
+  const step = 360 / teeth;
+  const points = Array.from({ length: teeth }, (_, i) => {
+    const a = i * step;
+    return [gear(a, GEAR_R), gear(a + step * 0.18, GEAR_R + 20), gear(a + step * 0.48, GEAR_R + 20), gear(a + step * 0.66, GEAR_R)];
+  }).flat();
+  return [...points, points[0]];
+};
+
 // La Rose des vents : le centre, et la longueur de chaque pointe (longues pour les quatre directions).
 const ROSE = [320, 480] as const;
 const ROSE_R = 40;
@@ -613,6 +630,37 @@ export const FIGURES: Record<PageId, Figure> = {
       ],
       strong: true,
       labelKeys: 'etherium.pages.tasks.branches',
+      labelSize: 11,
+      labelSpacing: 1.5,
+    },
+  },
+  // Le Rouage, « La Roue dentée » : l'axe met le Rouage en marche ; la jante porte les Âges à gauche (les deux derniers
+  // fermés) et la cadence à droite ; le nom de chaque côté au bord.
+  gear: {
+    spots: {
+      c: GEAR,
+      a2: gear(140),
+      a3: gear(180),
+      a4: gear(220),
+      a5: gear(260),
+      t1: gear(40),
+      t2: gear(0),
+      t3: gear(320),
+      t4: gear(280),
+    },
+    deco: [],
+    sketch: {
+      lines: [gearTeeth(), ...[90, 210, 330].map((deg) => [gear(deg, 26), gear(deg, GEAR_R - 34)])],
+      rings: [
+        [GEAR[0], GEAR[1], GEAR_R - 34],
+        [GEAR[0], GEAR[1], 26],
+      ],
+      labels: [
+        ['ages', gear(195, GEAR_R + 44)],
+        ['cadence', gear(345, GEAR_R + 44)],
+      ],
+      strong: true,
+      labelKeys: 'etherium.pages.gear.branches',
       labelSize: 11,
       labelSpacing: 1.5,
     },

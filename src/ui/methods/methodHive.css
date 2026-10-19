@@ -138,10 +138,16 @@
 }
 
 /* Sous la ruche, combien un clic achète (methodLot.ts) : la marque du choix, dépliée au survol. */
-.method-lot {
+/* Sous la ruche, sur une ligne : le lot, puis le Rouage. */
+.method-under {
   position: absolute;
   left: 0;
   top: calc(100% + 12px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.method-lot {
   display: inline-flex;
   align-items: baseline;
   padding: 4px 8px 4px 0;
@@ -191,4 +197,114 @@
 .method-lot[hidden],
 .method-lot button[hidden] {
   display: none;
+}
+
+/* Le Rouage (methodGear.ts, maquette .ai/maquette-rouage.html, piste A) : doré et qui tourne en marche, mat et immobile
+   arrêté, « AUTO » à côté (barré s'il est arrêté) ; la légende au survol, à droite. */
+.method-gear {
+  all: unset;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-shadow: var(--shadow);
+}
+.method-gear[hidden] {
+  display: none;
+}
+.method-gear svg {
+  width: 22px;
+  height: 22px;
+}
+.method-gear .gear-wheel {
+  fill: #5a4c3a;
+  stroke: #7a6a54;
+  stroke-width: 2;
+}
+.method-gear .gear-hub {
+  fill: #0b0805;
+  stroke: #7a6a54;
+  stroke-width: 3;
+}
+.method-gear .gear-axle {
+  fill: #7a6a54;
+}
+.method-gear-label {
+  color: #7a6a54;
+  text-decoration: line-through;
+}
+.method-gear.on svg {
+  animation: method-gear-turn 6s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(232, 199, 118, 0.8));
+}
+.method-gear.on .gear-wheel {
+  fill: #c9a24a;
+  stroke: #f3dc94;
+}
+.method-gear.on .gear-hub {
+  stroke: #f3dc94;
+}
+.method-gear.on .gear-axle {
+  fill: #f3dc94;
+}
+.method-gear.on .method-gear-label {
+  color: #e8c776;
+  text-decoration: none;
+}
+@keyframes method-gear-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.method-gear-tip {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 230px;
+  padding: 7px 10px;
+  background: rgba(10, 8, 6, 0.92);
+  border-left: 1px solid #c9a45a;
+  font-family: Georgia, serif;
+  font-size: 0.8rem;
+  letter-spacing: normal;
+  line-height: 1.45;
+  color: var(--ink);
+  text-shadow: none;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.method-gear:hover .method-gear-tip,
+.method-gear:focus-visible .method-gear-tip {
+  opacity: 1;
+}
+.method-gear-tip strong {
+  display: block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  letter-spacing: 0.04em;
+}
+.method-gear-tip span,
+.method-gear-tip em {
+  display: block;
+}
+.method-gear-tip em {
+  color: var(--muted);
+}
+.method-gear-tip [hidden] {
+  display: none;
+}
+.method-gear-click {
+  color: #e8c776;
+}
+@media (prefers-reduced-motion: reduce) {
+  .method-gear.on svg {
+    animation: none;
+  }
 }

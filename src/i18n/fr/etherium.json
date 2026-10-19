@@ -114,6 +114,13 @@
       "locked": "Cette page attend\nqu’un jeton soit joué.",
       "reels": { "time": "LE TEMPS", "value": "LA VALEUR", "luck": "LA CHANCE" }
     },
+    "gear": {
+      "name": "Le Rouage",
+      "figure": "La Roue dentée",
+      "description": "Il tourne pendant que je lis.",
+      "locked": "Cette page attend\nque l’Âge Numérique soit acheté.",
+      "branches": { "ages": "LES ÂGES", "cadence": "LA CADENCE" }
+    },
     "tasks": {
       "name": "Les Tâches",
       "figure": "Le Cadran solaire",
@@ -762,6 +769,51 @@
         "value": "La chance :",
         "effect": "« rien » 20 %…",
         "but": "mais malus 24 %"
+      }
+    },
+    "gear": {
+      "c": {
+        "name": "L’axe",
+        "value": "Le Rouage :",
+        "effect": "les méthodes de l’Âge Manuel s’achètent seules, une toutes les 10 s"
+      },
+      "a2": {
+        "name": "La jante, en bas à gauche",
+        "value": "L’Âge Automatique :",
+        "effect": "le Rouage achète aussi ses méthodes"
+      },
+      "a3": {
+        "name": "La jante, à gauche",
+        "value": "L’Âge Numérique :",
+        "effect": "le Rouage achète aussi ses méthodes"
+      },
+      "a4": {
+        "name": "Plus tard",
+        "note": "un Âge, plus tard"
+      },
+      "a5": {
+        "name": "Plus tard",
+        "note": "un Âge, plus tard"
+      },
+      "t1": {
+        "name": "La jante, en bas à droite",
+        "value": "La cadence :",
+        "effect": "une méthode toutes les 5 s"
+      },
+      "t2": {
+        "name": "La jante, à droite",
+        "value": "La cadence :",
+        "effect": "une méthode toutes les 2 s"
+      },
+      "t3": {
+        "name": "La jante, en haut à droite",
+        "value": "La cadence :",
+        "effect": "une méthode chaque seconde"
+      },
+      "t4": {
+        "name": "La jante, en haut",
+        "value": "La cadence :",
+        "effect": "dès qu’il peut"
       }
     },
     "tasks": {

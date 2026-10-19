@@ -8,6 +8,7 @@ import { runHooks } from '../mods/hooks';
 import { settleLottery } from '../systems/lottery';
 import { refreshTokenDay } from '../systems/tokenRelic';
 import { tickTasks } from '../systems/tasks';
+import { turnGear } from '../systems/gear';
 
 /** La partie avance par pas de tant (le compteur aussi : les pages qui tournent seules, ui/book3d/autoTurn3d.ts). */
 export const TICK_MS = 100;
@@ -32,6 +33,8 @@ export const startLoop = (state: GameState, onTick: () => void): void => {
     runHooks('tick', elapsed);
     previous = now;
     remember(state);
+    // Le Rouage achète les méthodes à sa cadence (onglet caché compris : ce n'est pas une absence).
+    turnGear(state, elapsed);
     // Un tirage de la Loterie dont la machine n'a pas vu la fin (bibliothèque quittée, onglet caché, jeu rechargé).
     settleLottery(state, Math.random, now);
     // Le Jeton qui agit : les jetons du jour, à minuit ou le jour où on le pose.

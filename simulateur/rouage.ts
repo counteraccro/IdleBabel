@@ -1,59 +1,34 @@
-import { AUTOMATIC_AGE, DIGITAL_AGE } from '../src/data/tools';
+import { STARS } from '../src/data/etheriumStars';
+import { GEAR_AGES, GEAR_EVERY } from '../src/data/gear';
 import { PLAYER } from './config';
 import { BIT, SECRET, type Method } from './methodes';
-import type { Life } from './vie';
 import { allMethods, pagesPerSecond, price, rate, type Run } from './partie';
 
 /**
- * Le Rouage (19/10, .ai/idee-rouage.md, maquette .ai/maquette-rouage.html), pas encore dans le jeu : une page de
- * l'Etherium, ouverte par l'Âge Numérique, qui achète seule les méthodes. L'axe : l'Âge Manuel, une méthode toutes les
- * 10 s ; les dents de gauche : les Âges suivants ; celles de droite : la cadence. Il achète la plus rentable (jamais une
- * secrète), au lot du joueur (PLAYER.rouageLot), et rien pendant l'absence.
+ * Le Rouage (19/10, .ai/idee-rouage.md), avec les étoiles du jeu (page « gear » de data/etheriumStars.ts, data/gear.ts) :
+ * ouvert par l'Âge Numérique, il achète seul les méthodes des Âges dont l'étoile est allumée, à sa cadence, la plus
+ * rentable comme le bot (jamais une secrète), au lot du joueur (PLAYER.rouageLot), et rien pendant l'absence. Le bot
+ * allume ses étoiles comme les autres (simulateur/vie.ts) ; --sans-rouage les lui retire.
  */
-interface GearStar {
-  id: string;
-  after?: string;
-  cost: number;
-  /** L'Âge dont il achète les méthodes ('' : le Manuel). */
-  age?: string;
-  /** Secondes entre deux achats (0 : dès qu'il peut). */
-  every?: number;
-}
+export const GEAR_STARS = STARS.filter((star) => star.page === 'gear');
 
-/** Prix validés par l'auteur le 19/10 (22 500 en tout). */
-export const GEAR_STARS: GearStar[] = [
-  { id: 'gear.c', cost: 500, age: '', every: 10 },
-  { id: 'gear.a2', after: 'gear.c', cost: 1000, age: AUTOMATIC_AGE },
-  { id: 'gear.a3', after: 'gear.a2', cost: 2500, age: DIGITAL_AGE },
-  { id: 'gear.t1', after: 'gear.c', cost: 1000, every: 5 },
-  { id: 'gear.t2', after: 'gear.t1', cost: 2500, every: 2 },
-  { id: 'gear.t3', after: 'gear.t2', cost: 5000, every: 1 },
-  { id: 'gear.t4', after: 'gear.t3', cost: 10000, every: 0 },
-];
-
-// --rouage=c:20,a2:30,… : d'autres prix, pour essayer.
-const priceOption = process.argv.find((arg) => arg.startsWith('--rouage='))?.split('=')[1];
-for (const part of priceOption?.split(',') ?? []) {
-  const [id, cost] = part.split(':');
-  const star = GEAR_STARS.find((s) => s.id === `gear.${id}`);
-  if (star) star.cost = Number(cost);
-}
-
-/** Les étoiles du Rouage qu'on peut allumer : l'Âge Numérique acheté, l'étoile d'avant allumée. */
-export const openGearStars = (life: Life): { id: string; cost: number }[] =>
-  PLAYER.rouage && life.stars.has(DIGITAL_AGE)
-    ? GEAR_STARS.filter((star) => !life.stars.has(star.id) && (!star.after || life.stars.has(star.after)))
-    : [];
-
-/** Ce que le Rouage a fait depuis toujours, et quand chaque étoile s'est allumée. */
-export const gearLog = { bought: 0, lots: 0, hand: 0 };
+/** Ce que le Rouage a acheté depuis toujours : ses achats, et les méthodes qu'ils ont pris. */
+export const gearLog = { bought: 0, lots: 0 };
 const clock = new WeakMap<Run, number>();
 
-const coveredAges = (life: Life): Set<string> =>
-  new Set(GEAR_STARS.filter((star) => star.age !== undefined && life.stars.has(star.id)).map((star) => star.age!));
+const coveredAges = (life: Run['life']): Set<string> =>
+  new Set(
+    Object.entries(GEAR_AGES)
+      .filter(([id]) => life.stars.has(id))
+      .map(([, age]) => age),
+  );
 
-const cadence = (life: Life): number =>
-  Math.min(...GEAR_STARS.filter((star) => star.every !== undefined && life.stars.has(star.id)).map((star) => star.every!));
+const cadence = (life: Run['life']): number =>
+  Math.min(
+    ...Object.entries(GEAR_EVERY)
+      .filter(([id]) => life.stars.has(id))
+      .map(([, every]) => every),
+  );
 
 /**
  * Une fois : la méthode la plus rentable des Âges couverts, comme le bot (son prix sur ce qu'elle lit, plus l'attente pour

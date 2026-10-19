@@ -114,6 +114,13 @@
       "locked": "This page is waiting\nfor a token to be played.",
       "reels": { "time": "TIME", "value": "VALUE", "luck": "LUCK" }
     },
+    "gear": {
+      "name": "The Gear",
+      "figure": "The Cogwheel",
+      "description": "It turns while I read.",
+      "locked": "This page is waiting\nfor the Digital Age to be bought.",
+      "branches": { "ages": "THE AGES", "cadence": "THE PACE" }
+    },
     "tasks": {
       "name": "Tasks",
       "figure": "The Sundial",
@@ -762,6 +769,51 @@
         "value": "Luck:",
         "effect": "“nothing” 20%…",
         "but": "but penalties 24%"
+      }
+    },
+    "gear": {
+      "c": {
+        "name": "The axle",
+        "value": "The Gear:",
+        "effect": "the Manual Age’s methods buy themselves, one every 10 s"
+      },
+      "a2": {
+        "name": "The rim, lower left",
+        "value": "The Automatic Age:",
+        "effect": "the Gear buys its methods too"
+      },
+      "a3": {
+        "name": "The rim, left",
+        "value": "The Digital Age:",
+        "effect": "the Gear buys its methods too"
+      },
+      "a4": {
+        "name": "Later",
+        "note": "an Age, later"
+      },
+      "a5": {
+        "name": "Later",
+        "note": "an Age, later"
+      },
+      "t1": {
+        "name": "The rim, lower right",
+        "value": "The pace:",
+        "effect": "one method every 5 s"
+      },
+      "t2": {
+        "name": "The rim, right",
+        "value": "The pace:",
+        "effect": "one method every 2 s"
+      },
+      "t3": {
+        "name": "The rim, upper right",
+        "value": "The pace:",
+        "effect": "one method every second"
+      },
+      "t4": {
+        "name": "The rim, top",
+        "value": "The pace:",
+        "effect": "as soon as it can"
       }
     },
     "tasks": {

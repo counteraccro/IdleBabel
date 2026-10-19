@@ -326,6 +326,11 @@ export interface GameState {
    * de la partie « Intuitions »).
    */
   reminiscence: { on: boolean };
+  /**
+   * Le Rouage (systems/gear.ts ; page de l'Etherium) : `on`, en marche (le rouage « AUTO » sous la ruche l'arrête ou le
+   * relance ; gardé au prestige).
+   */
+  gear: { on: boolean };
   /** Prestiges faits (le premier fait apparaître la Réminiscence ; systems/prestige.ts). */
   exiles: number;
   /** Éther à dépenser dans l'Etherium (data/etherium.ts) : reçu au prestige, gardé s'il n'est pas dépensé. */
@@ -417,6 +422,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   technologies: {},
   technologiesBest: {},
   reminiscence: { on: true },
+  gear: { on: true },
   exiles: 0,
   ether: 0,
   etherReceived: 0,
