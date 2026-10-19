@@ -1,6 +1,7 @@
 import { setNotation } from '../core/format';
 import { createHeader } from './header';
 import { createCounter } from './counter';
+import { createMedalsBar } from './medalsBar';
 import { createMethodHive } from './methods/methodHive';
 import { createFooter } from './footer';
 import { createLetter } from './letter/letter';
@@ -197,7 +198,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const etheriumOpened = (): boolean => openBook() === 'etherium' && etheriumPage?.opened() === true;
   // Le prestige fait, livre ouvert : ses pages se redessinent (la garde montre l'Éther qu'il vient de verser).
   const feed = createFeedButton(state, etheriumOpened, () => window.dispatchEvent(new Event(BIG_BOOK_REWRITE)));
-  const counter = createCounter(state, etheriumOpened, open(LIBRARY_HASH), feed);
+  const counter = createCounter(state, etheriumOpened, feed);
+  // Les médaillons (relique, bonus), dans l'en-tête juste après le titre.
+  const medals = createMedalsBar(state, open(LIBRARY_HASH));
+  header.root.firstElementChild!.after(medals.root);
   const lasting: Component[] = [header, counter];
 
   const game = (): Component[] => [
@@ -456,5 +460,6 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   return () => {
     showWonTome();
     components.forEach((c) => c.update());
+    medals.update();
   };
 };

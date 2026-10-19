@@ -3,32 +3,22 @@ import { getLocale, t } from '../i18n';
 import { formatNumber } from '../core/format';
 import { setNumberText } from './babelDigits';
 import { pagesPerSecond } from '../systems/production';
-import { createBoonMedals } from './letter/boonMedals';
-import { createRelicMedal } from './relics/relicMedal';
 import { boonOn } from '../systems/boons';
 import { etherSpendable } from '../systems/prestige';
 import type { GameState } from '../core/state';
 
 /**
  * Le compteur du haut : les pages en réserve, la vitesse, la Connaissance. L'Etherium ouvert (`showEther`),
- * l'Éther à dépenser à leur place (demande de l'auteur, 09/10) : on ne savait pas combien il en restait. À sa gauche, le
- * médaillon de la relique qui agit (`onRelic` : il ouvre la vitrine). Dessous, `below` (le bouton du prestige).
+ * l'Éther à dépenser à leur place (demande de l'auteur, 09/10) : on ne savait pas combien il en restait. Dessous, `below`
+ * (le bouton du prestige). Les médaillons sont à côté du titre (ui/medalsBar.ts).
  */
-export const createCounter = (
-  state: GameState,
-  showEther: () => boolean = () => false,
-  onRelic: () => void = () => {},
-  below?: Component,
-): Component => {
+export const createCounter = (state: GameState, showEther: () => boolean = () => false, below?: Component): Component => {
   const root = el('section', 'counter');
   const value = el('div', 'value');
   const rate = el('div', 'label');
   // Connaissance : la ligne n'apparaît qu'avec la première trouvaille.
   const knowledge = el('div', 'label knowledge');
-  // Les bonus de la lettre en cours : leurs médaillons, à droite du compteur.
-  const medals = createBoonMedals(state);
-  const relic = createRelicMedal(state, onRelic);
-  root.append(value, rate, knowledge, medals.root, relic.root);
+  root.append(value, rate, knowledge);
   // Sous l'Éther, le bouton du prestige (l'Etherium consulté).
   if (below) root.append(below.root);
   // Les nombres dans leur propre élément, dorés (classe number).
@@ -63,9 +53,6 @@ export const createCounter = (
     // Ce que porte un bonus en cours luit : la lecture pendant la Transe, la Connaissance pendant la Mémoire vive.
     speed.classList.toggle('boosted', boonOn('trance'));
     carried.classList.toggle('boosted', boonOn('mind'));
-    medals.update();
-    relic.update();
-    relic.root.hidden ||= ether;
     below?.update();
   };
   update();

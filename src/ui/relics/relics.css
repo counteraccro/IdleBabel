@@ -63,7 +63,7 @@ html.relic-hover * {
   z-index: 3;
 }
 
-/* Le médaillon de la relique qui agit : à gauche du compteur (les bonus de la lettre sont à droite), sans usure. */
+/* Le médaillon de la relique qui agit, à côté du titre (ui/medalsBar.ts), avant les bonus ; sans usure. */
 .relic-medals {
   position: absolute;
   right: 100%;

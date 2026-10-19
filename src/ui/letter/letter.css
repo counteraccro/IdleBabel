@@ -118,7 +118,7 @@
   text-shadow: 0 0 10px rgba(232, 199, 118, 0.8);
 }
 
-/* Les médaillons des bonus en cours, à droite du compteur, cerclés du temps qui reste (1 em : le nombre des pages). */
+/* Les médaillons des bonus en cours, à côté du titre (ui/medalsBar.ts), cerclés du temps qui reste (1 em : le nombre des pages). */
 .boon-medals {
   position: absolute;
   left: 100%;
