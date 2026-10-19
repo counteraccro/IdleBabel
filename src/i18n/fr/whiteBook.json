@@ -518,6 +518,8 @@
       "unknown": "?"
     },
     "progress": "{n} / {total}",
+    "progressMinutes": "{n} / {total} min",
+    "progressHours": "{n} / {total} h",
     "running": "{n} tâches en cours",
     "runningOne": "1 tâche en cours",
     "allDoneShort": "C’est tout pour aujourd’hui"

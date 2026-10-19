@@ -1,10 +1,10 @@
 import { getLocale, t } from '../../i18n';
 import { currentNotation, formatCount, formatNumber, writeDigits } from '../../core/format';
 import { ONCE_TASKS, type TaskReward } from '../../data/tasks';
-import { modTasks, takeModTask } from '../../mods/modTasks';
+import { modTaskCount, modTasks, takeModTask } from '../../mods/modTasks';
 import { modText } from '../../mods/modSeals';
 import { dailyLeft, dailyProgress } from '../../systems/dailyTasks';
-import { onceMet, onceShown } from '../../systems/onceTasks';
+import { onceCount, onceMet, onceShown } from '../../systems/onceTasks';
 import { takeDaily, takeOnce } from '../../systems/tasks';
 import { folio, heading, roman, type Item } from '../strangeBook/pageItems';
 import { babelize, seedOf } from './babelMask';
@@ -239,7 +239,14 @@ interface Row {
   state: RowState;
   lines: string[];
   reward: string;
+  /** Où elle en est, tant qu'elle n'est pas faite (« 3 412 / 10 000 ») ; sans, pas de ligne d'avancement. */
+  progress?: Progress;
   height: number;
+}
+
+interface Progress {
+  text: string;
+  share: number;
 }
 
 const ROWS_TOP = 168;
@@ -248,6 +255,9 @@ const ROW_SIZE = 26;
 const ROW_LINE = 30;
 const TEXT_LEFT = 96;
 const REWARD_RIGHT = 590;
+/** La ligne d'avancement sous la consigne : sa hauteur, la largeur de sa barre. */
+const PROGRESS_LINE = 28;
+const PROGRESS_BAR = 150;
 
 let measurer: CanvasRenderingContext2D | null = null;
 const measure = (): CanvasRenderingContext2D => (measurer ??= document.createElement('canvas').getContext('2d')!);
@@ -263,12 +273,29 @@ const wrap = (text: string, width: number): string[] => {
   return lines;
 };
 
-/** Une ligne de la liste : sa consigne coupée pour laisser la place à sa récompense. */
-const row = (key: string, rowState: RowState, text: string, reward: string): Row => {
+/** Une ligne de la liste : sa consigne coupée pour laisser la place à sa récompense, et son avancement dessous. */
+const row = (key: string, rowState: RowState, text: string, reward: string, progress?: Progress): Row => {
   const room = REWARD_RIGHT - TEXT_LEFT - (reward ? handWidth(measure(), reward, 22) + 18 : 0);
   const lines = wrap(text, room);
-  return { key, state: rowState, lines, reward, height: lines.length * ROW_LINE + 10 };
+  const shown = rowState === 'now' ? progress : undefined;
+  return { key, state: rowState, lines, reward, progress: shown, height: lines.length * ROW_LINE + 10 + (shown ? PROGRESS_LINE : 0) };
 };
+
+/**
+ * Où en est une tâche « une seule fois » (l'auteur, 19/10 : « dommage que l'on n'ait pas un avancement ») : en minutes
+ * pour « 1 h sans rien toucher », en heures pour « une absence de 24 h » ; rien pour une tâche d'un seul pas.
+ */
+const progressOf = (count: number, goal: number, unit = 1, key = 'progress'): Progress | undefined =>
+  goal <= 1
+    ? undefined
+    : {
+        text: t(`whiteBook.tasks.${key}`)
+          .replace('{n}', pencilNumber(Math.floor(count / unit), true))
+          .replace('{total}', pencilNumber(goal / unit, true)),
+        share: count / goal,
+      };
+
+const UNITS: Record<number, [number, string]> = { 8: [60, 'progressMinutes'], 9: [3600, 'progressHours'] };
 
 /**
  * Les lignes de la liste : celles dont l'étoile est allumée, en Babel tant que ce dont elles parlent n'est pas rencontré ;
@@ -280,7 +307,14 @@ const onceRows = (state: GameState): Row[] => [
     const rowState: RowState = task?.done !== undefined ? (task.taken ? 'done' : 'waiting') : onceMet(state, def) ? 'now' : 'ghost';
     const text = t(`whiteBook.tasks.onceTasks.${def.n}`);
     const ghost = rowState === 'ghost';
-    return row(`once:${def.n}`, rowState, ghost ? babelize(text, seedOf(`task:${def.n}`)) : text, ghost ? '' : rewardText(def.reward));
+    const [unit, key] = UNITS[def.n] ?? [1, 'progress'];
+    return row(
+      `once:${def.n}`,
+      rowState,
+      ghost ? babelize(text, seedOf(`task:${def.n}`)) : text,
+      ghost ? '' : rewardText(def.reward),
+      progressOf(onceCount(state, def), def.goal, unit, key),
+    );
   }),
   ...modTasks().map((task) => {
     const done = state.tasks.mods[task.key];
@@ -289,6 +323,7 @@ const onceRows = (state: GameState): Row[] => [
       done ? (done.taken ? 'done' : 'waiting') : 'now',
       modText(task.text, getLocale()),
       modText(task.reward, getLocale()),
+      progressOf(modTaskCount(state, task), task.goal),
     );
   }),
 ];
@@ -333,7 +368,14 @@ const drawRow = (context: CanvasRenderingContext2D, row: Row, y: number): void =
     context.ellipse(REWARD_RIGHT - width / 2, rewardY + 12, width / 2 + 10, 16, -0.03, 0, Math.PI * 2);
     context.stroke();
   }
-  if (!done) return pencilCircle(context, 70, y + 16, 10);
+  if (!done) {
+    if (row.progress) {
+      const barY = y + row.lines.length * ROW_LINE + 4;
+      progressBar(context, TEXT_LEFT, barY + 3, PROGRESS_BAR, row.progress.share);
+      handText(context, row.progress.text, TEXT_LEFT + PROGRESS_BAR + 14, barY - 4, { size: 21, color: PENCIL_FADED });
+    }
+    return pencilCircle(context, 70, y + 16, 10);
+  }
   row.lines.forEach((line, index) =>
     pencilLine(context, TEXT_LEFT - 4, y + index * ROW_LINE + 16, TEXT_LEFT + 4 + handWidth(context, line, ROW_SIZE), random),
   );
@@ -345,7 +387,10 @@ export const onceItems = (state: GameState, part: number, number: number): Item[
   const rows = rowPages(onceRows(state))[part] ?? [];
   const tops: number[] = [];
   rows.reduce((y, row) => (tops.push(y), y + row.height), ROWS_TOP);
-  const key = JSON.stringify([getLocale(), rows.map((row) => [row.key, row.state, row.lines, row.reward])]);
+  const key = JSON.stringify([
+    getLocale(),
+    rows.map((row) => [row.key, row.state, row.lines, row.reward, row.progress?.text, Math.round((row.progress?.share ?? 0) * 100)]),
+  ]);
   return [
     ...heading(t('whiteBook.tasks.once')),
     { kind: 'drawing', key, draw: (context) => rows.forEach((row, index) => drawRow(context, row, tops[index])) },
