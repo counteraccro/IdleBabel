@@ -5,6 +5,8 @@ import { setNumberText } from './babelDigits';
 import { pagesPerSecond } from '../systems/production';
 import { boonOn } from '../systems/boons';
 import { etherSpendable } from '../systems/prestige';
+import { lotteryEffects } from '../systems/lotteryEffects';
+import { goldenHere } from '../systems/goldenMimic';
 import type { GameState } from '../core/state';
 
 /**
@@ -53,6 +55,13 @@ export const createCounter = (state: GameState, showEther: () => boolean = () =>
     // Ce que porte un bonus en cours luit : la lecture pendant la Transe, la Connaissance pendant la Mémoire vive.
     speed.classList.toggle('boosted', boonOn('trance'));
     carried.classList.toggle('boosted', boonOn('mind'));
+    // Un malus de la Loterie, en rouge : la vitesse qu'il baisse, les pages que la Mimic dorée mange (l'auteur, 19/10).
+    const now = Date.now();
+    speed.classList.toggle(
+      'cursed',
+      lotteryEffects(state, now).some((effect) => effect.id === 'half' || effect.id === 'stopped'),
+    );
+    pages.classList.toggle('cursed', !ether && goldenHere(state, now));
     below?.update();
   };
   update();
