@@ -2662,11 +2662,9 @@
         "lotteryStars": {
           "head": "The Lottery in the Etherium",
           "text": [
-            "The machine has its night page, after the relics: “The Lottery”, the figure of the One-Armed Bandit. It stays blank until a token has been played. The machine is drawn there from the front, in dotted lines: the arched top, three windows, the tray, the lever and its knob.",
-            "The given star is the slot, at the bottom, where the token goes in. It was first meant to be the lever; but the three reels start better from the slot, without crossing a line, and the lever now carries the token branch: the Mimic drops one 1 time in 2, then 2 times in 3.",
-            "Each reel has two stars, and each one gives and takes back: it is written on two lines, what it gives, then its “…but…”. Time lengthens wins, bonuses, penalties and the Golden Mimic (up to 10 minutes). Value doubles what bonuses add, but production drops to a quarter during the penalty. Luck takes “nothing” from 40% down to 20%, and penalties from 12% up to 24%; the rest goes to wins and bonuses, the jackpot does not move.",
-            "The North of the Compass Rose is kept for the tickets, the quests that will give tokens; it stays closed until they exist. The machine’s texts now show a bonus’s real factor (“Production ×1.75”).",
-            "With it, the game moved to Alpha 2.4."
+            "We like the idea that everything has to be upgraded. And besides, the billions of Ether to spend will need a reason.",
+            "Each star gives, then takes back: its “but” is written underneath.",
+            "The page stays blank until a token has been played, to spark the player’s curiosity."
           ]
         },
         "tasks": {
