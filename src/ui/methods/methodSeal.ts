@@ -26,6 +26,11 @@ export interface MethodSeal {
   root: HTMLButtonElement;
   /** Nombre possédé, et assez de pages pour la suivante ? */
   show: (count: string, affordable: boolean) => void;
+  /**
+   * La méthode qui s'annonce (piste B de .ai/maquette-methode-floue.html, l'auteur, 20/10) : sceau éteint, « ? » au lieu
+   * du nombre, et ses traits qui se dessinent au prorata des morceaux de sa phrase (`drawn`, de 0 à 1).
+   */
+  sketch: (drawn: number) => void;
 }
 
 export const createMethodSeal = (id: ToolId): MethodSeal => {
@@ -36,11 +41,21 @@ export const createMethodSeal = (id: ToolId): MethodSeal => {
   root.append(el('span', 'method-rim'), el('span', 'method-core'));
   root.insertAdjacentHTML('beforeend', sigilSvg(id));
   root.append(count);
+  const strokes = [...root.querySelectorAll<SVGElement>('.method-sigil g > *')];
+  const drawAll = (shown: number): void => strokes.forEach((stroke, index) => stroke.classList.toggle('undrawn', index >= shown));
   return {
     root,
     show: (value, affordable) => {
+      root.classList.remove('announced');
+      drawAll(strokes.length);
       setNumberText(count, value, 11);
       root.classList.toggle('ready', affordable);
+    },
+    sketch: (drawn) => {
+      root.classList.remove('ready');
+      root.classList.add('announced');
+      drawAll(Math.round(drawn * strokes.length));
+      setNumberText(count, '?', 11);
     },
   };
 };

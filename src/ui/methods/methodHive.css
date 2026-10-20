@@ -85,6 +85,31 @@
 .method-seal:active.ready {
   transform: scale(1.02);
 }
+/* La méthode qui s'annonce (methodSeal.ts, sketch) : éteinte, « ? », ses traits dessinés à mesure que sa phrase s'écrit. */
+.method-seal.announced {
+  cursor: pointer;
+}
+.method-seal.announced .method-rim {
+  background: #3d352b;
+}
+.method-seal.announced .method-core {
+  background: radial-gradient(circle at 50% 35%, #2a221a, #100b07);
+}
+.method-seal.announced .method-sigil {
+  opacity: 0.55;
+  filter: grayscale(0.6);
+}
+.method-seal.announced .method-count {
+  color: #6d604c;
+}
+.method-seal.announced:hover,
+.method-seal.announced:focus-visible {
+  transform: scale(1.06);
+  z-index: 2;
+}
+.method-sigil .undrawn {
+  display: none;
+}
 /* Découverte pendant la partie : le sceau apparaît à sa place. */
 .method-seal.discovered {
   animation: method-discovered 1.2s ease-out;
@@ -128,6 +153,29 @@
 }
 .method-tip-price.short {
   color: #8b7a5c;
+}
+/* La méthode qui s'annonce : ce qui manque, au lieu du prix. */
+.method-tip.announced {
+  border-left-color: #6d604c;
+}
+.method-tip.announced .method-tip-price {
+  display: block;
+  color: #cdbb94;
+}
+.method-tip-guess {
+  display: block;
+  color: #e8c776;
+}
+.method-tip-hint {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.74rem;
+}
+.method-tip-guess[hidden],
+.method-tip-hint[hidden] {
+  display: none;
 }
 /* La Patience : le temps qu'il faut encore, sous le prix. */
 .method-tip-wait {

@@ -25,6 +25,15 @@
   "lotCost": "×{k} : {n} pages",
   "lotMax": "max ({k}) : {n} pages",
   "waitFor": "encore {time} de lecture",
+  "announced": {
+    "cant": "Je n'arrive pas encore à la lire.",
+    "clue": "Sa phrase s'écrit dans le livre blanc : {k} morceaux sur {n}.",
+    "clueOne": "Sa phrase s'écrit dans le livre blanc : un morceau sur {n}.",
+    "clueNone": "Sa phrase s'écrira dans le livre blanc, en lisant.",
+    "guess": "Il ne manque qu'un morceau : je peux le deviner.",
+    "guessMany": "Il ne manque que {m} morceaux : je peux les deviner.",
+    "hint": "Un clic : sa page du livre blanc."
+  },
   "lotMaxNone": "max (0) — prochaine : {n} pages",
   "reset": "Effacer la sauvegarde",
   "build": "Version du",

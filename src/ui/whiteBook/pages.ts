@@ -147,6 +147,20 @@ export const takeWhiteBookTasks = (): boolean => {
   return wanted;
 };
 
+/** La page de chaque phrase dans le dernier livre blanc fait. */
+const sentencePages = new Map<string, number>();
+/** Une méthode qui s'annonce cliquée (methodHive.ts) : le livre blanc s'ouvrira sur la page de sa phrase. */
+let sentenceWanted: string | undefined;
+export const openWhiteBookOnSentence = (id: string): void => {
+  sentenceWanted = id;
+};
+/** La page voulue, prise une fois à l'ouverture du livre (undefined : rien de demandé). */
+export const takeWhiteBookSentence = (): number | undefined => {
+  const id = sentenceWanted;
+  sentenceWanted = undefined;
+  return id === undefined ? undefined : sentencePages.get(id);
+};
+
 /**
  * Les pages du livre blanc. Le sommaire tient sur une page tant qu'il ne se tasse pas ; sinon, le livre se refait avec un
  * sommaire sur deux pages, face à face (2 et 3) : les parties qui suivent sont décalées.
@@ -162,6 +176,7 @@ const buildWhiteBook = (
   twoContents: boolean,
 ): { pages: (LeafPage | null)[]; entries: ContentsEntry[] } => {
   tasksPage = undefined;
+  sentencePages.clear();
   const trackers = new Map<string, (segment: number) => boolean>();
   const freshOf = (sentence: SentenceDef) => {
     if (!trackers.has(sentence.id)) trackers.set(sentence.id, freshTracker(state, sentence));
@@ -218,6 +233,7 @@ const buildWhiteBook = (
   };
   const sentencePage = (sentence: SentenceDef): void => {
     const number = pages.length;
+    sentencePages.set(sentence.id, number);
     pages.push(
       createLeafPage(({ asking }) => sentenceLayout(state, sentence, number, asking, freshOf(sentence)), goTo, {
         onPay: () => guess(state, sentence.id),

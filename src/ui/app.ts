@@ -50,7 +50,13 @@ import { ETHERIUM_HASH, askCloseEtherium } from './etherium/prestigeStory';
 import { createFeedButton } from './etherium/feedButton';
 import { takeStrangeBookPage } from './strangeBook/openAt';
 import { taskToken } from './whiteBook/taskToken';
-import { openWhiteBookOnTasks, takeWhiteBookTasks, whiteBookTasksPage } from './whiteBook/pages';
+import {
+  openWhiteBookOnSentence,
+  openWhiteBookOnTasks,
+  takeWhiteBookSentence,
+  takeWhiteBookTasks,
+  whiteBookTasksPage,
+} from './whiteBook/pages';
 import { tasksOpen, taskWaiting } from '../systems/tasks';
 import { NOTES_PAGE } from './rareBooks/credits/creditsPages';
 import { closeEtherium, etheriumOpens, prestigeReady } from '../systems/prestige';
@@ -211,7 +217,11 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     createMimic(state),
     // La relique qui attend dans la salle affichée (12/10).
     createRelicRoom(state),
-    createMethodHive(state),
+    // Une méthode qui s'annonce, cliquée : le livre blanc s'ouvre sur sa phrase (20/10).
+    createMethodHive(state, (sentence) => {
+      openWhiteBookOnSentence(sentence);
+      open(WHITE_BOOK_HASH)();
+    }),
     createHandReading3d(state),
     // La lettre qui s'échappe du livre en main (Alpha 1.1).
     createLetter(state),
@@ -319,6 +329,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       const book = whiteBook3d(state);
       // Le jeton de la clé : le livre s'ouvre sur les tâches.
       if (takeWhiteBookTasks()) Object.assign(book, { openAt: whiteBookTasksPage(), openJump: true });
+      // Une méthode qui s'annonce : sur la page de sa phrase.
+      const sentencePage = takeWhiteBookSentence();
+      if (sentencePage !== undefined) Object.assign(book, { openAt: sentencePage, openJump: true });
       return pileBook(createBook3dPage(book, leave, first ? t('ui.lookAround') : backLabel()));
     }
     // L'Etherium, pris en main : il se consulte dès le premier Éther (avant, sa couverture résiste) ; le prestige se fait

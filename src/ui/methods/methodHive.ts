@@ -7,6 +7,8 @@ import { TOOLS, type ToolId } from '../../data/tools';
 import { buyTools, chosenLot, lotCost, lotSize } from '../../systems/tools';
 import { armfulLots, levelOf } from '../../systems/technologies';
 import { toolUnlocked } from '../../systems/sentences';
+import { announcedTool, toolPieces } from '../../systems/nextMethod';
+import { babelize, seedOf } from '../whiteBook/babelMask';
 import { pagesPerSecond, toolRate } from '../../systems/production';
 import { waitText } from '../letter/duration';
 import { createMethodSeal } from './methodSeal';
@@ -60,9 +62,11 @@ const waitFor = (state: GameState, cost: number): string | undefined => {
  * éteint : pas assez de pages. Le nombre possédé est dans le sceau ; au survol (ou au clavier), le nom,
  * la description et le prix. Un clic achète le lot choisi sous la ruche (1, 10, 100 ou tout ce que les
  * pages permettent, à mesure que la Brassée les ouvre ; Maj enfoncée : 10), et le sceau ne luit que si le lot entier est payable (« max » :
- * dès qu'on peut en prendre une). Le détail de chaque méthode est dans le livre blanc.
+ * dès qu'on peut en prendre une). Le détail de chaque méthode est dans le livre blanc. La méthode qui s'annonce
+ * (systems/nextMethod.ts, 20/10) prend sa place, éteinte : au survol, ce qui manque à sa phrase ; un clic ouvre le
+ * livre blanc sur elle (`onAnnounced`, avec l'identifiant de la phrase).
  */
-export const createMethodHive = (state: GameState): Component => {
+export const createMethodHive = (state: GameState, onAnnounced: (sentence: string) => void = () => {}): Component => {
   const root = el('section', 'tools method-hive');
   root.setAttribute('aria-label', t('ui.methods'));
   const tip = el('div', 'method-tip');
@@ -73,7 +77,9 @@ export const createMethodHive = (state: GameState): Component => {
   const tipText = el('em');
   const tipPrice = el('span', 'method-tip-price');
   const tipWait = el('span', 'method-tip-wait');
-  tip.append(tipName, tipText, tipPrice, tipWait);
+  const tipGuess = el('span', 'method-tip-guess');
+  const tipHint = el('span', 'method-tip-hint');
+  tip.append(tipName, tipText, tipPrice, tipWait, tipGuess, tipHint);
   tip.setAttribute('aria-hidden', 'true');
   let pointed: ToolId | null = null;
   const lotMark = createMethodLot((chosen) => {
@@ -83,6 +89,7 @@ export const createMethodHive = (state: GameState): Component => {
   const seals = TOOLS.map((tool) => {
     const seal = createMethodSeal(tool.id);
     seal.root.addEventListener('click', (event) => {
+      if (announcedTool(state) === tool.id) return onAnnounced(toolPieces(state, tool.id).sentence);
       buyTools(state, tool.id, chosenLot(state, event.shiftKey));
       update();
     });
@@ -120,6 +127,39 @@ export const createMethodHive = (state: GameState): Component => {
     while (columns < MAX_PER_ROW && hiveHeight(Math.ceil(count / columns)) > height) columns += 1;
     return columns;
   };
+  /**
+   * La méthode qui s'annonce : son sceau se dessine avec sa phrase ; son nom en signes de Babel ; au survol, les
+   * morceaux écrits (et s'il n'en manque qu'un, qu'il se devine), puis où la trouver.
+   */
+  const showAnnounced = (entry: (typeof seals)[number], locale: ReturnType<typeof getLocale>): void => {
+    const { id, seal } = entry;
+    const { found, total, guessable } = toolPieces(state, id);
+    seal.sketch(total > 0 ? found / total : 0);
+    const name = babelize(t(`tools.${id}.name`), seedOf(`tool:${id}`));
+    const clue =
+      found === 0
+        ? t('ui.announced.clueNone')
+        : (found === 1 ? t('ui.announced.clueOne') : t('ui.announced.clue').replace('{k}', formatNumber(found, locale))).replace(
+            '{n}',
+            formatNumber(total, locale),
+          );
+    seal.root.setAttribute('aria-label', `${t('ui.announced.cant')} ${clue} ${t('ui.announced.hint')}`);
+    if (pointed !== id) return;
+    tipTitle.textContent = name;
+    setNumberText(tipCount, '', 14);
+    tipText.textContent = t('ui.announced.cant');
+    tipPrice.textContent = clue;
+    tipPrice.classList.remove('short');
+    tipWait.hidden = true;
+    // Un morceau à deviner, ou deux avec le Bec de l'Etherium.
+    tipGuess.textContent =
+      total - found === 1 ? t('ui.announced.guess') : t('ui.announced.guessMany').replace('{m}', formatNumber(total - found, locale));
+    tipGuess.hidden = !guessable;
+    tipHint.textContent = t('ui.announced.hint');
+    tipHint.hidden = false;
+    tip.classList.add('announced');
+    tip.style.top = seal.root.style.top;
+  };
   let columns = MIN_PER_ROW;
   /** Pour quel nombre de sceaux, et quelle fenêtre, les rangées ont été calculées. */
   let laidOut = '';
@@ -127,7 +167,8 @@ export const createMethodHive = (state: GameState): Component => {
   const update = (): void => {
     const locale = getLocale();
     // Rangées recalculées quand une méthode apparaît, ou quand la fenêtre change de taille.
-    const total = seals.filter((entry) => toolUnlocked(state, entry.id)).length;
+    const announced = announcedTool(state);
+    const total = seals.filter((entry) => toolUnlocked(state, entry.id) || entry.id === announced).length;
     const layout = `${total}:${window.innerWidth}x${window.innerHeight}`;
     if (layout !== laidOut && root.isConnected) {
       columns = perRow(total);
@@ -140,16 +181,21 @@ export const createMethodHive = (state: GameState): Component => {
     for (const entry of seals) {
       const { id, seal } = entry;
       const unlocked = toolUnlocked(state, id);
-      // Découverte pendant la partie : le sceau apparaît doucement à sa place dans la ruche.
-      if (unlocked && !entry.shown) seal.root.classList.add('discovered');
-      entry.shown = unlocked;
-      seal.root.hidden = !unlocked;
-      if (!unlocked) continue;
+      const visible = unlocked || id === announced;
+      // Découverte pendant la partie (ou annoncée) : le sceau apparaît doucement à sa place dans la ruche.
+      if (visible && !entry.shown) seal.root.classList.add('discovered');
+      entry.shown = visible;
+      seal.root.hidden = !visible;
+      if (!visible) continue;
       const row = Math.floor(place / columns);
       const column = place % columns;
       seal.root.style.left = `${column * (SEAL_WIDTH + GAP) + ((row % 2) * (SEAL_WIDTH + GAP)) / 2}px`;
       seal.root.style.top = `${row * (SEAL_HEIGHT * 0.75 + GAP)}px`;
       place += 1;
+      if (!unlocked) {
+        showAnnounced(entry, locale);
+        continue;
+      }
       // Le prix du lot entier ; « max » sans assez de pages pour une seule : le prix de la prochaine.
       const size = lotSize(state, id, chosen);
       const cost = Math.ceil(lotCost(state, id, size));
@@ -169,6 +215,9 @@ export const createMethodHive = (state: GameState): Component => {
         tipText.textContent = description;
         tipPrice.textContent = price;
         tipPrice.classList.toggle('short', !affordable);
+        tip.classList.remove('announced');
+        tipGuess.hidden = true;
+        tipHint.hidden = true;
         const wait = waitFor(state, cost);
         tipWait.textContent = affordable || !wait ? '' : wait;
         tipWait.hidden = affordable || !wait;

@@ -25,6 +25,15 @@
   "lotCost": "×{k}: {n} pages",
   "lotMax": "max ({k}): {n} pages",
   "waitFor": "{time} more reading",
+  "announced": {
+    "cant": "I can't read it yet.",
+    "clue": "Its sentence is being written in the white book: {k} pieces of {n}.",
+    "clueOne": "Its sentence is being written in the white book: one piece of {n}.",
+    "clueNone": "Its sentence will be written in the white book, as I read.",
+    "guess": "Only one piece is missing: I can guess it.",
+    "guessMany": "Only {m} pieces are missing: I can guess them.",
+    "hint": "Click: its page in the white book."
+  },
   "lotMaxNone": "max (0) — next: {n} pages",
   "reset": "Erase save",
   "build": "Build of",
