@@ -1,0 +1,45 @@
+/* Le médaillon de la Réminiscence (ui/reminiscence/reminiscenceMedal.ts), entre la relique et les bonus. */
+.reminiscence-medals {
+  display: flex;
+  pointer-events: auto;
+}
+.reminiscence-medals[hidden] {
+  display: none;
+}
+.reminiscence-medal {
+  cursor: pointer;
+}
+.reminiscence-medal:hover .boon-medal-tip {
+  opacity: 1;
+}
+.reminiscence-medal .boon-medal-tip .line {
+  display: block;
+  text-align: center;
+}
+.reminiscence-medal .boon-medal-tip .hint {
+  opacity: 0.7;
+}
+/* En pause : gris, l'anneau éteint. */
+.reminiscence-medal.paused .boon-medal-icon svg,
+.reminiscence-medal.paused .boon-medal-ring {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+/* Une intuition revenue : un éclat d'or. */
+.reminiscence-medal.flash .boon-medal-icon {
+  animation: reminiscence-flash 1.2s ease-out;
+}
+@keyframes reminiscence-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(232, 199, 118, 0);
+  }
+  20% {
+    box-shadow: 0 0 0.35em 0.12em rgba(232, 199, 118, 0.85);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(232, 199, 118, 0);
+  }
+}
+.reminiscence-medal .boon-medal-tip .line[hidden] {
+  display: none;
+}

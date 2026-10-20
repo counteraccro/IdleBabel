@@ -238,6 +238,14 @@
     "reload": "Reload",
     "later": "Later"
   },
+  "reminiscence": {
+    "left": "Reminiscence · {n} levels to recover",
+    "leftOne": "Reminiscence · one level to recover",
+    "next": "Next: “{name}”, {price} Knowledge",
+    "paused": "Reminiscence · paused, {n} to recover",
+    "pause": "Click: pause.",
+    "resume": "Click: let it come back."
+  },
   "mimic": {
     "name": "The Mimic",
     "medal": "The Mimic · methods −{p}%, it devours Knowledge",

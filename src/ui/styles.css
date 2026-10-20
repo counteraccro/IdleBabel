@@ -606,7 +606,7 @@ footer {
   }
 }
 
-/* Les médaillons (ui/medalsBar.ts), juste après le titre : la relique, puis les bonus en cours. */
+/* Les médaillons (ui/medalsBar.ts), juste après le titre : la relique, la Réminiscence, puis les bonus en cours. */
 .medals-bar {
   display: flex;
   align-items: center;

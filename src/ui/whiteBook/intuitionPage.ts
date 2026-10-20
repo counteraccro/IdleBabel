@@ -56,6 +56,9 @@ const texts = (id: TechnologyId): IntuitionTexts => {
   return { name: t(`tools.${tool}.name`), description, effect, notes: [notes[tool]] };
 };
 
+/** Le nom d'une intuition (celui de sa méthode pour un geste) : aussi pour le médaillon de la Réminiscence. */
+export const intuitionName = (id: TechnologyId): string => texts(id).name;
+
 const percent = (value: number): string =>
   writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(value));
 
