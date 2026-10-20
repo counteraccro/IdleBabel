@@ -86,6 +86,13 @@ export const PLAYER = {
   /** Le lot que le Rouage achète (celui choisi sous la ruche) : --lot=1, 10, 100 ou max. */
   rouageLot: 'max' as number | 'max',
   /**
+   * Le livre de jeux (20/10, simulateur/jeux.ts, pas encore dans le jeu) : le jour où le bot l'a (--livre-jeux=2 ; non :
+   * sans lui), les grilles qu'il résout par jour (--grilles=3, de 0 à 9), la part juste dès la 1re vérification (--premier-coup=0.5).
+   */
+  puzzleBook: 1,
+  puzzlesPerDay: 3,
+  puzzleFirstTry: 0.5,
+  /**
    * Lecture des méthodes de chaque Âge, multipliée (essais du 13/10 : adoucir le gain d'un Âge à l'autre) :
    * --lecture=auto:0.1,num:0.01 ; 1 partout, les chiffres du jeu.
    */

@@ -34,6 +34,7 @@ import { letterAverage } from './lettre';
 import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../src/data/mimic';
 import { LOTTERY_BOONS, LOTTERY_CURSES, LOTTERY_STARS, RELIC_TOKEN_ODDS } from '../src/data/lottery';
 import { countLast, drawn, tickTasks } from './taches';
+import { tickPuzzles } from './jeux';
 
 /** Une partie, du réveil au prestige. */
 export interface Run {
@@ -263,18 +264,21 @@ const dailyTokens = (run: Run, seconds: number, pps: number): void => {
 };
 const DAY_SECONDS = 86_400;
 
-/** Ce que les tâches rendent : des jetons, des heures de lecture, des heures de Connaissance (au rythme du moment). */
+/** Ce que les tâches et le livre de jeux rendent : des jetons, des heures de lecture, des heures de Connaissance (au rythme du moment). */
 const tasksFor = (run: Run, seconds: number, onScreen: boolean): void => {
   const pps = pagesPerSecond(run, !onScreen);
-  tickTasks(run, seconds, onScreen, {
-    tokens: (n) => addTokens(run, n, pps),
-    pages: (s) => gain(run, pps * s),
-    knowledge: (s) => {
+  const to = {
+    tokens: (n: number) => addTokens(run, n, pps),
+    pages: (s: number) => gain(run, pps * s),
+    knowledge: (s: number) => {
       run.knowledge += run.knowledgeRate * s;
       run.knowledgeGained += run.knowledgeRate * s;
       run.life.knowledge += run.knowledgeRate * s;
     },
-  });
+  };
+  tickTasks(run, seconds, onScreen, to);
+  // Le livre de jeux (simulateur/jeux.ts) : ses grilles se font à l'écran.
+  if (onScreen) tickPuzzles(run, seconds, pps, to);
 };
 
 /** Ce que chaque méthode a lu pendant `seconds` (part `share` de sa lecture) : les sceaux de ses pages. */

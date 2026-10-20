@@ -18,6 +18,7 @@
  *   npm run simule -- --reminiscence=gratuite  les intuitions reviennent gratuitement à leur meilleur niveau
  *   npm run simule -- --achat-main=300       le bot n'achète ses méthodes à la main que toutes les 300 s de jeu
  *   npm run simule -- --sans-rouage --lot=10   sans le Rouage, ou un autre lot que « max »
+ *   npm run simule -- --livre-jeux=non       sans le livre de jeux (--livre-jeux=5 : trouvé au 5e jour ; --grilles=9 --premier-coup=0.8)
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
@@ -28,6 +29,7 @@ import { etherGain, litPerPage, newLife, spendEther } from './vie';
 import { checkSeals, sealCount, sealsPerPlate } from './sceaux';
 import { LAST_TASK, ONCE_TASKS, TASK_STARS } from './taches';
 import { GEAR_STARS, gearLog, turnGear } from './rouage';
+import { PUZZLE_MINUTES, puzzleLog } from './jeux';
 
 const option = (name: string): string | undefined =>
   process.argv.find((arg) => arg === `--${name}` || arg.startsWith(`--${name}=`))?.split('=')[1] ??
@@ -50,6 +52,9 @@ if (option('avec-jeton') !== undefined) PLAYER.tokenRelic = true;
 if (option('reminiscence') === 'gratuite') PLAYER.reminiscence = 'gratuite';
 if (option('achat-main')) PLAYER.handBuyEvery = Number(option('achat-main'));
 if (option('sans-rouage') !== undefined) PLAYER.rouage = false;
+if (option('livre-jeux')) PLAYER.puzzleBook = option('livre-jeux') === 'non' ? -1 : Number(option('livre-jeux'));
+if (option('grilles')) PLAYER.puzzlesPerDay = Number(option('grilles'));
+if (option('premier-coup')) PLAYER.puzzleFirstTry = Number(option('premier-coup'));
 if (option('lot')) PLAYER.rouageLot = option('lot') === 'max' ? 'max' : Number(option('lot'));
 // L'Âge Automatique reste toujours possible (ages) ; les autres pages, seulement celles demandées.
 if (option('pages')) PLAYER.pages = [...(option('pages')!.split(',') as PageId[]), 'ages'];
@@ -108,6 +113,7 @@ const playRun = (run: Run, end: number): number => {
 const life = newLife();
 const end = days * 86400;
 const rows: string[][] = [];
+let lastRead = 0;
 for (let number = 1; life.clock < end; number++) {
   const run = newRun(life);
   const gain = playRun(run, end);
@@ -134,6 +140,7 @@ for (let number = 1; life.clock < end; number++) {
     gain > 0 ? `+${gain}` : '(en cours)',
   ];
   if (gain === 0) {
+    lastRead = run.read;
     rows.push([...row, String(life.etherReceived), '', duration(life.clock)]);
     break;
   }
@@ -207,5 +214,12 @@ if (PLAYER.tasks) {
 if (PLAYER.rouage) {
   console.log(
     `Rouage (lot ${PLAYER.rouageLot}, achat à la main ${PLAYER.handBuyEvery ? `toutes les ${PLAYER.handBuyEvery} s` : 'sans cesse'}) : ${GEAR_STARS.map((star) => `${star.id.slice(5)} ${duration(life.tasks.boughtAt[star.id])}`).join(' · ')} · ${gearLog.lots} achats (${big(gearLog.bought)} méthodes)`,
+  );
+}
+
+if (PLAYER.puzzleBook >= 0) {
+  const share = (part: number, all: number): string => `${((100 * part) / all).toFixed(1).replace('.', ',')} %`;
+  console.log(
+    `Livre de jeux (sudoku ${PUZZLE_MINUTES.sudoku.join(' / ')} min, mots ${PUZZLE_MINUTES.words} min ; ${PLAYER.puzzlesPerDay} grilles par jour, ${Math.round(PLAYER.puzzleFirstTry * 100)} % du premier coup) : trouvé ${duration(puzzleLog.foundAt)} · ${puzzleLog.grids} grilles (${puzzleLog.firstTry} du premier coup) · ${duration(puzzleLog.seconds)} de partie données · ${share(puzzleLog.pages, life.pages + lastRead)} des pages lues · ${share(puzzleLog.knowledge, life.knowledge)} de la Connaissance`,
   );
 }
