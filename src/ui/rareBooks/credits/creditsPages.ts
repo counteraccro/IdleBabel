@@ -57,6 +57,7 @@ const FONTS: [string, string][] = [
   ['Caveat', 'Impallari Type'],
   ['Great Vibes', 'Robert Leuschke'],
   ['Fredoka', 'Milena Brandão'],
+  ['Luckiest Guy', 'Astigmatic'],
   ['Nothing You Could Do', 'Kimberly Geswein'],
 ];
 
@@ -177,8 +178,8 @@ const fontsPage = (context: CanvasRenderingContext2D): void => {
   const { parts, fontsIntro } = text();
   heading(context, parts[3]);
   write(context, fontsIntro, CENTER, 205, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-  // Vingt et une polices : resserrées pour finir au-dessus du folio.
-  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 22));
+  // Vingt-trois polices : resserrées pour finir au-dessus du folio (la dernière là où finissait la 22e).
+  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 21));
   folio(context, FONTS_PAGE);
 };
 

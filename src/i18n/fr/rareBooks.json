@@ -1051,6 +1051,20 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.9",
+          "date": "20 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Un nouveau livre rare, à jouer dans la bibliothèque : de nouvelles grilles chaque jour.",
+                "De nouveaux sceaux, dont des secrets.",
+                "Une nouvelle tâche du jour."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.8",
           "date": "19 octobre 2026",
           "sections": [

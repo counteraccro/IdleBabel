@@ -1042,6 +1042,20 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.9",
+          "date": "20 October 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "A new rare book to play in the library: new grids every day.",
+                "New seals, some of them secret.",
+                "A new daily task."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.8",
           "date": "19 October 2026",
           "sections": [
