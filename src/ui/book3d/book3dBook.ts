@@ -39,6 +39,8 @@ export interface Book3d {
   hover?: (index: number, x: number, y: number) => boolean;
   /** Quelque chose de cliquable au point (x, y) de la page `index` (la main du pointeur). */
   pointable?: (index: number, x: number, y: number) => boolean;
+  /** Une touche du clavier, livre ouvert : true si le livre l'a prise (une grille à remplir) ; les pages ne tournent pas. */
+  key?: (key: string) => boolean;
   /** La page `index` arrive sous les yeux, livre posé (sceaux vus, légende survolée effacée). */
   shown?: (index: number) => void;
   /** La page `index` a été découverte en tournant les pages, même en feuilletant vite (un secret qu'on y trouve). */

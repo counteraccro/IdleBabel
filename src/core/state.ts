@@ -232,6 +232,24 @@ export const DEFAULT_SETTINGS: Settings = {
   scene: null,
 };
 
+/** Une grille du livre de jeux : ce que le joueur a écrit (case → chiffre ou lettre), ses vérifications ratées. */
+export interface PuzzleProgress {
+  cells: Record<number, string>;
+  misses: number;
+  /** Résolue : les minutes qu'elle a rapportées (0 : trop vérifiée, pour la gloire). */
+  solved?: number;
+}
+
+/**
+ * Le livre de jeux : le jour des grilles (« AAAA-MM-JJ », heure du joueur ; à minuit, tout s'efface), chacune de ses
+ * grilles (systems/puzzles.ts, puzzleKey : les grilles de mots changent avec la langue), les grilles résolues depuis toujours.
+ */
+export interface PuzzlesState {
+  day: string;
+  grids: Record<string, PuzzleProgress>;
+  solved: number;
+}
+
 export interface GameState {
   version: number;
   /** Pages disponibles, que l'on dépense. */
@@ -291,6 +309,8 @@ export interface GameState {
    * coloriée. Gardées au prestige.
    */
   coloring: Record<string, Record<string, string>>;
+  /** Le livre de jeux (systems/puzzles.ts) : les grilles du jour, ce qu'en a fait le joueur. Gardé au prestige. */
+  puzzles: PuzzlesState;
   /** La Mimic (systems/mimic.ts) : celle qui est là, et ce qu'en comptent les sceaux. */
   mimic: MimicState;
   /** Les reliques (systems/relics.ts) : trouvées, celle qui agit, le délai avant d'en changer. */
@@ -407,6 +427,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   darkPatternsFoiled: [],
   rabbitCaught: 0,
   coloring: {},
+  puzzles: { day: '', grids: {}, solved: 0 },
   mimic: { ...NO_MIMIC },
   relics: { ...NO_RELICS, found: {} },
   lottery: { ...NO_LOTTERY, effects: [] },

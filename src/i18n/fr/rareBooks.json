@@ -2387,6 +2387,90 @@
     "box": "{n} CRAYONS DE COULEUR",
     "eraser": "la gomme"
   },
+  "puzzles": {
+    "name": "410 grilles de JEUX",
+    "cover": ["410 grilles", "de JEUX"],
+    "title": ["410", "grilles", "de", "JEUX"],
+    "games": ["SUDOKU", "MOTS FLÉCHÉS", "MOTS CROISÉS"],
+    "badge": ["Nouvelles", "grilles", "chaque jour !"],
+    "publisher": "TOUR",
+    "edition": "Éditions de la Tour",
+    "backTitle": ["Chaque jour,", "de nouvelles grilles !"],
+    "backList": [
+      "Trois sudokus, du facile au difficile.",
+      "Trois grilles de mots fléchés.",
+      "Trois grilles de mots croisés.",
+      "Les règles de chaque jeu."
+    ],
+    "backLine": "Un crayon et un peu de temps suffisent.",
+    "today": "Les grilles du {date}",
+    "contents": "Dans ce cahier, chaque jour :",
+    "sudoku": "SUDOKU {n}",
+    "arrows": "MOTS FLÉCHÉS {n}",
+    "crossword": "MOTS CROISÉS {n}",
+    "definitions": "DÉFINITIONS",
+    "definitionsOf": "mots croisés {n}",
+    "rule": "la règle",
+    "levels": ["facile", "moyen", "difficile"],
+    "babel": "GRILLE N° {n}",
+    "across": "Horizontalement",
+    "down": "Verticalement",
+    "verify": "VÉRIFIER",
+    "rules": {
+      "play": [
+        "COMMENT JOUER",
+        [
+          "Chaque jour, à minuit, neuf nouvelles grilles : trois sudokus, trois mots fléchés et trois mots croisés.",
+          "Cliquez sur une case, puis tapez au clavier. La touche ⌫ efface. Les flèches du clavier déplacent d’une case ; Échap lâche la grille.",
+          "Dans les grilles de mots, cliquez sur une définition pour aller à son mot ; cliquez deux fois sur une case pour changer de sens.",
+          "Une grille finie ? Appuyez sur « Vérifier ». Les cases fausses passent en rouge. Une grille juste rapporte de la lecture et de la Connaissance. Juste du premier coup : le gain double ! Sinon, trois vérifications sont offertes ; ensuite, chacune ôte un dixième du gain."
+        ]
+      ],
+      "sudoku": [
+        "LE SUDOKU",
+        [
+          "Remplissez la grille avec les chiffres de 1 à 9.",
+          "Chaque ligne, chaque colonne et chaque carré de 3 × 3 contient une fois, et une seule, chacun des neuf chiffres.",
+          "Il n’y a qu’une solution. On la trouve sans jamais deviner : cherchez où un chiffre ne peut aller qu’à une seule place."
+        ]
+      ],
+      "arrows": [
+        "LES MOTS FLÉCHÉS",
+        [
+          "Les définitions sont dans les cases bleues. La flèche montre où écrire la réponse : vers la droite, ou vers le bas.",
+          "Une case coupée en deux porte deux définitions : celle du haut pour la flèche de droite, celle du bas pour la flèche du bas.",
+          "Les mots s’écrivent en majuscules, sans accents."
+        ]
+      ],
+      "crossword": [
+        "LES MOTS CROISÉS",
+        [
+          "Chaque numéro marque le début d’un mot. Sa définition est en face, avec le même numéro.",
+          "Horizontalement : on écrit de gauche à droite. Verticalement : de haut en bas. Le nombre entre parenthèses donne la longueur du mot.",
+          "Les mots se croisent : une lettre trouvée aide à trouver l’autre mot. Majuscules, sans accents."
+        ]
+      ]
+    },
+    "sudokuExample": "Il ne manquait que le 1 : il va au milieu.",
+    "arrowsExample": ["Astre", "LUNE"],
+    "crosswordExample": ["LIVRE", "ILE", "1. Il a des pages (5)   ·   2. Entourée d’eau (3)"],
+    "wrong": ["{n} case fausse", "{n} cases fausses"],
+    "empty": ["{n} case vide", "{n} cases vides"],
+    "free": ["encore {n} vérification gratuite", "encore {n} vérifications gratuites"],
+    "gain": "gain : {m}",
+    "nothing": "rien",
+    "solved": "Résolu : + {m} de lecture et de Connaissance",
+    "solvedFirst": "Résolu du premier coup : + {m} de lecture et de Connaissance",
+    "solvedGlory": "Résolu, mais trop vérifié : sans récompense",
+    "stamp": "RÉSOLU",
+    "stampFirst": "+ {m} · du premier coup",
+    "stampGain": "+ {m}",
+    "stampGlory": "pour la gloire",
+    "minutes": "{n} min",
+    "hours": "{h} h",
+    "hoursMinutes": "{h} h {mm}",
+    "locale": "fr-FR"
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],

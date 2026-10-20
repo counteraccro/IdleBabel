@@ -1,5 +1,6 @@
 import {
   CLICKS_PER_TOKEN,
+  GRIDS_PER_TOKEN,
   COUNT_STARS,
   DAILY_KINDS,
   DAILY_TASKS,
@@ -15,6 +16,7 @@ import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { mimicUnlocked } from './etherium';
 import { mimicEvery } from './mimic';
 import { relicTaskLength } from './relics';
+import { PUZZLES_ID } from '../data/puzzles';
 import type { DailyTask, GameState } from '../core/state';
 
 /**
@@ -53,6 +55,7 @@ const METRIC: Record<DailyKind, (state: GameState) => number> = {
   knowledge: (state) => state.lifetimeKnowledge,
   books: (state) => state.booksFinished,
   mimic: (state) => state.mimic.caught,
+  grids: (state) => state.puzzles.solved,
 };
 
 /** Pages tournées seules dans le livre en main, par seconde. */
@@ -69,6 +72,7 @@ const RATE: Record<DailyKind, ((state: GameState) => number) | null> = {
   knowledge: (state) => findsPerSecond(state) * findKnowledge(state),
   books: (state) => turnedPerSecond(state) / PAGES_PER_BOOK,
   mimic: (state) => (mimicUnlocked(state) ? 1 / mimicEvery(state) : 0),
+  grids: null,
 };
 
 /** Un nombre rond : deux chiffres significatifs, au moins 1. */
@@ -80,6 +84,8 @@ const round = (value: number): number => {
 
 /** Un modèle se tire : il a un rythme (la Mimic n'est pas là sans l'Est, rien ne se trouve sans pages qui tournent). */
 const drawable = (state: GameState, kind: DailyKind): boolean => {
+  // Les grilles : seulement quand le livre de jeux est trouvé.
+  if (kind === 'grids') return PUZZLES_ID in state.rareBooks;
   const rate = RATE[kind];
   return !rate || rate(state) > 0 || (kind === 'pages' && state.tasks.sinceWake < RECALC_AFTER_WAKE);
 };
@@ -92,6 +98,7 @@ const goalFor = (state: GameState, kind: DailyKind, value: number): number => {
   const rate = RATE[kind];
   // Le Crayon, s'il agit, raccourcit les nouvelles tâches.
   const length = relicTaskLength(state);
+  if (kind === 'grids') return GRIDS_PER_TOKEN * value;
   if (!rate) return round(CLICKS_PER_TOKEN * value * length);
   if (kind === 'pages' && state.tasks.sinceWake < RECALC_AFTER_WAKE) return 0;
   const perSecond = rate(state);

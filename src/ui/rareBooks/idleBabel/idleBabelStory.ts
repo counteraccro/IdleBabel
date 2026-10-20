@@ -119,6 +119,7 @@ export const STORY: StoryChapter[] = [
           'rabbit',
           'endlessBook',
           'coloring',
+          'puzzles',
         ],
       },
       {

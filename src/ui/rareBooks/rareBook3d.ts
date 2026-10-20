@@ -84,7 +84,8 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
       }
       return link !== undefined;
     },
-    pointable: (page, x, y) => (reading && art.pointable?.(page, x, y)) || linkAt(page, x, y) !== undefined,
+    pointable: (page, x, y) => (reading && art.pointable?.(page, x, y, state)) || linkAt(page, x, y) !== undefined,
+    key: reading && art.key ? (key) => art.key!(key, state) : undefined,
   };
   return book;
 };

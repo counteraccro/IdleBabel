@@ -2387,6 +2387,85 @@
     "box": "{n} COLOURED PENCILS",
     "eraser": "the eraser"
   },
+  "puzzles": {
+    "name": "410 Puzzle GRIDS",
+    "cover": ["410 Puzzle", "GRIDS"],
+    "title": ["410", "Puzzle", "", "GRIDS"],
+    "games": ["SUDOKU", "ARROW WORDS", "CROSSWORDS"],
+    "badge": ["New", "grids", "every day!"],
+    "publisher": "TOWER",
+    "edition": "Tower Books",
+    "backTitle": ["Every day,", "brand new grids!"],
+    "backList": ["Three sudokus, from easy to hard.", "Three arrow word grids.", "Three crosswords.", "The rules of every game."],
+    "backLine": "A pencil and a little time is all it takes.",
+    "today": "The grids for {date}",
+    "contents": "In this book, every day:",
+    "sudoku": "SUDOKU {n}",
+    "arrows": "ARROW WORDS {n}",
+    "crossword": "CROSSWORD {n}",
+    "definitions": "CLUES",
+    "definitionsOf": "crossword {n}",
+    "rule": "the rules",
+    "levels": ["easy", "medium", "hard"],
+    "babel": "GRID No. {n}",
+    "across": "Across",
+    "down": "Down",
+    "verify": "CHECK",
+    "rules": {
+      "play": [
+        "HOW TO PLAY",
+        [
+          "Every day at midnight, nine new grids: three sudokus, three arrow word grids and three crosswords.",
+          "Click a square, then type on your keyboard. The ⌫ key erases. The arrow keys move one square; Escape lets go of the grid.",
+          "In the word grids, click a clue to go to its word; click a square twice to change direction.",
+          "Finished a grid? Press “Check”. Wrong squares turn red. A correct grid brings reading and Knowledge. Right on the first try: double the reward! Otherwise, three checks are free; after that, each one takes away a tenth of the reward."
+        ]
+      ],
+      "sudoku": [
+        "SUDOKU",
+        [
+          "Fill the grid with the digits 1 to 9.",
+          "Every row, every column and every 3 × 3 box holds each of the nine digits once, and only once.",
+          "There is only one solution. You find it without ever guessing: look for the one place a digit can go."
+        ]
+      ],
+      "arrows": [
+        "ARROW WORDS",
+        [
+          "The clues are in the blue squares. The arrow shows where the answer goes: to the right, or down.",
+          "A square cut in two holds two clues: the top one for the right arrow, the bottom one for the down arrow.",
+          "Words are written in capitals."
+        ]
+      ],
+      "crossword": [
+        "CROSSWORDS",
+        [
+          "Each number marks the start of a word. Its clue is on the facing page, with the same number.",
+          "Across: write from left to right. Down: from top to bottom. The number in brackets gives the length of the word.",
+          "Words cross: one letter found helps find the other word. Capitals only."
+        ]
+      ]
+    },
+    "sudokuExample": "Only the 1 was missing: it goes in the middle.",
+    "arrowsExample": ["Night light", "MOON"],
+    "crosswordExample": ["TOWER", "OAK", "1. Babel had one (5)   ·   2. Mighty tree (3)"],
+    "wrong": ["{n} wrong square", "{n} wrong squares"],
+    "empty": ["{n} empty square", "{n} empty squares"],
+    "free": ["{n} free check left", "{n} free checks left"],
+    "gain": "reward: {m}",
+    "nothing": "nothing",
+    "solved": "Solved: + {m} of reading and Knowledge",
+    "solvedFirst": "Solved on the first try: + {m} of reading and Knowledge",
+    "solvedGlory": "Solved, but checked too often: no reward",
+    "stamp": "SOLVED",
+    "stampFirst": "+ {m} · first try",
+    "stampGain": "+ {m}",
+    "stampGlory": "for the glory",
+    "minutes": "{n} min",
+    "hours": "{h} h",
+    "hoursMinutes": "{h} h {mm}",
+    "locale": "en-GB"
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],

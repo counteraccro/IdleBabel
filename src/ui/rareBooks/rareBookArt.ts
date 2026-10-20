@@ -47,7 +47,12 @@ export interface RareBookArt {
    */
   press?: (page: number, x: number, y: number, state: GameState) => boolean;
   /** Ce qui, en (x, y) sur la page `page`, se clique (`press`) : la main au survol. */
-  pointable?: (page: number, x: number, y: number) => boolean;
+  pointable?: (page: number, x: number, y: number, state: GameState) => boolean;
+  /**
+   * Une touche du clavier, dans la bibliothèque seulement (une case du livre de jeux à remplir) : true si elle a servi ; la
+   * double page est redessinée, et les flèches ne tournent pas la page.
+   */
+  key?: (key: string, state: GameState) => boolean;
 }
 
 /** L'habillage d'un livre rare ; `tick` : couverture qui vit (le livre de débogage), propre à cet habillage. */

@@ -193,6 +193,9 @@
     "hintEndlessEnding": "In the book with no ending, / you die often. / You must remember.",
     "hintEndlessCheat": "A paragraph / nothing sends you to. / Go anyway.",
     "hintColoringAll": "A child’s colouring book / is still waiting / for its colours.",
+    "hintPuzzlesAll": "A puzzle book / refills every morning. / Empty it in one day.",
+    "hintPuzzlesNoEraser": "The hardest of the three, / a single check. / Not one more.",
+    "hintPuzzlesGlory": "Check, and check again. / Win nothing more. / Finish anyway.",
     "hintOneWord": "Someone circled a word. / At the very end.",
     "hintSandLastPage": "The book of sand / has no last page. / Really?",
     "hintFoundTypo": "Nothing but X. / Page after page. / Almost.",
@@ -493,6 +496,8 @@
       "booksOne": "Finish a book.",
       "mimic": "Catch the Mimic {n} times.",
       "mimicOne": "Catch the Mimic.",
+      "grids": "Solve {n} grids in the puzzle book.",
+      "gridsOne": "Solve a grid in the puzzle book.",
       "wait": "Read on. I will count soon."
     },
     "onceTasks": {

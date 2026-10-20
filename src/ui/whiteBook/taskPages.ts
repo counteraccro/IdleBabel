@@ -101,7 +101,7 @@ export const taskTitleItems = (state: GameState, number: number): Item[] => {
 /** La consigne d'une tâche du jour. */
 const dailyText = (task: DailyTask): string => {
   if (task.goal <= 0) return t('whiteBook.tasks.daily.wait');
-  const one = task.goal === 1 && ['finds', 'books', 'mimic'].includes(task.kind);
+  const one = task.goal === 1 && ['finds', 'books', 'mimic', 'grids'].includes(task.kind);
   return t(`whiteBook.tasks.daily.${task.kind}${one ? 'One' : ''}`).replace('{n}', pencilNumber(task.goal, true));
 };
 

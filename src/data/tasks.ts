@@ -19,11 +19,17 @@ export const RECALC_AFTER_WAKE = 5 * 60;
  * Les modèles des tâches du jour (validés par l'auteur le 17/10) : ce qu'elles comptent. Celles « au rythme » se calent sur
  * ce que fait la partie en ce moment (MINUTES_PER_TOKEN par jeton) ; les autres ont un nombre fixe par jeton.
  */
-export const DAILY_KINDS = ['pages', 'clicks', 'finds', 'knowledge', 'books', 'mimic'] as const;
+export const DAILY_KINDS = ['pages', 'clicks', 'finds', 'knowledge', 'books', 'mimic', 'grids'] as const;
 export type DailyKind = (typeof DAILY_KINDS)[number];
 
 /** Feuilles tournées à la main qu'il faut, par jeton. */
 export const CLICKS_PER_TOKEN = 600;
+
+/**
+ * Grilles du livre de jeux à résoudre, par jeton (« Résoudre une grille », validée par l'auteur le 20/10 : 1, 2 ou 3
+ * grilles selon les jetons) ; tirée seulement quand le livre est trouvé.
+ */
+export const GRIDS_PER_TOKEN = 1;
 
 /** Une récompense de tâche « une seule fois » (heures de lecture ou de Connaissance au rythme du moment). */
 export interface TaskReward {

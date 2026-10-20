@@ -250,6 +250,8 @@ export const SEALS: readonly SealDef[] = [
   })),
   // Un premier dessin de « Colorie la Bibliothèque » colorié en entier, dans la bibliothèque (systems/coloring.ts).
   event('coloringFirst', 'rare'),
+  // Une première grille de « 410 grilles de JEUX » résolue, dans la bibliothèque (systems/puzzles.ts).
+  event('puzzlesFirst', 'rare'),
 
   seal('insomnia', 'secrets', () => new Date().getHours() === 3),
   seal('still', 'secrets', (s) => !s.settings.bookSway),
@@ -279,6 +281,12 @@ export const SEALS: readonly SealDef[] = [
   secret('endlessCheat'),
   // Les neuf dessins de « Colorie la Bibliothèque » coloriés en entier (systems/coloring.ts).
   secret('coloringAll'),
+  // Les neuf grilles d'un même jour du livre de jeux résolues (systems/puzzles.ts).
+  secret('puzzlesAll'),
+  // Le sudoku difficile du livre de jeux juste dès la première vérification (systems/puzzles.ts).
+  secret('puzzlesNoEraser'),
+  // Une grille du livre de jeux finie après treize vérifications ratées : sans plus rien rapporter (systems/puzzles.ts).
+  secret('puzzlesGlory'),
   // Un mot entouré au crayon, à la dernière page du Manuscrit de Voynich (ui/rareBooks/voynich/voynich.ts).
   secret('oneWord'),
   // Vingt pages du Catalogue des catalogues lues dans la bibliothèque, à la recherche d'un cadeau de Noël

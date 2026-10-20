@@ -50,6 +50,8 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   { id: 'endlessBook' },
   // Un cahier de coloriage pour enfants des années 60 : neuf grands dessins à colorier pour de bon, dans la bibliothèque (13/10).
   { id: 'coloring' },
+  // Un cahier de jeux du kiosque : chaque jour, neuf grilles à remplir pour de bon, dans la bibliothèque (20/10).
+  { id: 'puzzles' },
   // L'autobiographie du jeu (décidée le 03/10) : la Bibliothèque contient le livre de sa propre création.
   { id: 'idleBabel' },
   // Le livre de débogage (décidé le 01/10) : dix fois plus rare ; du charabia qui bugue, et il ne s'ouvre

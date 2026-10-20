@@ -1,5 +1,4 @@
 import { el } from '../../ui/dom';
-import { t } from '../../i18n';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { forceRareBook, isRareBookFound, rareBookAt } from '../../systems/rareBooks';
 import { refreshBook, refreshLibrary } from '../refresh';
@@ -12,6 +11,11 @@ import { BIG_BOOK_REWRITE } from '../../ui/book3d/book3dBook';
 import { COLORING_DRAWINGS } from '../../data/coloring';
 import { colorZone, drawingDone } from '../../systems/coloring';
 import { coloringZones } from '../../ui/rareBooks/coloring/coloringDrawings';
+import { PUZZLE_GRIDS } from '../../data/puzzles';
+import { expected } from '../../systems/puzzleGrids';
+import { loadPuzzleWords, refreshPuzzles, todayGrids, writeCell } from '../../systems/puzzles';
+import { forgetPuzzleSession } from '../../ui/rareBooks/puzzles/puzzlesPages';
+import { getLocale, t } from '../../i18n';
 import type { DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
 
@@ -140,6 +144,36 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
           window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
         },
         { title: 'Les dessins redeviennent blancs (et les deux sceaux sont repris).' },
+      ],
+    );
+    kit.info(
+      '410 grilles de JEUX',
+      () =>
+        `${state.puzzles.solved} grilles résolues depuis toujours, ${Object.values(state.puzzles.grids).filter((grid) => grid.solved !== undefined).length} aujourd'hui`,
+    );
+    kit.actions(
+      [
+        'Jeux : tout remplir',
+        () =>
+          void loadPuzzleWords(getLocale()).then(() => {
+            // Les grilles du jour remplies justes, sans les vérifier : il reste à appuyer sur « Vérifier ».
+            refreshPuzzles(state);
+            const grids = todayGrids(state, getLocale());
+            if (!grids) return;
+            for (const id of PUZZLE_GRIDS) for (const [cell, value] of expected(grids[id])) writeCell(state, id, getLocale(), cell, value);
+            window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
+          }),
+        { title: 'Les neuf grilles du jour remplies justes, pas encore vérifiées (les gains et les sceaux tombent à « Vérifier »).' },
+      ],
+      [
+        'Jeux : tout effacer',
+        () => {
+          state.puzzles.grids = {};
+          for (const id of ['puzzlesFirst', 'puzzlesAll', 'puzzlesNoEraser', 'puzzlesGlory']) delete state.seals[id];
+          forgetPuzzleSession();
+          window.dispatchEvent(new Event(BIG_BOOK_REWRITE));
+        },
+        { title: 'Les grilles du jour redeviennent blanches (et les quatre sceaux sont repris).' },
       ],
     );
   },

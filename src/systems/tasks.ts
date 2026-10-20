@@ -117,6 +117,10 @@ const give = (state: GameState, reward: TaskReward): void => {
   if (reward.tome && tome !== undefined) giveTome(state, tome, 'task');
 };
 
+/** Des minutes de la partie, en lecture ET en Connaissance au rythme du moment : une grille juste du livre de jeux. */
+export const giveMinutes = (state: GameState, minutes: number): void =>
+  give(state, { readingHours: minutes / 60, knowledgeHours: minutes / 60 });
+
 /**
  * La récompense d'une tâche faite peut être prise : toujours, sauf le tome de « Une dernière pour la route » tant qu'aucun
  * ne peut venir (le tome 1 pas acheté, ou plus de tome écrit à gagner) : elle attend.

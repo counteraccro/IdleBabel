@@ -330,6 +330,12 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   const onKey = (event: KeyboardEvent): void => {
     // Un récit s'affiche par-dessus : le livre derrière ne tourne pas ses pages.
     if (modalOpen()) return;
+    // Une touche que le livre prend (une case du livre de jeux) : la page est redessinée, rien ne tourne.
+    if (!event.ctrlKey && !event.metaKey && !event.altKey && turner?.idle && spec.key?.(event.key)) {
+      event.preventDefault();
+      refresh();
+      return;
+    }
     if (event.key === 'ArrowRight') turn(true);
     if (event.key === 'ArrowLeft') turn(false);
     if (event.key === 'Home') backToBookmark();
