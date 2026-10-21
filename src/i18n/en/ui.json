@@ -110,7 +110,7 @@
   "nextPage": "Next page",
   "knowledge": "Knowledge",
   "library": "The library",
-  "shelfCount": { "books": "{n} books", "booksOne": "1 book", "relics": "{n} relics", "relicsOne": "1 relic" },
+  "shelfCount": { "books": "{n} books", "booksOne": "1 book", "relics": "{n} relics", "relicsOne": "1 relic", "total": "{n} books in all", "totalOne": "1 book in all" },
   "endings": {
     "collection": "The Story of Babel",
     "toLibrary": "To the library",

@@ -513,6 +513,7 @@ export const createLibraryPage = (
   const go = (name: LibraryView): void => {
     if (view === name) return;
     hover(null);
+    hoverPlate(null);
     glide = { from: shotOf(camera, framing(view)), to: shotOf(camera, framing(name)), start: animationNow() };
     view = name;
     rememberView(name);
@@ -611,6 +612,30 @@ export const createLibraryPage = (
     relicCaption();
     caption.classList.toggle('shown', id !== null);
   };
+  // Un cartouche survolé, quand il y a deux meubles : le compte de tous les livres, sous lui (l'auteur, 21/10 : « une astuce
+  // pour indiquer le nombre total de livres »). Rien à cliquer.
+  const plates = other ? [cartouche.mesh, other.cartouche.mesh] : [];
+  let hoveredPlate: THREE.Object3D | null = null;
+  const totalText = (): string => {
+    const books = found.length + (isRareBookFound(state, LIBRARY_DEBUG_BOOK) ? 1 : 0);
+    return writeDigits(books === 1 ? t('ui.shelfCount.totalOne') : t('ui.shelfCount.total').replace('{n}', String(books)));
+  };
+  /** Le cartouche sous la souris (le rayon est celui de relicAt, déjà lancé). */
+  const plateAt = (): THREE.Object3D | null => raycaster.intersectObjects(plates, false)[0]?.object ?? null;
+  const hoverPlate = (plate: THREE.Object3D | null): void => {
+    if (hoveredPlate === plate) return;
+    hoveredPlate = plate;
+    if (!plate) {
+      if (!hovered && !hoveredRelic) caption.classList.remove('shown');
+      return;
+    }
+    caption.textContent = totalText();
+    const box = new THREE.Box3().setFromObject(plate);
+    const at = new THREE.Vector3((box.min.x + box.max.x) / 2, box.min.y, box.max.z).project(camera);
+    caption.style.left = `${((at.x + 1) / 2) * 100}%`;
+    caption.style.top = `${((1 - at.y) / 2) * 100}%`;
+    caption.classList.add('shown');
+  };
   /** Le levier ou le bouton rouge de la machine, sous la souris. */
   const handleAt = (event: MouseEvent) => {
     const rect = canvas.getBoundingClientRect();
@@ -623,16 +648,21 @@ export const createLibraryPage = (
     if (handleAt(event)) {
       hoverRelic(null);
       hover(null);
+      hoverPlate(null);
       canvas.style.cursor = 'pointer';
       return;
     }
     const relic = relicAt(event);
     hoverRelic(relic);
-    if (!relic) hover(placeAt(event));
+    const place = relic ? null : placeAt(event);
+    if (!relic) hover(place);
+    // Le cartouche en dernier : sa légende ne s'efface que si rien d'autre n'en a une.
+    hoverPlate(relic || place ? null : plateAt());
   });
   canvas.addEventListener('pointerleave', () => {
     hoverRelic(null);
     hover(null);
+    hoverPlate(null);
   });
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
   canvas.addEventListener('click', (event) => {
@@ -733,6 +763,7 @@ export const createLibraryPage = (
       addFoundTomes();
       arrowTitles();
       if (hovered) caption.textContent = label(hovered);
+      if (hoveredPlate) caption.textContent = totalText();
     },
   };
 };
