@@ -1042,6 +1042,24 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.12",
+          "date": "21 October 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "Seals have a title, discovered when you earn them.",
+                "A new plate in the Great Book: “Seals”.",
+                "New seal tiers for closed volumes, covers that make sense and gathered Ether."
+              ]
+            },
+            {
+              "heading": "Fixes",
+              "items": ["Opened from a seal's announcement, the Great Book no longer writes its caption on the facing page."]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.11",
           "date": "21 October 2026",
           "sections": [
@@ -1058,9 +1076,7 @@
             },
             {
               "heading": "Fixes",
-              "items": [
-                "Opening a book no longer takes several seconds."
-              ]
+              "items": ["Opening a book no longer takes several seconds."]
             }
           ]
         },
@@ -1078,9 +1094,7 @@
             },
             {
               "heading": "Fixes",
-              "items": [
-                "The Great Book: seals seen while leafing quickly count as seen; the star next to “Seals” goes out as it should."
-              ]
+              "items": ["The Great Book: seals seen while leafing quickly count as seen; the star next to “Seals” goes out as it should."]
             }
           ]
         },

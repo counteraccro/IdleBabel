@@ -1051,6 +1051,24 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.12",
+          "date": "21 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Les sceaux ont un titre, qu'on découvre en les obtenant.",
+                "Une nouvelle planche dans le Grand Livre : « Les sceaux ».",
+                "De nouveaux paliers de sceaux pour les volumes refermés, les couvertures qui ont un sens et l'Éther recueilli."
+              ]
+            },
+            {
+              "heading": "Corrections",
+              "items": ["Ouvert depuis l'annonce d'un sceau, le Grand Livre n'écrit plus sa légende sur la page d'en face."]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.11",
           "date": "21 octobre 2026",
           "sections": [
@@ -1067,9 +1085,7 @@
             },
             {
               "heading": "Corrections",
-              "items": [
-                "Ouvrir un livre ne prend plus plusieurs secondes."
-              ]
+              "items": ["Ouvrir un livre ne prend plus plusieurs secondes."]
             }
           ]
         },
@@ -1087,9 +1103,7 @@
             },
             {
               "heading": "Corrections",
-              "items": [
-                "Le Grand Livre : les sceaux vus en feuilletant vite comptent comme vus ; l'étoile de « Sceaux » s'éteint bien."
-              ]
+              "items": ["Le Grand Livre : les sceaux vus en feuilletant vite comptent comme vus ; l'étoile de « Sceaux » s'éteint bien."]
             }
           ]
         },
