@@ -28,9 +28,10 @@ export interface Turner {
   hold: (position: number | null, corner?: number) => void;
   /**
    * Tourne jusqu'à la double page `spread` ; un nouvel appel en cours de route prolonge le mouvement.
-   * `corner` : page tirée par un coin (1 : en haut, -1 : en bas), elle part de lui.
+   * `corner` : page tirée par un coin (1 : en haut, -1 : en bas), elle part de lui. `skip` : un saut (sommaire, signet,
+   * page visée à l'ouverture) : les doubles pages traversées ne comptent pas comme vues (onCross).
    */
-  go: (spread: number, corner?: number) => void;
+  go: (spread: number, corner?: number, skip?: boolean) => void;
   /** Ouvre directement à la double page `spread`, sans rien tourner. */
   jump: (spread: number) => void;
   /** Avance l'animation de `dt` secondes ; true tant que des pages tournent. */
@@ -53,6 +54,12 @@ export const createTurner = (
   spreads: number,
   /** Une feuille se pose à gauche : le livre est ouvert à la double page `spread` (une fois par feuille). */
   onLand?: (spread: number) => void,
+  /**
+   * Le joueur tourne les pages (clic, glissé, réglette), même très vite : chaque double page traversée, dans un sens
+   * comme dans l'autre, compte comme vue (l'auteur, 21/10 : « le fait de passer les pages vite, ne la considère pas comme
+   * lu »). Pas pendant un saut (`go(…, skip)`).
+   */
+  onCross?: (spread: number) => void,
 ): Turner => {
   const last = Math.max(0, spreads - 1);
   const clamp = (spread: number): number => Math.min(last, Math.max(0, Math.round(spread)));
@@ -70,6 +77,15 @@ export const createTurner = (
   let laid = '';
   /** Dernière double page atteinte en avançant (les feuilles déjà signalées posées). */
   let landed = 0;
+  /** Le mouvement en cours est un saut : rien de ce qu'il traverse n'est signalé. */
+  let skipping = false;
+  /** Signale les doubles pages atteintes ou dépassées entre `before` et `shown` (pas celle d'où l'on part). */
+  const cross = (before: number): void => {
+    if (!onCross || skipping || before === shown) return;
+    const low = Math.min(before, shown);
+    const high = Math.max(before, shown);
+    for (let spread = Math.ceil(low - 1e-6); spread <= Math.floor(high + 1e-6); spread++) if (spread !== before) onCross(spread);
+  };
   /** Signale chaque feuille posée depuis la dernière fois ; en arrière, rien (elles le seront à nouveau). */
   const land = (): void => {
     const reached = Math.floor(shown + 1e-6);
@@ -113,11 +129,13 @@ export const createTurner = (
       return held === null && shown === target;
     },
     hold: (position, from = corner) => {
+      if (position !== null) skipping = false;
       if (held === null && position !== null) forward = position > shown;
       held = position === null ? null : Math.min(last, Math.max(0, position));
       corner = from;
     },
-    go: (spread, from = 0) => {
+    go: (spread, from = 0, skip = false) => {
+      skipping = skip;
       target = clamp(spread);
       corner = from;
       // Page lâchée (qui finit de tourner ou retombe) : elle garde le sens de la prise, sans à-coup.
@@ -136,6 +154,7 @@ export const createTurner = (
         speed = dt > 0 ? (shown - before) / dt : 0;
         apply();
         land();
+        cross(before);
         return true;
       }
       const remaining = target - shown;
@@ -150,6 +169,7 @@ export const createTurner = (
       const change = accel * dt;
       speed += Math.min(change, Math.max(-change, wanted - speed));
       const next = shown + speed * dt;
+      const before = shown;
       // Arrivé (ou dépassé) : on se pose sur la cible.
       if (Math.sign(target - next) !== Math.sign(remaining) || Math.abs(target - next) < 1e-3) {
         shown = target;
@@ -159,6 +179,7 @@ export const createTurner = (
       }
       apply();
       land();
+      cross(before);
       return shown !== target;
     },
     refresh: () => {

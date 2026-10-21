@@ -25,6 +25,7 @@ import {
 import {
   newsMark,
   plateHasNews,
+  sealsHaveNews,
   plateTitle,
   sealLegend,
   sealsTitle,
@@ -433,7 +434,7 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
     news: () => partHasNews(state, chapter.id),
   }));
   const sealEntries: Entry[] = [
-    { title: sealsTitle, page: sealsPage, news: () => state.newSeals.length > 0 || partHasNews(state, 'seals') },
+    { title: sealsTitle, page: sealsPage, news: () => sealsHaveNews(state) || partHasNews(state, 'seals') },
     ...plates
       .filter((plate) => plate.part === 0)
       .map((plate) => ({

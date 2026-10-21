@@ -167,12 +167,22 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
       canvas.classList.add('flying');
       flight = createFlight(flightStart, book.root, camera, frame);
     }
-    turner = createTurner(book, createPageCache(source), spreads, (landed) => {
-      spec.passed?.(2 * landed);
-      spec.passed?.(2 * landed + 1);
-    });
-    // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée.
-    spec.navigate = (index) => turner?.go(Math.floor(index / 2));
+    turner = createTurner(
+      book,
+      createPageCache(source),
+      spreads,
+      (landed) => {
+        spec.passed?.(2 * landed);
+        spec.passed?.(2 * landed + 1);
+      },
+      // Feuilletées à la main, même vite : les pages traversées sont vues (sceaux, étoiles du sommaire).
+      (crossed) => {
+        spec.shown?.(2 * crossed);
+        spec.shown?.(2 * crossed + 1);
+      },
+    );
+    // Entrée du sommaire : les pages tournent jusqu'à la double page qui porte la page visée (un saut).
+    spec.navigate = (index) => turner?.go(Math.floor(index / 2), 0, true);
     // Un lien vers la page qu'on lit : le livre tremble sur place, de moins en moins. Recliqué pendant qu'il
     // tremble, il repart du début (une seule secousse à la fois).
     let trembling = 0;
@@ -251,7 +261,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
     const jump = spec.openJump;
     spec.openJump = undefined;
     if (jump) turner.jump(Math.floor(page / 2));
-    swing('front', 1, undefined, () => !jump && turner?.go(Math.floor(page / 2)));
+    swing('front', 1, undefined, () => !jump && turner?.go(Math.floor(page / 2), 0, true));
   };
   /** Un livre scellé : sa couverture s'ouvre quand même, ou s'entrouvre à peine et retombe. */
   const cover = {
@@ -265,7 +275,7 @@ export const createBook3dPage = (spec: Book3d, onBack: () => void, backLabel = t
   /** Retour au signet (le sommaire), livre ouvert : toutes les pages tournent jusqu'à lui. */
   const backToBookmark = (): void => {
     if (!turner || spec.bookmark === undefined || swinging || shut > 0 || Number(open.value) < 1) return;
-    turner.go(Math.floor(spec.bookmark / 2));
+    turner.go(Math.floor(spec.bookmark / 2), 0, true);
   };
   /** Tourne une page de plus (ou de moins) ; des clics rapides s'enchaînent en feuilletage. */
   const turn = (forward: boolean): void => {

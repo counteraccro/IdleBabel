@@ -54,4 +54,32 @@ describe('pages qui tournent (livre 3D)', () => {
     settle(turner);
     expect(turner.idle).toBe(true);
   });
+
+  it('compte comme vue chaque double page feuilletée à la main, même vite, dans les deux sens', () => {
+    const crossed: number[] = [];
+    const turner = createTurner(book, pages, 10, undefined, (spread) => crossed.push(spread));
+    // Des clics rapides : quatre pages d'affilée.
+    turner.go(1);
+    turner.go(2);
+    turner.go(3);
+    turner.go(4);
+    settle(turner);
+    expect([...new Set(crossed)]).toEqual([1, 2, 3, 4]);
+    crossed.length = 0;
+    turner.go(1);
+    settle(turner);
+    expect([...new Set(crossed)]).toEqual([3, 2, 1]);
+  });
+
+  it('ne compte rien pendant un saut (sommaire, signet)', () => {
+    const crossed: number[] = [];
+    const turner = createTurner(book, pages, 10, undefined, (spread) => crossed.push(spread));
+    turner.go(8, 0, true);
+    settle(turner);
+    expect(crossed).toEqual([]);
+    // Le joueur reprend la main : de nouveau compté.
+    turner.go(9);
+    settle(turner);
+    expect(crossed).toEqual([9]);
+  });
 });

@@ -49,6 +49,7 @@ import { etherium3d } from './etherium/etherium3d';
 import { ETHERIUM_HASH, askCloseEtherium } from './etherium/prestigeStory';
 import { createFeedButton } from './etherium/feedButton';
 import { takeStrangeBookPage } from './strangeBook/openAt';
+import { sealsHaveNews } from './strangeBook/plates';
 import { taskToken } from './whiteBook/taskToken';
 import {
   openWhiteBookOnSentence,
@@ -183,7 +184,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       debug: debugging ? debugBook3d : undefined,
     },
     strangeBookFound: () => strangeBookFound(state),
-    strangeBookNews: () => state.newSeals.length > 0 || anyPartNews(state),
+    strangeBookNews: () => sealsHaveNews(state) || anyPartNews(state),
     writtenCount: () => Object.values(state.written).reduce((sum, done) => sum + done.length, 0),
     openBook,
     onLibrary: open(LIBRARY_HASH),

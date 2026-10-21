@@ -217,9 +217,16 @@ export const completionItems = (state: GameState, plates: PlatePage[], number: n
   ];
 };
 
-/** Des sceaux de la planche n'ont pas encore été vus : une étoile le signale au sommaire. */
+/**
+ * Des sceaux de la planche n'ont pas encore été vus : une étoile le signale au sommaire. Seulement ceux qu'elle montre :
+ * un sceau qui n'existe plus (un ancien palier) ou pas encore montré ne peut pas être vu, et laissait l'étoile allumée pour
+ * toujours (l'auteur, 21/10 : « j'ai vu tous les sceaux mais sceaux possède toujours son étoile »).
+ */
 export const plateHasNews = (state: GameState, plate: PlateId): boolean =>
-  plateSeals(plate).some((seal) => state.newSeals.includes(seal.id));
+  plateShown(state, plate) && knownSeals(state, plate).some((seal) => state.newSeals.includes(seal.id));
+
+/** Un sceau pas encore vu sur l'une des planches du livre : l'étoile de « Sceaux » au sommaire, la lueur du Grand Livre. */
+export const sealsHaveNews = (state: GameState): boolean => state.newSeals.length > 0 && PLATES.some((plate) => plateHasNews(state, plate));
 /** Étoile dorée dans la marge, devant un titre dont la planche a du nouveau. */
 export const newsMark = (x: number, y: number, size: number): Item => ({ kind: 'text', text: '✦', x, y, size, align: 'right', gold: true });
 
