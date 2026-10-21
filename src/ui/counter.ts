@@ -56,7 +56,7 @@ export const createCounter = (state: GameState, showEther: () => boolean = () =>
     // Ce que porte un bonus en cours luit : la lecture pendant la Transe, la Connaissance pendant la Mémoire vive.
     speed.classList.toggle('boosted', boonOn('trance'));
     carried.classList.toggle('boosted', boonOn('mind'));
-    // Un malus, en rouge (l'auteur, 19/10, « mimic comprise ») : la vitesse que baissent ÷ 2, une méthode arrêtée ou la
+    // Un malus, en cuivre (l'auteur, 19/10, « mimic comprise » ; le cuivre, 21/10) : la vitesse que baissent ÷ 2, une méthode arrêtée ou la
     // Mimic ; la Connaissance que la Mimic avale ; les pages et la Connaissance que la Mimic dorée mange.
     const now = Date.now();
     const golden = goldenHere(state, now);

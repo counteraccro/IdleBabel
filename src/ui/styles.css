@@ -147,12 +147,12 @@ button:disabled {
   transition: filter 1.2s;
 }
 /*
- * Un nombre du compteur qu'un malus touche (ui/counter.ts : la Loterie, la Mimic, la Mimic dorée) : l'or tourne au rouge
- * des malus. Un filtre, pour les chiffres de Babel aussi et pour le fondu ; jamais de clignotement.
+ * Un nombre du compteur qu'un malus touche (ui/counter.ts : la Loterie, la Mimic, la Mimic dorée) : l'or tourne au cuivre
+ * roux, plus sombre (l'auteur, 21/10 : le rouge « fait tache » ; maquette .ai/maquette-compteur-malus.html, piste B). Un
+ * filtre, pour les chiffres de Babel aussi et pour le fondu ; jamais de clignotement.
  */
 .number.cursed {
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9)) hue-rotate(-38deg) saturate(2.2) brightness(0.92)
-    drop-shadow(0 0 6px rgba(194, 69, 58, 0.55));
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9)) hue-rotate(-16deg) saturate(1.25) brightness(0.72);
 }
 /* Chiffres de Babel (ui/babelDigits.ts) : des sceaux dorés à la place des chiffres. */
 .babel-digit {
