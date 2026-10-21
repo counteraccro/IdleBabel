@@ -1042,24 +1042,6 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
-          "title": "Alpha 2.12",
-          "date": "21 October 2026",
-          "sections": [
-            {
-              "heading": "New",
-              "items": [
-                "Seals have a title, discovered when you earn them.",
-                "A new plate in the Great Book: “Seals”.",
-                "New seal tiers for closed volumes, covers that make sense and gathered Ether."
-              ]
-            },
-            {
-              "heading": "Fixes",
-              "items": ["Opened from a seal's announcement, the Great Book no longer writes its caption on the facing page."]
-            }
-          ]
-        },
-        {
           "title": "Alpha 2.11",
           "date": "21 October 2026",
           "sections": [
@@ -1071,12 +1053,18 @@
                 "Intuitions are introduced by a short story, the first time you can understand one.",
                 "When the showcase is full, another bookcase takes over, on a screen to the right.",
                 "Hover over a cartouche to see the count of all the books.",
-                "The “Idle Babel” book: a part about the top of the screen, another about the other bookcase."
+                "The “Idle Babel” book: a part about the top of the screen, another about the other bookcase.",
+                "Seals have a title, discovered when you earn them.",
+                "A new plate in the Great Book: “Seals”.",
+                "New seal tiers for closed volumes, covers that make sense and gathered Ether."
               ]
             },
             {
               "heading": "Fixes",
-              "items": ["Opening a book no longer takes several seconds."]
+              "items": [
+                "Opening a book no longer takes several seconds.",
+                "Opened from a seal's announcement, the Great Book no longer writes its caption on the facing page."
+              ]
             }
           ]
         },

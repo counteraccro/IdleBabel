@@ -1051,24 +1051,6 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
-          "title": "Alpha 2.12",
-          "date": "21 octobre 2026",
-          "sections": [
-            {
-              "heading": "Nouveautés",
-              "items": [
-                "Les sceaux ont un titre, qu'on découvre en les obtenant.",
-                "Une nouvelle planche dans le Grand Livre : « Les sceaux ».",
-                "De nouveaux paliers de sceaux pour les volumes refermés, les couvertures qui ont un sens et l'Éther recueilli."
-              ]
-            },
-            {
-              "heading": "Corrections",
-              "items": ["Ouvert depuis l'annonce d'un sceau, le Grand Livre n'écrit plus sa légende sur la page d'en face."]
-            }
-          ]
-        },
-        {
           "title": "Alpha 2.11",
           "date": "21 octobre 2026",
           "sections": [
@@ -1080,12 +1062,18 @@
                 "Les intuitions s'annoncent par un court récit, la première fois qu'on peut en comprendre une.",
                 "Quand la vitrine est pleine, une autre bibliothèque prend la suite, sur un écran à droite.",
                 "Au survol d'un cartouche, le compte de tous les livres.",
-                "Le livre « Idle Babel » : une partie sur le haut de l'écran, une autre sur l'autre bibliothèque."
+                "Le livre « Idle Babel » : une partie sur le haut de l'écran, une autre sur l'autre bibliothèque.",
+                "Les sceaux ont un titre, qu'on découvre en les obtenant.",
+                "Une nouvelle planche dans le Grand Livre : « Les sceaux ».",
+                "De nouveaux paliers de sceaux pour les volumes refermés, les couvertures qui ont un sens et l'Éther recueilli."
               ]
             },
             {
               "heading": "Corrections",
-              "items": ["Ouvrir un livre ne prend plus plusieurs secondes."]
+              "items": [
+                "Ouvrir un livre ne prend plus plusieurs secondes.",
+                "Ouvert depuis l'annonce d'un sceau, le Grand Livre n'écrit plus sa légende sur la page d'en face."
+              ]
             }
           ]
         },
