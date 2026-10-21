@@ -1042,6 +1042,27 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.11",
+          "date": "21 October 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "Top right, the books become medals, drawn like the ones on the left, their names on hover; on click, the book comes out of its medal.",
+                "Something new makes its medal hop once, then a star stays until the book is opened: nothing glows in a loop any more.",
+                "Intuitions are introduced by a short story, the first time you can understand one.",
+                "The “Idle Babel” book: a part about the top of the screen."
+              ]
+            },
+            {
+              "heading": "Fixes",
+              "items": [
+                "Opening a book no longer takes several seconds."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.10",
           "date": "21 October 2026",
           "sections": [

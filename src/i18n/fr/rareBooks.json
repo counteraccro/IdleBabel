@@ -1051,6 +1051,27 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.11",
+          "date": "21 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "En haut à droite, les livres deviennent des médaillons, du même dessin que ceux de gauche, leur nom au survol ; au clic, le livre sort de son médaillon.",
+                "Une nouveauté fait sursauter son médaillon une fois, puis une étoile reste jusqu'à ce qu'on ouvre le livre : plus rien ne luit en boucle.",
+                "Les intuitions s'annoncent par un court récit, la première fois qu'on peut en comprendre une.",
+                "Le livre « Idle Babel » : une partie sur le haut de l'écran."
+              ]
+            },
+            {
+              "heading": "Corrections",
+              "items": [
+                "Ouvrir un livre ne prend plus plusieurs secondes."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.10",
           "date": "21 octobre 2026",
           "sections": [
