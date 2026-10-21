@@ -3,7 +3,7 @@ import { createInitialState } from '../src/core/state';
 import { coverDesign } from '../src/systems/coverDesign';
 import { LEAVES_PER_BOOK, turnBookPage } from '../src/systems/books';
 import { STRANGE_BOOK_INDEX, randomDigitText, strangeBookFound } from '../src/systems/strangeBook';
-import { meaningfulCovers, trackPlay } from '../src/systems/stats';
+import { countCovers, meaningfulCovers, trackPlay } from '../src/systems/stats';
 import { meetStrangeBook } from '../src/systems/decipher';
 import { loreTold } from '../src/systems/lore';
 
@@ -62,9 +62,26 @@ describe('statistiques', () => {
     const state = createInitialState('fr');
     state.booksFinished = 200;
     const many = meaningfulCovers(state);
+    expect(state.stats.coversCounted).toBe(201);
     const expected = Array.from({ length: 201 }, (_, i) => coverDesign(i).sense.kind !== 'none').filter(Boolean).length;
     expect(many).toBe(expected);
     state.booksFinished = 0;
     expect(meaningfulCovers(state)).toBe(coverDesign(0).sense.kind !== 'none' ? 1 : 0);
+  });
+});
+
+describe('compte des couvertures gardé dans la sauvegarde', () => {
+  it('se rattrape par petits bouts, puis ne recompte que les nouveaux livres', () => {
+    const state = createInitialState('fr');
+    state.booksFinished = 999;
+    expect(countCovers(state, 300)).toBe(false);
+    expect(state.stats.coversCounted).toBe(300);
+    while (!countCovers(state, 300));
+    expect(state.stats.coversCounted).toBe(1000);
+    const expected = Array.from({ length: 1000 }, (_, i) => coverDesign(i).sense.kind !== 'none').filter(Boolean).length;
+    expect(meaningfulCovers(state)).toBe(expected);
+    state.booksFinished = 1004;
+    meaningfulCovers(state);
+    expect(state.stats.coversCounted).toBe(1005);
   });
 });

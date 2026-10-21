@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import type { BookShape } from './bookMesh';
 
 /** Durée du vol, de la pile jusqu'à la page du livre. */
 const FLIGHT_MS = 950;
@@ -59,20 +58,28 @@ export const launchFlight = (book: string, root: THREE.Object3D, camera: THREE.P
   pending = { book, position, rotation, lens: lensOf(camera, canvas.getBoundingClientRect()), at: performance.now() };
 };
 
-/** Focale d'un départ de médaillon (pixels) : le livre y est tout petit, vu de face. */
-const MEDAL_FOCAL = 1200;
+/**
+ * Focale d'un départ de médaillon (pixels) : courte, le livre tout petit reste près de la caméra (une focale longue le
+ * mettrait au-delà de ce qu'elle voit, et il ne paraîtrait qu'à mi-vol).
+ */
+const MEDAL_FOCAL = 120;
 /** Au départ, le livre fait cette part de la hauteur du médaillon. */
 const MEDAL_FILL = 0.6;
+/**
+ * La taille d'un livre au départ : celle des grands livres (livre blanc, Grand Livre). Celle de chacun n'y changerait rien
+ * qu'on voie (il est minuscule), et la connaître demanderait de fabriquer le livre, ses pages comprises, en plein clic.
+ */
+const MEDAL_BOOK = { width: 0.8, height: 1 };
 
 /**
  * Le médaillon d'un livre (en-tête) note le livre cliqué : il en sort, minuscule, de face, au milieu du médaillon (`rect`),
  * et grandit jusqu'à sa page. Le livre fermé a son dos en x = 0, son milieu en (largeur / 2, 0).
  */
-export const launchFlightFromMedal = (book: string, rect: DOMRect, shape: BookShape): void => {
-  const distance = (MEDAL_FOCAL * shape.height) / (rect.height * MEDAL_FILL);
+export const launchFlightFromMedal = (book: string, rect: DOMRect): void => {
+  const distance = (MEDAL_FOCAL * MEDAL_BOOK.height) / (rect.height * MEDAL_FILL);
   pending = {
     book,
-    position: new THREE.Vector3(-shape.width / 2, 0, -distance),
+    position: new THREE.Vector3(-MEDAL_BOOK.width / 2, 0, -distance),
     rotation: new THREE.Quaternion(),
     lens: { focal: MEDAL_FOCAL, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
     at: performance.now(),

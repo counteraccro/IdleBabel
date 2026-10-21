@@ -4,8 +4,6 @@ import { bookMedalIcon } from './bookMedalIcons';
 import { createNewsStar, type NewsStar } from './newsStar';
 import { flying, flyingHome, launchFlightFromMedal } from './book3d/bookFlight';
 import { isDebugEnabled } from '../debug/enabled';
-import type { Book3d } from './book3d/book3dBook';
-import type { BookShape } from './book3d/bookMesh';
 
 /** Un médaillon de l'en-tête : un livre du joueur (ou la clé, le jeton des tâches). */
 export interface BookMedalSpec {
@@ -13,8 +11,8 @@ export interface BookMedalSpec {
   /** Relu à chaque mise à jour : la langue peut changer, l'Etherium prend son nom. */
   label: () => string;
   onOpen: () => void;
-  /** Le livre qui s'ouvre : il sort du médaillon et vole jusqu'à sa page. Sans lui, la page s'ouvre sans vol. */
-  book?: () => Book3d;
+  /** Un livre en 3D s'ouvre : il sort du médaillon et vole jusqu'à sa page. Sinon (la clé, le jeton), la page s'ouvre sans vol. */
+  flies?: boolean;
   /** Cerclé de violet (l'Etherium). */
   violet?: boolean;
 }
@@ -38,7 +36,6 @@ interface Medal {
   button: HTMLButtonElement;
   tip: HTMLElement;
   star: NewsStar;
-  shape: BookShape | null;
 }
 
 /** Aucun livre qui revient. */
@@ -62,7 +59,7 @@ export const createBookMedals = (specs: BookMedalSpec[]): BookMedals => {
     button.innerHTML = `<span class="book-medal-ring"></span><span class="book-medal-icon">${bookMedalIcon(spec.id)}</span><span class="book-medal-star" aria-hidden="true">✦</span>`;
     const tip = el('span', 'book-medal-tip');
     button.append(tip);
-    const medal: Medal = { spec, button, tip, star: createNewsStar(), shape: null };
+    const medal: Medal = { spec, button, tip, star: createNewsStar() };
     button.addEventListener('click', () => open(medal));
     button.addEventListener('animationend', () => button.classList.remove('hop', 'arrive'));
     root.append(button);
@@ -96,12 +93,8 @@ export const createBookMedals = (specs: BookMedalSpec[]): BookMedals => {
 
   function open(medal: Medal): void {
     if (medal.button.disabled) return;
-    const { book } = medal.spec;
-    if (book && !still.matches) {
-      // La forme du livre, une fois : sa taille au départ du vol.
-      medal.shape ??= book().shape;
-      launchFlightFromMedal(medal.spec.id, medal.button.querySelector('.book-medal-icon')!.getBoundingClientRect(), medal.shape);
-    }
+    if (medal.spec.flies && !still.matches)
+      launchFlightFromMedal(medal.spec.id, medal.button.querySelector('.book-medal-icon')!.getBoundingClientRect());
     wanted = medal.spec.id;
     applyAway();
     medal.spec.onOpen();

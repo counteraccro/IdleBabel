@@ -5,6 +5,7 @@ import { startLoop } from './core/loop';
 import { pauseEnded, settleHidden, watchAbsence } from './core/absence';
 import { onResume } from './ui/animationClock';
 import { mountApp } from './ui/app';
+import { countCovers } from './systems/stats';
 import { mountSealVisions } from './ui/sealVision';
 import { mountTabTitle } from './ui/tabTitle';
 import { mountScene } from './scene';
@@ -43,6 +44,9 @@ setColoringZones(coloringZones);
 for (const type of ['pointerdown', 'keydown', 'wheel'] as const)
   window.addEventListener(type, () => taskTouched(state), { passive: true, capture: true });
 
+/** Couvertures passées en revue à la fois (~5 ms). */
+const COVERS_PER_STEP = 400;
+
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);
 mountSealVisions(state);
 mountTabTitle(state);
@@ -51,6 +55,19 @@ mountModApi(state);
 void loadSavedMods(state);
 void loadCatalog();
 startLoop(state, update);
+// Une partie d'avant le compte des couvertures dans la sauvegarde : il se rattrape par petits bouts, quand le jeu attend
+// (sinon, à la première ouverture du Grand Livre, des secondes figées).
+const catchUpCovers = (deadline?: IdleDeadline): void => {
+  const until = performance.now() + 8;
+  while (!countCovers(state, COVERS_PER_STEP)) {
+    if (deadline ? deadline.timeRemaining() < 2 : performance.now() > until) return void idle(catchUpCovers);
+  }
+};
+const idle = (step: (deadline?: IdleDeadline) => void): void => {
+  if ('requestIdleCallback' in window) requestIdleCallback(step, { timeout: 1000 });
+  else setTimeout(step, 50);
+};
+idle(catchUpCovers);
 void mountScene({ beyond: () => beyond(state), wanted: () => sceneShown(state) });
 if (isDebugEnabled()) mountDebugPanel(state);
 

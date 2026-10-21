@@ -44,6 +44,12 @@ export interface Stats {
   bestPagesPerSecond: number;
   /** Trouvailles (mots, morceaux de phrase, phrases) apparues dans les pages. */
   fragments: number;
+  /**
+   * Couvertures déjà passées en revue (les livres 0 à coversCounted − 1), et combien portaient un vrai mot ou un vrai titre
+   * (systems/stats.ts, meaningfulCovers) : gardé dans la sauvegarde, le compte ne se refait jamais depuis le premier livre.
+   */
+  coversCounted: number;
+  meaningfulCovers: number;
 }
 
 /** La Mimic : sa présence se sauvegarde (elle ne part jamais d'elle-même), et ses comptes, pour toujours. */
@@ -219,7 +225,14 @@ export const NO_RELICS: RelicsState = { found: {}, active: null, lockedUntil: 0,
 
 export const NO_MIMIC: MimicState = { at: null, spot: null, book: 0, eaten: 0, caught: 0, bonus: 0, seconds: 0 };
 
-export const DEFAULT_STATS: Stats = { clicks: 0, playSeconds: 0, bestPagesPerSecond: 0, fragments: 0 };
+export const DEFAULT_STATS: Stats = {
+  clicks: 0,
+  playSeconds: 0,
+  bestPagesPerSecond: 0,
+  fragments: 0,
+  coversCounted: 0,
+  meaningfulCovers: 0,
+};
 
 export const DEFAULT_SETTINGS: Settings = {
   autoTurn: true,

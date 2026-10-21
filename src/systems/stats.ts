@@ -11,19 +11,28 @@ export const trackPlay = (state: GameState, seconds: number): void => {
   state.stats.bestPagesPerSecond = Math.max(state.stats.bestPagesPerSecond, pagesPerSecond(state));
 };
 
-// Les couvertures se déduisent du numéro du livre : on compte au fil des livres sans tout recalculer.
-let coversCounted = 0;
-let meaningfulSoFar = 0;
+/**
+ * Passe en revue au plus `limit` couvertures pas encore comptées (les couvertures se déduisent du numéro du livre : on compte
+ * au fil des livres, sans tout recalculer) ; true quand tout est compté. Le livre a reculé (une partie remise à zéro) :
+ * on repart du premier. Le compte est dans la sauvegarde ; une vieille partie, qui ne l'a pas, le rattrape par petits
+ * bouts pendant que le jeu attend (main.ts) : 176 000 livres d'un coup, c'est 2,5 s figées.
+ */
+export const countCovers = (state: GameState, limit = Infinity): boolean => {
+  const { stats } = state;
+  const booksOpened = state.booksFinished + 1;
+  if (booksOpened < stats.coversCounted) {
+    stats.coversCounted = 0;
+    stats.meaningfulCovers = 0;
+  }
+  const end = Math.min(booksOpened, stats.coversCounted + limit);
+  for (; stats.coversCounted < end; stats.coversCounted++) {
+    if (coverDesign(stats.coversCounted).sense.kind !== 'none') stats.meaningfulCovers++;
+  }
+  return stats.coversCounted >= booksOpened;
+};
 
 /** Livres pris en main (celui en cours compris) dont la couverture portait un vrai mot ou un vrai titre. */
 export const meaningfulCovers = (state: GameState): number => {
-  const booksOpened = state.booksFinished + 1;
-  if (booksOpened < coversCounted) {
-    coversCounted = 0;
-    meaningfulSoFar = 0;
-  }
-  for (; coversCounted < booksOpened; coversCounted++) {
-    if (coverDesign(coversCounted).sense.kind !== 'none') meaningfulSoFar++;
-  }
-  return meaningfulSoFar;
+  countCovers(state);
+  return state.stats.meaningfulCovers;
 };

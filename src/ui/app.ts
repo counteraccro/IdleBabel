@@ -13,7 +13,6 @@ import { createBook3dPage } from './book3d/book3dPage';
 import { whiteBook3d } from './book3d/whiteBook3d';
 import { strangeBook3d } from './book3d/strangeBook3d';
 import { createHandReading3d } from './book3d/handReading3d';
-import { notebook3d } from './options/notebook3d';
 import { revealStats, strangeBookFound } from '../systems/strangeBook';
 import { anyPartNews, meetStrangeBook } from '../systems/decipher';
 import { mountAwayNotice } from './awayNotice/awayNotice';
@@ -175,13 +174,6 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     onEtherium: open(ETHERIUM_HASH),
     etheriumWaiting: () => prestigeReady(state),
     etheriumNamed: () => state.totalPagesRead >= ETHERIUM_NAMED_PAGES,
-    books: {
-      options: () => notebook3d(state, { onLocale: () => {}, onSettings: () => {}, onReset: () => {} }),
-      white: () => whiteBook3d(state),
-      strange: () => strangeBook3d(state),
-      etherium: () => etherium3d(state),
-      debug: debugging ? debugBook3d : undefined,
-    },
     strangeBookFound: () => strangeBookFound(state),
     strangeBookNews: () => sealsHaveNews(state) || anyPartNews(state),
     writtenCount: () => Object.values(state.written).reduce((sum, done) => sum + done.length, 0),

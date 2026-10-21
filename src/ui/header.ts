@@ -2,7 +2,6 @@ import { el } from './dom';
 import { t } from '../i18n';
 import { createBookMedals, type BookMedalSpec } from './bookMedals';
 import { createGameTitle } from './gameTitle';
-import type { Book3d } from './book3d/book3dBook';
 import type { Component } from './dom';
 
 export interface HeaderHandlers {
@@ -17,8 +16,6 @@ export interface HeaderHandlers {
   etheriumNamed: () => boolean;
   /** Le livre de débogage : seulement avec ?debug (sinon pas de médaillon). */
   onDebugBook?: () => void;
-  /** Les modèles 3D des livres du joueur : ils sortent de leur médaillon et volent jusqu'à leur page. */
-  books: { options: () => Book3d; white: () => Book3d; strange: () => Book3d; etherium: () => Book3d; debug?: () => Book3d };
   /** Le livre étrange a-t-il été trouvé ? Il n'est avec les autres qu'ensuite. */
   strangeBookFound: () => boolean;
   /** Des sceaux obtenus ou une partie devenue lisible attendent d'être vus : l'étoile du Grand Livre. */
@@ -45,25 +42,23 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
   // 21/10) : le livre blanc, qu'il a sur lui dès son réveil, et le jeton de ses tâches ; le Grand Livre trouvé plus tard ;
   // l'Etherium ; le cahier ; la clé de la bibliothèque.
   const medals = createBookMedals([
-    { id: 'white', label: () => t('ui.whiteBook'), book: handlers.books.white, onOpen: handlers.onWhiteBook },
+    { id: 'white', label: () => t('ui.whiteBook'), flies: true, onOpen: handlers.onWhiteBook },
     { id: 'tasks', ...handlers.taskToken },
-    { id: 'strange', label: () => t('ui.strangeBook'), book: handlers.books.strange, onOpen: handlers.onStrangeBook },
+    { id: 'strange', label: () => t('ui.strangeBook'), flies: true, onOpen: handlers.onStrangeBook },
     // L'Etherium, cerclé de violet, là dès le début ; tant que l'ouvrir ne rapporte pas 1 Éther, sa couverture résiste.
     {
       id: 'etherium',
       // Son nom dès qu'il paraît sur la couverture, même quand il peut s'ouvrir (l'auteur, 06/10).
       label: () => t(handlers.etheriumNamed() ? 'etherium.name' : 'etherium.unnamed'),
-      book: handlers.books.etherium,
+      flies: true,
       onOpen: handlers.onEtherium,
       violet: true,
     },
-    { id: 'options', label: () => t('ui.options'), book: handlers.books.options, onOpen: handlers.onOptions },
+    { id: 'options', label: () => t('ui.options'), flies: true, onOpen: handlers.onOptions },
     // Le même nom que la page ouverte (openBook) : dans la bibliothèque, la clé est pâlie.
     { id: 'library', label: () => t('ui.library'), onOpen: handlers.onLibrary },
     // Débogage : la plaque d'obsidienne, au bout.
-    ...(handlers.books.debug && handlers.onDebugBook
-      ? [{ id: 'debug', label: () => 'Débogage', book: handlers.books.debug, onOpen: handlers.onDebugBook }]
-      : []),
+    ...(handlers.onDebugBook ? [{ id: 'debug', label: () => 'Débogage', flies: true, onOpen: handlers.onDebugBook }] : []),
   ]);
   // Déjà trouvé à l'affichage : le médaillon est là. Trouvé pendant la partie : il paraît.
   let found = handlers.strangeBookFound();
