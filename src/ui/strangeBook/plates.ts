@@ -112,6 +112,22 @@ const sealText = (state: GameState, seal: SealDef): string => {
     .replace('{n}', formatCount(seal.tier.n, getLocale()));
 };
 
+/**
+ * Le titre d'un sceau (strangeBook.sealTitles.<id>), seulement là où sa légende est une consigne : ni les méthodes,
+ * ni les livres rares, ni les secrets, ni les séries à phrases, ni les reliques (validé le 21/10, .ai/titres-sceaux.md).
+ */
+export const sealTitle = (seal: SealDef): string | null => {
+  const key = `strangeBook.sealTitles.${seal.id}`;
+  const title = t(key);
+  return title === key ? null : title;
+};
+
+/** Ce que récompense un sceau, lisible (la légende d'un sceau sans titre). */
+export const sealDeed = (state: GameState, id: string): string => {
+  const seal = findSeal(id);
+  return seal ? sealText(state, seal) : '';
+};
+
 const date = (at: number): string =>
   writeDigits(new Date(at).toLocaleDateString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' }));
 
@@ -121,10 +137,13 @@ export const sealLegend = (state: GameState, id: string | null): { name: string;
   if (!seal) return { name: '', text: '' };
   const obtained = sealObtained(state, seal);
   const when = obtained ? date(state.seals[seal.id]) : '…';
-  // Lisible : ce que le sceau récompense, puis sa date.
-  // Celui d'un mod : son nom devant la date.
-  if (isDeciphered(state, 'seals'))
+  // Lisible : ce que le sceau récompense, puis sa date. Obtenu, un sceau qui a un titre le montre en grand,
+  // ce qu'il récompense passe en petit devant la date. Celui d'un mod : son nom devant la date.
+  if (isDeciphered(state, 'seals')) {
+    const title = obtained ? sealTitle(seal) : null;
+    if (title) return { name: title, text: `${sealText(state, seal)} — ${when}` };
     return { name: sealText(state, seal), text: seal.mod ? `${modText(seal.mod.name, getLocale())} — ${when}` : when };
+  }
   // Illisible comme le reste du livre (en symboles de Babel) ; la date, en chiffres.
   return { name: babelName(seal.id), text: obtained ? `${babelName(`${seal.id}:text`, 4)} — ${when}` : when };
 };
@@ -329,7 +348,8 @@ export const plateItems = (
     },
     ...seals,
     ...legendLines(legend.name),
-    { kind: 'text', text: legend.text, x: 320, y: 682, size: 18, align: 'center', italic: true, faded: true, steady: true },
+    // Sous un titre, ce que récompense le sceau et sa date : réduit au besoin pour tenir dans la page.
+    fitCaption({ kind: 'text', text: legend.text, x: 320, y: 682, size: 18, align: 'center', italic: true, faded: true, steady: true }),
     folio(page.page + 1),
   ];
 };

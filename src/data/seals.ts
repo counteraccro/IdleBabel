@@ -147,8 +147,8 @@ export const SEALS: readonly SealDef[] = [
   // La meilleure vitesse de la vie (idée de l'auteur, 05/10) : de dix en dix jusqu'à 10⁸, puis de cent en cent jusqu'à 10³⁰.
   ...series('speed', 'pages', (s) => s.stats.bestPagesPerSecond, SPEED_STEPS),
 
-  ...series('booksFinished', 'books', (s) => s.booksFinished, [1, 10, 100, K, 10 * K, 50 * K]),
-  ...series('meaningfulCovers', 'books', meaningfulCovers, [1, 10, 100]),
+  ...series('booksFinished', 'books', (s) => s.booksFinished, [1, 10, 100, K, 10 * K, 50 * K, 500 * K, 5 * M]),
+  ...series('meaningfulCovers', 'books', meaningfulCovers, [1, 10, 100, 410, K, 10 * K]),
   // La découverte du livre étrange (pas un secret : il arrive à son numéro de livre).
   seal('strangeBook', 'books', (s) => s.booksFinished >= STRANGE_BOOK_INDEX),
   // Le Grand Livre lu en entier : toutes ses parties déchiffrées, chapitre Éther compris.
@@ -206,7 +206,7 @@ export const SEALS: readonly SealDef[] = [
   // L'Etherium (revue des sceaux, 08/10) : prestiges, Éther reçu, étoiles, chaque constellation entière, les Âges. Les
   // étoiles fermées (les Âges d'après l'Automatique, la Goutte) n'y comptent pas.
   ...series('prestiges', 'etherium', (s) => s.exiles, [1, 5, 10, 25, 100]),
-  ...series('etherReceived', 'etherium', (s) => s.etherReceived, [1, 10, 100, K, 10 * K, 100 * K, M]),
+  ...series('etherReceived', 'etherium', (s) => s.etherReceived, [1, 10, 100, K, 10 * K, 100 * K, M, 10 * M, 100 * M, K * M]),
   ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, OPEN_STARS.length]),
   // L'Exploration : ses pointes ouvertes allumées (« La Rose des vents », 12/10 ; les autres sont encore fermées).
   ...ETHERIUM_PAGES.map((page) =>

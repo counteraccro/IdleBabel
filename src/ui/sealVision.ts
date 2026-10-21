@@ -6,7 +6,7 @@ import { findSeal, onSealed } from '../systems/seals';
 import { isDeciphered } from '../systems/decipher';
 import { strangeBookFound } from '../systems/strangeBook';
 import { sealSvg, sigil } from './strangeBook/sigil';
-import { plateTitle, sealLegend } from './strangeBook/plates';
+import { plateTitle, sealDeed, sealLegend, sealTitle } from './strangeBook/plates';
 import { sealPage } from './strangeBook/pages';
 import { openStrangeBookAt } from './strangeBook/openAt';
 import type { GameState } from '../core/state';
@@ -43,6 +43,8 @@ export const mountSealVisions = (state: GameState): void => {
     const text = el('div', 'seal-vision-text');
     const legend = el('div', `seal-vision-legend${readable ? '' : ' babel'}`, sealLegend(state, seal.id).name);
     text.append(el('div', 'seal-vision-plate', plateTitle(state, seal.plate)), legend);
+    // Un sceau qui a un titre : ce qu'il récompense, en petit dessous.
+    if (readable && sealTitle(seal)) text.append(el('div', 'seal-vision-note', sealDeed(state, seal.id)));
     if (!readable) text.append(el('div', 'seal-vision-note', t('strangeBook.sealVision.unread')));
     const others = ids.length - 1;
     if (others > 0)

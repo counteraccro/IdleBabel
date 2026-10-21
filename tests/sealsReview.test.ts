@@ -24,7 +24,7 @@ describe('revue des sceaux (08/10)', () => {
     expect(steps('pagesRead').at(-1)).toBe(1e30);
     expect(steps('stock').at(-1)).toBe(1e36);
     expect(steps('playTime').at(-1)).toBe(1000);
-    expect(steps('booksFinished').at(-1)).toBe(50_000);
+    expect(steps('booksFinished').at(-1)).toBe(5_000_000);
   });
 
   it('scelle les prestiges, l’Éther reçu, les étoiles, une constellation entière et l’Âge Automatique', () => {
