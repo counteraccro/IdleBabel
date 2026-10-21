@@ -475,10 +475,12 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
         onShown: () => markPartRead(state, 'seals'),
       }),
     ),
-    ...plates.map((plate) =>
-      // Le sceau survolé, sinon celui qu'on est venu voir : sa légende, et son or plus sombre.
-      createLeafPage(
-        ({ hovered }) => plateItems(state, plate, sealLegend(state, hovered ?? focus ?? null), isFresh, hovered ?? focus),
+    ...plates.map((plate) => {
+      // Le sceau survolé, sinon celui qu'on est venu voir s'il est sur cette page (pas sur celle d'en face) : sa
+      // légende, et son or plus sombre.
+      const seen = plate.seals.some((seal) => seal.id === focus) ? focus : undefined;
+      return createLeafPage(
+        ({ hovered }) => plateItems(state, plate, sealLegend(state, hovered ?? seen ?? null), isFresh, hovered ?? seen),
         goTo,
         {
           onShown: () =>
@@ -491,7 +493,7 @@ export const createPages = (state: GameState, goTo: (page: number) => void, offs
             markSealsSeen(state, [id]);
           },
         },
-      ),
-    ),
+      );
+    }),
   ];
 };
