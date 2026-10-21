@@ -72,6 +72,7 @@
     "lottery": "La Loterie",
     "tasks": "Les tâches",
     "rare": "Livres rares",
+    "seals": "Les sceaux",
     "secrets": "Secrets",
     "mods": "Mods"
   },
@@ -306,7 +307,9 @@
     "constellation-weight": "Lève le poids de la Bibliothèque",
     "constellation-screen": "Allume tout le Minitel",
     "intuition-lightSleep": "Entends dormir un livre",
-    "intuition-patience": "Sache combien attendre"
+    "intuition-patience": "Sache combien attendre",
+    "sealsApplied": "Appose {n} sceaux",
+    "sealsAll": "Appose tous les sceaux"
   },
   "sealTitles": {
     "pagesRead-1": "La première page",
@@ -483,7 +486,13 @@
     "meaningfulCovers-10000": "Un musée de couvertures",
     "etherReceived-10000000": "Un jour sans fenêtre",
     "etherReceived-100000000": "Une aube dans la Bibliothèque",
-    "etherReceived-1000000000": "Toute la lumière du monde"
+    "etherReceived-1000000000": "Toute la lumière du monde",
+    "sealsApplied-10": "Un début de collection",
+    "sealsApplied-25": "La cire chaude",
+    "sealsApplied-50": "Cinquante empreintes",
+    "sealsApplied-100": "Le livre se remplit",
+    "sealsApplied-410": "Une page de sceaux",
+    "sealsAll": "Le Grand Livre scellé"
   },
   "groups": {
     "reading": "Ce que lisent tes méthodes",

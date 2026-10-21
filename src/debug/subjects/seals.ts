@@ -17,6 +17,7 @@ const PLATE_NAMES: Record<PlateId, string> = {
   lottery: 'La Loterie',
   tasks: 'Les tâches',
   rare: 'Livres rares',
+  seals: 'Les sceaux',
   secrets: 'Secrets',
   mods: 'Mods',
 };

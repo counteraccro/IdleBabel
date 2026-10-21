@@ -37,6 +37,7 @@ export const PLATES = [
   'lottery',
   'tasks',
   'rare',
+  'seals',
   'secrets',
   // Les sceaux des mods (src/mods/modSeals.ts) : la planche n'existe qu'avec eux.
   'mods',
@@ -74,6 +75,11 @@ const series = (id: string, plate: PlateId, value: (state: GameState) => number,
 
 /** Les chiffres d'un nombre de pages, tous écrits (jamais « 1e+21 »). */
 const wholeDigits = (value: number): string => (Number.isFinite(value) ? BigInt(Math.floor(value)).toString() : '');
+
+/** Les sceaux de la planche « Les sceaux » : cinq paliers et « tous ». */
+const SEALS_OF_SEALS = 6;
+/** Sceaux du jeu apposés, hors planche « Les sceaux » (lue à chaque appel : SEALS est défini plus bas). */
+const sealsApplied = (state: GameState): number => SEALS.filter((seal) => seal.plate !== 'seals' && seal.id in state.seals).length;
 
 /** Les tâches « une seule fois » faites. */
 const onceDone = (state: GameState): number => Object.values(state.tasks.once).filter((task) => task.done !== undefined).length;
@@ -239,6 +245,11 @@ export const SEALS: readonly SealDef[] = [
     ...seal,
     phrases: true,
   })),
+
+  // Les sceaux apposés : ceux du jeu (pas ceux des mods), sans compter ceux de cette planche ; « tous », tous les autres
+  // (l'auteur, 21/10 : « débloque 10 sceaux, 25, 50, 100, 410, tous »).
+  ...series('sealsApplied', 'seals', (s) => sealsApplied(s), [10, 25, 50, 100, 410]),
+  seal('sealsAll', 'seals', (s) => sealsApplied(s) >= SEALS.length - SEALS_OF_SEALS),
 
   // Un sceau par livre rare, apposé quand il arrive en main.
   ...RARE_BOOKS.map((book): SealDef => ({

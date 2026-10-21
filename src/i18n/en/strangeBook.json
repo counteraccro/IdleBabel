@@ -72,6 +72,7 @@
     "lottery": "The Lottery",
     "tasks": "Tasks",
     "rare": "Rare books",
+    "seals": "Seals",
     "secrets": "Secrets",
     "mods": "Mods"
   },
@@ -306,7 +307,9 @@
     "constellation-weight": "Lift the weight of the Library",
     "constellation-screen": "Light up the whole Minitel",
     "intuition-lightSleep": "Hear a book sleeping",
-    "intuition-patience": "Know how long to wait"
+    "intuition-patience": "Know how long to wait",
+    "sealsApplied": "Set {n} seals",
+    "sealsAll": "Set every seal"
   },
   "sealTitles": {
     "pagesRead-1": "The first page",
@@ -483,7 +486,13 @@
     "dailyTasks-50": "The habit",
     "dailyTasks-100": "The trade",
     "dailyTasks-410": "A page of tasks",
-    "dailyTasks-1000": "Every day, again"
+    "dailyTasks-1000": "Every day, again",
+    "sealsApplied-10": "The start of a collection",
+    "sealsApplied-25": "Warm wax",
+    "sealsApplied-50": "Fifty imprints",
+    "sealsApplied-100": "The book fills up",
+    "sealsApplied-410": "A page of seals",
+    "sealsAll": "The Great Book, sealed"
   },
   "groups": {
     "reading": "What your methods read",
