@@ -1042,6 +1042,20 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.10",
+          "date": "21 October 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "The top of the screen reworked: the books stand on a ledge, their names written below; the library key at the end, its name on hover; the task token against the white book.",
+                "Ongoing boons gathered in a single medal, curses in another: on hover, the list, with the time left for each.",
+                "Under a curse, the counter takes a copper tint instead of red."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.9",
           "date": "20 October 2026",
           "sections": [

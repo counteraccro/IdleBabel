@@ -1051,6 +1051,20 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.10",
+          "date": "21 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Le haut de l'écran revu : les livres debout sur un rebord, leur nom écrit dessous ; la clé de la bibliothèque au bout, son nom au survol ; le jeton des tâches contre le livre blanc.",
+                "Les bonus en cours réunis en un seul médaillon, les malus en un autre : au survol, la liste, avec le temps de chacun.",
+                "Sous un malus, le compteur prend une teinte cuivrée au lieu du rouge."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.9",
           "date": "20 octobre 2026",
           "sections": [
