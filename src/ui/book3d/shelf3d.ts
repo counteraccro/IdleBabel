@@ -22,9 +22,10 @@ export interface ShelfBook {
 }
 
 /**
- * Un objet posé sur le rebord, pas un livre (il ne s'envole pas) ; au clic, il ouvre sa page. `end` : debout au bout
- * de la planche, son nom dessous (la clé) ; `against` : appuyé au pied de ce livre, devant sa couverture, son nom au
- * survol seulement, à la place de celui du livre (le jeton des tâches, contre le livre blanc).
+ * Un objet posé sur le rebord, pas un livre (il ne s'envole pas) ; au clic, il ouvre sa page. Son nom ne s'écrit
+ * qu'au survol, sous la ligne des noms des livres. `end` : debout au bout de la planche, serré contre le dernier livre
+ * (la clé : son nom toujours écrit lui donnait une place trop large, l'auteur, 21/10) ; `against` : appuyé au pied de
+ * ce livre, devant sa couverture (le jeton des tâches, contre le livre blanc).
  */
 export interface ShelfOrnament {
   id: string;
@@ -145,8 +146,6 @@ interface Placed {
   aim: number;
   news: boolean;
   button: HTMLButtonElement;
-  /** Son nom sous lui (au bout de la planche) ; appuyé contre un livre : aucun. */
-  name: HTMLElement | null;
   /** Largeur de son modèle (unités de scène). */
   width: number;
 }
@@ -288,11 +287,6 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
     const button = el('button', 'shelf3d-button', spec.label());
     button.addEventListener('click', () => spec.onOpen());
     root.append(button);
-    let name: HTMLElement | null = null;
-    if ('end' in spec.place) {
-      name = el('span', 'shelf3d-name', spec.label());
-      names.append(name);
-    }
     const item: Placed = {
       spec,
       pivot,
@@ -302,7 +296,6 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
       aim: 0,
       news: false,
       button,
-      name,
       width: box.max.x - box.min.x,
     };
     button.addEventListener('focus', () => (item.aim = 1));
@@ -350,9 +343,8 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
       if ('end' in place) {
         const on = item.shown && loaded.length > 0;
         item.pivot.visible = on && !item.away;
-        if (item.name) item.name.hidden = !on;
         if (!on) continue;
-        const center = room(item.width * scale, item.name);
+        const center = room(item.width * scale, null);
         item.pivot.position.set(center / scale, 0, BACK_Z + 0.05);
       }
     }
@@ -394,7 +386,6 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
     names.style.height = `${NAME_PX * k}px`;
     names.style.marginTop = `${NAME_GAP_PX * k}px`;
     for (const { center, name } of spaced) if (name) name.style.left = `${center}px`;
-    for (const item of placed) if (item.name && !item.name.hidden) item.name.style.left = `${item.pivot.position.x * scale}px`;
     unsorted = false;
     dirty = true;
   }
@@ -569,7 +560,7 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
       unsorted = true;
     }
   }
-  /** Les noms ; celui d'un objet appuyé contre un livre s'écrit sous le nom du livre, le temps du survol. */
+  /** Les noms ; celui d'un objet posé (la clé, le jeton) s'écrit sous la ligne des noms, le temps du survol. */
   function relabel(): void {
     for (const slot of slots) {
       const label = slot.spec.label();
@@ -582,18 +573,16 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
     for (const item of placed) {
       const label = item.spec.label();
       if (item.button.textContent !== label) item.button.textContent = label;
-      if (item.name && item.name.textContent !== label) {
-        item.name.textContent = label;
-        unsorted = true;
-      }
     }
-    const leaning = hoveredOrnament && 'against' in hoveredOrnament.spec.place ? hoveredOrnament : null;
-    const host = leaning && 'against' in leaning.spec.place ? find(leaning.spec.place.against) : undefined;
-    hint.hidden = !leaning || !host;
-    if (leaning && host) {
-      hint.textContent = leaning.spec.label();
-      hint.style.left = host.name.style.left;
-    }
+    const item = hoveredOrnament;
+    const place = item?.spec.place;
+    const host = place && 'against' in place ? find(place.against) : undefined;
+    hint.hidden = !item || (place !== undefined && 'against' in place && !host);
+    hint.classList.toggle('end', place !== undefined && 'end' in place);
+    if (!item) return;
+    hint.textContent = item.spec.label();
+    // Appuyé contre un livre : sous le nom du livre ; au bout de la planche : finit au bord droit de l'objet.
+    hint.style.left = host ? host.name.style.left : `${(item.pivot.position.x + item.width / 2) * scale}px`;
   }
   const find = (id: string): Slot | undefined => slots.find((slot) => slot.spec.id === id);
   const shelf: Shelf3d = {

@@ -35,10 +35,13 @@
 .shelf3d-name.away {
   opacity: 0.35;
 }
-/* Le nom du jeton, sous celui du livre blanc, le temps du survol. */
+/* Le nom d'un objet posé, le temps du survol : le jeton sous le nom du livre blanc, la clé finissant à son bord droit. */
 .shelf3d-hint {
   top: 1.35em;
   font-style: italic;
+}
+.shelf3d-hint.end {
+  transform: translateX(-100%);
 }
 .shelf3d-button {
   position: absolute;

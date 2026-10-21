@@ -25,8 +25,8 @@ const keyModel = (material: THREE.Material): THREE.Group => {
 const SCALE = 0.5;
 
 /**
- * La clé de la bibliothèque personnelle, pendue à un clou au bout du rebord de l'en-tête, son nom dessous : au survol
- * elle brille ; au clic, on entre dans la bibliothèque (`onOpen`).
+ * La clé de la bibliothèque personnelle, pendue à un clou au bout du rebord de l'en-tête : au survol elle brille et son
+ * nom s'écrit dessous ; au clic, on entre dans la bibliothèque (`onOpen`).
  */
 export const libraryKey = (onOpen: () => void): ShelfOrnament => {
   const brass = new THREE.MeshStandardMaterial({
