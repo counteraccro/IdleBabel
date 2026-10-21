@@ -1052,6 +1052,12 @@
                 "Ongoing boons gathered in a single medal, curses in another: on hover, the list, with the time left for each.",
                 "Under a curse, the counter takes a copper tint instead of red."
               ]
+            },
+            {
+              "heading": "Fixes",
+              "items": [
+                "The Great Book: seals seen while leafing quickly count as seen; the star next to “Seals” goes out as it should."
+              ]
             }
           ]
         },

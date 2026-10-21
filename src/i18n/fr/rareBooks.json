@@ -1061,6 +1061,12 @@
                 "Les bonus en cours réunis en un seul médaillon, les malus en un autre : au survol, la liste, avec le temps de chacun.",
                 "Sous un malus, le compteur prend une teinte cuivrée au lieu du rouge."
               ]
+            },
+            {
+              "heading": "Corrections",
+              "items": [
+                "Le Grand Livre : les sceaux vus en feuilletant vite comptent comme vus ; l'étoile de « Sceaux » s'éteint bien."
+              ]
             }
           ]
         },
