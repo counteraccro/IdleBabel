@@ -2890,6 +2890,15 @@
             "Under a penalty, the counter turned red. Over the long run, the colour tired the eyes: it turned copper."
           ]
         },
+        "otherShelf": {
+          "head": "The other bookcase",
+          "text": [
+            "The showcase was filling up. With the books already planned, it was going to run out of room, and many more are planned in the long run.",
+            "Three leads: a bookcase half as wide, set against the showcase; a single column; a bookcase as large as the showcase, on a screen of its own.",
+            "Setting another bookcase right next to the showcase was too much. A new screen on the right stays in the logical continuity of the screens: the shelf of endings on the left, the showcase in the middle, the other bookcase on the right.",
+            "They really are two different pieces of furniture, but they do the same thing: keep books. So they wear the same cartouche, and each counts its own. For the count of all the books, just hover over a cartouche."
+          ]
+        },
         "thisBook": {
           "head": "This book",
           "text": [
@@ -2987,6 +2996,8 @@
         "top-ledge": "The ledge",
         "top-spines": "Spines out, between two bookends",
         "top-sheet": "On the sheet",
+        "other-shelf-pendant": "Against the showcase",
+        "other-shelf-column": "The column",
         "new-version-a": "The Library has changed",
         "etherium-ink-d1": "The atlas",
         "etherium-ink-d3": "The restrained night",
@@ -3007,7 +3018,8 @@
         "sceneNotebook": "The setting in the notebook",
         "mimic": "The Mimic",
         "relicToken": "The Token",
-        "topBar": "The top of the screen"
+        "topBar": "The top of the screen",
+        "otherShelf": "The other bookcase"
       }
     }
   },

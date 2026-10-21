@@ -2895,6 +2895,15 @@
             "Sous un malus, le compteur virait au rouge. Sur le long terme, la couleur fatiguait les yeux : il est passé au cuivre."
           ]
         },
+        "otherShelf": {
+          "head": "L’autre bibliothèque",
+          "text": [
+            "La vitrine se remplissait. Avec les livres déjà prévus, elle allait manquer de place, et on prévoit d’en ajouter beaucoup à terme.",
+            "Trois pistes : un meuble moitié moins large, collé contre la vitrine ; une simple colonne ; un meuble aussi grand qu’elle, sur un écran à lui.",
+            "Coller une autre bibliothèque à côté de la vitrine, cela faisait trop. Un nouvel écran à droite reste dans la continuité logique des écrans : le meuble des fins à gauche, la vitrine au milieu, l’autre bibliothèque à droite.",
+            "Ce sont bien deux meubles différents, mais ils ont la même fonction : garder des livres. Ils portent donc le même cartouche, et chacun compte les siens. Pour le compte de tous les livres, il suffit de survoler un cartouche."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [
@@ -2992,6 +3001,8 @@
         "top-ledge": "Le rebord",
         "top-spines": "De dos, entre deux serre-livres",
         "top-sheet": "Sur la feuille",
+        "other-shelf-pendant": "Collé contre la vitrine",
+        "other-shelf-column": "La colonne",
         "new-version-a": "La Bibliothèque a changé",
         "etherium-ink-d1": "L’atlas",
         "etherium-ink-d3": "La nuit retenue",
@@ -3012,7 +3023,8 @@
         "sceneNotebook": "Le décor dans le cahier",
         "mimic": "La Mimic",
         "relicToken": "Le Jeton",
-        "topBar": "Le haut de l’écran"
+        "topBar": "Le haut de l’écran",
+        "otherShelf": "L’autre bibliothèque"
       }
     }
   },
