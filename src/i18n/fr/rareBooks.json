@@ -2863,6 +2863,17 @@
             "L’idée globale : que le jeu offre du contenu sur le long terme, et cohérent."
           ]
         },
+        "topBar": {
+          "head": "Le haut de l’écran",
+          "text": [
+            "Au fur et à mesure du jeu, l’interface devenait de plus en plus brouillonne, surtout quand les éléments de menu s’accumulaient.",
+            "Les médaillons de la relique et des bonus tournaient autour du compteur et bougeaient sans cesse : ils sont montés à côté du titre.",
+            "À droite, les livres en pile, puis debout sur un rebord : ce menu ne correspondait pas au reste du site. Trois pistes ont suivi : sur la feuille autour du livre ouvert, de dos entre deux serre-livres, des médaillons comme à gauche.",
+            "Pour être honnête, ce n’est pas encore l’idée validée à cent pour cent, mais c’est celle qui reste la plus cohérente avec le reste du site.",
+            "Les nouveautés luisaient en boucle. À y jouer, cela gênait plus qu’autre chose, et ne donnait pas envie de voir ce qui provoquait cet effet. Il n’en reste qu’un sursaut, puis une étoile.",
+            "Sous un malus, le compteur virait au rouge. Sur le long terme, la couleur fatiguait les yeux : il est passé au cuivre."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [
@@ -2957,6 +2968,9 @@
         "mimic-side-b": "À moitié sortie",
         "token-b": "Le jeton percé",
         "token-c": "Le jeton aux encoches",
+        "top-ledge": "Le rebord",
+        "top-spines": "De dos, entre deux serre-livres",
+        "top-sheet": "Sur la feuille",
         "new-version-a": "La Bibliothèque a changé",
         "etherium-ink-d1": "L’atlas",
         "etherium-ink-d3": "La nuit retenue",
@@ -2976,7 +2990,8 @@
         "scenes": "Les salles",
         "sceneNotebook": "Le décor dans le cahier",
         "mimic": "La Mimic",
-        "relicToken": "Le Jeton"
+        "relicToken": "Le Jeton",
+        "topBar": "Le haut de l’écran"
       }
     }
   },

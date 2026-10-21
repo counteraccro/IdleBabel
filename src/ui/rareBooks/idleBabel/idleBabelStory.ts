@@ -77,6 +77,7 @@ export const DRAFT_GROUPS = {
   sceneNotebook: ['scene-notebook-a', 'scene-notebook-c'],
   mimic: ['mimic-eyes-a', 'mimic-eyes-b', 'mimic-side-b'],
   relicToken: ['token-b', 'token-c'],
+  topBar: ['top-ledge', 'top-spines', 'top-sheet'],
 };
 
 export const STORY: StoryChapter[] = [
@@ -170,6 +171,7 @@ export const STORY: StoryChapter[] = [
       { key: 'relicToken', drafts: ['relicToken'] },
       { key: 'gear' },
       { key: 'patience' },
+      { key: 'topBar', drafts: ['topBar'] },
       // Toujours la dernière partie du livre : il s'écrit encore.
       { key: 'thisBook' },
     ],

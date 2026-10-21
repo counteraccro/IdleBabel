@@ -2858,6 +2858,17 @@
             "The overall idea: that the game offers content for the long run, and stays consistent."
           ]
         },
+        "topBar": {
+          "head": "The top of the screen",
+          "text": [
+            "As the game moved along, the interface grew messier and messier, especially as menu items piled up.",
+            "The relic and boon medals circled the counter and never stopped moving: they went up next to the title.",
+            "On the right, the books in a pile, then standing on a ledge: that menu didn’t match the rest of the site. Three leads followed: on the sheet around the open book, spines out between two bookends, medals like the ones on the left.",
+            "To be honest, it isn’t a fully validated idea yet, but it is the one that stays most consistent with the rest of the site.",
+            "New things used to glow in a loop. Playing with it, it got in the way more than anything, and didn’t make you want to see what caused it. All that is left is a single hop, then a star.",
+            "Under a penalty, the counter turned red. Over the long run, the colour tired the eyes: it turned copper."
+          ]
+        },
         "thisBook": {
           "head": "This book",
           "text": [
@@ -2952,6 +2963,9 @@
         "mimic-side-b": "Half off the edge",
         "token-b": "The pierced token",
         "token-c": "The notched token",
+        "top-ledge": "The ledge",
+        "top-spines": "Spines out, between two bookends",
+        "top-sheet": "On the sheet",
         "new-version-a": "The Library has changed",
         "etherium-ink-d1": "The atlas",
         "etherium-ink-d3": "The restrained night",
@@ -2971,7 +2985,8 @@
         "scenes": "The rooms",
         "sceneNotebook": "The setting in the notebook",
         "mimic": "The Mimic",
-        "relicToken": "The Token"
+        "relicToken": "The Token",
+        "topBar": "The top of the screen"
       }
     }
   },
