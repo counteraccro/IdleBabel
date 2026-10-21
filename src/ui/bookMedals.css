@@ -1,0 +1,174 @@
+/*
+ * Les médaillons des livres, en haut à droite (bookMedals.ts ; maquette .ai/maquette-menu-naturel.html, piste 3) : le même
+ * dessin que les médaillons de gauche (relique, bonus), à la même hauteur, la même marge que le titre.
+ */
+.book-medals {
+  position: fixed;
+  top: 36px;
+  right: 24px;
+  z-index: 4;
+  display: flex;
+  gap: 0.3em;
+  font-size: 2.2rem;
+}
+.book-medal {
+  position: relative;
+  width: 1.27em;
+  height: 1.27em;
+  padding: 0;
+  font-size: 1em;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  transition:
+    opacity 0.3s,
+    transform 0.2s;
+}
+.book-medal[hidden] {
+  display: none;
+}
+/* Un filet d'or fin, plein ; au survol, plus vif. */
+.book-medal-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(201, 164, 106, 0.55);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 88%, #000 92%);
+  mask: radial-gradient(circle closest-side, transparent 88%, #000 92%);
+  transition: background 0.2s;
+}
+.book-medal.violet .book-medal-ring {
+  background: rgba(180, 124, 255, 0.55);
+}
+.book-medal-icon {
+  position: absolute;
+  inset: 0.17em;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #3a2a16, #120c06);
+}
+.book-medal-icon svg {
+  width: 0.62em;
+  height: 0.62em;
+}
+.book-medal:hover:not(:disabled),
+.book-medal:focus-visible {
+  transform: translateY(-2px);
+  outline: none;
+}
+.book-medal:hover:not(:disabled) .book-medal-ring,
+.book-medal:focus-visible .book-medal-ring {
+  background: #e8c776;
+}
+.book-medal.violet:hover:not(:disabled) .book-medal-ring,
+.book-medal.violet:focus-visible .book-medal-ring {
+  background: #b47cff;
+}
+/* Le nom, au survol, sous le médaillon (comme ceux de gauche). */
+.book-medal-tip {
+  position: absolute;
+  top: 116%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.33em 0.83em;
+  white-space: nowrap;
+  font-size: 0.4em;
+  font-style: italic;
+  color: var(--ink);
+  text-shadow: var(--shadow);
+  background: radial-gradient(ellipse at center, rgba(8, 6, 4, 0.7), rgba(8, 6, 4, 0) 75%);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.book-medal:hover .book-medal-tip,
+.book-medal:focus-visible .book-medal-tip {
+  opacity: 1;
+}
+/* Le dernier médaillon, au bord de l'écran : son nom finit à son bord droit. */
+.book-medal:last-of-type .book-medal-tip {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+/* Une nouveauté attend : une étoile fixe, rien qui luit en boucle. */
+.book-medal-star {
+  position: absolute;
+  top: -0.14em;
+  right: -0.06em;
+  font-size: 0.4em;
+  line-height: 1;
+  color: #f0c870;
+  text-shadow:
+    0 0 4px #000,
+    0 1px 3px #000;
+  opacity: 0;
+  transform: scale(2);
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
+  pointer-events: none;
+}
+.book-medal.news .book-medal-star {
+  opacity: 1;
+  transform: scale(1);
+}
+/* Le livre est ouvert (sa page) : son médaillon pâlit, il est parti. */
+.book-medal.away {
+  opacity: 0.35;
+  cursor: default;
+}
+/* Un seul sursaut : une nouveauté arrive, un mot s'écrit dans le livre blanc. */
+.book-medal.hop {
+  animation: book-medal-hop 0.9s ease-out 1;
+}
+@keyframes book-medal-hop {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  20% {
+    translate: 0 -0.22em;
+    rotate: -6deg;
+  }
+  40% {
+    translate: 0 0;
+    rotate: 4deg;
+  }
+  55% {
+    translate: 0 -0.09em;
+    rotate: -2deg;
+  }
+  70% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+/* Un livre trouvé : son médaillon paraît. */
+.book-medal.arrive {
+  animation: book-medal-arrive 0.7s ease-out 1;
+}
+@keyframes book-medal-arrive {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+  60% {
+    opacity: 1;
+    scale: 1.15;
+  }
+}
+/* Téléphone : les médaillons suivent le titre, dans l'en-tête. */
+@media (max-width: 760px) {
+  .book-medals {
+    position: static;
+    font-size: 1.7rem;
+  }
+}
+/* Page d'un livre : les médaillons restent, le titre du jeu laisse sa place au bouton de retour. */
+#app.book-open h1 {
+  visibility: hidden;
+}

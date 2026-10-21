@@ -78,7 +78,7 @@ export const edgeTexture = (paper: string, line: string): THREE.CanvasTexture =>
  * La texture `texture` réduite pour tenir dans `size` (proportions gardées, sauf `keepRatio` faux : chaque
  * côté réduit à sa limite) ; telle quelle si elle y tient déjà ou n'est pas une image. Une texture neuve, qui
  * ne partage rien avec l'ancienne : celle-ci peut servir ailleurs (le même livre ouvert), elle n'est pas
- * touchée ; jamais envoyée à la carte graphique de la vitrine ou de la pile (shelfLook.ts, pileLook.ts), il n'y
+ * touchée ; jamais envoyée à la carte graphique de la vitrine (shelfLook.ts), il n'y
  * a rien à y libérer.
  */
 export const shrinkTexture = (texture: THREE.Texture, size: { width: number; height: number }, keepRatio = true): THREE.Texture => {

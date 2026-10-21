@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { BookShape } from './bookMesh';
 
 /** Durée du vol, de la pile jusqu'à la page du livre. */
 const FLIGHT_MS = 950;
@@ -56,6 +57,26 @@ export const launchFlight = (book: string, root: THREE.Object3D, camera: THREE.P
   const rotation = new THREE.Quaternion();
   seen.decompose(position, rotation, new THREE.Vector3());
   pending = { book, position, rotation, lens: lensOf(camera, canvas.getBoundingClientRect()), at: performance.now() };
+};
+
+/** Focale d'un départ de médaillon (pixels) : le livre y est tout petit, vu de face. */
+const MEDAL_FOCAL = 1200;
+/** Au départ, le livre fait cette part de la hauteur du médaillon. */
+const MEDAL_FILL = 0.6;
+
+/**
+ * Le médaillon d'un livre (en-tête) note le livre cliqué : il en sort, minuscule, de face, au milieu du médaillon (`rect`),
+ * et grandit jusqu'à sa page. Le livre fermé a son dos en x = 0, son milieu en (largeur / 2, 0).
+ */
+export const launchFlightFromMedal = (book: string, rect: DOMRect, shape: BookShape): void => {
+  const distance = (MEDAL_FOCAL * shape.height) / (rect.height * MEDAL_FILL);
+  pending = {
+    book,
+    position: new THREE.Vector3(-shape.width / 2, 0, -distance),
+    rotation: new THREE.Quaternion(),
+    lens: { focal: MEDAL_FOCAL, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+    at: performance.now(),
+  };
 };
 
 /** La page du livre reprend le départ noté (une fois), s'il vient d'être noté. */

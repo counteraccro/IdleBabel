@@ -164,8 +164,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     if (hash === NOTES_HASH) return 'notes';
     return hash === STRANGE_BOOK_HASH && strangeBookFound(state) ? 'strange' : null;
   };
-  // L'en-tête reste à l'écran d'une page à l'autre : la pile ne se recharge pas, le livre ouvert y laisse
-  // sa place vide et y revient.
+  // L'en-tête reste à l'écran d'une page à l'autre : le livre ouvert sort de son médaillon, qui pâlit, et y revient.
   const debugging = isDebugEnabled();
   const header = createHeader({
     onOptions: open(OPTIONS_HASH),

@@ -47,7 +47,7 @@ export const etherium3d = (state: GameState): Book3d => {
         paper: new THREE.Color(NIGHT[1]).multiply(NIGHT_TINT),
         pageTint: NIGHT_TINT,
         headband: headbandTexture(ETHERIUM_LEATHER.light, '#d9b56a'),
-        // La ruche suit l'Éther : la pile et le livre ouvert gardent la couverture en grand (pileLook.ts).
+        // La ruche suit l'Éther : le livre ouvert garde la couverture en grand.
         liveCover: true,
       };
     },
