@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { t } from '../../i18n';
-import type { PileOrnament } from '../book3d/pile3d';
+import type { ShelfOrnament } from '../book3d/shelf3d';
 
 /** Une vieille clé de laiton : l'anneau, la tige, le collet, le panneton (ses dents). Longue de 1,3 environ. */
 const keyModel = (material: THREE.Material): THREE.Group => {
@@ -21,14 +21,14 @@ const keyModel = (material: THREE.Material): THREE.Group => {
   return key;
 };
 
-/** Taille de la clé : un peu plus haute que la pile de livres. */
+/** Taille de la clé : un peu moins haute que les livres du rebord. */
 const SCALE = 0.5;
 
 /**
- * La clé de la bibliothèque personnelle, debout au pied de la pile de livres de l'en-tête, appuyée contre
- * elle : au survol elle brille et son nom s'écrit dessous ; au clic, on entre dans la bibliothèque (`onOpen`).
+ * La clé de la bibliothèque personnelle, pendue à un clou au bout du rebord de l'en-tête, son nom dessous : au survol
+ * elle brille ; au clic, on entre dans la bibliothèque (`onOpen`).
  */
-export const libraryKey = (onOpen: () => void): PileOrnament => {
+export const libraryKey = (onOpen: () => void): ShelfOrnament => {
   const brass = new THREE.MeshStandardMaterial({
     color: 0xc9a24a,
     metalness: 0.45,
@@ -37,7 +37,7 @@ export const libraryKey = (onOpen: () => void): PileOrnament => {
     emissiveIntensity: 0,
   });
   return {
-    // Le même nom que la page ouverte (openBook) : dans la bibliothèque, la clé n'est plus contre la pile.
+    // Le même nom que la page ouverte (openBook) : dans la bibliothèque, la clé n'est plus sur le rebord.
     id: 'library',
     label: () => t('ui.library'),
     model: () => {
@@ -46,7 +46,7 @@ export const libraryKey = (onOpen: () => void): PileOrnament => {
       key.rotation.z = -Math.PI / 2;
       key.scale.setScalar(SCALE);
       key.position.y = 0.55 * SCALE;
-      // Une zone invisible un peu plus large qu'elle : une clé si fine, dans une si petite pile, se rate.
+      // Une zone invisible un peu plus large qu'elle : une clé si fine se rate.
       const hit = new THREE.Mesh(new THREE.BoxGeometry(0.55 * SCALE, 1.4 * SCALE, 0.12), new THREE.MeshBasicMaterial({ visible: false }));
       hit.position.y = 0.7 * SCALE;
       const holder = new THREE.Group();
@@ -57,7 +57,6 @@ export const libraryKey = (onOpen: () => void): PileOrnament => {
       brass.emissiveIntensity = 0.45 * amount;
     },
     onOpen,
-    lean: 0.3,
-    dz: 0.3,
+    place: { end: true },
   };
 };

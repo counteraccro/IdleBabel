@@ -228,3 +228,84 @@
     opacity: 0.45;
   }
 }
+
+/*
+ * Les bonus réunis en un médaillon, les malus en un autre (medalGroup.ts ; maquette .ai/maquette-menus.html, piste M1) :
+ * leur nombre dans une pastille, en haut à droite ; au survol, la liste.
+ */
+.medal-group[hidden] {
+  display: none;
+}
+.medal-group-count {
+  position: absolute;
+  /* En unités de sa police (0,34 du médaillon) : 0,5 et 0,14 du médaillon, comme dans la maquette. */
+  right: -0.41em;
+  top: -0.29em;
+  box-sizing: border-box;
+  min-width: 1.47em;
+  height: 1.47em;
+  padding: 0 0.3em;
+  border-radius: 0.74em;
+  background: #2a1d0e;
+  border: 1px solid #c9a45a;
+  color: #e8c776;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.34em;
+  line-height: calc(1.47em - 2px);
+  text-align: center;
+}
+.medal-group:not(.many) .medal-group-count,
+.medal-group.many .boon-medal-tip,
+.medal-group:not(.many) .medal-group-panel {
+  display: none;
+}
+.medal-group.curse .medal-group-count {
+  border-color: #b4483a;
+  color: #f0a090;
+  background: #2a0e0a;
+}
+.medal-group-panel {
+  position: absolute;
+  top: 118%;
+  left: -0.4em;
+  z-index: 20;
+  min-width: 7.5em;
+  padding: 0.22em 0.3em;
+  background: rgba(10, 8, 6, 0.93);
+  border-left: 1px solid #c9a45a;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.medal-group.curse .medal-group-panel {
+  border-left-color: #b4483a;
+}
+.medal-group:hover .medal-group-panel {
+  opacity: 1;
+}
+.medal-group-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0.05em 0;
+}
+.medal-group-row .boon-medal {
+  flex: none;
+  font-size: 0.55em;
+}
+.medal-group-text,
+.medal-group-clock {
+  font-size: 0.36em;
+  white-space: nowrap;
+  text-shadow: var(--shadow);
+}
+.medal-group-text {
+  font-style: italic;
+  color: var(--ink);
+}
+.medal-group-clock {
+  margin-left: auto;
+  padding-left: 1em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}

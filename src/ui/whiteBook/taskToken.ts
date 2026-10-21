@@ -2,12 +2,13 @@ import * as THREE from 'three';
 import { t } from '../../i18n';
 import { writeDigits } from '../../core/format';
 import { dailyRunning } from '../../systems/tasks';
-import type { PileOrnament } from '../book3d/pile3d';
+import type { ShelfOrnament } from '../book3d/shelf3d';
 import type { GameState } from '../../core/state';
 
-/** Le jeton, à la taille de l'anneau de la clé, collé à sa gauche (maquette .ai/maquette-taches.html). */
+/** Le jeton, à la taille de l'anneau de la clé (maquette .ai/maquette-taches.html). */
 const RADIUS = 0.12;
-const AT = new THREE.Vector3(-0.29, 0.6, 0.03);
+/** Contre le livre blanc, un peu plus grand (maquette .ai/maquette-menus.html : 24 px pour des livres de 74). */
+const AGAINST_SCALE = 1.35;
 /** Au repos, il reste mat : son laiton un peu assombri. */
 const MATTE = 0.82;
 
@@ -25,11 +26,11 @@ const tokenModel = (brass: THREE.Material, rim: THREE.Material): THREE.Group => 
 };
 
 /**
- * Le raccourci des tâches : un petit jeton collé à la clé, sur la pile, toujours là dès le Nord allumé. Mat au repos, il
- * brille quand une tâche faite attend qu'on prenne ce qu'elle rapporte (pile.news) ; au survol, la légende de la pile
- * (« 2 tâches en cours ») ; au clic, le livre blanc s'ouvre sur les tâches (`onOpen`).
+ * Le raccourci des tâches : un petit jeton appuyé contre le livre blanc (ses tâches y sont), sur le rebord, toujours là dès
+ * le Nord allumé. Mat au repos, il brille quand une tâche faite attend qu'on prenne ce qu'elle rapporte (shelf.news) ; au
+ * survol, « 2 tâches en cours » à la place du nom du livre ; au clic, le livre blanc s'ouvre sur les tâches (`onOpen`).
  */
-export const taskToken = (state: GameState, onOpen: () => void): PileOrnament => {
+export const taskToken = (state: GameState, onOpen: () => void): ShelfOrnament => {
   const color = new THREE.Color(0xc99a3e);
   const brass = new THREE.MeshStandardMaterial({
     color: color.clone().multiplyScalar(MATTE),
@@ -58,8 +59,6 @@ export const taskToken = (state: GameState, onOpen: () => void): PileOrnament =>
       brass.emissiveIntensity = 0.6 * amount;
     },
     onOpen,
-    lean: 0,
-    dz: 0,
-    glued: { to: 'library', at: AT },
+    place: { against: 'white', scale: AGAINST_SCALE },
   };
 };

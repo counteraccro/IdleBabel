@@ -1,0 +1,63 @@
+/*
+ * Les livres du joueur, debout sur un rebord en haut à droite (book3d/shelf3d.ts ; maquette .ai/maquette-menus.html,
+ * piste P1) : leur nom écrit dessous, toujours. Des boutons invisibles les doublent pour le clavier.
+ */
+.shelf3d {
+  position: fixed;
+  top: 8px;
+  right: 28px;
+  z-index: 4;
+}
+.shelf3d-canvas {
+  display: block;
+}
+.shelf3d-names {
+  position: relative;
+  pointer-events: none;
+}
+.shelf3d-name {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.7rem;
+  line-height: 1;
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  text-shadow: var(--shadow);
+  transition: opacity 0.3s;
+}
+.shelf3d-name[hidden] {
+  display: none;
+}
+/* Livre ouvert devant le lecteur : sa place vide, son nom pâli. */
+.shelf3d-name.away {
+  opacity: 0.35;
+}
+/* Le nom du jeton, sous celui du livre blanc, le temps du survol. */
+.shelf3d-hint {
+  top: 1.35em;
+  font-style: italic;
+}
+.shelf3d-button {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+/* Téléphone : le rebord suit le titre, dans l'en-tête (shelf3d.ts réduit tout à 0,75). */
+@media (max-width: 760px) {
+  .shelf3d {
+    position: static;
+  }
+}
+/* Page d'un livre : le rebord reste, le titre du jeu laisse sa place au bouton de retour. */
+#app.book-open h1 {
+  visibility: hidden;
+}

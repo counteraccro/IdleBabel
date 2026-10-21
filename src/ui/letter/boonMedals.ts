@@ -4,7 +4,7 @@ import { t } from '../../i18n';
 import { activeBoons } from '../../systems/boons';
 import { tranceFactor } from '../../systems/etherium';
 import { BOON, type BoonId } from '../../data/letter';
-import { clockText } from './duration';
+import { createMedalGroup, type Medal } from './medalGroup';
 import { lotteryEffects } from '../../systems/lotteryEffects';
 import { goldenHere } from '../../systems/goldenMimic';
 import { mimicHere, mimicReading } from '../../systems/mimic';
@@ -38,36 +38,20 @@ const MIMIC_ICON =
 const textIcon = (text: string): string =>
   `<text x="10" y="13.5" text-anchor="middle" font-size="${text.length > 3 ? 7 : 9.5}" font-family="Georgia,serif" fill="#e8c776">${text}</text>`;
 
-/** Un médaillon : un bonus de la lettre, ou un bonus ou un malus de la Loterie (la Mimic dorée comprise). */
-interface Medal {
-  key: string;
-  icon: string;
-  text: string;
-  left: number;
-  total: number;
-  /** Un malus : cerclé de rouge. */
-  curse?: boolean;
-  /** Sans fin (la Mimic ne part pas d'elle-même) : cercle plein, pas d'horloge. */
-  endless?: boolean;
-}
-
-/** Ses dix dernières secondes, il clignote (s'il durait plus que ça). */
-const ENDING_MS = 10_000;
-/** Le temps de s'effacer (voir .boon-medal). */
-const FADE_MS = 600;
-
 /** Ce que dit le médaillon au survol : « Transe · lecture ×2 ». */
 export const boonShort = (state: GameState, id: BoonId): string =>
   t(`ui.letter.boons.${id}.short`).replace('{x}', String(tranceFactor(state, BOON.trance)));
 
 /**
- * Les médaillons des bonus en cours, à droite du compteur (maquette validée le 08/10) : un par bonus, cerclé du temps
- * qui reste ; au survol, ce qu'il fait et ce temps. Ceux de la Loterie aussi (16/10), les malus cerclés de rouge ; la Mimic
- * tant qu'elle est là (19/10).
+ * Les médaillons des effets en cours (maquette validée le 08/10), cerclés du temps qui reste ; au survol, ce qu'ils font et
+ * ce temps. Ceux de la Loterie aussi (16/10), les malus cerclés de rouge ; la Mimic tant qu'elle est là (19/10). Les bonus
+ * réunis en un médaillon, les malus en un autre (medalGroup.ts, l'auteur, 21/10) : la rangée ne s'allonge plus.
  */
 export const createBoonMedals = (state: GameState): Component => {
   const root = el('div', 'boon-medals');
-  const shown = new Map<string, { medal: HTMLElement; tip: HTMLElement; clock: HTMLElement }>();
+  const boons = createMedalGroup(false);
+  const curses = createMedalGroup(true);
+  root.append(boons.root, curses.root);
 
   const medals = (): Medal[] => {
     const now = Date.now();
@@ -113,36 +97,9 @@ export const createBoonMedals = (state: GameState): Component => {
   };
 
   const update = (): void => {
-    const boons = medals();
-    for (const [id, view] of shown)
-      if (!boons.some((boon) => boon.key === id)) {
-        view.medal.classList.remove('on');
-        window.setTimeout(() => view.medal.remove(), FADE_MS);
-        shown.delete(id);
-      }
-    for (const boon of boons) {
-      let view = shown.get(boon.key);
-      if (!view) {
-        const medal = el('div', boon.curse ? 'boon-medal curse' : 'boon-medal');
-        medal.innerHTML = `<div class="boon-medal-ring"></div><div class="boon-medal-icon"><svg viewBox="0 0 20 20" aria-hidden="true">${boon.icon}</svg></div>`;
-        const tip = el('div', 'boon-medal-tip');
-        const clock = el('span', 'clock');
-        medal.append(tip);
-        root.append(medal);
-        requestAnimationFrame(() => medal.classList.add('on'));
-        view = { medal, tip, clock };
-        shown.set(boon.key, view);
-      }
-      // Le texte refait à chaque tick (la langue, la Transe de la Plume peuvent changer) ; l'horloge à part.
-      const text = boon.endless ? boon.text : `${boon.text} · `;
-      if (view.tip.firstChild?.textContent !== text) {
-        view.tip.textContent = text;
-        if (!boon.endless) view.tip.append(view.clock);
-      }
-      if (!boon.endless) view.clock.textContent = clockText(boon.left);
-      view.medal.style.setProperty('--left', String(boon.left / boon.total));
-      view.medal.classList.toggle('ending', boon.left < ENDING_MS && boon.total > ENDING_MS);
-    }
+    const list = medals();
+    boons.update(list.filter((medal) => !medal.curse));
+    curses.update(list.filter((medal) => medal.curse));
   };
   update();
   return { root, update };
