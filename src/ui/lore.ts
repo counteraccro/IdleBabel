@@ -5,6 +5,8 @@ import { loreRead, onLore } from '../systems/lore';
 import { awayNoticeOpen } from './awayNotice/awayNotice';
 import { updateNoticeOpen } from './updateNotice/updateNotice';
 import { LORE_BACKDROP, type LoreId } from '../data/lore';
+import { cheapestAffordable } from '../systems/technologies';
+import { openWhiteBookOnIntuition } from './whiteBook/pages';
 import type { GameState } from '../core/state';
 
 /** Écart entre deux paragraphes qui apparaissent (voir .modal-story dans modal.css). */
@@ -26,7 +28,7 @@ export const storyLines = (count: number): { root: HTMLElement; lines: HTMLEleme
 };
 
 /** Où mène un moment une fois lu (adresse de l'écran à ouvrir, voir ui/app.ts). */
-const LEADS_TO: Partial<Record<LoreId, string>> = { lookAround: '#blanc', strangeBook: '#livre' };
+const LEADS_TO: Partial<Record<LoreId, string>> = { lookAround: '#blanc', strangeBook: '#livre', firstIntuition: '#blanc' };
 
 /** Le temps que l'écran suivant se construise (livre 3D) sous le voile noir, avant qu'il se lève. */
 const VEIL_HOLD_MS = 250;
@@ -76,6 +78,9 @@ export const mountLore = (state: GameState): (() => void) => {
         loreRead(state, id);
         telling = false;
         const leadsTo = LEADS_TO[id as LoreId];
+        // La première intuition : le livre blanc s'ouvre sur sa page (pas s'il est déjà ouvert : il ne se referait pas).
+        const intuition = id === 'firstIntuition' ? cheapestAffordable(state) : undefined;
+        if (intuition && window.location.hash !== leadsTo) openWhiteBookOnIntuition(intuition);
         if (leadsTo) goThroughTheDark(leadsTo);
         next();
       },

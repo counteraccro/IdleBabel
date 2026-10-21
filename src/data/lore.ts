@@ -13,6 +13,11 @@ export const LORE = [
   /** La toute première trouvaille lue : une phrase qu'on comprend (systems/knowledge.ts). */
   'firstKnowledge',
   /**
+   * La première intuition à portée, pour qui n'en a jamais compris (systems/knowledge.ts) : le livre blanc s'ouvre ensuite
+   * sur sa page (ui/lore.ts). Un collègue avait joué deux semaines sans voir qu'elles s'achetaient (l'auteur, 21/10).
+   */
+  'firstIntuition',
+  /**
    * Le premier livre refermé (systems/books.ts) : le chercheur le garde, sa première trouvaille, et une clé
    * de laiton apparaît dans sa poche (celle de la bibliothèque, où ce livre est rangé).
    */

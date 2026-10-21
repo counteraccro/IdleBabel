@@ -48,6 +48,16 @@
       "Contre votre flanc, le livre blanc a changé. Une de ses pages s'est écrite. Ces mots sont les vôtres."
     ]
   },
+  "firstIntuition": {
+    "title": "Une intuition",
+    "text": [
+      "Toutes ces phrases comprises, une à une. Vous ne les comptiez plus.",
+      "Pourtant elles se rassemblent. Quelque chose prend forme, que vous sentez avant de le comprendre.",
+      "Dans le livre blanc, une page attend. Vous ne l'aviez jamais remarquée.",
+      "Ce que vous savez, vous pourriez le donner, et lire autrement."
+    ],
+    "button": "Ouvrir le livre blanc"
+  },
   "firstBookKept": {
     "title": "Le premier",
     "text": [

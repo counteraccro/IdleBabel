@@ -53,6 +53,7 @@ import { taskToken } from './whiteBook/taskToken';
 import {
   openWhiteBookOnSentence,
   openWhiteBookOnTasks,
+  takeWhiteBookIntuition,
   takeWhiteBookSentence,
   takeWhiteBookTasks,
   whiteBookTasksPage,
@@ -324,6 +325,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       // Une méthode qui s'annonce : sur la page de sa phrase.
       const sentencePage = takeWhiteBookSentence();
       if (sentencePage !== undefined) Object.assign(book, { openAt: sentencePage, openJump: true });
+      // Le récit de la première intuition : sur sa page.
+      const intuitionPage = takeWhiteBookIntuition();
+      if (intuitionPage !== undefined) Object.assign(book, { openAt: intuitionPage, openJump: true });
       return pileBook(createBook3dPage(book, leave, first ? t('ui.lookAround') : backLabel()));
     }
     // L'Etherium, pris en main : il se consulte dès le premier Éther (avant, sa couverture résiste) ; le prestige se fait

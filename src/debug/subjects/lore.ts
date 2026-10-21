@@ -12,6 +12,7 @@ const TRIGGERS: Record<LoreId, string> = {
   whiteBook: 'à la première ouverture du livre blanc',
   firstBook: 'en sortant du livre blanc la première fois',
   firstKnowledge: 'à la toute première trouvaille lue',
+  firstIntuition: 'quand la Connaissance suffit pour une première intuition (jamais comprise), puis le livre blanc s’ouvre sur sa page',
   firstBookKept: 'au premier livre refermé (gardé, rangé dans la bibliothèque)',
   strangeBook: 'quand le Grand Livre arrive en main (le troisième), puis il s’ouvre en grand',
   relicLoupe: 'la Loupe trouvée dans le désert (relu sur son sceau)',

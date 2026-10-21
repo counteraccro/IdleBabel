@@ -43,6 +43,16 @@
       "Against your side, the white book has changed. One of its pages has written itself. These words are yours."
     ]
   },
+  "firstIntuition": {
+    "title": "An intuition",
+    "text": [
+      "All those sentences understood, one by one. You had stopped counting them.",
+      "And yet they gather. Something is taking shape, something you feel before you understand it.",
+      "In the white book, a page is waiting. You had never noticed it.",
+      "What you know, you could give it, and read differently."
+    ],
+    "button": "Open the white book"
+  },
   "firstBookKept": {
     "title": "The first",
     "text": [

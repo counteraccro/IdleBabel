@@ -83,6 +83,24 @@ export const understand = (state: GameState, id: TechnologyId): boolean => {
   return true;
 };
 
+/** La moins chère des intuitions qui ont leur page et qu'on peut comprendre tout de suite (undefined : aucune). */
+export const cheapestAffordable = (state: GameState): TechnologyId | undefined => {
+  let cheapest: TechnologyId | undefined;
+  let lowest = Infinity;
+  for (const tech of TECHNOLOGIES) {
+    if (!intuitionVisible(state, tech.id)) continue;
+    const price = nextPrice(state, tech.id);
+    if (price !== undefined && price <= state.knowledge && price < lowest) {
+      cheapest = tech.id;
+      lowest = price;
+    }
+  }
+  return cheapest;
+};
+
+/** Aucune intuition jamais comprise, toutes parties confondues. */
+export const neverUnderstood = (state: GameState): boolean => Object.values(state.technologiesBest).every((level) => !level);
+
 // Ce que fait chaque intuition, au niveau `level` (le sien par défaut), avec ce qu'y ajoute l'Etherium.
 
 /** Filtre sémantique : ce qu'il fait à la chance de trouvaille. */

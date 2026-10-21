@@ -6,7 +6,7 @@ import { anomalyPages, familyTitle, ofFamily } from './anomalyPages';
 import { contentsFit, contentsItems, splitContents, type ContentsEntry } from './contents';
 import { partTitleItems, partTitleLayout, subPartLayout, type WhiteBookPart } from './partTitle';
 import { intuitionItems, reminiscenceNote } from './intuitionPage';
-import { TECHNOLOGIES } from '../../data/technologies';
+import { TECHNOLOGIES, type TechnologyId } from '../../data/technologies';
 import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS } from '../../data/tools';
 import { starLit } from '../../systems/etherium';
 import { intuitionVisible, technologiesCompletion, understand } from '../../systems/technologies';
@@ -161,6 +161,20 @@ export const takeWhiteBookSentence = (): number | undefined => {
   return id === undefined ? undefined : sentencePages.get(id);
 };
 
+/** La page de chaque intuition dans le dernier livre blanc fait. */
+const intuitionPages = new Map<TechnologyId, number>();
+/** Le récit de la première intuition lu (ui/lore.ts) : le livre blanc s'ouvrira sur sa page. */
+let intuitionWanted: TechnologyId | undefined;
+export const openWhiteBookOnIntuition = (id: TechnologyId): void => {
+  intuitionWanted = id;
+};
+/** La page voulue, prise une fois à l'ouverture du livre (undefined : rien de demandé). */
+export const takeWhiteBookIntuition = (): number | undefined => {
+  const id = intuitionWanted;
+  intuitionWanted = undefined;
+  return id === undefined ? undefined : intuitionPages.get(id);
+};
+
 /**
  * Les pages du livre blanc. Le sommaire tient sur une page tant qu'il ne se tasse pas ; sinon, le livre se refait avec un
  * sommaire sur deux pages, face à face (2 et 3) : les parties qui suivent sont décalées.
@@ -177,6 +191,7 @@ const buildWhiteBook = (
 ): { pages: (LeafPage | null)[]; entries: ContentsEntry[] } => {
   tasksPage = undefined;
   sentencePages.clear();
+  intuitionPages.clear();
   const trackers = new Map<string, (segment: number) => boolean>();
   const freshOf = (sentence: SentenceDef) => {
     if (!trackers.has(sentence.id)) trackers.set(sentence.id, freshTracker(state, sentence));
@@ -253,6 +268,7 @@ const buildWhiteBook = (
   });
   const intuitionPage = (tech: (typeof TECHNOLOGIES)[number]): void => {
     const number = pages.length;
+    intuitionPages.set(tech.id, number);
     pages.push(createLeafPage(() => intuitionItems(state, tech.id, number), goTo, { onPay: () => understand(state, tech.id) }));
   };
   const lasting = (tech: (typeof TECHNOLOGIES)[number]): boolean => 'permanent' in tech && tech.permanent;
