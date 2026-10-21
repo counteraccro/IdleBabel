@@ -10,8 +10,6 @@ import { RELIC_REELS } from '../../data/lottery';
  */
 
 const R = 0.016;
-/** Son rayon (en mètres), pour le mettre à une autre échelle (le jeton des tâches, sur le rebord). */
-export const TOKEN_RADIUS = R;
 const T = 0.0026;
 /** Agrandi dans la vitrine (choix de l'auteur, 18/10 : « qu'il apparaisse agrandi ») : 9 fois la taille d'une relique. */
 export const TOKEN_SHELF_SCALE = 9;

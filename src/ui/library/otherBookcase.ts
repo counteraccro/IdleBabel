@@ -9,7 +9,7 @@ import { createCartouche, type Cartouche } from './cartouche';
  * Il ne paraît qu'avec le premier d'entre eux (l'auteur : « quand la vitrine est pleine »). Son cartouche est celui de la
  * vitrine : deux meubles, une même fonction.
  */
-export const OTHER_X = 9;
+const OTHER_X = 9;
 
 export const OTHER_COLUMNS: BookcaseColumn[] = [
   {

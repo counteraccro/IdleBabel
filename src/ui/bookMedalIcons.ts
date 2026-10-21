@@ -5,7 +5,7 @@
 const GOLD = '#e8c776';
 const VIOLET = '#c9a2ff';
 
-export const BOOK_MEDAL_ICONS: Record<string, string> = {
+const BOOK_MEDAL_ICONS: Record<string, string> = {
   // Le livre blanc : un livre ouvert.
   white: `<path d="M10 5.5Q6.5 3.8 3 4.6V15.4Q6.5 14.6 10 16.3Q13.5 14.6 17 15.4V4.6Q13.5 3.8 10 5.5Z M10 5.5V16.3" fill="none" stroke="${GOLD}" stroke-width="1.2" stroke-linejoin="round"/>`,
   // Le jeton des tâches : le dessin du Jeton (relics/relicIcons.ts).

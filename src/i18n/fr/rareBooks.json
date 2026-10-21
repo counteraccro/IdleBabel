@@ -1072,7 +1072,8 @@
               "heading": "Corrections",
               "items": [
                 "Ouvrir un livre ne prend plus plusieurs secondes.",
-                "Ouvert depuis l'annonce d'un sceau, le Grand Livre n'écrit plus sa légende sur la page d'en face."
+                "Ouvert depuis l'annonce d'un sceau, le Grand Livre n'écrit plus sa légende sur la page d'en face.",
+                "Une partie déjà longue ne fige plus le jeu quelques secondes à son chargement."
               ]
             }
           ]

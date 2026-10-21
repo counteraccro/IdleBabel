@@ -1,6 +1,6 @@
 import type { GameState } from '../core/state';
 import { STRANGE_BOOK_INDEX } from '../systems/strangeBook';
-import { meaningfulCovers } from '../systems/stats';
+import { COVERS_PER_TICK, meaningfulCovers } from '../systems/stats';
 import { isComplete } from '../systems/sentences';
 import { fullyDeciphered } from '../systems/decipher';
 import { pagesPerSecond } from '../systems/production';
@@ -154,7 +154,7 @@ export const SEALS: readonly SealDef[] = [
   ...series('speed', 'pages', (s) => s.stats.bestPagesPerSecond, SPEED_STEPS),
 
   ...series('booksFinished', 'books', (s) => s.booksFinished, [1, 10, 100, K, 10 * K, 50 * K, 500 * K, 5 * M]),
-  ...series('meaningfulCovers', 'books', meaningfulCovers, [1, 10, 100, 410, K, 10 * K]),
+  ...series('meaningfulCovers', 'books', (s) => meaningfulCovers(s, COVERS_PER_TICK), [1, 10, 100, 410, K, 10 * K]),
   // La découverte du livre étrange (pas un secret : il arrive à son numéro de livre).
   seal('strangeBook', 'books', (s) => s.booksFinished >= STRANGE_BOOK_INDEX),
   // Le Grand Livre lu en entier : toutes ses parties déchiffrées, chapitre Éther compris.

@@ -40,7 +40,7 @@
   width: 100%;
   height: 100%;
 }
-/* Le livre arrive de la pile de l'en-tête : le canvas couvre la fenêtre le temps du vol. */
+/* Le livre sort de son médaillon dans l'en-tête : le canvas couvre la fenêtre le temps du vol. */
 .book3d-stage > .book3d-canvas.flying {
   position: fixed;
   z-index: 5;
@@ -59,7 +59,7 @@
   opacity: 0;
   transition: opacity 0.4s;
 }
-/* Le livre retourne à la pile, le jeu est déjà revenu dessous : la page ne retient plus la souris. */
+/* Le livre retourne à son médaillon, le jeu est déjà revenu dessous : la page ne retient plus la souris. */
 #app > .book3d-page.homing {
   pointer-events: none;
 }

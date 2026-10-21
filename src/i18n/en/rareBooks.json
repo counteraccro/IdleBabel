@@ -1063,7 +1063,8 @@
               "heading": "Fixes",
               "items": [
                 "Opening a book no longer takes several seconds.",
-                "Opened from a seal's announcement, the Great Book no longer writes its caption on the facing page."
+                "Opened from a seal's announcement, the Great Book no longer writes its caption on the facing page.",
+                "A long-running game no longer freezes for a few seconds when it loads."
               ]
             }
           ]

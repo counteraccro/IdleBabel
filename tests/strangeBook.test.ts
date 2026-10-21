@@ -3,7 +3,8 @@ import { createInitialState } from '../src/core/state';
 import { coverDesign } from '../src/systems/coverDesign';
 import { LEAVES_PER_BOOK, turnBookPage } from '../src/systems/books';
 import { STRANGE_BOOK_INDEX, randomDigitText, strangeBookFound } from '../src/systems/strangeBook';
-import { countCovers, meaningfulCovers, trackPlay } from '../src/systems/stats';
+import { COVERS_PER_TICK, countCovers, meaningfulCovers, trackPlay } from '../src/systems/stats';
+import { checkSeals } from '../src/systems/seals';
 import { meetStrangeBook } from '../src/systems/decipher';
 import { loreTold } from '../src/systems/lore';
 
@@ -83,5 +84,13 @@ describe('compte des couvertures gardé dans la sauvegarde', () => {
     state.booksFinished = 1004;
     meaningfulCovers(state);
     expect(state.stats.coversCounted).toBe(1005);
+  });
+
+  it('les sceaux ne comptent qu’un peu à chaque tick : une vieille partie ne fige pas le jeu au chargement', () => {
+    const state = createInitialState('fr');
+    state.booksFinished = 100_000;
+    checkSeals(state);
+    expect(state.stats.coversCounted).toBeGreaterThan(0);
+    expect(state.stats.coversCounted).toBeLessThanOrEqual(6 * COVERS_PER_TICK);
   });
 });

@@ -31,8 +31,19 @@ export const countCovers = (state: GameState, limit = Infinity): boolean => {
   return stats.coversCounted >= booksOpened;
 };
 
-/** Livres pris en main (celui en cours compris) dont la couverture portait un vrai mot ou un vrai titre. */
-export const meaningfulCovers = (state: GameState): number => {
-  countCovers(state);
+/** Couvertures passées en revue à la fois, quand le jeu attend (main.ts) : ~7 ms. */
+export const COVERS_PER_STEP = 400;
+/**
+ * Au plus tant à chaque tick et par palier pas encore obtenu (six au plus, ~4 ms en tout), pour les sceaux (data/seals.ts) :
+ * ils sont vérifiés dix fois par seconde, et compter toute une vieille partie d'un coup figeait le jeu 3 s au chargement.
+ */
+export const COVERS_PER_TICK = 40;
+
+/**
+ * Livres pris en main (celui en cours compris) dont la couverture portait un vrai mot ou un vrai titre ; `limit` : le compte
+ * n'avance que d'autant de couvertures (il peut être en retard).
+ */
+export const meaningfulCovers = (state: GameState, limit = Infinity): number => {
+  countCovers(state, limit);
   return state.stats.meaningfulCovers;
 };

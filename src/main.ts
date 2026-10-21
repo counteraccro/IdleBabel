@@ -5,7 +5,7 @@ import { startLoop } from './core/loop';
 import { pauseEnded, settleHidden, watchAbsence } from './core/absence';
 import { onResume } from './ui/animationClock';
 import { mountApp } from './ui/app';
-import { countCovers } from './systems/stats';
+import { COVERS_PER_STEP, countCovers } from './systems/stats';
 import { mountSealVisions } from './ui/sealVision';
 import { mountTabTitle } from './ui/tabTitle';
 import { mountScene } from './scene';
@@ -43,9 +43,6 @@ setColoringZones(coloringZones);
 // « Laisse le jeu ouvert 1 h sans rien toucher » : la moindre touche ou le moindre geste la fait repartir de zéro.
 for (const type of ['pointerdown', 'keydown', 'wheel'] as const)
   window.addEventListener(type, () => taskTouched(state), { passive: true, capture: true });
-
-/** Couvertures passées en revue à la fois (~5 ms). */
-const COVERS_PER_STEP = 400;
 
 const update = mountApp(document.querySelector<HTMLElement>('#app')!, state);
 mountSealVisions(state);
