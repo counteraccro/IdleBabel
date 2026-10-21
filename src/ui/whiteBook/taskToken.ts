@@ -4,6 +4,7 @@ import { writeDigits } from '../../core/format';
 import { dailyRunning } from '../../systems/tasks';
 import type { ShelfOrnament } from '../book3d/shelf3d';
 import type { GameState } from '../../core/state';
+import { TOKEN_RADIUS, tokenModel } from '../relics/tokenModel';
 
 /** Le jeton, à la taille de l'anneau de la clé (maquette .ai/maquette-taches.html). */
 const RADIUS = 0.12;
@@ -11,19 +12,8 @@ const RADIUS = 0.12;
 const AGAINST_SCALE = 1.35;
 /** Au repos, il reste mat : son laiton un peu assombri. */
 const MATTE = 0.82;
-
-/** Le jeton de laiton, l'hexagone de Babel frappé dessus, face au lecteur. */
-const tokenModel = (brass: THREE.Material, rim: THREE.Material): THREE.Group => {
-  const coin = new THREE.Group();
-  const disc = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, 0.03, 32), brass);
-  disc.rotation.x = Math.PI / 2;
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(RADIUS * 0.84, 0.008, 6, 40), rim);
-  const hexagon = new THREE.Mesh(new THREE.TorusGeometry(RADIUS * 0.48, 0.008, 6, 6), rim);
-  hexagon.rotation.z = Math.PI / 6;
-  ring.position.z = hexagon.position.z = 0.016;
-  coin.add(disc, ring, hexagon);
-  return coin;
-};
+/** Le rebord n'a pas le reflet de la pièce : moins métallique, le laiton prend la lumière des lampes. */
+const METALNESS = 0.5;
 
 /**
  * Le raccourci des tâches : un petit jeton appuyé contre le livre blanc (ses tâches y sont), sur le rebord, toujours là dès
@@ -31,15 +21,22 @@ const tokenModel = (brass: THREE.Material, rim: THREE.Material): THREE.Group => 
  * survol, « 2 tâches en cours » à la place du nom du livre ; au clic, le livre blanc s'ouvre sur les tâches (`onOpen`).
  */
 export const taskToken = (state: GameState, onOpen: () => void): ShelfOrnament => {
-  const color = new THREE.Color(0xc99a3e);
-  const brass = new THREE.MeshStandardMaterial({
-    color: color.clone().multiplyScalar(MATTE),
-    metalness: 0.5,
-    roughness: 0.35,
-    emissive: 0xf0c870,
-    emissiveIntensity: 0,
+  // Le vrai Jeton, celui de la relique (relics/tokenModel.ts), ramené à la taille de l'anneau de la clé.
+  const coin = tokenModel(null, 0);
+  const brass: THREE.MeshStandardMaterial[] = [];
+  coin.traverse((object) => {
+    if (object instanceof THREE.Mesh && object.material instanceof THREE.MeshStandardMaterial) brass.push(object.material);
   });
-  const rim = new THREE.MeshStandardMaterial({ color: 0x5a3c0f, metalness: 0.3, roughness: 0.6 });
+  const color = brass[0].color.clone();
+  for (const material of brass) {
+    material.metalness = METALNESS;
+    material.color.copy(color).multiplyScalar(MATTE);
+    material.emissive.set(0xf0c870);
+  }
+  coin.scale.setScalar(RADIUS / TOKEN_RADIUS);
+  coin.position.y = -RADIUS;
+  // Un peu devant la couverture : sinon le bas du livre le cache à moitié.
+  coin.position.z = 0.06;
   return {
     id: 'tasks',
     label: () => {
@@ -49,14 +46,16 @@ export const taskToken = (state: GameState, onOpen: () => void): ShelfOrnament =
     },
     model: () => {
       const holder = new THREE.Group();
-      holder.add(tokenModel(brass, rim));
+      holder.add(coin);
       // Une zone invisible un peu plus large : un si petit jeton se rate.
       holder.add(new THREE.Mesh(new THREE.BoxGeometry(RADIUS * 2.6, RADIUS * 2.6, 0.06), new THREE.MeshBasicMaterial({ visible: false })));
       return holder;
     },
     glow: (amount) => {
-      brass.color.copy(color).multiplyScalar(MATTE + (1 - MATTE) * Math.min(1, amount * 2));
-      brass.emissiveIntensity = 0.6 * amount;
+      for (const material of brass) {
+        material.color.copy(color).multiplyScalar(MATTE + (1 - MATTE) * Math.min(1, amount * 2));
+        material.emissiveIntensity = 0.6 * amount;
+      }
     },
     onOpen,
     place: { against: 'white', scale: AGAINST_SCALE },
