@@ -43,7 +43,9 @@ export const NOTE_PAGE = 365;
 export const loadAlmanacPageFonts = (): Promise<unknown> =>
   Promise.all([
     loadAlmanacFonts(),
-    ...['400 20px Inter', '600 20px Inter', 'italic 400 20px Inter', '400 40px Oswald', '400 40px Caveat'].map((font) => document.fonts.load(font)),
+    ...['400 20px Inter', '600 20px Inter', 'italic 400 20px Inter', '400 40px Oswald', '400 40px Caveat'].map((font) =>
+      document.fonts.load(font),
+    ),
   ]);
 
 const texts = () => messages().rareBooks.almanac.pages;
@@ -101,8 +103,16 @@ const sub = (context: Context, label: string, y: number): void => {
   context.fillRect(LEFT, y + 6, RIGHT - LEFT, 1);
   context.globalAlpha = 1;
 };
-const cell = (context: Context, label: string, x: number, y: number, align: CanvasTextAlign = 'left', bold = false, size = 14, color = INK): void =>
-  text(context, label, x, y, `${bold ? 600 : 400} ${size}px ${INTER}`, color, align);
+const cell = (
+  context: Context,
+  label: string,
+  x: number,
+  y: number,
+  align: CanvasTextAlign = 'left',
+  bold = false,
+  size = 14,
+  color = INK,
+): void => text(context, label, x, y, `${bold ? 600 : 400} ${size}px ${INTER}`, color, align);
 
 const titlePage = (context: Context): void => {
   const { title, years, edition } = messages().rareBooks.almanac;
@@ -113,7 +123,9 @@ const titlePage = (context: Context): void => {
   text(context, title[1], C, 340, fitFont(context, title[1], 72, HEAVY, RIGHT - LEFT), INK, 'center', 3);
   text(context, years, C, 410, `700 42px ${CONDENSED}`, RED, 'center', 8);
   text(context, page.subtitle, C, 470, `italic 400 19px ${INTER}`, INK, 'center');
-  wrap(context, page.allSports, `400 14px ${INTER}`, 380).forEach((line, i) => text(context, line, C, 530 + i * 22, `400 14px ${INTER}`, SOFT, 'center'));
+  wrap(context, page.allSports, `400 14px ${INTER}`, 380).forEach((line, i) =>
+    text(context, line, C, 530 + i * 22, `400 14px ${INTER}`, SOFT, 'center'),
+  );
   hexagon(context, C, 640, 20, 4, INK, INK);
   hexagon(context, C, 640, 8, 3, PAPER);
   text(context, page.publisher, C, 700, `500 16px ${CONDENSED}`, INK, 'center', 5);
@@ -127,7 +139,10 @@ const CONTENTS_COLUMNS = [LEFT, LEFT + 180, LEFT + 360];
 const CONTENTS_WIDTH = 150;
 const CONTENTS_TOP = 178;
 const CONTENTS_STEP = 29;
-const contentsSpot = (index: number): [number, number] => [CONTENTS_COLUMNS[Math.floor(index / 17)], CONTENTS_TOP + (index % 17) * CONTENTS_STEP];
+const contentsSpot = (index: number): [number, number] => [
+  CONTENTS_COLUMNS[Math.floor(index / 17)],
+  CONTENTS_TOP + (index % 17) * CONTENTS_STEP,
+];
 const NOTES_Y = CONTENTS_TOP + 17 * CONTENTS_STEP + 12;
 
 const contentsPage = (context: Context): void => {
@@ -148,7 +163,13 @@ const contentsPage = (context: Context): void => {
 /** Un clic sur une année du sommaire (ou sur les notes) mène à sa page. */
 export const almanacLinks = (page: number): PageLink[] => {
   if (page !== CONTENTS_PAGE) return [];
-  const link = ([x, y]: [number, number], target: number): PageLink => ({ x: x - 4, width: CONTENTS_WIDTH + 8, y: y - 20, height: CONTENTS_STEP, target });
+  const link = ([x, y]: [number, number], target: number): PageLink => ({
+    x: x - 4,
+    width: CONTENTS_WIDTH + 8,
+    y: y - 20,
+    height: CONTENTS_STEP,
+    target,
+  });
   const years = Array.from({ length: LAST_YEAR - FIRST_YEAR + 1 }, (_, k) => link(contentsSpot(k), seasonPage(FIRST_YEAR + k)));
   return [...years, link([CONTENTS_COLUMNS[0], NOTES_Y], Math.min(seasonPage(LAST_YEAR + 1), PAGES_PER_BOOK))];
 };
@@ -251,11 +272,34 @@ const leaguePage = (context: Context, s: Season): void => {
     }
     const values = [i + 1, row.club, row.pts, row.p, row.w, row.d, row.l, row.f, row.a].map(String);
     values.forEach((value, k) =>
-      cell(context, value, LEAGUE_COLUMNS[k], y, k < 2 ? 'left' : 'right', (k === 1 && i === 0) || k === 2, 14, i === 0 && k < 3 ? RED : INK),
+      cell(
+        context,
+        value,
+        LEAGUE_COLUMNS[k],
+        y,
+        k < 2 ? 'left' : 'right',
+        (k === 1 && i === 0) || k === 2,
+        14,
+        i === 0 && k < 3 ? RED : INK,
+      ),
     );
   });
   const y = top + 30 + 18 * 27 + 14;
-  cell(context, fill(page.relegated, { clubs: s.league.rows.slice(15).map((row) => row.club).join(', ') }), LEFT, y, 'left', false, 13, SOFT);
+  cell(
+    context,
+    fill(page.relegated, {
+      clubs: s.league.rows
+        .slice(15)
+        .map((row) => row.club)
+        .join(', '),
+    }),
+    LEFT,
+    y,
+    'left',
+    false,
+    13,
+    SOFT,
+  );
   cell(context, fill(page.winPoints, { n: s.league.win }), LEFT, y + 22, 'left', false, 13, SOFT);
 };
 
@@ -306,7 +350,15 @@ const boxingPage = (context: Context, s: Season): void => {
     cell(context, dateOf(bout.date), RIGHT, y, 'right', false, 12, SOFT);
     cell(context, bout.winner, LEFT, y + 21, 'left', true, 15);
     const method = fill(page.methods[bout.method], { n: bout.round });
-    cell(context, ` ${page.beats} ${bout.loser}, ${method}`, LEFT + measure(context, bout.winner, `600 15px ${INTER}`), y + 21, 'left', false, 15);
+    cell(
+      context,
+      ` ${page.beats} ${bout.loser}, ${method}`,
+      LEFT + measure(context, bout.winner, `600 15px ${INTER}`),
+      y + 21,
+      'left',
+      false,
+      15,
+    );
     cell(context, `${bout.keep ? page.retains : page.newChampion} · ${bout.arena}`, LEFT, y + 40, 'left', false, 12, SOFT);
     y += 70;
   }
@@ -426,7 +478,10 @@ const handNote = (context: Context): void => {
   context.strokeStyle = BALLPOINT;
   context.lineWidth = 2.5;
   context.lineCap = 'round';
-  for (const [y, bend, from] of [[10, 4, 2], [17, -3, 14]]) {
+  for (const [y, bend, from] of [
+    [10, 4, 2],
+    [17, -3, 14],
+  ]) {
     context.beginPath();
     context.moveTo(from, y);
     context.quadraticCurveTo(width / 2, y + bend, width + 6, y - 2);
@@ -447,8 +502,7 @@ export const paintAlmanacPage = (context: Context, page: number): void => {
   else if (page >= seasonPage(LAST_YEAR + 1)) {
     notesPage(context);
     if (page === NOTE_PAGE) handNote(context);
-  }
-  else {
+  } else {
     const offset = page - FIRST_SEASON_PAGE;
     SEASON_PAGES[offset % YEAR_PAGES](context, season(FIRST_YEAR + Math.floor(offset / YEAR_PAGES)));
   }

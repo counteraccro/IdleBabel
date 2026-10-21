@@ -5,7 +5,16 @@ import { edgeTexture } from '../../book3d/textures';
 import { CHAPTERS, platePage, rabbitHome } from '../../../systems/rabbit';
 import { GREEN, GREEN_EDGE, loadRabbitFonts } from './rabbitDraw';
 import { SPINE_WIDTH, rabbitBack, rabbitFront, rabbitInside, rabbitSpine } from './rabbitCover';
-import { CONTENTS_PAGE, CONTENTS_ROW, CONTENTS_TOP, PLATES_PAGE, PLATES_ROW, PLATES_TOP, contentsTargets, paintRabbitPage } from './rabbitPages';
+import {
+  CONTENTS_PAGE,
+  CONTENTS_ROW,
+  CONTENTS_TOP,
+  PLATES_PAGE,
+  PLATES_ROW,
+  PLATES_TOP,
+  contentsTargets,
+  paintRabbitPage,
+} from './rabbitPages';
 import { rabbitMayCross } from './rabbitHunt';
 import type { RareBookArt } from '../rareBookArt';
 

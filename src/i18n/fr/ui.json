@@ -110,7 +110,14 @@
   "nextPage": "Page suivante",
   "knowledge": "Connaissance",
   "library": "La bibliothèque",
-  "shelfCount": { "books": "{n} livres", "booksOne": "1 livre", "relics": "{n} reliques", "relicsOne": "1 relique", "total": "{n} livres en tout", "totalOne": "1 livre en tout" },
+  "shelfCount": {
+    "books": "{n} livres",
+    "booksOne": "1 livre",
+    "relics": "{n} reliques",
+    "relicsOne": "1 relique",
+    "total": "{n} livres en tout",
+    "totalOne": "1 livre en tout"
+  },
   "endings": {
     "collection": "L’histoire de Babel",
     "toLibrary": "Vers la bibliothèque",
@@ -125,9 +132,12 @@
     "colophon": ["Achevé d’imprimer sur les presses", "des Éditions Quatre Cent Dix."],
     "contents": "Sommaire",
     "memory": "Souvenir {n}",
-    "dedications": ["À ma grand-mère,\nqui savait qui j’étais.", "Au fils du boulanger,\nqui est parti lire.",
+    "dedications": [
+      "À ma grand-mère,\nqui savait qui j’étais.",
+      "Au fils du boulanger,\nqui est parti lire.",
       "À Maman,\nqui m’appelait depuis la porte.",
-      "À ma grand-mère,\nqui avait raison."],
+      "À ma grand-mère,\nqui avait raison."
+    ],
     "titles": [
       "Qui j’étais",
       "On en parlait tout bas",

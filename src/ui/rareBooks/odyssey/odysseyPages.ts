@@ -53,7 +53,8 @@ export const odysseyTitlePage = (context: CanvasRenderingContext2D): void => {
     address: [`11px ${GARAMOND}`, 1.5],
     year: [`11px ${GARAMOND}`, 2],
   };
-  for (const [y, kind, text] of messages().rareBooks.odyssey.titlePage as [number, string, string][]) print(context, text, y, ...fonts[kind]);
+  for (const [y, kind, text] of messages().rareBooks.odyssey.titlePage as [number, string, string][])
+    print(context, text, y, ...fonts[kind]);
 };
 
 /** L'ouverture d'une rhapsodie : son titre en capitales grasses, bien bas sur la page. */

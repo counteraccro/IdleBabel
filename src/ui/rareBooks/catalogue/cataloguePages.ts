@@ -86,7 +86,8 @@ const titlePage = (context: Context, depth = 0): void => {
   context.strokeRect(FRAME.x - 11, FRAME.y - 11, FRAME.w + 22, FRAME.h + 22);
   text(context, t.edition, W / 2, 700, `italic 500 24px ${GARA}`);
   // Le point d'interrogation au crayon, juste après « Édition fidèle ».
-  if (depth === 0) pencil(context, text_().pencil.edition, W / 2 + width(context, t.edition, `italic 500 24px ${GARA}`) / 2 + 12, 702, 34, 0.1);
+  if (depth === 0)
+    pencil(context, text_().pencil.edition, W / 2 + width(context, t.edition, `italic 500 24px ${GARA}`) / 2 + 12, 702, 34, 0.1);
 };
 
 // ---------- Page 2 · l'avertissement ----------
@@ -136,7 +137,9 @@ const bookTitle = (index: number, rare: string | undefined): Words => {
 const head = (context: Context, state: GameState, x: number, spineOnLeft: boolean, page: number): void => {
   const right = x + COLS.vol;
   const first = firstOn(catalogueIndex(state), page);
-  const range = text_().range.replace('{from}', group(state, first)).replace('{to}', group(state, first + rowsOn(page) - 1));
+  const range = text_()
+    .range.replace('{from}', group(state, first))
+    .replace('{to}', group(state, first + rowsOn(page) - 1));
   if (spineOnLeft) text(context, range, right, 70, `italic 19px ${FELL}`, INK, 'right');
   else text(context, text_().runningHead, x, 70, `17px ${FELL_SC}`, INK, 'left', 2);
   rule(context, x, right, 82, 0.8);
@@ -159,7 +162,16 @@ const columns = (context: Context, x: number, y: number): void => {
 };
 
 /** Une ligne : numéro, titre, points de conduite, cote. Rend le bout du titre. */
-const entry = (context: Context, state: GameState, x: number, y: number, n: number | null, words: Words, mark: Mark | null, color = INK): number => {
+const entry = (
+  context: Context,
+  state: GameState,
+  x: number,
+  y: number,
+  n: number | null,
+  words: Words,
+  mark: Mark | null,
+  color = INK,
+): number => {
   if (n !== null) text(context, `${group(state, n)}.`, x + COLS.no, y, NUMS, color, 'right');
   let cx = x + COLS.title;
   for (const [i, [word, sensible]] of words.entries()) {
@@ -216,7 +228,8 @@ const pencilMarks = (context: Context, x: number, page: number): void => {
   const roll = random();
   if (roll < 1 / 12) pencil(context, text_().pencil.wrong, x + COLS.vol + 8, TOP + Math.floor(random() * 20) * ROW + 4, 22, -0.25);
   else if (roll < 1 / 4)
-    for (let i = 0; i < 1 + Math.floor(random() * 2); i++) pencil(context, '✓', x + COLS.vol + 10, TOP + Math.floor(random() * 20) * ROW + 2, 24);
+    for (let i = 0; i < 1 + Math.floor(random() * 2); i++)
+      pencil(context, '✓', x + COLS.vol + 10, TOP + Math.floor(random() * 20) * ROW + 2, 24);
 };
 
 const registerPage = (context: Context, state: GameState, page: number, spineOnLeft: boolean): void => {

@@ -108,11 +108,7 @@
   },
   "relicPencil": {
     "title": "Le Crayon",
-    "text": [
-      "Un bout de crayon, presque rien.",
-      "Il se donnait des tâches, une par une,",
-      "pour ne pas penser à la seule qui comptait."
-    ],
+    "text": ["Un bout de crayon, presque rien.", "Il se donnait des tâches, une par une,", "pour ne pas penser à la seule qui comptait."],
     "button": "Garder"
   },
   "relicToken": {

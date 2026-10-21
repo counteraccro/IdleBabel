@@ -218,8 +218,7 @@ export const gainFind = (state: GameState, find: Find): void => {
     // La toute première : le joueur comprend une phrase, pour la première fois.
     if (state.lifetimeKnowledge === gained) tellLore(state, 'firstKnowledge');
     // De quoi comprendre une première intuition, pour qui n'en a jamais compris : un récit le lui dit, une fois.
-    if (!loreTold(state, 'firstIntuition') && neverUnderstood(state) && cheapestAffordable(state))
-      tellLore(state, 'firstIntuition');
+    if (!loreTold(state, 'firstIntuition') && neverUnderstood(state) && cheapestAffordable(state)) tellLore(state, 'firstIntuition');
   }
   state.stats.fragments += 1;
   state.findCounts[find.kind] += 1;

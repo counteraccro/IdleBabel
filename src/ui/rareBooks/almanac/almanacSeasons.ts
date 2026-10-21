@@ -262,7 +262,10 @@ const racing = (year: number): Race[] => {
   return Array.from({ length: RACES }, (_, race) => {
     const horse = pick(r, HORSES);
     const odds = pick(r, [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 33]);
-    const finish = shuffle(r, Array.from({ length: 18 }, (_, k) => k + 1)).slice(0, 5);
+    const finish = shuffle(
+      r,
+      Array.from({ length: 18 }, (_, k) => k + 1),
+    ).slice(0, 5);
     const jockey = pick(r, JOCKEYS);
     const payout = odds * 10 + Math.floor(r() * 9) + r();
     return { race, horse, jockey, odds, finish, payout, date: { year, month: 3 + race, day: 1 + Math.floor(r() * 27) } };

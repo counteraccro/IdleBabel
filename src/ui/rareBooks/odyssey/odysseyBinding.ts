@@ -22,10 +22,22 @@ const K = WIDTH / W;
 const STRIP = 150;
 
 export const loadOdysseyFonts = (): Promise<unknown> =>
-  Promise.all([`40px ${GARAMOND}`, `italic 40px ${GARAMOND}`, `500 40px ${GARAMOND}`, `700 40px ${GARAMOND}`].map((font) => document.fonts.load(font)));
+  Promise.all(
+    [`40px ${GARAMOND}`, `italic 40px ${GARAMOND}`, `500 40px ${GARAMOND}`, `700 40px ${GARAMOND}`].map((font) =>
+      document.fonts.load(font),
+    ),
+  );
 
 /** Du texte posé par sa ligne de base, centré, comme sur la maquette. */
-const print = (context: CanvasRenderingContext2D, text: string, x: number, y: number, font: string, color: string | CanvasGradient, spacing = 0): void => {
+const print = (
+  context: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  font: string,
+  color: string | CanvasGradient,
+  spacing = 0,
+): void => {
   context.font = font;
   context.fillStyle = color;
   context.textAlign = 'center';
@@ -281,7 +293,18 @@ export const odysseySpine = (thickness: number): Drawing =>
       corner(context, x1 - 6, y1 - 6, -1, -1, gilt);
       fleuron(context, width / 2, (y0 + y1) / 2, 0.95, gilt);
       context.fillStyle = gilt;
-      for (const [dx, dy] of [[-28, -30], [28, -30], [-28, 30], [28, 30], [-30, 0], [30, 0], [-14, -38], [14, -38], [-14, 38], [14, 38]]) {
+      for (const [dx, dy] of [
+        [-28, -30],
+        [28, -30],
+        [-28, 30],
+        [28, 30],
+        [-30, 0],
+        [30, 0],
+        [-14, -38],
+        [14, -38],
+        [-14, 38],
+        [14, 38],
+      ]) {
         context.beginPath();
         context.arc(width / 2 + dx, (y0 + y1) / 2 + dy, 1.5, 0, Math.PI * 2);
         context.fill();
@@ -290,7 +313,8 @@ export const odysseySpine = (thickness: number): Drawing =>
     // Le pied : l'année entre deux paires de filets ; en tête, deux filets.
     const foot = EDGES[EDGES.length - 1];
     context.fillStyle = gilt;
-    for (const y of [foot + 4, foot + 8, foot + 70, foot + 74, 12, 17]) context.fillRect(y < foot ? 8 : 10, y, width - (y < foot ? 16 : 20), 1);
+    for (const y of [foot + 4, foot + 8, foot + 70, foot + 74, 12, 17])
+      context.fillRect(y < foot ? 8 : 10, y, width - (y < foot ? 16 : 20), 1);
     print(context, year, width / 2, foot + 50, `15px ${GARAMOND}`, gilt, 2);
     context.restore();
   });

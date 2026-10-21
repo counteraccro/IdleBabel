@@ -46,6 +46,13 @@ describe("l'Almanach des sports", () => {
   });
 
   it('les mêmes résultats à chaque lecture', () => {
-    expect(season(1957).champions).toEqual(['FC Gérance', 'Stade Brévannais', 'Rocco Quillet', 'Marque-Page', 'Redcliff Miners', 'Carlos Dobrev']);
+    expect(season(1957).champions).toEqual([
+      'FC Gérance',
+      'Stade Brévannais',
+      'Rocco Quillet',
+      'Marque-Page',
+      'Redcliff Miners',
+      'Carlos Dobrev',
+    ]);
   });
 });

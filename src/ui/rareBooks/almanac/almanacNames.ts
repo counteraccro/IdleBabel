@@ -26,12 +26,68 @@ export const CLUBS = [
 
 /** Les deux ligues de base-ball, l'Est puis l'Ouest. */
 export const BALL_CLUBS = [
-  ['Port Alder Gulls', 'Norwick Foxes', 'Calder Bay Clippers', 'Marlow Hill Rangers', 'Easton Vale Loggers', 'Fairhaven Stokers', 'Riverton Kings', 'Grand Isle Herons'],
-  ['Westmoor Bulls', 'Ashcombe Pioneers', 'Linden Park Dukes', 'Saltmarsh Sailors', 'Redcliff Miners', 'Hollow Creek Owls', 'Bramford Lancers', 'Silver Lake Comets'],
+  [
+    'Port Alder Gulls',
+    'Norwick Foxes',
+    'Calder Bay Clippers',
+    'Marlow Hill Rangers',
+    'Easton Vale Loggers',
+    'Fairhaven Stokers',
+    'Riverton Kings',
+    'Grand Isle Herons',
+  ],
+  [
+    'Westmoor Bulls',
+    'Ashcombe Pioneers',
+    'Linden Park Dukes',
+    'Saltmarsh Sailors',
+    'Redcliff Miners',
+    'Hollow Creek Owls',
+    'Bramford Lancers',
+    'Silver Lake Comets',
+  ],
 ];
 
-export const FIRST_NAMES = ['Joe', 'Rocco', 'Eddie', 'Marcel', 'Kid', 'Sonny', 'Willie', 'Tony', 'Jean', 'Carlos', 'Billy', 'Max', 'Lou', 'Ray', 'Abel', 'Teo', 'Hugo', 'Frank'];
-export const LAST_NAMES = ['Marlowe', 'Vasquez', 'Brennan', 'Lacombe', 'Kowalski', 'Okafor', 'Delorme', 'Sutter', 'Morand', 'Castellano', 'Hale', 'Fontanel', 'Ruiz', 'Bauer', 'Nakano', 'Ferrante', 'Quillet', 'Dobrev'];
+export const FIRST_NAMES = [
+  'Joe',
+  'Rocco',
+  'Eddie',
+  'Marcel',
+  'Kid',
+  'Sonny',
+  'Willie',
+  'Tony',
+  'Jean',
+  'Carlos',
+  'Billy',
+  'Max',
+  'Lou',
+  'Ray',
+  'Abel',
+  'Teo',
+  'Hugo',
+  'Frank',
+];
+export const LAST_NAMES = [
+  'Marlowe',
+  'Vasquez',
+  'Brennan',
+  'Lacombe',
+  'Kowalski',
+  'Okafor',
+  'Delorme',
+  'Sutter',
+  'Morand',
+  'Castellano',
+  'Hale',
+  'Fontanel',
+  'Ruiz',
+  'Bauer',
+  'Nakano',
+  'Ferrante',
+  'Quillet',
+  'Dobrev',
+];
 
 export const HORSES = [
   'Escalier',
@@ -62,4 +118,11 @@ export const HORSES = [
 
 export const JOCKEYS = ['J. Marchal', 'Y. Saint-Cyr', 'L. Benoît', 'P. Darras', 'M. Gauthier', 'R. Kerval', 'A. Lenoir', 'T. Brac'];
 
-export const ARENAS = ['Palais des sports, Valmorne', 'Garden, Port Alder', 'Arènes de Sarrance', 'Coliseum, Riverton', 'Salle Wagram, Dunois', 'Stadium, Westmoor'];
+export const ARENAS = [
+  'Palais des sports, Valmorne',
+  'Garden, Port Alder',
+  'Arènes de Sarrance',
+  'Coliseum, Riverton',
+  'Salle Wagram, Dunois',
+  'Stadium, Westmoor',
+];

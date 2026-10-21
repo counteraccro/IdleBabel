@@ -110,7 +110,14 @@
   "nextPage": "Next page",
   "knowledge": "Knowledge",
   "library": "The library",
-  "shelfCount": { "books": "{n} books", "booksOne": "1 book", "relics": "{n} relics", "relicsOne": "1 relic", "total": "{n} books in all", "totalOne": "1 book in all" },
+  "shelfCount": {
+    "books": "{n} books",
+    "booksOne": "1 book",
+    "relics": "{n} relics",
+    "relicsOne": "1 relic",
+    "total": "{n} books in all",
+    "totalOne": "1 book in all"
+  },
   "endings": {
     "collection": "The Story of Babel",
     "toLibrary": "To the library",
@@ -125,9 +132,12 @@
     "colophon": ["Printed on the presses", "of Four Hundred Ten Press."],
     "contents": "Contents",
     "memory": "Memory {n}",
-    "dedications": ["For my grandmother,\nwho knew who I was.", "For the baker’s son,\nwho went off to read.",
+    "dedications": [
+      "For my grandmother,\nwho knew who I was.",
+      "For the baker’s son,\nwho went off to read.",
       "For Mum,\nwho called me from the door.",
-      "For my grandmother,\nwho was right."],
+      "For my grandmother,\nwho was right."
+    ],
     "titles": [
       "Who I Was",
       "Whispered About",

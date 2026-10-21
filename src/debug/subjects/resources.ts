@@ -79,11 +79,22 @@ export const RESOURCE_SUBJECTS: DebugSubject[] = [
         forceFinds,
       );
       kit.info('Chance', () => `${format(findChance(state) * 100)} %`, '« Ta chance, à chaque page, de comprendre quelque chose. »');
-      kit.info('Fragments', () => format(Object.values(state.findCounts).reduce((sum, count) => sum + count, 0)), '« Mots · morceaux · phrases arrachés au hasard. »');
+      kit.info(
+        'Fragments',
+        () => format(Object.values(state.findCounts).reduce((sum, count) => sum + count, 0)),
+        '« Mots · morceaux · phrases arrachés au hasard. »',
+      );
       kit.actions([
         'Tout oublier',
         () => {
-          Object.assign(state, { knowledge: 0, cycleKnowledge: 0, lifetimeKnowledge: 0, findCounts: noFinds(), written: {}, deciphered: [] });
+          Object.assign(state, {
+            knowledge: 0,
+            cycleKnowledge: 0,
+            lifetimeKnowledge: 0,
+            findCounts: noFinds(),
+            written: {},
+            deciphered: [],
+          });
           state.stats.fragments = 0;
           rewriteBigBook();
         },

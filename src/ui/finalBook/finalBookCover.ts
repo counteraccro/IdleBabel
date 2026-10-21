@@ -87,10 +87,7 @@ export const finalPlain = (seed: number): Promise<THREE.CanvasTexture> =>
   svgTexture(createVellum(seed, false, { dark: true }).querySelector('svg')!, WIDTH, HEIGHT);
 
 /** Le dos, à ses vraies proportions (filets sans coins), le nom couché en long, et sa lumière. */
-export const finalSpine = async (
-  name: string,
-  thickness: number,
-): Promise<TitledTexture> => {
+export const finalSpine = async (name: string, thickness: number): Promise<TitledTexture> => {
   const width = 125 * thickness * 1.4;
   const [texture] = await Promise.all([
     svgTexture(createVellum(19, false, { dark: true, ornaments: false, width }).querySelector('svg')!, WIDTH, HEIGHT),

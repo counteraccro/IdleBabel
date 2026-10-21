@@ -14,9 +14,7 @@ export const CONDENSED = "'Oswald', 'Arial Narrow', sans-serif";
 export const HEAVY = "'Anton', 'Oswald', Impact, sans-serif";
 
 export const loadAlmanacFonts = (): Promise<unknown> =>
-  Promise.all(
-    ['400 40px Anton', '300 40px Oswald', '500 40px Oswald', '700 40px Oswald'].map((font) => document.fonts.load(font)),
-  );
+  Promise.all(['400 40px Anton', '300 40px Oswald', '500 40px Oswald', '700 40px Oswald'].map((font) => document.fonts.load(font)));
 
 /** Texte posé sur sa ligne de base, comme dans la maquette (centré : l'espacement final compensé). */
 export const text = (
@@ -142,37 +140,139 @@ interface Picto {
 const PICTOS: readonly Picto[] = [
   // Le footballeur, qui frappe le ballon.
   {
-    strokes: [[[0, -30], [-4, 6], [-14, 48]], [[-4, 6], [18, 22], [34, 14]], [[-2, -22], [-26, -8]], [[-2, -22], [22, -20]]],
+    strokes: [
+      [
+        [0, -30],
+        [-4, 6],
+        [-14, 48],
+      ],
+      [
+        [-4, 6],
+        [18, 22],
+        [34, 14],
+      ],
+      [
+        [-2, -22],
+        [-26, -8],
+      ],
+      [
+        [-2, -22],
+        [22, -20],
+      ],
+    ],
     head: [4, -46],
     ball: [44, 26],
   },
   // Le boxeur, en garde.
   {
-    strokes: [[[0, -30], [0, 6], [-16, 48]], [[0, 6], [16, 48]], [[0, -22], [20, -14], [30, -30]], [[0, -22], [28, -24], [44, -22]]],
+    strokes: [
+      [
+        [0, -30],
+        [0, 6],
+        [-16, 48],
+      ],
+      [
+        [0, 6],
+        [16, 48],
+      ],
+      [
+        [0, -22],
+        [20, -14],
+        [30, -30],
+      ],
+      [
+        [0, -22],
+        [28, -24],
+        [44, -22],
+      ],
+    ],
     head: [0, -46],
-    gloves: [[32, -32], [46, -22]],
+    gloves: [
+      [32, -32],
+      [46, -22],
+    ],
   },
   // Le coureur.
   {
     strokes: [
-      [[4, -30], [-6, 8]],
-      [[-6, 8], [16, 24], [10, 48]],
-      [[-6, 8], [-24, 26], [-36, 18]],
-      [[2, -22], [22, -10], [30, -24]],
-      [[2, -22], [-16, -12], [-24, 0]],
+      [
+        [4, -30],
+        [-6, 8],
+      ],
+      [
+        [-6, 8],
+        [16, 24],
+        [10, 48],
+      ],
+      [
+        [-6, 8],
+        [-24, 26],
+        [-36, 18],
+      ],
+      [
+        [2, -22],
+        [22, -10],
+        [30, -24],
+      ],
+      [
+        [2, -22],
+        [-16, -12],
+        [-24, 0],
+      ],
     ],
     head: [10, -46],
   },
   // Le batteur de base-ball, la batte levée.
   {
-    strokes: [[[0, -30], [2, 6], [-18, 48]], [[2, 6], [20, 48]], [[0, -22], [-16, -18], [-10, -30]], [[-10, -30], [-40, -54]]],
+    strokes: [
+      [
+        [0, -30],
+        [2, 6],
+        [-18, 48],
+      ],
+      [
+        [2, 6],
+        [20, 48],
+      ],
+      [
+        [0, -22],
+        [-16, -18],
+        [-10, -30],
+      ],
+      [
+        [-10, -30],
+        [-40, -54],
+      ],
+    ],
     head: [2, -46],
   },
   // Le cycliste.
   {
-    strokes: [[[-6, -22], [10, 0], [-2, 18]], [[-6, -22], [18, -18]], [[-26, 30], [-2, 18], [22, 30]], [[-2, 18], [18, -10]]],
+    strokes: [
+      [
+        [-6, -22],
+        [10, 0],
+        [-2, 18],
+      ],
+      [
+        [-6, -22],
+        [18, -18],
+      ],
+      [
+        [-26, 30],
+        [-2, 18],
+        [22, 30],
+      ],
+      [
+        [-2, 18],
+        [18, -10],
+      ],
+    ],
     head: [-10, -36],
-    wheels: [[-26, 30], [26, 30]],
+    wheels: [
+      [-26, 30],
+      [26, 30],
+    ],
   },
 ];
 
@@ -182,7 +282,14 @@ const dot = (context: CanvasRenderingContext2D, [x, y]: Point, radius: number): 
   context.fill();
 };
 
-const picto = (context: CanvasRenderingContext2D, { strokes, head, ball, gloves, wheels }: Picto, x: number, y: number, scale: number, color: string): void => {
+const picto = (
+  context: CanvasRenderingContext2D,
+  { strokes, head, ball, gloves, wheels }: Picto,
+  x: number,
+  y: number,
+  scale: number,
+  color: string,
+): void => {
   context.save();
   context.translate(x, y);
   context.scale(scale, scale);

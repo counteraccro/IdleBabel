@@ -26,9 +26,15 @@ export const NIGHT: [string, string] = ['#1f2a3d', '#0e1420'];
 
 export const loadCatalogueFonts = (): Promise<unknown> =>
   Promise.all(
-    [`19px ${FELL}`, `italic 19px ${FELL}`, `13px ${FELL_SC}`, `600 26px ${HAND}`, `500 18px ${GARA}`, `italic 500 34px ${GARA}`, `600 46px ${GARA}`].map(
-      (font) => document.fonts.load(font),
-    ),
+    [
+      `19px ${FELL}`,
+      `italic 19px ${FELL}`,
+      `13px ${FELL_SC}`,
+      `600 26px ${HAND}`,
+      `500 18px ${GARA}`,
+      `italic 500 34px ${GARA}`,
+      `600 46px ${GARA}`,
+    ].map((font) => document.fonts.load(font)),
   );
 
 /** Hasard reproductible (Park-Miller), celui des maquettes. */
@@ -66,7 +72,15 @@ export const width = (context: Context, value: string, font: string): number => 
   return measured;
 };
 
-export const pencil = (context: Context, value: string, x: number, y: number, size = 28, angle = 0, align: CanvasTextAlign = 'left'): void => {
+export const pencil = (
+  context: Context,
+  value: string,
+  x: number,
+  y: number,
+  size = 28,
+  angle = 0,
+  align: CanvasTextAlign = 'left',
+): void => {
   context.save();
   context.translate(x, y);
   context.rotate(angle);

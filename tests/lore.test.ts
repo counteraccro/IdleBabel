@@ -36,11 +36,17 @@ describe('lore', () => {
   it('dit la première intuition à portée, une fois, et jamais à qui en a déjà compris une', () => {
     const state = createInitialState('fr');
     state.lifetimeKnowledge = 1;
-    gainFind(state, drawFind(state, () => 0.5));
+    gainFind(
+      state,
+      drawFind(state, () => 0.5),
+    );
     expect(state.lorePending).not.toContain('firstIntuition');
     const price = nextPrice(state, 'semanticFilter')!;
     state.knowledge = price;
-    gainFind(state, drawFind(state, () => 0.5));
+    gainFind(
+      state,
+      drawFind(state, () => 0.5),
+    );
     expect(state.lorePending).toContain('firstIntuition');
     expect(cheapestAffordable(state)).toBeDefined();
 
@@ -48,7 +54,10 @@ describe('lore', () => {
     seasoned.lifetimeKnowledge = 1;
     seasoned.technologiesBest.semanticFilter = 1;
     seasoned.knowledge = price;
-    gainFind(seasoned, drawFind(seasoned, () => 0.5));
+    gainFind(
+      seasoned,
+      drawFind(seasoned, () => 0.5),
+    );
     expect(seasoned.lorePending).not.toContain('firstIntuition');
   });
 

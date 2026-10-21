@@ -66,7 +66,14 @@ export const cloth = (context: CanvasRenderingContext2D, width: number, seed: nu
     context.fillStyle = `rgba(0,0,0,${0.05 + random() * 0.06})`;
     context.fillRect(0, y, width, 1);
   }
-  const shade = context.createRadialGradient(width / 2, HEIGHT / 2, Math.min(width, HEIGHT) * 0.3, width / 2, HEIGHT / 2, Math.max(width, HEIGHT) * 0.75);
+  const shade = context.createRadialGradient(
+    width / 2,
+    HEIGHT / 2,
+    Math.min(width, HEIGHT) * 0.3,
+    width / 2,
+    HEIGHT / 2,
+    Math.max(width, HEIGHT) * 0.75,
+  );
   shade.addColorStop(0, 'rgba(0,0,0,0)');
   shade.addColorStop(1, 'rgba(0,0,0,0.5)');
   context.fillStyle = shade;

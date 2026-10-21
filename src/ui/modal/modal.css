@@ -295,7 +295,11 @@
   width: min(520px, 100%);
   box-sizing: border-box;
   padding: 8px 10px;
-  font: 0.75rem/1.4 ui-monospace, Menlo, Consolas, monospace;
+  font:
+    0.75rem/1.4 ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
   word-break: break-all;
   resize: vertical;
   color: #f3dc9c;

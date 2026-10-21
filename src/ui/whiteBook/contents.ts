@@ -16,8 +16,7 @@ const SUB_STEP = 40;
 /** Bas du sommaire, au-dessus du numéro de page : au-delà, les lignes se resserrent. */
 const BOTTOM = 700;
 
-const heightOf = (entries: readonly ContentsEntry[]): number =>
-  entries.reduce((sum, entry) => sum + (entry.sub ? SUB_STEP : STEP), 0);
+const heightOf = (entries: readonly ContentsEntry[]): number => entries.reduce((sum, entry) => sum + (entry.sub ? SUB_STEP : STEP), 0);
 
 /** Le sommaire tient sur une page sans se tasser. */
 export const contentsFit = (entries: readonly ContentsEntry[]): boolean => heightOf(entries) <= BOTTOM - TOP;

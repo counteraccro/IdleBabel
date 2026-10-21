@@ -15,7 +15,11 @@ describe('un fond par Âge', () => {
   });
 
   it('chaque fond a son Âge, la verrière attend le troisième', () => {
-    expect(SCENES.map(({ id, age }) => [id, age])).toEqual([['desert', 1], ['nuit', 2], ['verriere', 3]]);
+    expect(SCENES.map(({ id, age }) => [id, age])).toEqual([
+      ['desert', 1],
+      ['nuit', 2],
+      ['verriere', 3],
+    ]);
   });
 });
 

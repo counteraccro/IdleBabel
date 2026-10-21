@@ -101,7 +101,7 @@ export const almanacBack = (): THREE.CanvasTexture =>
     context.fillRect(WIDTH - 230, 860, 190, 110);
     let seed = 1950;
     context.fillStyle = '#141414';
-    for (let x = WIDTH - 215; x < WIDTH - 60; ) {
+    for (let x = WIDTH - 215; x < WIDTH - 60;) {
       seed = (seed * 16807) % 2147483647;
       const width = 2 + (seed % 4);
       context.fillRect(x, 872, width, 60);

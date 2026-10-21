@@ -25,12 +25,7 @@ export const finalBook3d = (state: GameState): Book3d => {
     ...leafPagesBook(() => createFinalBookPages(state, (page) => book.navigate?.(page + 1)), 1, STRANGE_PAPER),
     look: async () => {
       const name = state.playerName.trim();
-      const [cover, back, inside, spine] = await Promise.all([
-        finalFront(name),
-        finalBack(),
-        finalPlain(23),
-        finalSpine(name, THICKNESS),
-      ]);
+      const [cover, back, inside, spine] = await Promise.all([finalFront(name), finalBack(), finalPlain(23), finalSpine(name, THICKNESS)]);
       return {
         cover: cover.texture,
         coverGlow: cover.glow ?? undefined,
