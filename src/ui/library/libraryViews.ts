@@ -5,7 +5,8 @@ import * as THREE from 'three';
  * gauche le meuble des fins avec la machine de la Loterie. Une flèche mène de l'un à l'autre ; la caméra glisse de côté, en
  * face des meubles, et se pose devant le nouveau.
  */
-export type LibraryView = 'library' | 'endings';
+/** La vitrine, le meuble des fins à gauche, l'autre bibliothèque à droite (otherBookcase.ts). */
+export type LibraryView = 'library' | 'endings' | 'other';
 
 /** Ce que la caméra doit cadrer : le milieu, la demi-hauteur et la demi-largeur à faire tenir, la profondeur du meuble. */
 export interface Framing {

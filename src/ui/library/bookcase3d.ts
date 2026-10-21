@@ -15,8 +15,8 @@ export const FRONT = DEPTH / 2;
 export const CORNICE_FRONT = 0.04 + (DEPTH + 0.12) / 2;
 export const CORNICE_MIDDLE = CORNICE / 2;
 /** Une case basse (pour des livres couchés), une case haute (pour des livres debout, même sur une pile). */
-const LOW = 0.65;
-const HIGH = 1.25;
+export const LOW = 0.65;
+export const HIGH = 1.25;
 
 /** Une case : sa place dans le meuble (bord gauche, dessus de son étagère), sa taille, ce qu'elle accueille. */
 export interface BookcaseCell {
@@ -34,7 +34,13 @@ export interface BookcaseCell {
  * meuble mural fait sur mesure. 21 places d'abord (FILL_ORDER), puis 12 de plus (MORE_FILL_ORDER) dans des
  * cases jusque-là vides ; les cases basses et étroites restent vides (un livre n'y tient ni debout ni couché).
  */
-const COLUMNS: { width: number; cells: [number, Slot[]][] }[] = [
+export interface BookcaseColumn {
+  width: number;
+  /** Ses cases de bas en haut : hauteur (LOW ou HIGH), remplissage. */
+  cells: [number, Slot[]][];
+}
+
+const COLUMNS: BookcaseColumn[] = [
   {
     width: 1.12,
     cells: [
@@ -123,9 +129,10 @@ export interface Bookcase {
  * La vitrine de la bibliothèque personnelle : un grand meuble de noyer, ouvert, découpé en cases de
  * toutes tailles (des colonnes de largeurs différentes, des étagères décalées), fermé au fond de
  * planches plus sombres. Le socle est posé en y = 0, centré en x et en z ; les livres sont à leur vraie
- * taille (1 de haut). `onLoad` : la photo du bois est arrivée, redessiner.
+ * taille (1 de haut). `onLoad` : la photo du bois est arrivée, redessiner. Un autre meuble du même bois
+ * (otherBookcase.ts) passe ses colonnes, et `grain` pour que son bois ne soit pas la copie de la vitrine.
  */
-export const createBookcase = (onLoad: () => void): Bookcase => {
+export const createBookcase = (onLoad: () => void, columns: BookcaseColumn[] = COLUMNS, grain = ''): Bookcase => {
   const root = new THREE.Group();
   /** Une pièce de bois ; le fil suit sa longueur (UV tournées pour une pièce couchée). */
   const box = (seed: string, width: number, height: number, depth: number, x: number, y: number, z: number): void => {
@@ -134,7 +141,7 @@ export const createBookcase = (onLoad: () => void): Bookcase => {
       const uv = geometry.getAttribute('uv');
       for (let index = 0; index < uv.count; index++) uv.setXY(index, uv.getY(index), uv.getX(index));
     }
-    const material = oldWood(seed, { length: Math.max(width, height), color: PIECE }, onLoad);
+    const material = oldWood(grain + seed, { length: Math.max(width, height), color: PIECE }, onLoad);
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
     // Le meuble reçoit l'ombre des livres sans en porter : chaque case a son spot, l'étagère du dessus ne
@@ -142,9 +149,10 @@ export const createBookcase = (onLoad: () => void): Bookcase => {
     mesh.receiveShadow = true;
     root.add(mesh);
   };
-  const columnHeight = (cells: [number, Slot[]][]): number => cells.reduce((sum, [height]) => sum + height, 0) + (cells.length - 1) * BOARD;
-  const inner = Math.max(...COLUMNS.map((column) => columnHeight(column.cells)));
-  const innerWidth = COLUMNS.reduce((sum, column) => sum + column.width, 0) + (COLUMNS.length - 1) * BOARD;
+  const columnHeight = (cells: BookcaseColumn['cells']): number =>
+    cells.reduce((sum, [height]) => sum + height, 0) + (cells.length - 1) * BOARD;
+  const inner = Math.max(...columns.map((column) => columnHeight(column.cells)));
+  const innerWidth = columns.reduce((sum, column) => sum + column.width, 0) + (columns.length - 1) * BOARD;
   const width = innerWidth + 2 * SIDE;
   const height = PLINTH + inner + CORNICE;
   const left = -innerWidth / 2;
@@ -155,14 +163,14 @@ export const createBookcase = (onLoad: () => void): Bookcase => {
   box('plinth', width, PLINTH, DEPTH + 0.06, 0, PLINTH / 2, 0.03);
   box('cornice', width + 0.1, CORNICE, DEPTH + 0.12, 0, height - CORNICE / 2, 0.04);
   // Le fond : la photo entière, ses planches debout.
-  const back = new THREE.Mesh(new THREE.BoxGeometry(width, height, 0.04), oldWood('back', { whole: true, color: BACK }, onLoad));
+  const back = new THREE.Mesh(new THREE.BoxGeometry(width, height, 0.04), oldWood(`${grain}back`, { whole: true, color: BACK }, onLoad));
   back.position.set(0, height / 2, -DEPTH / 2 - 0.02);
   back.receiveShadow = true;
   root.add(back);
 
   const cells: BookcaseCell[] = [];
   let x = left;
-  COLUMNS.forEach((column, index) => {
+  columns.forEach((column, index) => {
     // La séparation à droite de la colonne (sauf la dernière, contre le montant).
     if (index > 0) box(`divider${index}`, BOARD, inner, DEPTH, x - BOARD / 2, PLINTH + inner / 2, 0);
     let floor = PLINTH;

@@ -14,7 +14,16 @@ import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { visibleBox } from '../book3d/visibleBox';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
-import { CORNICE_FRONT, CORNICE_MIDDLE, DEBUG_CELL, FILL_ORDER, FRONT, MORE_FILL_ORDER, createBookcase } from './bookcase3d';
+import {
+  CORNICE_FRONT,
+  CORNICE_MIDDLE,
+  DEBUG_CELL,
+  FILL_ORDER,
+  FRONT,
+  MORE_FILL_ORDER,
+  createBookcase,
+  type BookcaseCell,
+} from './bookcase3d';
 import { finalBook3d } from '../finalBook/finalBook3d';
 import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
@@ -47,6 +56,7 @@ import { createLotteryMachine } from './lotteryMachine3d';
 import { drawResults } from './lotteryText';
 import { lastLotteryDraw, settleLottery, startLottery } from '../../systems/lottery';
 import { lotteryTokens } from '../../systems/tokenRelic';
+import { OTHER_FILL_ORDER, createOtherBookcase } from './otherBookcase';
 import { GLIDE_MS, glideEase, rememberView, rememberedView, shotOf, type LibraryView, type Shot } from './libraryViews';
 
 /**
@@ -159,20 +169,25 @@ export const createLibraryPage = (
   const stage = el('div', 'library-stage');
   const canvas = el('canvas', 'library-canvas');
   const caption = el('div', 'library-caption');
-  // Les flèches d'un meuble à l'autre : à gauche sur la vitrine (vers le meuble des fins), à droite sur le meuble des fins.
+  // Les flèches d'un meuble à l'autre : à gauche sur la vitrine (vers le meuble des fins), à droite sur le meuble des fins ;
+  // à droite sur la vitrine (vers l'autre bibliothèque, quand elle est là), à gauche sur l'autre bibliothèque.
   const toEndings = el('button', 'library-arrow left', '‹');
   const toLibrary = el('button', 'library-arrow right', '›');
+  const toOther = el('button', 'library-arrow right', '›');
+  const backFromOther = el('button', 'library-arrow left', '‹');
   const arrowTitles = (): void => {
     for (const [arrow, key] of [
       [toEndings, 'ui.endings.toEndings'],
       [toLibrary, 'ui.endings.toLibrary'],
+      [toOther, 'ui.endings.toOther'],
+      [backFromOther, 'ui.endings.toLibrary'],
     ] as const) {
       arrow.title = t(key);
       arrow.setAttribute('aria-label', t(key));
     }
   };
   arrowTitles();
-  stage.append(canvas, caption, toEndings, toLibrary);
+  stage.append(canvas, caption, toEndings, toLibrary, toOther, backFromOther);
   root.append(back, stage);
 
   let dirty = true;
@@ -233,14 +248,6 @@ export const createLibraryPage = (
   machineLamp.position.set(MACHINE_AT.x, ENDINGS_HEIGHT + 0.6, 1.6);
   machineLamp.target.position.set(MACHINE_AT.x, 1.4, 0.3);
   scene.add(endingsLamp, endingsLamp.target, machineLamp, machineLamp.target);
-  // La pièce s'assombrit : ce sont les spots des cases qui font briller la vitrine.
-  scene.traverse((object) => {
-    if (object instanceof THREE.Light) object.intensity *= ROOM_DIM;
-  });
-  const cellLights = addCellLights(bookcase.root, bookcase.cells);
-  // Les reliques trouvées, dans leurs petites cases (12/10).
-  const relics = createRelicShelf(state, scene, bookcase.cells, cellLights, environment, () => (dirty = true));
-
   const thickness = (id: string): number => (id === LIBRARY_FIRST_BOOK ? THICKNESS : (rareBookArt(id).thickness ?? THICKNESS));
   // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre. Le livre des
   // crédits, là dès le début, puis le premier livre lu, passent avant tous les livres rares.
@@ -251,16 +258,34 @@ export const createLibraryPage = (
       .filter((id) => id !== LIBRARY_DEBUG_BOOK && isRareBookFound(state, id))
       .sort((a, b) => state.rareBooks[a] - state.rareBooks[b]),
   ];
-  // Le cartouche de la corniche : les livres rangés (le livre de débogage, s'il a été trouvé), les reliques.
+  // La vitrine d'abord ; les livres qui n'y tiennent plus vont dans l'autre bibliothèque, à droite, qui ne paraît qu'avec le
+  // premier d'entre eux (maquette du 21/10). Aucun livre rangé ne change de place.
+  const shelfBooks = found.map((id) => ({ id, thickness: thickness(id) }));
+  const inVitrine = layoutBookcase(shelfBooks, bookcase.cells, FILL_ORDER, MORE_FILL_ORDER);
+  const other = shelfBooks.length > inVitrine.length ? createOtherBookcase(() => (dirty = true)) : null;
+  const inOther = other ? layoutBookcase(shelfBooks.slice(inVitrine.length), other.cells, OTHER_FILL_ORDER) : [];
+  if (other) scene.add(other.root, other.lamp, other.lamp.target);
+  // La pièce s'assombrit : ce sont les spots des cases qui font briller la vitrine.
+  scene.traverse((object) => {
+    if (object instanceof THREE.Light) object.intensity *= ROOM_DIM;
+  });
+  const cellLights = addCellLights(bookcase.root, bookcase.cells);
+  // Les reliques trouvées, dans leurs petites cases (12/10).
+  const relics = createRelicShelf(state, scene, bookcase.cells, cellLights, environment, () => (dirty = true));
+
+  // Le cartouche de la corniche : les livres qu'elle garde (le livre de débogage, s'il a été trouvé), les reliques. Celui de
+  // l'autre bibliothèque : ses livres.
   const cartouche = createCartouche(() => (dirty = true));
   const shelfText = (): string =>
     cartoucheText(
-      found.length + (isRareBookFound(state, LIBRARY_DEBUG_BOOK) ? 1 : 0),
+      inVitrine.length + (isRareBookFound(state, LIBRARY_DEBUG_BOOK) ? 1 : 0),
       RELICS.filter((relic) => relicFound(state, relic.id)).length,
     );
+  const otherText = (): string => cartoucheText(inOther.length, 0);
   cartouche.mesh.position.set(0, bookcase.size.y - CORNICE_MIDDLE, CORNICE_FRONT);
   bookcase.root.add(cartouche.mesh);
   cartouche.write(shelfText());
+  other?.cartouche.write(otherText());
   // Celui du meuble des fins : les fausses fins trouvées, sur onze (« 1/11 »).
   const endingsText = (): string => writeDigits(`${fakeEndingsFound(state)}/${ENDING_TOMES}`);
   endings.cartouche.write(endingsText());
@@ -268,17 +293,10 @@ export const createLibraryPage = (
     debugging || isRareBookFound(state, LIBRARY_DEBUG_BOOK)
       ? layoutBookcase([{ id: LIBRARY_DEBUG_BOOK, thickness: THICKNESS }], bookcase.cells, [DEBUG_CELL])
       : [];
-  const shelfPlaces: Place[] = [
-    ...layoutBookcase(
-      found.map((id) => ({ id, thickness: thickness(id) })),
-      bookcase.cells,
-      FILL_ORDER,
-      MORE_FILL_ORDER,
-    ),
-    ...debugShelf,
-  ].map((spot) => {
-    const cell = bookcase.cells[spot.cell];
-    const floor = new THREE.Vector2(cell.left + cell.width / 2, cell.floor);
+  /** Un livre à sa place dans une case de la vitrine, ou de l'autre bibliothèque (`at` : où est le meuble). */
+  const shelfPlace = (spot: ShelfPlace, cells: BookcaseCell[], at = 0): Place => {
+    const cell = cells[spot.cell];
+    const floor = new THREE.Vector2(at + cell.left + cell.width / 2, cell.floor);
     const z = FRONT - SET_BACK - spot.depth;
     const pivot =
       spot.pose === 'stand'
@@ -296,7 +314,9 @@ export const createLibraryPage = (
       pull: 0,
       aim: 0,
     };
-  });
+  };
+  const shelfPlaces = [...inVitrine, ...debugShelf].map((spot) => shelfPlace(spot, bookcase.cells));
+  const otherPlaces = other ? inOther.map((spot) => shelfPlace(spot, other.cells, other.root.position.x)) : [];
   // Le meuble des fins : en haut sur le chevalet, le vrai livre (?debug) ; en bas, « Qui j'étais », tome 1.
   const endingsAt = (local: THREE.Vector3): THREE.Vector3 => local.clone().add(endings.root.position);
   const easelPlaces: Place[] = debugging
@@ -328,7 +348,7 @@ export const createLibraryPage = (
     aim: 0,
   });
   const tomePlaces: Place[] = SAGA_TOMES.flatMap((id, index): Place[] => (tomeFound(state, index) ? [tomePlace(id, index)] : []));
-  const places = [...shelfPlaces, ...easelPlaces, ...tomePlaces];
+  const places = [...shelfPlaces, ...otherPlaces, ...easelPlaces, ...tomePlaces];
   /**
    * Un livre posé à sa place `spot` : son vrai modèle, chargé à part (couvertures, polices), le dos vers le lecteur, éclairé
    * par les spots de son meuble (`lights`). `flanks` : un tome sans voisin d'un côté, dont on voit les plats de biais. Reposé
@@ -373,6 +393,7 @@ export const createLibraryPage = (
   };
   // Les livres trouvés de la vitrine.
   for (const place of shelfPlaces) placeBook(place, place.spot!, cellLights);
+  for (const place of otherPlaces) placeBook(place, place.spot!, other!.cellLights);
   // Les tomes rangés, comme les livres de la vitrine (l'auteur, 17/10), debout ; leurs plats et leur dos sont écrits dans la
   // langue du jeu : ils sont reposés quand elle change (sauf celui qu'on a pris).
   let tomesLocale = getLocale();
@@ -453,13 +474,16 @@ export const createLibraryPage = (
   const framing = (name: LibraryView) =>
     name === 'library'
       ? { center, tall: (bookcase.size.y / 2) * 1.08, wide: (bookcase.size.x / 2) * 1.12, depth: bookcase.size.z }
-      : {
-          center: new THREE.Vector3(ENDINGS_X + 0.1, ENDINGS_HEIGHT / 2, 0),
-          tall: (ENDINGS_HEIGHT / 2) * 1.1,
-          wide: 2.0 * 1.1,
-          depth: ENDINGS_DEPTH,
-        };
-  let view: LibraryView = rememberedView();
+      : name === 'other' && other
+        ? { center: other.center, tall: (other.size.y / 2) * 1.08, wide: (other.size.x / 2) * 1.12, depth: other.size.z }
+        : {
+            center: new THREE.Vector3(ENDINGS_X + 0.1, ENDINGS_HEIGHT / 2, 0),
+            tall: (ENDINGS_HEIGHT / 2) * 1.1,
+            wide: 2.0 * 1.1,
+            depth: ENDINGS_DEPTH,
+          };
+  // L'autre bibliothèque n'est pas (encore) là : retour devant la vitrine.
+  let view: LibraryView = rememberedView() === 'other' && !other ? 'library' : rememberedView();
   let glide: { from: Shot; to: Shot; start: number } | null = null;
   /** La caméra entre deux vues (`k` de 0 à 1), à hauteur de leur milieu, et les lumières qui la suivent. */
   const aim = (to: Shot, k: number, from: Shot = to): void => {
@@ -480,6 +504,8 @@ export const createLibraryPage = (
   const showArrows = (): void => {
     toEndings.hidden = view !== 'library';
     toLibrary.hidden = view !== 'endings';
+    toOther.hidden = view !== 'library' || !other;
+    backFromOther.hidden = view !== 'other';
   };
   showArrows();
   let glideEnd: ReturnType<typeof setTimeout> | undefined;
@@ -503,6 +529,8 @@ export const createLibraryPage = (
   };
   toEndings.addEventListener('click', () => go('endings'));
   toLibrary.addEventListener('click', () => go('library'));
+  toOther.addEventListener('click', () => go('other'));
+  backFromOther.addEventListener('click', () => go('library'));
 
   /** Le nom du livre survolé, posé sur le bord avant de son étagère, au milieu du livre. */
   const placeCaption = (): void => {
@@ -691,6 +719,7 @@ export const createLibraryPage = (
     update: () => {
       back.textContent = `← ${t('ui.back')}`;
       cartouche.write(shelfText());
+      other?.cartouche.write(otherText());
       endings.cartouche.write(endingsText());
       // La boucle appelle update dix fois par seconde : la machine ne se redessine (la scène avec) que si
       // leurs textes ou les jetons ont changé.
