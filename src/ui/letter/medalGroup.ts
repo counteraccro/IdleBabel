@@ -56,10 +56,14 @@ export const createMedalGroup = (curse: boolean): MedalGroup => {
   let rowsKey = '';
   let rows: { clock: HTMLElement; text: HTMLElement; mini: HTMLElement }[] = [];
   let hideTimer = 0;
+  /** Une apparition demandée à la prochaine image : une seule à la fois (onglet caché, les images attendent). */
+  let showing = false;
 
   const update = (medals: Medal[]): void => {
     const first = soonest(medals);
     if (!first) {
+      // Parti avant d'être apparu : il reste caché.
+      if (showing) root.hidden = true;
       if (!root.hidden && root.classList.contains('on')) {
         root.classList.remove('on');
         hideTimer = window.setTimeout(() => (root.hidden = true), FADE_MS);
@@ -69,7 +73,13 @@ export const createMedalGroup = (curse: boolean): MedalGroup => {
     if (root.hidden || !root.classList.contains('on')) {
       window.clearTimeout(hideTimer);
       root.hidden = false;
-      requestAnimationFrame(() => root.classList.add('on'));
+      if (!showing) {
+        showing = true;
+        requestAnimationFrame(() => {
+          showing = false;
+          if (!root.hidden) root.classList.add('on');
+        });
+      }
     }
     if (shownIcon !== first.icon) icon.innerHTML = svg((shownIcon = first.icon));
     root.style.setProperty('--left', String(first.left / first.total));

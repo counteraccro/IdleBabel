@@ -7,7 +7,7 @@ import { createLighting } from './lighting';
 import { isDebugEnabled } from '../../debug/enabled';
 import { oldWood } from '../library/oldWood';
 import type { Book3d } from './book3dBook';
-import { flyingHome, launchFlight } from './bookFlight';
+import { flying, flyingHome, launchFlight } from './bookFlight';
 import { animationNow } from '../animationClock';
 
 /** Un livre du rebord : son nom (écrit dessous), son modèle 3D, ce qu'il ouvre. */
@@ -93,6 +93,8 @@ const BACK_Z = 0.04;
 const ELEVATION = THREE.MathUtils.degToRad(5);
 const AZIMUTH = THREE.MathUtils.degToRad(7);
 const FOV = 22;
+/** Aucun livre qui revient. */
+const NONE: string[] = [];
 /** Le clou de la clé : une tête de laiton, au haut de son anneau. */
 const NAIL_RADIUS = 0.025;
 
@@ -389,7 +391,10 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
     unsorted = false;
     dirty = true;
   }
-  PHONE.addEventListener('change', () => (unsorted = true));
+  const onPhone = (): void => {
+    unsorted = true;
+  };
+  PHONE.addEventListener('change', onPhone);
 
   // Survol : le livre se soulève, un contour doré ; au clic, il s'ouvre.
   const raycaster = new THREE.Raycaster();
@@ -466,8 +471,12 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
   const frame = (frameTime: number): void => {
     const now = animationNow(frameTime);
     // Rebord retiré (autre écran) : son contexte WebGL est rendu tout de suite.
+    // L'écouteur de l'écran retiré aussi : il retiendrait toute la scène.
     if (!root.isConnected) {
-      if (mounted) return destroy(scene);
+      if (mounted) {
+        PHONE.removeEventListener('change', onPhone);
+        return destroy(scene);
+      }
     } else mounted = true;
     const dt = Math.min(0.05, (now - before) / 1000);
     before = now;
@@ -540,10 +549,11 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
   let wanted: string | null = null;
   /** Cache le livre ouvert, sa place gardée ; un livre qui revient reste caché jusqu'à ce qu'il soit arrivé. */
   function applyAway(): void {
-    const hidden = new Set(flyingHome());
-    if (wanted) hidden.add(wanted);
+    // À chaque image : rien d'alloué tant qu'aucun livre ne revient.
+    const home = flying() ? flyingHome() : NONE;
+    const hidden = (id: string): boolean => id === wanted || home.includes(id);
     for (const slot of slots) {
-      const away = hidden.has(slot.spec.id);
+      const away = hidden(slot.spec.id);
       if (slot.away === away) continue;
       slot.away = away;
       slot.button.disabled = away;
@@ -552,7 +562,7 @@ export const createShelf3d = (books: ShelfBook[], ornaments: ShelfOrnament[] = [
       unsorted = true;
     }
     for (const item of placed) {
-      const away = hidden.has(item.spec.id);
+      const away = hidden(item.spec.id);
       if (item.away === away) continue;
       item.away = away;
       item.button.disabled = away;
