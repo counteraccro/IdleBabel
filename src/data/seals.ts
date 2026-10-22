@@ -298,6 +298,8 @@ export const SEALS: readonly SealDef[] = [
   secret('puzzlesNoEraser'),
   // Une grille du livre de jeux finie après treize vérifications ratées : sans plus rien rapporter (systems/puzzles.ts).
   secret('puzzlesGlory'),
+  // Toutes les cases de l'album « Les Couvertures de Babel » remplies, la liste de contrôle cochée en entier (systems/stickerAlbum.ts).
+  secret('stickerAlbumAll'),
   // Un mot entouré au crayon, à la dernière page du Manuscrit de Voynich (ui/rareBooks/voynich/voynich.ts).
   secret('oneWord'),
   // Vingt pages du Catalogue des catalogues lues dans la bibliothèque, à la recherche d'un cadeau de Noël

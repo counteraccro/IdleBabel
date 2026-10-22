@@ -7,6 +7,7 @@ import {
   MODERN_COLORS,
   RAREST,
   albumSticker,
+  checkAlbumFull,
   partSlots,
   rareAt,
   scanAlbum,
@@ -324,6 +325,7 @@ const colorOf = (page: number): string => {
 export const paintAlbumPage = (context: CanvasRenderingContext2D, state: GameState, page: number, spineOnLeft: boolean): boolean => {
   if (page < 1 || page > PAGES_PER_BOOK) return false;
   keepScanning(state);
+  checkAlbumFull(state);
   const book = texts();
   paper(context, colorOf(page), page, spineOnLeft);
   if (page === TITLE_PAGE) titlePage(context, book);

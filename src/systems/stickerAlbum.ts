@@ -1,6 +1,7 @@
 import { RARE_BOOKS } from '../data/rareBooks';
 import { coverDesign, type CoverDesign } from './coverDesign';
 import { STRANGE_BOOK_INDEX } from './strangeBook';
+import { sealEvent } from './seals';
 import type { GameState } from '../core/state';
 
 /**
@@ -170,3 +171,12 @@ export const albumSticker = (state: GameState, slot: AlbumSlot): { book?: number
 /** Le livre rare trouvé au livre n° `book`, s'il y en a un. */
 export const rareAt = (state: GameState, book: number): string | undefined =>
   Object.keys(state.rareBooks).find((id) => state.rareBooks[id] === book);
+
+/**
+ * Toutes les cases remplies (la liste de contrôle cochée en entier) : le sceau secret de l'album. Vérifié quand l'album est
+ * ouvert, une fois tous les livres lus passés en revue.
+ */
+export const checkAlbumFull = (state: GameState): void => {
+  if ('stickerAlbumAll' in state.seals || !scanAlbum(state, 0)) return;
+  if (ALBUM_SLOTS.every((slot) => albumSticker(state, slot).book !== undefined)) sealEvent(state, 'stickerAlbumAll');
+};

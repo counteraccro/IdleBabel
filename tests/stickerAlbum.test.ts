@@ -16,6 +16,7 @@ import {
   SENSE_TITLES,
   SENSE_WORDS,
   albumSticker,
+  checkAlbumFull,
   partSlots,
   rareAt,
   scanAlbum,
@@ -110,7 +111,19 @@ describe('Album d’autocollants', () => {
     expect(albumSticker(state, thousandth).book).toBeUndefined();
   });
 
-  it('a son sceau, comme les autres livres rares', () => {
+  it('a son sceau, comme les autres livres rares, et un sceau secret quand il est plein', () => {
     expect(SEALS.some((seal) => seal.id === 'rare-stickerAlbum')).toBe(true);
+    expect(SEALS.find((seal) => seal.id === 'stickerAlbumAll')?.plate).toBe('secrets');
+  });
+
+  it('n’appose pas son sceau secret tant qu’une case est vide', () => {
+    const state = stateWith(2000);
+    checkAlbumFull(state);
+    expect('stickerAlbumAll' in state.seals).toBe(false);
+    scanAlbum(state);
+    state.rareBooks = Object.fromEntries(ALBUM_RARES.map((id, i) => [id, 3 + i]));
+    checkAlbumFull(state);
+    // Le millionième livre n'est pas lu : la case des grandes dates reste vide.
+    expect('stickerAlbumAll' in state.seals).toBe(false);
   });
 });
