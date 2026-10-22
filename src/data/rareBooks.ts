@@ -53,6 +53,9 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   // Un cahier de jeux du kiosque : chaque jour, neuf grilles à remplir pour de bon, dans la bibliothèque (20/10).
   { id: 'puzzles' },
   // L'autobiographie du jeu (décidée le 03/10) : la Bibliothèque contient le livre de sa propre création.
+  // « Gare aux pages » : la notice du jeu en bande dessinée, en lettres de Babel (21-22/10). Tirée bien plus souvent que les
+  // autres : elle sort presque toujours parmi les trois premiers livres rares.
+  { id: 'comicNotice', weight: 30 },
   { id: 'idleBabel' },
   // Le livre de débogage (décidé le 01/10) : dix fois plus rare ; du charabia qui bugue, et il ne s'ouvre
   // dans la bibliothèque qu'en mode ?debug (sa case à lui dans la vitrine).

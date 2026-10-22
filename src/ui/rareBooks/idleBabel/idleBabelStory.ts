@@ -58,6 +58,7 @@ export const BOOK_DRAFTS: Record<string, string[]> = {
   rabbit: ['rabbit-a2', 'rabbit-a3'],
   endlessBook: ['endlessBook-b', 'endlessBook-c'],
   coloring: ['coloring-b', 'coloring-c'],
+  comicNotice: ['comicNotice-a', 'comicNotice-c'],
   trueStory: ['trueStory-a', 'trueStory-c'],
 };
 
@@ -122,6 +123,7 @@ export const STORY: StoryChapter[] = [
           'endlessBook',
           'coloring',
           'puzzles',
+          'comicNotice',
         ],
       },
       {

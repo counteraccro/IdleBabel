@@ -7,6 +7,7 @@ import { bigXArt } from './bigX/bigX';
 import { catalogueArt } from './catalogue/catalogue';
 import { centerEarthArt } from './centerEarth/centerEarth';
 import { coloringArt } from './coloring/coloring';
+import { comicNoticeArt } from './comicNotice/comicNotice';
 import { puzzlesArt } from './puzzles/puzzles';
 import { blankPageArt } from './blankPage/blankPage';
 import { creditsArt } from './credits/credits';
@@ -46,6 +47,7 @@ const ARTS: Record<string, RareBookArt> = {
   catalogue: catalogueArt,
   centerEarth: centerEarthArt,
   coloring: coloringArt,
+  comicNotice: comicNoticeArt,
   puzzles: puzzlesArt,
   credits: creditsArt,
   dadJokes: dadJokesArt,

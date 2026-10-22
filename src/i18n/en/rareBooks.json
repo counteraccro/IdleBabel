@@ -2528,6 +2528,106 @@
     "hoursMinutes": "{h} h {mm}",
     "locale": "en-GB"
   },
+  "comicNotice": {
+    "name": "Mind the Pages",
+    "cover": ["MIND", "THE PAGES"],
+    "subtitle": "ILLUSTRATED MANUAL",
+    "publisher": "HEXAGON EDITIONS",
+    "back": ["Read, find, understand:", "the user’s guide", "in eight plates."],
+    "plates": [
+      {
+        "title": "READ",
+        "captions": [
+          "You wake up in a hexagon. In front of you, an open book.",
+          "It is written in every language. Mostly none.",
+          "Touch the page: it turns.",
+          "Every page counts. By hand, it takes a while.",
+          "Next plate: getting help."
+        ],
+        "words": ["three", "pages read"]
+      },
+      {
+        "title": "GETTING HELP",
+        "captions": [
+          "A reading method reads for you.",
+          "They live in the hive, next to the book.",
+          "You buy it with your pages read.",
+          "Then it reads on its own, even when you touch nothing.",
+          "Each copy reads more. And costs a little more.",
+          "The next ones hide in the pages. Plate 4."
+        ],
+        "words": ["diagonal", "reading", "fifteen", "pages", "twenty", "pages read", "fifteen", "seventeen", "twenty"]
+      },
+      {
+        "title": "UNDERSTAND",
+        "captions": [
+          "In the gibberish, sometimes, a sentence makes sense.",
+          "Understanding it gives you Knowledge.",
+          "Beginner’s mistake: keeping it to yourself.",
+          "Open the white book: each intuition has its page.",
+          "Give your Knowledge: that is “understand”.",
+          "And you read differently."
+        ],
+        "words": ["the sun also rises.", "knowledge", "so much", "speed", "reading", "understand"]
+      },
+      {
+        "title": "FIND",
+        "captions": [
+          "Sometimes the page hides a word. More rarely, a piece of a sentence.",
+          "That is a find.",
+          "It is written in the white book, in its place.",
+          "Piece by piece, the sentence comes together.",
+          "It teaches you a new method.",
+          "The more you read, the more you find."
+        ],
+        "words": ["skips", "........ skips", "...... other word.", "the mind skips", "every other word."]
+      },
+      {
+        "title": "CATCH",
+        "captions": [
+          "Sometimes a letter escapes from the open book.",
+          "Catch it before it fades.",
+          "A bonus, for a while. Its medallion sits by the counter.",
+          "Missed? Nothing is lost. Others will come.",
+          "Later, they come out in flocks."
+        ],
+        "words": ["trance"]
+      },
+      {
+        "title": "SHELVE",
+        "captions": [
+          "Four hundred and ten pages: the book closes. You take another one.",
+          "Very rarely, the book taken from the shelf is a known book.",
+          "A rare book. This one can really be read.",
+          "It takes its place in the display case. For good.",
+          "Each has its seal. Next plate."
+        ],
+        "words": ["alice", "alice was", "beginning to", "get very tired", "of sitting by", "her sister.", "eight books"]
+      },
+      {
+        "title": "COLLECT",
+        "captions": [
+          "The Great Book keeps count of everything. Its plates hold your seals.",
+          "Its numbers never stop moving.",
+          "A milestone reached: a seal.",
+          "Its title is only revealed once you earn it.",
+          "And each seal makes finds a little more frequent."
+        ],
+        "words": ["pages read", "a thousand", "books closed", "two", "finds", "thirty", "first steps", "read a thousand pages"]
+      },
+      {
+        "title": "SLEEP",
+        "captions": [
+          "You can close the game. Leave.",
+          "Your methods keep going.",
+          "When you return, a dream tells you what your hands have done.",
+          "Only the first hours count.",
+          "Then go back to reading."
+        ],
+        "words": ["a dream", "pages read", "so many", "finds", "twelve", "seals", "two", "the end"]
+      }
+    ]
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -2960,6 +3060,8 @@
         "endlessBook-c": "The maze of numbers",
         "coloring-b": "The school exercise book",
         "coloring-c": "The cover to colour in",
+        "comicNotice-a": "The title found in the gibberish",
+        "comicNotice-c": "The game screen",
         "trueStory-a": "The title in cream",
         "trueStory-c": "The label at the top",
         "credits-a": "The colophon",

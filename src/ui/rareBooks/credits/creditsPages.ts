@@ -58,8 +58,13 @@ const FONTS: [string, string][] = [
   ['Great Vibes', 'Robert Leuschke'],
   ['Fredoka', 'Milena Brandão'],
   ['Luckiest Guy', 'Astigmatic'],
+  ['Courier Prime', 'Alan Dague-Greene'],
+  ['Comic Neue', 'Craig Rozynski'],
   ['Nothing You Could Do', 'Kimberly Geswein'],
 ];
+
+/** De la première police à la dernière, sur la page des polices. */
+const FONTS_SPAN = 22 * 21;
 
 export const loadCreditsPageFonts = (): Promise<unknown> =>
   Promise.all([`400 40px ${GARAMOND}`, `500 40px ${GARAMOND}`, `italic 40px ${GARAMOND}`].map((font) => document.fonts.load(font)));
@@ -178,8 +183,9 @@ const fontsPage = (context: CanvasRenderingContext2D): void => {
   const { parts, fontsIntro } = text();
   heading(context, parts[3]);
   write(context, fontsIntro, CENTER, 205, { font: `italic 18px ${GARAMOND}`, color: SOFT });
-  // Vingt-trois polices : resserrées pour finir au-dessus du folio (la dernière là où finissait la 22e).
-  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * 21));
+  // Les polices resserrées pour que la dernière finisse toujours au-dessus du folio (là où finissait la 22e, à 21 d'écart).
+  const step = Math.min(21, FONTS_SPAN / (FONTS.length - 1));
+  FONTS.forEach(([font, who], i) => credit(context, font.toLocaleUpperCase(), who, '', 255 + i * step));
   folio(context, FONTS_PAGE);
 };
 

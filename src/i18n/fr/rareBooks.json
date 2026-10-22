@@ -2533,6 +2533,106 @@
     "hoursMinutes": "{h} h {mm}",
     "locale": "fr-FR"
   },
+  "comicNotice": {
+    "name": "Gare aux pages",
+    "cover": ["GARE", "AUX PAGES"],
+    "subtitle": "NOTICE ILLUSTRÉE",
+    "publisher": "ÉDITIONS DE L’HEXAGONE",
+    "back": ["Lire, trouver, comprendre :", "le mode d’emploi", "en huit planches."],
+    "plates": [
+      {
+        "title": "LIRE",
+        "captions": [
+          "Vous vous réveillez dans un hexagone. Devant vous, un livre ouvert.",
+          "Il est écrit dans toutes les langues. Surtout aucune.",
+          "Touchez la page : elle tourne.",
+          "Chaque page compte. À la main, c’est long.",
+          "Planche suivante : se faire aider."
+        ],
+        "words": ["trois", "pages lues"]
+      },
+      {
+        "title": "SE FAIRE AIDER",
+        "captions": [
+          "Une méthode de lecture lit à votre place.",
+          "Elles vivent dans la ruche, à côté du livre.",
+          "Elle s’achète avec vos pages lues.",
+          "Puis elle lit seule, même quand vous ne touchez à rien.",
+          "Chaque exemplaire lit en plus. Et coûte un peu plus.",
+          "Les suivantes se cachent dans les pages. Planche 4."
+        ],
+        "words": ["lecture", "diagonale", "quinze", "pages", "vingt", "pages lues", "quinze", "dix sept", "vingt"]
+      },
+      {
+        "title": "COMPRENDRE",
+        "captions": [
+          "Dans le charabia, parfois, une phrase a un sens.",
+          "La comprendre vous donne de la Connaissance.",
+          "Erreur de débutant : la garder pour soi.",
+          "Ouvrez le livre blanc : chaque intuition y a sa page.",
+          "Donnez votre Connaissance : c’est « comprendre ».",
+          "Et vous lisez autrement."
+        ],
+        "words": ["le soleil se leve aussi.", "connaissance", "beaucoup", "lecture", "rapide", "comprendre"]
+      },
+      {
+        "title": "TROUVER",
+        "captions": [
+          "Parfois, la page cache un mot. Plus rarement, un morceau de phrase.",
+          "C’est une trouvaille.",
+          "Elle s’écrit dans le livre blanc, à sa place.",
+          "Morceau après morceau, la phrase se complète.",
+          "Elle vous apprend une nouvelle méthode.",
+          "Plus vous lisez, plus vous trouvez."
+        ],
+        "words": ["saute", ".......... saute", "...... sur deux.", "le cerveau saute", "un mot sur deux."]
+      },
+      {
+        "title": "ATTRAPER",
+        "captions": [
+          "Parfois, une lettre s’échappe du livre ouvert.",
+          "Attrapez-la avant qu’elle ne s’éteigne.",
+          "Un bonus, pour un temps. Son médaillon près du compteur.",
+          "Ratée ? Rien n’est perdu. Il en viendra d’autres.",
+          "Plus tard, elles sortent en volée."
+        ],
+        "words": ["transe"]
+      },
+      {
+        "title": "RANGER",
+        "captions": [
+          "Quatre cent dix pages : le livre se referme. Vous en prenez un autre.",
+          "Très rarement, le livre pris sur l’étagère est un livre connu.",
+          "Un livre rare. Celui-là se lit pour de vrai.",
+          "Il prend sa place dans la vitrine. Pour toujours.",
+          "Chacun a son sceau. Planche suivante."
+        ],
+        "words": ["alice", "alice etait", "fatiguee", "d etre assise", "pres de sa", "soeur.", "huit livres"]
+      },
+      {
+        "title": "COLLECTIONNER",
+        "captions": [
+          "Le Grand Livre tient le compte de tout. Ses planches gardent vos sceaux.",
+          "Ses chiffres bougent sans cesse.",
+          "Un palier atteint : un sceau.",
+          "Son titre ne se découvre qu’en l’obtenant.",
+          "Et chaque sceau rend les trouvailles un peu plus fréquentes."
+        ],
+        "words": ["pages lues", "mille", "livres refermes", "deux", "trouvailles", "trente", "premiers pas", "lire mille pages"]
+      },
+      {
+        "title": "DORMIR",
+        "captions": [
+          "Vous pouvez fermer le jeu. Partir.",
+          "Vos méthodes, elles, continuent.",
+          "Au retour, un songe vous dit ce que vos mains ont fait.",
+          "Seules les premières heures comptent.",
+          "Puis reprenez la lecture."
+        ],
+        "words": ["un songe", "pages lues", "beaucoup", "trouvailles", "douze", "sceaux", "deux", "fin"]
+      }
+    ]
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -2965,6 +3065,8 @@
         "endlessBook-c": "Le labyrinthe de numéros",
         "coloring-b": "Le cahier d’écolier",
         "coloring-c": "La couverture à colorier",
+        "comicNotice-a": "Le titre trouvé dans le charabia",
+        "comicNotice-c": "L’écran du jeu",
         "trueStory-a": "Le titre en crème",
         "trueStory-c": "L’étiquette en haut",
         "credits-a": "L’achevé d’imprimer",
