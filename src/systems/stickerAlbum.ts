@@ -78,8 +78,11 @@ const isRarest =
     (title === undefined || (design.sense.kind === 'title' && senseRank(design, SENSE_TITLES) === title)) &&
     (cartouche === undefined || design.details!.cartouche === cartouche);
 
-/** Les grandes dates : le premier livre, le livre étrange, puis tous les ordres de grandeur. */
-export const DATES: readonly number[] = [0, STRANGE_BOOK_INDEX, 9, 99, 999, 9_999, 99_999, 999_999];
+/**
+ * Les grandes dates : le premier livre, le livre étrange, puis les ordres de grandeur jusqu'au 100 000e (l'auteur, 22/10 : le
+ * millionième était trop loin pour l'album plein).
+ */
+export const DATES: readonly number[] = [0, STRANGE_BOOK_INDEX, 9, 99, 999, 9_999, 99_999];
 
 /** Les livres rares en autocollants brillants : tous, sauf celui de débogage. */
 export const ALBUM_RARES: readonly string[] = RARE_BOOKS.map((book) => book.id).filter((id) => id !== 'debug');

@@ -123,7 +123,7 @@ describe('Album d’autocollants', () => {
     scanAlbum(state);
     state.rareBooks = Object.fromEntries(ALBUM_RARES.map((id, i) => [id, 3 + i]));
     checkAlbumFull(state);
-    // Le millionième livre n'est pas lu : la case des grandes dates reste vide.
+    // Le 10 000e livre n'est pas lu : la case des grandes dates reste vide.
     expect('stickerAlbumAll' in state.seals).toBe(false);
   });
 });
