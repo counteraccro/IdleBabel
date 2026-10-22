@@ -61,6 +61,7 @@ const FONTS: [string, string][] = [
   ['Courier Prime', 'Alan Dague-Greene'],
   ['Comic Neue', 'Craig Rozynski'],
   ['Crimson Pro', 'Jacques Le Bailly'],
+  ['Lilita One', 'Juan Montoreano'],
   ['Nothing You Could Do', 'Kimberly Geswein'],
 ];
 

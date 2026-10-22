@@ -115,20 +115,7 @@ const wear = async (context: CanvasRenderingContext2D, design: CoverDesign, stre
  */
 export const leatherCover = async (design: CoverDesign, binding: Binding): Promise<LeatherCover> => {
   if (design.details && !design.strange) return ordinaryCover(design, design.details, binding);
-  const [front, frontContext] = canvas();
-  leather(frontContext, binding);
-  if (design.frame > 0) frame(frontContext, design.frame);
-  title(frontContext, coverTitle(design));
-  const flower = ornament(design.ornament).querySelector('svg')!;
-  // Le fleuron est dessiné en `currentColor` : l'or de la couverture.
-  flower.setAttribute('color', GOLD);
-  const size = 18 * CQW;
-  frontContext.save();
-  frontContext.shadowColor = 'rgba(0, 0, 0, 0.5)';
-  frontContext.shadowOffsetY = 0.3 * CQW;
-  frontContext.drawImage(await svgImage(flower, size, size), (WIDTH - size) / 2, HEIGHT * 0.62 - size / 2, size, size);
-  frontContext.restore();
-  await wear(frontContext, design);
+  const front = await simpleFront(design, binding);
 
   const [back, backContext] = canvas();
   leather(backContext, binding);
@@ -151,6 +138,36 @@ export const leatherCover = async (design: CoverDesign, binding: Binding): Promi
   return { front: canvasTexture(front), back: canvasTexture(back), plain: canvasTexture(plain) };
 };
 
+/** Le plat de devant d'un livre sans détails de reliure (le livre étrange, les livres d'avant) : titre, cadre, fleuron, usure. */
+const simpleFront = async (design: CoverDesign, binding: Binding): Promise<HTMLCanvasElement> => {
+  const [front, frontContext] = canvas();
+  leather(frontContext, binding);
+  if (design.frame > 0) frame(frontContext, design.frame);
+  title(frontContext, coverTitle(design));
+  const flower = ornament(design.ornament).querySelector('svg')!;
+  // Le fleuron est dessiné en `currentColor` : l'or de la couverture.
+  flower.setAttribute('color', GOLD);
+  const size = 18 * CQW;
+  frontContext.save();
+  frontContext.shadowColor = 'rgba(0, 0, 0, 0.5)';
+  frontContext.shadowOffsetY = 0.3 * CQW;
+  frontContext.drawImage(await svgImage(flower, size, size), (WIDTH - size) / 2, HEIGHT * 0.62 - size / 2, size, size);
+  frontContext.restore();
+  await wear(frontContext, design);
+  return front;
+};
+
+/**
+ * Le plat de devant seul, sans le dos, les gardes ni le plat arrière (cinq fois moins long) : les autocollants de
+ * l'album (rareBooks/stickerAlbum).
+ */
+export const leatherFront = async (design: CoverDesign, binding: Binding): Promise<HTMLCanvasElement> => {
+  const details = design.details;
+  if (!details || design.strange) return simpleFront(design, binding);
+  const [flower, fer] = await ordinaryFers(details);
+  return ordinaryFront(design, details, binding, flower, fer);
+};
+
 /** Un fer doré (fleuron ou fer d'angle, en SVG `currentColor`) en image, à `size` pixels. */
 const goldFer = (element: HTMLElement, size: number): Promise<HTMLImageElement> => {
   const svg = element.querySelector('svg')!;
@@ -161,18 +178,19 @@ const goldFer = (element: HTMLElement, size: number): Promise<HTMLImageElement> 
 /** Un calque de la taille d'un plat. */
 const layer = (): [HTMLCanvasElement, CanvasRenderingContext2D] => canvas();
 
-/**
- * Un livre ordinaire (maquette .ai/maquette-livres-ordinaires.html) : grain du cuir, filets à froid, roulette,
- * fers d'angle, cartouche, fleuron parmi huit, or usé ; une demi-reliure sur quatre (papier marbré, titre
- * sur une étiquette) ; au dos les nerfs et la pièce de titre ; à l'intérieur, les gardes marbrées et l'ex-libris.
- */
-const ordinaryCover = async (design: CoverDesign, details: CoverDetails, binding: Binding): Promise<LeatherCover> => {
-  const words = coverTitle(design);
-  const [flower, fer] = await Promise.all([
-    goldFer(ornament(details.ornament), 18 * CQW),
-    goldFer(cornerOrnament(details.corner), 12 * CQW),
-  ]);
+/** Le fleuron et le fer d'angle d'un livre ordinaire, en or. */
+const ordinaryFers = (details: CoverDetails): Promise<[HTMLImageElement, HTMLImageElement]> =>
+  Promise.all([goldFer(ornament(details.ornament), 18 * CQW), goldFer(cornerOrnament(details.corner), 12 * CQW)]);
 
+/** Le plat de devant d'un livre ordinaire : grain, filets, or (ou demi-reliure et étiquette), usure. */
+const ordinaryFront = async (
+  design: CoverDesign,
+  details: CoverDetails,
+  binding: Binding,
+  flower: HTMLImageElement,
+  fer: HTMLImageElement,
+): Promise<HTMLCanvasElement> => {
+  const words = coverTitle(design);
   const [front, frontContext] = canvas();
   leather(frontContext, binding);
   inMockup(frontContext, (mockup) => leatherGrain(mockup, MW, MH, details.seed));
@@ -206,6 +224,17 @@ const ordinaryCover = async (design: CoverDesign, details: CoverDetails, binding
     frontContext.restore();
   }
   await wear(frontContext, design);
+  return front;
+};
+
+/**
+ * Un livre ordinaire (maquette .ai/maquette-livres-ordinaires.html) : grain du cuir, filets à froid, roulette,
+ * fers d'angle, cartouche, fleuron parmi huit, or usé ; une demi-reliure sur quatre (papier marbré, titre
+ * sur une étiquette) ; au dos les nerfs et la pièce de titre ; à l'intérieur, les gardes marbrées et l'ex-libris.
+ */
+const ordinaryCover = async (design: CoverDesign, details: CoverDetails, binding: Binding): Promise<LeatherCover> => {
+  const [flower, fer] = await ordinaryFers(details);
+  const front = await ordinaryFront(design, details, binding, flower, fer);
 
   const [back, backContext] = canvas();
   leather(backContext, binding);

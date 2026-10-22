@@ -9,6 +9,7 @@ import { centerEarthArt } from './centerEarth/centerEarth';
 import { coloringArt } from './coloring/coloring';
 import { comicNoticeArt } from './comicNotice/comicNotice';
 import { wiskyPediaArt } from './wiskyPedia/wiskyPedia';
+import { stickerAlbumArt } from './stickerAlbum/stickerAlbum';
 import { puzzlesArt } from './puzzles/puzzles';
 import { blankPageArt } from './blankPage/blankPage';
 import { creditsArt } from './credits/credits';
@@ -50,6 +51,7 @@ const ARTS: Record<string, RareBookArt> = {
   coloring: coloringArt,
   comicNotice: comicNoticeArt,
   wiskyPedia: wiskyPediaArt,
+  stickerAlbum: stickerAlbumArt,
   puzzles: puzzlesArt,
   credits: creditsArt,
   dadJokes: dadJokesArt,

@@ -60,6 +60,7 @@ export const BOOK_DRAFTS: Record<string, string[]> = {
   coloring: ['coloring-b', 'coloring-c'],
   comicNotice: ['comicNotice-a', 'comicNotice-c'],
   wiskyPedia: ['wiskyPedia-b', 'wiskyPedia-c'],
+  stickerAlbum: ['stickerAlbum-b'],
   trueStory: ['trueStory-a', 'trueStory-c'],
 };
 
@@ -126,6 +127,7 @@ export const STORY: StoryChapter[] = [
           'puzzles',
           'comicNotice',
           'wiskyPedia',
+          'stickerAlbum',
         ],
       },
       {

@@ -59,6 +59,7 @@ export const rareBook3d = (state: GameState, id: string, index = state.rareBooks
       return coverTick ? { ...look, liveCover: true } : look;
     },
     ready: art.prepare,
+    live: reading && art.live,
     // Une page tournée en avançant, même vite ; ou celle où le livre est ouvert, quel que soit le chemin (revenu en
     // arrière, rouvert là, sommaire) : avant, une page atteinte en reculant ne comptait pas.
     passed: found,

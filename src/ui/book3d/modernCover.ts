@@ -222,11 +222,7 @@ const back = (context: CanvasRenderingContext2D, design: CoverDesign): void => {
 export const modernCover = async (design: CoverDesign, binding: Binding): Promise<LeatherCover> => {
   const details = design.details;
   if (details && details.kind !== 'none') return modernKind(design, details);
-  const [front, frontContext] = canvas();
-  await cloth(frontContext, design, binding);
-  LAYOUTS[design.layout % LAYOUTS.length](frontContext, design);
-  if (details?.band) band(frontContext, details);
-  gloss(frontContext);
+  const front = await publisherFront(design, binding);
 
   const [backCanvas, backContext] = canvas();
   await cloth(backContext, design, binding);
@@ -244,6 +240,28 @@ export const modernCover = async (design: CoverDesign, binding: Binding): Promis
     spine: canvasTexture(await modernSpine(design, binding)),
     inside: canvasTexture(whiteEndpaper(design)),
   };
+};
+
+/** Le plat de devant d'une couverture d'éditeur : toile, mise en page, bandeau, vernis. */
+const publisherFront = async (design: CoverDesign, binding: Binding): Promise<HTMLCanvasElement> => {
+  const [front, frontContext] = canvas();
+  await cloth(frontContext, design, binding);
+  LAYOUTS[design.layout % LAYOUTS.length](frontContext, design);
+  if (design.details?.band) band(frontContext, design.details);
+  gloss(frontContext);
+  return front;
+};
+
+/** Le plat de devant seul (les autocollants de l'album, rareBooks/stickerAlbum) : bande dessinée, autobiographie ou livre d'éditeur. */
+export const modernFront = async (design: CoverDesign, binding: Binding): Promise<HTMLCanvasElement> => {
+  const details = design.details;
+  if (!details || details.kind === 'none') return publisherFront(design, binding);
+  if (details.kind === 'comic') {
+    await loadComicFonts();
+    return comicFront(design, details);
+  }
+  await loadAutobiographyFonts();
+  return autobiographyFront(design, details);
 };
 
 /** Bandeau d'éditeur : une bande de papier rouge autour du bas du livre, un mot de Babel en grand. */

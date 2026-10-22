@@ -25,6 +25,11 @@ export interface RareBookArt {
    * par feuille) ; false : la page reste vierge.
    */
   paint: (page: number, canvas: HTMLCanvasElement, spineOnLeft: boolean, state: GameState, design: CoverDesign) => boolean;
+  /**
+   * Pages redessinées régulièrement, livre ouvert dans la bibliothèque : leurs images arrivent après coup (les autocollants
+   * de l'album, dessinés un à un).
+   */
+  live?: boolean;
   /** La page du signet (son sommaire) : un clic sur le ruban y ramène ; sans : la page de titre. */
   bookmark?: number;
   /** Les entrées cliquables de la page `page` (un sommaire) : chacune mène à sa page. */

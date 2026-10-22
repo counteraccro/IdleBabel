@@ -57,6 +57,8 @@ export const RARE_BOOKS: readonly RareBookDef[] = [
   { id: 'comicNotice', weight: 30 },
   // Un guide des whiskies écrit en une soirée par un auteur qui goûte tout ce qu'il décrit, jusqu'au trou noir (22/10).
   { id: 'wiskyPedia' },
+  // Un album d'autocollants dont les images sont les couvertures des livres lus, jusqu'aux introuvables (22/10).
+  { id: 'stickerAlbum' },
   // L'autobiographie du jeu (décidée le 03/10) : la Bibliothèque contient le livre de sa propre création.
   { id: 'idleBabel' },
   // Le livre de débogage (décidé le 01/10) : dix fois plus rare ; du charabia qui bugue, et il ne s'ouvre

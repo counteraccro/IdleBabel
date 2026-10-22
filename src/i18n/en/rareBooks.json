@@ -3100,6 +3100,136 @@
       ]
     ]
   },
+  "stickerAlbum": {
+    "name": "The Covers of Babel",
+    "cover": ["The Covers", "of Babel"],
+    "band": "STICKER ALBUM",
+    "titleLines": ["THE COVERS", "OF BABEL"],
+    "subtitle": "Sticker album",
+    "badge": "STICKERS",
+    "publisher": "Hexagon Editions",
+    "spine": "THE COVERS OF BABEL",
+    "backTitle": "COLLECT THEM ALL!",
+    "back": ["One sticker for every book in the Library.", "The shiny ones are rare.", "The unfindables live up to their name."],
+    "count": "{n} stickers to collect",
+    "mine": "and {n} spaces for your books",
+    "howTo": "How to use",
+    "howToSubtitle": "Read before sticking",
+    "steps": [
+      "Read books. Every book you read gives you its sticker: its cover.",
+      "Your sticker goes into its space by itself. No glue needed.",
+      "Each space waits for one kind of cover. The first book that matches fills it.",
+      "The next ones are doubles. You can’t swap them with anyone.",
+      "The shiny stickers are the rare books. The unfindables live up to their name.",
+      "At the end of the album, your books, in the order you read them."
+    ],
+    "contents": "Contents",
+    "contentsEntries": {
+      "leathers": "Leathers, corner tools",
+      "ornaments": "Fleurons, rolls",
+      "half": "Half bindings",
+      "modern": "Modern editions",
+      "comics": "Comics",
+      "titles": "Titles that make sense",
+      "words": "Words that make sense",
+      "rares": "Rare books",
+      "rarest": "The unfindables",
+      "dates": "Great dates",
+      "checklist": "Checklist",
+      "mine": "My books"
+    },
+    "parts": {
+      "leathers": {
+        "title": "Leathers",
+        "subtitle": "Seven skins, one book at a time",
+        "names": ["Brown", "Burgundy", "Bottle green", "Midnight blue", "Tan", "Black", "Plum"]
+      },
+      "corners": {
+        "title": "Corner tools",
+        "subtitle": "Four ways to hold the corners",
+        "names": ["Quarter rosette", "Fan", "Pointed fleuron", "Square"]
+      },
+      "ornaments": {
+        "title": "Fleurons",
+        "subtitle": "In the middle of the board, in gold",
+        "names": ["Pointed diamond", "Rosette", "Star", "Three leaves", "Fleur-de-lis", "Hexagon", "Laurel", "Sun"]
+      },
+      "rolls": {
+        "title": "Rolls",
+        "subtitle": "The border around the frame",
+        "names": ["Beads", "Dogtooth", "Chain", "Herringbone"]
+      },
+      "half": {
+        "title": "Half bindings",
+        "subtitle": "Leather on the spine, marbled paper on the boards",
+        "name": "Marbled {n}, {kind}",
+        "kinds": ["stone", "comb"]
+      },
+      "modern": {
+        "title": "Modern editions",
+        "subtitle": "The Library has paperbacks too",
+        "name": "{color}, {layout}",
+        "colors": ["Orange", "Teal", "Crimson", "Cobalt"],
+        "layouts": ["disc", "type", "band"]
+      },
+      "comics": {
+        "title": "Comics",
+        "subtitle": "The complete series, in twelve albums",
+        "name": "Album no. {n}"
+      },
+      "titles": {
+        "title": "Titles that make sense",
+        "subtitle": "A whole readable title among the symbols"
+      },
+      "words": {
+        "title": "Words that make sense",
+        "subtitle": "A single real word in the title"
+      },
+      "rares": {
+        "title": "Rare books",
+        "subtitle": "Shiny stickers ({n}/{m})"
+      },
+      "rarest": {
+        "title": "The unfindables",
+        "subtitle": "Only one cover fits each space",
+        "names": [
+          "The Garden",
+          "Starry Night",
+          "The Great Sun",
+          "The Crown",
+          "The Hexagon",
+          "The Red Lily",
+          "Black and Gold",
+          "The Perfect Book"
+        ]
+      },
+      "dates": {
+        "title": "Great dates",
+        "subtitle": "The books you never forget",
+        "names": [
+          "The first book",
+          "The strange book",
+          "The 10th book",
+          "The 100th book",
+          "The 1,000th book",
+          "The 10,000th book",
+          "The 100,000th book",
+          "The millionth book"
+        ]
+      }
+    },
+    "checklist": "Checklist",
+    "checklistSubtitle": "Tick the ones you have. Note your doubles.",
+    "doublesTotal": "Doubles: {n}",
+    "mineTitle": "My books",
+    "mineSubtitle": "From book no. {a} to book no. {b}",
+    "book": "Book no. {n}",
+    "strange": "The strange book",
+    "from": "book no. {n}",
+    "doubles": "{n} doubles",
+    "oneDouble": "1 double",
+    "quoted": "“{w}”"
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -3535,6 +3665,7 @@
         "comicNotice-a": "The title found in the gibberish",
         "comicNotice-c": "The game screen",
         "wiskyPedia-b": "The glass on the cream board",
+        "stickerAlbum-b": "The old-fashioned picture album",
         "wiskyPedia-c": "The tartan band",
         "trueStory-a": "The title in cream",
         "trueStory-c": "The label at the top",

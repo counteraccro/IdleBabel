@@ -3105,6 +3105,136 @@
       ]
     ]
   },
+  "stickerAlbum": {
+    "name": "Les Couvertures de Babel",
+    "cover": ["Les Couvertures", "de Babel"],
+    "band": "ALBUM D’AUTOCOLLANTS",
+    "titleLines": ["LES COUVERTURES", "DE BABEL"],
+    "subtitle": "Album d’autocollants",
+    "badge": "IMAGES",
+    "publisher": "Éditions de l’Hexagone",
+    "spine": "LES COUVERTURES DE BABEL",
+    "backTitle": "COLLECTIONNE-LES TOUS !",
+    "back": ["Une image pour chaque livre de la Bibliothèque.", "Les brillants sont rares.", "Les introuvables portent bien leur nom."],
+    "count": "{n} images à collectionner",
+    "mine": "et {n} cases pour tes livres",
+    "howTo": "Mode d’emploi",
+    "howToSubtitle": "À lire avant de coller",
+    "steps": [
+      "Lis des livres. Chaque livre lu te donne son image : sa couverture.",
+      "Ton image se colle toute seule dans sa case. Pas besoin de colle.",
+      "Une case attend une sorte de couverture. Le premier livre qui lui ressemble la remplit.",
+      "Les suivants sont des doubles. Tu ne peux les échanger avec personne.",
+      "Les images brillantes sont les livres rares. Les introuvables portent bien leur nom.",
+      "À la fin de l’album, tes livres, dans l’ordre où tu les as lus."
+    ],
+    "contents": "Sommaire",
+    "contentsEntries": {
+      "leathers": "Les cuirs, les fers d’angle",
+      "ornaments": "Les fleurons, les roulettes",
+      "half": "Les demi-reliures",
+      "modern": "Les éditions modernes",
+      "comics": "La bande dessinée",
+      "titles": "Les titres qui ont un sens",
+      "words": "Les mots qui ont un sens",
+      "rares": "Les livres rares",
+      "rarest": "Les introuvables",
+      "dates": "Les grandes dates",
+      "checklist": "Liste de contrôle",
+      "mine": "Mes livres"
+    },
+    "parts": {
+      "leathers": {
+        "title": "Les cuirs",
+        "subtitle": "Sept peaux, un seul livre à la fois",
+        "names": ["Brun", "Bordeaux", "Vert bouteille", "Bleu nuit", "Fauve", "Noir", "Prune"]
+      },
+      "corners": {
+        "title": "Les fers d’angle",
+        "subtitle": "Quatre façons de tenir les coins",
+        "names": ["Quart de rosace", "Éventail", "Fleuron pointé", "Équerre"]
+      },
+      "ornaments": {
+        "title": "Les fleurons",
+        "subtitle": "Au milieu du plat, en or",
+        "names": ["Losange pointé", "Rosace", "Étoile", "Trois feuilles", "Fleur de lys", "Hexagone", "Laurier", "Soleil"]
+      },
+      "rolls": {
+        "title": "Les roulettes",
+        "subtitle": "La frise autour du cadre",
+        "names": ["Perles", "Dents de rat", "Chaînette", "Épi"]
+      },
+      "half": {
+        "title": "Les demi-reliures",
+        "subtitle": "Cuir au dos, papier marbré sur les plats",
+        "name": "Marbré {n}, {kind}",
+        "kinds": ["caillouté", "peigné"]
+      },
+      "modern": {
+        "title": "Les éditions modernes",
+        "subtitle": "La Bibliothèque a aussi des livres de poche",
+        "name": "{color}, {layout}",
+        "colors": ["Orange", "Canard", "Cramoisi", "Cobalt"],
+        "layouts": ["disque", "typo", "bandeau"]
+      },
+      "comics": {
+        "title": "La bande dessinée",
+        "subtitle": "La série complète, en douze albums",
+        "name": "Album n° {n}"
+      },
+      "titles": {
+        "title": "Les titres qui ont un sens",
+        "subtitle": "Un titre entier, lisible, parmi les symboles"
+      },
+      "words": {
+        "title": "Les mots qui ont un sens",
+        "subtitle": "Un seul vrai mot dans le titre"
+      },
+      "rares": {
+        "title": "Les livres rares",
+        "subtitle": "Autocollants brillants ({n}/{m})"
+      },
+      "rarest": {
+        "title": "Les introuvables",
+        "subtitle": "Une seule couverture convient à chaque case",
+        "names": [
+          "Le jardin",
+          "Nuit étoilée",
+          "Le grand soleil",
+          "La couronne",
+          "L’hexagone",
+          "Le lys rouge",
+          "Le noir et l’or",
+          "Le livre parfait"
+        ]
+      },
+      "dates": {
+        "title": "Les grandes dates",
+        "subtitle": "Les livres qu’on n’oublie pas",
+        "names": [
+          "Le premier livre",
+          "Le livre étrange",
+          "Le 10e livre",
+          "Le 100e livre",
+          "Le 1 000e livre",
+          "Le 10 000e livre",
+          "Le 100 000e livre",
+          "Le millionième livre"
+        ]
+      }
+    },
+    "checklist": "Liste de contrôle",
+    "checklistSubtitle": "Coche ceux que tu as. Note tes doubles.",
+    "doublesTotal": "Doubles : {n}",
+    "mineTitle": "Mes livres",
+    "mineSubtitle": "Du livre n° {a} au livre n° {b}",
+    "book": "Livre n° {n}",
+    "strange": "Le livre étrange",
+    "from": "livre n° {n}",
+    "doubles": "{n} doubles",
+    "oneDouble": "1 double",
+    "quoted": "« {w} »"
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -3540,6 +3670,7 @@
         "comicNotice-a": "Le titre trouvé dans le charabia",
         "comicNotice-c": "L’écran du jeu",
         "wiskyPedia-b": "Le verre sur le plat crème",
+        "stickerAlbum-b": "L’album d’images à l’ancienne",
         "wiskyPedia-c": "La bande de tartan",
         "trueStory-a": "Le titre en crème",
         "trueStory-c": "L’étiquette en haut",
