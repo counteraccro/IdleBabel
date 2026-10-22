@@ -60,6 +60,7 @@ const FONTS: [string, string][] = [
   ['Luckiest Guy', 'Astigmatic'],
   ['Courier Prime', 'Alan Dague-Greene'],
   ['Comic Neue', 'Craig Rozynski'],
+  ['Crimson Pro', 'Jacques Le Bailly'],
   ['Nothing You Could Do', 'Kimberly Geswein'],
 ];
 

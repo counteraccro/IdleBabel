@@ -2628,6 +2628,477 @@
       }
     ]
   },
+  "wiskyPedia": {
+    "name": "WiskyPedia",
+    "cover": ["WiskyPedia"],
+    "edition": "NEW EDITION",
+    "subtitle": "The (almost) complete guide to the world’s whiskies",
+    "subtitleLines": ["The (almost) complete guide", "to the world’s whiskies"],
+    "badge": ["Over 400", "whiskies", "tasted*"],
+    "footnote": "* on the same night",
+    "publisher": "Hexagon Press",
+    "spine": "WISKYPEDIA",
+    "backTitle": "The reference guide",
+    "blurb": [
+      "Hundreds of whiskies from Scotland, Ireland, America, Japan and beyond, described one by one: the distillery, the colour, the nose, the palate, the finish.",
+      "A whole evening’s work."
+    ],
+    "warning": "Excessive drinking is bad for your health.",
+    "price": "£24.99",
+    "legal": [
+      "*WISKYPEDIA",
+      "_The (almost) complete guide to the world’s whiskies",
+      "_New edition, revised and slightly spilled.",
+      "",
+      "Every whisky in this guide was tasted",
+      "by the author, in page order,",
+      "in a single evening. This book is the proof.",
+      "!Don’t do as he did.",
+      "",
+      "Excessive drinking is bad for your health.",
+      "Please drink responsibly.",
+      "_Responsibility is covered on page 411.",
+      "",
+      "None of the distilleries in this guide exist.",
+      "Printed in the Library of Babel."
+    ],
+    "contents": "Contents",
+    "contentsIntro": [
+      ["Foreword", 4],
+      ["How to taste", 6],
+      ["How it’s made", 8],
+      ["Reading a label", 9],
+      ["The regions", 10]
+    ],
+    "contentsEnd": [["Morning After", 410]],
+    "preface": "Foreword",
+    "prefaceText": [
+      "This guide is the fruit of a single evening’s work.",
+      "The author tasted each whisky as he wrote about it, one sip at a time, methodically. He took notes on the distillery, the colour, the nose, the palate and the finish, in that order, for every one.",
+      "He thanks the distilleries, all of them invented, for their welcome, and the reader for their patience.",
+      "A serious guide, in short."
+    ],
+    "prefaceSign": "The author, 8 p.m.",
+    "glassCaption": "The tasting glass: a tulip, to hold in the aromas.",
+    "tasting": "How to taste",
+    "tastingSteps": [
+      ["Look", "Tilt the glass, observe the colour and the legs running down the side."],
+      ["Smell", "Bring your nose in gently. Don’t dive in."],
+      ["Taste", "A small sip, held in the mouth for a few seconds."],
+      ["Wait", "The finish comes afterwards. One sip is enough: the author will remind you throughout the book."]
+    ],
+    "waterCaption": "A glass of water, always within reach.",
+    "making": "How it’s made",
+    "makingSteps": [
+      ["Malting", "The barley is soaked, sprouts, then dries. On some islands, over a peat fire."],
+      ["Mashing", "The ground malt steeps in hot water: the result is a sweet liquid."],
+      ["Fermentation", "Yeast eats the sugar. The liquid becomes a kind of beer."],
+      ["Distillation", "Two runs through copper stills. What comes out is colourless."],
+      ["Maturation", "At least three years in an oak cask. The wood gives the colour."],
+      ["The angels’ share", "Each year a little whisky evaporates from the cask. Nobody has ever seen the angels."]
+    ],
+    "label": "Reading a label",
+    "labelWords": ["GLEN TARDY", "Single Malt", "YEARS", "Speyside", "70 cl  ·  40% vol."],
+    "labelNotes": [
+      "The name: the distillery, the valley, or the founder’s dog.",
+      "Single malt: one malt, one distillery.",
+      "The age: that of the youngest whisky in the bottle.",
+      "The region: where it matured.",
+      "The strength: never under 40%."
+    ],
+    "labelTip": "A label is best read before opening the bottle. Afterwards, it gets harder.",
+    "scotland": "The regions of Scotland",
+    "scotlandRegions": [
+      ["Speyside", "Along the River Spey, half the country’s distilleries. Gentle, fruity malts."],
+      ["Highlands", "The high lands of the north: wide open spaces, dry and spicy malts."],
+      ["Islay", "A windswept island in the west. Peat, smoke, the sea."]
+    ],
+    "world": "The rest of the world",
+    "worldRegions": [
+      ["Ireland", "Distilled three times, for smoothness."],
+      ["United States", "Bourbon: corn and new casks."],
+      ["Canada", "Light blends, often rye."],
+      ["Japan", "Precision and harmony."],
+      ["France", "Young and curious."],
+      ["Elsewhere", "Wherever a glass can be found."]
+    ],
+    "before": "Before we begin",
+    "beforeText": [
+      "It is 8 p.m. The bottles are lined up in page order, from Scotland to the rest of the world.",
+      "Next to the notebook, the author has put a glass of water. He means to use it between each whisky.",
+      "Each entry will say what he tasted, and at what time. The tasting can begin."
+    ],
+    "running": "WHISKIES OF THE WORLD",
+    "chapters": [
+      ["SCOTLAND", "SPEYSIDE", "Scotland · Speyside"],
+      ["SCOTLAND", "HIGHLANDS", "Scotland · Highlands"],
+      ["SCOTLAND", "ISLAY", "Scotland · Islay"],
+      ["IRELAND", "IRELAND", "Ireland"],
+      ["UNITED STATES", "KENTUCKY", "United States"],
+      ["CANADA", "CANADA", "Canada"],
+      ["JAPAN", "JAPAN", "Japan"],
+      ["FRANCE", "FRANCE", "France"],
+      ["ELSEWHERE", "ELSEWHERE", "Elsewhere"]
+    ],
+    "lostHeaders": ["the kitchen", "the floor", "the hallway", "dunno", "again", "or somewhere"],
+    "places": ["Speyside", "Highlands", "Islay", "Ireland", "Kentucky", "Canada", "Japan", "France", "somewhere"],
+    "maker": "{name} Distillery, {place}",
+    "sip": "Sip no. {n}, tasted for you · {time}",
+    "time": "{h}:{m}",
+    "lostTimes": ["2-ish", "? o’clock", "late", "1:72", "25:00", "the hour before"],
+    "noteLabels": ["Nose:", "Palate:", "Finish:"],
+    "names": [
+      [
+        "Glen Tardy",
+        "Glen Dozy",
+        "Ben Evitable",
+        "Strathsteady",
+        "Abercourt",
+        "Glen Hesitate",
+        "Ben Evolent",
+        "Glen Chatty",
+        "Craigsoft",
+        "Dal Drizzle"
+      ],
+      ["Ben Toofar", "Ben Early", "Glen Chilly", "Invertilt", "Ramble", "Tom Heather", "Glen Misty", "Dal Rocky"],
+      ["Loch Maloch", "Port Corran", "Ardfog", "Ardslate", "Kilskid", "Kilometre", "Port Spray", "Loch Slumber"],
+      ["O’Blivion", "Saint Hiccup", "O’Clover", "Mac Rainbow", "Old Closed Pub", "Saint Drizzle"],
+      ["Colonel Corn", "Old Bureau", "Great-Uncle Sam", "Slow Bison", "Kentucky Fiction", "Porch Swing"],
+      ["Royal Maple", "Polite Caribou", "Gentle North", "Mountie Sorry"],
+      ["Shizuka", "Kaze", "Origami", "Gentle Cherry", "Bonsai", "Haiku"],
+      ["Hexagon Malt", "Smoky Gaul", "Château No-Rain", "Stubborn Breton"],
+      ["Glen Somewhere", "Ben Dunno", "Loch Kitchen", "Port Sofa"]
+    ],
+    "kinds": [
+      ["Single malt", "Single malt", "Single malt"],
+      ["Single malt", "Single malt", "Single malt"],
+      ["Peated single malt", "Peated single malt", "Single malt"],
+      ["Blend", "Single pot still", "Single malt"],
+      ["Bourbon", "Bourbon", "Rye"],
+      ["Blend", "Rye", "Blend"],
+      ["Blend", "Single malt", "Blend"],
+      ["Single malt", "Peated single malt", "Blend"],
+      ["Blend", "Whisky?", "Something"]
+    ],
+    "ages": [
+      ["3 YEARS", "3 years"],
+      ["8 YEARS", "8 years"],
+      ["10 YEARS", "10 years"],
+      ["12 YEARS", "12 years"],
+      ["15 YEARS", "15 years"],
+      ["16 YEARS", "16 years"],
+      ["18 YEARS", "18 years"],
+      ["21 YEARS", "21 years"],
+      ["25 YEARS", "25 years"],
+      ["30 YEARS", "30 years"],
+      ["", "no age"],
+      ["CASK STRENGTH", "cask strength"],
+      ["LIMITED EDITION", "limited edition"],
+      ["SHERRY CASK", "sherry cask"],
+      ["PORT CASK", "port cask"],
+      ["DOUBLE CASK", "double cask"]
+    ],
+    "abv": "{n}%",
+    "lostAbv": ["400%", "lots", "yes", "43% (I think)", "too much", "enough"],
+    "history": [
+      "The distillery was founded in {year} by two brothers who were no longer speaking.",
+      "The water comes from a spring nobody has ever found on a map.",
+      "The casks sleep in a warehouse dug into the hill, out of the wind.",
+      "The distillery has only one still, which everyone calls by its first name.",
+      "The malt is dried the old way, by hand, by a very patient employee.",
+      "They say the recipe has never changed; nobody has ever read it.",
+      "The distillery has closed three times and reopened four.",
+      "The cellar master tastes every cask with a pipette and says nothing.",
+      "The labels are still stuck on by hand, sometimes crooked.",
+      "The morning mist drifts into the warehouse; they say it stays in the whisky.",
+      "The cask comes from an old ship, which never got over it.",
+      "Visits are on Tuesdays, when it isn’t raining, so rarely."
+    ],
+    "tastingNotes": [
+      [
+        "A balanced malt, to be tasted with attention.",
+        "The colour is pale, almost straw.",
+        "One sip is enough to grasp its character.",
+        "Best kept for patient enthusiasts.",
+        "It improves after a few minutes breathing in the glass."
+      ],
+      [
+        "Very good. Very good really. I’m marking it very good.",
+        "It reminds me of something, I can’t remember what, a beach or an uncle.",
+        "Golden colour, very pretty colour, I take a closer look.",
+        "I’ll have a little more to be sure of my notes.",
+        "Apparently you should hold it in your mouth for a long time. I forgot to hold it.",
+        "Better than the last one, or the same, they all look a bit alike at this hour."
+      ],
+      [
+        "very good very good very",
+        "it’s round. like the table. is the table round? no",
+        "I like it a lot I like it more than the last one whose name I forgot",
+        "I spilled a bit on it, that’s the stain, sorry",
+        "the colour is yellow. everything is a bit yellow",
+        "you should hold it in your mouth. I held it in the glass, it’s safer"
+      ],
+      ["good", "the best", "glen glen", "it’s", "I recommend it to everyone even to those who", "where’s the glass"]
+    ],
+    "asides": [
+      "Note: slow down.",
+      "Note: drink some water. Done. A bit. No.",
+      "It’s warm in here.",
+      "Dropped the pen. Found it.",
+      "Someone knocking? No.",
+      "Got up to open the window. Can’t remember why.",
+      "The book is leaning, I straighten it.",
+      "Reminder: one sip is enough (page 6).",
+      "I’ll reread tomorrow."
+    ],
+    "notes": [
+      [
+        ["honey", "pear", "light smoke", "dried fruit", "heather", "vanilla", "orange", "leather", "cedar", "iodine"],
+        ["malt", "caramel", "soft spice", "oak", "hazelnut", "baked apple", "pepper", "dark chocolate"],
+        ["short.", "medium.", "long.", "dry.", "warm.", "smoky.", "spicy.", "elegant."]
+      ],
+      [
+        ["campfire", "grandma", "cellar", "wet jumper", "holidays", "new tyre", "library"],
+        ["vanilla", "lots of vanilla", "sincerity", "childhood", "caramel (I think)"],
+        ["long.", "very long.", "I can still taste it.", "choppy.", "uphill.", "still here."]
+      ],
+      [
+        ["nose", "my nose", "the sleeve", "the last glass", "yes"],
+        ["yes", "good", "very good", "vanilla?", "the same"],
+        ["already over", "too fast", "see previous page", "zzz", "later"]
+      ],
+      [
+        ["—", "gl", "dunno"],
+        ["……", "good", "—"],
+        ["(nothing)", "gl", "zz"]
+      ]
+    ],
+    "scrawl": ["the best", "of all", "I love them", "all of them", "", "tomorrow I", "reread it all", "promise"],
+    "scrawlSip": "sip {n}",
+    "blackout": ["and", "the", "next", "one", "is", "Glen", "Gl", "g"],
+    "morning": "Morning After",
+    "morningKind": "n.",
+    "morningText": "The day that follows. Recognised by the light, too bright, and by the sound of a page being turned. Remedy: a large glass of water, then silence.",
+    "morningSee": "See also: Water; Moderation (p. 411).",
+    "fixed": [
+      [
+        "GLEN TARDY 12 YEARS",
+        "Glen Tardy Distillery, Speyside",
+        "Single malt · 12 years · 40%",
+        "Founded in 1824, two years later than planned, the distillery has never done anything on time. Its malt ages twelve years in oak casks, plus three weeks: the time it takes to find the keys to the warehouse. Round and gentle, a good starting point for this guide.",
+        "honey, ripe pear.",
+        "vanilla, dry biscuit.",
+        "medium, discreet."
+      ],
+      [
+        "BEN EVITABLE 18 YEARS",
+        "Ben Evitable Distillery, Speyside",
+        "Single malt · 18 years · 43%",
+        "At the foot of the mountain of the same name, which every hiker walks around. Eighteen years in sherry casks give it a mahogany colour. A whisky of patience, to be tasted in small amounts. The author is sticking to that rule, for now.",
+        "raisins, leather, walnut.",
+        "candied orange, spice.",
+        "long, dry."
+      ],
+      [
+        "STRATHSTEADY 10 YEARS",
+        "Strathsteady Distillery, Speyside",
+        "Single malt · 10 years · 40%",
+        "A sign at the distillery gate reads: “Steady now.” Distilled slowly, casked slowly, it is tasted the same way. The author copies the motto into his notebook and underlines it twice.",
+        "green apple, cut grass.",
+        "cereal, light honey.",
+        "short, sensible."
+      ],
+      [
+        "GLEN DOZY 15 YEARS",
+        "Glen Dozy Distillery, Speyside",
+        "Single malt · 15 years · 46%",
+        "The warehouse is so quiet you can hear the wood at work. Fifteen years of waiting for a deep, almost dark malt. The guide still has three hundred and ninety-five pages to go: the author promises to stay focused.",
+        "linden, beeswax.",
+        "toasted malt, cocoa.",
+        "warm, settled."
+      ],
+      [
+        "ABERCOURT 21 YEARS",
+        "Abercourt Distillery, Speyside",
+        "Single malt · 21 years · 43%",
+        "The oldest malt in this chapter. One sip, respectfully, taking notes. The author notices he is already on his fifty-fifth sip and decides to slow down from the next page on.",
+        "polished leather, fig.",
+        "oak, blond tobacco.",
+        "very long, noble."
+      ],
+      [
+        "GLEN TARDY 12 YEARS (SECOND OPINION)",
+        "Glen Tardy Distillery, Speyside",
+        "Single malt · 12 years · 40%",
+        "I’m going back to the first one to compare, that’s the method. It’s much better than I remembered. My memory is from page 13. I’ve changed my mind about everything, the vanilla most of all.",
+        "honey, pear, nostalgia.",
+        "vanilla, much better.",
+        "I misjudged it."
+      ],
+      [
+        "BEN TOOFAR 25 YEARS",
+        "Ben Toofar Distillery, Highlands",
+        "Single malt · 25 years · 45%",
+        "The most remote distillery in Scotland: three days’ walk to get there. Getting back depends. I didn’t go, I tasted it here, it’s closer. The Highlands are very high. I stood up to check.",
+        "heather, wind, calves.",
+        "wild honey, footpath.",
+        "uphill."
+      ],
+      [
+        "LOCH MALOCH 10 YEARS",
+        "Loch Maloch Distillery, Islay",
+        "Peated single malt · 10 years · 46%",
+        "On the island they dry the barley over a peat fire. So the barley smells of peat, and the whisky smells of peat, and the kitchen smells of peat, and now my jumper does too. Peat is earth that burns, it’s amazing when you think about it. I think about it a lot.",
+        "campfire, tyre, grandad.",
+        "smoke, iodine, more smoke.",
+        "doesn’t end. Still here."
+      ],
+      [
+        "PORT CORRAN 16 YEARS",
+        "Port Corran Distillery, Islay",
+        "Single malt · 16 years · 43%",
+        "The distillery is so close to the sea that the casks get seasick. The whisky keeps a salty taste and a tendency to sway. The table is swaying a bit too. Amber colour, very pretty colour, I take a closer look. The glass is already empty, someone must have drunk it.",
+        "sea spray, wet rope.",
+        "salt, caramel, rolling.",
+        "choppy."
+      ],
+      [
+        "ARDFOG 8 YEARS",
+        "Ardfog Distillery, Islay",
+        "Single malt · 8 years · 48%",
+        "The cellar master says you open it with a drop of water. I added a drop of water. Too much water. I made up for it with whisky. Then too much whisky, so water. It balances out very nicely, I’ll do it again to check [hic].",
+        "fog, liquorice, streetlamp.",
+        "pepper, smoke, sincerity.",
+        "fine. Doing very fine."
+      ],
+      [
+        "THE GLASS HALF FULL",
+        "Or half empty, depending on how you look at it",
+        "Uncategorised · 50% glass",
+        "Special entry. A glass, half full, in front of me. The optimist calls it half full, the pessimist half empty. I taste it to settle the matter: half empty. I taste again: empty. The pessimist was right, he always is.",
+        "half a nose.",
+        "optimistic, then not.",
+        "half finished."
+      ],
+      [
+        "O’BLIVION TRIPLE DISTILLED",
+        "O’Blivion Distillery, Ireland",
+        "Blend · no age · 40%",
+        "The Irish distil three times, for smoothness. I tasted it three times too, to be fair to them. Or four. I can’t remember the first one, maybe that’s the name.",
+        "apple, clover, memory gap.",
+        "smooth, very smooth, too smooth.",
+        "what were we talking about?"
+      ],
+      [
+        "ABBEY OF SAINT HICCUP 12 YEARS",
+        "The Abbey Distillery, Ireland",
+        "Single pot still · 12 years · 43%",
+        "Monks have made it since the Middle Ages, in silence and prayer. Silence mostly. I tried the silence, I got the hiccups [hic]. The patron saint of distillers is Saint Hiccup [hic], I’m not making it up [hic].",
+        "incense, gingerbread.",
+        "[hic].",
+        "[hic] [hic]."
+      ],
+      [
+        "COLONEL CORN 7 YEARS",
+        "The Colonel’s Distillery, Kentuckee",
+        "Bourbon · 7 years · 50%",
+        "Bourbon. BOURBON. At least half corn, and new casks charred inside, like my throat. The colonel doesn’t exist but the corn does. 7 years. Or 8, I counted the casks twice and the casks moved in between.",
+        "vanilla",
+        "vanilla?",
+        "VANILLA. who spilled the vanilla"
+      ],
+      [
+        "COLONEL CORN 7 YEARS",
+        "The Colonel’s Distillery, Kentucky, I think",
+        "Bourbon · 7 years · 50% · again",
+        "did I already do this one? it looks new. very good. the colonel is very kind to have us. thank you colonel. we should all be colonels",
+        "colonel",
+        "same as the other one",
+        "see previous page"
+      ],
+      [
+        "THE BATHTUB BROTHERS",
+        "Distillery: a bathtub, somewhere",
+        "Corn spirit · 0 days · nobody knows",
+        "It isn’t done any more and it shouldn’t be done. The brothers distilled it in secret, in their bathtub. Don’t do that. I don’t recommend it. I don’t recommend the bathtub either, I tried sitting in it for the article, there’s no water left.",
+        "soap.",
+        "corn, soap.",
+        "rubber duck."
+      ],
+      [
+        "ROYAL MAPLE 10 YEARS",
+        "Maple Distillery, Canada",
+        "Blend · 10 years · 40%",
+        "They say Canadians are very polite. So is this whisky: it apologises as you swallow it. Sorry. No, sorry, my fault. Sorry. I think I spilled a bit. Sorry, book.",
+        "maple syrup, sorry.",
+        "sweet, apologetic.",
+        "apologies."
+      ],
+      [
+        "SHIZUKA HARMONY",
+        "Shizuka Distillery, very far away",
+        "Blend · no age · shh",
+        "shh. you have to whisper here. SHIZUKA MEANS QUIET. sorry. every bottle is polished by hand, I polished this one too with my sleeve, it shines. harmony. balance. I am very balanced",
+        "flowers, I think, or my sleeve",
+        "harmony",
+        "zzz"
+      ],
+      [
+        "THE EMPTY GLASS",
+        "All distilleries",
+        "Vintage: a moment ago · 0%",
+        "a great classic. you find it everywhere, mostly in front of me. very easy to taste, that’s actually the problem, it’s over too fast. colour: clear. I don’t recommend it. I don’t recommend it to anyone. who emptied it",
+        "the bottom of the glass",
+        "nothing, but for ages",
+        "already over. too fast. far too fast"
+      ],
+      [
+        "THE KITCHEN SINK",
+        "Kitchen Sink Distillery, the kitchen",
+        "Tap water · 0 years · 0%",
+        "no peat. no cask. no colour. no age. very disappointing, I don’t understand how they can serve this to people. I had two glasses to be sure. best one of the night. don’t tell anyone",
+        "nothing",
+        "fresh, very fresh",
+        "clean"
+      ],
+      [
+        "HEXAGON MALT 6 YEARS",
+        "Hexagon Distillery, France",
+        "Single malt · 6 years · 6%",
+        "the french call france the hexagon because it has six sides. I counted. seven. counted again, five. the whisky is six years old because six sides. makes sense. everything makes sense tonight",
+        "six",
+        "six too",
+        "seven"
+      ],
+      [
+        "MY OWN BLEND",
+        "Distillery: me",
+        "Blend · all ages · 47 whiskies",
+        "I poured every leftover into one glass. it’s a blend. it’s MY blend. it has every flavour at once, so none. it’s very good it’s very. it’s",
+        "everything",
+        "everything at once",
+        "ah"
+      ],
+      [
+        "THE CEILING",
+        "Distillery: the ceiling",
+        "Lying down · ? years · ?%",
+        "written on the floor. the ceiling turns slowly. it’s beige. beige colour. it has a little crack shaped like scotland",
+        "carpet",
+        "—",
+        "ceiling"
+      ],
+      [
+        "THE LAST ONE",
+        "Distillery: the last one",
+        "Single malt · the last · the last",
+        "the last one. really the last one. after this I stop and reread everything from page 1 to correct it. best one of all",
+        "promise",
+        "promise",
+        "promise"
+      ]
+    ]
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -3062,6 +3533,8 @@
         "coloring-c": "The cover to colour in",
         "comicNotice-a": "The title found in the gibberish",
         "comicNotice-c": "The game screen",
+        "wiskyPedia-b": "The glass on the cream board",
+        "wiskyPedia-c": "The tartan band",
         "trueStory-a": "The title in cream",
         "trueStory-c": "The label at the top",
         "credits-a": "The colophon",

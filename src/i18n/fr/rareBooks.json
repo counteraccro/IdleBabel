@@ -2633,6 +2633,477 @@
       }
     ]
   },
+  "wiskyPedia": {
+    "name": "WiskyPedia",
+    "cover": ["WiskyPedia"],
+    "edition": "NOUVELLE ÉDITION",
+    "subtitle": "Le guide (presque) complet des whiskies du monde",
+    "subtitleLines": ["Le guide (presque) complet", "des whiskies du monde"],
+    "badge": ["Plus de 400", "whiskies", "goûtés*"],
+    "footnote": "* le même soir",
+    "publisher": "Éditions de l’Hexagone",
+    "spine": "WISKYPEDIA",
+    "backTitle": "Le guide de référence",
+    "blurb": [
+      "Des centaines de whiskies d’Écosse, d’Irlande, d’Amérique, du Japon et d’ailleurs, décrits un par un : la distillerie, la robe, le nez, la bouche, la finale.",
+      "Un travail de toute une soirée."
+    ],
+    "warning": "L’abus d’alcool est dangereux pour la santé.",
+    "price": "29,90 €",
+    "legal": [
+      "*WISKYPEDIA",
+      "_Le guide (presque) complet des whiskies du monde",
+      "_Nouvelle édition, revue et un peu renversée.",
+      "",
+      "Tous les whiskies de ce guide ont été goûtés",
+      "par l’auteur, dans l’ordre des pages,",
+      "en une seule soirée. Ce livre en est la preuve.",
+      "!Ne faites pas comme lui.",
+      "",
+      "L’abus d’alcool est dangereux pour la santé.",
+      "À consommer avec modération.",
+      "_La modération est traitée page 411.",
+      "",
+      "Aucune des distilleries de ce guide n’existe.",
+      "Imprimé dans la Bibliothèque de Babel."
+    ],
+    "contents": "Sommaire",
+    "contentsIntro": [
+      ["Préface", 4],
+      ["Comment déguster", 6],
+      ["La fabrication", 8],
+      ["Lire une étiquette", 9],
+      ["Les régions", 10]
+    ],
+    "contentsEnd": [["Lendemain", 410]],
+    "preface": "Préface",
+    "prefaceText": [
+      "Ce guide est le fruit d’une seule soirée de travail.",
+      "L’auteur a goûté chaque whisky au moment de l’écrire, une gorgée à la fois, avec méthode. Il a pris des notes sur la distillerie, la robe, le nez, la bouche et la finale, dans cet ordre, pour chacun.",
+      "Il remercie les distilleries, toutes inventées, pour leur accueil, et le lecteur pour sa patience.",
+      "Un guide sérieux, en somme."
+    ],
+    "prefaceSign": "L’auteur, 20 h",
+    "glassCaption": "Le verre de dégustation : une tulipe, pour garder les arômes.",
+    "tasting": "Comment déguster",
+    "tastingSteps": [
+      ["Regarder", "Incliner le verre, observer la robe et les larmes qui coulent le long de la paroi."],
+      ["Sentir", "Approcher le nez doucement. Ne pas le plonger dedans."],
+      ["Goûter", "Une petite gorgée, gardée en bouche quelques secondes."],
+      ["Attendre", "La finale vient après. Une gorgée suffit : l’auteur le rappellera tout au long du livre."]
+    ],
+    "waterCaption": "Un verre d’eau, toujours à portée de main.",
+    "making": "La fabrication",
+    "makingSteps": [
+      ["Maltage", "L’orge trempe, germe, puis sèche. Sur certaines îles, au feu de tourbe."],
+      ["Brassage", "Le malt moulu infuse dans l’eau chaude : on obtient un jus sucré."],
+      ["Fermentation", "Les levures mangent le sucre. Le jus devient une sorte de bière."],
+      ["Distillation", "Deux passages dans des alambics de cuivre. Ce qui sort est incolore."],
+      ["Vieillissement", "Au moins trois ans en fût de chêne. C’est le bois qui donne la couleur."],
+      ["La part des anges", "Chaque année, un peu de whisky s’évapore du fût. Personne n’a jamais vu les anges."]
+    ],
+    "label": "Lire une étiquette",
+    "labelWords": ["GLEN TARDIF", "Single Malt", "ANS", "Speyside", "70 cl  ·  40 % vol."],
+    "labelNotes": [
+      "Le nom : la distillerie, la vallée, ou le chien du fondateur.",
+      "Single malt : un seul malt, une seule distillerie.",
+      "L’âge : celui du plus jeune whisky de la bouteille.",
+      "La région : là où il a vieilli.",
+      "Le degré : jamais moins de 40 %."
+    ],
+    "labelTip": "Une étiquette se lit avant d’ouvrir la bouteille. Après, c’est plus difficile.",
+    "scotland": "Les régions d’Écosse",
+    "scotlandRegions": [
+      ["Speyside", "Le long de la rivière Spey, la moitié des distilleries du pays. Des malts doux et fruités."],
+      ["Highlands", "Les hautes terres du Nord : de grands espaces, des malts secs et épicés."],
+      ["Islay", "Une île de l’Ouest, battue par le vent. La tourbe, la fumée, la mer."]
+    ],
+    "world": "Le reste du monde",
+    "worldRegions": [
+      ["Irlande", "Distillé trois fois, pour la douceur."],
+      ["États-Unis", "Le bourbon : du maïs et des fûts neufs."],
+      ["Canada", "Des blends légers, souvent de seigle."],
+      ["Japon", "La précision et l’harmonie."],
+      ["France", "Jeune et curieux."],
+      ["Ailleurs", "Partout où l’on trouve un verre."]
+    ],
+    "before": "Avant de commencer",
+    "beforeText": [
+      "Il est 20 heures. Les bouteilles sont rangées dans l’ordre des pages, de l’Écosse au reste du monde.",
+      "À côté du carnet, l’auteur a posé un verre d’eau. Il compte s’en servir entre chaque whisky.",
+      "Chaque fiche dira ce qu’il a goûté, et à quelle heure. La dégustation peut commencer."
+    ],
+    "running": "WHISKIES DU MONDE",
+    "chapters": [
+      ["ÉCOSSE", "SPEYSIDE", "Écosse · Speyside"],
+      ["ÉCOSSE", "HIGHLANDS", "Écosse · Highlands"],
+      ["ÉCOSSE", "ISLAY", "Écosse · Islay"],
+      ["IRLANDE", "IRLANDE", "Irlande"],
+      ["ÉTATS-UNIS", "KENTUCKY", "États-Unis"],
+      ["CANADA", "CANADA", "Canada"],
+      ["JAPON", "JAPON", "Japon"],
+      ["FRANCE", "FRANCE", "France"],
+      ["AILLEURS", "AILLEURS", "Ailleurs"]
+    ],
+    "lostHeaders": ["la cuisine", "par terre", "le couloir", "je sais plus", "encore", "ou ailleurs"],
+    "places": ["Speyside", "Highlands", "Islay", "Irlande", "Kentucky", "Canada", "Japon", "France", "quelque part"],
+    "maker": "Distillerie {name}, {place}",
+    "sip": "Gorgée n° {n}, goûtée pour vous · {time}",
+    "time": "{h} h {m}",
+    "lostTimes": ["2 h et quelques", "? h", "tard", "1 h 72", "25 h", "l’heure d’avant"],
+    "noteLabels": ["Nez :", "Bouche :", "Finale :"],
+    "names": [
+      [
+        "Glen Tardif",
+        "Glen Dormi",
+        "Ben Évitable",
+        "Strathmollo",
+        "Abercourt",
+        "Glen Hésite",
+        "Ben Volent",
+        "Glen Bavard",
+        "Craigmolle",
+        "Dal Pluvieux"
+      ],
+      ["Ben Troploin", "Ben Tôt", "Glen Frileux", "Inverpente", "Ballade", "Tom Bruyère", "Glen Brumeux", "Dal Rocheux"],
+      ["Loch Maloch", "Port Corran", "Ardbrume", "Ardoise", "Kildérape", "Kilomètre", "Port Embrun", "Loch Sommeil"],
+      ["O’Blivion", "Saint-Hoquet", "O’Trèfle", "Mac Arc-en-ciel", "Old Pub Fermé", "Saint-Crachin"],
+      ["Colonel Maïs", "Old Bureau", "Grand-Oncle Sam", "Bison Lent", "Kentucky Fiction", "Véranda"],
+      ["Érable Royal", "Caribou Poli", "Grand Nord Doux", "Mountie Pardon"],
+      ["Shizuka", "Kaze", "Origami", "Cerisier Doux", "Bonsaï", "Haïku"],
+      ["Malt de l’Hexagone", "Gaulois Tourbé", "Château Pas-de-Pluie", "Le Breton Têtu"],
+      ["Glen Quelquepart", "Ben Jsaisplus", "Loch Cuisine", "Port Canapé"]
+    ],
+    "kinds": [
+      ["Single malt", "Single malt", "Single malt"],
+      ["Single malt", "Single malt", "Single malt"],
+      ["Single malt tourbé", "Single malt tourbé", "Single malt"],
+      ["Blend", "Single pot still", "Single malt"],
+      ["Bourbon", "Bourbon", "Rye"],
+      ["Blend", "Rye", "Blend"],
+      ["Blend", "Single malt", "Blend"],
+      ["Single malt", "Single malt tourbé", "Blend"],
+      ["Blend", "Whisky ?", "Quelque chose"]
+    ],
+    "ages": [
+      ["3 ANS", "3 ans"],
+      ["8 ANS", "8 ans"],
+      ["10 ANS", "10 ans"],
+      ["12 ANS", "12 ans"],
+      ["15 ANS", "15 ans"],
+      ["16 ANS", "16 ans"],
+      ["18 ANS", "18 ans"],
+      ["21 ANS", "21 ans"],
+      ["25 ANS", "25 ans"],
+      ["30 ANS", "30 ans"],
+      ["", "sans âge"],
+      ["BRUT DE FÛT", "brut de fût"],
+      ["ÉDITION LIMITÉE", "édition limitée"],
+      ["FÛT DE XÉRÈS", "fût de xérès"],
+      ["FÛT DE PORTO", "fût de porto"],
+      ["DOUBLE FÛT", "double fût"]
+    ],
+    "abv": "{n} %",
+    "lostAbv": ["400 %", "beaucoup", "oui", "43 % (je crois)", "trop", "assez"],
+    "history": [
+      "La distillerie a été fondée en {year} par deux frères qui ne se parlaient plus.",
+      "L’eau vient d’une source que personne n’a jamais trouvée sur une carte.",
+      "Les fûts dorment dans un chai creusé dans la colline, à l’abri du vent.",
+      "La distillerie n’a qu’un alambic, qu’on appelle par son prénom.",
+      "Le malt est séché à l’ancienne, à la main, par un employé très patient.",
+      "On dit que la recette n’a jamais changé ; personne ne l’a jamais lue.",
+      "La distillerie a fermé trois fois et rouvert quatre.",
+      "Le maître de chai goûte chaque fût avec une pipette et ne dit rien.",
+      "Les étiquettes sont encore collées à la main, parfois de travers.",
+      "La brume du matin entre dans le chai ; on dit qu’elle reste dans le whisky.",
+      "Le fût vient d’un vieux bateau, qui ne s’en est jamais remis.",
+      "La distillerie se visite le mardi, quand il ne pleut pas, donc rarement."
+    ],
+    "tastingNotes": [
+      [
+        "Un malt équilibré, à goûter avec attention.",
+        "La robe est claire, presque paille.",
+        "Une gorgée suffit pour en saisir le caractère.",
+        "À réserver aux amateurs patients.",
+        "Il gagne à respirer quelques minutes dans le verre."
+      ],
+      [
+        "Très bon. Très bon vraiment. Je le note très bon.",
+        "Il me rappelle quelque chose, je ne sais plus quoi, une plage ou un oncle.",
+        "Robe dorée, très jolie robe, je la regarde de plus près.",
+        "J’en reprends un peu pour être sûr de mes notes.",
+        "Il paraît qu’il faut le garder en bouche longtemps. J’ai oublié de le garder.",
+        "Meilleur que le précédent, ou le même, ils se ressemblent un peu tous à cette heure."
+      ],
+      [
+        "très bon très bon très",
+        "il est rond. comme la table. la table est ronde ? non",
+        "je l’aime beaucoup je l’aime plus que le précédent dont j’ai oublié le nom",
+        "j’ai renversé un peu dessus, c’est pour ça la tache, pardon",
+        "la robe est jaune. tout est jaune un peu",
+        "il faut le garder en bouche. je l’ai gardé dans le verre, c’est plus prudent"
+      ],
+      ["bon", "le meilleur", "glen glen", "il est", "je le recommande à tout le monde même à ceux qui", "où est le verre"]
+    ],
+    "asides": [
+      "Note : ralentir.",
+      "Note : boire de l’eau. Fait. Un peu. Non.",
+      "Il fait chaud ici.",
+      "J’ai fait tomber le stylo. Je l’ai retrouvé.",
+      "Quelqu’un frappe ? Non.",
+      "Je me suis levé pour ouvrir la fenêtre. Je ne sais plus pourquoi.",
+      "Le livre penche, je le redresse.",
+      "Rappel : une gorgée suffit (page 6).",
+      "Je relirai demain."
+    ],
+    "notes": [
+      [
+        ["miel", "poire", "fumée légère", "fruits secs", "bruyère", "vanille", "orange", "cuir", "cèdre", "iode"],
+        ["malt", "caramel", "épices douces", "chêne", "noisette", "pomme cuite", "poivre", "chocolat noir"],
+        ["courte.", "moyenne.", "longue.", "sèche.", "chaude.", "fumée.", "épicée.", "élégante."]
+      ],
+      [
+        ["feu de camp", "grand-mère", "cave", "pull mouillé", "vacances", "pneu neuf", "bibliothèque"],
+        ["vanille", "beaucoup de vanille", "sincérité", "enfance", "caramel (je crois)"],
+        ["longue.", "très longue.", "je la sens encore.", "houleuse.", "en pente.", "toujours là."]
+      ],
+      [
+        ["nez", "mon nez", "la manche", "le verre d’avant", "oui"],
+        ["oui", "bon", "très bon", "vanille ?", "le même"],
+        ["déjà fini", "trop vite", "voir page d’avant", "zzz", "plus tard"]
+      ],
+      [
+        ["—", "gl", "jsp"],
+        ["……", "bon", "—"],
+        ["(rien)", "gl", "zz"]
+      ]
+    ],
+    "scrawl": ["le meilleur", "de tous", "je les aime", "tous en fait", "", "demain je", "relis tout", "promis"],
+    "scrawlSip": "gorgée {n}",
+    "blackout": ["et", "le", "suivant", "c’est", "le", "Glen", "Gl", "g"],
+    "morning": "Lendemain",
+    "morningKind": "n. m.",
+    "morningText": "Jour qui suit. Se reconnaît à la lumière, trop forte, et au bruit d’une page qu’on tourne. Remède : un grand verre d’eau, puis le silence.",
+    "morningSee": "Voir aussi : Eau ; Modération (p. 411).",
+    "fixed": [
+      [
+        "GLEN TARDIF 12 ANS",
+        "Distillerie Glen Tardif, Speyside",
+        "Single malt · 12 ans · 40 %",
+        "Fondée en 1824, deux ans après la date prévue, la distillerie n’a jamais rien fait dans les temps. Son malt vieillit douze ans en fûts de chêne, plus trois semaines : le temps de retrouver les clés du chai. Rond et doux, un bon point de départ pour ce guide.",
+        "miel, poire mûre.",
+        "vanille, biscuit sec.",
+        "moyenne, discrète."
+      ],
+      [
+        "BEN ÉVITABLE 18 ANS",
+        "Distillerie du Ben Évitable, Speyside",
+        "Single malt · 18 ans · 43 %",
+        "Au pied du mont du même nom, que tous les randonneurs contournent. Dix-huit ans en fûts de xérès lui donnent une robe acajou. Un whisky de patience, qu’on goûte en petite quantité. L’auteur s’en tient, pour l’instant, à cette règle.",
+        "raisins secs, cuir, noix.",
+        "orange confite, épices.",
+        "longue, sèche."
+      ],
+      [
+        "STRATHMOLLO 10 ANS",
+        "Distillerie de Strathmollo, Speyside",
+        "Single malt · 10 ans · 40 %",
+        "À l’entrée de la distillerie, un panneau : « Vas-y mollo ». Distillé lentement, mis en fût lentement, il se déguste de la même façon. L’auteur note la devise dans son carnet et la souligne deux fois.",
+        "pomme verte, herbe coupée.",
+        "céréales, miel léger.",
+        "courte, raisonnable."
+      ],
+      [
+        "GLEN DORMI 15 ANS",
+        "Distillerie Glen Dormi, Speyside",
+        "Single malt · 15 ans · 46 %",
+        "Le chai est si calme qu’on y entend le bois travailler. Quinze ans d’attente pour un malt profond, presque sombre. Le guide compte encore trois cent quatre-vingt-quinze pages : l’auteur promet de rester concentré.",
+        "tilleul, cire d’abeille.",
+        "malt grillé, cacao.",
+        "chaude, apaisée."
+      ],
+      [
+        "ABERCOURT 21 ANS",
+        "Distillerie d’Abercourt, Speyside",
+        "Single malt · 21 ans · 43 %",
+        "Le plus vieux malt de ce chapitre. Une gorgée, avec respect, en prenant des notes. L’auteur remarque qu’il en est déjà à sa cinquante-cinquième gorgée et décide de ralentir à partir de la page suivante.",
+        "cuir ciré, figue.",
+        "chêne, tabac blond.",
+        "très longue, noble."
+      ],
+      [
+        "GLEN TARDIF 12 ANS (DEUXIÈME AVIS)",
+        "Distillerie Glen Tardif, Speyside",
+        "Single malt · 12 ans · 40 %",
+        "Je reviens au premier pour comparer, c’est la méthode. Il est bien meilleur que dans mon souvenir. Mon souvenir date de la page 13. J’ai changé d’avis sur tout, la vanille surtout.",
+        "miel, poire, nostalgie.",
+        "vanille, beaucoup mieux.",
+        "je l’avais mal jugé."
+      ],
+      [
+        "BEN TROPLOIN 25 ANS",
+        "Distillerie du Ben Troploin, Highlands",
+        "Single malt · 25 ans · 45 %",
+        "La distillerie la plus isolée d’Écosse : trois jours de marche pour y aller. Pour en revenir, ça dépend. Je n’y suis pas allé, je l’ai goûté ici, c’est plus près. Les Highlands sont très hautes. Je me suis levé pour vérifier.",
+        "bruyère, vent, mollets.",
+        "miel sauvage, sentier.",
+        "en pente."
+      ],
+      [
+        "LOCH MALOCH 10 ANS",
+        "Distillerie du Loch Maloch, Islay",
+        "Single malt tourbé · 10 ans · 46 %",
+        "Sur l’île, on sèche l’orge au feu de tourbe. Alors l’orge sent la tourbe, et le whisky sent la tourbe, et la cuisine sent la tourbe, et mon pull aussi maintenant. La tourbe c’est de la terre qui brûle, c’est fou quand on y pense. J’y pense beaucoup.",
+        "feu de camp, pneu, grand-père.",
+        "fumée, iode, encore de la fumée.",
+        "ne finit pas. Toujours là."
+      ],
+      [
+        "PORT CORRAN 16 ANS",
+        "Distillerie de Port Corran, Islay",
+        "Single malt · 16 ans · 43 %",
+        "La distillerie est si près de la mer que les fûts ont le mal de mer. Le whisky en garde un goût salé et une tendance à tanguer. La table aussi tangue un peu. Robe ambrée, très jolie robe, je la regarde de plus près. Le verre est déjà vide, quelqu’un a dû le boire.",
+        "embruns, corde mouillée.",
+        "sel, caramel, roulis.",
+        "houleuse."
+      ],
+      [
+        "ARDBRUME 8 ANS",
+        "Distillerie d’Ardbrume, Islay",
+        "Single malt · 8 ans · 48 %",
+        "Le maître de chai dit qu’on l’ouvre avec une goutte d’eau. J’ai mis une goutte d’eau. Trop d’eau. J’ai rattrapé avec du whisky. Puis trop de whisky, donc de l’eau. Ça s’équilibre très bien, je recommence pour vérifier [hic].",
+        "brume, réglisse, réverbère.",
+        "poivre, fumée, sincérité.",
+        "ça va. Ça va très bien."
+      ],
+      [
+        "LE VERRE À MOITIÉ PLEIN",
+        "Ou à moitié vide, selon le point de vue",
+        "Hors catégorie · 50 % de verre",
+        "Fiche spéciale. Un verre à moitié plein, posé devant moi. L’optimiste le dit à moitié plein, le pessimiste à moitié vide. Moi je le goûte pour trancher : à moitié vide. Je goûte encore : vide. Le pessimiste avait raison, c’est toujours lui qui a raison.",
+        "la moitié d’un nez.",
+        "optimiste, puis non.",
+        "à moitié finie."
+      ],
+      [
+        "O’BLIVION TRIPLE DISTILLÉ",
+        "Distillerie O’Blivion, Irlande",
+        "Blend · sans âge · 40 %",
+        "Les Irlandais distillent trois fois, pour la douceur. Je l’ai goûté trois fois aussi, pour être juste avec eux. Ou quatre. Je ne me souviens plus de la première, c’est peut-être ça, le nom.",
+        "pomme, trèfle, trou de mémoire.",
+        "douce, très douce, trop.",
+        "de quoi on parlait ?"
+      ],
+      [
+        "ABBAYE DE SAINT-HOQUET 12 ANS",
+        "Distillerie de l’abbaye, Irlande",
+        "Single pot still · 12 ans · 43 %",
+        "Des moines le font depuis le Moyen Âge, dans le silence et la prière. Le silence surtout. J’ai essayé le silence, j’ai eu le hoquet [hic]. Le saint patron des distillateurs, c’est Saint-Hoquet [hic], je ne l’invente pas [hic].",
+        "encens, pain d’épices.",
+        "[hic].",
+        "[hic] [hic]."
+      ],
+      [
+        "COLONEL MAÏS 7 ANS",
+        "Distillerie du Colonel, Kentucké",
+        "Bourbon · 7 ans · 50 %",
+        "Le bourbon. LE BOURBON. Au moins la moitié de maïs, et des fûts neufs brûlés dedans, comme ma gorge. Le colonel n’existe pas mais le maïs oui. 7 ans. Ou 8, j’ai compté les fûts deux fois et les fûts ont bougé entre les deux.",
+        "vanille",
+        "vanille ?",
+        "VANILLE. qui a renversé la vanille"
+      ],
+      [
+        "COLONEL MAÏS 7 ANS",
+        "Distillerie du Colonel, Kentucky, je crois",
+        "Bourbon · 7 ans · 50 % · encore",
+        "je l’ai déjà fait celui-là ? il a l’air nouveau. très bon. le colonel est très gentil de nous accueillir. merci colonel. on devrait tous être colonels",
+        "colonel",
+        "le même que l’autre",
+        "voir page d’avant"
+      ],
+      [
+        "LES FRÈRES DE LA BAIGNOIRE",
+        "Distillerie : une baignoire, quelque part",
+        "Alcool de maïs · 0 jour · on ne sait pas",
+        "Ça ne se fait plus et ça ne se fait pas. Les frères le distillaient en cachette, dans leur baignoire. Il ne faut pas faire ça. Je ne recommande pas. Je ne recommande pas la baignoire non plus, j’ai essayé de m’asseoir dedans pour l’article, il n’y a plus d’eau.",
+        "savon.",
+        "maïs, savon.",
+        "canard en plastique."
+      ],
+      [
+        "ÉRABLE ROYAL 10 ANS",
+        "Distillerie de l’Érable, Canada",
+        "Blend · 10 ans · 40 %",
+        "On dit que les Canadiens sont très polis. Ce whisky aussi : il s’excuse au moment où on l’avale. Pardon. Non, pardon, c’est moi. Pardon. Je crois que j’ai renversé un peu. Pardon au livre.",
+        "sirop d’érable, pardon.",
+        "sucré, désolé.",
+        "excuses."
+      ],
+      [
+        "SHIZUKA HARMONIE",
+        "Distillerie Shizuka, très loin",
+        "Blend · sans âge · chut",
+        "chut. ici il faut chuchoter. SHIZUKA ÇA VEUT DIRE CALME. pardon. chaque bouteille est polie à la main, j’ai poli celle-là aussi avec ma manche, elle brille. harmonie. équilibre. je suis très équilibré",
+        "fleurs, je crois, ou ma manche",
+        "harmonie",
+        "zzz"
+      ],
+      [
+        "LE VERRE VIDE",
+        "Toutes distilleries",
+        "Millésime : tout à l’heure · 0 %",
+        "un grand classique. on le trouve partout, surtout devant moi. très facile à déguster, c’est même ça le problème, ça finit trop vite. robe : transparente. je le recommande pas. je le recommande à personne. qui l’a vidé",
+        "le fond du verre",
+        "rien, mais longtemps",
+        "déjà fini. trop vite. beaucoup trop vite"
+      ],
+      [
+        "L’ÉVIER",
+        "Distillerie de l’Évier, la cuisine",
+        "Eau du robinet · 0 an · 0 %",
+        "pas de tourbe. pas de fût. pas de couleur. aucun âge. très décevant, je ne comprends pas qu’on serve ça aux gens. j’en ai bu deux verres pour être sûr. c’est le meilleur de la soirée. ne le dites à personne",
+        "rien",
+        "frais, très frais",
+        "propre"
+      ],
+      [
+        "MALT DE L’HEXAGONE 6 ANS",
+        "Distillerie de l’Hexagone, France",
+        "Single malt · 6 ans · 6 %",
+        "la france on l’appelle l’hexagone parce qu’elle a six côtés. j’ai compté. sept. j’ai recompté, cinq. le whisky a six ans parce que six côtés. c’est logique. tout est logique ce soir",
+        "six",
+        "six aussi",
+        "sept"
+      ],
+      [
+        "LE BLEND DE MOI",
+        "Distillerie : moi",
+        "Blend · tous les âges · 47 whiskies",
+        "j’ai versé tous les fonds de verre dans un seul verre. c’est un blend. c’est MON blend. il a tous les goûts en même temps, donc aucun. il est très bon il est très. il est",
+        "tout",
+        "tout à la fois",
+        "ah"
+      ],
+      [
+        "LE PLAFOND",
+        "Distillerie : le plafond",
+        "Allongé · ? ans · ? %",
+        "écrit par terre. le plafond tourne doucement. il est beige. robe beige. il a une petite fissure en forme d’écosse",
+        "moquette",
+        "—",
+        "plafond"
+      ],
+      [
+        "LE DERNIER",
+        "Distillerie : la dernière",
+        "Single malt · le dernier · le dernier",
+        "le dernier. vraiment le dernier. après j’arrête et je relis tout depuis la page 1 pour corriger. le meilleur de tous",
+        "promis",
+        "promis",
+        "promis"
+      ]
+    ]
+  },
   "idleBabel": {
     "name": "Idle Babel",
     "cover": ["Idle Babel"],
@@ -3067,6 +3538,8 @@
         "coloring-c": "La couverture à colorier",
         "comicNotice-a": "Le titre trouvé dans le charabia",
         "comicNotice-c": "L’écran du jeu",
+        "wiskyPedia-b": "Le verre sur le plat crème",
+        "wiskyPedia-c": "La bande de tartan",
         "trueStory-a": "Le titre en crème",
         "trueStory-c": "L’étiquette en haut",
         "credits-a": "L’achevé d’imprimer",
