@@ -10,6 +10,8 @@
  *   npm run simule -- --lettres=0              sans la lettre qui s'échappe (0,5 : le bot en attrape une sur deux)
  *   npm run simule -- --numerique=500          l'étoile de l'Âge Numérique à 500 Éther (1 500 dans le jeu)
  *   npm run simule -- --sans-bit               sans le Bit, méthode secrète de l'Âge Numérique
+ *   npm run simule -- --quantique=150000       l'Âge Quantique (essai, pas encore dans le jeu), son étoile à 150 000 Éther
+ *   npm run simule -- --intuitions-quantiques  avec les intuitions des méthodes Quantiques (essai)
  *   npm run simule -- --sans-poids             sans le poids de la Bibliothèque (lecture de l'Éther freinée au-delà de 5 000)
  *   npm run simule -- --lecture=auto:0.1       la lecture des méthodes d'un Âge multipliée (manual, auto, num)
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
@@ -22,7 +24,7 @@
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
-import { AUTOMATIC, BIT, DIGITAL } from './methodes';
+import { AUTOMATIC, BIT, DIGITAL, QUANTUM } from './methodes';
 import { away, buyMethods, newRun, pagesPerSecond, play, type Run } from './partie';
 import { buyIntuitions } from './intuitions';
 import { etherGain, litPerPage, newLife, spendEther } from './vie';
@@ -47,6 +49,7 @@ if (option('sans-poids') !== undefined) PLAYER.weight = false;
 if (option('lettres') !== undefined) PLAYER.letters = Number(option('lettres'));
 if (option('numerique')) PLAYER.digitalAge = Number(option('numerique'));
 if (option('sans-bit') !== undefined) PLAYER.bit = false;
+if (option('quantique')) PLAYER.quantumAge = Number(option('quantique'));
 if (option('sans-taches') !== undefined) PLAYER.tasks = false;
 if (option('avec-jeton') !== undefined) PLAYER.tokenRelic = true;
 if (option('reminiscence') === 'gratuite') PLAYER.reminiscence = 'gratuite';
@@ -133,9 +136,12 @@ for (let number = 1; life.clock < end; number++) {
     // Pareil pour l'Âge Numérique.
     DIGITAL.map((method) => short(run.firstBought[method.id])).join(' · '),
     short(run.firstBought.bit),
+    // Pareil pour l'Âge Quantique (essai).
+    ...(PLAYER.quantumAge > 0 ? [QUANTUM.map((method) => short(run.firstBought[method.id])).join(' · ')] : []),
     // Connaissance gagnée dans la partie ; niveaux des intuitions de l'Âge Numérique (le Bit en dernier).
     big(run.knowledgeGained),
     [...DIGITAL, BIT].map((method) => run.levels[method.gesture!] ?? 0).join(''),
+    ...(PLAYER.quantumGestures ? [QUANTUM.map((method) => run.levels[method.gesture!] ?? 0).join('')] : []),
     String(sealCount(run)),
     gain > 0 ? `+${gain}` : '(en cours)',
   ];
@@ -165,8 +171,10 @@ const header = [
   'Auto 1 · 2 · 3 · 4 · 5',
   'Num 1 · 2 · 3 · 4 · 5',
   'Bit',
+  ...(PLAYER.quantumAge > 0 ? ['Quant 1 · 2 · 3 · 4 · 5'] : []),
   'Conn.',
   'Int. Num',
+  ...(PLAYER.quantumGestures ? ['Int. Quant'] : []),
   'sceaux',
   'Éther',
   'total',

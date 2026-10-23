@@ -4,8 +4,24 @@ import type { Run } from './partie';
 import { PLAYER } from './config';
 import { lit, product } from './vie';
 
-/** Les intuitions du jeu (celles de l'Âge Numérique comprises). */
-const ALL: readonly { id: string; prices: readonly number[]; tool?: string; growth?: number }[] = TECHNOLOGIES;
+/**
+ * Les intuitions de l'Âge Quantique (essai du 23/10, --intuitions-quantiques) : une par méthode, ×2 par niveau, 5 niveaux,
+ * dans la suite de l'Âge Numérique (l'Algorithme de Babel commence à 51,2 M).
+ */
+const gesture = (first: number): number[] => [1, 2, 4, 8, 16].map((step) => first * step);
+const QUANTUM_GESTURES = [
+  { id: 'microscopeGesture', prices: gesture(102_400_000), tool: 'microscope' },
+  { id: 'entangledGesture', prices: gesture(204_800_000), tool: 'entangled' },
+  { id: 'teleportationGesture', prices: gesture(409_600_000), tool: 'teleportation' },
+  { id: 'groverGesture', prices: gesture(819_200_000), tool: 'grover' },
+  { id: 'quantumComputerGesture', prices: gesture(1_638_400_000), tool: 'quantumComputer' },
+];
+
+/** Les intuitions du jeu (celles de l'Âge Numérique comprises), et celles de l'Âge Quantique à l'essai. */
+const ALL: readonly { id: string; prices: readonly number[]; tool?: string; growth?: number }[] = [
+  ...TECHNOLOGIES,
+  ...(PLAYER.quantumGestures ? QUANTUM_GESTURES : []),
+];
 
 /** Celles qui changent le rythme de la partie ; le bot laisse les autres (Flair, Brassée, Réminiscence…). */
 const USEFUL = [

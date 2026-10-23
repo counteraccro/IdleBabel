@@ -60,6 +60,13 @@ export const PLAYER = {
   mimicMinutes: 30,
   /** Le prix de l'étoile de l'Âge Numérique remplacé, pour essayer (--numerique=500) ; 0 : celui du jeu. */
   digitalAge: 0,
+  /**
+   * L'Âge Quantique (23/10, pas encore dans le jeu ; méthodes dans methodes.ts, QUANTUM) : le prix de son étoile
+   * (--quantique=150000) ; 0 : sans lui.
+   */
+  quantumAge: 0,
+  /** Les intuitions des méthodes Quantiques (essai, simulateur/intuitions.ts) : --intuitions-quantiques. */
+  quantumGestures: false,
   /** Le Bit, méthode secrète de l'Âge Numérique : --sans-bit pour s'en passer. */
   bit: true,
   /** Les tâches (17/10, simulateur/taches.ts, pas encore dans le jeu) : --sans-taches pour s'en passer. */
@@ -98,7 +105,7 @@ export const PLAYER = {
    */
   /** Prix et lecture d'une méthode du jeu remplacés, pour essayer (--methode=voice:12000:18,lectern:800000:650). */
   methods: {} as Record<string, { baseCost: number; pagesPerSecond: number }>,
-  reading: { manual: 1, auto: 1, num: 1 } as Record<'manual' | 'auto' | 'num', number>,
+  reading: { manual: 1, auto: 1, num: 1, quant: 1 } as Record<'manual' | 'auto' | 'num' | 'quant', number>,
 };
 
 const methodOption = process.argv.find((arg) => arg.startsWith('--methode='))?.split('=')[1];
@@ -106,7 +113,8 @@ for (const part of methodOption?.split(',') ?? []) {
   const [id, baseCost, pagesPerSecond] = part.split(':');
   PLAYER.methods[id] = { baseCost: Number(baseCost), pagesPerSecond: Number(pagesPerSecond) };
 }
-// Lu ici et pas dans main.ts : les méthodes (methodes.ts) sont calculées dès leur import.
+// Lu ici et pas dans main.ts : les méthodes (methodes.ts) et les intuitions (intuitions.ts) sont calculées dès leur import.
+if (process.argv.includes('--intuitions-quantiques')) PLAYER.quantumGestures = true;
 const readingOption = process.argv.find((arg) => arg.startsWith('--lecture='))?.split('=')[1];
 for (const part of readingOption?.split(',') ?? []) {
   const [age, factor] = part.split(':');

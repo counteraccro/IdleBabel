@@ -11,6 +11,7 @@ import {
   type PageId,
 } from '../src/data/etheriumStars';
 import { DIGITAL_AGE } from '../src/data/tools';
+import { QUANTUM_AGE } from './methodes';
 import { relicById } from '../src/data/relics';
 import { PLAYER } from './config';
 import { etherNeeded } from '../src/systems/etherium';
@@ -124,6 +125,10 @@ const open = (life: Life): Buyable[] => [
       life.etherReceived >= etherNeeded(star.page),
   ),
   ...openTaskStars(life),
+  // L'Âge Quantique (essai, --quantique) : après l'Âge Numérique.
+  ...(PLAYER.quantumAge > 0 && life.stars.has(DIGITAL_AGE) && !life.stars.has(QUANTUM_AGE)
+    ? [{ id: QUANTUM_AGE, cost: PLAYER.quantumAge }]
+    : []),
 ];
 
 type Buyable = { id: string; cost: number };
