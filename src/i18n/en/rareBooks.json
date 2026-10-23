@@ -1042,6 +1042,16 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 2.12",
+          "date": "23 October 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": ["Two new books to find for the endings shelf.", "New secret seals."]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.11",
           "date": "21 October 2026",
           "sections": [
