@@ -136,6 +136,7 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintTomeJackpot',
     'hintTomeMimic',
     'hintTomeTask',
+    'hintTomeReading',
     'hintTenTimes',
     'hintAllCurses',
     'hintAllBoons',
@@ -188,8 +189,8 @@ export const HINTS_AFTER_PRESTIGE: readonly string[] = ['hintEmptyEtherium', 'hi
 /** Les indices de la Loterie (la Mimic dorée, ses bonus et malus) ne tombent qu'après un premier tirage. */
 export const HINTS_AFTER_DRAW: readonly string[] = ['hintTenTimes', 'hintAllCurses', 'hintAllBoons', 'hintAllEffects', 'hintTomeJackpot'];
 
-/** Les indices des tomes qui se gagnent (le gros lot, la Mimic) ne tombent qu'une fois le tome 1 acheté : avant, rien ne se gagne. */
-export const HINTS_AFTER_FIRST_TOME: readonly string[] = ['hintTomeJackpot', 'hintTomeMimic', 'hintTomeTask'];
+/** Les indices des tomes qui se gagnent (le gros lot, la Mimic, la tâche, la lecture) ne tombent qu'une fois le tome 1 acheté : avant, rien ne se gagne. */
+export const HINTS_AFTER_FIRST_TOME: readonly string[] = ['hintTomeJackpot', 'hintTomeMimic', 'hintTomeTask', 'hintTomeReading'];
 
 /** L'indice du tome de la Mimic ne tombe qu'une fois la Mimic achetée (l'Est de l'Exploration). */
 export const HINTS_AFTER_MIMIC: readonly string[] = ['hintTomeMimic'];

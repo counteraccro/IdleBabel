@@ -16,6 +16,7 @@ export const TOME_BRIBE_PAGES: readonly (readonly number[])[] = [
   [9, 44, 81, 127, 176, 219, 268, 330, 410],
   [12, 53, 88, 141, 187, 240, 296, 352, 410],
   [8, 47, 95, 133, 181, 229, 284, 341, 410],
+  [11, 49, 92, 138, 190, 236, 279, 337, 410],
 ];
 
 /** Le livre dans la vitrine (ui/library/libraryPage.ts), et ses textes (rareBooks.trueStory). */

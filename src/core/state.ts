@@ -341,6 +341,8 @@ export interface GameState {
   tomeToShow: number | null;
   /** Le premier tome (son numéro) donné par chaque source : le nom de son sceau (systems/endings.ts, giveTome). */
   tomeFrom: Partial<Record<TomeSource, number>>;
+  /** Le livre (son numéro) où la lecture a trouvé un tome : il le garde, comme un livre rare (systems/endings.ts, takeTome). */
+  tomeBook: number | null;
   /** Sceaux obtenus que le joueur n'a pas encore vus dans le livre étrange. */
   newSeals: string[];
   /** Livres de la bibliothèque que le joueur y a déjà vus (systems/library.ts) : au-delà, la clé brille. */
@@ -448,6 +450,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   sagaTomes: [],
   tomeToShow: null,
   tomeFrom: {},
+  tomeBook: null,
   newSeals: [],
   libraryBooksSeen: 0,
   history: [{ type: 'gameStarted', at: now }],

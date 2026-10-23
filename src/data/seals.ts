@@ -336,6 +336,7 @@ export const SEALS: readonly SealDef[] = [
   { ...seal('tomeJackpot', 'secrets', (s) => s.tomeFrom.jackpot !== undefined), tomeFrom: 'jackpot' },
   { ...seal('tomeMimic', 'secrets', (s) => s.tomeFrom.mimic !== undefined), tomeFrom: 'mimic' },
   { ...seal('tomeTask', 'secrets', (s) => s.tomeFrom.task !== undefined), tomeFrom: 'task' },
+  { ...seal('tomeReading', 'secrets', (s) => s.tomeFrom.reading !== undefined), tomeFrom: 'reading' },
   // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).
   seal('cheat', 'secrets', (s) => s.modded !== null),
 ];

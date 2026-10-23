@@ -114,7 +114,8 @@
   "tomeSeals": {
     "2": "Là-bas.",
     "3": "La huitième.",
-    "4": "Encore une salle."
+    "4": "Encore une salle.",
+    "5": "Les poches vides."
   },
   "seals": {
     "pagesRead": "Traverse {n} pages",
@@ -282,6 +283,7 @@
     "tomeJackpot": "Un livre est tombé.",
     "tomeMimic": "Un livre est tombé.",
     "tomeTask": "Un livre est tombé.",
+    "tomeReading": "Un livre est tombé.",
     "tenTimes": "Dix fois. Pour rien.",
     "allCurses": "Tous les malheurs à la fois.",
     "allBoons": "Toute la chance du monde.",

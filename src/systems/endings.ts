@@ -1,4 +1,6 @@
 import { starLit } from './etherium';
+import { gameRandom } from '../core/random';
+import { STRANGE_BOOK_INDEX } from './strangeBook';
 import { S } from '../data/etheriumStars';
 import { SAGA_TOMES } from '../data/sagaTomes';
 import { TOME_BRIBE_PAGES } from '../data/trueStory';
@@ -30,8 +32,11 @@ export const nextTome = (state: GameState): number | undefined => {
   return index > 0 && index < TOME_BRIBE_PAGES.length ? index : undefined;
 };
 
-/** Ce qui fait gagner un tome : trois 7 à la Loterie, une Mimic attrapée, « Une dernière pour la route » (la tâche 21). */
-export type TomeSource = 'jackpot' | 'mimic' | 'task';
+/**
+ * Ce qui fait gagner un tome : trois 7 à la Loterie, une Mimic attrapée, « Une dernière pour la route » (la tâche 21), un
+ * livre pris en lisant.
+ */
+export type TomeSource = 'jackpot' | 'mimic' | 'task' | 'reading';
 
 /**
  * Le tome `index` (1 pour le tome 2) rejoint le meuble des fins ; il sera montré, en main (state.tomeToShow). La source
@@ -42,6 +47,42 @@ export const giveTome = (state: GameState, index: number, source: TomeSource): v
   state.sagaTomes.push(index + 1);
   state.tomeToShow = index;
   state.tomeFrom[source] ??= index + 1;
+};
+
+/**
+ * Un tome trouvé en lisant (l'auteur, 23/10 : « il apparaîtra comme un livre rare », mais ce n'en est pas un, « il se rangera
+ * avec les autres ») : un livre sur 3 000 (l’auteur, 23/10), une seule fois dans la partie, le tome suivant, pas avant le livre étrange.
+ */
+export const READING_TOME_CHANCE = 1 / 3000;
+
+/**
+ * Le tome (son index) que cache le livre n° `index`, s'il y en a un : celui où on l'a trouvé le garde ; sinon, tiré de son
+ * numéro, tant que la lecture n'a pas encore donné de tome.
+ */
+/** Débogage : le livre où la lecture trouvera le tome suivant. */
+let forcedTomeBook: number | undefined;
+export const forceReadingTome = (index: number | undefined): void => {
+  forcedTomeBook = index;
+};
+
+export const tomeAt = (state: GameState, index: number): number | undefined => {
+  if (state.tomeBook === index) return state.tomeFrom.reading === undefined ? undefined : state.tomeFrom.reading - 1;
+  if (state.tomeFrom.reading !== undefined || index <= STRANGE_BOOK_INDEX) return undefined;
+  if (index !== forcedTomeBook && gameRandom(`tome:${index}`)() >= READING_TOME_CHANCE) return undefined;
+  return nextTome(state);
+};
+
+/**
+ * Le livre n° `index` arrive en main : s'il cache un tome, celui-ci est trouvé et rangé au meuble des fins. `held` : il est
+ * déjà en main (le livre tenu devient le tome), rien à montrer de plus ; pris pendant une absence, il sera montré au retour.
+ */
+export const takeTome = (state: GameState, index: number, held: boolean): number | undefined => {
+  const tome = tomeAt(state, index);
+  if (tome === undefined || state.tomeBook === index) return tome;
+  giveTome(state, tome, 'reading');
+  state.tomeBook = index;
+  if (held) state.tomeToShow = null;
+  return tome;
 };
 
 /** Ce que fait lire de plus chaque tome, aux méthodes de son Âge : le tome 2 à l'Âge Automatique, le tome 3 à l'Âge Numérique (l'auteur, 18/10). */

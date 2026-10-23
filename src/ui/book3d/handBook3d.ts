@@ -4,6 +4,8 @@ import { coverDesign } from '../../systems/coverDesign';
 import { rareBookAt, takeBook } from '../../systems/rareBooks';
 import { rareBookArt } from '../rareBooks/arts';
 import { rareBook3d } from '../rareBooks/rareBook3d';
+import { takeTome } from '../../systems/endings';
+import { SAGA_TOMES } from '../../data/sagaTomes';
 import { pageNumberLabel } from '../../systems/pageNumber';
 import { producedWholePages } from '../../systems/production';
 import { PAGES_PER_BOOK, PAGES_PER_LEAF } from '../../systems/books';
@@ -79,6 +81,9 @@ export const handBook3d = (state: GameState, index = state.booksFinished, finds?
   if (upcoming) void rareBookArt(upcoming).prepare?.();
   // Le livre lui-même, pas une copie : la page 3D y branche `navigate` et `tremble`, que ses liens appellent.
   if (rare) return Object.assign(rareBook3d(state, rare, index, HAND_SHAPE), { next, autoTurn });
+  // Un tome de « L'histoire de Babel » arrive en main comme un livre rare : trouvé, il est rangé au meuble des fins.
+  const tome = isStrangeBook(index) ? undefined : takeTome(state, index, true);
+  if (tome !== undefined) return Object.assign(rareBook3d(state, SAGA_TOMES[tome], index, HAND_SHAPE), { next, autoTurn });
   const design = coverDesign(index);
   const strange = isStrangeBook(index) ? strangeHandPages(state) : null;
   const paper = strange ? STRANGE_PAPER : design.modern ? MODERN_PAPER : OLD_PAPER;

@@ -1,12 +1,13 @@
 import { PAGES_PER_BOOK, PAGES_PER_LEAF, closeBook } from './books';
 import { takeBook } from './rareBooks';
+import { takeTome } from './endings';
 import { isStrangeBook } from './strangeBook';
 import type { GameState } from '../core/state';
 
 /**
  * Pages tournées sans le chercheur (absence, modale) : le livre en main avance d'autant, feuille par
  * feuille (arrondi au hasard : la moyenne est juste) ; chaque livre lu jusqu'au bout est refermé, le suivant
- * pris, et un livre rare pris ainsi est trouvé, comme s'il était arrivé en main. Renvoie les livres refermés.
+ * pris, et un livre rare (ou un tome) pris ainsi est trouvé, comme s'il était arrivé en main. Renvoie les livres refermés.
  */
 export const readWhileAway = (state: GameState, pages: number, random: () => number = Math.random): number => {
   let leaves = Math.floor(pages / PAGES_PER_LEAF + random());
@@ -20,7 +21,7 @@ export const readWhileAway = (state: GameState, pages: number, random: () => num
     leaves -= left;
     closeBook(state);
     closed += 1;
-    if (!isStrangeBook(state.booksFinished)) takeBook(state, state.booksFinished);
+    if (!isStrangeBook(state.booksFinished) && !takeBook(state, state.booksFinished)) takeTome(state, state.booksFinished, false);
   }
   return closed;
 };

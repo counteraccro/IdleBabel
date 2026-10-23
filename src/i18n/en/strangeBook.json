@@ -114,7 +114,8 @@
   "tomeSeals": {
     "2": "Over there.",
     "3": "The eighth.",
-    "4": "Another room."
+    "4": "Another room.",
+    "5": "Empty pockets."
   },
   "seals": {
     "pagesRead": "Cross {n} pages",
@@ -282,6 +283,7 @@
     "tomeJackpot": "A book dropped.",
     "tomeMimic": "A book dropped.",
     "tomeTask": "A book dropped.",
+    "tomeReading": "A book dropped.",
     "tenTimes": "Ten times. For nothing.",
     "allCurses": "Every misfortune at once.",
     "allBoons": "All the luck in the world.",

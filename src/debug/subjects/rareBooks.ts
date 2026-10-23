@@ -1,6 +1,7 @@
 import { el } from '../../ui/dom';
 import { RARE_BOOKS } from '../../data/rareBooks';
 import { forceRareBook, isRareBookFound, rareBookAt } from '../../systems/rareBooks';
+import { forceReadingTome } from '../../systems/endings';
 import { refreshBook, refreshLibrary } from '../refresh';
 import { RARE_BOOK_HASH } from '../enabled';
 import { remember } from '../remember';
@@ -76,6 +77,20 @@ export const RARE_BOOK_SUBJECT: DebugSubject = {
           refreshLibrary();
         },
         { title: 'Passe au livre suivant, qui sera celui-ci.' },
+      ],
+      [
+        'Un tome en lisant',
+        () => {
+          // La lecture redonne son tome : le suivant de « L'histoire de Babel » arrive comme livre suivant, fermé.
+          delete state.tomeFrom.reading;
+          state.tomeBook = null;
+          state.booksFinished += 1;
+          state.bookPage = 0;
+          forceReadingTome(state.booksFinished);
+          refreshBook();
+          refreshLibrary();
+        },
+        { title: 'Le livre suivant sera le tome suivant de la saga (le tome 1 acheté).' },
       ],
       ['L’ouvrir en grand', () => (window.location.hash = `${RARE_BOOK_HASH}${menu.value}`), { title: 'Comme dans la bibliothèque.' }],
       ['Tout trouver', () => findAllRareBooks(state), { title: 'Remplit la vitrine de la bibliothèque (sans les sceaux).' }],

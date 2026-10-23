@@ -4,6 +4,7 @@ import { tellLore } from '../../systems/lore';
 import { meetStrangeBook } from '../../systems/decipher';
 import { isStrangeBook } from '../../systems/strangeBook';
 import { takeBook } from '../../systems/rareBooks';
+import { takeTome } from '../../systems/endings';
 import { DEBUG_BOOK_EVENT } from '../../debug/events';
 import { BOOK_MOVED_EVENT } from '../../core/absence';
 import { heldBookReplacement } from '../../mods/heldBook';
@@ -56,10 +57,11 @@ export const createHandReading3d = (state: GameState): Component => {
       onArrived: () => meetStrangeBook(state),
     });
 
-  /** Le livre n° `index` est-il ordinaire ? Il arrive en main : s'il est rare, il est trouvé (comme handBook3d). */
+  /** Le livre n° `index` est-il ordinaire ? Il arrive en main : s'il est rare, ou un tome, il est trouvé (comme handBook3d). */
   const ordinary = new Map<number, boolean>();
   const isOrdinary = (index: number): boolean => {
-    if (!ordinary.has(index)) ordinary.set(index, !isStrangeBook(index) && !takeBook(state, index));
+    if (!ordinary.has(index))
+      ordinary.set(index, !isStrangeBook(index) && !takeBook(state, index) && takeTome(state, index, true) === undefined);
     return ordinary.get(index)!;
   };
   const wantsMod = (): boolean =>
