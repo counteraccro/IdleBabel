@@ -115,7 +115,8 @@
     "2": "Là-bas.",
     "3": "La huitième.",
     "4": "Encore une salle.",
-    "5": "Les poches vides."
+    "5": "Les poches vides.",
+    "6": "Toujours sept."
   },
   "seals": {
     "pagesRead": "Traverse {n} pages",
@@ -284,6 +285,7 @@
     "tomeMimic": "Un livre est tombé.",
     "tomeTask": "Un livre est tombé.",
     "tomeReading": "Un livre est tombé.",
+    "tomeSeals": "Un livre est tombé.",
     "tenTimes": "Dix fois. Pour rien.",
     "allCurses": "Tous les malheurs à la fois.",
     "allBoons": "Toute la chance du monde.",

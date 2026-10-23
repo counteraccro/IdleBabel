@@ -1,4 +1,5 @@
 import type { GameState } from '../core/state';
+import { giveSealsTome } from './endings';
 import { SEALS, type PlateId, type SealDef } from '../data/seals';
 import { SEAL_FIND_BONUS } from '../data/knowledge';
 import { seeded, hashText } from '../core/random';
@@ -40,6 +41,8 @@ export const sealAll = (state: GameState, now = Date.now()): void => {
 
 /** Appelé à chaque tick : scelle ce qui vient d'être atteint (avec sa date), et l'annonce. */
 export const checkSeals = (state: GameState, now = Date.now()): void => {
+  // Le centième sceau, apposé à un appel précédent, donne son tome : le sceau de cette source suit dans la même passe.
+  giveSealsTome(state);
   const sealed: string[] = [];
   for (const seal of allSeals()) {
     if (!(seal.id in state.seals) && seal.reached(state)) {

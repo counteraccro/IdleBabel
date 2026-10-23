@@ -34,9 +34,9 @@ export const nextTome = (state: GameState): number | undefined => {
 
 /**
  * Ce qui fait gagner un tome : trois 7 à la Loterie, une Mimic attrapée, « Une dernière pour la route » (la tâche 21), un
- * livre pris en lisant.
+ * livre pris en lisant, le centième sceau.
  */
-export type TomeSource = 'jackpot' | 'mimic' | 'task' | 'reading';
+export type TomeSource = 'jackpot' | 'mimic' | 'task' | 'reading' | 'seals';
 
 /**
  * Le tome `index` (1 pour le tome 2) rejoint le meuble des fins ; il sera montré, en main (state.tomeToShow). La source
@@ -83,6 +83,19 @@ export const takeTome = (state: GameState, index: number, held: boolean): number
   state.tomeBook = index;
   if (held) state.tomeToShow = null;
   return tome;
+};
+
+/** Le sceau du palier des 100 sceaux (data/seals.ts, sealsApplied). */
+export const HUNDRED_SEALS = 'sealsApplied-100';
+
+/**
+ * Le palier des 100 sceaux donne le tome suivant (l'auteur, 22/10 : « ok pour 100 »), une seule fois ; atteint avant que
+ * le tome 1 soit acheté, ou sans tome écrit à gagner, il attend.
+ */
+export const giveSealsTome = (state: GameState): void => {
+  if (state.tomeFrom.seals !== undefined || !(HUNDRED_SEALS in state.seals)) return;
+  const tome = nextTome(state);
+  if (tome !== undefined) giveTome(state, tome, 'seals');
 };
 
 /** Ce que fait lire de plus chaque tome, aux méthodes de son Âge : le tome 2 à l'Âge Automatique, le tome 3 à l'Âge Numérique (l'auteur, 18/10). */
