@@ -180,6 +180,7 @@ export const STORY: StoryChapter[] = [
       { key: 'patience' },
       { key: 'topBar', drafts: ['topBar'] },
       { key: 'otherShelf', drafts: ['otherShelf'] },
+      { key: 'quantumAge' },
       // Toujours la dernière partie du livre : il s'écrit encore.
       { key: 'thisBook' },
     ],

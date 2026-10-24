@@ -196,6 +196,12 @@ const TOOL_CAPTIONS: Record<string, string> = {
   crawler: 'galen vagu',
   algorithm: 'numer babel',
   bit: 'uno nul',
+  microscope: 'atom vide',
+  entangled: 'gemin libra',
+  teleportation: 'pagna trans',
+  grover: 'quero nordo',
+  quantumComputer: 'lustra frigo',
+  qubit: 'ambo uno',
 };
 
 export const CHAPTERS: readonly Chapter[] = [

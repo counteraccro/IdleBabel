@@ -1,7 +1,7 @@
 import { messages, t } from '../../i18n';
 import { TECHNOLOGIES, type TechnologyId } from '../../data/technologies';
 import { bestOf, levelOf, maxLevel, technology } from '../../systems/technologies';
-import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS } from '../../data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE, TOOLS } from '../../data/tools';
 import { nextRemembered, remember, reminiscenceKnown, reminiscing } from '../../systems/reminiscence';
 import { ageTitle, format, type DebugSubject } from './subject';
 import type { GameState } from '../../core/state';
@@ -106,4 +106,5 @@ export const INTUITION_SUBJECTS: DebugSubject[] = [
   },
   ageSubject('intuitions:auto', ageTitle(AUTOMATIC_AGE)),
   ageSubject('intuitions:digital', ageTitle(DIGITAL_AGE)),
+  ageSubject('intuitions:quantum', ageTitle(QUANTUM_AGE)),
 ];

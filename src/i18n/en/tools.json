@@ -15,5 +15,15 @@
   "search": { "gender": "n", "name": "The Search Engine", "description": "three words, and it gives me the right book." },
   "crawler": { "gender": "n", "name": "The Crawler", "description": "it walks the galleries without me." },
   "algorithm": { "gender": "n", "name": "The Babel Algorithm", "description": "a number, and the book is already written." },
-  "bit": { "gender": "n", "name": "The Bit", "description": "one, zero: the whole Library." }
+  "bit": { "gender": "n", "name": "The Bit", "description": "one, zero: the whole Library." },
+  "microscope": { "gender": "n", "name": "The Scanning Tunnelling Microscope", "description": "it sees every atom of the ink." },
+  "entangled": { "gender": "n", "name": "The Entangled Books", "description": "I open one, the other opens too." },
+  "teleportation": {
+    "gender": "n",
+    "name": "Quantum Teleportation",
+    "description": "the page goes from here to there without travelling."
+  },
+  "grover": { "gender": "n", "name": "Grover's Algorithm", "description": "it finds the book without sorting anything." },
+  "quantumComputer": { "gender": "n", "name": "The Quantum Computer", "description": "it reads everything at once." },
+  "qubit": { "gender": "n", "name": "The Qubit", "description": "one and zero at once." }
 }

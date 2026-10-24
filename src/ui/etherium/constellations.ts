@@ -412,7 +412,8 @@ export const FIGURES: Record<PageId, Figure> = {
     },
   },
   ages: {
-    spots: { manual: [320, 665], auto: [440, 575], quantum: [215, 490], dim: [410, 405], inf: [280, 325] },
+    // Six marches (24/10 : l'Âge Quantique entre le Numérique et le Dimensionnel), de part et d'autre de l'axe.
+    spots: { manual: [320, 665], auto: [440, 597], quantum: [215, 529], quantic: [430, 461], dim: [210, 393], inf: [380, 325] },
     deco: [],
     given: { id: 'manual', opens: ['auto'] },
   },

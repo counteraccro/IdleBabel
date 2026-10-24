@@ -55,7 +55,13 @@
     "search": "{when}, tu as tapé trois mots. Le livre est venu.",
     "crawler": "{when}, quelque chose s'est mis à parcourir les galeries à ta place.",
     "algorithm": "{when}, tu as compris qu'un nombre suffisait. Tu n'as pas tapé le tien.",
-    "bit": "{when}, tu as vu toute la Bibliothèque tenir dans deux signes."
+    "bit": "{when}, tu as vu toute la Bibliothèque tenir dans deux signes.",
+    "microscope": "{when}, tu as lu une page atome par atome. Aucune lettre ne t'a échappé.",
+    "entangled": "{when}, tu as ouvert un livre, et un autre, très loin, s'est ouvert avec lui.",
+    "teleportation": "{when}, une page a disparu de tes mains pour être lue ailleurs.",
+    "grover": "{when}, tu as trouvé le bon livre sans rien ranger.",
+    "quantumComputer": "{when}, tu as laissé une machine lire tous les livres à la fois. Tu ne l'as pas regardée.",
+    "qubit": "{when}, tu as vu toute la Bibliothèque tenir dans un seul signe, tant que tu ne le regardais pas."
   },
   "memories": {
     "cup": "{when}, un souvenir est revenu. Une tasse ébréchée. Tu buvais toujours du côté de l'ébréchure."

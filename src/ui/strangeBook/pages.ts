@@ -1,5 +1,5 @@
 import { el } from '../dom';
-import { AUTOMATIC_AGE, DIGITAL_AGE } from '../../data/tools';
+import { AUTOMATIC_AGE, agePart } from '../../data/tools';
 import { starLit } from '../../systems/etherium';
 import { babelize, seedOf } from '../whiteBook/babelMask';
 import { isDeciphered } from '../../systems/decipher';
@@ -256,7 +256,7 @@ const rowPages = (state: GameState, chapter: Chapter): Slot[][] => {
   let age: string | null = null;
   for (const figure of chapter.figures.filter((candidate) => candidate.row && figureShown(state, candidate))) {
     // Un bonus est toujours sous ce qu'il booste.
-    const key = figure.group ?? (figure.age === DIGITAL_AGE ? 'digitalAge' : figure.age === AUTOMATIC_AGE ? 'automaticAge' : 'manualAge');
+    const key = figure.group ?? agePart(figure.age);
     const path = figure.group ? `strangeBook.groups.${key}` : `whiteBook.parts.${key}`;
     if ((byAge || figure.group) && key !== age) slots.push({ kind: 'age', key, path, group: figure.group });
     age = key;

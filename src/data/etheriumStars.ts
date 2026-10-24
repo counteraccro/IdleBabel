@@ -121,7 +121,10 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['ages', 'auto', null, 1],
   // L'Âge Numérique : 1 500 Éther (validé le 13/10, simulé : achetée vers la 17e partie).
   ['ages', 'quantum', 'auto', 1500],
-  ['ages', 'dim', 'quantum', 100],
+  // L'Âge Quantique : 75 000 Éther (validé le 24/10, essai 11 du simulateur : moins cher que weight.w4, acheté vers la 31e
+  // partie, ~54e jour, au lieu d'un creux de ~22 jours après le Numérique).
+  ['ages', 'quantic', 'quantum', 75_000],
+  ['ages', 'dim', 'quantic', 100],
   ['ages', 'inf', 'dim', 1000],
   // Le Rouage, « La Roue dentée » (19/10, .ai/maquette-rouage.html ; prix validés après le simulateur) : il achète seul les
   // méthodes (data/gear.ts). L'axe : l'Âge Manuel, une toutes les 10 s ; à gauche, chaque Âge qu'il achète en plus (les deux

@@ -14,11 +14,12 @@ describe('un fond par Âge', () => {
     expect(sceneOfAge(state)).toBe('nuit');
   });
 
-  it('chaque fond a son Âge, la verrière attend le troisième', () => {
+  it('chaque fond a son Âge, la verrière attend le troisième, le jour et la nuit le quatrième', () => {
     expect(SCENES.map(({ id, age }) => [id, age])).toEqual([
       ['desert', 1],
       ['nuit', 2],
       ['verriere', 3],
+      ['jour-nuit', 4],
     ]);
   });
 });

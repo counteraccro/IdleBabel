@@ -12,6 +12,7 @@
     "manualAge": "The Manual Age",
     "automaticAge": "The Automatic Age",
     "digitalAge": "The Digital Age",
+    "quantumAge": "The Quantum Age",
     "task": "Tasks"
   },
   "partDescriptions": {
@@ -24,6 +25,7 @@
     "manualAge": "My hands, my eyes. Nothing else.",
     "automaticAge": "Now things read for me. I don’t know if that is better.",
     "digitalAge": "Machines that read nothing but numbers. And yet they read everything.",
+    "quantumAge": "Machines you cannot watch while they read.",
     "task": "Words in my hand. I do not remember writing them."
   },
   "anomaliesCompletion": "sentences found · {percent}",
@@ -82,6 +84,12 @@
     "crawler": "It walks / the galleries / without me, / and forgets / no page.",
     "algorithm": "A number / is enough. / The book / comes out, / whole, already written.",
     "bit": "One, / zero. / The whole Library / fits in / these two signs.",
+    "microscope": "It reads / the ink / atom by atom. / No letter / escapes it.",
+    "entangled": "I open one. / The other, / at the far end of the Library, / opens / at the same page.",
+    "teleportation": "The page vanishes here / and is read / over there. / Nothing crossed / the galleries.",
+    "grover": "Nothing is shelved / in any order. / It finds the right book / all the same, / long before I do.",
+    "quantumComputer": "It reads / every book / at once, / and keeps / only the right one.",
+    "qubit": "Neither one / nor zero. / Both at once, / as long as / no one looks.",
     "cup": "A cup, / chipped; / I always drank / from the side / of the chip.",
     "shelves": "Five shelves / per wall. / I counted / six, / once. / I did not / count again.",
     "thirtyOne": "Thirty-two books / per shelf. / On this one, / thirty-one. / Someone / is reading right now.",
@@ -362,7 +370,13 @@
         "search": "Two words are enough. Soon, just one.",
         "crawler": "It comes back before I call it.",
         "algorithm": "The numbers come on their own. So do the books.",
-        "bit": "I no longer see the letters. Only the ones and the zeros."
+        "bit": "I no longer see the letters. Only the ones and the zeros.",
+        "microscope": "The tip trembles less. The ink lets itself be read.",
+        "entangled": "I no longer need to carry the other book. It knows.",
+        "teleportation": "I press before I have hesitated.",
+        "grover": "The right book grows heavier, sooner.",
+        "quantumComputer": "It grows colder. It reads faster.",
+        "qubit": "I look away for longer."
       }
     },
     "lightSleep": {
@@ -474,6 +488,36 @@
     "bit": {
       "description": "The smallest of signs: one, or zero. Put end to end, they write any book.",
       "quote": "For a long time I counted the twenty-five symbols of the Library. Two were enough. One, zero, one, one, zero: that is all the warm box holds, and yet it holds everything. I wonder what became of the other twenty-three.",
+      "source": "a memory from before waking"
+    },
+    "microscope": {
+      "description": "A tip so fine it has a single atom at its end. It glides above the page without touching it and draws every grain of ink.",
+      "quote": "Under the tip, a letter is no longer a letter: it is a landscape of hills, atoms laid out like cobblestones. It took me a night to read the dot of a single i. The next day, the machine was reading a thousand a second.",
+      "source": "a pencil note in a margin"
+    },
+    "entangled": {
+      "description": "Two books bound without thread or binding. Whatever happens to one happens to the other, at the same instant, wherever it is shelved.",
+      "quote": "I left one on my table and carried the other ten galleries down. There, I opened it at page forty. When I came back up, I found the first one open too, at page forty. No one had touched it.",
+      "source": "two identical leaves, found far from each other"
+    },
+    "teleportation": {
+      "description": "A page fades here and reappears elsewhere, identical, letter for letter. Nothing travelled: only the original page is gone.",
+      "quote": "You have to accept losing the page for it to exist over there. You cannot keep both. I hesitated a long time before pressing. Since then, I press without thinking, and pages I have never held arrive on my table.",
+      "source": "a page that arrived alone, still warm"
+    },
+    "grover": {
+      "description": "A search through a Library with no order at all. Where you would have to open every book, it opens only a handful, and the right book comes out.",
+      "quote": "To find one book among a million, you have to open a million. It opens a thousand, not one more. I do not understand how. I only know that with each turn, the right book weighs a little more than the others.",
+      "source": "a calculation scrawled on the back of a cover"
+    },
+    "quantumComputer": {
+      "description": "A golden chandelier hanging upside down, colder than the night between the stars. It reads every book at once, and keeps only the right one.",
+      "quote": "You cannot watch it work: as soon as you look, it stops and gives a single answer. So I leave it alone, in the cold. When I come back, the page is there. I will never know how many books it read for me.",
+      "source": "a frosted label on the bottom plate"
+    },
+    "qubit": {
+      "description": "The smallest of signs, again: neither one nor zero, but both at once, as long as no one looks at it.",
+      "quote": "The Bit taught me that two signs were enough. The Qubit teaches me that one is enough, as long as I do not look at it. I closed my eyes. The whole Library was there, in a single sign that hesitated.",
       "source": "a memory from before waking"
     }
   },

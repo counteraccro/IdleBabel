@@ -109,4 +109,4 @@ export const RELIC_LOCK_HOURS = 12;
 export const RELIC_PATIENT_HOURS = 6;
 
 /** La lumière de chaque salle sur l'objet (comme MIMIC_LIGHT ; la verrière, un peu plus claire que la nuit). */
-export const RELIC_LIGHT: Record<SceneId, number> = { desert: 0.8, nuit: 0.62, verriere: 0.75 };
+export const RELIC_LIGHT: Record<SceneId, number> = { desert: 0.8, nuit: 0.62, verriere: 0.75, 'jour-nuit': 0.75 };

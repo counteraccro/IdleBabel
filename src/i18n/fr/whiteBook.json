@@ -12,6 +12,7 @@
     "manualAge": "L’Âge Manuel",
     "automaticAge": "L’Âge Automatique",
     "digitalAge": "L’Âge Numérique",
+    "quantumAge": "L’Âge Quantique",
     "task": "Tâches"
   },
   "partDescriptions": {
@@ -24,6 +25,7 @@
     "manualAge": "Mes mains, mes yeux. Rien d’autre.",
     "automaticAge": "Maintenant, des choses lisent pour moi. Je ne sais pas si c’est mieux.",
     "digitalAge": "Des machines qui ne lisent que des chiffres. Et pourtant, elles lisent tout.",
+    "quantumAge": "Des machines qu'on ne peut pas regarder lire.",
     "task": "Des mots de ma main. Je ne me souviens pas de les avoir écrits."
   },
   "anomaliesCompletion": "phrases retrouvées · {percent}",
@@ -82,6 +84,12 @@
     "crawler": "Il parcourt / les galeries / sans moi, / et n'oublie / aucune page.",
     "algorithm": "Un nombre / suffit. / Le livre / en sort, / entier, déjà écrit.",
     "bit": "Un, / zéro. / Toute la Bibliothèque / tient dans / ces deux signes.",
+    "microscope": "Il lit / l'encre / atome par atome. / Aucune lettre / ne lui échappe.",
+    "entangled": "J'ouvre l'un. / L'autre, / à l'autre bout de la Bibliothèque, / s'ouvre / à la même page.",
+    "teleportation": "La page disparaît ici / et se lit / là-bas. / Rien n'a traversé / les galeries.",
+    "grover": "Rien n'est rangé / dans aucun ordre. / Il trouve le bon livre / quand même, / bien avant moi.",
+    "quantumComputer": "Il lit / tous les livres / à la fois, / et ne garde / que le bon.",
+    "qubit": "Ni un, / ni zéro. / Les deux à la fois, / tant qu'on / ne regarde pas.",
     "cup": "Une tasse / ébréchée ; / je buvais toujours / du côté / de l'ébréchure.",
     "shelves": "Cinq étagères / par mur. / J'en ai compté / six, / une fois. / Je n'ai pas / recompté.",
     "thirtyOne": "Trente-deux livres / par étagère. / Sur celle-ci, / trente et un. / Quelqu'un / lit en ce moment.",
@@ -362,7 +370,13 @@
         "search": "Deux mots suffisent. Bientôt, un seul.",
         "crawler": "Il revient avant que je l'aie appelé.",
         "algorithm": "Les nombres viennent tout seuls. Les livres aussi.",
-        "bit": "Je ne vois plus les lettres. Seulement les uns et les zéros."
+        "bit": "Je ne vois plus les lettres. Seulement les uns et les zéros.",
+        "microscope": "La pointe tremble moins. L'encre se laisse lire.",
+        "entangled": "Je n'ai plus besoin de porter l'autre livre. Il sait.",
+        "teleportation": "J'appuie avant d'avoir hésité.",
+        "grover": "Le bon livre pèse plus lourd, plus tôt.",
+        "quantumComputer": "Il fait plus froid. Il lit plus vite.",
+        "qubit": "Je regarde ailleurs plus longtemps."
       }
     },
     "lightSleep": {
@@ -474,6 +488,36 @@
     "bit": {
       "description": "Le plus petit des signes : un, ou zéro. Mis bout à bout, ils écrivent n'importe quel livre.",
       "quote": "J'ai longtemps compté les vingt-cinq symboles de la Bibliothèque. Il n'en fallait que deux. Un, zéro, un, un, zéro : c'est tout ce que contient la boîte qui chauffe, et pourtant elle contient tout. Je me demande ce qu'on a fait des vingt-trois autres.",
+      "source": "souvenir d'avant le réveil"
+    },
+    "microscope": {
+      "description": "Une pointe si fine qu'elle n'a qu'un atome au bout. Elle glisse au-dessus de la page sans la toucher et en dessine chaque grain d'encre.",
+      "quote": "Sous la pointe, une lettre n'est plus une lettre : c'est un paysage de collines, des atomes rangés comme des pavés. J'ai mis une nuit à lire le point d'un seul i. Le lendemain, la machine en lisait mille par seconde.",
+      "source": "note au crayon dans une marge"
+    },
+    "entangled": {
+      "description": "Deux livres liés sans fil ni reliure. Ce qui arrive à l'un arrive à l'autre, au même instant, où qu'il soit rangé.",
+      "quote": "J'en ai laissé un sur ma table et j'ai porté l'autre dix galeries plus bas. Là, je l'ai ouvert à la page quarante. En remontant, j'ai trouvé le premier ouvert, lui aussi, à la page quarante. Personne n'y avait touché.",
+      "source": "deux feuillets identiques, trouvés loin l'un de l'autre"
+    },
+    "teleportation": {
+      "description": "Une page s'efface ici et réapparaît ailleurs, identique, lettre pour lettre. Rien n'a voyagé : seule la page de départ a disparu.",
+      "quote": "Il faut accepter de perdre la page pour qu'elle existe là-bas. On ne peut pas garder les deux. J'ai hésité longtemps avant d'appuyer. Depuis, j'appuie sans y penser, et des pages que je n'ai jamais tenues arrivent sur ma table.",
+      "source": "page arrivée seule, encore tiède"
+    },
+    "grover": {
+      "description": "Une recherche dans une Bibliothèque sans aucun ordre. Là où il faudrait ouvrir tous les livres, il n'en ouvre qu'une poignée, et le bon livre ressort.",
+      "quote": "Pour trouver un livre parmi un million, il faut en ouvrir un million. Lui en ouvre mille, pas un de plus. Je ne comprends pas comment. Je sais seulement qu'à chaque tour, le bon livre pèse un peu plus lourd que les autres.",
+      "source": "calcul griffonné au dos d'une couverture"
+    },
+    "quantumComputer": {
+      "description": "Un lustre d'or suspendu la tête en bas, plus froid que la nuit entre les étoiles. Il lit tous les livres à la fois, et ne garde que le bon.",
+      "quote": "On ne peut pas le regarder travailler : dès qu'on regarde, il s'arrête et rend une seule réponse. Alors je le laisse seul, dans le froid. Quand je reviens, la page est là. Je ne saurai jamais combien de livres il a lus pour moi.",
+      "source": "étiquette givrée, sur le plateau du bas"
+    },
+    "qubit": {
+      "description": "Le plus petit des signes, encore : ni un, ni zéro, mais les deux à la fois, tant qu'on ne le regarde pas.",
+      "quote": "Le Bit m'avait appris qu'il suffisait de deux signes. Le Qubit m'apprend qu'il en suffit d'un seul, à condition de ne pas le regarder. J'ai fermé les yeux. Toute la Bibliothèque était là, dans un seul signe qui hésitait.",
       "source": "souvenir d'avant le réveil"
     }
   },

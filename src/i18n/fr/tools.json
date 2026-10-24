@@ -15,5 +15,11 @@
   "search": { "gender": "m", "name": "Le Moteur de Recherche", "description": "trois mots, et il me rend le bon livre." },
   "crawler": { "gender": "m", "name": "Le Robot d'Indexation", "description": "il parcourt les galeries sans moi." },
   "algorithm": { "gender": "m", "name": "L'Algorithme de Babel", "description": "un nombre, et le livre est déjà écrit." },
-  "bit": { "gender": "m", "name": "Le Bit", "description": "un, zéro : toute la Bibliothèque." }
+  "bit": { "gender": "m", "name": "Le Bit", "description": "un, zéro : toute la Bibliothèque." },
+  "microscope": { "gender": "m", "name": "Le Microscope à Effet Tunnel", "description": "il voit chaque atome de l'encre." },
+  "entangled": { "gender": "mp", "name": "Les Livres Intriqués", "description": "j'en ouvre un, l'autre s'ouvre aussi." },
+  "teleportation": { "gender": "f", "name": "La Téléportation Quantique", "description": "la page passe d'ici à là-bas sans voyager." },
+  "grover": { "gender": "m", "name": "L'Algorithme de Grover", "description": "il trouve le livre sans rien ranger." },
+  "quantumComputer": { "gender": "m", "name": "L'Ordinateur Quantique", "description": "il lit tout à la fois." },
+  "qubit": { "gender": "m", "name": "Le Qubit", "description": "un et zéro à la fois." }
 }

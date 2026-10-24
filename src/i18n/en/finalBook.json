@@ -55,7 +55,13 @@
     "search": "{when}, you typed three words. The book came.",
     "crawler": "{when}, something began to walk the galleries in your place.",
     "algorithm": "{when}, you understood that a number was enough. You did not type yours.",
-    "bit": "{when}, you saw the whole Library fit in two signs."
+    "bit": "{when}, you saw the whole Library fit in two signs.",
+    "microscope": "{when}, you read a page atom by atom. No letter escaped you.",
+    "entangled": "{when}, you opened a book, and another, very far away, opened with it.",
+    "teleportation": "{when}, a page vanished from your hands to be read elsewhere.",
+    "grover": "{when}, you found the right book without sorting anything.",
+    "quantumComputer": "{when}, you let a machine read every book at once. You did not look at it.",
+    "qubit": "{when}, you saw the whole Library fit in a single sign, as long as you did not look at it."
   },
   "memories": {
     "cup": "{when}, a memory came back. A chipped cup. You always drank from the chipped side."

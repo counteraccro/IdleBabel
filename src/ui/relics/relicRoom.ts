@@ -34,6 +34,8 @@ const SUN: Record<SceneId, { from: [number, number, number]; color: number }> = 
   desert: { from: [-2, 3, 1], color: 0xffd6a0 },
   nuit: { from: [0, 4, -2], color: 0xc8d0ff },
   verriere: { from: [0.3, 5, -0.6], color: 0xffe2b8 },
+  // Le jour entre par les arches, sur les côtés.
+  'jour-nuit': { from: [-2.5, 2.5, 0.5], color: 0xfff0d8 },
 };
 
 /** Débogage : la taille de l'objet (1 : sa vraie taille). */

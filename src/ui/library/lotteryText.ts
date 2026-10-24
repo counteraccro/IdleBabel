@@ -17,8 +17,12 @@ export const effectText = (state: GameState, id: LotteryBoonId | LotteryCurseId,
   t(`ui.lottery.effects.${id}`)
     .replace('{x}', factorText(state, id))
     .replace('{m}', method ? t(`tools.${method}.name`) : '')
-    // L'accord (« Le Bit arrêté », « La Roue à Livres arrêtée ») : le genre de la méthode (tools.json, « f », « m »).
-    .replace('{e}', method && t(`tools.${method}.gender`) === 'f' ? 'e' : '');
+    // L'accord (« Le Bit arrêté », « La Roue à Livres arrêtée », « Les Livres Intriqués arrêtés ») : le genre de la méthode
+    // (tools.json, « f », « m », et au pluriel « mp », « fp »).
+    .replace('{e}', method ? (AGREEMENT[t(`tools.${method}.gender`)] ?? '') : '');
+
+/** La terminaison de « arrêté » selon le genre d'une méthode. */
+const AGREEMENT: Record<string, string> = { f: 'e', mp: 's', fp: 'es' };
 
 /** Le facteur d'un bonus (« 1,5 »), ou le diviseur de la production (« 2 ») ; rien pour les autres. */
 const factorText = (state: GameState, id: LotteryBoonId | LotteryCurseId): string => {

@@ -3,7 +3,12 @@ import { SCENES } from '../../scene/scenes';
 import { beyond } from '../../systems/perception';
 import { format, type DebugSubject } from './subject';
 
-const SCENE_NAMES: Record<string, string> = { nuit: 'La salle étoilée', desert: 'L’hexagone au désert', verriere: 'La verrière' };
+const SCENE_NAMES: Record<string, string> = {
+  nuit: 'La salle étoilée',
+  desert: 'L’hexagone au désert',
+  verriere: 'La verrière',
+  'jour-nuit': 'Le jour et la nuit',
+};
 
 export const DISPLAY_SUBJECTS: DebugSubject[] = [
   {

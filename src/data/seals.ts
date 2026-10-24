@@ -10,7 +10,7 @@ import { ANOMALIES, ANOMALY_FAMILIES } from './anomalies';
 import { RARE_BOOKS } from './rareBooks';
 import { TECHNOLOGIES } from './technologies';
 import { levelOf, lockOf, maxLevel } from '../systems/technologies';
-import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS, type ToolId } from './tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE, TOOLS, type ToolId } from './tools';
 import { mimicSeconds } from '../systems/mimic';
 import { RELICS } from './relics';
 import { TOKENS_SPENT_STEPS } from './lottery';
@@ -222,6 +222,7 @@ export const SEALS: readonly SealDef[] = [
   ),
   seal('automaticAge', 'etherium', (s) => s.etherium.includes(AUTOMATIC_AGE)),
   seal('digitalAge', 'etherium', (s) => s.etherium.includes(DIGITAL_AGE)),
+  seal('quantumAge', 'etherium', (s) => s.etherium.includes(QUANTUM_AGE)),
 
   // La Mimic (11/10, choix de l'auteur), depuis toujours, absences comprises : en attraper, le bonus seul qu'elle a rendu
   // (pas ce qu'elle avait avalé ; le saut de 100 000 à 10 millions est voulu), le temps où elle a mangé.

@@ -478,6 +478,11 @@
         "value": "The Digital Age",
         "effect": "its methods, and one more cell in the Hive"
       },
+      "quantic": {
+        "name": "Quantum",
+        "value": "The Quantum Age",
+        "effect": "its methods, and one more cell in the Hive"
+      },
       "dim": {
         "name": "Dimensional",
         "value": "The Dimensional Age",

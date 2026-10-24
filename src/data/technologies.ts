@@ -95,6 +95,14 @@ export const TECHNOLOGIES = [
   { id: 'crawlerGesture', prices: gesture(25_600_000), tool: 'crawler' },
   { id: 'algorithmGesture', prices: gesture(51_200_000), tool: 'algorithm' },
   { id: 'bitGesture', prices: gesture(8_000_000), tool: 'bit' },
+  // L'Âge Quantique (piste A, validée le 23/10 ; prix ×2 dans la suite de l'Algorithme) : hors de portée sans le Lustre
+  // (ses plateaux, dans l'Etherium : essais 6 et 7 du simulateur). Le Qubit entre le Microscope et les Livres Intriqués.
+  { id: 'microscopeGesture', prices: gesture(102_400_000), tool: 'microscope' },
+  { id: 'entangledGesture', prices: gesture(204_800_000), tool: 'entangled' },
+  { id: 'teleportationGesture', prices: gesture(409_600_000), tool: 'teleportation' },
+  { id: 'groverGesture', prices: gesture(819_200_000), tool: 'grover' },
+  { id: 'quantumComputerGesture', prices: gesture(1_638_400_000), tool: 'quantumComputer' },
+  { id: 'qubitGesture', prices: gesture(256_000_000), tool: 'qubit' },
 ] as const satisfies readonly TechnologyDef[];
 
 export type TechnologyId = (typeof TECHNOLOGIES)[number]['id'];

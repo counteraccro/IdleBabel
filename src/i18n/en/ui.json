@@ -101,7 +101,8 @@
   "scenes": {
     "desert": "The desert",
     "nuit": "The night",
-    "verriere": "The glass roof"
+    "verriere": "The glass roof",
+    "jour-nuit": "Day and night"
   },
   "fps": "FPS",
   "whiteBook": "The white book",

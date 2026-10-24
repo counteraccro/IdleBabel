@@ -39,12 +39,26 @@ export type ToolId =
   | 'search'
   | 'crawler'
   | 'algorithm'
-  | 'bit';
+  | 'bit'
+  | 'microscope'
+  | 'entangled'
+  | 'teleportation'
+  | 'grover'
+  | 'quantumComputer'
+  | 'qubit';
 
 /** L'étoile de l'Etherium qui achète l'Âge Automatique (data/etheriumStars.ts, S.age). */
 export const AUTOMATIC_AGE = 'ages.auto';
 /** L'étoile qui achète l'Âge Numérique (l'Âge Quantique jusqu'au 13/10 : l'id est resté). */
 export const DIGITAL_AGE = 'ages.quantum';
+/** L'étoile qui achète l'Âge Quantique (23/10 : 'ages.quantum' est déjà l'Âge Numérique). */
+export const QUANTUM_AGE = 'ages.quantic';
+
+/** Les Âges, dans l'ordre (aucun : l'Âge Manuel), et le nom de leur sous-partie du livre blanc (whiteBook.parts). */
+export const AGES = [undefined, AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE] as const;
+const AGE_PARTS: Record<string, string> = { [AUTOMATIC_AGE]: 'automaticAge', [DIGITAL_AGE]: 'digitalAge', [QUANTUM_AGE]: 'quantumAge' };
+/** La sous-partie d'un Âge (`age` d'une méthode : aucun pour l'Âge Manuel) : « manualAge », « digitalAge »… */
+export const agePart = (age: string | undefined): string => (age ? AGE_PARTS[age] : 'manualAge');
 
 export const COST_GROWTH = 1.15;
 
@@ -81,6 +95,16 @@ export const TOOLS: readonly ToolDefinition[] = [
   // Le Bit, méthode secrète de l'Âge Numérique (validé le 13/10, sur le modèle de la Page Cornée : prix entre la 2e et la
   // 3e méthode, lecture entre la 4e et la 5e) ; son étoile, la 1re de l'alvéole Numérique de la Ruche.
   { id: 'bit', baseCost: 2.56e17, pagesPerSecond: 6.4e10, secret: true, age: DIGITAL_AGE },
+  // L'Âge Quantique (méthodes choisies par l'auteur le 23/10 ; prix et lectures : essai 4 du simulateur, validé le 24/10) :
+  // des machines qu'on ne peut pas regarder lire. Prix ×8 d'une méthode à l'autre, lecture ~×2,7 : plus lentes exprès.
+  { id: 'microscope', baseCost: 5e21, pagesPerSecond: 6.7e13, age: QUANTUM_AGE },
+  { id: 'entangled', baseCost: 4e22, pagesPerSecond: 1.8e14, age: QUANTUM_AGE },
+  { id: 'teleportation', baseCost: 3.2e23, pagesPerSecond: 4.8e14, age: QUANTUM_AGE },
+  { id: 'grover', baseCost: 2.5e24, pagesPerSecond: 1.25e15, age: QUANTUM_AGE },
+  { id: 'quantumComputer', baseCost: 2e25, pagesPerSecond: 3.3e15, age: QUANTUM_AGE },
+  // Le Qubit, méthode secrète de l'Âge Quantique (validé le 24/10, essai 13 : rentabilité entre la Téléportation et Grover) ;
+  // son étoile, la puce du Lustre (chandelier.chip, dans la page de l'Âge).
+  { id: 'qubit', baseCost: 2.048e24, pagesPerSecond: 2e15, secret: true, age: QUANTUM_AGE },
 ];
 
 /**

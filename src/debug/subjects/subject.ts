@@ -1,7 +1,7 @@
 import { el } from '../../ui/dom';
 import { currentNotation, formatNumber } from '../../core/format';
 import { chips, clampCount, numberInput, row, shortCount, showCount, stepper, toggle } from '../debugControls';
-import { AUTOMATIC_AGE, DIGITAL_AGE } from '../../data/tools';
+import { agePart } from '../../data/tools';
 import type { GameState } from '../../core/state';
 
 /**
@@ -24,9 +24,14 @@ export interface DebugSubject {
   age?: string;
 }
 
+const AGE_TITLES: Record<string, string> = {
+  manualAge: 'L’Âge Manuel',
+  automaticAge: 'L’Âge Automatique',
+  digitalAge: 'L’Âge Numérique',
+  quantumAge: 'L’Âge Quantique',
+};
 /** Le nom d'un Âge (`age` d'une méthode : aucun pour l'Âge Manuel). */
-export const ageTitle = (age: string | undefined): string =>
-  age === DIGITAL_AGE ? 'L’Âge Numérique' : age === AUTOMATIC_AGE ? 'L’Âge Automatique' : 'L’Âge Manuel';
+export const ageTitle = (age: string | undefined): string => AGE_TITLES[agePart(age)];
 
 export const CHAPTERS = [
   { id: 'resources', title: 'Ressources' },

@@ -101,7 +101,8 @@
   "scenes": {
     "desert": "Le désert",
     "nuit": "La nuit",
-    "verriere": "La verrière"
+    "verriere": "La verrière",
+    "jour-nuit": "Le jour et la nuit"
   },
   "fps": "FPS",
   "whiteBook": "Le livre blanc",

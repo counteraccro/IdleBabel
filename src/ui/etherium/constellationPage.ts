@@ -157,8 +157,8 @@ const stairs = (ctx: Ctx, stars: StarView[]): void => {
   ctx.strokeStyle = 'rgba(200,185,230,0.15)';
   ctx.setLineDash([1, 5]);
   ctx.beginPath();
-  ctx.moveTo(280, 325);
-  ctx.quadraticCurveTo(410, 280, 345, 230);
+  ctx.moveTo(380, 325);
+  ctx.quadraticCurveTo(250, 280, 300, 230);
   ctx.stroke();
   ctx.restore();
 };

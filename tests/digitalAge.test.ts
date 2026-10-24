@@ -32,9 +32,10 @@ const game = (bought: boolean): GameState => {
 };
 
 describe('L’Âge Numérique', () => {
-  it('cinq méthodes au bout de la chaîne, et le Bit, secret ; l’étoile de l’Âge à 1 500 Éther', () => {
+  it('cinq méthodes après l’Horloge, et le Bit, secret ; l’étoile de l’Âge à 1 500 Éther', () => {
     expect(TOOLS.filter((tool) => tool.age === DIGITAL_AGE).map((tool) => tool.id)).toEqual(ALL);
-    expect(METHOD_CHAIN.slice(-5).map((tool) => tool.id)).toEqual(DIGITAL);
+    expect(METHOD_CHAIN.filter((tool) => tool.age === DIGITAL_AGE).map((tool) => tool.id)).toEqual(DIGITAL);
+    expect(METHOD_CHAIN.map((tool) => tool.id).indexOf('minitel')).toBe(METHOD_CHAIN.map((tool) => tool.id).indexOf('clock') + 1);
     expect(TOOLS.find((tool) => tool.id === 'bit')?.secret).toBe(true);
     expect(starById(DIGITAL_AGE)?.cost).toBe(1500);
   });
