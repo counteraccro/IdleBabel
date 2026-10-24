@@ -11,7 +11,12 @@ import { duration, format, type DebugSubject } from './subject';
 const SPOT_NAMES: Record<string, string[]> = {
   desert: ['Parquet, à gauche', 'Banc de gauche', 'Banc de droite', 'Coin du tapis', 'Contre les rayons'],
   nuit: ['Parquet, à gauche', 'Pied des rayons de droite', 'Parquet, à droite', 'Contre les rayons de gauche'],
+  verriere: ['Parquet, pied du pilier de gauche', 'Rayons du fond, à gauche', 'Rayons du fond, à droite'],
+  'jour-nuit': ['Parquet, devant à gauche', 'Parquet, à droite', 'Contre les rayons de droite', 'Rayons, près de l’échelle'],
 };
+
+/** Le nom court de chaque salle. */
+const ROOM_NAMES: Record<string, string> = { desert: 'Désert', nuit: 'Nuit', verriere: 'Verrière', 'jour-nuit': 'Jour-nuit' };
 
 /** La Mimic (systems/mimic.ts) : la faire venir, la poser à chaque place, régler sa taille, ses comptes. */
 export const MIMIC_SUBJECT: DebugSubject = {
@@ -36,10 +41,7 @@ export const MIMIC_SUBJECT: DebugSubject = {
         ['Au hasard', () => placeMimic(null)],
         ['Au bord (sceau)', () => placeMimic('side')],
         ...Object.entries(SPOT_NAMES).flatMap(([scene, names]) =>
-          names.map((name, index): [string, () => void] => [
-            `${scene === 'desert' ? 'Désert' : 'Nuit'} · ${name}`,
-            () => placeMimic(`${scene}:${index}`),
-          ]),
+          names.map((name, index): [string, () => void] => [`${ROOM_NAMES[scene]} · ${name}`, () => placeMimic(`${scene}:${index}`)]),
         ),
       ]),
       'Une place de l’autre salle ne sert que si ce fond est affiché (Affichage › Le décor). Même cachée par l’interface.',

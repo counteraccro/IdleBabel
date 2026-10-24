@@ -32,7 +32,7 @@ export const EYE_HEIGHT = 1.6;
 export const FOCAL = 1500;
 
 /** La lumière de chaque salle sur le livre (maquette : le filtre « Lumière »). */
-export const MIMIC_LIGHT: Record<string, number> = { desert: 0.8, nuit: 0.62 };
+export const MIMIC_LIGHT: Record<string, number> = { desert: 0.8, nuit: 0.62, verriere: 0.75, 'jour-nuit': 0.75 };
 
 /** Un vrai livre : les livres peints sur les rayons font 0,24 à 0,27 m ; même rapport que les couvertures (800 × 1000). */
 export const MIMIC_BOOK = { w: 0.22, h: 0.275, t: 0.06 } as const;
@@ -67,6 +67,21 @@ export const MIMIC_SPOTS: Record<string, readonly MimicSpot[]> = {
     { surface: 0, X: 2.6, Z: 5.5, yaw: -8 },
     { surface: 0, X: 1.9, Z: 4.2, yaw: -12 },
     { surface: 0, X: -3.0, Z: 6.4, yaw: 0, pitch: 80, mouth: 'tail' },
+  ],
+  // La verrière et la salle jour-nuit n'avaient aucune place (revue de l'Alpha 3, 24/10 ; places validées par l'auteur,
+  // .ai/maquette-mimic.html). Le sol du milieu, sous le grand livre, reste vide.
+  verriere: [
+    // Le parquet, au pied du pilier de gauche ; contre les rayons du fond, à gauche ; à droite.
+    { surface: 0, X: -1.45, Z: 4.38, yaw: 10 },
+    { surface: 0, X: -1.93, Z: 5.48, yaw: 0, pitch: 80, mouth: 'tail' },
+    { surface: 0, X: 2.18, Z: 5.8, yaw: 0, pitch: 80, mouth: 'tail' },
+  ],
+  'jour-nuit': [
+    // Le parquet, devant à gauche ; le parquet, à droite ; contre les rayons de droite ; contre les rayons, près de l'échelle.
+    { surface: 0, X: -2.51, Z: 4.19, yaw: 15 },
+    { surface: 0, X: 2.33, Z: 4.63, yaw: -10 },
+    { surface: 0, X: 2.15, Z: 5.61, yaw: 0, pitch: 80, mouth: 'tail' },
+    { surface: 0, X: -2.07, Z: 4.95, yaw: 0, pitch: 80, mouth: 'tail' },
   ],
 };
 

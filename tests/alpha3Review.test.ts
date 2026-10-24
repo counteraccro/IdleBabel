@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { AGES, QUANTUM_AGE, TOOLS, agePart } from '../src/data/tools';
 import { ETHERIUM_GROUPS, NEEDS_AGE } from '../src/data/etheriumStars';
+import { MIMIC_LIGHT, MIMIC_SPOTS } from '../src/data/mimic';
+import { SCENES } from '../src/scene/scenes';
 
 describe('revue de l’Alpha 3 (24/10)', () => {
   it('chaque Âge, et celui de chaque méthode, a sa sous-partie', () => {
@@ -17,5 +19,14 @@ describe('revue de l’Alpha 3 (24/10)', () => {
   it('seule la dent du Rouage d’un Âge d’après le Numérique attend son Âge', () => {
     const gear = [...NEEDS_AGE].filter(([id]) => id.startsWith('gear.'));
     expect(gear).toEqual([['gear.a4', QUANTUM_AGE]]);
+  });
+});
+
+describe('la Mimic dans chaque salle (24/10)', () => {
+  it('chaque fond a ses places et sa lumière', () => {
+    for (const { id } of SCENES) {
+      expect(MIMIC_SPOTS[id]?.length, id).toBeGreaterThan(0);
+      expect(MIMIC_LIGHT[id], id).toBeGreaterThan(0);
+    }
   });
 });
