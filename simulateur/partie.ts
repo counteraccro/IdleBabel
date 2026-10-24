@@ -26,20 +26,8 @@ import { ETHER_READING } from '../src/data/etherium';
 import { PLAYER } from './config';
 import { etherCounted as weighed } from '../src/systems/etherium';
 import { sealCount } from './sceaux';
-import {
-  BIT,
-  CHANDELIER_KNOWLEDGE,
-  CHANDELIER_READING,
-  DIGITAL_AGE,
-  keptMethods,
-  methodSequence,
-  QUANTUM_AGE,
-  QUBIT,
-  QUBIT_STAR,
-  SECRET,
-  type Method,
-} from './methodes';
-import { EFFECT, S } from '../src/data/etheriumStars';
+import { BIT, DIGITAL_AGE, keptMethods, methodSequence, QUANTUM_AGE, QUBIT, SECRET, type Method } from './methodes';
+import { EFFECT, KEEPS, S } from '../src/data/etheriumStars';
 import { SENTENCES } from '../src/data/sentences';
 import { lit, product, relicBonus, starsCache, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
@@ -100,7 +88,7 @@ export const newRun = (life: Life): Run => {
   };
   if (life.secretFound) run.unlocked.add(SECRET.id);
   if (life.bitFound) run.unlocked.add(BIT.id);
-  if (life.qubitFound && (!PLAYER.quantumHive || lit(life, 'memory.q0'))) run.unlocked.add(QUBIT.id);
+  if (life.qubitFound && lit(life, KEEPS.qubit)) run.unlocked.add(QUBIT.id);
   // La Porte : des méthodes au réveil (et leur phrase, sans quoi elles ne serviraient à rien).
   const give = (id: string, count: number): void => {
     if (count < 1) return;
@@ -130,8 +118,8 @@ const level = (run: Run, id: string): number => run.levels[id] ?? 0;
 const BIT_STAR = SENTENCES.find((sentence) => sentence.id === 'bit')?.secret ?? '';
 const bitSought = (life: Life): boolean => PLAYER.bit && lit(life, BIT_STAR);
 
-/** Le Qubit (essai) : cherché une fois la puce du Lustre allumée. */
-const qubitSought = (life: Life): boolean => PLAYER.qubit && lit(life, QUBIT_STAR);
+/** Le Qubit : cherché une fois la puce du Lustre allumée. */
+const qubitSought = (life: Life): boolean => PLAYER.qubit && lit(life, S.qubit);
 
 export const allMethods = (run: Run): Method[] => [
   ...run.methods,
@@ -163,7 +151,7 @@ export const rate = (run: Run, method: Method, away = false): number =>
   (method.gesture ? GESTURE_BONUS ** level(run, method.gesture) : 1) *
   product(run.life, EFFECT.readingRate) *
   (method.age === DIGITAL_AGE ? product(run.life, EFFECT.digitalReading) : 1) *
-  (method.age === QUANTUM_AGE ? product(run.life, CHANDELIER_READING) : 1) *
+  (method.age === QUANTUM_AGE ? product(run.life, EFFECT.quantumReading) : 1) *
   (method.age === undefined ? 1 + sum(run.life, EFFECT.firstAgeReading) : 1) *
   etherReading(run) *
   (1 + run.life.tasks.readingBonus) *
@@ -241,9 +229,7 @@ const find = (run: Run, turned: number, away = false): void => {
   const finds = turned * chance;
   // La Loupe : des connaissances garanties en plus, à chaque trouvaille.
   const found =
-    finds *
-    (product(run.life, EFFECT.knowledge) * product(run.life, CHANDELIER_KNOWLEDGE) * (away ? 1 : letterAverage(run).knowledge) +
-      relicBonus(run.life, 'loupe', 0));
+    finds * (product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0));
   const mimicBonus = away ? 0 : found * mimicGives(run.life) * mimicPresence(run.life);
   run.life.mimic.bonus += mimicBonus;
   const knowledge = (found + mimicBonus) * (1 + run.life.tasks.knowledgeBonus);

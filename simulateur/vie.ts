@@ -10,8 +10,7 @@ import {
   neededFor,
   type PageId,
 } from '../src/data/etheriumStars';
-import { DIGITAL_AGE } from '../src/data/tools';
-import { CHANDELIER, QUANTUM_AGE, QUANTUM_HIVE } from './methodes';
+import { DIGITAL_AGE, QUANTUM_AGE } from '../src/data/tools';
 import { relicById } from '../src/data/relics';
 import { PLAYER } from './config';
 import { etherNeeded } from '../src/systems/etherium';
@@ -26,7 +25,7 @@ export interface Life {
   secretFound: boolean;
   /** Le Bit, une fois retrouvé (comme la Page Cornée). */
   bitFound: boolean;
-  /** Le Qubit, une fois retrouvé (essai). */
+  /** Le Qubit, une fois retrouvé (gardé avec memory.q0). */
   qubitFound: boolean;
   /** Secondes écoulées depuis le début, absences comprises. */
   clock: number;
@@ -147,23 +146,17 @@ const open = (life: Life): Buyable[] => [
       life.etherReceived >= etherNeeded(star.page),
   ),
   ...openTaskStars(life),
-  // L'Âge Quantique (essai, --quantique) : après l'Âge Numérique.
-  ...(PLAYER.quantumAge > 0 && life.stars.has(DIGITAL_AGE) && !life.stars.has(QUANTUM_AGE)
-    ? [{ id: QUANTUM_AGE, cost: PLAYER.quantumAge }]
-    : []),
-  // L'alvéole Quantique de la Ruche (essai, --ruche-quantique), une fois l'Âge Quantique acheté.
-  ...(life.stars.has(QUANTUM_AGE) ? QUANTUM_HIVE.filter((star) => !life.stars.has(star.id) && life.stars.has(star.after)) : []),
-  // Le Lustre (essai, --lustre) : sa page, une fois l'Âge Quantique acheté.
-  ...(PLAYER.chandelier && life.stars.has(QUANTUM_AGE)
-    ? CHANDELIER.filter((star) => !life.stars.has(star.id) && (star.after === null || life.stars.has(star.after)))
-    : []),
 ];
 
 type Buyable = { id: string; cost: number };
 
-/** Son prix ; celui qu'essaie le simulateur s'il en donne un (--numerique, --etoile). */
+/** Son prix ; celui qu'essaie le simulateur s'il en donne un (--numerique, --quantique, --etoile). */
 const starCost = (star: Buyable): number =>
-  star.id === DIGITAL_AGE && PLAYER.digitalAge > 0 ? PLAYER.digitalAge : (PLAYER.stars[star.id] ?? star.cost);
+  star.id === DIGITAL_AGE && PLAYER.digitalAge > 0
+    ? PLAYER.digitalAge
+    : star.id === QUANTUM_AGE && PLAYER.quantumAge > 0
+      ? PLAYER.quantumAge
+      : (PLAYER.stars[star.id] ?? star.cost);
 
 /** Au réveil : le bot prend l'Âge Automatique d'abord, puis l'étoile la moins chère qu'il peut s'offrir, tant qu'il peut. */
 export const spendEther = (life: Life): string[] => {

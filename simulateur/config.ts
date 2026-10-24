@@ -60,19 +60,10 @@ export const PLAYER = {
   mimicMinutes: 30,
   /** Le prix de l'étoile de l'Âge Numérique remplacé, pour essayer (--numerique=500) ; 0 : celui du jeu. */
   digitalAge: 0,
-  /**
-   * L'Âge Quantique (23/10, pas encore dans le jeu ; méthodes dans methodes.ts, QUANTUM) : le prix de son étoile
-   * (--quantique=150000) ; 0 : sans lui.
-   */
+  /** Le prix de l'étoile de l'Âge Quantique remplacé, pour essayer (--quantique=150000) ; 0 : celui du jeu. */
   quantumAge: 0,
-  /** Les intuitions des méthodes Quantiques (essai, simulateur/intuitions.ts) : --intuitions-quantiques. */
-  quantumGestures: false,
-  /** Le Qubit, méthode secrète de l'Âge Quantique (essai, methodes.ts, QUBIT ; son étoile : la puce du Lustre) : --qubit. */
-  qubit: false,
-  /** L'alvéole Quantique de la Ruche (essai, methodes.ts, QUANTUM_HIVE) : --ruche-quantique. */
-  quantumHive: false,
-  /** Le Lustre, page de l'Âge Quantique dans l'Etherium (essai, methodes.ts, CHANDELIER) : --lustre. */
-  chandelier: false,
+  /** Le Qubit, méthode secrète de l'Âge Quantique (son étoile : la puce du Lustre) : --sans-qubit pour s'en passer. */
+  qubit: true,
   /** Le Bit, méthode secrète de l'Âge Numérique : --sans-bit pour s'en passer. */
   bit: true,
   /** Les tâches (17/10, simulateur/taches.ts, pas encore dans le jeu) : --sans-taches pour s'en passer. */
@@ -126,10 +117,6 @@ for (const part of starOption?.split(',') ?? []) {
   const [id, cost] = part.split(':');
   PLAYER.stars[id] = Number(cost);
 }
-// Lu ici et pas dans main.ts : les méthodes (methodes.ts) et les intuitions (intuitions.ts) sont calculées dès leur import.
-if (process.argv.includes('--intuitions-quantiques')) PLAYER.quantumGestures = true;
-if (process.argv.includes('--qubit')) PLAYER.qubit = true;
-if (process.argv.includes('--ruche-quantique')) PLAYER.quantumHive = true;
 const readingOption = process.argv.find((arg) => arg.startsWith('--lecture='))?.split('=')[1];
 for (const part of readingOption?.split(',') ?? []) {
   const [age, factor] = part.split(':');
