@@ -27,7 +27,7 @@ describe('Le poids de la Bibliothèque', () => {
     state.etherium.push('weight.w2', 'weight.w3', 'weight.w4', 'weight.w5', 'weight.w6', 'weight.w7');
     expect(etherReading(state)).toBeCloseTo(1 + 5e6 * 0.01);
     expect([1, 2, 3, 4, 5, 6, 7].map((i) => starById(`weight.w${i}`)?.cost)).toEqual([
-      10_000, 25_000, 60_000, 150_000, 400_000, 1_000_000, 2_500_000,
+      10_000, 25_000, 60_000, 150_000, 4_000_000, 10_000_000, 25_000_000,
     ]);
   });
 

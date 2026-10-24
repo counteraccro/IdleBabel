@@ -153,9 +153,11 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['weight', 'w2', 'w1', 25_000],
   ['weight', 'w3', 'w2', 60_000],
   ['weight', 'w4', 'w3', 150_000],
-  ['weight', 'w5', 'w4', 400_000],
-  ['weight', 'w6', 'w5', 1_000_000],
-  ['weight', 'w7', 'w6', 2_500_000],
+  // Les trois dernières ×10 (24/10, essai 5 du simulateur, validé) : à 400 000 · 1 M · 2,5 M, elles emballaient l'Éther dès
+  // l'Âge Quantique ; elles sont la fin de cet Âge, la marche vers le suivant.
+  ['weight', 'w5', 'w4', 4_000_000],
+  ['weight', 'w6', 'w5', 10_000_000],
+  ['weight', 'w7', 'w6', 25_000_000],
   // Numérique, le Minitel (13/10, .ai/maquette-etherium-numerique.html) : la prise, puis le cordon mène à l'écran (ses
   // quatre coins : lecture des méthodes Numériques) et au clavier (ses touches : Connaissance). Page de l'Âge Numérique.
   ['screen', 'plug', null, 1000],
