@@ -1,11 +1,12 @@
 import { getLocale, t } from '../../i18n';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
-import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS } from '../../data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE, TOOLS } from '../../data/tools';
 import { automaticAgeMultiplier, digitalAgeMultiplier, tomeKnowledgeMultiplier } from '../../systems/endings';
 import { FLAIR_LEVELS } from '../../data/technologies';
 import { filterMultiplier, gestureMultiplier, levelOf, rareChance, toolPriceFactor, clickShare } from '../../systems/technologies';
 import {
   boonLengthFactor,
+  agePageMultiplier,
   digitalMultiplier,
   etherReading,
   findsMultiplier,
@@ -16,6 +17,7 @@ import {
   rareMultiplier,
   readingMultiplier,
   firstAgeMultiplier,
+  quantumMultiplier,
 } from '../../systems/etherium';
 import { clickBoon, findsBoon, fourTen, knowledgeBoon, priceBoon, readingBoon } from '../../systems/boons';
 import { sealFindMultiplier } from '../../systems/seals';
@@ -62,14 +64,23 @@ const storyFactor = (state: GameState, tool: (typeof TOOLS)[number]): number =>
         ? digitalAgeMultiplier(state)
         : 1;
 
-export const methodReading = (state: GameState): { base: number; gestures: number; digital: number; story: number } => {
+/**
+ * `digital` : avec la page de l'Etherium de leur Âge (le Minitel, le Lustre) ; `minitel` et `chandelier` : avec l'une des deux
+ * seulement, pour la ligne de chacune.
+ */
+export const methodReading = (
+  state: GameState,
+): { base: number; gestures: number; digital: number; minitel: number; chandelier: number; story: number } => {
   const rate = (tool: (typeof TOOLS)[number]): number => state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id);
-  const digitalRate = (tool: (typeof TOOLS)[number]): number => rate(tool) * (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1);
+  const pageRate = (tool: (typeof TOOLS)[number]): number => rate(tool) * agePageMultiplier(state, tool.age);
+  const sum = (of: (tool: (typeof TOOLS)[number]) => number): number => TOOLS.reduce((total, tool) => total + of(tool), 0);
   return {
-    base: TOOLS.reduce((total, tool) => total + state.tools[tool.id] * tool.pagesPerSecond, 0),
-    gestures: TOOLS.reduce((total, tool) => total + rate(tool), 0),
-    digital: TOOLS.reduce((total, tool) => total + digitalRate(tool), 0),
-    story: TOOLS.reduce((total, tool) => total + digitalRate(tool) * storyFactor(state, tool), 0),
+    base: sum((tool) => state.tools[tool.id] * tool.pagesPerSecond),
+    gestures: sum(rate),
+    digital: sum(pageRate),
+    minitel: sum((tool) => rate(tool) * (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1)),
+    chandelier: sum((tool) => rate(tool) * (tool.age === QUANTUM_AGE ? quantumMultiplier(state) : 1)),
+    story: sum((tool) => pageRate(tool) * storyFactor(state, tool)),
   };
 };
 const gestures = (state: GameState): number => {
@@ -78,8 +89,13 @@ const gestures = (state: GameState): number => {
 };
 /** Le Minitel ne fait lire plus vite que les méthodes de l'Âge Numérique : sa part de toute la lecture. */
 const digitalShare = (state: GameState): number => {
-  const { gestures: read, digital } = methodReading(state);
-  return read > 0 ? digital / read : 1;
+  const { gestures: read, minitel } = methodReading(state);
+  return read > 0 ? minitel / read : 1;
+};
+/** De même, le Lustre pour les méthodes de l'Âge Quantique. */
+const quantumShare = (state: GameState): number => {
+  const { gestures: read, chandelier } = methodReading(state);
+  return read > 0 ? chandelier / read : 1;
 };
 /** Les tomes de « L'histoire de Babel » ne font lire plus vite que les méthodes de leur Âge : leur part de toute la lecture. */
 export const storyShare = (state: GameState): number => {
@@ -130,6 +146,7 @@ export const BONUS_FIGURES: Figure[] = [
   factorRow('reading', 'readingIntuitions', 'tedu ralvi', gestures),
   factorRow('reading', 'readingEtherium', 'etra lomi', readingMultiplier),
   factorRow('reading', 'readingDigital', 'etra numel', digitalShare),
+  factorRow('reading', 'readingQuantum', 'etra lustra', quantumShare),
   factorRow('reading', 'readingEther', 'etra dulvo', etherReading),
   factorRow('reading', 'readingStory', 'vuntal babel', storyShare),
   factorRow('reading', 'readingLetter', 'lettra vimo', readingBoon),

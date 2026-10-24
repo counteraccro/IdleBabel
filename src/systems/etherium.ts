@@ -14,6 +14,7 @@ import {
   STARS,
   type PageId,
 } from '../data/etheriumStars';
+import { DIGITAL_AGE, QUANTUM_AGE } from '../data/tools';
 import { ETHER_READING, ETHER_WEIGHT } from '../data/etherium';
 import { SENTENCES } from '../data/sentences';
 import { runHooks } from '../mods/hooks';
@@ -119,6 +120,11 @@ export const readingMultiplier = (state: GameState): number => product(state, EF
 export const firstAgeMultiplier = (state: GameState): number => 1 + sum(state, EFFECT.firstAgeReading);
 /** Le Minitel (la prise, l'écran) : les pages/s des méthodes de l'Âge Numérique. */
 export const digitalMultiplier = (state: GameState): number => product(state, EFFECT.digitalReading);
+/** Le Lustre (le crochet, les câbles) : les pages/s des méthodes de l'Âge Quantique. */
+export const quantumMultiplier = (state: GameState): number => product(state, EFFECT.quantumReading);
+/** La page de l'Etherium de l'Âge d'une méthode (le Minitel, le Lustre) : ce qu'elle fait lire de plus à cette méthode. */
+export const agePageMultiplier = (state: GameState, age: string | undefined): number =>
+  age === DIGITAL_AGE ? digitalMultiplier(state) : age === QUANTUM_AGE ? quantumMultiplier(state) : 1;
 /** La Main (poignet, paume, index) : les pages d'un clic. */
 export const handsMultiplier = (state: GameState): number => product(state, EFFECT.click);
 /** La Chouette (pattes, corps, aile droite) : ce que rapporte une trouvaille. */

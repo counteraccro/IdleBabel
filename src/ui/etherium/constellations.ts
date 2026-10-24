@@ -41,6 +41,10 @@ export interface Sketch {
   boxes?: readonly (readonly [number, number, number, number, number])[];
   /** Un œil en amande, la fente du chat au milieu : centre, demi-largeur, angle (degrés). */
   eye?: readonly [number, number, number, number];
+  /** Des ellipses (les faces des plateaux du Lustre) : centre, demi-axes. */
+  ellipses?: readonly (readonly [number, number, number, number])[];
+  /** Les plateaux du Lustre, teintés d'or à peine (face du dessus et tranche) : haut, demi-largeur, épaisseur ; centrés. */
+  plates?: readonly (readonly [number, number, number])[];
 }
 
 const ring = ([cx, cy]: readonly [number, number], r: number, deg: number): readonly [number, number] => [
@@ -200,6 +204,98 @@ const MANUAL_CELL = [120, 385] as const;
 const AUTO_CELL = [320, 385] as const;
 const DIGITAL_CELL = [520, 385] as const;
 const QUANTUM_CELL = [420, 580] as const;
+
+/**
+ * Le Lustre (24/10, .ai/maquette-etherium-quantique.html, mêmes mesures) : quatre plateaux dorés qui rétrécissent en
+ * descendant, reliés par des tiges et des tubes en spirale ; le crochet en haut, la puce tout en bas.
+ */
+const CHANDELIER_X = 320;
+/** Haut et demi-largeur de chaque plateau. */
+const TIERS = [
+  [372, 172],
+  [452, 140],
+  [527, 108],
+  [597, 76],
+] as const;
+const THICK = 9;
+const HOOK_Y = 318;
+/** Un tube en spirale de (x0, y0) à (x1, y1). */
+const coil = (x0: number, y0: number, x1: number, y1: number, turns: number, amp: number): [number, number][] =>
+  Array.from({ length: turns * 8 + 1 }, (_, k) => {
+    const t = k / (turns * 8);
+    return [Math.round(x0 + (x1 - x0) * t + amp * Math.sin(t * turns * Math.PI * 2)), Math.round(y0 + (y1 - y0) * t)];
+  });
+const chandelierLines = (): [number, number][][] => {
+  const X = CHANDELIER_X;
+  const lines: [number, number][][] = [
+    // Le câble qui tient le lustre au plafond, puis la tige du milieu jusqu'au premier plateau.
+    [
+      [X, 270],
+      [X, HOOK_Y - 20],
+    ],
+    [
+      [X, HOOK_Y + 20],
+      [X, TIERS[0][0] - 12],
+    ],
+  ];
+  // Les bords des plateaux.
+  for (const [y, rx] of TIERS)
+    lines.push(
+      [
+        [X - rx, y],
+        [X - rx, y + THICK],
+      ],
+      [
+        [X + rx, y],
+        [X + rx, y + THICK],
+      ],
+    );
+  // Entre deux plateaux : des tiges droites, et des tubes en spirale à mi-chemin du bord.
+  for (let i = 0; i < TIERS.length - 1; i++) {
+    const [[ya, ra], [yb, rb]] = [TIERS[i], TIERS[i + 1]];
+    const [top, bottom] = [ya + THICK + 10, yb - 10];
+    lines.push([
+      [X, top],
+      [X, bottom],
+    ]);
+    for (const side of [-1, 1]) {
+      lines.push([
+        [X + side * ra * 0.42, top],
+        [X + side * rb * 0.42, bottom],
+      ]);
+      lines.push(coil(X + side * ra * 0.72, top, X + side * rb * 0.72, bottom, 5, 5));
+    }
+  }
+  // Sous le dernier plateau : la tige, puis la puce et ses broches.
+  const last = TIERS[TIERS.length - 1][0] + THICK;
+  lines.push([
+    [X, last + 10],
+    [X, 638],
+  ]);
+  for (const side of [-1, 1]) lines.push(coil(X + side * 30, last + 12, X + side * 16, 636, 4, 4));
+  lines.push(
+    [
+      [X - 24, 640],
+      [X + 24, 640],
+      [X + 24, 666],
+      [X - 24, 666],
+      [X - 24, 640],
+    ],
+    [
+      [X - 12, 648],
+      [X + 12, 648],
+      [X + 12, 658],
+      [X - 12, 658],
+      [X - 12, 648],
+    ],
+  );
+  for (const dx of [-16, -5, 5, 16])
+    lines.push([
+      [X + dx, 666],
+      [X + dx, 672],
+    ]);
+  return lines;
+};
 const CELL = 80;
 
 export const FIGURES: Record<PageId, Figure> = {
@@ -413,6 +509,28 @@ export const FIGURES: Record<PageId, Figure> = {
           [380, 465],
         ],
       ],
+    },
+  },
+  // Quantique, le Lustre : le crochet, le bord gauche des plateaux (les câbles, lecture), le bord droit (Connaissance), la puce.
+  chandelier: {
+    spots: {
+      hook: [CHANDELIER_X, HOOK_Y],
+      ...Object.fromEntries(
+        TIERS.flatMap(([y, rx], i) => [
+          [`q${i + 1}`, [CHANDELIER_X - rx, y + THICK / 2]],
+          [`k${i + 1}`, [CHANDELIER_X + rx, y + THICK / 2]],
+        ]),
+      ),
+      chip: [CHANDELIER_X, 653],
+    },
+    deco: [],
+    sketch: {
+      lines: chandelierLines(),
+      ellipses: TIERS.flatMap(([y, rx]) => [
+        [CHANDELIER_X, y, rx, 12],
+        [CHANDELIER_X, y + THICK, rx, 12],
+      ]),
+      plates: TIERS.map(([y, rx]) => [y, rx, THICK]),
     },
   },
   ages: {

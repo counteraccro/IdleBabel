@@ -65,10 +65,12 @@ const ENTRY_TOP = 214;
 const ENTRY_STEP = 50;
 /** Le nom d'un groupe, au-dessus de ses pages. */
 const GROUP_STEP = 34;
-/** Le sommaire tient sur deux pages (demande de l'auteur, 11/10 : avec la Mimic, une seule était trop tassée). */
-const CONTENTS_PAGES = 2;
-/** Les groupes de la première page du sommaire (les méthodes, lire) ; les autres sont en face. */
-const FIRST_PAGE_GROUPS = 2;
+/**
+ * Les groupes de chaque page du sommaire (demande de l'auteur, 11/10 : avec la Mimic, une seule page était trop tassée ; 24/10 :
+ * avec le Lustre, deux ne suffisent plus) : les méthodes ; lire et le temps ; les salles.
+ */
+const CONTENTS_GROUPS: readonly (readonly string[])[] = [['methods'], ['reading', 'time'], ['rooms']];
+const CONTENTS_PAGES = CONTENTS_GROUPS.length;
 
 type Row = { kind: 'group'; id: string; y: number } | { kind: 'page'; page: PageId; y: number };
 
@@ -77,7 +79,7 @@ type Row = { kind: 'group'; id: string; y: number } | { kind: 'page'; page: Page
  * Mimic) n'y entre qu'une fois débloquée, et un groupe sans page ouverte n'y est pas.
  */
 const rows = (state: GameState, part: number): Row[] => {
-  const groups = part === 0 ? ETHERIUM_GROUPS.slice(0, FIRST_PAGE_GROUPS) : ETHERIUM_GROUPS.slice(FIRST_PAGE_GROUPS);
+  const groups = ETHERIUM_GROUPS.filter((group) => CONTENTS_GROUPS[part].includes(group.id));
   const result: Row[] = [];
   let y = ENTRY_TOP;
   for (const group of groups) {

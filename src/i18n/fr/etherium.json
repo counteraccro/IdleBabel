@@ -133,6 +133,12 @@
       "figure": "Le Minitel",
       "description": "L’écran s’allume quand je m’approche.",
       "locked": "Cette page attend\nun Âge nouveau."
+    },
+    "chandelier": {
+      "name": "Quantique",
+      "figure": "Le Lustre",
+      "description": "Plus froid que la nuit entre les étoiles.",
+      "locked": "Cette page attend\nun Âge nouveau."
     }
   },
   "stars": {
@@ -970,6 +976,57 @@
         "name": "La touche 4",
         "value": "×2",
         "effect": "Connaissance par trouvaille"
+      }
+    },
+    "chandelier": {
+      "hook": {
+        "name": "Le crochet",
+        "value": "×1,1",
+        "effect": "lecture des méthodes Quantiques"
+      },
+      "q1": {
+        "name": "Le câble 1",
+        "value": "×1,25",
+        "effect": "lecture des méthodes Quantiques"
+      },
+      "q2": {
+        "name": "Le câble 2",
+        "value": "×1,25",
+        "effect": "lecture des méthodes Quantiques"
+      },
+      "q3": {
+        "name": "Le câble 3",
+        "value": "×1,5",
+        "effect": "lecture des méthodes Quantiques"
+      },
+      "q4": {
+        "name": "Le câble 4",
+        "value": "×2",
+        "effect": "lecture des méthodes Quantiques"
+      },
+      "k1": {
+        "name": "Le plateau 1",
+        "value": "×1,25",
+        "effect": "Connaissance par trouvaille"
+      },
+      "k2": {
+        "name": "Le plateau 2",
+        "value": "×1,5",
+        "effect": "Connaissance par trouvaille"
+      },
+      "k3": {
+        "name": "Le plateau 3",
+        "value": "×1,5",
+        "effect": "Connaissance par trouvaille"
+      },
+      "k4": {
+        "name": "Le plateau 4",
+        "value": "×2",
+        "effect": "Connaissance par trouvaille"
+      },
+      "chip": {
+        "name": "La puce",
+        "effect": "méthode secrète : son souvenir flou"
       }
     }
   },

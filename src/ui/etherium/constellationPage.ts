@@ -164,7 +164,10 @@ const stairs = (ctx: Ctx, stars: StarView[]): void => {
 };
 
 /** Le dessin de la figure, à peine tracé sous les étoiles : la Rose et ses points cardinaux, la Mimic et son œil. */
-const sketch = (ctx: Ctx, { lines, circle, rings, labels, eye, boxes, strong, labelKeys, labelSize, labelSpacing }: Sketch): void => {
+const sketch = (
+  ctx: Ctx,
+  { lines, circle, rings, labels, eye, boxes, ellipses, plates, strong, labelKeys, labelSize, labelSpacing }: Sketch,
+): void => {
   ctx.save();
   ctx.strokeStyle = strong ? C.sketchStrong : C.sketch;
   ctx.lineWidth = strong ? 1.4 : 1;
@@ -202,7 +205,28 @@ const sketch = (ctx: Ctx, { lines, circle, rings, labels, eye, boxes, strong, la
     ctx.roundRect(x, y, w, h, r);
     ctx.stroke();
   }
+  for (const [x, y, rx, ry] of ellipses ?? []) {
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
   ctx.restore();
+  // Les plateaux du Lustre : une teinte d'or à peine posée (face du dessus et tranche).
+  for (const [y, rx, thick] of plates ?? []) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(232,199,118,0.07)';
+    ctx.beginPath();
+    ctx.ellipse(320, y + thick, rx, 12, 0, 0, Math.PI);
+    ctx.lineTo(320 - rx, y);
+    ctx.ellipse(320, y, rx, 12, 0, Math.PI, 0, true);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = 'rgba(232,199,118,0.05)';
+    ctx.beginPath();
+    ctx.ellipse(320, y, rx, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
   for (const [key, [x, y]] of labels ?? [])
     write(ctx, t(`${labelKeys ?? 'etherium.compass'}.${key}`), x, y - 10, {
       size: labelSize ?? 14,

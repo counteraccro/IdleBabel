@@ -133,6 +133,12 @@
       "figure": "The Minitel",
       "description": "The screen lights up when I come near.",
       "locked": "This page is waiting\nfor a new Age."
+    },
+    "chandelier": {
+      "name": "Quantum",
+      "figure": "The Chandelier",
+      "description": "Colder than the night between the stars.",
+      "locked": "This page is waiting\nfor a new Age."
     }
   },
   "stars": {
@@ -970,6 +976,57 @@
         "name": "The key 4",
         "value": "×2",
         "effect": "Knowledge per find"
+      }
+    },
+    "chandelier": {
+      "hook": {
+        "name": "The hook",
+        "value": "×1.1",
+        "effect": "reading of the Quantum methods"
+      },
+      "q1": {
+        "name": "The cable 1",
+        "value": "×1.25",
+        "effect": "reading of the Quantum methods"
+      },
+      "q2": {
+        "name": "The cable 2",
+        "value": "×1.25",
+        "effect": "reading of the Quantum methods"
+      },
+      "q3": {
+        "name": "The cable 3",
+        "value": "×1.5",
+        "effect": "reading of the Quantum methods"
+      },
+      "q4": {
+        "name": "The cable 4",
+        "value": "×2",
+        "effect": "reading of the Quantum methods"
+      },
+      "k1": {
+        "name": "The plate 1",
+        "value": "×1.25",
+        "effect": "Knowledge per find"
+      },
+      "k2": {
+        "name": "The plate 2",
+        "value": "×1.5",
+        "effect": "Knowledge per find"
+      },
+      "k3": {
+        "name": "The plate 3",
+        "value": "×1.5",
+        "effect": "Knowledge per find"
+      },
+      "k4": {
+        "name": "The plate 4",
+        "value": "×2",
+        "effect": "Knowledge per find"
+      },
+      "chip": {
+        "name": "The chip",
+        "effect": "secret method: its blurry memory"
       }
     }
   },

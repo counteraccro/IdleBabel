@@ -16,7 +16,7 @@ import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE } from './tools';
  * tome 1 s'achète au Nord-Est de la Rose des vents. Le sommaire écrit le nom de chaque groupe (etherium.groups.<groupe>).
  */
 export const ETHERIUM_GROUPS = [
-  { id: 'methods', pages: ['ages', 'gear', 'reading', 'start', 'memory', 'screen'] },
+  { id: 'methods', pages: ['ages', 'gear', 'reading', 'start', 'memory', 'screen', 'chandelier'] },
   { id: 'reading', pages: ['hands', 'quill', 'knowledge', 'finds'] },
   { id: 'time', pages: ['away', 'weight'] },
   { id: 'rooms', pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks'] },
@@ -167,6 +167,20 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['screen', 'k2', 'k1', 5000],
   ['screen', 'k3', 'k2', 10_000],
   ['screen', 'k4', 'k3', 25_000],
+  // Quantique, le Lustre (24/10, .ai/maquette-etherium-quantique.html ; prix validés après les essais 8 à 13 du simulateur) :
+  // l'ordinateur quantique doré, suspendu la tête en bas. Le crochet, puis le bord gauche des plateaux (les câbles : lecture des
+  // méthodes Quantiques) et le bord droit (les plateaux : Connaissance) ; la puce, au bout de la tige du milieu, fait trouver
+  // le Qubit. Page de l'Âge Quantique.
+  ['chandelier', 'hook', null, 100_000],
+  ['chandelier', 'q1', 'hook', 500_000],
+  ['chandelier', 'q2', 'q1', 1_000_000],
+  ['chandelier', 'q3', 'q2', 1_500_000],
+  ['chandelier', 'q4', 'q3', 3_000_000],
+  ['chandelier', 'k1', 'hook', 500_000],
+  ['chandelier', 'k2', 'k1', 1_000_000],
+  ['chandelier', 'k3', 'k2', 1_500_000],
+  ['chandelier', 'k4', 'k3', 3_000_000],
+  ['chandelier', 'chip', 'hook', 200_000],
   // La Plume (Alpha 1.1, 08/10) : le bec, puis la tige (la lettre vient plus souvent) jusqu'à la pointe (la Transe plus
   // forte) ; les barbes de gauche (durées, temps à l'écran), celles de droite (un bonus de plus chacune).
   ['quill', 'nib', null, 3],
@@ -312,6 +326,7 @@ export const PAGE_NEEDS: Partial<Record<PageId, string>> = {
   relics: 'explore.w',
   tasks: 'explore.n',
   screen: DIGITAL_AGE,
+  chandelier: QUANTUM_AGE,
 };
 
 /** Une page qui attend un premier jeton joué : la Loterie (blanche jusque-là, absente du sommaire). */
@@ -345,9 +360,22 @@ export const EFFECT = {
     'screen.k2': 1.5,
     'screen.k3': 1.5,
     'screen.k4': 2,
+    // Les plateaux du Lustre.
+    'chandelier.k1': 1.25,
+    'chandelier.k2': 1.5,
+    'chandelier.k3': 1.5,
+    'chandelier.k4': 2,
   },
   /** ×pages/s des méthodes de l'Âge Numérique (la prise et l'écran du Minitel). */
   digitalReading: { 'screen.plug': 1.1, 'screen.s1': 1.25, 'screen.s2': 1.25, 'screen.s3': 1.5, 'screen.s4': 2 },
+  /** ×pages/s des méthodes de l'Âge Quantique (le crochet et les câbles du Lustre). */
+  quantumReading: {
+    'chandelier.hook': 1.1,
+    'chandelier.q1': 1.25,
+    'chandelier.q2': 1.25,
+    'chandelier.q3': 1.5,
+    'chandelier.q4': 2,
+  },
   /** ×prix des intuitions (−10 %, puis −25 % en tout). */
   intuitions: { 'knowledge.wl': 0.9, 'knowledge.el': 0.75 / 0.9 },
   /** ×chance de trouvaille. */
@@ -460,6 +488,8 @@ export const S = {
   relics: 'explore.w',
   patience: 'relics.d',
   trueStory: 'explore.d0',
+  /** La puce du Lustre : le souvenir flou du Qubit (sa phrase, data/sentences.ts). */
+  qubit: 'chandelier.chip',
 } as const;
 
 /** Les deux étoiles de chaque relique, sur la page « Les reliques » (leur lettre : la loupe, l'astrolabe, le sablier). */

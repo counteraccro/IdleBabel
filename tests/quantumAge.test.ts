@@ -9,7 +9,9 @@ import { AUTOMATIC_AGE, DIGITAL_AGE, METHOD_CHAIN, QUANTUM_AGE, TOOLS } from '..
 import { TECHNOLOGIES } from '../src/data/technologies';
 import { SEALS } from '../src/data/seals';
 import { starById } from '../src/data/etheriumStars';
-import { starOpen } from '../src/systems/etherium';
+import { knowledgePerFind, pageOpen, starOpen } from '../src/systems/etherium';
+import { toolRate } from '../src/systems/production';
+import { ETHERIUM_PAGES, STARS } from '../src/data/etheriumStars';
 import { gearAges } from '../src/systems/gear';
 import { effectText } from '../src/ui/library/lotteryText';
 import { LOCALES } from '../src/i18n/locales';
@@ -144,6 +146,38 @@ describe('L’Âge Quantique', () => {
     expect(gearAges(state)).not.toContain(QUANTUM_AGE);
     state.etherium.push('gear.a4');
     expect(gearAges(state)).toContain(QUANTUM_AGE);
+  });
+
+  it('le Lustre attend l’Âge ; le crochet et les câbles font lire les machines, pas les autres ; les plateaux, la Connaissance', () => {
+    const state = game(false);
+    state.ether = 1e8;
+    expect(ETHERIUM_PAGES.indexOf('chandelier')).toBe(ETHERIUM_PAGES.indexOf('screen') + 1);
+    expect(pageOpen(state, 'chandelier')).toBe(false);
+    expect(starOpen(state, 'chandelier.hook')).toBe(false);
+    state.etherium.push(QUANTUM_AGE);
+    expect(pageOpen(state, 'chandelier')).toBe(true);
+    expect(starOpen(state, 'chandelier.hook')).toBe(true);
+    const microscope = toolRate(state, 'microscope');
+    const algorithm = toolRate(state, 'algorithm');
+    const knowledge = knowledgePerFind(state);
+    state.etherium.push('chandelier.hook', 'chandelier.q1', 'chandelier.k1');
+    expect(toolRate(state, 'microscope')).toBeCloseTo(microscope * 1.1 * 1.25);
+    expect(toolRate(state, 'algorithm')).toBeCloseTo(algorithm);
+    expect(knowledgePerFind(state)).toBeCloseTo(knowledge * 1.25);
+    expect(starOpen(state, 'chandelier.q2')).toBe(true);
+    expect(starOpen(state, 'chandelier.chip')).toBe(true);
+  });
+
+  it('les prix du Lustre (validés le 24/10) ; la puce, après le crochet, fait trouver le Qubit', () => {
+    const cost = (id: string) => STARS.find((star) => star.id === `chandelier.${id}`)?.cost;
+    expect(['hook', 'q1', 'q2', 'q3', 'q4', 'k1', 'k2', 'k3', 'k4', 'chip'].map(cost)).toEqual([
+      100_000, 500_000, 1_000_000, 1_500_000, 3_000_000, 500_000, 1_000_000, 1_500_000, 3_000_000, 200_000,
+    ]);
+    expect(starById('chandelier.chip')?.after).toBe('chandelier.hook');
+    const state = game(true);
+    state.etherium.push('chandelier.hook', 'chandelier.chip');
+    expect(sentenceShown(state, 'qubit')).toBe(true);
+    expect(SEALS.some((seal) => seal.id === 'constellation-chandelier')).toBe(true);
   });
 
   it('la Loterie accorde au pluriel : « Les Livres Intriqués arrêtés »', () => {
