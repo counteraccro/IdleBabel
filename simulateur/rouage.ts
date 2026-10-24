@@ -1,7 +1,7 @@
 import { STARS } from '../src/data/etheriumStars';
 import { GEAR_AGES, GEAR_EVERY } from '../src/data/gear';
 import { PLAYER } from './config';
-import { BIT, SECRET, type Method } from './methodes';
+import { BIT, QUBIT, SECRET, type Method } from './methodes';
 import { allMethods, pagesPerSecond, price, rate, type Run } from './partie';
 
 /**
@@ -40,7 +40,7 @@ const buyOnce = (run: Run, ages: Set<string>): boolean => {
   let best: Method | undefined;
   let bestScore = Infinity;
   for (const method of allMethods(run)) {
-    if (method === SECRET || method === BIT || !run.unlocked.has(method.id) || !ages.has(method.age ?? '')) continue;
+    if (method === SECRET || method === BIT || method === QUBIT || !run.unlocked.has(method.id) || !ages.has(method.age ?? '')) continue;
     const cost = price(run, method);
     const score = cost / rate(run, method) + Math.max(0, cost - run.pages) / income;
     if (score < bestScore) [best, bestScore] = [method, score];

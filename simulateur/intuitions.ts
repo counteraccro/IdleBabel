@@ -15,6 +15,8 @@ const QUANTUM_GESTURES = [
   { id: 'teleportationGesture', prices: gesture(409_600_000), tool: 'teleportation' },
   { id: 'groverGesture', prices: gesture(819_200_000), tool: 'grover' },
   { id: 'quantumComputerGesture', prices: gesture(1_638_400_000), tool: 'quantumComputer' },
+  // Le Qubit (--qubit) : celle des Livres Intriqués ×1,25, comme le Bit.
+  ...(PLAYER.qubit ? [{ id: 'qubitGesture', prices: gesture(256_000_000), tool: 'qubit' }] : []),
 ];
 
 /** Les intuitions du jeu (celles de l'Âge Numérique comprises), et celles de l'Âge Quantique à l'essai. */

@@ -40,8 +40,33 @@ export interface LetterAverage {
 
 const NONE: LetterAverage = { reading: 1, finds: 1, clicks: 1, fourTen: 1, knowledge: 1, price: 1, flash: 0, word: 0 };
 
+/**
+ * Gardée tant que les étoiles, la relique et les intuitions de la lettre ne changent pas (24/10 : recalculée à chaque pas,
+ * elle prenait un dixième du temps).
+ */
+const LETTER_LEVELS = ['watch', 'heldBreath', 'flock', 'letterUnderstood'];
+const kept = new WeakMap<Run, { stars: number; relic: string | null; levels: number[]; value: LetterAverage }>();
 export const letterAverage = (run: Run): LetterAverage => {
   if (PLAYER.letters <= 0) return NONE;
+  const before = kept.get(run);
+  if (
+    before &&
+    before.stars === run.life.stars.size &&
+    before.relic === run.life.relic &&
+    LETTER_LEVELS.every((id, i) => (run.levels[id] ?? 0) === before.levels[i])
+  )
+    return before.value;
+  const value = letterAverageNow(run);
+  kept.set(run, {
+    stars: run.life.stars.size,
+    relic: run.life.relic,
+    levels: LETTER_LEVELS.map((id) => run.levels[id] ?? 0),
+    value,
+  });
+  return value;
+};
+
+const letterAverageNow = (run: Run): LetterAverage => {
   const level = (id: string): number => run.levels[id] ?? 0;
   // L'Astrolabe, s'il agit : +40 % d'apparitions (et ses étoiles).
   const wait =

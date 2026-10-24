@@ -67,6 +67,12 @@ export const PLAYER = {
   quantumAge: 0,
   /** Les intuitions des méthodes Quantiques (essai, simulateur/intuitions.ts) : --intuitions-quantiques. */
   quantumGestures: false,
+  /** Le Qubit, méthode secrète de l'Âge Quantique (essai, methodes.ts, QUBIT ; son étoile : la puce du Lustre) : --qubit. */
+  qubit: false,
+  /** L'alvéole Quantique de la Ruche (essai, methodes.ts, QUANTUM_HIVE) : --ruche-quantique. */
+  quantumHive: false,
+  /** Le Lustre, page de l'Âge Quantique dans l'Etherium (essai, methodes.ts, CHANDELIER) : --lustre. */
+  chandelier: false,
   /** Le Bit, méthode secrète de l'Âge Numérique : --sans-bit pour s'en passer. */
   bit: true,
   /** Les tâches (17/10, simulateur/taches.ts, pas encore dans le jeu) : --sans-taches pour s'en passer. */
@@ -105,6 +111,8 @@ export const PLAYER = {
    */
   /** Prix et lecture d'une méthode du jeu remplacés, pour essayer (--methode=voice:12000:18,lectern:800000:650). */
   methods: {} as Record<string, { baseCost: number; pagesPerSecond: number }>,
+  /** Prix d'étoiles de l'Etherium remplacés, pour essayer (--etoile=weight.w5:4e6,weight.w6:1e7). */
+  stars: {} as Record<string, number>,
   reading: { manual: 1, auto: 1, num: 1, quant: 1 } as Record<'manual' | 'auto' | 'num' | 'quant', number>,
 };
 
@@ -113,8 +121,15 @@ for (const part of methodOption?.split(',') ?? []) {
   const [id, baseCost, pagesPerSecond] = part.split(':');
   PLAYER.methods[id] = { baseCost: Number(baseCost), pagesPerSecond: Number(pagesPerSecond) };
 }
+const starOption = process.argv.find((arg) => arg.startsWith('--etoile='))?.split('=')[1];
+for (const part of starOption?.split(',') ?? []) {
+  const [id, cost] = part.split(':');
+  PLAYER.stars[id] = Number(cost);
+}
 // Lu ici et pas dans main.ts : les méthodes (methodes.ts) et les intuitions (intuitions.ts) sont calculées dès leur import.
 if (process.argv.includes('--intuitions-quantiques')) PLAYER.quantumGestures = true;
+if (process.argv.includes('--qubit')) PLAYER.qubit = true;
+if (process.argv.includes('--ruche-quantique')) PLAYER.quantumHive = true;
 const readingOption = process.argv.find((arg) => arg.startsWith('--lecture='))?.split('=')[1];
 for (const part of readingOption?.split(',') ?? []) {
   const [age, factor] = part.split(':');

@@ -12,9 +12,13 @@
  *   npm run simule -- --sans-bit               sans le Bit, méthode secrète de l'Âge Numérique
  *   npm run simule -- --quantique=150000       l'Âge Quantique (essai, pas encore dans le jeu), son étoile à 150 000 Éther
  *   npm run simule -- --intuitions-quantiques  avec les intuitions des méthodes Quantiques (essai)
+ *   npm run simule -- --qubit                  avec le Qubit, méthode secrète de l'Âge Quantique (essai ; avec --lustre)
+ *   npm run simule -- --ruche-quantique        avec l'alvéole Quantique de la Ruche (essai)
+ *   npm run simule -- --lustre                 avec le Lustre, page de l'Âge Quantique dans l'Etherium (essai)
  *   npm run simule -- --sans-poids             sans le poids de la Bibliothèque (lecture de l'Éther freinée au-delà de 5 000)
  *   npm run simule -- --lecture=auto:0.1       la lecture des méthodes d'un Âge multipliée (manual, auto, num)
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
+ *   npm run simule -- --etoile=weight.w5:4e6   une étoile de l'Etherium à un autre prix
  *   npm run simule -- --sans-taches          sans les tâches (simulateur/taches.ts, pas encore dans le jeu)
  *   npm run simule -- --avec-jeton           le bot pose le Jeton (la relique de la Loterie) à la place de la Loupe
  *   npm run simule -- --reminiscence=gratuite  les intuitions reviennent gratuitement à leur meilleur niveau
@@ -24,7 +28,7 @@
  */
 import { PLAYER } from './config';
 import type { PageId } from '../src/data/etheriumStars';
-import { AUTOMATIC, BIT, DIGITAL, QUANTUM } from './methodes';
+import { AUTOMATIC, BIT, CHANDELIER, DIGITAL, QUANTUM, QUBIT } from './methodes';
 import { away, buyMethods, newRun, pagesPerSecond, play, type Run } from './partie';
 import { buyIntuitions } from './intuitions';
 import { etherGain, litPerPage, newLife, spendEther } from './vie';
@@ -50,6 +54,7 @@ if (option('lettres') !== undefined) PLAYER.letters = Number(option('lettres'));
 if (option('numerique')) PLAYER.digitalAge = Number(option('numerique'));
 if (option('sans-bit') !== undefined) PLAYER.bit = false;
 if (option('quantique')) PLAYER.quantumAge = Number(option('quantique'));
+if (option('lustre') !== undefined) PLAYER.chandelier = true;
 if (option('sans-taches') !== undefined) PLAYER.tasks = false;
 if (option('avec-jeton') !== undefined) PLAYER.tokenRelic = true;
 if (option('reminiscence') === 'gratuite') PLAYER.reminiscence = 'gratuite';
@@ -138,10 +143,13 @@ for (let number = 1; life.clock < end; number++) {
     short(run.firstBought.bit),
     // Pareil pour l'Âge Quantique (essai).
     ...(PLAYER.quantumAge > 0 ? [QUANTUM.map((method) => short(run.firstBought[method.id])).join(' · ')] : []),
+    ...(PLAYER.qubit ? [short(run.firstBought.qubit)] : []),
     // Connaissance gagnée dans la partie ; niveaux des intuitions de l'Âge Numérique (le Bit en dernier).
     big(run.knowledgeGained),
     [...DIGITAL, BIT].map((method) => run.levels[method.gesture!] ?? 0).join(''),
-    ...(PLAYER.quantumGestures ? [QUANTUM.map((method) => run.levels[method.gesture!] ?? 0).join('')] : []),
+    ...(PLAYER.quantumGestures
+      ? [[...QUANTUM, ...(PLAYER.qubit ? [QUBIT] : [])].map((method) => run.levels[method.gesture!] ?? 0).join('')]
+      : []),
     String(sealCount(run)),
     gain > 0 ? `+${gain}` : '(en cours)',
   ];
@@ -172,6 +180,7 @@ const header = [
   'Num 1 · 2 · 3 · 4 · 5',
   'Bit',
   ...(PLAYER.quantumAge > 0 ? ['Quant 1 · 2 · 3 · 4 · 5'] : []),
+  ...(PLAYER.qubit ? ['Qubit'] : []),
   'Conn.',
   'Int. Num',
   ...(PLAYER.quantumGestures ? ['Int. Quant'] : []),
@@ -192,7 +201,9 @@ console.log(`Sceaux : ${sealsPerPlate(life.seals)} (+ ${PLAYER.otherSeals} livre
 console.log(
   `Loterie : ${life.lottery.draws} jetons joués (dont ${Math.floor(life.lottery.daily)} du Jeton, trouvé : ${duration(life.lottery.tokenAt)}) · page ouverte : ${duration(life.lottery.openedAt)} · étoiles achetées : ${[...life.stars].filter((id) => id.startsWith('lottery.')).join(', ') || 'aucune'}`,
 );
-console.log(`Éther reçu : ${life.etherReceived} · non dépensé : ${life.etherFree} · étoiles : ${litPerPage(life)}`);
+console.log(
+  `Éther reçu : ${life.etherReceived} · non dépensé : ${life.etherFree} · étoiles : ${litPerPage(life)}${PLAYER.chandelier ? `, chandelier ${CHANDELIER.filter((s) => life.stars.has(s.id)).length}/${CHANDELIER.length}` : ''}`,
+);
 
 const tasks = life.tasks;
 if (PLAYER.tasks) {

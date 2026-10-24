@@ -68,6 +68,50 @@ export const QUANTUM: Method[] = QUANTUM_TOOLS.map((tool) => ({
   age: QUANTUM_AGE,
 }));
 
+/**
+ * Le Qubit, méthode secrète de l'Âge Quantique (24/10, essai, --qubit), sur le modèle du Bit : prix des Livres Intriqués ×5,12,
+ * lecture de Grover ×1,6. Comme le Bit, une fois trouvé il reste (dans le jeu : la 1re étoile de l'alvéole Quantique).
+ */
+export const QUBIT: Method = {
+  id: 'qubit',
+  baseCost: PLAYER.methods.qubit?.baseCost ?? 2.048e23,
+  pagesPerSecond: (PLAYER.methods.qubit?.pagesPerSecond ?? 2e15) * PLAYER.reading.quant,
+  pieces: 5,
+  ...(PLAYER.quantumGestures ? { gesture: 'qubitGesture' } : {}),
+  age: QUANTUM_AGE,
+};
+
+/**
+ * Le Lustre, page de l'Âge Quantique dans l'Etherium (24/10, essai : pas encore dans le jeu ; --lustre) : le crochet, puis
+ * les tubes de gauche (lecture des méthodes Quantiques) et ceux de droite (Connaissance), comme le Minitel.
+ */
+export const QUBIT_STAR = 'chandelier.chip';
+export const CHANDELIER: { id: string; after: string | null; cost: number }[] = [
+  { id: 'chandelier.hook', after: null, cost: 20_000 },
+  ...['q', 'k'].flatMap((side) =>
+    [50_000, 100_000, 250_000, 500_000].map((cost, i) => ({
+      id: `chandelier.${side}${i + 1}`,
+      after: i === 0 ? 'chandelier.hook' : `chandelier.${side}${i}`,
+      cost,
+    })),
+  ),
+  // La puce, au bout de la tige du milieu : elle fait trouver le Qubit (--qubit).
+  ...(PLAYER.qubit ? [{ id: QUBIT_STAR, after: 'chandelier.hook', cost: 200_000 }] : []),
+];
+export const CHANDELIER_READING: Record<string, number> = {
+  'chandelier.hook': 1.1,
+  'chandelier.q1': 1.25,
+  'chandelier.q2': 1.25,
+  'chandelier.q3': 1.5,
+  'chandelier.q4': 2,
+};
+export const CHANDELIER_KNOWLEDGE: Record<string, number> = {
+  'chandelier.k1': 1.25,
+  'chandelier.k2': 1.5,
+  'chandelier.k3': 1.5,
+  'chandelier.k4': 2,
+};
+
 /** Les méthodes dans l'ordre où leurs phrases se trouvent, selon les Âges achetés. */
 export const methodSequence = (life: Life): Method[] => [
   ...MANUAL,
@@ -76,7 +120,21 @@ export const methodSequence = (life: Life): Method[] => [
   ...(lit(life, QUANTUM_AGE) ? QUANTUM : []),
 ];
 
+/**
+ * L'alvéole Quantique de la Ruche (24/10, essai, --ruche-quantique) : après l'Algorithme de Babel (memory.n5), le Qubit puis
+ * les cinq méthodes ; chacune garde sa phrase au prestige. Prix ×10 de l'alvéole Numérique.
+ */
+export const QUANTUM_HIVE: { id: string; after: string; cost: number; method: string }[] = PLAYER.quantumHive
+  ? ['qubit', 'microscope', 'entangled', 'teleportation', 'grover', 'quantumComputer'].map((method, i) => ({
+      id: `memory.q${i}`,
+      after: i === 0 ? 'memory.n5' : `memory.q${i - 1}`,
+      cost: [1000, 1000, 2000, 4000, 8000, 16_000][i],
+      method,
+    }))
+  : [];
+
 /** Méthodes gardées par la Mémoire des méthodes (une étoile de la Ruche chacune). */
-export const keptMethods = (life: Life): string[] => {
-  return Object.keys(KEEPS).filter((id) => lit(life, KEEPS[id]));
-};
+export const keptMethods = (life: Life): string[] => [
+  ...Object.keys(KEEPS).filter((id) => lit(life, KEEPS[id])),
+  ...QUANTUM_HIVE.filter((star) => star.method !== 'qubit' && lit(life, star.id)).map((star) => star.method),
+];

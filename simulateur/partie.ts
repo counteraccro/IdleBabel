@@ -26,10 +26,22 @@ import { ETHER_READING } from '../src/data/etherium';
 import { PLAYER } from './config';
 import { etherCounted as weighed } from '../src/systems/etherium';
 import { sealCount } from './sceaux';
-import { BIT, DIGITAL_AGE, keptMethods, methodSequence, SECRET, type Method } from './methodes';
+import {
+  BIT,
+  CHANDELIER_KNOWLEDGE,
+  CHANDELIER_READING,
+  DIGITAL_AGE,
+  keptMethods,
+  methodSequence,
+  QUANTUM_AGE,
+  QUBIT,
+  QUBIT_STAR,
+  SECRET,
+  type Method,
+} from './methodes';
 import { EFFECT, S } from '../src/data/etheriumStars';
 import { SENTENCES } from '../src/data/sentences';
-import { lit, product, relicBonus, sum, type Life } from './vie';
+import { lit, product, relicBonus, starsCache, sum, type Life } from './vie';
 import { letterAverage } from './lettre';
 import { MIMIC_BONUS, MIMIC_EVERY, MIMIC_SLOW_CAP } from '../src/data/mimic';
 import { LOTTERY_BOONS, LOTTERY_CURSES, LOTTERY_STARS, RELIC_TOKEN_ODDS } from '../src/data/lottery';
@@ -88,6 +100,7 @@ export const newRun = (life: Life): Run => {
   };
   if (life.secretFound) run.unlocked.add(SECRET.id);
   if (life.bitFound) run.unlocked.add(BIT.id);
+  if (life.qubitFound && (!PLAYER.quantumHive || lit(life, 'memory.q0'))) run.unlocked.add(QUBIT.id);
   // La Porte : des méthodes au réveil (et leur phrase, sans quoi elles ne serviraient à rien).
   const give = (id: string, count: number): void => {
     if (count < 1) return;
@@ -117,10 +130,26 @@ const level = (run: Run, id: string): number => run.levels[id] ?? 0;
 const BIT_STAR = SENTENCES.find((sentence) => sentence.id === 'bit')?.secret ?? '';
 const bitSought = (life: Life): boolean => PLAYER.bit && lit(life, BIT_STAR);
 
-export const allMethods = (run: Run): Method[] => [...run.methods, SECRET, ...(bitSought(run.life) ? [BIT] : [])];
+/** Le Qubit (essai) : cherché une fois la puce du Lustre allumée. */
+const qubitSought = (life: Life): boolean => PLAYER.qubit && lit(life, QUBIT_STAR);
+
+export const allMethods = (run: Run): Method[] => [
+  ...run.methods,
+  SECRET,
+  ...(bitSought(run.life) ? [BIT] : []),
+  ...(qubitSought(run.life) ? [QUBIT] : []),
+];
 
 /** L'Éther reçu depuis toujours : +1 % de lecture chacun (méthodes et feuille tournée à la main). */
-const etherReading = (run: Run): number => (PLAYER.etherReading ? 1 + ETHER_READING * etherCounted(run.life) : 1);
+const etherReading = (run: Run): number => (PLAYER.etherReading ? 1 + ETHER_READING * etherCountedKept(run.life) : 1);
+
+/** Gardé jusqu'au prochain prestige (l'Éther reçu et les étoiles n'y changent qu'à ce moment). */
+let counted = { life: null as Life | null, received: -1, stars: -1, value: 0 };
+const etherCountedKept = (life: Life): number => {
+  if (counted.life !== life || counted.received !== life.etherReceived || counted.stars !== life.stars.size)
+    counted = { life, received: life.etherReceived, stars: life.stars.size, value: etherCounted(life) };
+  return counted.value;
+};
 
 /** L'Éther reçu tel que la lecture le compte : sous le poids de la Bibliothèque (celui du jeu), ou tout (--sans-poids). */
 const etherCounted = (life: Life): number => (PLAYER.weight ? weighed(life.etherReceived, sum(life, EFFECT.weight)) : life.etherReceived);
@@ -134,6 +163,7 @@ export const rate = (run: Run, method: Method, away = false): number =>
   (method.gesture ? GESTURE_BONUS ** level(run, method.gesture) : 1) *
   product(run.life, EFFECT.readingRate) *
   (method.age === DIGITAL_AGE ? product(run.life, EFFECT.digitalReading) : 1) *
+  (method.age === QUANTUM_AGE ? product(run.life, CHANDELIER_READING) : 1) *
   (method.age === undefined ? 1 + sum(run.life, EFFECT.firstAgeReading) : 1) *
   etherReading(run) *
   (1 + run.life.tasks.readingBonus) *
@@ -174,6 +204,7 @@ const progress = (run: Run, method: Method, found: number): void => {
   }
   if (method === SECRET && run.unlocked.has(SECRET.id)) run.life.secretFound = true;
   if (method === BIT && run.unlocked.has(BIT.id)) run.life.bitFound = true;
+  if (method === QUBIT && run.unlocked.has(QUBIT.id)) run.life.qubitFound = true;
 };
 
 /**
@@ -182,14 +213,25 @@ const progress = (run: Run, method: Method, found: number): void => {
  * (10 %, et les dents du bas) : en moyenne, une Connaissance ×(1 + bonus × part du temps où elle est là), un peu en
  * retard (négligé).
  */
+const mimicCache = starsCache();
+const MIMIC_EVERY_KEY = {};
+const MIMIC_GIVES_KEY = {};
 const mimicEvery = (life: Life): number =>
-  MIMIC_EVERY / Math.max(1, ...Object.entries(EFFECT.mimicComes).map(([id, v]) => (lit(life, id) ? v : 0)));
+  mimicCache(
+    life,
+    MIMIC_EVERY_KEY,
+    () => MIMIC_EVERY / Math.max(1, ...Object.entries(EFFECT.mimicComes).map(([id, v]) => (lit(life, id) ? v : 0))),
+  );
 const mimicStay = (): number => PLAYER.mimicMinutes * 60;
 /** Part du temps à l'écran où une Mimic est là. */
 const mimicPresence = (life: Life): number => (lit(life, S.mimic) ? mimicStay() / (mimicEvery(life) + mimicStay()) : 0);
 /** Ce qu'elle rend en plus de ce qu'elle a avalé. */
 const mimicGives = (life: Life): number =>
-  MIMIC_BONUS + Math.max(0, ...Object.entries(EFFECT.mimicGives).map(([id, v]) => (lit(life, id) ? v : 0)));
+  mimicCache(
+    life,
+    MIMIC_GIVES_KEY,
+    () => MIMIC_BONUS + Math.max(0, ...Object.entries(EFFECT.mimicGives).map(([id, v]) => (lit(life, id) ? v : 0))),
+  );
 /** La lecture des méthodes, en moyenne : −(ce qu'elle rendra en plus, 50 % au plus) pendant qu'elle est là. */
 const mimicSlow = (life: Life): number => 1 - mimicPresence(life) * Math.min(MIMIC_SLOW_CAP, mimicGives(life));
 
@@ -199,7 +241,9 @@ const find = (run: Run, turned: number, away = false): void => {
   const finds = turned * chance;
   // La Loupe : des connaissances garanties en plus, à chaque trouvaille.
   const found =
-    finds * (product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0));
+    finds *
+    (product(run.life, EFFECT.knowledge) * product(run.life, CHANDELIER_KNOWLEDGE) * (away ? 1 : letterAverage(run).knowledge) +
+      relicBonus(run.life, 'loupe', 0));
   const mimicBonus = away ? 0 : found * mimicGives(run.life) * mimicPresence(run.life);
   run.life.mimic.bonus += mimicBonus;
   const knowledge = (found + mimicBonus) * (1 + run.life.tasks.knowledgeBonus);
@@ -223,6 +267,7 @@ const find = (run: Run, turned: number, away = false): void => {
   const secrets = [
     ...(lit(run.life, S.cornee) && !run.unlocked.has(SECRET.id) ? [SECRET] : []),
     ...(bitSought(run.life) && !run.unlocked.has(BIT.id) ? [BIT] : []),
+    ...(qubitSought(run.life) && !run.unlocked.has(QUBIT.id) ? [QUBIT] : []),
   ];
   const part = towardTarget / ((current ? 1 : 0) + secrets.length || 1);
   if (current) progress(run, current, part);

@@ -11,7 +11,7 @@ import {
   type PageId,
 } from '../src/data/etheriumStars';
 import { DIGITAL_AGE } from '../src/data/tools';
-import { QUANTUM_AGE } from './methodes';
+import { CHANDELIER, QUANTUM_AGE, QUANTUM_HIVE } from './methodes';
 import { relicById } from '../src/data/relics';
 import { PLAYER } from './config';
 import { etherNeeded } from '../src/systems/etherium';
@@ -26,6 +26,8 @@ export interface Life {
   secretFound: boolean;
   /** Le Bit, une fois retrouvé (comme la Page Cornée). */
   bitFound: boolean;
+  /** Le Qubit, une fois retrouvé (essai). */
+  qubitFound: boolean;
   /** Secondes écoulées depuis le début, absences comprises. */
   clock: number;
   prestiges: number;
@@ -67,6 +69,7 @@ export const newLife = (): Life => ({
   stars: new Set(),
   secretFound: false,
   bitFound: false,
+  qubitFound: false,
   clock: 0,
   prestiges: 0,
   clicks: 0,
@@ -94,13 +97,32 @@ export const etherGain = (life: Life, runPages: number): number =>
 
 export const lit = (life: Life, id: string): boolean => life.stars.has(id);
 
+/**
+ * Ce qui ne dépend que des étoiles allumées et de la relique posée, gardé tant qu'elles ne changent pas (24/10 : ces calculs,
+ * refaits à chaque pas, prenaient près de la moitié du temps). Les étoiles ne font que s'ajouter : leur nombre suffit.
+ */
+export const starsCache = () => {
+  const memo = new WeakMap<object, { life: Life; size: number; relic: string | null; value: number }>();
+  return (life: Life, key: object, compute: () => number): number => {
+    const kept = memo.get(key);
+    if (kept && kept.life === life && kept.size === life.stars.size && kept.relic === life.relic) return kept.value;
+    const value = compute();
+    memo.set(key, { life, size: life.stars.size, relic: life.relic, value });
+    return value;
+  };
+};
+const productCache = starsCache();
+const sumCache = starsCache();
+
 /** Les facteurs des étoiles allumées, multipliés. */
 export const product = (life: Life, effect: Record<string, number>): number =>
-  Object.entries(effect).reduce((total, [id, factor]) => (life.stars.has(id) ? total * factor : total), 1);
+  productCache(life, effect, () =>
+    Object.entries(effect).reduce((total, [id, factor]) => (life.stars.has(id) ? total * factor : total), 1),
+  );
 
 /** Les valeurs des étoiles allumées, ajoutées. */
 export const sum = (life: Life, effect: Record<string, number>): number =>
-  Object.entries(effect).reduce((total, [id, value]) => (life.stars.has(id) ? total + value : total), 0);
+  sumCache(life, effect, () => Object.entries(effect).reduce((total, [id, value]) => (life.stars.has(id) ? total + value : total), 0));
 
 /**
  * Les étoiles qu'on peut allumer maintenant, comme en jeu : pas fermées, leur étoile d'avant est allumée (et l'Âge, pour
@@ -129,12 +151,19 @@ const open = (life: Life): Buyable[] => [
   ...(PLAYER.quantumAge > 0 && life.stars.has(DIGITAL_AGE) && !life.stars.has(QUANTUM_AGE)
     ? [{ id: QUANTUM_AGE, cost: PLAYER.quantumAge }]
     : []),
+  // L'alvéole Quantique de la Ruche (essai, --ruche-quantique), une fois l'Âge Quantique acheté.
+  ...(life.stars.has(QUANTUM_AGE) ? QUANTUM_HIVE.filter((star) => !life.stars.has(star.id) && life.stars.has(star.after)) : []),
+  // Le Lustre (essai, --lustre) : sa page, une fois l'Âge Quantique acheté.
+  ...(PLAYER.chandelier && life.stars.has(QUANTUM_AGE)
+    ? CHANDELIER.filter((star) => !life.stars.has(star.id) && (star.after === null || life.stars.has(star.after)))
+    : []),
 ];
 
 type Buyable = { id: string; cost: number };
 
-/** Son prix ; l'Âge Numérique, celui qu'essaie le simulateur s'il en donne un (--numerique). */
-const starCost = (star: Buyable): number => (star.id === DIGITAL_AGE && PLAYER.digitalAge > 0 ? PLAYER.digitalAge : star.cost);
+/** Son prix ; celui qu'essaie le simulateur s'il en donne un (--numerique, --etoile). */
+const starCost = (star: Buyable): number =>
+  star.id === DIGITAL_AGE && PLAYER.digitalAge > 0 ? PLAYER.digitalAge : (PLAYER.stars[star.id] ?? star.cost);
 
 /** Au réveil : le bot prend l'Âge Automatique d'abord, puis l'étoile la moins chère qu'il peut s'offrir, tant qu'il peut. */
 export const spendEther = (life: Life): string[] => {
@@ -171,8 +200,14 @@ export const takeRelics = (life: Life): void => {
 };
 
 /** Ce que donne la relique `id` si elle agit (au niveau de ses étoiles) ; sinon `none`. */
+const relicLevels = new Map<string, object>();
+const relicCache = starsCache();
 export const relicBonus = (life: Life, id: string, none: number): number => {
   if (life.relic !== id) return none;
+  if (!relicLevels.has(id)) relicLevels.set(id, {});
+  return relicCache(life, relicLevels.get(id)!, () => relicBonusNow(life, id));
+};
+const relicBonusNow = (life: Life, id: string): number => {
   const level = Math.max(
     0,
     ...Object.entries(EFFECT.relicLevel).map(([star, value]) =>
