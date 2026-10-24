@@ -1042,6 +1042,23 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 3",
+          "date": "24 October 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "A fourth Age, the Quantum Age, on the Etherium’s Staircase: five new methods, and a secret method to find.",
+                "One intuition per new method, and their seals.",
+                "A room for the Quantum Age.",
+                "Etherium: a new cell in the Hive, a new page among the methods, and the Gear can buy the new methods.",
+                "The Etherium’s contents now span three pages.",
+                "The Atlas’s last three stars cost more."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.12",
           "date": "23 October 2026",
           "sections": [

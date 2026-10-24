@@ -1051,6 +1051,23 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 3",
+          "date": "24 octobre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Un quatrième Âge, l’Âge Quantique, sur l’Escalier de l’Etherium : cinq nouvelles méthodes, et une méthode secrète à retrouver.",
+                "Une intuition par nouvelle méthode, et leurs sceaux.",
+                "Une salle pour l’Âge Quantique.",
+                "Etherium : une nouvelle alvéole dans la Ruche, une nouvelle page parmi les méthodes, et le Rouage peut acheter les nouvelles méthodes.",
+                "Le sommaire de l’Etherium tient sur trois pages.",
+                "Les trois dernières étoiles de l’Atlas coûtent plus cher."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 2.12",
           "date": "23 octobre 2026",
           "sections": [
