@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createInitialState, type GameState } from '../src/core/state';
 import { SENTENCES } from '../src/data/sentences';
-import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS, type ToolId } from '../src/data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE, TOOLS, type ToolId } from '../src/data/tools';
 import { pageOpen, starOpen } from '../src/systems/etherium';
 import { gearChoice, gearKnown, resetGearTurn, turnGear } from '../src/systems/gear';
 import { lotCost } from '../src/systems/tools';
@@ -40,7 +40,7 @@ const run = (state: GameState, seconds: number): number => {
 beforeEach(resetGearTurn);
 
 describe('Le Rouage', () => {
-  it('sa page attend l’Âge Numérique ; les dents des Âges suivants restent fermées', () => {
+  it('sa page attend l’Âge Numérique ; la dent de l’Âge Quantique attend son Âge, la suivante reste fermée', () => {
     const state = createInitialState('fr');
     state.ether = 100_000;
     state.etherReceived = 100_000;
@@ -52,6 +52,10 @@ describe('Le Rouage', () => {
     expect(starOpen(state, 'gear.c')).toBe(true);
     state.etherium.push('gear.c', 'gear.a2', 'gear.a3');
     expect(starOpen(state, 'gear.a4')).toBe(false);
+    state.etherium.push(QUANTUM_AGE);
+    expect(starOpen(state, 'gear.a4')).toBe(true);
+    state.etherium.push('gear.a4');
+    expect(starOpen(state, 'gear.a5')).toBe(false);
   });
 
   it('sans l’axe, il ne fait rien', () => {

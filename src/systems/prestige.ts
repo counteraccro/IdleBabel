@@ -7,6 +7,7 @@ import { resetGearTurn } from './gear';
 import { forgetPagesRest } from './production';
 import { forgetBoons } from './boons';
 import { giftsFilter, keepsFirstLevels, keptMethodSentences, openDoor, starAffordable } from './etherium';
+import { KEEPS } from '../data/etheriumStars';
 import { levelOf, maxLevel } from './technologies';
 import { sealEvent } from './seals';
 import { catchMimic } from './mimic';
@@ -101,9 +102,10 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   }
   state.wake = { pages: state.totalPagesRead, book: state.booksFinished + 1, clicks: state.stats.clicks, stars: state.etherium.length };
   const kept = keptMethodSentences(state);
-  // Une méthode secrète, elle, ne s'oublie jamais.
+  // Une méthode secrète, elle, ne s'oublie jamais, sauf celle qu'une étoile de la Ruche garde (le Qubit, memory.q0).
   for (const sentence of SENTENCES)
-    if (sentence.kind === 'method' && !sentence.secret && !kept.includes(sentence.id)) delete state.written[sentence.id];
+    if (sentence.kind === 'method' && (!sentence.secret || KEEPS[sentence.id]) && !kept.includes(sentence.id))
+      delete state.written[sentence.id];
   tasksAfterPrestige(state);
   state.etheriumInHand = true;
   if (counted) recordOnce(state, 'prestige', String(state.exiles), now);

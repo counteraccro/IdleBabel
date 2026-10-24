@@ -1,4 +1,4 @@
-import { AUTOMATIC_AGE, DIGITAL_AGE } from './tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE } from './tools';
 
 /**
  * Le Rouage (19/10, .ai/idee-rouage.md, maquette .ai/maquette-rouage.html, piste A) : une page de l'Etherium, ouverte par
@@ -13,6 +13,7 @@ export const GEAR_AGES: Readonly<Record<string, string>> = {
   'gear.c': '',
   'gear.a2': AUTOMATIC_AGE,
   'gear.a3': DIGITAL_AGE,
+  'gear.a4': QUANTUM_AGE,
 };
 
 /** Secondes entre deux achats, par étoile ; la plus courte allumée compte (0 : dès qu'il peut). */

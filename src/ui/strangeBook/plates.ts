@@ -11,6 +11,7 @@ import { tasksOpen } from '../../systems/tasks';
 import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
 import type { GameState } from '../../core/state';
 import { TOOLS, type ToolId } from '../../data/tools';
+import { OPEN_STARS } from '../../data/etheriumStars';
 import { LINE_SIZE, LINE_STEP, LINE_TOP, MORE_TOP, plateListPages } from './plateLines';
 
 /**
@@ -116,8 +117,11 @@ const sealText = (state: GameState, seal: SealDef): string => {
  * Le titre d'un sceau (strangeBook.sealTitles.<id>), seulement là où sa légende est une consigne : ni les méthodes,
  * ni les livres rares, ni les secrets, ni les séries à phrases, ni les reliques (validé le 21/10, .ai/titres-sceaux.md).
  */
+/** Le sceau de toutes les étoiles porte leur nombre (« starsLit-149 ») : son titre, lui, ne change pas avec lui. */
+const titleId = (id: string): string => (id === `starsLit-${OPEN_STARS.length}` ? 'starsLit-all' : id);
+
 export const sealTitle = (seal: SealDef): string | null => {
-  const key = `strangeBook.sealTitles.${seal.id}`;
+  const key = `strangeBook.sealTitles.${titleId(seal.id)}`;
   const title = t(key);
   return title === key ? null : title;
 };

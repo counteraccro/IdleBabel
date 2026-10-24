@@ -10,6 +10,7 @@ import { TECHNOLOGIES } from '../src/data/technologies';
 import { SEALS } from '../src/data/seals';
 import { starById } from '../src/data/etheriumStars';
 import { starOpen } from '../src/systems/etherium';
+import { gearAges } from '../src/systems/gear';
 import { effectText } from '../src/ui/library/lotteryText';
 import { LOCALES } from '../src/i18n/locales';
 import { setLocale } from '../src/i18n';
@@ -104,6 +105,45 @@ describe('L’Âge Quantique', () => {
     prestige(state);
     expect(state.etherium).toContain(QUANTUM_AGE);
     expect(toolUnlocked(state, 'microscope')).toBe(false);
+  });
+
+  it('l’alvéole Quantique de la Ruche attend l’Âge, puis suit l’Algorithme : le Qubit, puis une machine par étoile', () => {
+    const state = game(false);
+    for (const cell of ['m', 'a', 'n']) for (let i = 0; i < 6; i++) if (`${cell}${i}` !== 'a0') state.etherium.push(`memory.${cell}${i}`);
+    expect(starOpen(state, 'memory.q0')).toBe(false);
+    state.etherium.push(QUANTUM_AGE);
+    expect(starOpen(state, 'memory.q0')).toBe(true);
+    expect(starOpen(state, 'memory.q1')).toBe(false);
+    expect([0, 1, 2, 3, 4, 5].map((i) => starById(`memory.q${i}`)?.cost)).toEqual([1000, 1000, 2000, 4000, 8000, 16_000]);
+  });
+
+  it('le Qubit s’oublie au prestige, sauf avec la 1re étoile de l’alvéole ; une machine, avec la sienne', () => {
+    const state = game(true);
+    state.etherium.push('chandelier.chip', 'memory.q1');
+    writeAll(state, 'qubit');
+    writeAll(state, 'microscope');
+    writeAll(state, 'entangled');
+    state.totalPagesRead = 1e10;
+    prestige(state);
+    expect(toolUnlocked(state, 'qubit')).toBe(false);
+    expect(toolUnlocked(state, 'microscope')).toBe(true);
+    expect(toolUnlocked(state, 'entangled')).toBe(false);
+    state.etherium.push('memory.q0');
+    writeAll(state, 'qubit');
+    state.totalPagesRead = 2e10;
+    prestige(state);
+    expect(toolUnlocked(state, 'qubit')).toBe(true);
+  });
+
+  it('la dent du Rouage de l’Âge Quantique attend l’Âge, puis il achète aussi ses machines', () => {
+    const state = game(false);
+    state.etherium.push('gear.c', 'gear.a2', 'gear.a3');
+    expect(starOpen(state, 'gear.a4')).toBe(false);
+    state.etherium.push(QUANTUM_AGE);
+    expect(starOpen(state, 'gear.a4')).toBe(true);
+    expect(gearAges(state)).not.toContain(QUANTUM_AGE);
+    state.etherium.push('gear.a4');
+    expect(gearAges(state)).toContain(QUANTUM_AGE);
   });
 
   it('la Loterie accorde au pluriel : « Les Livres Intriqués arrêtés »', () => {

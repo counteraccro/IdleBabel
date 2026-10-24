@@ -465,6 +465,30 @@
       "n5": {
         "name": "Algorithme de Babel",
         "effect": "sa phrase reste au prestige"
+      },
+      "q0": {
+        "name": "Le Qubit",
+        "effect": "sa phrase reste au prestige"
+      },
+      "q1": {
+        "name": "Microscope à Effet Tunnel",
+        "effect": "sa phrase reste au prestige"
+      },
+      "q2": {
+        "name": "Livres Intriqués",
+        "effect": "sa phrase reste au prestige"
+      },
+      "q3": {
+        "name": "Téléportation Quantique",
+        "effect": "sa phrase reste au prestige"
+      },
+      "q4": {
+        "name": "Algorithme de Grover",
+        "effect": "sa phrase reste au prestige"
+      },
+      "q5": {
+        "name": "Ordinateur Quantique",
+        "effect": "sa phrase reste au prestige"
       }
     },
     "ages": {
@@ -793,8 +817,9 @@
         "effect": "le Rouage achète aussi ses méthodes"
       },
       "a4": {
-        "name": "Plus tard",
-        "note": "un Âge, plus tard"
+        "name": "La jante, en haut à gauche",
+        "value": "L’Âge Quantique :",
+        "effect": "le Rouage achète aussi ses méthodes"
       },
       "a5": {
         "name": "Plus tard",

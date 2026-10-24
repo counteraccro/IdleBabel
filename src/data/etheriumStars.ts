@@ -1,5 +1,5 @@
 import { ETHER_WEIGHT } from './etherium';
-import { AUTOMATIC_AGE, DIGITAL_AGE } from './tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE } from './tools';
 
 /**
  * L'Etherium en constellations (validé avec l'auteur le 06/10/2026, .ai/plan-etherium-constellations.md) : une figure
@@ -117,6 +117,14 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['memory', 'n3', 'n2', 400],
   ['memory', 'n4', 'n3', 800],
   ['memory', 'n5', 'n4', 1600],
+  // L'alvéole Quantique (24/10, essai 14 : ×10 l'alvéole Numérique) : le Qubit d'abord, dont elle garde la phrase au prestige
+  // (son souvenir flou vient de la puce du Lustre), puis ses cinq machines.
+  ['memory', 'q0', 'n5', 1000],
+  ['memory', 'q1', 'q0', 1000],
+  ['memory', 'q2', 'q1', 2000],
+  ['memory', 'q3', 'q2', 4000],
+  ['memory', 'q4', 'q3', 8000],
+  ['memory', 'q5', 'q4', 16_000],
   // L'Escalier : l'Âge Manuel est offert (il n'est pas une étoile à acheter), puis chaque Âge.
   ['ages', 'auto', null, 1],
   // L'Âge Numérique : 1 500 Éther (validé le 13/10, simulé : achetée vers la 17e partie).
@@ -132,7 +140,8 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['gear', 'c', null, 500],
   ['gear', 'a2', 'c', 1000],
   ['gear', 'a3', 'a2', 2500],
-  ['gear', 'a4', 'a3', 0],
+  // L'Âge Quantique (24/10, l'auteur : « le rouage doit pouvoir acheter les méthodes quantiques ») : prix proposé.
+  ['gear', 'a4', 'a3', 100_000],
   ['gear', 'a5', 'a4', 0],
   ['gear', 't1', 'c', 1000],
   ['gear', 't2', 't1', 2500],
@@ -257,8 +266,7 @@ export const CLOSED: ReadonlySet<string> = new Set([
   'memory.a0',
   // Les pointes de la Rose des vents qui n'ouvrent encore rien.
   ...['s', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
-  // Les dents du Rouage des Âges Dimensionnel et Infini, tant que ces Âges n'existent pas.
-  'gear.a4',
+  // La dent du Rouage de l'Âge Dimensionnel, tant que cet Âge n'existe pas.
   'gear.a5',
 ]);
 
@@ -278,14 +286,21 @@ export const afterLit = (star: Star, lit: (id: string) => boolean): boolean => {
 };
 
 /** Chaque alvéole de la Ruche d'après le Manuel ne s'ouvre qu'avec son Âge (l'étoile de l'Escalier), par sa lettre. */
-const CELL_AGES: Record<string, string> = { a: AUTOMATIC_AGE, n: DIGITAL_AGE };
+const CELL_AGES: Record<string, string> = { a: AUTOMATIC_AGE, n: DIGITAL_AGE, q: QUANTUM_AGE };
 /** La lettre de l'alvéole d'une étoile de la Ruche : « memory.n3 » → « n ». */
 const cellOf = (id: string): string => id.slice('memory.'.length, 'memory.'.length + 1);
 
-/** Les étoiles des alvéoles Automatique et Numérique, et l'Âge que chacune attend. */
-export const NEEDS_AGE: ReadonlyMap<string, string> = new Map(
-  STARS.filter((star) => star.page === 'memory' && cellOf(star.id) in CELL_AGES).map((star) => [star.id, CELL_AGES[cellOf(star.id)]]),
-);
+/**
+ * Les étoiles des alvéoles Automatique, Numérique et Quantique, et la dent du Rouage de l'Âge Quantique (sa page s'ouvre avec
+ * le Numérique) : l'Âge que chacune attend.
+ */
+export const NEEDS_AGE: ReadonlyMap<string, string> = new Map([
+  ...STARS.filter((star) => star.page === 'memory' && cellOf(star.id) in CELL_AGES).map((star): [string, string] => [
+    star.id,
+    CELL_AGES[cellOf(star.id)],
+  ]),
+  ['gear.a4', QUANTUM_AGE],
+]);
 
 /**
  * Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration ; les
@@ -450,7 +465,7 @@ export const S = {
 /** Les deux étoiles de chaque relique, sur la page « Les reliques » (leur lettre : la loupe, l'astrolabe, le sablier). */
 export const RELIC_BRANCH: Record<string, string> = { loupe: 'l', astrolabe: 'a', hourglass: 'h', pencil: 'p', token: 't' };
 
-/** Mémoire des méthodes : l'étoile qui garde la phrase de chaque méthode (Manuel, Automatique, puis Numérique). */
+/** Mémoire des méthodes : l'étoile qui garde la phrase de chaque méthode (Manuel, Automatique, Numérique, puis Quantique). */
 export const KEEPS: Record<string, string> = {
   diagonal: 'memory.m1',
   finger: 'memory.m2',
@@ -467,4 +482,11 @@ export const KEEPS: Record<string, string> = {
   search: 'memory.n3',
   crawler: 'memory.n4',
   algorithm: 'memory.n5',
+  // Le Qubit, méthode secrète, oublié au prestige sans elle (option A, 24/10) ; la Page Cornée et le Bit ne s'oublient jamais.
+  qubit: 'memory.q0',
+  microscope: 'memory.q1',
+  entangled: 'memory.q2',
+  teleportation: 'memory.q3',
+  grover: 'memory.q4',
+  quantumComputer: 'memory.q5',
 };

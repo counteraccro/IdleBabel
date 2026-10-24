@@ -195,9 +195,11 @@ const ATLAS_BODY: readonly (readonly (readonly [number, number])[])[] = [
   ],
 ];
 
-const MANUAL_CELL = [120, 470] as const;
-const AUTO_CELL = [320, 470] as const;
-const DIGITAL_CELL = [520, 470] as const;
+// Trois alvéoles en ligne, la Quantique dessous, entre les deux dernières (24/10).
+const MANUAL_CELL = [120, 385] as const;
+const AUTO_CELL = [320, 385] as const;
+const DIGITAL_CELL = [520, 385] as const;
+const QUANTUM_CELL = [420, 580] as const;
 const CELL = 80;
 
 export const FIGURES: Record<PageId, Figure> = {
@@ -305,11 +307,13 @@ export const FIGURES: Record<PageId, Figure> = {
       ...Object.fromEntries([90, 150, 210, 270, 330, 30].map((deg, i) => [`m${i}`, ring(MANUAL_CELL, CELL, deg)])),
       ...Object.fromEntries([150, 210, 270, 330, 30, 90].map((deg, i) => [`a${i}`, ring(AUTO_CELL, CELL, deg)])),
       ...Object.fromEntries([150, 210, 270, 330, 30, 90].map((deg, i) => [`n${i}`, ring(DIGITAL_CELL, CELL, deg)])),
+      ...Object.fromEntries([270, 330, 30, 90, 150, 210].map((deg, i) => [`q${i}`, ring(QUANTUM_CELL, CELL, deg)])),
     },
     deco: [
       ['m5', 'm0'],
       ['a5', 'a0'],
       ['n5', 'n0'],
+      ['q5', 'q0'],
     ],
   },
   // Du pied à la salle qu'il porte, chaque étoile allège le poids de la Bibliothèque.

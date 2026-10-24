@@ -465,6 +465,30 @@
       "n5": {
         "name": "Babel Algorithm",
         "effect": "its sentence stays through prestige"
+      },
+      "q0": {
+        "name": "The Qubit",
+        "effect": "its sentence stays through prestige"
+      },
+      "q1": {
+        "name": "Scanning Tunnelling Microscope",
+        "effect": "its sentence stays through prestige"
+      },
+      "q2": {
+        "name": "Entangled Books",
+        "effect": "its sentence stays through prestige"
+      },
+      "q3": {
+        "name": "Quantum Teleportation",
+        "effect": "its sentence stays through prestige"
+      },
+      "q4": {
+        "name": "Grover's Algorithm",
+        "effect": "its sentence stays through prestige"
+      },
+      "q5": {
+        "name": "Quantum Computer",
+        "effect": "its sentence stays through prestige"
       }
     },
     "ages": {
@@ -793,8 +817,9 @@
         "effect": "the Gear buys its methods too"
       },
       "a4": {
-        "name": "Later",
-        "note": "an Age, later"
+        "name": "The rim, upper left",
+        "value": "The Quantum Age:",
+        "effect": "the Gear buys its methods too"
       },
       "a5": {
         "name": "Later",
