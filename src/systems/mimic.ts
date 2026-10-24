@@ -5,6 +5,7 @@ import { hookAllows, runHooks } from '../mods/hooks';
 import { modded } from '../mods/quantities';
 import { goldenEatsKnowledge, goldenHere } from './goldenMimic';
 import { tokenChance } from './lotteryStars';
+import { relicMimicComes } from './relics';
 import type { GameState } from '../core/state';
 
 /**
@@ -15,8 +16,9 @@ import type { GameState } from '../core/state';
 
 export const mimicHere = (state: GameState): boolean => state.mimic.at !== null;
 
-/** Secondes, en moyenne, entre deux Mimics (les dents du haut les rapprochent). */
-export const mimicEvery = (state: GameState): number => (MIMIC_EVERY / mimicComesFactor(state)) * modded('mimicEvery');
+/** Secondes, en moyenne, entre deux Mimics (les dents du haut et la Boussole les rapprochent). */
+export const mimicEvery = (state: GameState): number =>
+  (MIMIC_EVERY / (mimicComesFactor(state) * relicMimicComes(state))) * modded('mimicEvery');
 
 /** Ce qu'elle rend en plus de ce qu'elle a avalé : 10 %, et les dents du bas. */
 export const mimicBonusShare = (state: GameState): number => Math.max(0, MIMIC_BONUS + mimicGivesBonus(state) + modded('mimicGives'));

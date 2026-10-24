@@ -85,6 +85,8 @@ export const relicLetterWait = (state: GameState): number => 1 / (1 + activeBonu
 export const relicReading = (state: GameState): number => 1 + activeBonus(state, 'hourglass', 0);
 /** Le Crayon : ×ce que demande une nouvelle tâche du jour (−25 % : ×0,75). */
 export const relicTaskLength = (state: GameState): number => 1 - activeBonus(state, 'pencil', 0);
+/** La Boussole : ×apparitions de la Mimic (+50 % : l'attente ÷ 1,5) ; elle ne touche pas à ce qu'elle rend. */
+export const relicMimicComes = (state: GameState): number => 1 + activeBonus(state, 'compass', 0);
 
 /** Débogage : remettre le délai à zéro. */
 export const unlockRelicChange = (state: GameState): void => {

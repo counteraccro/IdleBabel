@@ -1051,6 +1051,7 @@
                 "A fourth Age, the Quantum Age, on the Etherium’s Staircase: five new methods, and a secret method to find.",
                 "One intuition per new method, and their seals.",
                 "A room for the Quantum Age.",
+                "A relic in the Quantum Age room.",
                 "Etherium: a new cell in the Hive, a new page among the methods, and the Gear can buy the new methods.",
                 "The Etherium’s contents now span three pages.",
                 "The Atlas’s last three stars cost more."
@@ -3653,6 +3654,14 @@
             "The Age also received its page in the Etherium: “Quantum”, a golden chandelier traced in stars, the quantum computer of the photographs, hanging upside down. Its cables make the machines read faster, its plates bring more Knowledge; the chip, at the very bottom, gives back the memory of the Qubit. With it, the Etherium’s contents grew to three pages, followed by a blank one: each figure keeps its side of the book."
           ]
         },
+        "relicCompass": {
+          "head": "The Compass",
+          "text": [
+            "The room of the Quantum Age was empty: the Mimic had no place there, no relic was waiting in it. It needed one.",
+            "Three objects were drawn: a pocket compass, a ship’s compass in its wooden box, a bare disc with two needles. We kept the pocket compass. Its needle doubles: one sharp point, the other like a ghost image laid over it. In a room where it is day and night at once, it had to be an object that hesitates.",
+            "It waits on the threshold of the left arch, between the parquet and the sand. In the showcase, it stands up like an open pocket watch, above the Token. Set out, it makes the Mimic come more often."
+          ]
+        },
         "thisBook": {
           "head": "This book",
           "text": [
@@ -3752,6 +3761,8 @@
         "mimic-side-b": "Half off the edge",
         "token-b": "The pierced token",
         "token-c": "The notched token",
+        "compass-b": "The ship’s compass",
+        "compass-c": "The two needles",
         "top-ledge": "The ledge",
         "top-spines": "Spines out, between two bookends",
         "top-sheet": "On the sheet",
@@ -3777,6 +3788,7 @@
         "sceneNotebook": "The setting in the notebook",
         "mimic": "The Mimic",
         "relicToken": "The Token",
+        "relicCompass": "The Compass",
         "topBar": "The top of the screen",
         "otherShelf": "The other bookcase"
       }

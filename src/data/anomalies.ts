@@ -148,6 +148,8 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintRelicLoupe',
     'hintRelicAstrolabe',
     'hintRelicHourglass',
+    // La Boussole (24/10), dans la salle jour-nuit.
+    'hintRelicCompass',
   ],
 };
 

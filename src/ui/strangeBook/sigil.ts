@@ -45,6 +45,12 @@ const RELIC_SIGILS: Record<string, Shape[]> = {
     { kind: 'circle', cx: 50, cy: 50, r: 13 },
     { kind: 'path', d: 'M50 41.5 L57.4 45.8 L57.4 54.2 L50 58.5 L42.6 54.2 L42.6 45.8 Z' },
   ],
+  // La Boussole (24/10, maquette .ai/maquette-relique-boussole.html) : le cadran, l'aiguille dédoublée.
+  relicCompass: [
+    { kind: 'circle', cx: 50, cy: 50, r: 16 },
+    { kind: 'path', d: 'M50 50 L60.5 38 M50 50 L44.6 62.2' },
+    { kind: 'path', d: 'M50 50 L37 43.5 M50 50 L58 57' },
+  ],
   relicPencil: [
     { kind: 'path', d: 'M30.4 69.6 L38.8 52.8 L61.2 30.4 L69.6 38.8 L47.2 61.2 Z' },
     { kind: 'path', d: 'M38.8 52.8 L47.2 61.2' },

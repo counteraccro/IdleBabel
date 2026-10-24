@@ -20,6 +20,7 @@ const TRIGGERS: Record<LoreId, string> = {
   relicHourglass: 'le Sablier trouvé sous la verrière (relu sur son sceau)',
   relicPencil: 'le Crayon, gagné par « Fais 30 tâches du jour » (relu sur son sceau)',
   relicToken: 'le Jeton, donné par la Loterie (4 · 1 · 0 ; relu sur son sceau)',
+  relicCompass: 'la Boussole trouvée dans la salle jour-nuit (relu sur son sceau)',
 };
 
 const status = (state: GameState, id: LoreId): string => {

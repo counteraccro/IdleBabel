@@ -14,6 +14,9 @@ export const RELIC_ICONS: Record<RelicId, string> = {
   // Le Jeton (18/10) : un cercle, son listel, l'hexagone au milieu.
   token:
     '<circle cx="10" cy="10" r="6.2" fill="none" stroke="#e8c776" stroke-width="1.3"/><circle cx="10" cy="10" r="4.6" fill="none" stroke="#e8c776" stroke-width="0.7"/><path d="M10 7L12.6 8.5V11.5L10 13L7.4 11.5V8.5Z" fill="none" stroke="#e8c776" stroke-width="0.9" stroke-linejoin="round"/>',
+  // La Boussole (24/10) : le cadran, l'aiguille nette et celle qui se dédouble, plus pâle.
+  compass:
+    '<circle cx="10" cy="10" r="5.7" fill="none" stroke="#e8c776" stroke-width="1.3"/><path d="M10 10L13.75 5.7M10 10L8.07 14.36" stroke="#e8c776" stroke-width="1.3" stroke-linecap="round"/><path d="M10 10L5.36 7.68M10 10L12.86 12.5" stroke="#e8c776" stroke-width="1" stroke-linecap="round" opacity="0.5"/>',
   pencil:
     '<path d="M3 17L6 11L14 3L17 6L9 14Z M6 11L9 14" fill="none" stroke="#e8c776" stroke-width="1.3" stroke-linejoin="round"/><path d="M3 17L4.2 14.6L5.4 15.8Z" fill="#e8c776"/>',
 };

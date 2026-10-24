@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { compassModel } from './compassModel';
 import type { RelicId, RelicPose } from '../../data/relics';
 
 /**
@@ -409,9 +410,13 @@ const settle = (inner: THREE.Object3D): THREE.Group => {
   return group;
 };
 
-/** Le modèle d'une relique, posé (y = 0) et centré ; `pose` pour la loupe et l'astrolabe. */
+/**
+ * Le modèle d'une relique, posé (y = 0) et centré ; `pose` pour la loupe et l'astrolabe. La Boussole, centrée sur son
+ * boîtier comme dans la maquette (son couvercle ouvert dépasse derrière).
+ */
 export const relicModel = (id: RelicId, pose: RelicPose, envMap: THREE.Texture | null, envMapIntensity = 0.5): THREE.Group => {
   const look = { envMap, envMapIntensity };
+  if (id === 'compass') return compassModel(envMap, envMapIntensity);
   if (id === 'loupe') return settle(pose === 'lean' ? leaningLoupe(look) : loupe(look));
   if (id === 'astrolabe') return settle(astrolabe(look, pose));
   if (id === 'pencil') return settle(pencil());

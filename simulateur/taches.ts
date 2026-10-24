@@ -1,6 +1,7 @@
 import { CLOSED, STARS, neededFor, starById, type PageId, type Star } from '../src/data/etheriumStars';
 import { TASK_STAR } from '../src/data/tasks';
-import { DIGITAL_AGE } from '../src/data/tools';
+import { DIGITAL_AGE, QUANTUM_AGE } from '../src/data/tools';
+import { ROOM_RELICS } from '../src/data/relics';
 import { PAGES_PER_BOOK } from '../src/systems/books';
 import { LOTTERY_STARS } from '../src/data/lottery';
 import { EFFECT } from '../src/data/etheriumStars';
@@ -118,11 +119,15 @@ export const ONCE_TASKS: readonly OnceTask[] = [
   { n: 10, label: 'Nourris-le 10 fois', star: 'explore.n', goal: 10, count: (run) => run.life.prestiges, reward: { tokens: 25 } },
   {
     n: 11,
-    label: 'Les trois reliques',
+    label: 'Les quatre reliques',
     star: 'explore.n',
-    goal: 3,
+    goal: ROOM_RELICS.length,
     before: true,
-    count: (run) => run.life.relics.size + (digitalLit(run.life) ? 1 : 0),
+    // La Loupe et l'Astrolabe trouvées par le bot ; le Sablier et la Boussole, avec leur Âge (le bot ne les ramasse pas).
+    count: (run) =>
+      ROOM_RELICS.filter(({ id }) => run.life.relics.has(id)).length +
+      (digitalLit(run.life) ? 1 : 0) +
+      (run.life.stars.has(QUANTUM_AGE) ? 1 : 0),
     reward: { knowledge: 48 },
   },
   {

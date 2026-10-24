@@ -80,6 +80,7 @@ export const DRAFT_GROUPS = {
   sceneNotebook: ['scene-notebook-a', 'scene-notebook-c'],
   mimic: ['mimic-eyes-a', 'mimic-eyes-b', 'mimic-side-b'],
   relicToken: ['token-b', 'token-c'],
+  relicCompass: ['compass-b', 'compass-c'],
   topBar: ['top-ledge', 'top-spines', 'top-sheet'],
   otherShelf: ['other-shelf-pendant', 'other-shelf-column'],
 };
@@ -181,6 +182,7 @@ export const STORY: StoryChapter[] = [
       { key: 'topBar', drafts: ['topBar'] },
       { key: 'otherShelf', drafts: ['otherShelf'] },
       { key: 'quantumAge' },
+      { key: 'relicCompass', drafts: ['relicCompass'] },
       // Toujours la dernière partie du livre : il s'écrit encore.
       { key: 'thisBook' },
     ],

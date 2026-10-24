@@ -16,7 +16,7 @@ import type { GameState, OnceTask } from '../core/state';
  * Les tâches « une seule fois » (data/tasks.ts) : hors du quota du jour, toutes en même temps. Chacune reste en lettres de
  * Babel tant que le joueur n'a pas rencontré ce dont elle parle ; écrite en clair, elle apparaît, et son compte commence
  * là, jamais avant (l'auteur, 17/10 : « pas avant ») : ce qui était déjà fait ne compte pas, les séries et l'absence
- * repartent de zéro. Sauf les trois reliques et les livres qui se jouent, et le coloriage (ceux d'avant comptent).
+ * repartent de zéro. Sauf les reliques des salles et les livres qui se jouent, et le coloriage (ceux d'avant comptent).
  */
 
 const lit = (state: GameState, id: string): boolean => state.etherium.includes(id);

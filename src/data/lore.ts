@@ -38,6 +38,8 @@ export const LORE = [
   'relicPencil',
   /** Le Jeton, donné par la Loterie (18/10). */
   'relicToken',
+  /** La Boussole, trouvée dans la salle jour-nuit (24/10). */
+  'relicCompass',
 ] as const;
 
 export type LoreId = (typeof LORE)[number];

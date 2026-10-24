@@ -281,14 +281,16 @@
       "astrolabe": "The Astrolabe",
       "hourglass": "The Hourglass",
       "pencil": "The Pencil",
-      "token": "The Token"
+      "token": "The Token",
+      "compass": "The Compass"
     },
     "put": {
       "loupe": "Set out the magnifying glass?",
       "astrolabe": "Set out the astrolabe?",
       "hourglass": "Set out the hourglass?",
       "pencil": "Set out the pencil?",
-      "token": "Set out the token?"
+      "token": "Set out the token?",
+      "compass": "Set out the compass?"
     },
     "bonus": {
       "loupe": "+{n} guaranteed Knowledge per find",
@@ -296,7 +298,8 @@
       "astrolabe": "letter +{n}%",
       "hourglass": "pages read +{n}%",
       "pencil": "tasks of the day −{n}%",
-      "token": "{n} free tokens every day"
+      "token": "{n} free tokens every day",
+      "compass": "the Mimic comes {n}% more often"
     },
     "tokensLeft": "{left} of today’s {n} tokens left",
     "acts": "at work",

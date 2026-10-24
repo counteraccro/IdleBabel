@@ -115,6 +115,16 @@
     "text": ["A token that fits no slot.", "He turned it between his fingers, every day,", "and every day the machine gave him others."],
     "button": "Keep it"
   },
+  "relicCompass": {
+    "title": "The Compass",
+    "text": [
+      "A compass whose needle cannot make up its mind.",
+      "It points two ways at once.",
+      "He took them both.",
+      "One of the two led me here."
+    ],
+    "button": "Keep it"
+  },
   "away": {
     "title": "A dream",
     "text": [

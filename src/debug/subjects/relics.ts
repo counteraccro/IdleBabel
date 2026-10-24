@@ -13,6 +13,7 @@ const NAMES: Record<string, string> = {
   hourglass: 'Le Sablier (verrière)',
   pencil: 'Le Crayon (tâche 15)',
   token: 'Le Jeton (Loterie, 4 · 1 · 0)',
+  compass: 'La Boussole (jour-nuit)',
 };
 
 /** Les reliques (systems/relics.ts) : les faire apparaître, les ranger dans la vitrine, remettre le délai à zéro (validé le 11/10). */

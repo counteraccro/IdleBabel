@@ -147,6 +147,14 @@ const PENCIL_TIP = [570, 575] as const;
 const PENCIL_CONE = 0.78;
 /** Le Jeton (18/10), en bas à gauche du Cabinet : le centre de son cercle. */
 const TOKEN = [170, 640] as const;
+/** La Boussole (24/10, .ai/maquette-relique-boussole.html), au bord gauche du Cabinet : son cadran et sa lunette. */
+const COMPASS = [96, 512] as const;
+const COMPASS_R = 40;
+/** La pointe d'une aiguille de la Boussole, à `deg` degrés (sa queue : k = 0,5 du côté opposé). */
+const compassNeedle = (deg: number, k = 1): [number, number] => {
+  const a = (deg * Math.PI) / 180;
+  return [Math.round(COMPASS[0] + COMPASS_R * 0.86 * k * Math.cos(a)), Math.round(COMPASS[1] + COMPASS_R * 0.86 * k * Math.sin(a))];
+};
 /** Le crayon en lignes brisées : le corps et sa pointe, la base de la pointe, la mine. */
 const pencilSketch = (): (readonly [number, number])[][] => {
   const [ex, ey] = PENCIL_END;
@@ -627,9 +635,12 @@ export const FIGURES: Record<PageId, Figure> = {
       // Le Jeton (18/10, .ai/maquette-relique-jeton.html) : ses deux étoiles dans son cercle, en bas à gauche, sous la loupe.
       t1: [TOKEN[0] - 34, TOKEN[1]],
       t2: [TOKEN[0] + 34, TOKEN[1]],
+      // La Boussole : une étoile au bout de chaque aiguille (l'aiguille qui se dédouble).
+      c1: compassNeedle(-60),
+      c2: compassNeedle(80),
     },
     deco: [],
-    given: { id: 'hub', opens: ['l1', 'a1', 'h1', 'd', 'p1', 't1'] },
+    given: { id: 'hub', opens: ['l1', 'a1', 'h1', 'd', 'p1', 't1', 'c1'] },
     sketch: {
       lines: [
         // Le manche de la loupe ; l'alidade de l'astrolabe ; les plateaux du sablier, et ses deux bulbes de chaque côté.
@@ -652,6 +663,9 @@ export const FIGURES: Record<PageId, Figure> = {
         glassSide(-1),
         glassSide(1),
         ...pencilSketch(),
+        // Les deux aiguilles de la Boussole : du pivot à leur étoile, et leur queue de l'autre côté.
+        [compassNeedle(120, 0.5), compassNeedle(-60)],
+        [compassNeedle(-100, 0.5), compassNeedle(80)],
       ],
       rings: [
         [160, 360, 54],
@@ -661,6 +675,9 @@ export const FIGURES: Record<PageId, Figure> = {
         // Le Jeton et son listel.
         [TOKEN[0], TOKEN[1], 58],
         [TOKEN[0], TOKEN[1], 48],
+        // La Boussole : sa lunette et son cadran.
+        [COMPASS[0], COMPASS[1], COMPASS_R + 8],
+        [COMPASS[0], COMPASS[1], COMPASS_R],
       ],
     },
   },

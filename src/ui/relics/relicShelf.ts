@@ -6,6 +6,7 @@ import { RELICS, type RelicId } from '../../data/relics';
 import { relicFound, relicLockHours, relicWait, setRelic } from '../../systems/relics';
 import { relicModel } from './relicModels';
 import { tokenOnEasel } from './tokenModel';
+import { COMPASS_SET_BACK, compassOnShelf } from './compassModel';
 import { relicBonusText, relicName, waitText } from './relicText';
 import type { CellLights } from '../library/cellLights';
 import type { GameState } from '../../core/state';
@@ -23,7 +24,7 @@ const SHELF_SCALE = 2.4;
 const LOUPE_SCALE = 0.88;
 /** Un peu en avant du milieu de la case, tournée vers le lecteur comme dans la maquette. */
 const SET_BACK = 0.42;
-const YAW: Record<RelicId, number> = { loupe: 0.75, astrolabe: 0.12, hourglass: 0.3, pencil: 0.35, token: -0.18 };
+const YAW: Record<RelicId, number> = { loupe: 0.75, astrolabe: 0.12, hourglass: 0.3, pencil: 0.35, token: -0.18, compass: -0.15 };
 /** Le Crayon, un bout de 8 cm, presque rien : plus grand, pour qu'on le voie dans sa case (les deux tiers de sa largeur). */
 const PENCIL_SCALE = 2.2;
 
@@ -51,16 +52,18 @@ export const createRelicShelf = (
   for (const relic of RELICS) {
     if (!relicFound(state, relic.id)) continue;
     const cell = cells[relic.cell];
-    // Le Jeton, sur son chevalet, déjà à l'échelle des livres (ui/relics/tokenModel.ts).
+    // Le Jeton, sur son chevalet, et la Boussole, dressée, déjà à l'échelle des livres (tokenModel.ts, compassModel.ts).
     const model =
       relic.id === 'token'
         ? tokenOnEasel(envMap)
-        : relicModel(relic.id, relic.id === 'hourglass' || relic.id === 'pencil' ? 'flat' : 'lean', envMap, 0.1);
-    if (relic.id !== 'token')
+        : relic.id === 'compass'
+          ? compassOnShelf(envMap, SHELF_SCALE)
+          : relicModel(relic.id, relic.id === 'hourglass' || relic.id === 'pencil' ? 'flat' : 'lean', envMap, 0.1);
+    if (relic.id !== 'token' && relic.id !== 'compass')
       model.scale.setScalar(SHELF_SCALE * (relic.id === 'loupe' ? LOUPE_SCALE : relic.id === 'pencil' ? PENCIL_SCALE : 1));
     const holder = new THREE.Group();
     holder.add(model);
-    holder.position.set(cell.left + cell.width / 2, cell.floor, FRONT - SET_BACK);
+    holder.position.set(cell.left + cell.width / 2, cell.floor, FRONT - (relic.id === 'compass' ? COMPASS_SET_BACK : SET_BACK));
     holder.rotation.y = YAW[relic.id];
     holder.traverse((object) => {
       if (object instanceof THREE.Mesh) object.castShadow = object.receiveShadow = true;

@@ -751,6 +751,16 @@
         "name": "Token 2",
         "value": "The Token:",
         "effect": "10 tokens a day"
+      },
+      "c1": {
+        "name": "Compass 1",
+        "value": "The Compass:",
+        "effect": "the Mimic comes 75% more often (instead of 50%)"
+      },
+      "c2": {
+        "name": "Compass 2",
+        "value": "The Compass:",
+        "effect": "the Mimic comes twice as often"
       }
     },
     "lottery": {

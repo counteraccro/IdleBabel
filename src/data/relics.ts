@@ -7,7 +7,7 @@ import type { SceneId } from '../scene/scenes';
  * dans sa salle. Un clic : son récit, son sceau, et elle rejoint sa petite case de la vitrine, pour toujours. Une seule
  * agit à la fois ; en changer la fait agir tout de suite, puis plus de changement pendant un temps.
  */
-export const RELIC_IDS = ['loupe', 'astrolabe', 'hourglass', 'pencil', 'token'] as const;
+export const RELIC_IDS = ['loupe', 'astrolabe', 'hourglass', 'pencil', 'token', 'compass'] as const;
 export type RelicId = (typeof RELIC_IDS)[number];
 
 /** Comment l'objet est posé : couché à plat, ou appuyé (debout, un peu penché en arrière). */
@@ -17,12 +17,12 @@ export interface RelicDef {
   id: RelicId;
   /** Sa salle (le fond où elle est posée) ; aucune pour le Crayon (la tâche 15, data/tasks.ts) ni le Jeton (la Loterie), qui se gagnent. */
   room?: SceneId;
-  /** Sa phrase-indice (famille « hints » du livre blanc) ; aucune pour le Crayon. */
+  /** Sa phrase-indice (famille « hints » du livre blanc) ; aucune pour le Crayon ni le Jeton. */
   hint?: string;
   /** Son sceau (le même nom que l'indice, sans « hint » : data/anomalies.ts, hintSeal). */
   seal: string;
   /** Son moment de lore : le récit, à la trouvaille (data/lore.ts). */
-  lore: 'relicLoupe' | 'relicAstrolabe' | 'relicHourglass' | 'relicPencil' | 'relicToken';
+  lore: 'relicLoupe' | 'relicAstrolabe' | 'relicHourglass' | 'relicPencil' | 'relicToken' | 'relicCompass';
   /** Sa petite case de la vitrine (ui/library/bookcase3d.ts : les cases basses et étroites). */
   cell: number;
   /**
@@ -96,9 +96,23 @@ export const RELICS: readonly RelicDef[] = [
     // Jetons offerts chaque jour (systems/tokenRelic.ts).
     bonus: [5, 7, 10],
   },
+  // La Boussole (24/10, .ai/maquette-relique-boussole.html, piste A « De poche ») : la relique de la salle jour-nuit
+  // (Âge Quantique), dans la case basse en haut de la colonne du milieu, au-dessus du Jeton.
+  {
+    id: 'compass',
+    room: 'jour-nuit',
+    hint: 'hintRelicCompass',
+    seal: 'relicCompass',
+    lore: 'relicCompass',
+    cell: 15,
+    // Le seuil de l'arche de gauche, entre le parquet et le sable (x 250, y 1478, au sol), couchée.
+    spot: { X: -3.146, Y: 0, Z: 4.313, yaw: -20, pose: 'flat' },
+    // + part d'apparitions de la Mimic (×1,5 : elle vient 50 % plus souvent).
+    bonus: [0.5, 0.75, 1],
+  },
 ];
 
-/** Les reliques qui se trouvent dans une salle (la Loupe, l'Astrolabe, le Sablier) : « Trouve les trois reliques ». */
+/** Les reliques qui se trouvent dans une salle (la Loupe, l'Astrolabe, le Sablier, la Boussole) : « Trouve les quatre reliques ». */
 export type RoomRelic = RelicDef & Required<Pick<RelicDef, 'room' | 'hint' | 'spot'>>;
 export const ROOM_RELICS: readonly RoomRelic[] = RELICS.filter((relic): relic is RoomRelic => relic.room !== undefined);
 

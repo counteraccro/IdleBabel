@@ -751,6 +751,16 @@
         "name": "Jeton 2",
         "value": "Le Jeton :",
         "effect": "10 jetons par jour"
+      },
+      "c1": {
+        "name": "Boussole 1",
+        "value": "La Boussole :",
+        "effect": "la Mimic vient 75 % plus souvent (au lieu de 50 %)"
+      },
+      "c2": {
+        "name": "Boussole 2",
+        "value": "La Boussole :",
+        "effect": "la Mimic vient deux fois plus souvent"
       }
     },
     "lottery": {

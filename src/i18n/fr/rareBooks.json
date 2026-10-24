@@ -1060,6 +1060,7 @@
                 "Un quatrième Âge, l’Âge Quantique, sur l’Escalier de l’Etherium : cinq nouvelles méthodes, et une méthode secrète à retrouver.",
                 "Une intuition par nouvelle méthode, et leurs sceaux.",
                 "Une salle pour l’Âge Quantique.",
+                "Une relique dans la salle de l’Âge Quantique.",
                 "Etherium : une nouvelle alvéole dans la Ruche, une nouvelle page parmi les méthodes, et le Rouage peut acheter les nouvelles méthodes.",
                 "Le sommaire de l’Etherium tient sur trois pages.",
                 "Les trois dernières étoiles de l’Atlas coûtent plus cher."
@@ -3658,6 +3659,14 @@
             "L’Âge a aussi reçu sa page de l’Etherium : « Quantique », un lustre d’or tracé en étoiles, l’ordinateur quantique des photos, suspendu la tête en bas. Ses câbles font lire les machines plus vite, ses plateaux rapportent plus de Connaissance ; la puce, tout en bas, rend le souvenir du Qubit. Avec lui, le sommaire de l’Etherium est passé à trois pages, suivies d’une page blanche : chaque figure garde son côté du livre."
           ]
         },
+        "relicCompass": {
+          "head": "La Boussole",
+          "text": [
+            "La salle de l’Âge Quantique était vide : la Mimic n’y avait pas de place, aucune relique ne l’attendait. Il lui en fallait une.",
+            "Trois objets ont été dessinés : une boussole de poche, un compas de marine dans sa boîte de bois, un disque nu à deux aiguilles. On a gardé la boussole de poche. Son aiguille se dédouble : une pointe nette, l’autre comme une image en surimpression. Dans une salle où il fait jour et nuit à la fois, il fallait un objet qui hésite.",
+            "Elle attend sur le seuil de l’arche de gauche, entre le parquet et le sable. Dans la vitrine, elle est dressée comme une montre de poche ouverte, au-dessus du Jeton. Posée, elle fait venir la Mimic plus souvent."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [
@@ -3757,6 +3766,8 @@
         "mimic-side-b": "À moitié sortie",
         "token-b": "Le jeton percé",
         "token-c": "Le jeton aux encoches",
+        "compass-b": "Le compas de marine",
+        "compass-c": "Les deux aiguilles",
         "top-ledge": "Le rebord",
         "top-spines": "De dos, entre deux serre-livres",
         "top-sheet": "Sur la feuille",
@@ -3782,6 +3793,7 @@
         "sceneNotebook": "Le décor dans le cahier",
         "mimic": "La Mimic",
         "relicToken": "Le Jeton",
+        "relicCompass": "La Boussole",
         "topBar": "Le haut de l’écran",
         "otherShelf": "L’autre bibliothèque"
       }

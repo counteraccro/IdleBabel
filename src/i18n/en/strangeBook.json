@@ -50,7 +50,8 @@
       "astrolabe": "{name} · the letter comes more often",
       "hourglass": "{name} · pages read, methods and clicks",
       "pencil": "{name} · what a task of the day asks",
-      "token": "{name} · the tokens given every day"
+      "token": "{name} · the tokens given every day",
+      "compass": "{name} · the Mimic comes more often"
     },
     "etherWeight": "Ether that reading counts",
     "etherWeightParts": "the weight of the Library: each Ether beyond {n} counts for less",
@@ -315,6 +316,7 @@
     "relicHourglass": "The Hourglass",
     "relicPencil": "The Pencil",
     "relicToken": "The Token",
+    "relicCompass": "The Compass",
     "relicsAll": "The Cabinet: every relic",
     "relicChanges": ["A change of heart", "Hesitate: {n} changes of relic", "Never choose: {n} changes of relic"],
     "constellation-mimic": "Count all its teeth",

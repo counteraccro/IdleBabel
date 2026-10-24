@@ -75,7 +75,8 @@ export const ONCE_TASKS: readonly OnceTaskDef[] = [
   { n: 8, star: TASK_STAR.north, goal: 3600, unit: 'minutes', reward: { readingHours: 12 } },
   { n: 9, star: TASK_STAR.north, goal: 24 * 3600, unit: 'hours', reward: { tokens: 15 } },
   { n: 10, star: TASK_STAR.north, goal: 10, reward: { tokens: 25 } },
-  { n: 11, star: TASK_STAR.north, goal: 3, reward: { knowledgeHours: 48 } },
+  // Les reliques des salles (ROOM_RELICS) : quatre depuis la Boussole (24/10).
+  { n: 11, star: TASK_STAR.north, goal: 4, reward: { knowledgeHours: 48 } },
   { n: 12, star: TASK_STAR.north, goal: 50, reward: { knowledgeBonus: 0.05 } },
   // « Finis tous les livres qui se jouent » : le lapin, les dark patterns, le livre-jeu, le coloriage.
   { n: 13, star: TASK_STAR.once1, goal: 4, reward: { readingHours: 48 } },

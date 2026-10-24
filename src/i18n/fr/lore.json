@@ -120,6 +120,16 @@
     ],
     "button": "Garder"
   },
+  "relicCompass": {
+    "title": "La Boussole",
+    "text": [
+      "Une boussole dont l’aiguille ne se décide pas.",
+      "Elle montre deux chemins à la fois.",
+      "Il les a pris tous les deux.",
+      "L’un des deux m’a mené ici."
+    ],
+    "button": "Garder"
+  },
   "away": {
     "title": "Un songe",
     "text": [

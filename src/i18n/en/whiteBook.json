@@ -227,6 +227,7 @@
     "hintRelicLoupe": "Where the sand / comes in through the windows, / someone looked up close.",
     "hintRelicAstrolabe": "Under the stars, / someone tried to find / where he was.",
     "hintRelicHourglass": "Under the glass, / someone’s time / stopped running.",
+    "hintRelicCompass": "Between day / and night, / someone lost their bearings.",
     "hintTrueCatalogue": "A catalogue. / I leaf through it / like a child / in December."
   },
   "guess": "guess · {n} Knowledge",
@@ -558,7 +559,7 @@
       "8": "Leave the game open for 1 h without touching anything.",
       "9": "Come back after 24 h away.",
       "10": "Feed it 10 times.",
-      "11": "Find the three relics.",
+      "11": "Find the four relics.",
       "12": "Light 50 stars of the Etherium.",
       "13": "Finish every book that can be played.",
       "14": "Colour the nine drawings of the book.",

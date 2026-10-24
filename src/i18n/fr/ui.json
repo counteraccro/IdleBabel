@@ -287,14 +287,16 @@
       "astrolabe": "L’Astrolabe",
       "hourglass": "Le Sablier",
       "pencil": "Le Crayon",
-      "token": "Le Jeton"
+      "token": "Le Jeton",
+      "compass": "La Boussole"
     },
     "put": {
       "loupe": "Poser la loupe ?",
       "astrolabe": "Poser l’astrolabe ?",
       "hourglass": "Poser le sablier ?",
       "pencil": "Poser le crayon ?",
-      "token": "Poser le jeton ?"
+      "token": "Poser le jeton ?",
+      "compass": "Poser la boussole ?"
     },
     "bonus": {
       "loupe": "+{n} de Connaissance garantie à chaque trouvaille",
@@ -302,7 +304,8 @@
       "astrolabe": "lettre +{n} %",
       "hourglass": "pages lues +{n} %",
       "pencil": "tâches du jour −{n} %",
-      "token": "{n} jetons offerts chaque jour"
+      "token": "{n} jetons offerts chaque jour",
+      "compass": "la Mimic vient {n} % plus souvent"
     },
     "tokensLeft": "{left} jetons du jour sur {n}",
     "acts": "elle agit",
