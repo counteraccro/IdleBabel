@@ -16,7 +16,7 @@ describe('les titres des sceaux (21/10)', () => {
   afterEach(() => revealStats(false));
 
   it('chaque titre est celui d’un vrai sceau', () => {
-    const ids = new Set([...SEALS.map((seal) => seal.id), 'starsLit-all']);
+    const ids = new Set(SEALS.map((seal) => seal.id));
     for (const id of Object.keys(fr.sealTitles)) expect(ids.has(id), id).toBe(true);
   });
 

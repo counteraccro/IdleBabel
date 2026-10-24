@@ -56,9 +56,19 @@ export const QUANTUM_AGE = 'ages.quantic';
 
 /** Les Âges, dans l'ordre (aucun : l'Âge Manuel), et le nom de leur sous-partie du livre blanc (whiteBook.parts). */
 export const AGES = [undefined, AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE] as const;
-const AGE_PARTS: Record<string, string> = { [AUTOMATIC_AGE]: 'automaticAge', [DIGITAL_AGE]: 'digitalAge', [QUANTUM_AGE]: 'quantumAge' };
+/** Un Âge de plus dans AGES sans sa sous-partie ne compile pas (revue de l'Alpha 3, 24/10). */
+const AGE_PARTS: Readonly<Record<NonNullable<(typeof AGES)[number]>, string>> = {
+  [AUTOMATIC_AGE]: 'automaticAge',
+  [DIGITAL_AGE]: 'digitalAge',
+  [QUANTUM_AGE]: 'quantumAge',
+};
 /** La sous-partie d'un Âge (`age` d'une méthode : aucun pour l'Âge Manuel) : « manualAge », « digitalAge »… */
-export const agePart = (age: string | undefined): string => (age ? AGE_PARTS[age] : 'manualAge');
+export const agePart = (age: string | undefined): string => {
+  if (age === undefined) return 'manualAge';
+  const part = (AGE_PARTS as Readonly<Record<string, string>>)[age];
+  if (part === undefined) throw new Error(`Âge sans sous-partie : ${age}`);
+  return part;
+};
 
 export const COST_GROWTH = 1.15;
 

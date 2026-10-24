@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { passTime } from '../src/core/absence';
-import { SEALS } from '../src/data/seals';
+import { SEALS, STARS_LIT_ALL } from '../src/data/seals';
 import { ANOMALIES, hintSeal } from '../src/data/anomalies';
 import { OPEN_STARS, STARS } from '../src/data/etheriumStars';
 import { checkSeals } from '../src/systems/seals';
@@ -50,7 +50,7 @@ describe('revue des sceaux (08/10)', () => {
     checkSeals(state, 1);
     expect(state.seals['constellation-ages']).toBe(1);
     expect(state.seals['constellation-memory']).toBe(1);
-    expect(state.seals[`starsLit-${OPEN_STARS.length}`]).toBe(1);
+    expect(state.seals[STARS_LIT_ALL]).toBe(1);
     // Les Âges d'après le Numérique, la Goutte, les quatre pointes de la Rose des vents qui n'ouvrent encore rien (le Nord-Est
     // donne le tome 1 depuis le 18/10) ; « Une dernière pour la route » s'ouvre le 18/10 (le tome 4) ; les deux dents du
     // Rouage qui attendaient leur Âge (19/10), celle de l'Âge Quantique ouverte le 24/10.

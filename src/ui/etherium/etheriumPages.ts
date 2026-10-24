@@ -65,12 +65,13 @@ const ENTRY_TOP = 214;
 const ENTRY_STEP = 50;
 /** Le nom d'un groupe, au-dessus de ses pages. */
 const GROUP_STEP = 34;
+/** Les pages du sommaire : chaque groupe dit sur laquelle il s'écrit (data/etheriumStars.ts). */
+const CONTENTS_PAGES = Math.max(...ETHERIUM_GROUPS.map((group) => group.contents)) + 1;
 /**
- * Les groupes de chaque page du sommaire (demande de l'auteur, 11/10 : avec la Mimic, une seule page était trop tassée ; 24/10 :
- * avec le Lustre, deux ne suffisent plus) : les méthodes ; lire et le temps ; les salles.
+ * Une page de nuit vierge après un sommaire impair (l'auteur, 24/10, revue de l'Alpha 3) : chaque figure reste du côté où
+ * les maquettes l'ont posée (l'Escalier à gauche, le Rouage en face), comme avec deux pages de sommaire.
  */
-const CONTENTS_GROUPS: readonly (readonly string[])[] = [['methods'], ['reading', 'time'], ['rooms']];
-const CONTENTS_PAGES = CONTENTS_GROUPS.length;
+const CONTENTS_BLANK = CONTENTS_PAGES % 2;
 
 type Row = { kind: 'group'; id: string; y: number } | { kind: 'page'; page: PageId; y: number };
 
@@ -79,7 +80,7 @@ type Row = { kind: 'group'; id: string; y: number } | { kind: 'page'; page: Page
  * Mimic) n'y entre qu'une fois débloquée, et un groupe sans page ouverte n'y est pas.
  */
 const rows = (state: GameState, part: number): Row[] => {
-  const groups = ETHERIUM_GROUPS.filter((group) => CONTENTS_GROUPS[part].includes(group.id));
+  const groups = ETHERIUM_GROUPS.filter((group) => group.contents === part);
   const result: Row[] = [];
   let y = ENTRY_TOP;
   for (const group of groups) {
@@ -132,9 +133,15 @@ const drawContents = (ctx: Ctx, state: GameState, first: number, part: number): 
   nightFolio(ctx, 2 + part);
 };
 
-/** Toutes les pages : garde, sommaire (deux pages), une constellation par page. Une étoile allumée se voit aussitôt partout. */
+/** Une page de nuit vierge, sans folio. */
+const blankLeaf = (): LeafPage => nightLeaf({ draw: () => {}, spots: () => [], press: () => {} });
+
+/**
+ * Toutes les pages : garde, sommaire (trois pages, puis une vierge), une constellation par page. Une étoile allumée se
+ * voit aussitôt partout.
+ */
 export const createEtheriumPages = (state: GameState, goTo: (page: number) => void): LeafPage[] => {
-  const first = 1 + CONTENTS_PAGES;
+  const first = 1 + CONTENTS_PAGES + CONTENTS_BLANK;
   const contents = (part: number) =>
     nightLeaf({
       draw: (ctx) => drawContents(ctx, state, first, part),
@@ -147,8 +154,9 @@ export const createEtheriumPages = (state: GameState, goTo: (page: number) => vo
   return [
     nightLeaf({ draw: (ctx) => drawTitle(ctx, state), spots: () => [], press: () => {} }),
     ...Array.from({ length: CONTENTS_PAGES }, (_, part) => contents(part)),
+    ...Array.from({ length: CONTENTS_BLANK }, blankLeaf),
     ...ETHERIUM_PAGES.map((page, index) => constellationPage(state, page, first + index + 1)),
     // En face de la dernière figure, une page de nuit vierge (les suivantes, du papier de nuit uni).
-    nightLeaf({ draw: () => {}, spots: () => [], press: () => {} }),
+    blankLeaf(),
   ];
 };

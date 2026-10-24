@@ -118,13 +118,21 @@ export const etherReading = (state: GameState): number => 1 + etherCounted(state
 export const readingMultiplier = (state: GameState): number => product(state, EFFECT.readingRate);
 /** Le tome 1 de « L'histoire de Babel » (le Nord-Est de la Rose des vents) : +15 % de pages/s aux méthodes du premier Âge. */
 export const firstAgeMultiplier = (state: GameState): number => 1 + sum(state, EFFECT.firstAgeReading);
-/** Le Minitel (la prise, l'écran) : les pages/s des méthodes de l'Âge Numérique. */
-export const digitalMultiplier = (state: GameState): number => product(state, EFFECT.digitalReading);
-/** Le Lustre (le crochet, les câbles) : les pages/s des méthodes de l'Âge Quantique. */
-export const quantumMultiplier = (state: GameState): number => product(state, EFFECT.quantumReading);
-/** La page de l'Etherium de l'Âge d'une méthode (le Minitel, le Lustre) : ce qu'elle fait lire de plus à cette méthode. */
-export const agePageMultiplier = (state: GameState, age: string | undefined): number =>
-  age === DIGITAL_AGE ? digitalMultiplier(state) : age === QUANTUM_AGE ? quantumMultiplier(state) : 1;
+/**
+ * La page de l'Etherium de chaque Âge, et ce qu'elle fait lire de plus à ses méthodes : le Minitel (la prise, l'écran) à
+ * l'Âge Numérique, le Lustre (le crochet, les câbles) à l'Âge Quantique. Un nouvel Âge n'a que sa ligne à ajouter ici.
+ */
+const AGE_PAGES: Readonly<Record<string, Readonly<Record<string, number>>>> = {
+  [DIGITAL_AGE]: EFFECT.digitalReading,
+  [QUANTUM_AGE]: EFFECT.quantumReading,
+};
+/** Un facteur par Âge ('' : l'Âge Manuel ; un Âge absent : ×1). */
+export type AgeFactors = Readonly<Record<string, number>>;
+/** Le facteur de l'Âge d'une méthode (`age` : aucun pour l'Âge Manuel). */
+export const ageFactor = (factors: AgeFactors, age: string | undefined): number => factors[age ?? ''] ?? 1;
+/** Ce que la page de chaque Âge fait lire de plus à ses méthodes, calculé une fois. */
+export const agePageMultipliers = (state: GameState): AgeFactors =>
+  Object.fromEntries(Object.entries(AGE_PAGES).map(([age, effect]) => [age, product(state, effect)]));
 /** La Main (poignet, paume, index) : les pages d'un clic. */
 export const handsMultiplier = (state: GameState): number => product(state, EFFECT.click);
 /** La Chouette (pattes, corps, aile droite) : ce que rapporte une trouvaille. */

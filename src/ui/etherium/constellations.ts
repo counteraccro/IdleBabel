@@ -43,8 +43,8 @@ export interface Sketch {
   eye?: readonly [number, number, number, number];
   /** Des ellipses (les faces des plateaux du Lustre) : centre, demi-axes. */
   ellipses?: readonly (readonly [number, number, number, number])[];
-  /** Les plateaux du Lustre, teintés d'or à peine (face du dessus et tranche) : haut, demi-largeur, épaisseur ; centrés. */
-  plates?: readonly (readonly [number, number, number])[];
+  /** Les plateaux du Lustre, teintés d'or à peine (face du dessus et tranche) : centre, haut, demi-largeur, demi-hauteur, épaisseur. */
+  plates?: readonly (readonly [number, number, number, number, number])[];
 }
 
 const ring = ([cx, cy]: readonly [number, number], r: number, deg: number): readonly [number, number] => [
@@ -218,6 +218,8 @@ const TIERS = [
   [597, 76],
 ] as const;
 const THICK = 9;
+/** La demi-hauteur des ellipses d'un plateau (la face vue de biais). */
+const PLATE_RY = 12;
 const HOOK_Y = 318;
 /** Un tube en spirale de (x0, y0) à (x1, y1). */
 const coil = (x0: number, y0: number, x1: number, y1: number, turns: number, amp: number): [number, number][] =>
@@ -235,7 +237,7 @@ const chandelierLines = (): [number, number][][] => {
     ],
     [
       [X, HOOK_Y + 20],
-      [X, TIERS[0][0] - 12],
+      [X, TIERS[0][0] - PLATE_RY],
     ],
   ];
   // Les bords des plateaux.
@@ -527,10 +529,10 @@ export const FIGURES: Record<PageId, Figure> = {
     sketch: {
       lines: chandelierLines(),
       ellipses: TIERS.flatMap(([y, rx]) => [
-        [CHANDELIER_X, y, rx, 12],
-        [CHANDELIER_X, y + THICK, rx, 12],
+        [CHANDELIER_X, y, rx, PLATE_RY],
+        [CHANDELIER_X, y + THICK, rx, PLATE_RY],
       ]),
-      plates: TIERS.map(([y, rx]) => [y, rx, THICK]),
+      plates: TIERS.map(([y, rx]) => [CHANDELIER_X, y, rx, PLATE_RY, THICK]),
     },
   },
   ages: {

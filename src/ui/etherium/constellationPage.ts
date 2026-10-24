@@ -212,18 +212,18 @@ const sketch = (
   }
   ctx.restore();
   // Les plateaux du Lustre : une teinte d'or à peine posée (face du dessus et tranche).
-  for (const [y, rx, thick] of plates ?? []) {
+  for (const [x, y, rx, ry, thick] of plates ?? []) {
     ctx.save();
     ctx.fillStyle = 'rgba(232,199,118,0.07)';
     ctx.beginPath();
-    ctx.ellipse(320, y + thick, rx, 12, 0, 0, Math.PI);
-    ctx.lineTo(320 - rx, y);
-    ctx.ellipse(320, y, rx, 12, 0, Math.PI, 0, true);
+    ctx.ellipse(x, y + thick, rx, ry, 0, 0, Math.PI);
+    ctx.lineTo(x - rx, y);
+    ctx.ellipse(x, y, rx, ry, 0, Math.PI, 0, true);
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = 'rgba(232,199,118,0.05)';
     ctx.beginPath();
-    ctx.ellipse(320, y, rx, 12, 0, 0, Math.PI * 2);
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }

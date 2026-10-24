@@ -1,13 +1,13 @@
 import { getLocale, t } from '../../i18n';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
-import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE, TOOLS } from '../../data/tools';
-import { automaticAgeMultiplier, digitalAgeMultiplier, tomeKnowledgeMultiplier } from '../../systems/endings';
+import { DIGITAL_AGE, QUANTUM_AGE, TOOLS } from '../../data/tools';
+import { tomeKnowledgeMultiplier } from '../../systems/endings';
 import { FLAIR_LEVELS } from '../../data/technologies';
 import { filterMultiplier, gestureMultiplier, levelOf, rareChance, toolPriceFactor, clickShare } from '../../systems/technologies';
 import {
+  ageFactor,
+  agePageMultipliers,
   boonLengthFactor,
-  agePageMultiplier,
-  digitalMultiplier,
   etherReading,
   findsMultiplier,
   handFindsMultiplier,
@@ -16,8 +16,6 @@ import {
   letterWaitFactor,
   rareMultiplier,
   readingMultiplier,
-  firstAgeMultiplier,
-  quantumMultiplier,
 } from '../../systems/etherium';
 import { clickBoon, findsBoon, fourTen, knowledgeBoon, priceBoon, readingBoon } from '../../systems/boons';
 import { sealFindMultiplier } from '../../systems/seals';
@@ -27,7 +25,7 @@ import { lotteryMethod, lotteryReading } from '../../systems/lotteryEffects';
 import { hookProduct } from '../../mods/hooks';
 import { modded } from '../../mods/quantities';
 import { relicName } from '../relics/relicText';
-import { pagesPerSecond } from '../../systems/production';
+import { pagesPerSecond, storyMultipliers } from '../../systems/production';
 import { clickParts, pagesPerClick } from '../../systems/click';
 import { findChance, findKnowledge } from '../../systems/knowledge';
 import { nextRareChance } from '../../systems/rareBooks';
@@ -50,37 +48,28 @@ const plusPercent = (value: number): string =>
   `+${writeDigits(new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 2 }).format(value))}`;
 
 /**
- * Ce que lisent les méthodes d'elles-mêmes, avec leurs intuitions, avec en plus le Minitel pour celles de l'Âge Numérique,
- * puis les tomes pour celles de leur Âge : les intuitions, le Minitel et le tome en moyenne, pesés par ce que lit chacune. La décomposition de la vitesse de lecture
- * (chapters.ts) s'en sert aussi.
- */
-/** Ce que les tomes font lire de plus à une méthode : le tome 1 au premier Âge, le tome 2 à l'Âge Automatique, le tome 3 à l'Âge Numérique. */
-const storyFactor = (state: GameState, tool: (typeof TOOLS)[number]): number =>
-  tool.age === undefined
-    ? firstAgeMultiplier(state)
-    : tool.age === AUTOMATIC_AGE
-      ? automaticAgeMultiplier(state)
-      : tool.age === DIGITAL_AGE
-        ? digitalAgeMultiplier(state)
-        : 1;
-
-/**
- * `digital` : avec la page de l'Etherium de leur Âge (le Minitel, le Lustre) ; `minitel` et `chandelier` : avec l'une des deux
- * seulement, pour la ligne de chacune.
+ * Ce que lisent les méthodes d'elles-mêmes, avec leurs intuitions, avec en plus la page de l'Etherium de leur Âge, puis les
+ * tomes pour celles de leur Âge : les intuitions, la page et le tome en moyenne, pesés par ce que lit chacune. La
+ * décomposition de la vitesse de lecture (chapters.ts) s'en sert aussi. `digital` : avec la page de leur Âge (le Minitel,
+ * le Lustre) ; `minitel` et `chandelier` : avec l'une des deux seulement, pour la ligne de chacune.
  */
 export const methodReading = (
   state: GameState,
 ): { base: number; gestures: number; digital: number; minitel: number; chandelier: number; story: number } => {
+  // Chaque facteur calculé une fois, pas une fois par méthode et par somme (revue de l'Alpha 3, 24/10).
+  const agePage = agePageMultipliers(state);
+  const story = storyMultipliers(state);
   const rate = (tool: (typeof TOOLS)[number]): number => state.tools[tool.id] * tool.pagesPerSecond * gestureMultiplier(state, tool.id);
-  const pageRate = (tool: (typeof TOOLS)[number]): number => rate(tool) * agePageMultiplier(state, tool.age);
+  const pageRate = (tool: (typeof TOOLS)[number]): number => rate(tool) * ageFactor(agePage, tool.age);
   const sum = (of: (tool: (typeof TOOLS)[number]) => number): number => TOOLS.reduce((total, tool) => total + of(tool), 0);
+  const onlyAge = (age: string) => (tool: (typeof TOOLS)[number]) => rate(tool) * (tool.age === age ? ageFactor(agePage, age) : 1);
   return {
     base: sum((tool) => state.tools[tool.id] * tool.pagesPerSecond),
     gestures: sum(rate),
     digital: sum(pageRate),
-    minitel: sum((tool) => rate(tool) * (tool.age === DIGITAL_AGE ? digitalMultiplier(state) : 1)),
-    chandelier: sum((tool) => rate(tool) * (tool.age === QUANTUM_AGE ? quantumMultiplier(state) : 1)),
-    story: sum((tool) => pageRate(tool) * storyFactor(state, tool)),
+    minitel: sum(onlyAge(DIGITAL_AGE)),
+    chandelier: sum(onlyAge(QUANTUM_AGE)),
+    story: sum((tool) => pageRate(tool) * ageFactor(story, tool.age)),
   };
 };
 const gestures = (state: GameState): number => {

@@ -137,6 +137,9 @@ const powers = (step: number, from: number, to: number): number[] =>
 /** Pages par seconde : 1, 10… 10⁸, puis 10¹⁰, 10¹²… 10³⁰. */
 const SPEED_STEPS = [...powers(1, 0, 8), ...powers(2, 10, 30)];
 
+/** Le sceau de toutes les étoiles ouvertes (« Tout le ciel ») : son id ne change pas quand des étoiles s'ouvrent. */
+export const STARS_LIT_ALL = 'starsLit-all';
+
 export const SEALS: readonly SealDef[] = [
   // Pages lues et pages en réserve, prolongées le 08/10 (revue des sceaux) : jusqu'à 10³⁰ comme la vitesse, et 10³⁶
   // comme le prix des dernières méthodes.
@@ -213,7 +216,11 @@ export const SEALS: readonly SealDef[] = [
   // étoiles fermées (les Âges d'après l'Automatique, la Goutte) n'y comptent pas.
   ...series('prestiges', 'etherium', (s) => s.exiles, [1, 5, 10, 25, 100]),
   ...series('etherReceived', 'etherium', (s) => s.etherReceived, [1, 10, 100, K, 10 * K, 100 * K, M, 10 * M, 100 * M, K * M]),
-  ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, OPEN_STARS.length]),
+  // Le dernier palier, toutes les étoiles ouvertes, garde le même id quand des étoiles s'ouvrent (revue de l'Alpha 3, 24/10 :
+  // « starsLit-148 » devenait « starsLit-166 » et le sceau se perdait ; core/starsLitSeal.ts reprend les anciens).
+  ...series('starsLit', 'etherium', (s) => s.etherium.length, [1, 10, 25, OPEN_STARS.length]).map((seal): SealDef =>
+    seal.tier!.n === OPEN_STARS.length ? { ...seal, id: STARS_LIT_ALL } : seal,
+  ),
   // L'Exploration : ses pointes ouvertes allumées (« La Rose des vents », 12/10 ; les autres sont encore fermées).
   ...ETHERIUM_PAGES.map((page) =>
     seal(`constellation-${page}`, 'etherium', (s) =>

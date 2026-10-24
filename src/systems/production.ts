@@ -1,7 +1,7 @@
 import { taskReading } from './taskBonus';
-import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE, TOOLS, type ToolId } from '../data/tools';
+import { AUTOMATIC_AGE, DIGITAL_AGE, TOOLS, type ToolId } from '../data/tools';
 import { gestureMultiplier } from './technologies';
-import { digitalMultiplier, etherReading, firstAgeMultiplier, quantumMultiplier, readingMultiplier } from './etherium';
+import { ageFactor, agePageMultipliers, etherReading, firstAgeMultiplier, readingMultiplier, type AgeFactors } from './etherium';
 import { readingBoon } from './boons';
 import { relicReading } from './relics';
 import { mimicReading } from './mimic';
@@ -24,7 +24,15 @@ export const isForcingPagesPerSecond = (): boolean => forcedPagesPerSecond !== u
  * cours), le Sablier (s'il agit), la Mimic qui la ralentit (si elle est là), les bonus et malus de la Loterie et les mods (crochet `reading`, grandeur `reading`) ; et le Minitel,
  * pour celles de l'Âge Numérique, le Lustre pour celles de l'Âge Quantique ; le tome 1 de « L'histoire de Babel », pour celles du premier Âge, le tome 2 pour celles de l'Âge Automatique, le tome 3 pour celles de l'Âge Numérique. Calculés une fois pour toutes les méthodes (revue de code, 13/10).
  */
-type Shared = { all: number; digital: number; quantum: number; firstAge: number; automaticAge: number; digitalAge: number };
+type Shared = { all: number; agePage: AgeFactors; story: AgeFactors };
+
+/** Ce que les tomes font lire de plus aux méthodes de leur Âge : le tome 1 au premier, le 2 à l'Automatique, le 3 au Numérique. */
+export const storyMultipliers = (state: GameState): AgeFactors => ({
+  '': firstAgeMultiplier(state),
+  [AUTOMATIC_AGE]: automaticAgeMultiplier(state),
+  [DIGITAL_AGE]: digitalAgeMultiplier(state),
+});
+
 const shared = (state: GameState): Shared => ({
   all:
     readingMultiplier(state) *
@@ -36,20 +44,15 @@ const shared = (state: GameState): Shared => ({
     taskReading(state) *
     hookProduct('reading') *
     modded('reading'),
-  digital: digitalMultiplier(state),
-  quantum: quantumMultiplier(state),
-  firstAge: firstAgeMultiplier(state),
-  automaticAge: automaticAgeMultiplier(state),
-  digitalAge: digitalAgeMultiplier(state),
+  agePage: agePageMultipliers(state),
+  story: storyMultipliers(state),
 });
 
 const rateOf = (state: GameState, tool: (typeof TOOLS)[number], factors: Shared): number =>
   tool.pagesPerSecond *
   gestureMultiplier(state, tool.id) *
-  (tool.age === DIGITAL_AGE ? factors.digital * factors.digitalAge : 1) *
-  (tool.age === QUANTUM_AGE ? factors.quantum : 1) *
-  (tool.age === undefined ? factors.firstAge : 1) *
-  (tool.age === AUTOMATIC_AGE ? factors.automaticAge : 1) *
+  ageFactor(factors.agePage, tool.age) *
+  ageFactor(factors.story, tool.age) *
   factors.all *
   lotteryMethod(state, tool.id) *
   modded(`method:${tool.id}`);

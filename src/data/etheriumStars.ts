@@ -1,5 +1,6 @@
 import { ETHER_WEIGHT } from './etherium';
 import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE } from './tools';
+import { GEAR_AGES } from './gear';
 
 /**
  * L'Etherium en constellations (validé avec l'auteur le 06/10/2026, .ai/plan-etherium-constellations.md) : une figure
@@ -13,13 +14,15 @@ import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE } from './tools';
  * choses ») : les méthodes (les Âges d'abord, 07/10, puis le Rouage qui les achète, 19/10, et tout ce qui les fait lire, revenir au réveil ou rester), lire
  * (la main, la lettre, la Connaissance, les trouvailles), le temps (l'absence, le poids de l'Éther), les salles (ce que
  * l'Exploration y fait apparaître). Le Rideau, la fausse fin (14/10), qui était tout au bout, est supprimé le 18/10 : le
- * tome 1 s'achète au Nord-Est de la Rose des vents. Le sommaire écrit le nom de chaque groupe (etherium.groups.<groupe>).
+ * tome 1 s'achète au Nord-Est de la Rose des vents. Le sommaire écrit le nom de chaque groupe (etherium.groups.<groupe>),
+ * sur sa page (`contents` ; 11/10 : avec la Mimic, une seule page était trop tassée ; 24/10 : avec le Lustre, deux ne
+ * suffisent plus) : les méthodes ; lire et le temps ; les salles.
  */
 export const ETHERIUM_GROUPS = [
-  { id: 'methods', pages: ['ages', 'gear', 'reading', 'start', 'memory', 'screen', 'chandelier'] },
-  { id: 'reading', pages: ['hands', 'quill', 'knowledge', 'finds'] },
-  { id: 'time', pages: ['away', 'weight'] },
-  { id: 'rooms', pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks'] },
+  { id: 'methods', contents: 0, pages: ['ages', 'gear', 'reading', 'start', 'memory', 'screen', 'chandelier'] },
+  { id: 'reading', contents: 1, pages: ['hands', 'quill', 'knowledge', 'finds'] },
+  { id: 'time', contents: 1, pages: ['away', 'weight'] },
+  { id: 'rooms', contents: 2, pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks'] },
 ] as const;
 
 /** L'ordre des pages dans le livre : celui des groupes. */
@@ -307,18 +310,6 @@ const CELL_AGES: Record<string, string> = { a: AUTOMATIC_AGE, n: DIGITAL_AGE, q:
 const cellOf = (id: string): string => id.slice('memory.'.length, 'memory.'.length + 1);
 
 /**
- * Les étoiles des alvéoles Automatique, Numérique et Quantique, et la dent du Rouage de l'Âge Quantique (sa page s'ouvre avec
- * le Numérique) : l'Âge que chacune attend.
- */
-export const NEEDS_AGE: ReadonlyMap<string, string> = new Map([
-  ...STARS.filter((star) => star.page === 'memory' && cellOf(star.id) in CELL_AGES).map((star): [string, string] => [
-    star.id,
-    CELL_AGES[cellOf(star.id)],
-  ]),
-  ['gear.a4', QUANTUM_AGE],
-]);
-
-/**
  * Une page qu'une autre débloque : blanche jusque-là, absente du sommaire (la Mimic, par l'Est de l'Exploration ; les
  * Tâches, par le Nord ; le Minitel et le Rouage, par l'Âge Numérique).
  */
@@ -330,6 +321,24 @@ export const PAGE_NEEDS: Partial<Record<PageId, string>> = {
   screen: DIGITAL_AGE,
   chandelier: QUANTUM_AGE,
 };
+
+/** L'Âge `age` vient après l'Âge `earlier` sur l'Escalier. */
+const comesAfter = (age: string, earlier: string): boolean => {
+  for (let step = starById(age)?.after; step; step = starById(step)?.after) if (step === earlier) return true;
+  return false;
+};
+
+/**
+ * Les étoiles des alvéoles Automatique, Numérique et Quantique, et les dents du Rouage d'un Âge d'après celui qui ouvre sa
+ * page (data/gear.ts : l'Âge Quantique) : l'Âge que chacune attend.
+ */
+export const NEEDS_AGE: ReadonlyMap<string, string> = new Map([
+  ...STARS.filter((star) => star.page === 'memory' && cellOf(star.id) in CELL_AGES).map((star): [string, string] => [
+    star.id,
+    CELL_AGES[cellOf(star.id)],
+  ]),
+  ...Object.entries(GEAR_AGES).filter(([, age]) => age && comesAfter(age, PAGE_NEEDS.gear!)),
+]);
 
 /** Une page qui attend un premier jeton joué : la Loterie (blanche jusque-là, absente du sommaire). */
 export const PAGE_NEEDS_DRAW: ReadonlySet<PageId> = new Set(['lottery']);

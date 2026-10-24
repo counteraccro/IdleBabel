@@ -1055,6 +1055,13 @@
                 "The Etherium’s contents now span three pages.",
                 "The Atlas’s last three stars cost more."
               ]
+            },
+            {
+              "heading": "Fixes",
+              "items": [
+                "The seal for lighting every star is no longer lost when new stars open.",
+                "Etherium: a blank page after the contents; each constellation is back on its side of the book."
+              ]
             }
           ]
         },
@@ -3642,7 +3649,7 @@
             "The prices came out of the simulator, after fourteen trials. This Age had to be earned: its machines read more slowly than expected, and the Quantum Computer cannot be bought in the first run. Along the way, the simulator was made ten times faster.",
             "The room: an image that seems to make sense without making any. The three rooms laid over each other were tried, then set aside: a background is looked at for hours, it must stay calm. What remains is a room where it is day and night at once: night in the ceiling, the desert in broad daylight through the arches.",
             "The Hive received a fourth cell, below the other three: this one also keeps the Qubit’s sentence, which is otherwise forgotten at prestige. The Gear, for its part, learned to buy the new machines.",
-            "The Age also received its page in the Etherium: “Quantum”, a golden chandelier traced in stars, the quantum computer of the photographs, hanging upside down. Its cables make the machines read faster, its plates bring more Knowledge; the chip, at the very bottom, gives back the memory of the Qubit. With it, the Etherium’s contents grew to three pages."
+            "The Age also received its page in the Etherium: “Quantum”, a golden chandelier traced in stars, the quantum computer of the photographs, hanging upside down. Its cables make the machines read faster, its plates bring more Knowledge; the chip, at the very bottom, gives back the memory of the Qubit. With it, the Etherium’s contents grew to three pages, followed by a blank one: each figure keeps its side of the book."
           ]
         },
         "thisBook": {

@@ -1064,6 +1064,13 @@
                 "Le sommaire de l’Etherium tient sur trois pages.",
                 "Les trois dernières étoiles de l’Atlas coûtent plus cher."
               ]
+            },
+            {
+              "heading": "Corrections",
+              "items": [
+                "Le sceau des étoiles toutes allumées n’est plus perdu quand de nouvelles étoiles s’ouvrent.",
+                "Etherium : une page blanche après le sommaire ; chaque constellation retrouve son côté du livre."
+              ]
             }
           ]
         },
@@ -3647,7 +3654,7 @@
             "Les prix sont sortis du simulateur, après quatorze essais. Cet Âge devait se mériter : ses machines lisent moins vite qu’on ne l’attend, et l’Ordinateur Quantique ne s’achète pas dès la première partie. En chemin, le simulateur a été rendu dix fois plus rapide.",
             "La salle : une image qui semble avoir un sens sans l’avoir. Les trois salles superposées ont été essayées, puis écartées : un fond se regarde des heures, il doit rester calme. Il en reste une salle où il fait jour et nuit à la fois : la nuit au plafond, le désert en plein jour par les arches.",
             "La Ruche a reçu une quatrième alvéole, sous les trois autres : celle-là garde aussi la phrase du Qubit, qui sinon s’oublie au prestige. Le Rouage, lui, a appris à acheter les nouvelles machines.",
-            "L’Âge a aussi reçu sa page de l’Etherium : « Quantique », un lustre d’or tracé en étoiles, l’ordinateur quantique des photos, suspendu la tête en bas. Ses câbles font lire les machines plus vite, ses plateaux rapportent plus de Connaissance ; la puce, tout en bas, rend le souvenir du Qubit. Avec lui, le sommaire de l’Etherium est passé à trois pages."
+            "L’Âge a aussi reçu sa page de l’Etherium : « Quantique », un lustre d’or tracé en étoiles, l’ordinateur quantique des photos, suspendu la tête en bas. Ses câbles font lire les machines plus vite, ses plateaux rapportent plus de Connaissance ; la puce, tout en bas, rend le souvenir du Qubit. Avec lui, le sommaire de l’Etherium est passé à trois pages, suivies d’une page blanche : chaque figure garde son côté du livre."
           ]
         },
         "thisBook": {
