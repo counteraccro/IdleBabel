@@ -1061,6 +1061,7 @@
                 "Une intuition par nouvelle méthode, et leurs sceaux.",
                 "Une salle pour l’Âge Quantique.",
                 "Une relique dans la salle de l’Âge Quantique.",
+                "Un clic sur une relique de la vitrine la montre en grand, avec son récit ; on la pose depuis cette vue.",
                 "Etherium : une nouvelle alvéole dans la Ruche, une nouvelle page parmi les méthodes, et le Rouage peut acheter les nouvelles méthodes.",
                 "Le sommaire de l’Etherium tient sur trois pages.",
                 "Les trois dernières étoiles de l’Atlas coûtent plus cher."
@@ -3665,6 +3666,14 @@
             "La salle de l’Âge Quantique était vide : la Mimic n’y avait pas de place, aucune relique ne l’attendait. Il lui en fallait une.",
             "Trois objets ont été dessinés : une boussole de poche, un compas de marine dans sa boîte de bois, un disque nu à deux aiguilles. On a gardé la boussole de poche. Son aiguille se dédouble : une pointe nette, l’autre comme une image en surimpression. Dans une salle où il fait jour et nuit à la fois, il fallait un objet qui hésite.",
             "Elle attend sur le seuil de l’arche de gauche, entre le parquet et le sable. Dans la vitrine, elle est dressée comme une montre de poche ouverte, au-dessus du Jeton. Posée, elle fait venir la Mimic plus souvent."
+          ]
+        },
+        "relicLook": {
+          "head": "Regarder les reliques",
+          "text": [
+            "Les reliques restaient au fond de leurs cases : on les voyait petites, et un clic les posait. On a voulu pouvoir les regarder comme les livres.",
+            "Trois vues ont été essayées : une sobre, avec son nom et ce qu’elle donne ; une avec son récit écrit en entier ; une devant le fond de sa salle. On a gardé le récit : une relique, on la regarde pour son histoire.",
+            "Au clic, elle sort de sa case et vient en grand sur la vitrine assombrie. On la tourne ; relâchée, elle revient face à soi. À côté : d’où elle vient, son récit, ce qu’elle donne, et « Poser »."
           ]
         },
         "thisBook": {

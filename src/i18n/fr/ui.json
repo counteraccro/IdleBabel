@@ -309,11 +309,22 @@
     },
     "tokensLeft": "{left} jetons du jour sur {n}",
     "acts": "elle agit",
-    "choose": "la poser ?",
+    "look": "la regarder",
     "wait": "on pourra la poser dans {t}",
     "stops": "{name} cessera d’agir.",
     "then": "Ensuite, plus de changement avant {h} h.",
     "keep": "Laisser",
-    "confirm": "Poser"
+    "confirm": "Poser",
+    "putBack": "Remettre",
+    "putBackTitle": "La remettre",
+    "turn": "Glisser pour la tourner",
+    "from": {
+      "loupe": "Trouvée dans le désert, sur le rebord d’une fenêtre",
+      "astrolabe": "Trouvé dans la salle de nuit, contre les livres",
+      "hourglass": "Trouvé sous la verrière, au bord de la lumière",
+      "pencil": "Gagné au bout de trente tâches du jour",
+      "token": "Gagné à la Loterie, sur 4 · 1 · 0",
+      "compass": "Trouvée entre le jour et la nuit, au seuil d’une arche"
+    }
   }
 }

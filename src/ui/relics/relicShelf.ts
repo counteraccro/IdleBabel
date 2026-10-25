@@ -14,8 +14,8 @@ import type { GameState } from '../../core/state';
 /**
  * Les reliques trouvées, chacune dans sa petite case de la vitrine (maquette validée le 12/10) : le même modèle que dans
  * la salle, à l'échelle des livres (un livre debout fait 1 ; une vraie loupe, 0,27 m). Seule la case de celle qui agit
- * reste éclairée. Survolée : son nom, ce qu'elle donne, et si elle agit ; cliquée : la poser à la place de l'autre (elle
- * agit tout de suite), puis plus de changement pendant 12 h (6 h avec « La patience »).
+ * reste éclairée. Survolée : son nom, ce qu'elle donne, et si elle agit ; cliquée : on la regarde (relicLook.ts), et de là on
+ * la pose à la place de l'autre (elle agit tout de suite), puis plus de changement pendant 12 h (6 h avec « La patience »).
  */
 
 /** Une relique de 0,27 m fait 0,65 à l'échelle des livres : elle tient dans sa case basse (0,65 de haut). */
@@ -35,8 +35,10 @@ export interface RelicShelf {
   caption: (id: RelicId) => { name: string; line: string };
   /** Le bord avant de son étagère, au milieu de sa case (pour poser la légende). */
   anchor: (id: RelicId) => THREE.Vector3;
-  /** Cliquée : la poser, si elle peut l'être (une fenêtre le demande). */
-  choose: (id: RelicId) => void;
+  /** La poser, si elle peut l'être (une fenêtre le demande) ; `after` à la fermeture de la fenêtre. */
+  choose: (id: RelicId, after?: () => void) => void;
+  /** Sortie de sa case pour être regardée (false), ou rentrée (true). */
+  show: (id: RelicId, visible: boolean) => void;
 }
 
 export const createRelicShelf = (
@@ -95,14 +97,20 @@ export const createRelicShelf = (
           ? `${bonus} · ${t('ui.relics.acts')}`
           : wait > 0
             ? `${bonus} · ${t('ui.relics.wait').replace('{t}', waitText(wait))}`
-            : `${bonus} · ${t('ui.relics.choose')}`;
+            : `${bonus} · ${t('ui.relics.look')}`;
       return { name: relicName(id), line };
     },
     anchor: (id) => {
       const cell = cells[RELICS.find((relic) => relic.id === id)!.cell];
       return new THREE.Vector3(cell.left + cell.width / 2, cell.floor, FRONT);
     },
-    choose: (id) => {
+    show: (id, visible) => {
+      const holder = holders.get(id);
+      if (!holder || holder.visible === visible) return;
+      holder.visible = visible;
+      onChange();
+    },
+    choose: (id, after) => {
       if (state.relics.active === id || relicWait(state) > 0) return;
       const before = state.relics.active;
       const text = document.createElement('p');
@@ -116,6 +124,7 @@ export const createRelicShelf = (
         title: t(`ui.relics.put.${id}`),
         body: [text],
         dismissible: true,
+        onClose: after,
         actions: [
           { label: t('ui.relics.keep') },
           {

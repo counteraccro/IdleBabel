@@ -303,11 +303,22 @@
     },
     "tokensLeft": "{left} of today’s {n} tokens left",
     "acts": "at work",
-    "choose": "set it out?",
+    "look": "look at it",
     "wait": "can be set out in {t}",
     "stops": "{name} will stop working.",
     "then": "After that, no change for {h} h.",
     "keep": "Leave it",
-    "confirm": "Set it out"
+    "confirm": "Set it out",
+    "putBack": "Put back",
+    "putBackTitle": "Put it back",
+    "turn": "Drag to turn it",
+    "from": {
+      "loupe": "Found in the desert, on a window ledge",
+      "astrolabe": "Found in the night room, against the books",
+      "hourglass": "Found under the glass roof, at the edge of the light",
+      "pencil": "Earned after thirty tasks of the day",
+      "token": "Won at the Lottery, on 4 · 1 · 0",
+      "compass": "Found between day and night, on the threshold of an arch"
+    }
   }
 }

@@ -29,6 +29,7 @@ import { debugBook3d } from '../../debug/book/debugBook3d';
 import type { Book3d } from '../book3d/book3dBook';
 import { addCellLights, type CellLights } from './cellLights';
 import { createRelicShelf } from '../relics/relicShelf';
+import { createRelicLook } from '../relics/relicLook';
 import { createCartouche, cartoucheText } from './cartouche';
 import { RELICS } from '../../data/relics';
 import { relicFound } from '../../systems/relics';
@@ -111,6 +112,8 @@ const SHADOW_DISTANCE = 8;
 const THICKNESS = 0.12;
 /** Le livre du chevalet, survolé, avance moins qu'un livre tiré de sa case. */
 const EASEL_PULL = 0.08;
+/** Le milieu d'une relique, au-dessus du bord de son étagère : d'où elle part quand on la regarde. */
+const RELIC_RISE = 0.3;
 /**
  * Le meuble des fins et la machine de la Loterie, à gauche de la vitrine (la maquette les pose à 9 de la vitrine : le meuble
  * à -0,95 de ce point, la machine à +1,15 et un peu en avant).
@@ -272,6 +275,8 @@ export const createLibraryPage = (
   const cellLights = addCellLights(bookcase.root, bookcase.cells);
   // Les reliques trouvées, dans leurs petites cases (12/10).
   const relics = createRelicShelf(state, scene, bookcase.cells, cellLights, environment, () => (dirty = true));
+  // Cliquée, une relique se regarde en grand, par-dessus la vitrine (25/10).
+  const look = createRelicLook(state, stage, relics.choose, relics.show);
 
   // Le cartouche de la corniche : les livres qu'elle garde (le livre de débogage, s'il a été trouvé), les reliques. Celui de
   // l'autre bibliothèque : ses livres.
@@ -644,7 +649,7 @@ export const createLibraryPage = (
     return view === 'endings' && !glide ? machine.handleAt(raycaster) : null;
   };
   canvas.addEventListener('pointermove', (event) => {
-    if (glide) return;
+    if (glide || look.isOpen()) return;
     if (handleAt(event)) {
       hoverRelic(null);
       hover(null);
@@ -666,11 +671,19 @@ export const createLibraryPage = (
   });
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
   canvas.addEventListener('click', (event) => {
-    if (glide) return;
+    if (glide || look.isOpen()) return;
     const handle = handleAt(event);
     if (handle) return machine.press(handle, animationNow());
     const relic = relicAt(event);
-    if (relic) return relics.choose(relic);
+    if (relic) {
+      hoverRelic(null);
+      // Elle part du milieu de sa case (un peu au-dessus du bord de l'étagère).
+      const at = relics
+        .anchor(relic)
+        .add(new THREE.Vector3(0, RELIC_RISE, 0))
+        .project(camera);
+      return look.open(relic, { x: ((at.x + 1) / 2) * canvas.clientWidth, y: ((1 - at.y) / 2) * canvas.clientHeight });
+    }
     const place = placeAt(event);
     if (!place?.holder || !place.book) return;
     // Il part de sa place dans sa case, tel qu'on le voit (sorti à moitié) : la page reprend ce départ.
@@ -686,7 +699,10 @@ export const createLibraryPage = (
   const frame = (frameTime: number): void => {
     const now = animationNow(frameTime);
     if (!root.isConnected) {
-      if (mounted) return destroy(scene);
+      if (mounted) {
+        look.destroy();
+        return destroy(scene);
+      }
     } else mounted = true;
     const dt = Math.min(0.05, (now - before) / 1000);
     before = now;

@@ -1052,6 +1052,7 @@
                 "One intuition per new method, and their seals.",
                 "A room for the Quantum Age.",
                 "A relic in the Quantum Age room.",
+                "Clicking a relic in the showcase shows it up close, with its story; it is set out from there.",
                 "Etherium: a new cell in the Hive, a new page among the methods, and the Gear can buy the new methods.",
                 "The Etherium’s contents now span three pages.",
                 "The Atlas’s last three stars cost more."
@@ -3660,6 +3661,14 @@
             "The room of the Quantum Age was empty: the Mimic had no place there, no relic was waiting in it. It needed one.",
             "Three objects were drawn: a pocket compass, a ship’s compass in its wooden box, a bare disc with two needles. We kept the pocket compass. Its needle doubles: one sharp point, the other like a ghost image laid over it. In a room where it is day and night at once, it had to be an object that hesitates.",
             "It waits on the threshold of the left arch, between the parquet and the sand. In the showcase, it stands up like an open pocket watch, above the Token. Set out, it makes the Mimic come more often."
+          ]
+        },
+        "relicLook": {
+          "head": "Looking at the relics",
+          "text": [
+            "The relics stayed at the back of their cells: they looked small, and a click set them out. We wanted to look at them the way we look at the books.",
+            "Three views were tried: a plain one, with its name and what it gives; one with its story written out in full; one in front of its room. We kept the story: you look at a relic for its history.",
+            "On a click, it leaves its cell and comes up close over the darkened showcase. You turn it; let go, it comes back to face you. Beside it: where it comes from, its story, what it gives, and “Set it out”."
           ]
         },
         "thisBook": {
