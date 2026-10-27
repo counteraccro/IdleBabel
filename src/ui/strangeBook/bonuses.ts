@@ -33,6 +33,15 @@ import { RARE_BOOKS } from '../../data/rareBooks';
 import { boonLength, letterWait, understoodFactor, watchFactor } from '../../systems/letter';
 import type { Figure } from './chapters';
 import type { GameState } from '../../core/state';
+import {
+  curiosityBoonLength,
+  curiosityClick,
+  curiosityFinds,
+  curiosityKnowledge,
+  curiosityLetterWait,
+  curiosityPrice,
+  curiosityReading,
+} from '../../systems/curiosityEffects';
 
 /**
  * Le chapitre « Bonus » du Grand Livre (demande de l'auteur, 17/10, après le +15 % des tomes de « L'histoire de
@@ -147,6 +156,8 @@ export const BONUS_FIGURES: Figure[] = [
     label: () => t('strangeBook.bonuses.lotteryMethod').replace('{method}', t(`tools.${tool.id}.name`)),
   })),
   factorRow('reading', 'readingMimic', 'mimra dolt', mimicReading),
+  // Les curiosités du lutrin (systems/curiosityEffects.ts) : leurs bonus et leurs malus.
+  factorRow('reading', 'readingAtelier', 'curio lutra', curiosityReading),
   factorRow('reading', 'readingMods', 'modo vel', () => hookProduct('reading') * modded('reading')),
 
   addRow('click', 'clickShare', 'zo selim mao', clickShare, plusPercent),
@@ -154,6 +165,7 @@ export const BONUS_FIGURES: Figure[] = [
   factorRow('click', 'clickEther', 'etra dulvo', (s) => onLeaf(s, etherReading(s))),
   { ...factorRow('click', 'clickRelic', 'relva sablo', (s) => onLeaf(s, relicReading(s))), label: () => relicName('hourglass') },
   factorRow('click', 'clickLetter', 'lettra vimo', (s) => clickBoon() * onLeaf(s, fourTen())),
+  factorRow('click', 'clickAtelier', 'curio lutra', curiosityClick),
   factorRow('click', 'clickMods', 'modo vel', () => hookProduct('click') * modded('click')),
 
   factorRow('finds', 'findIntuitions', 'tedu ralvi', filterMultiplier),
@@ -161,6 +173,7 @@ export const BONUS_FIGURES: Figure[] = [
   factorRow('finds', 'findEtherium', 'etra lupa', findsMultiplier),
   factorRow('finds', 'findHand', 'etra anel', handFindsMultiplier),
   factorRow('finds', 'findLetter', 'lettra vimo', () => findsBoon()),
+  factorRow('finds', 'findAtelier', 'curio lutra', curiosityFinds),
   factorRow('finds', 'findMods', 'modo vel', () => modded('findChance')),
 
   factorRow('knowledge', 'knowledgeEtherium', 'etra semav', knowledgePerFind),
@@ -170,6 +183,7 @@ export const BONUS_FIGURES: Figure[] = [
     ...addRow('knowledge', 'knowledgeRelic', 'relva lupa', relicKnowledge, (value) => writeDigits(`+${formatNumber(value, getLocale())}`)),
     label: () => relicName('loupe'),
   },
+  factorRow('knowledge', 'knowledgeAtelier', 'curio lutra', curiosityKnowledge),
   factorRow('knowledge', 'knowledgeMods', 'modo vel', () => modded('knowledge')),
 
   factorRow('rare', 'rareIntuitions', 'tedu ralvi', flair),
@@ -178,6 +192,7 @@ export const BONUS_FIGURES: Figure[] = [
 
   factorRow('price', 'priceIntuitions', 'tedu ralvi', toolPriceFactor),
   factorRow('price', 'priceLetter', 'lettra vimo', () => priceBoon()),
+  factorRow('price', 'priceAtelier', 'curio lutra', curiosityPrice),
   factorRow('price', 'priceMods', 'modo vel', () => modded('methodCost')),
 
   factorRow('letterWait', 'letterWaitIntuitions', 'tedu ralvi', watchFactor),
@@ -186,10 +201,12 @@ export const BONUS_FIGURES: Figure[] = [
     ...factorRow('letterWait', 'letterWaitRelic', 'relva astro', relicLetterWait),
     label: () => relicName('astrolabe'),
   },
+  factorRow('letterWait', 'letterWaitAtelier', 'curio lutra', curiosityLetterWait),
   factorRow('letterWait', 'letterWaitMods', 'modo vel', () => modded('letterWait')),
 
   factorRow('boonLength', 'boonLengthIntuitions', 'tedu ralvi', understoodFactor),
   factorRow('boonLength', 'boonLength', 'etra pluma dur', boonLengthFactor),
+  factorRow('boonLength', 'boonLengthAtelier', 'curio lutra', curiosityBoonLength),
   factorRow('boonLength', 'boonLengthMods', 'modo vel', () => modded('boonLength')),
 ];
 
@@ -208,7 +225,7 @@ const GROUP_VALUES: Record<Group, (state: GameState) => Record<string, string>> 
   }),
   knowledge: (s) => ({ n: formatNumber(findKnowledge(s), getLocale()) }),
   rare: (s) => ({ n: formatNumber(Math.round(1 / nextRareChance(Object.keys(s.rareBooks).length, rareChance(s))), getLocale()) }),
-  price: (s) => ({ n: boost(toolPriceFactor(s) * priceBoon() * modded('methodCost')) }),
+  price: (s) => ({ n: boost(toolPriceFactor(s) * priceBoon() * curiosityPrice(s) * modded('methodCost')) }),
   letterWait: (s) => {
     const { min, max } = letterWait(s);
     return { min: minutes(min), max: minutes(max) };

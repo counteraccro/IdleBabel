@@ -623,7 +623,14 @@
     "letterWaitIntuitions": "tes intuitions",
     "letterWaitMods": "les mods",
     "boonLengthIntuitions": "tes intuitions",
-    "boonLengthMods": "les mods"
+    "boonLengthMods": "les mods",
+    "readingAtelier": "le lutrin",
+    "clickAtelier": "le lutrin",
+    "findAtelier": "le lutrin",
+    "knowledgeAtelier": "le lutrin",
+    "priceAtelier": "le lutrin",
+    "letterWaitAtelier": "le lutrin",
+    "boonLengthAtelier": "le lutrin"
   },
   "groupValues": {
     "reading": "{n} pages par seconde",

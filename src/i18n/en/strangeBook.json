@@ -623,7 +623,14 @@
     "letterWaitIntuitions": "your intuitions",
     "letterWaitMods": "mods",
     "boonLengthIntuitions": "your intuitions",
-    "boonLengthMods": "mods"
+    "boonLengthMods": "mods",
+    "readingAtelier": "the lectern",
+    "clickAtelier": "the lectern",
+    "findAtelier": "the lectern",
+    "knowledgeAtelier": "the lectern",
+    "priceAtelier": "the lectern",
+    "letterWaitAtelier": "the lectern",
+    "boonLengthAtelier": "the lectern"
   },
   "groupValues": {
     "reading": "{n} pages every second",
