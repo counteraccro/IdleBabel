@@ -4,6 +4,7 @@ import type { GameState } from '../core/state';
 import { recordOnce } from '../core/history';
 import { armfulLots, toolPriceFactor } from './technologies';
 import { priceBoon } from './boons';
+import { curiosityPrice } from './curiosityEffects';
 import { modded, rule } from '../mods/quantities';
 
 /** La hausse de prix d'un exemplaire au suivant : 1,15, ou celle qu'a réglée un mod (`costGrowth`). */
@@ -16,7 +17,12 @@ export const toolCost = (baseCost: number, owned: number): number => baseCost * 
 export const nextToolCost = (state: GameState, id: ToolId): number => {
   const tool = TOOLS.find((t) => t.id === id)!;
   return (
-    toolCost(tool.baseCost, state.tools[id]) * toolPriceFactor(state) * priceBoon() * modded('methodCost') * modded(`methodCost:${id}`)
+    toolCost(tool.baseCost, state.tools[id]) *
+    toolPriceFactor(state) *
+    priceBoon() *
+    curiosityPrice(state) *
+    modded('methodCost') *
+    modded(`methodCost:${id}`)
   );
 };
 

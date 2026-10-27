@@ -17,6 +17,7 @@ import {
 import { activeBoons, startBoon } from './boons';
 import { boonLengthFactor, letterStaysBonus, letterWaitFactor, starLit } from './etherium';
 import { relicLetterWait } from './relics';
+import { curiosityBoonLength, curiosityLetterWait } from './curiosityEffects';
 import { levelOf } from './technologies';
 import { gainPages, pagesPerSecond } from './production';
 import { drawFind, gainFind } from './knowledge';
@@ -40,7 +41,8 @@ export const understoodFactor = (state: GameState, level = levelOf(state, 'lette
 
 /** Le Guet, la Plume et l'Astrolabe : l'attente entre deux lettres, en secondes. */
 export const letterWait = (state: GameState, level = levelOf(state, 'watch')): { min: number; max: number } => {
-  const factor = letterWaitFactor(state) * watchFactor(state, level) * relicLetterWait(state) * modded('letterWait');
+  const factor =
+    letterWaitFactor(state) * watchFactor(state, level) * relicLetterWait(state) * curiosityLetterWait(state) * modded('letterWait');
   return { min: LETTER_WAIT.min * factor, max: LETTER_WAIT.max * factor };
 };
 
@@ -50,7 +52,7 @@ export const letterStays = (state: GameState, level = levelOf(state, 'heldBreath
 
 /** La Lettre comprise et la Plume : ce qu'elles font à la durée des bonus. */
 export const boonLength = (state: GameState, level = levelOf(state, 'letterUnderstood')): number =>
-  boonLengthFactor(state) * understoodFactor(state, level) * modded('boonLength');
+  boonLengthFactor(state) * understoodFactor(state, level) * curiosityBoonLength(state) * modded('boonLength');
 
 /** La durée d'un bonus, en secondes ; aucune s'il agit d'un coup. */
 export const boonSeconds = (state: GameState, id: BoonId, level?: number): number | undefined => {

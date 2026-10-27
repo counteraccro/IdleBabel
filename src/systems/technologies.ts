@@ -29,6 +29,7 @@ import {
 } from './etherium';
 import { BUY_LOTS, type BuyLot, type ToolId } from '../data/tools';
 import { modded } from '../mods/quantities';
+import { curiosityAway } from './curiosityEffects';
 import { runHooks } from '../mods/hooks';
 import type { GameState } from '../core/state';
 
@@ -124,7 +125,7 @@ export const clickShare = (state: GameState, level = levelOf(state, 'muscleMemor
 
 /** Cartographie du Retour : part de la lecture comptée pendant une absence. */
 export const awayShare = (state: GameState, level = levelOf(state, 'returnMap')): number =>
-  Math.min(1, Math.max(0, AWAY_SHARE + RETURN_STEP * level + awayShareBonus(state) + modded('awayShare')));
+  Math.min(1, Math.max(0, (AWAY_SHARE + RETURN_STEP * level + awayShareBonus(state) + modded('awayShare')) * curiosityAway(state)));
 
 /** Sommeil profond : absence comptée au plus (en secondes). */
 export const maxAwaySeconds = (state: GameState, level = levelOf(state, 'deepSleep')): number =>

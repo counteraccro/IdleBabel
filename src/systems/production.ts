@@ -4,6 +4,7 @@ import { gestureMultiplier } from './technologies';
 import { ageFactor, agePageMultipliers, etherReading, firstAgeMultiplier, readingMultiplier, type AgeFactors } from './etherium';
 import { readingBoon } from './boons';
 import { relicReading } from './relics';
+import { curiosityReading } from './curiosityEffects';
 import { mimicReading } from './mimic';
 import { lotteryMethod, lotteryReading } from './lotteryEffects';
 import { goldenEatsPages, goldenHere } from './goldenMimic';
@@ -42,6 +43,7 @@ const shared = (state: GameState): Shared => ({
     mimicReading(state) *
     lotteryReading(state) *
     taskReading(state) *
+    curiosityReading(state) *
     hookProduct('reading') *
     modded('reading'),
   agePage: agePageMultipliers(state),

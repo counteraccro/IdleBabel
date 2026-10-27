@@ -39,7 +39,12 @@
   "reading": "+{n}% reading: one per Ether received",
   "next": "Next Ether: in {n} pages",
   "contents": "Contents",
-  "groups": { "methods": "Methods", "reading": "Reading", "time": "Time", "rooms": "The rooms" },
+  "groups": {
+    "methods": "Methods",
+    "reading": "Reading",
+    "time": "Time",
+    "rooms": "The rooms"
+  },
   "pages": {
     "reading": {
       "name": "Reading",
@@ -112,21 +117,32 @@
       "figure": "The One-Armed Bandit",
       "description": "It gives. It takes back.",
       "locked": "This page is waiting\nfor a token to be played.",
-      "reels": { "time": "TIME", "value": "VALUE", "luck": "LUCK" }
+      "reels": {
+        "time": "TIME",
+        "value": "VALUE",
+        "luck": "LUCK"
+      }
     },
     "gear": {
       "name": "The Gear",
       "figure": "The Cogwheel",
       "description": "It turns while I read.",
       "locked": "This page is waiting\nfor the Digital Age to be bought.",
-      "branches": { "ages": "THE AGES", "cadence": "THE PACE" }
+      "branches": {
+        "ages": "THE AGES",
+        "cadence": "THE PACE"
+      }
     },
     "tasks": {
       "name": "Tasks",
       "figure": "The Sundial",
       "description": "One day, then another.",
       "locked": "This page is waiting\nfor the North to light up.",
-      "branches": { "gain": "THE GAIN", "count": "THE NUMBER", "once": "ONLY ONCE" }
+      "branches": {
+        "gain": "THE GAIN",
+        "count": "THE NUMBER",
+        "once": "ONLY ONCE"
+      }
     },
     "screen": {
       "name": "Digital",
@@ -139,6 +155,12 @@
       "figure": "The Chandelier",
       "description": "Colder than the night between the stars.",
       "locked": "This page is waiting\nfor a new Age."
+    },
+    "atelier": {
+      "name": "The Workshop",
+      "figure": "The Press",
+      "description": "Nothing is lost.",
+      "locked": "This page is waiting\nfor the South to light up."
     }
   },
   "stars": {
@@ -618,7 +640,9 @@
         "effect": "they slip into the white book, and their page opens"
       },
       "s": {
-        "name": "Later",
+        "name": "South",
+        "value": "The workshop:",
+        "effect": "curiosities arrive as you read, and its page opens",
         "note": "a direction, for later"
       },
       "d0": {
@@ -1037,6 +1061,68 @@
       "chip": {
         "name": "The chip",
         "effect": "secret method: its blurry memory"
+      }
+    },
+    "atelier": {
+      "screw": {
+        "name": "The screw",
+        "value": "The workshop:",
+        "effect": "curiosities arrive as you read, one an hour at most"
+      },
+      "f1": {
+        "name": "The left post, low",
+        "value": "The nose:",
+        "effect": "one curiosity in 7 carries an S piece"
+      },
+      "f2": {
+        "name": "The left post, high",
+        "value": "The nose:",
+        "effect": "one curiosity in 5 carries an S piece"
+      },
+      "a1": {
+        "name": "The right post, low",
+        "value": "The supply:",
+        "effect": "a curiosity every 45 min at most"
+      },
+      "a2": {
+        "name": "The right post, high",
+        "value": "The supply:",
+        "effect": "a curiosity every 30 min at most"
+      },
+      "h1": {
+        "name": "The bar, left",
+        "value": "A steady hand:",
+        "effect": "one piece in 6 is damaged coming out"
+      },
+      "h2": {
+        "name": "The bar, right",
+        "value": "A steady hand:",
+        "effect": "one piece in 10 is damaged coming out"
+      },
+      "e1": {
+        "name": "The platen, left",
+        "value": "The bookseller’s eye:",
+        "effect": "one piece in 5 arrives a notch better"
+      },
+      "e2": {
+        "name": "The platen, right",
+        "value": "The bookseller’s eye:",
+        "effect": "one piece in 3 arrives a notch better"
+      },
+      "b1": {
+        "name": "The base, left",
+        "value": "The workbench:",
+        "effect": "restoring takes 25% less time"
+      },
+      "b2": {
+        "name": "The base, right",
+        "value": "The workbench:",
+        "effect": "restoring takes half the time"
+      },
+      "p3": {
+        "name": "The base, middle",
+        "value": "The third press:",
+        "effect": "one more place at the workbench, after the first S book is bound"
       }
     }
   },

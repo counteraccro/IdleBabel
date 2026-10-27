@@ -228,7 +228,8 @@
     "hintRelicAstrolabe": "Under the stars, / someone tried to find / where he was.",
     "hintRelicHourglass": "Under the glass, / someone’s time / stopped running.",
     "hintRelicCompass": "Between day / and night, / someone lost their bearings.",
-    "hintTrueCatalogue": "A catalogue. / I leaf through it / like a child / in December."
+    "hintTrueCatalogue": "A catalogue. / I leaf through it / like a child / in December.",
+    "hintUnmakeMasterpiece": "Some books / are only worth / their pieces."
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",

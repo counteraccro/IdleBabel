@@ -6,7 +6,7 @@ import { messages } from '../../i18n';
 import { formatNumber } from '../../core/format';
 import { getLocale } from '../../i18n';
 import { saveGame } from '../../core/save';
-import { closeEtherium, etherSpendable, feedReady, prestige, prestigeGain } from '../../systems/prestige';
+import { closeEtherium, etherSpendable, feedReady, prestige, prestigeEther, prestigeGain } from '../../systems/prestige';
 import { readingGain, starAffordable } from '../../systems/etherium';
 import type { GameState } from '../../core/state';
 
@@ -79,7 +79,7 @@ export const feedEtherium = (state: GameState, done: () => void): void => {
     again
       ? etherium.confirm.againWarning
       : etherium.confirm.warning
-          .replace('{ether}', formatNumber(gain, getLocale()))
+          .replace('{ether}', formatNumber(prestigeEther(state), getLocale()))
           .replace('{reading}', formatNumber(shownReading(readingGain(state, gain)), getLocale())),
     false,
   );

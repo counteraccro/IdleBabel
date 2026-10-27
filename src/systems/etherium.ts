@@ -9,6 +9,7 @@ import {
   RELIC_BRANCH,
   S,
   SIMPLE,
+  THIRD_PRESS,
   neededFor,
   starById,
   STARS,
@@ -39,7 +40,9 @@ export const starOpen = (state: GameState, id: string): boolean => {
     afterLit(star, (before) => starLit(state, before)) &&
     (!needed || starLit(state, needed)) &&
     state.etherReceived >= etherNeeded(star.page) &&
-    drawnFor(state, star.page)
+    drawnFor(state, star.page) &&
+    // La troisième presse de l'atelier attend le premier livre S monté.
+    (id !== THIRD_PRESS || state.atelier.sBooks.length > 0)
   );
 };
 
@@ -203,7 +206,7 @@ export const relicStarLevel = (state: GameState, relic: string): number =>
   );
 
 /** Le niveau d'une branche (0 sans étoile) : la plus haute allumée. */
-const levelOf = (state: GameState, effect: Record<string, number>): number =>
+export const levelOf = (state: GameState, effect: Record<string, number>): number =>
   Math.max(0, ...Object.entries(effect).map(([id, level]) => (starLit(state, id) ? level : 0)));
 /** La Loterie, le levier : la chance qu'une Mimic attrapée lâche un jeton (data/lottery.ts, LOTTERY_STARS.token). */
 export const lotteryTokenLevel = (state: GameState): number => levelOf(state, EFFECT.lotteryToken);
@@ -213,6 +216,18 @@ export const lotteryTimeLevel = (state: GameState): number => levelOf(state, EFF
 export const lotteryValueLevel = (state: GameState): number => levelOf(state, EFFECT.lotteryValue);
 /** Le rouleau de la chance : la part de chaque résultat. */
 export const lotteryLuckLevel = (state: GameState): number => levelOf(state, EFFECT.lotteryLuck);
+
+/** Le Sud de l'Exploration : l'atelier des curiosités (seulement en débogage pour l'instant : systems/curiosities.ts). */
+export const atelierLit = (state: GameState): boolean => starLit(state, S.atelier);
+/** L'atelier : le flair (pièces S), l'arrivage, la main sûre, l'œil du libraire, l'établi (0 à 2), la troisième presse. */
+export const atelierLevels = (state: GameState) => ({
+  flair: levelOf(state, EFFECT.atelierFlair),
+  arrival: levelOf(state, EFFECT.atelierArrival),
+  hand: levelOf(state, EFFECT.atelierHand),
+  eye: levelOf(state, EFFECT.atelierEye),
+  bench: levelOf(state, EFFECT.atelierBench),
+  thirdPress: starLit(state, THIRD_PRESS),
+});
 
 /** La partie qui s'achève au prestige : ce dont la Porte se souvient. */
 export interface PreviousRun {

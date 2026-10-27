@@ -228,7 +228,8 @@
     "hintRelicAstrolabe": "Sous les étoiles, / quelqu’un a cherché / où il était.",
     "hintRelicHourglass": "Sous le verre, / le temps de quelqu’un / s’est arrêté de couler.",
     "hintRelicCompass": "Entre le jour / et la nuit, / quelqu’un a perdu le nord.",
-    "hintTrueCatalogue": "Un catalogue. / Je le feuillette / comme un enfant / en décembre."
+    "hintTrueCatalogue": "Un catalogue. / Je le feuillette / comme un enfant / en décembre.",
+    "hintUnmakeMasterpiece": "Certains livres / ne valent que / leurs morceaux."
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",

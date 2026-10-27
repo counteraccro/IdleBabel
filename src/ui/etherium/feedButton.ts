@@ -1,7 +1,7 @@
 import { el, type Component } from '../dom';
 import { getLocale, t } from '../../i18n';
 import { formatNumber } from '../../core/format';
-import { etherSpendable, feedReady, prestigeGain } from '../../systems/prestige';
+import { etherSpendable, feedReady, prestigeEther, prestigeGain } from '../../systems/prestige';
 import { feedEtherium } from './prestigeStory';
 import type { GameState } from '../../core/state';
 
@@ -31,8 +31,10 @@ export const createFeedButton = (state: GameState, shown: () => boolean, done: (
     const visible = shown() && !etherSpendable(state) && feedReady(state);
     root.hidden = !visible;
     if (!visible) return;
-    const gain = prestigeGain(state);
-    const text = gain >= 1 ? t('etherium.feed.button').replace('{n}', formatNumber(gain, getLocale())) : t('etherium.feed.again');
+    const text =
+      prestigeGain(state) >= 1
+        ? t('etherium.feed.button').replace('{n}', formatNumber(prestigeEther(state), getLocale()))
+        : t('etherium.feed.again');
     if (root.textContent !== text) root.textContent = text;
   };
   update();

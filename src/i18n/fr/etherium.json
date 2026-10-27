@@ -39,7 +39,12 @@
   "reading": "+{n} % de lecture : un par Éther reçu",
   "next": "Prochain Éther : dans {n} pages",
   "contents": "Sommaire",
-  "groups": { "methods": "Les méthodes", "reading": "Lire", "time": "Le temps", "rooms": "Les salles" },
+  "groups": {
+    "methods": "Les méthodes",
+    "reading": "Lire",
+    "time": "Le temps",
+    "rooms": "Les salles"
+  },
   "pages": {
     "reading": {
       "name": "Lecture",
@@ -112,21 +117,32 @@
       "figure": "Le Bandit manchot",
       "description": "Elle donne. Elle reprend.",
       "locked": "Cette page attend\nqu’un jeton soit joué.",
-      "reels": { "time": "LE TEMPS", "value": "LA VALEUR", "luck": "LA CHANCE" }
+      "reels": {
+        "time": "LE TEMPS",
+        "value": "LA VALEUR",
+        "luck": "LA CHANCE"
+      }
     },
     "gear": {
       "name": "Le Rouage",
       "figure": "La Roue dentée",
       "description": "Il tourne pendant que je lis.",
       "locked": "Cette page attend\nque l’Âge Numérique soit acheté.",
-      "branches": { "ages": "LES ÂGES", "cadence": "LA CADENCE" }
+      "branches": {
+        "ages": "LES ÂGES",
+        "cadence": "LA CADENCE"
+      }
     },
     "tasks": {
       "name": "Les Tâches",
       "figure": "Le Cadran solaire",
       "description": "Un jour, puis un autre.",
       "locked": "Cette page attend\nque le Nord s’allume.",
-      "branches": { "gain": "LE GAIN", "count": "LE NOMBRE", "once": "UNE SEULE FOIS" }
+      "branches": {
+        "gain": "LE GAIN",
+        "count": "LE NOMBRE",
+        "once": "UNE SEULE FOIS"
+      }
     },
     "screen": {
       "name": "Numérique",
@@ -139,6 +155,12 @@
       "figure": "Le Lustre",
       "description": "Plus froid que la nuit entre les étoiles.",
       "locked": "Cette page attend\nun Âge nouveau."
+    },
+    "atelier": {
+      "name": "L’atelier",
+      "figure": "La Presse",
+      "description": "Rien ne se perd.",
+      "locked": "Cette page attend\nque le Sud s’allume."
     }
   },
   "stars": {
@@ -618,7 +640,9 @@
         "effect": "elles se glissent dans le livre blanc, et leur page s’ouvre"
       },
       "s": {
-        "name": "Plus tard",
+        "name": "Sud",
+        "value": "L’atelier :",
+        "effect": "les curiosités arrivent en lisant, et sa page s’ouvre",
         "note": "une direction, plus tard"
       },
       "d0": {
@@ -1037,6 +1061,68 @@
       "chip": {
         "name": "La puce",
         "effect": "méthode secrète : son souvenir flou"
+      }
+    },
+    "atelier": {
+      "screw": {
+        "name": "La vis",
+        "value": "L’atelier :",
+        "effect": "les curiosités arrivent en lisant, une par heure au plus"
+      },
+      "f1": {
+        "name": "Le montant gauche, en bas",
+        "value": "Le flair :",
+        "effect": "une curiosité sur 7 porte une pièce S"
+      },
+      "f2": {
+        "name": "Le montant gauche, en haut",
+        "value": "Le flair :",
+        "effect": "une curiosité sur 5 porte une pièce S"
+      },
+      "a1": {
+        "name": "Le montant droit, en bas",
+        "value": "L’arrivage :",
+        "effect": "une curiosité toutes les 45 min au plus"
+      },
+      "a2": {
+        "name": "Le montant droit, en haut",
+        "value": "L’arrivage :",
+        "effect": "une curiosité toutes les 30 min au plus"
+      },
+      "h1": {
+        "name": "La barre, à gauche",
+        "value": "La main sûre :",
+        "effect": "une pièce sur 6 s’abîme en sortant"
+      },
+      "h2": {
+        "name": "La barre, à droite",
+        "value": "La main sûre :",
+        "effect": "une pièce sur 10 s’abîme en sortant"
+      },
+      "e1": {
+        "name": "Le plateau, à gauche",
+        "value": "L’œil du libraire :",
+        "effect": "une pièce sur 5 arrive un cran au-dessus"
+      },
+      "e2": {
+        "name": "Le plateau, à droite",
+        "value": "L’œil du libraire :",
+        "effect": "une pièce sur 3 arrive un cran au-dessus"
+      },
+      "b1": {
+        "name": "Le socle, à gauche",
+        "value": "L’établi :",
+        "effect": "restaurer prend 25 % de temps en moins"
+      },
+      "b2": {
+        "name": "Le socle, à droite",
+        "value": "L’établi :",
+        "effect": "restaurer prend moitié moins de temps"
+      },
+      "p3": {
+        "name": "Le socle, au milieu",
+        "value": "La troisième presse :",
+        "effect": "une place de plus à l’établi, après le premier livre S monté"
       }
     }
   },

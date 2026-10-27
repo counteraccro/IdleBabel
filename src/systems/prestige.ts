@@ -12,6 +12,8 @@ import { levelOf, maxLevel } from './technologies';
 import { sealEvent } from './seals';
 import { catchMimic } from './mimic';
 import { tasksAfterPrestige } from './tasks';
+import { curiosityEther } from './curiosityEffects';
+import { atelierOpen, emptyCart } from './curiosities';
 import { runHooks } from '../mods/hooks';
 import { rule } from '../mods/quantities';
 import type { GameState } from '../core/state';
@@ -30,6 +32,21 @@ export const etherDeserved = (state: GameState): number => Math.floor(Math.cbrt(
 
 /** Ce que rapporterait le prestige maintenant. */
 export const prestigeGain = (state: GameState): number => Math.max(0, etherDeserved(state) - state.etherReceived);
+
+/**
+ * L'Éther en plus que donne l'atelier pour un gain (les curiosités d'Éther du lutrin, le pilon) : ce qui en est entier, et le
+ * reste, gardé pour le prestige d'après (rien ne se perd).
+ */
+export const atelierEther = (state: GameState, gain: number): { whole: number; rest: number } => {
+  const raw = gain * curiosityEther(state) + (gain >= 1 ? state.atelier.etherRest : 0);
+  return { whole: Math.floor(raw), rest: raw - Math.floor(raw) };
+};
+
+/** Ce que rapporterait le prestige maintenant, l'Éther de l'atelier compris (il ne compte pas dans l'Éther reçu). */
+export const prestigeEther = (state: GameState): number => {
+  const gain = prestigeGain(state);
+  return gain + atelierEther(state, gain).whole;
+};
 
 /** Le livre violet luit : le prestige rapporte au moins 1 Éther, et l'Éther ne se dépense pas déjà. */
 export const prestigeReady = (state: GameState): boolean => prestigeGain(state) >= 1 && !state.etheriumInHand;
@@ -80,6 +97,15 @@ export const prestige = (state: GameState, now = Date.now()): number => {
   state.etherReceived += gain;
   state.ether += gain;
   if (counted) state.exiles += 1;
+  // L'atelier (systems/curiosities.ts) : son Éther en plus (à dépenser, pas reçu : la lecture ne le compte pas, le prochain
+  // prestige non plus) ; le pilon repart à zéro, le chariot se vide.
+  if (counted && atelierOpen(state)) {
+    const extra = atelierEther(state, gain);
+    state.ether += extra.whole;
+    state.atelier.etherRest = extra.rest;
+    state.atelier.pulp = 0;
+    emptyCart(state, Math.random);
+  }
   const previous = { tools: { ...state.tools }, pages: state.totalPagesRead - state.wake.pages, knowledge: state.cycleKnowledge };
   const levels = { ...state.technologies };
   state.pages = 0;

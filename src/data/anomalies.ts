@@ -1,4 +1,5 @@
 import type { SentenceDef } from './sentences';
+import { ATELIER_ON } from './atelierOn';
 
 /**
  * Anomalies : des phrases qui ne débloquent rien, à collectionner sur toute la partie (le fil rouge,
@@ -8,6 +9,9 @@ import type { SentenceDef } from './sentences';
  */
 export const ANOMALY_FAMILIES = ['structure', 'speaks', 'said', 'others', 'unwritten', 'numbers', 'ordinary', 'hints'] as const;
 export type AnomalyFamily = (typeof ANOMALY_FAMILIES)[number];
+
+/** L'indice du secret de l'atelier ne tombe qu'une fois l'atelier ouvert. */
+export const HINT_ATELIER = 'hintUnmakeMasterpiece';
 
 const IDS: Record<AnomalyFamily, readonly string[]> = {
   // La structure de la Bibliothèque (chiffres de Borges), qui ne tombe jamais juste.
@@ -150,6 +154,8 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintRelicHourglass',
     // La Boussole (24/10), dans la salle jour-nuit.
     'hintRelicCompass',
+    // L'atelier (27/10) : détruire un livre S. Seulement en débogage pour l'instant, comme l'atelier (data/atelierOn.ts).
+    ...(ATELIER_ON ? [HINT_ATELIER] : []),
   ],
 };
 

@@ -1,6 +1,7 @@
 import { ETHER_WEIGHT } from './etherium';
 import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE } from './tools';
 import { GEAR_AGES } from './gear';
+import { ATELIER_ON } from './atelierOn';
 
 /**
  * L'Etherium en constellations (validé avec l'auteur le 06/10/2026, .ai/plan-etherium-constellations.md) : une figure
@@ -22,12 +23,16 @@ export const ETHERIUM_GROUPS = [
   { id: 'methods', contents: 0, pages: ['ages', 'gear', 'reading', 'start', 'memory', 'screen', 'chandelier'] },
   { id: 'reading', contents: 1, pages: ['hands', 'quill', 'knowledge', 'finds'] },
   { id: 'time', contents: 1, pages: ['away', 'weight'] },
-  { id: 'rooms', contents: 2, pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks'] },
+  // L'atelier (27/10), après les Tâches : seulement en mode débogage pour sa première version (data/atelierOn.ts).
+  { id: 'rooms', contents: 2, pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks', 'atelier'] },
 ] as const;
 
-/** L'ordre des pages dans le livre : celui des groupes. */
-export const ETHERIUM_PAGES = ETHERIUM_GROUPS.flatMap((group) => group.pages);
 export type PageId = (typeof ETHERIUM_GROUPS)[number]['pages'][number];
+/** Les pages d'un groupe, telles que le livre les montre (sans l'atelier hors débogage). */
+export const groupPages = (group: (typeof ETHERIUM_GROUPS)[number]): readonly PageId[] =>
+  group.pages.filter((page) => ATELIER_ON || page !== 'atelier');
+/** L'ordre des pages dans le livre : celui des groupes. */
+export const ETHERIUM_PAGES: readonly PageId[] = ETHERIUM_GROUPS.flatMap(groupPages);
 
 export interface Star {
   /** « page.étoile » (les noms de la maquette). */
@@ -211,7 +216,8 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['explore', 'e', null, 2],
   ['explore', 'w', null, 5],
   ['explore', 'n', null, 2],
-  ['explore', 's', null, 0],
+  // Le Sud, à 10 (27/10) : l'atelier des curiosités, et sa page.
+  ['explore', 's', null, 10],
   ['explore', 'd0', null, 5],
   ['explore', 'd1', null, 0],
   ['explore', 'd2', null, 0],
@@ -266,6 +272,21 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['tasks', 'p1', null, 20],
   ['tasks', 'p2', 'p1', 60],
   ['tasks', 'p3', 'p2', 200],
+  // L'atelier, « La Presse » (27/10, .ai/plan-curiosites.md, validée par l'auteur : « je valide, prix hauts pour le flair 2 et
+  // l'arrivage 2 ») : la vis est offerte quand le Sud s'allume ; le montant gauche porte le flair (les pièces S), le droit
+  // l'arrivage ; la barre de la vis la main sûre ; le plateau l'œil du libraire ; le socle l'établi ; la troisième presse, au
+  // sommet, ne s'allume qu'après le premier livre S monté (l'auteur : « cela doit se mériter »).
+  ['atelier', 'f1', null, 60],
+  ['atelier', 'f2', 'f1', 2000],
+  ['atelier', 'a1', null, 50],
+  ['atelier', 'a2', 'a1', 1500],
+  ['atelier', 'h1', null, 20],
+  ['atelier', 'h2', 'h1', 60],
+  ['atelier', 'e1', null, 25],
+  ['atelier', 'e2', 'e1', 80],
+  ['atelier', 'b1', null, 20],
+  ['atelier', 'b2', 'b1', 60],
+  ['atelier', 'p3', null, 3000],
 ];
 
 export const STARS: readonly Star[] = RAW.map(([page, id, after, cost]) => ({
@@ -286,11 +307,21 @@ export const CLOSED: ReadonlySet<string> = new Set([
   'ages.dim',
   'ages.inf',
   'memory.a0',
-  // Les pointes de la Rose des vents qui n'ouvrent encore rien.
-  ...['s', 'd1', 'd2', 'd3'].map((id) => `explore.${id}`),
+  // Les pointes de la Rose des vents qui n'ouvrent encore rien ; le Sud et l'atelier, hors débogage (data/atelierOn.ts).
+  ...['d1', 'd2', 'd3'].map((id) => `explore.${id}`),
+  ...(ATELIER_ON ? [] : ['explore.s', ...RAW.filter(([page]) => page === 'atelier').map(([page, id]) => `${page}.${id}`)]),
   // La dent du Rouage de l'Âge Dimensionnel, tant que cet Âge n'existe pas.
   'gear.a5',
 ]);
+
+/** Les étoiles de l'atelier (le Sud compris) : fermées hors débogage, mais jamais rendues (core/closedStars.ts). */
+export const ATELIER_STARS: ReadonlySet<string> = new Set([
+  'explore.s',
+  ...RAW.filter(([page]) => page === 'atelier').map(([page, id]) => `${page}.${id}`),
+]);
+
+/** La troisième presse ne s'allume qu'après le premier livre S monté. */
+export const THIRD_PRESS = 'atelier.p3';
 
 /** Fermées, mais sans bloquer la suite : les étoiles d'après la Goutte attendent celle d'avant elle. */
 const PASSABLE: ReadonlySet<string> = new Set(['memory.a0']);
@@ -321,6 +352,7 @@ export const PAGE_NEEDS: Partial<Record<PageId, string>> = {
   mimic: 'explore.e',
   relics: 'explore.w',
   tasks: 'explore.n',
+  atelier: 'explore.s',
   screen: DIGITAL_AGE,
   chandelier: QUANTUM_AGE,
 };
@@ -438,6 +470,12 @@ export const EFFECT = {
   lotteryTime: { 'lottery.g1': 1, 'lottery.g2': 2 },
   lotteryValue: { 'lottery.m1': 1, 'lottery.m2': 2 },
   lotteryLuck: { 'lottery.d1': 1, 'lottery.d2': 2 },
+  /** Les branches de l'atelier (data/curiosities.ts) : le niveau de chacune, la plus haute allumée compte. */
+  atelierFlair: { 'atelier.f1': 1, 'atelier.f2': 2 },
+  atelierArrival: { 'atelier.a1': 1, 'atelier.a2': 2 },
+  atelierHand: { 'atelier.h1': 1, 'atelier.h2': 2 },
+  atelierEye: { 'atelier.e1': 1, 'atelier.e2': 2 },
+  atelierBench: { 'atelier.b1': 1, 'atelier.b2': 2 },
   /** Le niveau du bonus de chaque relique (data/relics.ts, RelicDef.bonus) : ses deux étoiles ; la plus haute compte. */
   relicLevel: {
     'relics.l1': 1,
@@ -504,6 +542,8 @@ export const S = {
   relics: 'explore.w',
   patience: 'relics.d',
   trueStory: 'explore.d0',
+  /** Le Sud : l'atelier des curiosités. */
+  atelier: 'explore.s',
   /** La puce du Lustre : le souvenir flou du Qubit (sa phrase, data/sentences.ts). */
   qubit: 'chandelier.chip',
 } as const;

@@ -8,6 +8,7 @@ import { mimicUnlocked, relicsUnlocked } from '../../systems/etherium';
 import { isDeciphered } from '../../systems/decipher';
 import { sentenceShown } from '../../systems/sentences';
 import { tasksOpen } from '../../systems/tasks';
+import { atelierOpen } from '../../systems/curiosities';
 import { CAPTION_WIDTH, fitCaption, folio, heading, textWidth, type Item, type TextItem } from './pageItems';
 import type { GameState } from '../../core/state';
 import { TOOLS, type ToolId } from '../../data/tools';
@@ -48,6 +49,7 @@ const plateShown = (state: GameState, plate: PlateId): boolean => {
   if (plate === 'mods') return plateSeals('mods').length > 0;
   if (plate === 'lottery') return state.lottery.draws > 0 || statsRevealed();
   if (plate === 'tasks') return tasksOpen(state) || state.tasks.dailyDone > 0 || statsRevealed();
+  if (plate === 'atelier') return atelierOpen(state) || state.atelier.found > 0 || statsRevealed();
   if (plate === 'relics') return relicsUnlocked(state) || Object.keys(state.relics.found).length > 0 || statsRevealed();
   return true;
 };

@@ -44,6 +44,12 @@ const readSave = (raw: string, defaultLocale: Locale): GameState | null => {
                   mimic: { ...initial.mimic, ...saved.mimic },
                   relics: { ...initial.relics, ...saved.relics, found: { ...saved.relics?.found } },
                   lottery: { ...initial.lottery, ...saved.lottery, effects: [...(saved.lottery?.effects ?? [])] },
+                  atelier: {
+                    ...initial.atelier,
+                    ...saved.atelier,
+                    drawers: { ...initial.atelier.drawers, ...saved.atelier?.drawers },
+                    scrap: { ...initial.atelier.scrap, ...saved.atelier?.scrap },
+                  },
                   puzzles: { ...initial.puzzles, ...saved.puzzles, grids: { ...saved.puzzles?.grids } },
                   tasks: {
                     ...initial.tasks,

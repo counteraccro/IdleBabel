@@ -1,4 +1,4 @@
-import { ETHERIUM_GROUPS, ETHERIUM_PAGES, type PageId } from '../../data/etheriumStars';
+import { ETHERIUM_GROUPS, ETHERIUM_PAGES, groupPages, type PageId } from '../../data/etheriumStars';
 import { etherSpendable, nextEtherPages } from '../../systems/prestige';
 import { etherReading, weightPresses } from '../../systems/etherium';
 import { formatCount, formatNumber, writeDigits } from '../../core/format';
@@ -84,7 +84,7 @@ const rows = (state: GameState, part: number): Row[] => {
   const result: Row[] = [];
   let y = ENTRY_TOP;
   for (const group of groups) {
-    const pages = group.pages.filter((page) => !pageLocked(state, page));
+    const pages = groupPages(group).filter((page) => !pageLocked(state, page));
     if (pages.length === 0) continue;
     result.push({ kind: 'group', id: group.id, y });
     y += GROUP_STEP;
@@ -149,7 +149,7 @@ export const createEtheriumPages = (state: GameState, goTo: (page: number) => vo
         rows(state, part).flatMap((row) =>
           row.kind === 'page' ? [{ id: row.page, x: 100, y: row.y - 6, w: 480, h: ENTRY_STEP - 4, pointer: true }] : [],
         ),
-      press: (id) => goTo(first + ETHERIUM_PAGES.indexOf(id as (typeof ETHERIUM_PAGES)[number])),
+      press: (id) => goTo(first + ETHERIUM_PAGES.indexOf(id as PageId)),
     });
   return [
     nightLeaf({ draw: (ctx) => drawTitle(ctx, state), spots: () => [], press: () => {} }),

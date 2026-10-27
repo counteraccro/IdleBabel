@@ -18,6 +18,8 @@ import { ONCE_TASKS } from './tasks';
 import { allLotteryBoons, allLotteryCurses } from '../systems/lotteryEffects';
 import type { ModText } from '../mods/modSeals';
 import type { TomeSource } from '../systems/endings';
+import { ATELIER_ON } from './atelierOn';
+import { LECTERN_PLACES, NEW, PARTS, RANK_S, SETS } from './curiosities';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
@@ -36,6 +38,8 @@ export const PLATES = [
   'relics',
   'lottery',
   'tasks',
+  // L'atelier (27/10) : seulement en débogage pour l'instant (data/atelierOn.ts) ; sans sceau, la planche n'a pas de page.
+  'atelier',
   'rare',
   'seals',
   'secrets',
@@ -136,6 +140,26 @@ const powers = (step: number, from: number, to: number): number[] =>
   Array.from({ length: (to - from) / step + 1 }, (_, index) => Number(`1e${from + index * step}`));
 /** Pages par seconde : 1, 10… 10⁸, puis 10¹⁰, 10¹²… 10³⁰. */
 const SPEED_STEPS = [...powers(1, 0, 8), ...powers(2, 10, 30)];
+
+/**
+ * Les sceaux de l'atelier : curiosités trouvées, démontées, pièces remontées, rangs montés, pièces S trouvées (différentes) ;
+ * chaque livre S monté, les huit ; une curiosité comme neuve, le lutrin plein, un livre arrivé F mené jusqu'à S.
+ */
+export const ATELIER_SEALS: SealDef[] = [
+  ...series('curiositiesFound', 'atelier', (s) => s.atelier.found, [1, 10, 50, 100, 410]),
+  ...series('curiositiesDestroyed', 'atelier', (s) => s.atelier.destroyed, [1, 10, 50, 100, 410]),
+  ...series('piecesMounted', 'atelier', (s) => s.atelier.mounted, [1, 10, 50, 100]),
+  ...series('rankUps', 'atelier', (s) => s.atelier.rankUps, [1, 10, 50, 100]),
+  ...series('sPiecesFound', 'atelier', (s) => s.atelier.sPieces.length, [1, 8, 16, SETS.length * PARTS.length]),
+  ...SETS.map((_, set) => seal(`atelierBook-${set}`, 'atelier', (s) => s.atelier.sBooks.includes(set))),
+  seal('atelierBooksAll', 'atelier', (s) => SETS.every((_, set) => s.atelier.sBooks.includes(set))),
+  seal('likeNew', 'atelier', (s) => s.atelier.books.some((book) => PARTS.every((part) => book.parts[part].state === NEW))),
+  seal('lecternFull', 'atelier', (s) => s.atelier.books.filter((book) => book.where === 'lectern').length >= LECTERN_PLACES),
+  seal('fromScrapToTop', 'atelier', (s) => s.atelier.books.some((book) => book.startRank === 0 && book.rank === RANK_S)),
+];
+
+/** Le secret de l'atelier : un livre S détruit (systems/curiosities.ts). */
+export const ATELIER_SECRET: SealDef = seal('unmakeMasterpiece', 'secrets', (s) => s.atelier.sDestroyed > 0);
 
 /** Le sceau de toutes les étoiles ouvertes (« Tout le ciel ») : son id ne change pas quand des étoiles s'ouvrent. */
 export const STARS_LIT_ALL = 'starsLit-all';
@@ -254,6 +278,9 @@ export const SEALS: readonly SealDef[] = [
     phrases: true,
   })),
 
+  // L'atelier (27/10, .ai/plan-curiosites.md ; l'auteur : « je valide les sceaux ») : seulement en débogage pour l'instant.
+  ...(ATELIER_ON ? ATELIER_SEALS : []),
+
   // Les sceaux apposés : ceux du jeu (pas ceux des mods), sans compter ceux de cette planche ; « tous », tous les autres
   // (l'auteur, 21/10 : « débloque 10 sceaux, 25, 50, 100, 410, tous »).
   ...series('sealsApplied', 'seals', (s) => sealsApplied(s), [10, 25, 50, 100, 410]),
@@ -346,6 +373,8 @@ export const SEALS: readonly SealDef[] = [
   { ...seal('tomeTask', 'secrets', (s) => s.tomeFrom.task !== undefined), tomeFrom: 'task' },
   { ...seal('tomeReading', 'secrets', (s) => s.tomeFrom.reading !== undefined), tomeFrom: 'reading' },
   { ...seal('tomeSeals', 'secrets', (s) => s.tomeFrom.seals !== undefined), tomeFrom: 'seals' },
+  // Un livre S de l'atelier détruit (systems/curiosities.ts) : seulement en débogage pour l'instant, comme l'atelier.
+  ...(ATELIER_ON ? [ATELIER_SECRET] : []),
   // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).
   seal('cheat', 'secrets', (s) => s.modded !== null),
 ];

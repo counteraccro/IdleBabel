@@ -21,6 +21,7 @@ import { sealFindMultiplier } from './seals';
 import { findsMultiplier, knowledgePerFind } from './etherium';
 import { findsBoon, knowledgeBoon } from './boons';
 import { swallow } from './mimic';
+import { curiosityFinds, curiosityKnowledge } from './curiosityEffects';
 import { runHooks } from '../mods/hooks';
 import { modded } from '../mods/quantities';
 import type { GameState } from '../core/state';
@@ -48,7 +49,13 @@ export const maxTurnsPerSecond = (state: GameState): number => turnCap ?? turnsP
 export const findChance = (state: GameState): number =>
   forced
     ? 1
-    : BASE_FIND_CHANCE * filterMultiplier(state) * sealFindMultiplier(state) * findsMultiplier(state) * findsBoon() * modded('findChance');
+    : BASE_FIND_CHANCE *
+      filterMultiplier(state) *
+      sealFindMultiplier(state) *
+      findsMultiplier(state) *
+      findsBoon() *
+      curiosityFinds(state) *
+      modded('findChance');
 
 /** Pages tournées dans le livre en main depuis le début de la partie. */
 const pagesTurned = (state: GameState): number => state.booksFinished * PAGES_PER_BOOK + state.bookPage;
@@ -200,7 +207,12 @@ export const findText = (find: Find): string => {
 /** La Connaissance d'une trouvaille. Les bonus multiplient : arrondi au supérieur, la Connaissance se compte en entiers. */
 export const findKnowledge = (state: GameState): number =>
   Math.ceil(
-    knowledgePerFind(state) * taskKnowledge(state) * tomeKnowledgeMultiplier(state) * knowledgeBoon() * modded('knowledge') +
+    knowledgePerFind(state) *
+      taskKnowledge(state) *
+      tomeKnowledgeMultiplier(state) *
+      knowledgeBoon() *
+      curiosityKnowledge(state) *
+      modded('knowledge') +
       relicKnowledge(state),
   );
 

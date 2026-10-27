@@ -6,6 +6,7 @@ import { PAGES_PER_LEAF } from './books';
 import { etherReading, handsMultiplier } from './etherium';
 import { clickBoon, fourTen } from './boons';
 import { relicReading } from './relics';
+import { curiosityClick } from './curiosityEffects';
 import { hookProduct } from '../mods/hooks';
 import { modded } from '../mods/quantities';
 
@@ -20,7 +21,7 @@ export const PAGES_PER_CLICK = PAGES_PER_LEAF;
  */
 export const pagesPerClick = (state: GameState): number => {
   const { leaf, share } = clickParts(state);
-  return (leaf + share) * handsMultiplier(state) * clickBoon() * hookProduct('click') * modded('click');
+  return (leaf + share) * handsMultiplier(state) * clickBoon() * curiosityClick(state) * hookProduct('click') * modded('click');
 };
 
 /**

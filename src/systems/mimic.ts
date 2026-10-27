@@ -3,6 +3,7 @@ import { giveTome, nextTome } from './endings';
 import { mimicComesFactor, mimicGivesBonus, mimicUnlocked } from './etherium';
 import { hookAllows, runHooks } from '../mods/hooks';
 import { modded } from '../mods/quantities';
+import { curiosityMimicGives } from './curiosityEffects';
 import { goldenEatsKnowledge, goldenHere } from './goldenMimic';
 import { tokenChance } from './lotteryStars';
 import { relicMimicComes } from './relics';
@@ -21,7 +22,8 @@ export const mimicEvery = (state: GameState): number =>
   (MIMIC_EVERY / (mimicComesFactor(state) * relicMimicComes(state))) * modded('mimicEvery');
 
 /** Ce qu'elle rend en plus de ce qu'elle a avalé : 10 %, et les dents du bas. */
-export const mimicBonusShare = (state: GameState): number => Math.max(0, MIMIC_BONUS + mimicGivesBonus(state) + modded('mimicGives'));
+export const mimicBonusShare = (state: GameState): number =>
+  Math.max(0, MIMIC_BONUS + mimicGivesBonus(state) + curiosityMimicGives(state) + modded('mimicGives'));
 
 /**
  * Ce qu'elle laisse de la lecture des méthodes : tant qu'elle est là, −(ce qu'elle rendra en plus), −50 % au plus.

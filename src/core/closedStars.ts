@@ -1,4 +1,4 @@
-import { CLOSED, starById } from '../data/etheriumStars';
+import { ATELIER_STARS, CLOSED, starById } from '../data/etheriumStars';
 import { DIGITAL_AGE } from '../data/tools';
 import type { GameState } from './state';
 
@@ -13,7 +13,8 @@ const OLD_QUANTUM_COST = 10;
  * récupère les 10 Éther d'alors.
  */
 export const refundClosedStars = (state: GameState, beforeClosing = false): GameState => {
-  const closes = (id: string): boolean => CLOSED.has(id) || (beforeClosing && id === DIGITAL_AGE);
+  // L'atelier, fermé hors débogage (data/atelierOn.ts) : ses étoiles allumées en débogage restent, sans rien faire.
+  const closes = (id: string): boolean => (CLOSED.has(id) && !ATELIER_STARS.has(id)) || (beforeClosing && id === DIGITAL_AGE);
   const closed = state.etherium.filter(closes);
   if (closed.length === 0) return state;
   const cost = (id: string): number => (id === DIGITAL_AGE ? OLD_QUANTUM_COST : (starById(id)?.cost ?? 0));

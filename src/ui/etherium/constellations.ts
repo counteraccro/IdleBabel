@@ -308,6 +308,16 @@ const chandelierLines = (): [number, number][][] => {
 };
 const CELL = 80;
 
+// L'atelier, « La Presse » (27/10) : une presse à relier de face, le socle, les deux montants, la traverse, la vis et sa barre,
+// le plateau qui descend sur une pile de feuilles.
+const SCREW = [320, 420] as const;
+const PRESS_TOP = 330;
+const PRESS_FOOT = 650;
+const PRESS_SIDES = [200, 440] as const;
+/** Le filet de la vis, en zigzag, de la traverse au plateau. */
+const screwThread = (): (readonly [number, number])[] =>
+  Array.from({ length: 14 }, (_, i) => [SCREW[0] + (i % 2 ? 8 : -8), PRESS_TOP + 36 + i * 10] as const);
+
 export const FIGURES: Record<PageId, Figure> = {
   // Le livre vu de face : le dos au milieu ; chaque page part du haut du dos, suit le haut de la page, puis le bord
   // jusqu'au coin du bas.
@@ -774,6 +784,63 @@ export const FIGURES: Record<PageId, Figure> = {
       labelKeys: 'etherium.pages.tasks.branches',
       labelSize: 11,
       labelSpacing: 1.5,
+    },
+  },
+  // L'atelier, « La Presse » : la vis offerte ; le montant gauche porte le flair, le droit l'arrivage ; la barre de la vis la
+  // main sûre ; le plateau l'œil du libraire ; le socle l'établi, et en son milieu la troisième presse.
+  atelier: {
+    spots: {
+      screw: SCREW,
+      f1: [PRESS_SIDES[0], 580],
+      f2: [PRESS_SIDES[0], 420],
+      a1: [PRESS_SIDES[1], 580],
+      a2: [PRESS_SIDES[1], 420],
+      h1: [250, 300],
+      h2: [390, 300],
+      e1: [255, 510],
+      e2: [385, 510],
+      b1: [175, PRESS_FOOT],
+      b2: [465, PRESS_FOOT],
+      p3: [320, PRESS_FOOT],
+    },
+    deco: [],
+    given: { id: 'screw', opens: ['f1', 'a1', 'h1', 'e1', 'b1', 'p3'] },
+    sketch: {
+      lines: [
+        // Le socle, sur deux planches ; les montants ; la vis, de sa barre au plateau, et son filet.
+        [
+          [140, PRESS_FOOT],
+          [500, PRESS_FOOT],
+        ],
+        [
+          [150, PRESS_FOOT + 18],
+          [490, PRESS_FOOT + 18],
+        ],
+        ...PRESS_SIDES.map((x): (readonly [number, number])[] => [
+          [x, PRESS_FOOT],
+          [x, PRESS_TOP],
+        ]),
+        [
+          [SCREW[0], 300],
+          [SCREW[0], 500],
+        ],
+        screwThread(),
+        [
+          [250, 300],
+          [390, 300],
+        ],
+      ],
+      rings: [
+        [242, 300, 8],
+        [398, 300, 8],
+      ],
+      boxes: [
+        // La traverse, le plateau, la pile de feuilles dessous.
+        [180, PRESS_TOP, 280, 26, 4],
+        [240, 500, 160, 20, 3],
+        [262, 590, 116, 60, 2],
+      ],
+      strong: true,
     },
   },
   // Le Rouage, « La Roue dentée » : l'axe met le Rouage en marche ; la jante porte les Âges à gauche (les deux derniers

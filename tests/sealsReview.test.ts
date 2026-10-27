@@ -3,7 +3,7 @@ import { createInitialState } from '../src/core/state';
 import { passTime } from '../src/core/absence';
 import { SEALS, STARS_LIT_ALL } from '../src/data/seals';
 import { ANOMALIES, hintSeal } from '../src/data/anomalies';
-import { OPEN_STARS, STARS } from '../src/data/etheriumStars';
+import { ATELIER_STARS, OPEN_STARS, STARS } from '../src/data/etheriumStars';
 import { checkSeals } from '../src/systems/seals';
 import { closeEtherium, prestige } from '../src/systems/prestige';
 import { lightStar } from '../src/systems/etherium';
@@ -54,7 +54,8 @@ describe('revue des sceaux (08/10)', () => {
     // Les Âges d'après le Numérique, la Goutte, les quatre pointes de la Rose des vents qui n'ouvrent encore rien (le Nord-Est
     // donne le tome 1 depuis le 18/10) ; « Une dernière pour la route » s'ouvre le 18/10 (le tome 4) ; les deux dents du
     // Rouage qui attendaient leur Âge (19/10), celle de l'Âge Quantique ouverte le 24/10.
-    expect(OPEN_STARS.length).toBe(STARS.length - 8);
+    // L'atelier (27/10), fermé hors débogage : le Sud (déjà compté) et ses onze étoiles.
+    expect(OPEN_STARS.length).toBe(STARS.length - 8 - (ATELIER_STARS.size - 1));
   });
 
   it('scelle la Connaissance trouvée, et le livre blanc', () => {

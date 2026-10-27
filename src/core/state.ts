@@ -11,6 +11,7 @@ import type { RelicId } from '../data/relics';
 import { RECALC_AFTER_WAKE, type DailyKind } from '../data/tasks';
 import type { LotteryBoonId, LotteryCurseId, LotteryEffectId, OutcomeId } from '../data/lottery';
 import type { TomeSource } from '../systems/endings';
+import { PARTS, PULP_KEEP, SETS, type FamilyId, type PieceId } from '../data/curiosities';
 
 export const SAVE_VERSION = 1;
 
@@ -142,6 +143,90 @@ export interface LotteryState {
   daily?: { day: string; left: number; given: number };
 }
 
+/** Une pièce d'une curiosité (data/curiosities.ts) : son état (0 médiocre à 3 neuf), son dessin, son livre S s'il en a un. */
+export interface CuriosityPiece {
+  state: number;
+  /** La teinte de son cuir (ou de son papier marbré) et la graine de son dessin : une pièce garde le sien d'un livre à l'autre. */
+  hue: number;
+  seed: number;
+  /** Une pièce S : le numéro de son livre S (data/curiosities.ts, SETS). */
+  set?: number;
+}
+
+/** Une curiosité (systems/curiosities.ts) : sur le chariot, couchée dessus (une pièce S), ou au lutrin. */
+export interface Curiosity {
+  id: number;
+  /** 0 (F) à 6 (S). */
+  rank: number;
+  /** Son rang à l'arrivée (le sceau « Du rebut au sommet »). */
+  startRank: number;
+  family: FamilyId;
+  parts: Record<PieceId, CuriosityPiece>;
+  where: 'cart' | 'top' | 'lectern';
+  /** Sa place sur le chariot (0 à 9) ou au lutrin (0 à 2) ; -1 couchée sur le dessus. */
+  slot: number;
+  locked: boolean;
+  /** Le malus (dès B), le 2e bonus (dès A) ; ceux qui viendront au prochain rang, tirés d'avance pour les montrer. */
+  malus?: FamilyId;
+  second?: FamilyId;
+  nextMalus?: FamilyId;
+  nextSecond?: FamilyId;
+  /** Un livre S : son numéro (SETS). */
+  set?: number;
+  /** Le titre de ses plats (charabia de Babel, sa graine). */
+  title: number;
+}
+
+/** Ce que fait une presse : remonter une pièce du tiroir sur un livre, ou restaurer une pièce S (d'un livre ou du carnet). */
+export interface PressJob {
+  kind: 'mount' | 'restore';
+  /** Le livre (son id), ou le livre S du carnet (son numéro). */
+  book?: number;
+  carnet?: number;
+  part: PieceId;
+  /** L'état qu'aura la pièce. */
+  to: number;
+  /** La pièce du tiroir qu'on remonte (son dessin tiré à la sortie du tiroir). */
+  piece?: CuriosityPiece;
+  /** Fin (ms, temps réel : les presses travaillent aussi jeu fermé) ; sa durée entière. */
+  end: number;
+  total: number;
+}
+
+/** L'atelier des curiosités (systems/curiosities.ts) : gardé au prestige (le chariot se vide, data/curiosities.ts). */
+export interface AtelierState {
+  books: Curiosity[];
+  nextId: number;
+  /** Les tiroirs : pour chaque pièce, combien de chaque état (médiocre → neuf). */
+  drawers: Record<PieceId, number[]>;
+  /** Les pages de réemploi. */
+  reserve: number;
+  /** Le carnet des pièces S : pour chaque livre S, ses pièces trouvées. */
+  notebook: Partial<Record<PieceId, CuriosityPiece>>[];
+  jobs: PressJob[];
+  /** La règle du rebut : au rebut dès l'arrivée, rang ≤ … et état ≤ … (rang -1 : rien). */
+  scrap: { rank: number; state: number };
+  /** Le pilon : ses points, le stock gardé par tiroir (-1 : tout), l'Éther pas encore entier qu'il a donné. */
+  pulp: number;
+  keep: number;
+  etherRest: number;
+  /** Secondes de jeu depuis la dernière arrivée ; le livre lu qu'attend la suivante (-1 : le temps n'est pas encore là). */
+  sinceArrival: number;
+  waitBook: number;
+  /** Une curiosité arrivée, une presse finie : l'étoile du trousseau, jusqu'à ce qu'on ouvre l'atelier. */
+  news: boolean;
+  /** Ce que comptent les sceaux, depuis toujours. */
+  found: number;
+  destroyed: number;
+  mounted: number;
+  rankUps: number;
+  /** Livres S détruits (le sceau secret « Défaire un chef-d'œuvre »). */
+  sDestroyed: number;
+  /** Les pièces S trouvées (« livre:pièce »), et les livres S montés (leur numéro). */
+  sPieces: string[];
+  sBooks: number[];
+}
+
 /** Une tâche du jour (systems/dailyTasks.ts) : ce qu'elle compte, d'où, jusqu'où. */
 export interface DailyTask {
   kind: DailyKind;
@@ -220,6 +305,30 @@ export const noTasks = (): TasksState => ({
 });
 
 export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0, pending: null };
+
+/** Un atelier vide : rien sur le chariot, des tiroirs vides, le carnet sans pièce. */
+export const noAtelier = (): AtelierState => ({
+  books: [],
+  nextId: 1,
+  drawers: Object.fromEntries(PARTS.map((part) => [part, [0, 0, 0, 0]])) as Record<PieceId, number[]>,
+  reserve: 0,
+  notebook: SETS.map(() => ({})),
+  jobs: [],
+  scrap: { rank: -1, state: 0 },
+  pulp: 0,
+  keep: PULP_KEEP,
+  etherRest: 0,
+  sinceArrival: 0,
+  waitBook: -1,
+  news: false,
+  found: 0,
+  destroyed: 0,
+  mounted: 0,
+  rankUps: 0,
+  sDestroyed: 0,
+  sPieces: [],
+  sBooks: [],
+});
 
 export const NO_RELICS: RelicsState = { found: {}, active: null, lockedUntil: 0, changes: 0 };
 
@@ -330,6 +439,8 @@ export interface GameState {
   relics: RelicsState;
   /** La Loterie : jetons, bonus et malus en cours, la Mimic dorée. */
   lottery: LotteryState;
+  /** L'atelier des curiosités (systems/curiosities.ts), ouvert par le Sud de la Rose des vents. */
+  atelier: AtelierState;
   /** Les tâches : celles du jour, celles « une seule fois », leurs bonus pour toujours. */
   tasks: TasksState;
   /**
@@ -446,6 +557,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   mimic: { ...NO_MIMIC },
   relics: { ...NO_RELICS, found: {} },
   lottery: { ...NO_LOTTERY, effects: [] },
+  atelier: noAtelier(),
   tasks: noTasks(),
   sagaTomes: [],
   tomeToShow: null,

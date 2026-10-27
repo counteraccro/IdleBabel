@@ -6,6 +6,7 @@ import {
   HINTS_AFTER_LAST_TASK,
   HINTS_AFTER_MIMIC,
   HINTS_AFTER_PRESTIGE,
+  HINT_ATELIER,
 } from '../data/anomalies';
 import { TASK_STAR } from '../data/tasks';
 import { mimicUnlocked } from './etherium';
@@ -15,6 +16,8 @@ import { METHOD_CHAIN, type ToolId } from '../data/tools';
 import { currentTarget } from './sentences';
 import { relicHintFindable } from './relics';
 import { rule } from '../mods/quantities';
+import { atelierLit } from './etherium';
+import { ATELIER_ON } from '../data/atelierOn';
 import type { GameState } from '../core/state';
 
 /** Exemplaires de la méthode d'avant qu'il faut : METHOD_GATE, ou ce qu'a réglé un mod (`methodGate`). */
@@ -53,6 +56,7 @@ export const hintFindable = (state: GameState, id: string): boolean => {
   if (HINTS_AFTER_FIRST_TOME.includes(id) && !tomeFound(state, 0)) return false;
   if (HINTS_AFTER_MIMIC.includes(id) && !mimicUnlocked(state)) return false;
   if (HINTS_AFTER_LAST_TASK.includes(id) && !state.etherium.includes(TASK_STAR.last)) return false;
+  if (id === HINT_ATELIER && !(ATELIER_ON && atelierLit(state))) return false;
   if (!relicHintFindable(state, id)) return false;
   const books = HINT_BOOKS[id];
   return !books || books.some((book) => book in state.rareBooks);
