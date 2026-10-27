@@ -64,6 +64,8 @@ import { closeEtherium, etheriumOpens, prestigeReady } from '../systems/prestige
 import { ETHERIUM_NAMED_PAGES } from '../data/etherium';
 import type { Component } from './dom';
 import { runHooks } from '../mods/hooks';
+import { atelierOpen } from '../systems/curiosities';
+import { createAtelierPage } from './atelier/atelierPage';
 
 const OPTIONS_HASH = '#options';
 const STRANGE_BOOK_HASH = '#livre';
@@ -73,6 +75,8 @@ const WHITE_BOOK_HASH = '#blanc';
 /** La bibliothèque personnelle, et un de ses livres ouvert en grand (#bibliotheque:<id>). */
 const LIBRARY_HASH = '#bibliotheque';
 const LIBRARY_BOOK_HASH = '#bibliotheque:';
+/** L'atelier des curiosités (la clé de l'atelier du trousseau). */
+const ATELIER_HASH = '#atelier';
 /** Un tome gagné arrive en main après ce délai (le temps de lire le panneau du gros lot, de voir le jeu revenir). */
 const TOME_DELAY_MS = 1800;
 /** Changement d'écran : l'ancien s'efface en fondu pendant que le nouveau apparaît (voir .screen-out). */
@@ -154,8 +158,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const inLibrary = (): boolean => window.location.hash === LIBRARY_HASH || window.location.hash.startsWith(LIBRARY_BOOK_HASH);
 
   /** Le livre dont la page est ouverte (null : le jeu). */
-  const openBook = (): 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'notes' | null => {
+  const openBook = (): 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'atelier' | 'notes' | null => {
     const hash = window.location.hash;
+    if (hash === ATELIER_HASH && atelierOpen(state)) return 'atelier';
     if (hash === OPTIONS_HASH) return 'options';
     if (hash === ETHERIUM_HASH) return 'etherium';
     if (inLibrary()) return 'library';
@@ -182,6 +187,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     onLibrary: open(LIBRARY_HASH),
     libraryKey: () => debugging || firstBookKept(state) || Object.keys(state.rareBooks).length > 0,
     libraryNews: () => libraryHasNews(state),
+    // Le trousseau : dès la première curiosité (l'atelier, en débogage seulement pour l'instant).
+    keyRing: () => atelierOpen(state) && state.atelier.found > 0,
+    onAtelier: open(ATELIER_HASH),
+    atelierNews: () => state.atelier.news,
     taskToken: taskToken(state, () => {
       openWhiteBookOnTasks();
       open(WHITE_BOOK_HASH)();
@@ -304,6 +313,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
 
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
+    if (window.location.hash === ATELIER_HASH && atelierOpen(state)) return [header, counter, createAtelierPage(state, back)];
     if (window.location.hash === LIBRARY_HASH) return library();
     const shelved = libraryBook();
     if (shelved) return libraryBookPage(shelved);

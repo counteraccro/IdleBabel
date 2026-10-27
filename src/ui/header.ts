@@ -3,6 +3,7 @@ import { t } from '../i18n';
 import { createBookMedals, type BookMedalSpec } from './bookMedals';
 import { createGameTitle } from './gameTitle';
 import type { Component } from './dom';
+import { createKeyRing } from './keyRing';
 
 export interface HeaderHandlers {
   onOptions: () => void;
@@ -21,13 +22,18 @@ export interface HeaderHandlers {
   /** Des sceaux obtenus ou une partie devenue lisible attendent d'être vus : l'étoile du Grand Livre. */
   strangeBookNews: () => boolean;
   /** Le livre ouvert en ce moment (sa page à l'écran), son médaillon pâli ; null : le jeu. */
-  openBook: () => 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'notes' | null;
+  openBook: () => 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'atelier' | 'notes' | null;
   /** Entrer dans la bibliothèque personnelle (la clé). */
   onLibrary: () => void;
   /** La clé a son médaillon : un livre rare a été trouvé (ou débogage). */
   libraryKey: () => boolean;
   /** Un livre nouveau attend dans la bibliothèque : l'étoile de la clé. */
   libraryNews: () => boolean;
+  /** La clé est devenue un trousseau (la première curiosité, ui/keyRing.ts) ; sa clé de l'atelier l'ouvre. */
+  keyRing: () => boolean;
+  onAtelier: () => void;
+  /** Une curiosité arrivée, une presse finie : l'étoile du trousseau et de la clé de l'atelier. */
+  atelierNews: () => boolean;
   /** Le jeton des tâches (dès le Nord allumé), juste après le livre blanc : son nom, ce qu'il ouvre, s'il est là, s'il attend. */
   taskToken: Pick<BookMedalSpec, 'label' | 'onOpen'>;
   tasksShown: () => boolean;
@@ -56,10 +62,25 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     },
     { id: 'options', label: () => t('ui.options'), flies: true, onOpen: handlers.onOptions },
     // Le même nom que la page ouverte (openBook) : dans la bibliothèque, la clé est pâlie.
-    { id: 'library', label: () => t('ui.library'), onOpen: handlers.onLibrary },
+    // Le trousseau, dès la première curiosité : il n'ouvre pas de page, il déplie ses clés.
+    {
+      id: 'library',
+      label: () => t(handlers.keyRing() ? 'atelier.ring' : 'ui.library'),
+      onOpen: () => {
+        if (!handlers.keyRing()) return handlers.onLibrary();
+        ring.toggle();
+        queueMicrotask(away);
+      },
+    },
     // Débogage : la plaque d'obsidienne, au bout.
     ...(handlers.onDebugBook ? [{ id: 'debug', label: () => 'Débogage', flies: true, onOpen: handlers.onDebugBook }] : []),
   ]);
+  const ring = createKeyRing(medals, { library: handlers.onLibrary, atelier: handlers.onAtelier });
+  /** Le livre ouvert pâlit son médaillon ; le trousseau, lui, ne pâlit jamais (il mène à deux pièces). */
+  const away = (): void => {
+    const open = handlers.openBook();
+    medals.away(handlers.keyRing() && (open === 'library' || open === 'atelier') ? null : open);
+  };
   // Déjà trouvé à l'affichage : le médaillon est là. Trouvé pendant la partie : il paraît.
   let found = handlers.strangeBookFound();
   medals.show('strange', found);
@@ -75,12 +96,13 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     medals.news('strange', handlers.strangeBookNews());
     // Le prestige rapporte : l'étoile de l'Etherium, jusqu'à ce qu'on l'ouvre.
     medals.news('etherium', handlers.etheriumWaiting());
-    medals.news('library', handlers.libraryNews());
+    medals.news('library', handlers.libraryNews() || (handlers.keyRing() && handlers.atelierNews()));
+    ring.update(handlers.keyRing(), handlers.atelierNews());
     medals.news('tasks', handlers.tasksNews());
     const count = handlers.writtenCount();
     if (count > written) medals.shake('white');
     written = count;
-    medals.away(handlers.openBook());
+    away();
     medals.relabel();
   };
   root.append(createGameTitle(), medals.root);

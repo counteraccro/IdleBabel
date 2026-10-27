@@ -1,0 +1,354 @@
+/* L'atelier (atelier/atelierPage.ts), comme la maquette validée (.ai/maquette-atelier-interface.html, mêmes mesures) : la
+   scène sur fond noir comme la bibliothèque, la fiche de catalogue à gauche, le carnet et les feuilles posés par-dessus. */
+.atelier-page {
+  --card: #efe6cf;
+  --card-ink: #2e241a;
+  --card-red: #8e2f22;
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: 0;
+}
+.atelier-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #000;
+}
+.atelier-stage {
+  flex: 1;
+  margin-top: 36px;
+  width: 100%;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+.atelier-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.atelier-log {
+  text-align: center;
+  color: #b8a684;
+  font-style: italic;
+  font-size: 13px;
+  min-height: 20px;
+  margin-bottom: 6px;
+}
+.atelier-tip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(20, 14, 9, 0.92);
+  border: 1px solid #6a5232;
+  color: #efe3c8;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  display: none;
+}
+
+/* La fiche : une fiche de catalogue de bibliothèque (bristol, filet rouge), tapée à la machine. */
+.atelier-card {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  width: 318px;
+  max-height: calc(100% - 36px);
+  overflow-y: auto;
+  background: var(--card);
+  color: var(--card-ink);
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 16px 18px 30px;
+  border-radius: 3px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+  transform: translateX(-120%) rotate(-1deg);
+  transition: transform 0.45s ease;
+  background-image:
+    linear-gradient(transparent 33px, var(--card-red) 33px, var(--card-red) 34px, transparent 34px),
+    radial-gradient(rgba(120, 90, 40, 0.06) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    5px 5px;
+}
+.atelier-card.open {
+  transform: translateX(0) rotate(-1deg);
+}
+.atelier-card .close {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  background: none;
+  border: 0;
+  color: var(--card-ink);
+  font-size: 20px;
+  padding: 0 6px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.atelier-card .close:hover {
+  color: var(--card-red);
+}
+.atelier-card h3 {
+  font-family: inherit;
+  font-weight: normal;
+  font-size: 15px;
+  margin: 0 26px 14px 0;
+  height: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.atelier-card .head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.atelier-card .stamp {
+  width: 52px;
+  height: 52px;
+  border: 3px solid var(--card-red);
+  border-radius: 50%;
+  color: var(--card-red);
+  display: grid;
+  place-items: center;
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 600;
+  transform: rotate(-9deg);
+  opacity: 0.85;
+  flex: none;
+}
+.atelier-card .stamp.S {
+  border-color: #a07818;
+  color: #a07818;
+}
+.atelier-card .sec {
+  margin: 12px 0 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  color: #6a5a44;
+  border-bottom: 1px dotted #9a8a6a;
+}
+.atelier-card .good {
+  color: #2c4a22;
+}
+.atelier-card .bad {
+  color: var(--card-red);
+}
+.atelier-card .dim {
+  color: #7a6a50;
+}
+.atelier-card .parts {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+}
+.atelier-card .parts li {
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.atelier-card .parts li:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+.atelier-card .parts li.on {
+  background: rgba(142, 47, 34, 0.12);
+}
+.atelier-card .dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+.atelier-card .st0 {
+  background: #9a5a3c;
+}
+.atelier-card .st1 {
+  background: #b08a4c;
+}
+.atelier-card .st2 {
+  background: #8fa060;
+}
+.atelier-card .st3 {
+  background: #f2e6bb;
+}
+.atelier-card .s-mark {
+  color: #a07818;
+}
+.atelier-card .act {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 5px 0;
+  background: transparent;
+  color: var(--card-ink);
+  border: 1px solid #9a8a6a;
+  font-family: 'Special Elite', monospace;
+  letter-spacing: 0;
+  font-size: 12.5px;
+  padding: 5px 8px;
+  cursor: pointer;
+}
+.atelier-card .act:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.06);
+}
+.atelier-card .act:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.atelier-card .act.danger {
+  border-color: var(--card-red);
+  color: var(--card-red);
+}
+.atelier-card .note {
+  font-size: 11.5px;
+  color: #6a5a44;
+  margin: 2px 0 6px;
+}
+
+/* Le carnet des pièces S, et les notes du rebut et du pilon : du papier posé sur la scène. */
+.atelier-sheet {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.55);
+}
+.atelier-sheet.open {
+  display: grid;
+}
+.atelier-notebook {
+  width: min(760px, 94%);
+  max-height: 92%;
+  overflow-y: auto;
+  background: #f1e8d0;
+  color: #2a2a3a;
+  font-family: 'Caveat', cursive;
+  font-size: 21px;
+  padding: 22px 30px 26px 56px;
+  border-radius: 3px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9);
+  position: relative;
+  background-image:
+    linear-gradient(90deg, transparent 40px, rgba(160, 60, 50, 0.45) 40px, rgba(160, 60, 50, 0.45) 42px, transparent 42px),
+    repeating-linear-gradient(transparent 0 31px, rgba(80, 110, 160, 0.25) 31px 32px);
+}
+.atelier-notebook h2 {
+  font-family: 'Caveat', cursive;
+  font-weight: 600;
+  font-size: 32px;
+  margin: 0 0 4px;
+}
+.atelier-notebook .x {
+  position: absolute;
+  right: 10px;
+  top: 6px;
+  background: none;
+  border: 0;
+  color: #2a2a3a;
+  font-size: 22px;
+  cursor: pointer;
+}
+.atelier-notebook .set {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, 92px);
+  gap: 4px 6px;
+  align-items: center;
+  padding: 3px 0;
+  line-height: 1.15;
+}
+.atelier-notebook .set .name {
+  font-weight: 600;
+}
+.atelier-notebook .set .slot {
+  font-size: 17px;
+  text-align: center;
+  border: 1px dashed rgba(42, 42, 58, 0.3);
+  border-radius: 3px;
+  padding: 1px 2px;
+  min-height: 26px;
+}
+.atelier-notebook .set .slot.have {
+  border-style: solid;
+  border-color: rgba(42, 42, 58, 0.55);
+  cursor: pointer;
+}
+.atelier-notebook .set .slot.have:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.atelier-notebook .set .slot.busy {
+  opacity: 0.55;
+}
+.atelier-notebook .set .slot small {
+  display: block;
+  font-size: 14px;
+  color: #555;
+}
+.atelier-notebook .hd {
+  font-size: 16px;
+  color: #555;
+}
+.atelier-notebook button,
+.atelier-paper button {
+  font-family: 'Caveat', cursive;
+  font-size: 19px;
+  letter-spacing: 0;
+  background: #e4d6b2;
+  color: #2a2a3a;
+  border: 1px solid #8a7a5a;
+  padding: 1px 10px;
+  margin: 2px 0;
+  cursor: pointer;
+}
+.atelier-notebook button:hover:not(:disabled),
+.atelier-paper button:hover:not(:disabled) {
+  background: #d8c79c;
+}
+.atelier-notebook button:disabled,
+.atelier-paper button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.atelier-notebook .line {
+  margin: 6px 0 0;
+  font-size: 18px;
+}
+.atelier-paper {
+  background: #f1e8d0;
+  color: #2a2a3a;
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  padding: 18px 26px 22px;
+  border-radius: 2px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9);
+  transform: rotate(-1.5deg);
+  max-width: 94%;
+}
+.atelier-paper button {
+  font-size: 20px;
+}
+.atelier-paper select {
+  background: #f8f0dc;
+  color: #2a2a3a;
+  border: 1px solid #8a7a5a;
+  font-family: 'Caveat', cursive;
+  font-size: 20px;
+}
+.atelier-paper .small {
+  font-size: 18px;
+  color: #555;
+}

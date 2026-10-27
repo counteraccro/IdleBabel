@@ -18,6 +18,10 @@ const BOOK_MEDAL_ICONS: Record<string, string> = {
   options: `<path d="M14.6 3.2Q8 5 5.6 12.6L4.6 16.8M5.6 12.6Q11.5 11.6 14.6 3.2M7.4 9.8L10 9.3" fill="none" stroke="${GOLD}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>`,
   // La clé de la bibliothèque.
   library: `<circle cx="10" cy="5.6" r="2.8" fill="none" stroke="${GOLD}" stroke-width="1.3"/><path d="M10 8.4V17.2M10 13.6h2.6M10 16h2" fill="none" stroke="${GOLD}" stroke-width="1.3" stroke-linecap="round"/>`,
+  // La clé de l'atelier (27/10, .ai/maquette-atelier-interface.html) : l'anneau carré, un panneton plus large.
+  atelier: `<rect x="7.3" y="2.9" width="5.4" height="5.4" rx="1" fill="none" stroke="${GOLD}" stroke-width="1.3"/><path d="M10 8.3V17.2M10 12.8h2.8V14.6M10 16h2" fill="none" stroke="${GOLD}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>`,
+  // Le trousseau : un anneau, les deux clés qui pendent.
+  ring: `<circle cx="10" cy="5.4" r="3.3" fill="none" stroke="${GOLD}" stroke-width="1.1"/><circle cx="13.4" cy="9.9" r="1.7" fill="none" stroke="${GOLD}" stroke-width="1.1"/><path d="M13.4 11.6V17.4M13.4 15.2h1.8M13.4 16.9h1.4" fill="none" stroke="${GOLD}" stroke-width="1.1" stroke-linecap="round"/><rect x="5" y="8.2" width="3.2" height="3.2" rx=".6" fill="none" stroke="${GOLD}" stroke-width="1.1"/><path d="M6.6 11.4V17.4M6.6 14.6H4.6V15.8M6.6 16.9H5" fill="none" stroke="${GOLD}" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>`,
   // Le livre de débogage : la plaque d'obsidienne.
   debug: `<path d="M10 2.6L16.4 6.3V13.7L10 17.4L3.6 13.7V6.3Z" fill="none" stroke="${GOLD}" stroke-width="1.2" stroke-linejoin="round"/><path d="M10 6.5V13.5M6.8 8.2L13.2 11.8" stroke="${GOLD}" stroke-width=".8"/>`,
 };

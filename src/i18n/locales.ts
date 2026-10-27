@@ -9,6 +9,7 @@ import frNumbers from './fr/numbers.json';
 import frRareBooks from './fr/rareBooks.json';
 import frFinalBook from './fr/finalBook.json';
 import frEtherium from './fr/etherium.json';
+import frAtelier from './fr/atelier.json';
 import enUi from './en/ui.json';
 import enTools from './en/tools.json';
 import enWhiteBook from './en/whiteBook.json';
@@ -20,6 +21,7 @@ import enNumbers from './en/numbers.json';
 import enRareBooks from './en/rareBooks.json';
 import enFinalBook from './en/finalBook.json';
 import enEtherium from './en/etherium.json';
+import enAtelier from './en/atelier.json';
 
 /**
  * Langues disponibles. Pour en ajouter une :
@@ -48,6 +50,7 @@ const fr = unbreakable({
   rareBooks: frRareBooks,
   finalBook: frFinalBook,
   etherium: frEtherium,
+  atelier: frAtelier,
 });
 export type Messages = typeof fr;
 
@@ -63,6 +66,7 @@ const en: Messages = {
   rareBooks: enRareBooks,
   finalBook: enFinalBook,
   etherium: enEtherium,
+  atelier: enAtelier,
 };
 
 export const LOCALES = { fr, en } satisfies Record<string, Messages>;

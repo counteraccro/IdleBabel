@@ -172,3 +172,39 @@
 #app.book-open h1 {
   visibility: hidden;
 }
+
+/* Le trousseau (ui/keyRing.ts, maquette .ai/maquette-atelier-interface.html) : ses deux clés l'une sous l'autre, sous lui, leur
+   nom écrit à gauche ; le même écart que celui des médaillons de la rangée (0,3em de la rangée = 0,366em ici, à 0,82). */
+.key-fan {
+  position: absolute;
+  top: calc(1.27em / 0.82 + 0.366em);
+  display: flex;
+  flex-direction: column;
+  gap: 0.366em;
+  font-size: 0.82em;
+  padding: 0;
+  opacity: 0;
+  transform: translateY(-0.4em);
+  pointer-events: none;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
+}
+.key-fan.open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.key-fan .key-name {
+  position: absolute;
+  top: 50%;
+  right: 125%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font:
+    italic 0.42em Georgia,
+    serif;
+  letter-spacing: 0.04em;
+  color: var(--ink, #efe3c8);
+  text-shadow: 0 2px 6px #000;
+}
