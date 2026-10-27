@@ -1051,6 +1051,19 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 3.1",
+          "date": "27 octobre 2026",
+          "sections": [
+            {
+              "heading": "Corrections",
+              "items": [
+                "Un tome gagné puis rangé : « Retour au jeu » ne le rouvre plus.",
+                "Le tome 1 acheté est bien montré en main avant le tome suivant qui l’attendait."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 3",
           "date": "24 octobre 2026",
           "sections": [
@@ -1072,9 +1085,7 @@
               "items": [
                 "Le sceau des étoiles toutes allumées n’est plus perdu quand de nouvelles étoiles s’ouvrent.",
                 "Etherium : une page blanche après le sommaire ; chaque constellation retrouve son côté du livre.",
-                "La Mimic se pose aussi dans les salles de l’Âge Numérique et de l’Âge Quantique.",
-                "Un tome gagné puis rangé : « Retour au jeu » ne le rouvre plus.",
-                "Le tome 1 acheté est bien montré en main avant le tome suivant qui l’attendait."
+                "La Mimic se pose aussi dans les salles de l’Âge Numérique et de l’Âge Quantique."
               ]
             }
           ]

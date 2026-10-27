@@ -8,6 +8,7 @@
  * le livre « Idle Babel » réécrit et le Rouage, 19/10 ; l'Alpha 2.8 : l'avancement des tâches et la Patience, le même jour ; l'Alpha 2.9 : le livre de jeux, 20/10 ;
  * l'Alpha 2.10 : le rebord des livres, les médaillons réunis et le compteur en cuivre, 21/10 ; l'Alpha 2.11 : les livres en
  * médaillons, le récit de la première intuition, l'autre bibliothèque et les titres des sceaux, le même jour ; l'Alpha 2.12 :
- * les tomes 5 et 6 de « L'histoire de Babel », 23/10 ; l'Alpha 3 : l'Âge Quantique, 24/10).
+ * les tomes 5 et 6 de « L'histoire de Babel », 23/10 ; l'Alpha 3 : l'Âge Quantique, 24/10 ;
+ * l'Alpha 3.1 : les tomes gagnés corrigés, 27/10).
  */
-export const VERSION = 'Alpha 3';
+export const VERSION = 'Alpha 3.1';
