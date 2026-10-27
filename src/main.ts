@@ -66,7 +66,11 @@ const idle = (step: (deadline?: IdleDeadline) => void): void => {
 };
 idle(catchUpCovers);
 void mountScene({ beyond: () => beyond(state), wanted: () => sceneShown(state) });
-if (isDebugEnabled()) mountDebugPanel(state);
+if (isDebugEnabled()) {
+  mountDebugPanel(state);
+  // Débogage : la partie depuis la console (window.debugState), pour essayer un état à la main.
+  (window as unknown as { debugState?: unknown }).debugState = state;
+}
 
 // Onglet caché, ce que le livre en main a trouvé est compté avant chaque sauvegarde : rien ne se perd s'il est fermé.
 const save = (): void => {
