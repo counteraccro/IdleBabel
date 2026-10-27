@@ -280,7 +280,9 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const libraryBookPage = (id: string): Component[] => {
     const leave = (): void => {
       if (openedFromLibrary) window.history.back();
-      else window.location.hash = LIBRARY_HASH;
+      // Ouvert sans la vitrine (un tome gagné au jeu) : elle prend la place du livre dans l'historique, et son
+      // « retour » ne rouvre pas le livre rangé.
+      else window.location.replace(LIBRARY_HASH);
       openedFromLibrary = false;
     };
     // La vitrine reste en fond, floue, sous le livre ouvert.
@@ -463,6 +465,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     state.tomeToShow = null;
     rememberView('endings');
     openedFromLibrary = window.location.hash === LIBRARY_HASH;
+    // Gagné au jeu : la vitrine, une fois le tome rangé, ramène au jeu par le retour de l'historique.
+    if (!openedFromLibrary) openedFromGame = true;
     window.location.hash = `${LIBRARY_BOOK_HASH}${encodeURIComponent(SAGA_TOMES[index])}`;
   };
 

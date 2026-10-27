@@ -90,10 +90,11 @@ export const HUNDRED_SEALS = 'sealsApplied-100';
 
 /**
  * Le palier des 100 sceaux donne le tome suivant (l'auteur, 22/10 : « ok pour 100 »), une seule fois ; atteint avant que
- * le tome 1 soit acheté, ou sans tome écrit à gagner, il attend.
+ * le tome 1 soit acheté, ou sans tome écrit à gagner, il attend ; un tome encore à montrer en main (le tome 1 qu'on vient
+ * d'acheter) passe d'abord, sinon il prenait sa place.
  */
 export const giveSealsTome = (state: GameState): void => {
-  if (state.tomeFrom.seals !== undefined || !(HUNDRED_SEALS in state.seals)) return;
+  if (state.tomeFrom.seals !== undefined || !(HUNDRED_SEALS in state.seals) || state.tomeToShow !== null) return;
   const tome = nextTome(state);
   if (tome !== undefined) giveTome(state, tome, 'seals');
 };

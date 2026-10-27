@@ -53,8 +53,15 @@ describe('« Comme avant », le tome 6, au centième sceau (23/10)', () => {
     checkSeals(state, DAY);
     expect(state.tomeFrom).toEqual({});
     state.etherium.push(S.trueStory);
+    // Le tome 1 acheté est d'abord montré en main : le tome 2 ne prend pas sa place.
+    state.tomeToShow = 0;
+    checkSeals(state, DAY);
+    expect(state.tomeFrom).toEqual({});
+    expect(state.tomeToShow).toBe(0);
+    state.tomeToShow = null;
     checkSeals(state, DAY);
     expect(state.tomeFrom).toEqual({ seals: 2 });
+    expect(state.tomeToShow).toBe(1);
   });
 
   it('son sceau secret et son indice, qui attend le tome 1', () => {
