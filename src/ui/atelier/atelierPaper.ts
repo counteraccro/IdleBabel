@@ -397,6 +397,20 @@ export const slipCanvas = (rank: string, gold: boolean): HTMLCanvasElement => {
   const [canvas, x] = canvasOf(48, 200);
   x.fillStyle = '#ece0c0';
   x.fillRect(0, 0, 48, 200);
+  // Un papier qui a servi : son grain, ses bords frottés, le haut plus sale (là où on l'attrape).
+  const r = seeded(gold ? 5 : 3);
+  for (let i = 0; i < 260; i++) {
+    x.fillStyle = `rgba(120,90,50,${r() * 0.1})`;
+    x.fillRect(r() * 48, r() * 200, 1 + r() * 2, 1 + r() * 2);
+  }
+  const dirt = x.createLinearGradient(0, 0, 0, 200);
+  dirt.addColorStop(0, 'rgba(110,80,40,0.22)');
+  dirt.addColorStop(0.3, 'rgba(110,80,40,0)');
+  x.fillStyle = dirt;
+  x.fillRect(0, 0, 48, 200);
+  x.strokeStyle = 'rgba(110,80,40,0.3)';
+  x.lineWidth = 3;
+  x.strokeRect(0, 0, 48, 200);
   x.fillStyle = gold ? '#a07818' : '#3a3a44';
   x.font = `bold 36px ${PRINT}`;
   x.textAlign = 'center';

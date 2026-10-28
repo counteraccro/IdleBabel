@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { seeded } from '../../core/random';
 import { createBookMesh } from '../book3d/bookMesh';
 import { edgeTexture } from '../book3d/textures';
 import { visibleBox } from '../book3d/visibleBox';
@@ -64,13 +65,27 @@ export const createAtelierBooks = (scene: THREE.Scene, furniture: Furniture, tex
   const bookMesh = (book: Curiosity, pose: 'spine' | 'face'): THREE.Group => {
     const g = new THREE.Group();
     g.add(realBook(book, pose));
-    // La fiche glissée dans les pages : le rang, au crayon.
+    // La fiche glissée dans les pages : le rang. Une vraie fiche, glissée à la main (l'auteur, 28/10 : « trop parfait ») :
+    // plus ou moins enfoncée, penchée, un peu gondolée, d'un papier plus ou moins jauni, toujours la même pour un livre.
+    const r = seeded(book.id * 131 + 17);
+    const geometry = new THREE.PlaneGeometry(0.075, 0.31, 1, 8);
+    const position = geometry.attributes.position;
+    const curl = (r() - 0.5) * 0.05;
+    for (let i = 0; i < position.count; i++) {
+      const up = position.getY(i) / 0.31 + 0.5;
+      position.setZ(i, curl * up * up + (position.getX(i) > 0 ? 0.004 : -0.004) * up);
+    }
+    geometry.computeVertexNormals();
+    const tint = new THREE.Color().setHSL(0.1 + r() * 0.03, 0.2 + r() * 0.3, 0.8 + r() * 0.12);
     const slip = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.075, 0.31),
-      new THREE.MeshStandardMaterial({ map: slipTexture(book.rank), roughness: 0.9, side: THREE.DoubleSide }),
+      geometry,
+      new THREE.MeshStandardMaterial({ map: slipTexture(book.rank), color: tint, roughness: 0.9, side: THREE.DoubleSide }),
     );
-    if (pose === 'spine') slip.position.set(0, BH + 0.03, BW / 2 - 0.12);
-    else slip.position.set(BW / 2 - 0.12, BH + 0.03, 0);
+    const sink = -0.02 - r() * 0.1;
+    const along = (r() - 0.5) * 0.12;
+    if (pose === 'spine') slip.position.set(0, BH + 0.03 + sink, BW / 2 - 0.12 + along);
+    else slip.position.set(BW / 2 - 0.12 + along, BH + 0.03 + sink, 0);
+    slip.rotation.set((r() - 0.5) * 0.15, (r() - 0.5) * 0.5, (r() - 0.5) * 0.45);
     g.add(slip);
     g.traverse((object) => (object.userData.pick = { kind: 'book', id: book.id }));
     return g;
