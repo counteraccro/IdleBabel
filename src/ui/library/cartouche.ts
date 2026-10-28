@@ -9,13 +9,13 @@ import { babelTextWidth, drawBabelText, hasBabelDigits } from '../babelDigits';
  * fixée au milieu de la corniche et un peu plus haute qu'elle ; en lettres dorées, les livres et les reliques
  * rangés (« 14 livres · 2 reliques » ; les reliques, une fois la première trouvée).
  */
-const PLATE_WIDTH = 0.98;
-const PLATE_HEIGHT = 0.13;
+const WIDTH = 0.98;
+const HEIGHT = 0.13;
 /** Les coins échancrés (quart de cercle creusé), et l'épaisseur de la plaque. */
-const PLATE_NOTCH = 0.027;
-const PLATE_DEPTH = 0.014;
+const NOTCH = 0.027;
+const DEPTH = 0.014;
 /** Pixels du dessin par unité du meuble. */
-const PLATE_SCALE = 1600;
+const SCALE = 1600;
 
 /** De quoi tracer un contour : une forme three.js ou un canevas (y vers le haut), aux arcs en coordonnées absolues. */
 interface Pen {
@@ -51,32 +51,16 @@ export interface Cartouche {
   write: (text: string, force?: boolean) => void;
 }
 
-/**
- * `size` : une plaque d'une autre taille (les tiroirs de l'atelier), au même dessin : coins, filets et lettres suivent sa
- * hauteur.
- */
-export const createCartouche = (onChange: () => void, size?: { width: number; height: number }): Cartouche => {
-  const plateW = size?.width ?? PLATE_WIDTH;
-  const plateH = size?.height ?? PLATE_HEIGHT;
-  const k = plateH / PLATE_HEIGHT;
-  const corner = PLATE_NOTCH * k;
-  const depth = PLATE_DEPTH * k;
-  // Une petite plaque (l'atelier) : à peu près deux fois sa taille à l'écran, sans paliers réduits (mipmaps), sinon ses
-  // lettres deviennent floues.
-  const scale = size ? 900 : PLATE_SCALE;
+export const createCartouche = (onChange: () => void): Cartouche => {
   const canvas = document.createElement('canvas');
-  canvas.width = Math.round(plateW * scale);
-  canvas.height = Math.round(plateH * scale);
+  canvas.width = Math.round(WIDTH * SCALE);
+  canvas.height = Math.round(HEIGHT * SCALE);
   const context = canvas.getContext('2d')!;
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 8;
-  if (size) {
-    texture.generateMipmaps = false;
-    texture.minFilter = THREE.LinearFilter;
-  }
   // Les faces de la plaque ont pour UV ses coordonnées (en unités du meuble, centrées) : la texture la couvre une fois.
-  texture.repeat.set(1 / plateW, 1 / plateH);
+  texture.repeat.set(1 / WIDTH, 1 / HEIGHT);
   texture.offset.set(0.5, 0.5);
 
   const shape = new THREE.Shape();
@@ -86,15 +70,15 @@ export const createCartouche = (onChange: () => void, size?: { width: number; he
       lineTo: (x, y) => shape.lineTo(x, y),
       arc: (x, y, r, from, to) => shape.absarc(x, y, r, from, to, true),
     },
-    plateW,
-    plateH,
-    corner,
+    WIDTH,
+    HEIGHT,
+    NOTCH,
   );
   const geometry = new THREE.ExtrudeGeometry(shape, {
-    depth: depth,
+    depth: DEPTH,
     bevelEnabled: true,
-    bevelThickness: 0.004 * k,
-    bevelSize: 0.004 * k,
+    bevelThickness: 0.004,
+    bevelSize: 0.004,
     bevelSegments: 2,
   });
   const face = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.55, metalness: 0.1 });
@@ -123,7 +107,7 @@ export const createCartouche = (onChange: () => void, size?: { width: number; he
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.clearRect(0, 0, w, h);
     // Repère du dessin : celui de la plaque (y vers le haut), en pixels.
-    context.setTransform(scale, 0, 0, -scale, w / 2, h / 2);
+    context.setTransform(SCALE, 0, 0, -SCALE, w / 2, h / 2);
     const path = (inset: number, notch: number): void => {
       context.beginPath();
       outline(
@@ -132,27 +116,27 @@ export const createCartouche = (onChange: () => void, size?: { width: number; he
           lineTo: (x, y) => context.lineTo(x, y),
           arc: (x, y, r, from, to) => context.arc(x, y, r, from, to, true),
         },
-        plateW,
-        plateH,
+        WIDTH,
+        HEIGHT,
         notch,
         inset,
       );
       context.closePath();
     };
     // L'ébène, un peu plus claire au milieu.
-    path(0, corner);
-    const wood = context.createRadialGradient(0, 0, 0.05, 0, 0, plateW / 2);
+    path(0, NOTCH);
+    const wood = context.createRadialGradient(0, 0, 0.05, 0, 0, WIDTH / 2);
     wood.addColorStop(0, '#3a2a1f');
     wood.addColorStop(1, '#1a110c');
     context.fillStyle = wood;
     context.fill();
     // Le filet d'or, puis un second, plus fin, en dedans.
     context.strokeStyle = gold(0, h);
-    context.lineWidth = 0.007 * k;
-    path(0.006 * k, corner);
+    context.lineWidth = 0.007;
+    path(0.006, NOTCH);
     context.stroke();
-    context.lineWidth = 0.0025 * k;
-    path(0.016 * k, corner + 0.004 * k);
+    context.lineWidth = 0.0025;
+    path(0.016, NOTCH + 0.004);
     context.stroke();
 
     // Les lettres, gravées puis dorées.

@@ -323,6 +323,13 @@ export type NoteLine = string | [string, { size?: number; bold?: boolean; color?
 
 /** Les lettres des papiers, plus grosses que dans la maquette : elle se lisait de près, l'atelier se voit de loin. */
 const GROW = 1.45;
+/**
+ * Les papiers sont imprimés, dans la lettre du jeu (l'auteur, 28/10 : la Bibliothèque contient tous les textes, ceux du
+ * jeu compris). Georgia est plus large que l'écriture à la main de la maquette : le même corps, un peu réduit.
+ */
+const PRINT = "Georgia, 'Times New Roman', serif";
+/** Le maigre se lit moins bien de loin que le gras : il est réduit moins. */
+const PRINT_SIZE = { bold: 0.74, normal: 0.86 };
 
 /** Du papier écrit à la main (étiquettes, cartes, notes), comme la maquette. */
 export const note = (
@@ -362,13 +369,14 @@ export const note = (
   lines.forEach((line, i) => {
     const [text, options = {}] = typeof line === 'string' ? [line] : line;
     // Vu de loin, dans la pénombre : tout s'écrit plus gros (GROW), en trait épais, et rétrécit seulement s'il déborde.
-    let px = (options.size ?? size) * GROW;
-    x.font = `600 ${px}px 'Caveat'`;
+    const weight = options.bold ? 'bold' : 'normal';
+    let px = (options.size ?? size) * GROW * PRINT_SIZE[weight];
+    x.font = `${weight} ${px}px ${PRINT}`;
     const room = w - (align === 'center' ? 24 : 44);
     const width = x.measureText(text).width;
     if (width > room) {
       px *= room / width;
-      x.font = `600 ${px}px 'Caveat'`;
+      x.font = `${weight} ${px}px ${PRINT}`;
     }
     x.fillStyle = options.color ?? '#1c1820';
     x.fillText(text, align === 'center' ? w / 2 : 22, (top ?? step) + i * (top !== null ? (options.step ?? size * 1.1) * GROW : step));
@@ -384,13 +392,13 @@ export const repaint = (canvas: HTMLCanvasElement, texture: THREE.Texture, paper
   texture.needsUpdate = true;
 };
 
-/** La fiche glissée dans les pages : le rang, au crayon. */
+/** La fiche glissée dans les pages : le rang, imprimé. */
 export const slipCanvas = (rank: string, gold: boolean): HTMLCanvasElement => {
   const [canvas, x] = canvasOf(48, 200);
   x.fillStyle = '#ece0c0';
   x.fillRect(0, 0, 48, 200);
   x.fillStyle = gold ? '#a07818' : '#3a3a44';
-  x.font = "600 44px 'Caveat'";
+  x.font = `bold 36px ${PRINT}`;
   x.textAlign = 'center';
   x.textBaseline = 'middle';
   x.fillText(rank, 24, 36);

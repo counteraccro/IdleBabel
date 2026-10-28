@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { createCartouche, type Cartouche } from '../library/cartouche';
 import { createTitlePiece, type TitleLine, type TitlePiece } from './atelierTitlePiece';
 import { disposeObject } from '../book3d/renderer3d';
 import { oldWood } from '../library/oldWood';
@@ -115,8 +114,8 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
 
   // Le casier des pièces : seize tiroirs (quatre pièces × quatre états), au mur, au-dessus du pupitre.
   const drawers: { part: PieceId; state: number; group: THREE.Group; canvas: HTMLCanvasElement; texture: THREE.Texture; z: number }[] = [];
-  // Au-dessus de chaque colonne, la pièce qu'elle range : un cartouche posé sur le casier.
-  const heads: { part: PieceId; plate: Cartouche }[] = [];
+  // Au-dessus de chaque colonne, la pièce qu'elle range : une pièce de titre en cuir havane, comme au lutrin.
+  const heads: { part: PieceId; plate: TitlePiece }[] = [];
   {
     const w = 4 * CAB.colW + 0.12;
     const h = 4 * CAB.rowH + 0.12;
@@ -156,8 +155,8 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
       }),
     );
     PARTS.forEach((part, c) => {
-      const plate = createCartouche(redraw, { width: 0.5, height: 0.135 });
-      plate.mesh.position.set(-w / 2 + 0.06 + c * CAB.colW + CAB.colW / 2, h + 0.12, d / 2 - 0.02);
+      const plate = createTitlePiece(redraw, 0.5, 0.12);
+      plate.mesh.position.set(-w / 2 + 0.06 + c * CAB.colW + CAB.colW / 2, h + 0.11, d / 2 - 0.02);
       cab.add(plate.mesh);
       heads.push({ part, plate });
     });
@@ -412,13 +411,16 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
         280,
         [
           [at('scene.notebookTitle'), { size: 36, bold: true, color: '#e8dcc0' }],
-          [at('scene.notebookSub'), { size: 24, color: '#d8ccb0' }],
+          [at('scene.notebookSub'), { size: 19, color: '#d8ccb0' }],
         ],
         { bg: '#2f3d2c' },
       ),
     );
   const drawDrawers = (state: GameState): void => {
-    for (const head of heads) head.plate.write(partName(head.part));
+    for (const head of heads) {
+      head.plate.write([{ text: partName(head.part) }], 'brown');
+      head.plate.glow(0.35);
+    }
     for (const d of drawers) {
       const n = state.atelier.drawers[d.part][d.state];
       repaint(

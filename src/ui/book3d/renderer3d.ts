@@ -42,10 +42,14 @@ export const releaseSharedTextures = (renderer: THREE.WebGLRenderer, scene: THRE
   for (const texture of shared) texture.dispose();
 };
 
-/** Rendu d'un livre 3D sur fond transparent, ombres portées adoucies (la couverture sur les feuilles). */
-export const createBookRenderer = (canvas: HTMLCanvasElement, camera: THREE.PerspectiveCamera): BookRenderer => {
+/**
+ * Rendu d'un livre 3D sur fond transparent, ombres portées adoucies (la couverture sur les feuilles). `minPixelRatio` :
+ * une scène pleine de petits textes (l'atelier) se calcule au moins aussi fin, même sur un écran ordinaire, puis le
+ * navigateur la réduit proprement : sans cela, la carte graphique saute des points des étiquettes et l'écriture bave.
+ */
+export const createBookRenderer = (canvas: HTMLCanvasElement, camera: THREE.PerspectiveCamera, minPixelRatio = 1): BookRenderer => {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.max(minPixelRatio, Math.min(window.devicePixelRatio, 2)));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.shadowMap.enabled = true;

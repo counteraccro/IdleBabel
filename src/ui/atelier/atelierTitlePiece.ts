@@ -4,10 +4,11 @@ import { TITLE } from '../rareBooks/draw';
 /**
  * Les pièces de titre du lutrin (l'auteur, 28/10 : les bonus « mieux mis en valeur », dans l'esprit de l'atelier) : une
  * étiquette de cuir comme celle qu'on colle au dos d'un vieux livre, filets et lettres dorés au fer. Maroquin rouge pour
- * un bonus, cuir noir pour un malus ; sous la lampe allumée, la dorure brille.
+ * un bonus, cuir noir pour un malus, havane pour ce qui n'est ni l'un ni l'autre (les colonnes du casier) ; sous la lampe
+ * allumée, la dorure brille.
  */
 
-export type Leather = 'red' | 'black';
+export type Leather = 'red' | 'black' | 'brown';
 /** Une ligne de lettres ; `big` : le titre de la pièce, plus gros ; `silver` : poussée à l'argent (un malus du total). */
 export interface TitleLine {
   text: string;
@@ -18,6 +19,7 @@ export interface TitleLine {
 const LEATHER: Record<Leather, [string, string]> = {
   red: ['#7a2219', '#3e0f0b'],
   black: ['#2a2420', '#0e0b09'],
+  brown: ['#6a4428', '#2e1c10'],
 };
 /**
  * Pixels du dessin par unité du meuble : à peu près deux fois ce que la pièce couvre à l'écran (Retina compris). Bien plus,

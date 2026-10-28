@@ -1,6 +1,4 @@
 import './atelier.css';
-import '@fontsource/caveat/400.css';
-import '@fontsource/caveat/600.css';
 import '@fontsource/cinzel/600.css';
 import '@fontsource/cinzel/700.css';
 import '../modal/modal.css';
@@ -102,7 +100,7 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
   };
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 60);
-  const { renderer, resize, destroy } = createBookRenderer(canvas, camera);
+  const { renderer, resize, destroy } = createBookRenderer(canvas, camera, 2);
   const textures = createPieceTextures();
   const furniture = createFurniture(scene, redraw);
   // Le reflet de la pièce sur le laiton seulement (comme la vitrine) : sur tout le bois, il éclairait l'atelier partout pareil.
@@ -383,9 +381,7 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
   });
 
   // Les écritures d'abord : les étiquettes et le carnet sont dessinés une fois les polices là.
-  void Promise.all(
-    ["600 40px 'Cinzel'", "700 40px 'Cinzel'", "40px 'Caveat'", "600 40px 'Caveat'"].map((font) => document.fonts?.load(font)),
-  ).then(() => {
+  void Promise.all(["600 40px 'Cinzel'", "700 40px 'Cinzel'"].map((font) => document.fonts?.load(font))).then(() => {
     shown = '';
     refresh();
   });
