@@ -28,6 +28,10 @@ export type Pick =
 
 /** L'ampoule de la lampe suspendue au-dessus de l'établi : d'où vient la lumière de l'atelier (atelierPage.ts). */
 export const LAMP_BULB = new THREE.Vector3(0.9, 3.37, 0.2);
+/** Le lampadaire du chariot : le haut de son pied, son ampoule, et où il éclaire. */
+const FLOOR_LAMP = new THREE.Vector3(-2.32, 3.15, -0.2);
+export const FLOOR_BULB = new THREE.Vector3(-2.42, 3.0, 1.25);
+export const FLOOR_AIM = new THREE.Vector3(-3.2, 0.9, 0);
 const PIECE = 0xc8a080;
 const DARK = 0x6a5446;
 /** Les mesures : un livre debout = 0,9 de haut (la vitrine : 1). */
@@ -326,6 +330,30 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
       g.add(arm);
     }
   }
+  // Le lampadaire, debout entre le chariot et l'établi (l'auteur, 28/10 : les livres du chariot « plats », et un chariot
+  // n'a pas de lumière à lui) : son abat-jour penché éclaire le chariot par-devant, d'en haut (ses côtés sont pleins), et
+  // les livres s'y font de l'ombre.
+  {
+    const shadeMaterial = new THREE.MeshStandardMaterial({ color: 0x2c3a2a, roughness: 0.5, metalness: 0.3, side: THREE.DoubleSide });
+    const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.19, 0.04, 24), brass);
+    foot.position.set(FLOOR_LAMP.x, 0.02, FLOOR_LAMP.z);
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, FLOOR_LAMP.y, 10), brass);
+    post.position.set(FLOOR_LAMP.x, FLOOR_LAMP.y / 2, FLOOR_LAMP.z);
+    // Le bras, du haut du pied à l'abat-jour, et l'abat-jour au bout, tourné vers le chariot.
+    const top = FLOOR_LAMP.clone();
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, top.distanceTo(FLOOR_BULB), 8), brass);
+    arm.position.copy(top).add(FLOOR_BULB).multiplyScalar(0.5);
+    arm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), FLOOR_BULB.clone().sub(top).normalize());
+    const head = new THREE.Group();
+    head.position.copy(FLOOR_BULB);
+    head.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), FLOOR_AIM.clone().sub(FLOOR_BULB).normalize());
+    const shade = new THREE.Mesh(new THREE.ConeGeometry(0.17, 0.16, 24, 1, true), shadeMaterial);
+    shade.position.y = 0.06;
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 12), new THREE.MeshBasicMaterial({ color: 0xfff0c8 }));
+    head.add(shade, bulb);
+    scene.add(foot, post, arm, head);
+  }
+
   // La règle du rebut : une étiquette de papier pendue à la poignée du chariot.
   const scrapLabel = label(300, 200);
   {

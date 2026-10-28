@@ -12,7 +12,7 @@ import { animationNow } from '../animationClock';
 import type { PieceId } from '../../data/curiosities';
 import { atelierNotes, bookState, visitAtelier, type AtelierNote } from '../../systems/curiosities';
 import { pulpPercent } from '../../systems/curiosityPulp';
-import { createFurniture, LAMP_BULB, type Pick } from './atelierFurniture';
+import { createFurniture, FLOOR_AIM, FLOOR_BULB, LAMP_BULB, type Pick } from './atelierFurniture';
 import { createAtelierBooks } from './atelierBooks';
 import { createPieceTextures } from './atelierPaper';
 import { cardAction, cardHtml, type CardChoice } from './atelierCard';
@@ -117,8 +117,8 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
   scene.traverse((object) => {
     if (object instanceof THREE.Light) object.intensity *= ROOM_DIM;
   });
-  // La seule lumière qu'on voit, celle qui éclaire : la lampe suspendue. Son cône tombe droit sous l'abat-jour et porte
-  // les ombres ; un peu de sa lumière déborde sur le mur autour d'elle. Le chariot et le lutrin restent dans la pénombre.
+  // La lumière de l'établi : la lampe suspendue. Son cône tombe droit sous l'abat-jour et porte les ombres ; un peu de sa
+  // lumière déborde sur le mur autour d'elle. Le lutrin reste dans la pénombre ; le chariot a son lampadaire.
   shadowLamp.castShadow = false;
   const hanging = new THREE.SpotLight(0xffd29a, 34, 0, THREE.MathUtils.degToRad(62), 1, 2);
   hanging.position.copy(LAMP_BULB);
@@ -135,6 +135,16 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
   const spill = new THREE.PointLight(0xffc98a, 11, 0, 2);
   spill.position.copy(LAMP_BULB);
   scene.add(hanging, hanging.target, halo, spill);
+  // Le lampadaire du chariot : il éclaire les dos d'en haut, par-devant, et porte les ombres des livres entre eux.
+  const floorLamp = new THREE.SpotLight(0xffd29a, 14, 0, THREE.MathUtils.degToRad(48), 0.8, 2);
+  floorLamp.position.copy(FLOOR_BULB);
+  floorLamp.target.position.copy(FLOOR_AIM);
+  floorLamp.castShadow = true;
+  floorLamp.shadow.mapSize.set(1024, 1024);
+  floorLamp.shadow.bias = -0.0015;
+  floorLamp.shadow.normalBias = 0.02;
+  floorLamp.shadow.radius = 5;
+  scene.add(floorLamp, floorLamp.target);
 
   type View = { center: THREE.Vector3; tall: number; wide: number };
   const viewOf = (name: 'atelier' | 'bench'): View => {
