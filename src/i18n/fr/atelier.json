@@ -44,6 +44,18 @@
     "away": "Lecture pendant l’absence",
     "ether": "Éther du prochain prestige"
   },
+  "familiesShort": {
+    "pages": "Lecture",
+    "click": "Clic",
+    "finds": "Trouvailles",
+    "knowledge": "Connaissance",
+    "price": "Prix",
+    "letter": "Lettre",
+    "boons": "Bonus de la lettre",
+    "mimic": "Mimic",
+    "away": "Absence",
+    "ether": "Éther"
+  },
   "points": "pts",
   "sets": [
     "Voyage au centre de la mer",
@@ -82,13 +94,13 @@
     "more": "et {n} de plus"
   },
   "tips": {
-    "book": "{name} · rang {rank} · {state}",
+    "book": "rang {rank} · {state}",
     "locked": "cadenas",
-    "drawer": "Tiroir : {part} {state} ({n})",
-    "piece": "{part} : {state}",
+    "drawer": "{n} dans le tiroir",
     "notebook": "Le carnet des pièces S",
     "scrap": "La règle du rebut",
-    "pulp": "Le pilon : +{n} % d’Éther au prochain prestige"
+    "pulp": "Le pilon",
+    "pulpLine": "+{n} % d’Éther au prochain prestige"
   },
   "card": {
     "close": "Remettre",
@@ -147,8 +159,7 @@
     "rank": "rang ≤",
     "state": "et état ≤",
     "none": "(rien)",
-    "never": "Jamais un livre à pièce S.",
-    "ok": "C’est noté"
+    "never": "Jamais un livre à pièce S."
   },
   "pulpForm": {
     "title": "Le pilon",
@@ -158,8 +169,7 @@
     "pulpState": "Piler les {state} ({n})",
     "keep": "Garder par tiroir :",
     "keepAll": "tout (rien au pilon tout seul)",
-    "beyond": "Au-delà, le surplus part tout seul au pilon.",
-    "ok": "C’est noté"
+    "beyond": "Au-delà, le surplus part tout seul au pilon."
   },
   "log": {
     "arrived": "Une curiosité {r} arrive au chariot.",

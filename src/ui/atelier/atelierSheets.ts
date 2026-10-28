@@ -18,8 +18,9 @@ import { at, minutesText, partName, partsName, rankName, setTitle, stateName, st
 import type { Curiosity, GameState } from '../../core/state';
 
 /**
- * Les feuilles posées sur la scène (maquette validée) : le carnet des pièces S (les huit livres S, leurs pièces trouvées ;
- * restaurer une pièce, monter un set complet sur le livre de rang A du pupitre), la règle du rebut, le pilon.
+ * Les petits écrins de l'atelier (l'auteur, 28/10 : le style des modales du jeu, en plus léger) : le carnet des pièces S
+ * (les huit livres S, leurs pièces trouvées ; restaurer une pièce, monter un set complet sur le livre de rang A du
+ * pupitre), la règle du rebut, le pilon. Leurs réglages valent dès qu'on les change.
  */
 
 const escape = (text: string): string => text.replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -29,12 +30,12 @@ const disabled = (off: boolean): string => (off ? 'disabled' : '');
 export const notebookHtml = (state: GameState, selected: Curiosity | null, chosen: [number, PieceId] | null, now: number): string => {
   const atelier = state.atelier;
   const free = freePresses(state);
-  let html = `<button class="x" data-c="close">×</button><h2>${escape(at('notebook.title'))}</h2>`;
+  let html = `<button class="x" data-c="close">×</button><h2 class="ecrin-title">${escape(at('notebook.title'))}</h2>`;
   html += `<div class="set hd"><span></span>${PARTS.map((part) => `<span style="text-align:center">${escape(partName(part))}</span>`).join('')}</div>`;
   SETS.forEach((_, set) => {
     const have = atelier.notebook[set];
     const n = PARTS.filter((part) => have[part]).length;
-    html += `<div class="set"><span class="name">${escape(setTitle(set))} <small style="font-weight:400;color:#555">${n}/4</small></span>`;
+    html += `<div class="set"><span class="name">${escape(setTitle(set))} <small>${n}/4</small></span>`;
     for (const part of PARTS) {
       const piece = have[part];
       const busy = notebookJob(state, set, part);
@@ -46,7 +47,7 @@ export const notebookHtml = (state: GameState, selected: Curiosity | null, chose
     if (n === PARTS.length) {
       const onDesk = selected?.rank === RANK_A && PARTS.every((part) => !notebookJob(state, set, part));
       const ok = onDesk && atelier.reserve >= SET_PAGES && setReady(state, set);
-      html += `<div class="line">${escape(at('notebook.complete'))} <button data-c="mount" data-k="${set}" ${disabled(!ok)}>${escape(at('notebook.mountSet', { n: SET_PAGES }))}</button> ${ok ? '' : `<span style="color:#666">(${escape(onDesk ? at('notebook.needPages', { n: SET_PAGES, have: atelier.reserve }) : at('notebook.needA'))})</span>`}</div>`;
+      html += `<div class="line">${escape(at('notebook.complete'))} <button data-c="mount" data-k="${set}" ${disabled(!ok)}>${escape(at('notebook.mountSet', { n: SET_PAGES }))}</button> ${ok ? '' : `<span class="small">(${escape(onDesk ? at('notebook.needPages', { n: SET_PAGES, have: atelier.reserve }) : at('notebook.needA'))})</span>`}</div>`;
     }
   });
   if (chosen) {
@@ -98,9 +99,10 @@ export const scrapHtml = (state: GameState): string => {
     { length: STATES },
     (_, s) => `<option value="${s}" ${worst === s ? 'selected' : ''}>${escape(stateName(s))}</option>`,
   ).join('');
-  return `${escape(at('scrapForm.title'))}<br>${escape(at('scrapForm.rank'))} <select data-f="rank"><option value="-1">${escape(at('scrapForm.none'))}</option>${ranks}</select>
-    ${escape(at('scrapForm.state'))} <select data-f="state">${states}</select><br>
-    <span class="small">${escape(at('scrapForm.never'))}</span><br><button data-f="ok">${escape(at('scrapForm.ok'))}</button>`;
+  return `<h2 class="ecrin-title">${escape(at('tips.scrap'))}</h2>
+    <p>${escape(at('scrapForm.title'))} ${escape(at('scrapForm.rank'))} <select data-f="rank"><option value="-1">${escape(at('scrapForm.none'))}</option>${ranks}</select>
+    ${escape(at('scrapForm.state'))} <select data-f="state">${states}</select></p>
+    <p class="small">${escape(at('scrapForm.never'))}</p>`;
 };
 
 /** Le pilon : à la main, un état à la fois (tous les tiroirs) ; et le stock gardé par tiroir. */
@@ -110,14 +112,15 @@ export const pulpHtml = (state: GameState): string => {
   const keep = PULP_KEEP_CHOICES.map(
     (n) => `<option value="${n}" ${atelier.keep === n ? 'selected' : ''}>${n < 0 ? escape(at('pulpForm.keepAll')) : n}</option>`,
   ).join('');
-  return `<b>${escape(at('pulpForm.title'))}</b> : ${escape(at('pulpForm.gives', { n: pulpPercent(state) }))} <span class="small">${escape(at('pulpForm.limits', { n: PULP_MAX_PERCENT }))}</span><br>
-    <span class="small">${escape(at('pulpForm.rules', { points: atelier.pulp, per: PULP_PER_PERCENT }))}</span><br>
-    ${counts.map((n, s) => `<button data-s="${s}" ${disabled(pulpFull(state) || !n)}>${escape(at('pulpForm.pulpState', { state: statesName(s), n }))}</button>`).join(' ')}<br>
-    ${escape(at('pulpForm.keep'))} <select data-f="keep">${keep}</select>
-    <br><span class="small">${escape(at('pulpForm.beyond'))}</span><br><button data-f="ok">${escape(at('pulpForm.ok'))}</button>`;
+  return `<h2 class="ecrin-title">${escape(at('pulpForm.title'))}</h2>
+    <p class="big">${escape(at('pulpForm.gives', { n: pulpPercent(state) }))} <span class="small">${escape(at('pulpForm.limits', { n: PULP_MAX_PERCENT }))}</span></p>
+    <p class="small">${escape(at('pulpForm.rules', { points: atelier.pulp, per: PULP_PER_PERCENT }))}</p>
+    <div class="row">${counts.map((n, s) => `<button data-s="${s}" ${disabled(pulpFull(state) || !n)}>${escape(at('pulpForm.pulpState', { state: statesName(s), n }))}</button>`).join('')}</div>
+    <p>${escape(at('pulpForm.keep'))} <select data-f="keep">${keep}</select></p>
+    <p class="small">${escape(at('pulpForm.beyond'))}</p>`;
 };
 
 /** Piler un état (à la main). */
 export const pulpOne = (state: GameState, pieceState: number): void => void pulpState(state, pieceState);
-/** La feuille du pilon, validée : le stock gardé. */
+/** Le stock gardé par tiroir, changé dans l'écrin du pilon. */
 export const pulpKeep = (state: GameState, keep: number): void => setPulpKeep(state, keep);

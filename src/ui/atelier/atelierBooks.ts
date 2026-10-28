@@ -80,7 +80,7 @@ export const createAtelierBooks = (scene: THREE.Scene, furniture: Furniture, tex
   scene.add(group);
   const locks = new THREE.Group();
   scene.add(locks);
-  const brass = new THREE.MeshStandardMaterial({ color: 0xb08a4a, roughness: 0.35, metalness: 0.85 });
+  const { brass } = furniture;
   const iron = new THREE.MeshStandardMaterial({ color: 0x2a2622, roughness: 0.6, metalness: 0.6 });
   const padlock = (): THREE.Group => {
     const g = new THREE.Group();
@@ -137,6 +137,11 @@ export const createAtelierBooks = (scene: THREE.Scene, furniture: Furniture, tex
       }
       const spot = slotPosition(book, top);
       m.position.copy(spot);
+      // Rangés à la main : chacun un peu plus ou moins enfoncé, un peu de travers.
+      if (book.where === 'cart') {
+        m.position.z += (((book.id * 53) % 7) - 3) * 0.006;
+        m.rotation.y = (((book.id * 29) % 9) - 4) * 0.02;
+      }
       group.add(m);
       if (fresh) {
         const from = spot.clone().add(new THREE.Vector3(-1.6, 0.25, 0.5));
@@ -160,8 +165,9 @@ export const createAtelierBooks = (scene: THREE.Scene, furniture: Furniture, tex
     }
     furniture.lecternLamps.forEach((lamp, i) => {
       const on = state.atelier.books.some((book) => book.where === 'lectern' && book.slot === i && book !== selected);
-      lamp.light.intensity = on ? 2.4 : 0;
+      lamp.light.intensity = on ? 4 : 0;
       lamp.glow.material.color.set(on ? 0xfff0c8 : 0x3a3020);
+      furniture.lightLectern(i, on);
     });
   };
 

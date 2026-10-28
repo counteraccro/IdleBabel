@@ -1,8 +1,9 @@
 import './atelier.css';
-import '@fontsource/special-elite/400.css';
 import '@fontsource/caveat/400.css';
 import '@fontsource/caveat/600.css';
 import '@fontsource/cinzel/600.css';
+import '@fontsource/cinzel/700.css';
+import '../modal/modal.css';
 import * as THREE from 'three';
 import { el, type Component } from '../dom';
 import { t } from '../../i18n';
@@ -13,7 +14,7 @@ import { animationNow } from '../animationClock';
 import type { PieceId } from '../../data/curiosities';
 import { atelierNotes, bookState, visitAtelier, type AtelierNote } from '../../systems/curiosities';
 import { pulpPercent } from '../../systems/curiosityPulp';
-import { createFurniture, CART_X, LECTERN_X, type Pick } from './atelierFurniture';
+import { createFurniture, LAMP_BULB, type Pick } from './atelierFurniture';
 import { createAtelierBooks } from './atelierBooks';
 import { createPieceTextures } from './atelierPaper';
 import { cardAction, cardHtml, type CardChoice } from './atelierCard';
@@ -32,6 +33,8 @@ const VIEWS = {
   atelier: { center: new THREE.Vector3(0, 1.88, 0), tall: 1.98, wide: 3.85 },
 };
 const GLIDE = 900;
+/** La lumière de la pièce, baissée d'autant devant les spots (comme la vitrine) : l'atelier se perd dans le noir. */
+const ROOM_DIM = 0.5;
 
 /** « +1 page de réemploi », « +4 pages de réemploi ». */
 const pagesText = (n: number): string => (n === 1 ? at('log.pagesOne') : at('log.pages', { n }));
@@ -71,19 +74,24 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
   const stage = el('div', 'atelier-stage');
   const canvas = el('canvas', 'atelier-canvas');
   const tip = el('div', 'atelier-tip');
-  const card = el('div', 'atelier-card');
-  const sheet = (inner: string) => {
-    const outer = el('div', 'atelier-sheet');
-    const paper = el('div', inner);
-    outer.append(paper);
-    outer.addEventListener('click', (event) => {
-      if (event.target === outer) close(outer);
-    });
+  /**
+   * Un écrin : le cuir et les filets des modales du jeu (modal.css : coins coupés, double filet doré), sans fond assombri
+   * ni filigranes ; son texte va dans `paper`.
+   */
+  const ecrin = (kind: string) => {
+    const outer = el('div', `atelier-ecrin-frame ${kind}`);
+    const leather = el('div', 'modal atelier-ecrin');
+    const paper = el('div', 'atelier-ecrin-body');
+    leather.append(el('div', 'modal-filet'), paper);
+    outer.append(leather);
     return { outer, paper };
   };
-  const notebook = sheet('atelier-notebook');
-  const scrap = sheet('atelier-paper');
-  const pulp = sheet('atelier-paper');
+  const cardEcrin = ecrin('atelier-card');
+  const card = cardEcrin.outer;
+  const notebook = ecrin('atelier-sheet atelier-notebook');
+  const scrap = ecrin('atelier-sheet atelier-paper');
+  const pulp = ecrin('atelier-sheet atelier-paper');
+  const sheets = [notebook, scrap, pulp];
   const log = el('div', 'atelier-log');
   stage.append(canvas, tip, card, notebook.outer, scrap.outer, pulp.outer);
   root.append(back, stage, log);
@@ -95,10 +103,11 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 60);
   const { renderer, resize, destroy } = createBookRenderer(canvas, camera);
-  scene.environment = relicEnvironment(renderer);
-  scene.environmentIntensity = 0.25;
   const textures = createPieceTextures();
   const furniture = createFurniture(scene, redraw);
+  // Le reflet de la pièce sur le laiton seulement (comme la vitrine) : sur tout le bois, il éclairait l'atelier partout pareil.
+  furniture.brass.envMap = relicEnvironment(renderer);
+  furniture.brass.envMapIntensity = 0.25;
   const books = createAtelierBooks(scene, furniture, textures);
 
   // Lumières (comme la vitrine), et la caméra : l'atelier entier, ou l'établi (la fiche à gauche).
@@ -106,22 +115,28 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
   const shadowLamp = scene.getObjectsByProperty('isDirectionalLight', true).find((light) => light.castShadow) as THREE.DirectionalLight;
   Object.assign(shadowLamp.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, far: 40 });
   shadowLamp.shadow.camera.updateProjectionMatrix();
-  const spot = (intensity: number, distance: number, angle: number, penumbra: number, from: THREE.Vector3, to: THREE.Vector3): void => {
-    const light = new THREE.SpotLight(0xffd9a0, intensity, distance, THREE.MathUtils.degToRad(angle), penumbra, from.y > 4 ? 1.5 : 1.6);
-    light.position.copy(from);
-    light.target.position.copy(to);
-    scene.add(light, light.target);
-  };
-  const lamp = new THREE.SpotLight(0xffd9a0, 22, 14, THREE.MathUtils.degToRad(48), 0.6, 1.4);
-  lamp.position.set(0, 5.2, 3.2);
-  lamp.target.position.set(0, 1.6, 0);
-  scene.add(lamp, lamp.target);
-  spot(9, 6, 55, 0.7, new THREE.Vector3(0.9, 3.35, 0.2), new THREE.Vector3(-0.3, 1.2, 0.1));
-  for (const x of [CART_X, LECTERN_X]) spot(10, 9, 30, 0.7, new THREE.Vector3(x, 4.6, 2.4), new THREE.Vector3(x, 1.3, 0));
   // Toute la pièce baissée (les lampes du lutrin, éteintes ici, s'allument plus tard à leur pleine force, comme la maquette).
   scene.traverse((object) => {
-    if (object instanceof THREE.Light) object.intensity *= 0.6;
+    if (object instanceof THREE.Light) object.intensity *= ROOM_DIM;
   });
+  // La seule lumière qu'on voit, celle qui éclaire : la lampe suspendue. Son cône tombe droit sous l'abat-jour et porte
+  // les ombres ; un peu de sa lumière déborde sur le mur autour d'elle. Le chariot et le lutrin restent dans la pénombre.
+  shadowLamp.castShadow = false;
+  const hanging = new THREE.SpotLight(0xffd29a, 34, 0, THREE.MathUtils.degToRad(62), 1, 2);
+  hanging.position.copy(LAMP_BULB);
+  hanging.target.position.set(LAMP_BULB.x - 0.3, 0, LAMP_BULB.z + 0.3);
+  hanging.castShadow = true;
+  hanging.shadow.mapSize.set(1024, 1024);
+  hanging.shadow.bias = -0.0015;
+  hanging.shadow.normalBias = 0.02;
+  hanging.shadow.radius = 6;
+  const halo = new THREE.PointLight(0xffc98a, 1.2, 2.5, 2);
+  halo.position.copy(LAMP_BULB).add(new THREE.Vector3(0, 0.12, 0));
+  // Ce que l'ampoule répand dans toute la pièce, sans abat-jour ni ombre : elle frise de biais le dos des livres du chariot
+  // (à sa gauche) et ceux du lutrin (à sa droite), qui gardent leur relief au lieu de faire un panneau plat.
+  const spill = new THREE.PointLight(0xffc98a, 11, 0, 2);
+  spill.position.copy(LAMP_BULB);
+  scene.add(hanging, hanging.target, halo, spill);
 
   type View = { center: THREE.Vector3; tall: number; wide: number };
   const viewOf = (name: 'atelier' | 'bench'): View => {
@@ -201,7 +216,7 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
     books.build(state, choice.book, animationNow());
     books.unfold(state, choice.book, choice.part);
     card.classList.toggle('open', !!choice.book);
-    if (choice.book) card.innerHTML = cardHtml(state, choice, now);
+    if (choice.book) cardEcrin.paper.innerHTML = cardHtml(state, choice, now);
     if (notebook.outer.classList.contains('open')) notebook.paper.innerHTML = notebookHtml(state, choice.book, chosen, now);
     furniture.drawIdle();
     furniture.drawNotebook();
@@ -239,77 +254,109 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
     shown = '';
     refresh();
   });
-  scrap.paper.addEventListener('click', (event) => {
-    if ((event.target as HTMLElement).dataset.f !== 'ok') return;
+  // La règle du rebut et le stock du pilon valent dès qu'on les change.
+  scrap.paper.addEventListener('change', () => {
     const value = (name: string): number => Number(scrap.paper.querySelector<HTMLSelectElement>(`[data-f="${name}"]`)!.value);
     state.atelier.scrap = { rank: value('rank'), state: value('state') };
-    close(scrap.outer);
+    refresh();
+  });
+  pulp.paper.addEventListener('change', () => {
+    pulpKeep(state, Number(pulp.paper.querySelector<HTMLSelectElement>('[data-f="keep"]')!.value));
+    refresh();
   });
   pulp.paper.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
-    if (target.dataset.s !== undefined && !(target as HTMLButtonElement).disabled) {
-      pulpOne(state, Number(target.dataset.s));
-      pulp.paper.innerHTML = pulpHtml(state);
-      return refresh();
-    }
-    if (target.dataset.f !== 'ok') return;
-    pulpKeep(state, Number(pulp.paper.querySelector<HTMLSelectElement>('[data-f="keep"]')!.value));
-    close(pulp.outer);
+    if (target.dataset.s === undefined || (target as HTMLButtonElement).disabled) return;
+    pulpOne(state, Number(target.dataset.s));
+    pulp.paper.innerHTML = pulpHtml(state);
+    refresh();
   });
+  /** Échap ferme l'écrin ouvert. */
+  const onKey = (event: KeyboardEvent): void => {
+    if (event.key !== 'Escape') return;
+    for (const open of sheets) if (open.outer.classList.contains('open')) close(open.outer);
+  };
+  document.addEventListener('keydown', onKey);
+  /** L'écrin du rebut ou du pilon : posé au-dessus de l'objet cliqué, sans sortir de la scène. */
+  const above = (outer: HTMLElement, object: THREE.Object3D): void => {
+    under.setFromObject(object);
+    const top = new THREE.Vector3((under.min.x + under.max.x) / 2, under.max.y, under.max.z).project(camera);
+    const box = stage.getBoundingClientRect();
+    outer.style.left = `${Math.min(Math.max(((top.x + 1) / 2) * box.width, 200), box.width - 200)}px`;
+    outer.style.top = `${Math.max(((1 - top.y) / 2) * box.height, 20)}px`;
+  };
 
   // Les clics dans la scène.
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
-  const hitAt = (event: MouseEvent): Pick | null => {
+  /** Ce que la souris touche : ce qu'on y fait, et l'objet entier (un livre, un tiroir) sous lequel s'écrit sa légende. */
+  const hitAt = (event: MouseEvent): { pick: Pick; object: THREE.Object3D } | null => {
     const box = canvas.getBoundingClientRect();
     pointer.set(((event.clientX - box.left) / box.width) * 2 - 1, -((event.clientY - box.top) / box.height) * 2 + 1);
     scene.updateMatrixWorld();
     raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster
-      .intersectObjects([books.group, furniture.unfolded, ...furniture.pickables], true)
-      .find((candidate) => candidate.object.userData.pick);
-    return (hit?.object.userData.pick as Pick | undefined) ?? null;
+    const roots = [books.group, furniture.unfolded, ...furniture.pickables];
+    const hit = raycaster.intersectObjects(roots, true).find((candidate) => candidate.object.userData.pick);
+    if (!hit) return null;
+    // L'objet entier : un meuble cliquable lui-même (un tiroir, le pilon : pas sa poignée ni sa cuve), ou ce qui est posé
+    // dans les livres ou sur le pupitre (un livre).
+    const holders: THREE.Object3D[] = [books.group, furniture.unfolded];
+    let object = hit.object;
+    while (object.parent && !furniture.pickables.includes(object) && !holders.includes(object.parent)) object = object.parent;
+    return { pick: hit.object.userData.pick as Pick, object };
   };
-  const tipText = (pick: Pick | null): string => {
-    if (!pick) return '';
+  /** La légende d'un objet : son nom, et une ligne de plus en dessous (comme les reliques de la vitrine). */
+  const tipText = (pick: Pick | null): [string, string?] | null => {
+    if (!pick) return null;
     if (pick.kind === 'book') {
       const book = state.atelier.books.find((candidate) => candidate.id === pick.id);
-      if (!book) return '';
-      const text = at('tips.book', { name: bookName(book), rank: rankName(book.rank), state: stateName(bookState(book)) });
-      return book.locked ? `${text} · ${at('tips.locked')}` : text;
+      if (!book) return null;
+      const line = at('tips.book', { rank: rankName(book.rank), state: stateName(bookState(book)) });
+      return [bookName(book), book.locked ? `${line} · ${at('tips.locked')}` : line];
     }
     if (pick.kind === 'drawer')
-      return at('tips.drawer', {
-        part: partName(pick.part),
-        state: stateName(pick.state),
-        n: state.atelier.drawers[pick.part][pick.state],
-      });
-    if (pick.kind === 'piece' && choice.book)
-      return at('tips.piece', { part: partLong(pick.part), state: stateName(choice.book.parts[pick.part].state) });
-    if (pick.kind === 'notebook') return at('tips.notebook');
-    if (pick.kind === 'scrap') return at('tips.scrap');
-    if (pick.kind === 'pulp') return at('tips.pulp', { n: pulpPercent(state) });
-    return '';
+      return [
+        at('scene.drawer', { part: partName(pick.part), state: stateName(pick.state) }),
+        at('tips.drawer', { n: state.atelier.drawers[pick.part][pick.state] }),
+      ];
+    if (pick.kind === 'piece' && choice.book) return [partLong(pick.part), stateName(choice.book.parts[pick.part].state)];
+    if (pick.kind === 'notebook') return [at('tips.notebook')];
+    if (pick.kind === 'scrap') return [at('tips.scrap')];
+    if (pick.kind === 'pulp') return [at('tips.pulp'), at('tips.pulpLine', { n: pulpPercent(state) })];
+    return null;
   };
+  const under = new THREE.Box3();
   canvas.addEventListener('pointermove', (event) => {
-    const pick = hitAt(event);
-    canvas.style.cursor = pick ? 'pointer' : '';
-    const text = tipText(pick);
-    tip.style.display = text ? 'block' : 'none';
-    if (!text) return;
-    tip.textContent = text;
-    const box = stage.getBoundingClientRect();
-    tip.style.left = `${event.clientX - box.left + 14}px`;
-    tip.style.top = `${event.clientY - box.top + 12}px`;
+    const hit = hitAt(event);
+    canvas.style.cursor = hit ? 'pointer' : '';
+    const text = tipText(hit?.pick ?? null);
+    tip.classList.toggle('shown', !!text);
+    if (!hit || !text) return;
+    const [name, line] = text;
+    const sign = `${name}|${line ?? ''}`;
+    if (tip.dataset.sign !== sign) {
+      tip.dataset.sign = sign;
+      tip.replaceChildren(name, ...(line ? [Object.assign(document.createElement('i'), { textContent: line })] : []));
+    }
+    // Sous l'objet, au milieu (comme le nom d'un livre de la vitrine sur le bord de son étagère).
+    under.setFromObject(hit.object);
+    const at3 = new THREE.Vector3((under.min.x + under.max.x) / 2, under.min.y, under.max.z).project(camera);
+    tip.style.left = `${((at3.x + 1) / 2) * 100}%`;
+    tip.style.top = `${((1 - at3.y) / 2) * 100}%`;
   });
-  canvas.addEventListener('pointerleave', () => (tip.style.display = 'none'));
+  canvas.addEventListener('pointerleave', () => tip.classList.remove('shown'));
   /** Un tiroir cliqué s'ouvre un instant. */
   const opening: { drawer: (typeof furniture.drawers)[number]; start: number }[] = [];
   canvas.addEventListener('click', (event) => {
-    const pick = hitAt(event);
-    if (!pick) return;
+    const hit = hitAt(event);
+    // Un clic à côté ferme l'écrin ouvert (et en ouvre un autre, si c'est sur un objet).
+    for (const open of sheets) if (open.outer.classList.contains('open')) close(open.outer);
+    const pick = hit?.pick;
+    if (!hit || !pick) return;
     if (pick.kind === 'book') {
       choice = { book: state.atelier.books.find((book) => book.id === pick.id) ?? null, part: null, confirm: false };
+      // La vue glisse vers l'établi : la légende du livre n'y serait plus à sa place.
+      tip.classList.remove('shown');
       go('bench');
     }
     if (pick.kind === 'piece') choice = { ...choice, part: choice.part === pick.part ? null : pick.part, confirm: false };
@@ -324,10 +371,12 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
     }
     if (pick.kind === 'scrap') {
       scrap.paper.innerHTML = scrapHtml(state);
+      above(scrap.outer, hit.object);
       scrap.outer.classList.add('open');
     }
     if (pick.kind === 'pulp') {
       pulp.paper.innerHTML = pulpHtml(state);
+      above(pulp.outer, hit.object);
       pulp.outer.classList.add('open');
     }
     refresh();
@@ -335,7 +384,7 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
 
   // Les écritures d'abord : les étiquettes et le carnet sont dessinés une fois les polices là.
   void Promise.all(
-    ["600 40px 'Cinzel'", "40px 'Caveat'", "600 40px 'Caveat'", "16px 'Special Elite'"].map((font) => document.fonts?.load(font)),
+    ["600 40px 'Cinzel'", "700 40px 'Cinzel'", "40px 'Caveat'", "600 40px 'Caveat'"].map((font) => document.fonts?.load(font)),
   ).then(() => {
     shown = '';
     refresh();
@@ -346,6 +395,7 @@ export const createAtelierPage = (state: GameState, onBack: () => void): Compone
     const now = animationNow(frameTime);
     if (!root.isConnected) {
       if (mounted) {
+        document.removeEventListener('keydown', onKey);
         textures.dispose();
         books.dispose();
         return destroy(scene);

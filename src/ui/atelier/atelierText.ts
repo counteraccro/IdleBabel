@@ -33,6 +33,11 @@ export const bonusText = (family: FamilyId, value: number): string =>
 /** Un malus : « Pages d'un clic −8 % » (le prix monte). */
 export const malusText = (family: FamilyId, value: number): string =>
   `${familyName(family)} ${family === 'price' ? '+' : '−'}${decimal(value)}${unit(family)}`;
+/** Les mêmes, en court, pour les pièces de titre du lutrin : « Trouvailles +4 % », « Clic −8 % ». */
+export const shortBonusText = (family: FamilyId, value: number): string =>
+  `${messages().atelier.familiesShort[family]} ${family === 'price' ? '−' : '+'}${decimal(value)}${unit(family)}`;
+export const shortMalusText = (family: FamilyId, value: number): string =>
+  `${messages().atelier.familiesShort[family]} ${family === 'price' ? '+' : '−'}${decimal(value)}${unit(family)}`;
 
 /** Une durée en minutes : « 2 h 05 », « 40 min ». */
 export const minutesText = (minutes: number): string => {

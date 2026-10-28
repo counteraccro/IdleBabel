@@ -1,9 +1,6 @@
 /* L'atelier (atelier/atelierPage.ts), comme la maquette validée (.ai/maquette-atelier-interface.html, mêmes mesures) : la
-   scène sur fond noir comme la bibliothèque, la fiche de catalogue à gauche, le carnet et les feuilles posés par-dessus. */
+   scène sur fond noir comme la bibliothèque, la fiche du livre à gauche, le carnet et les écrins posés par-dessus. */
 .atelier-page {
-  --card: #efe6cf;
-  --card-ink: #2e241a;
-  --card-red: #8e2f22;
   grid-column: 1 / -1;
   grid-row: 1 / -1;
   display: flex;
@@ -42,67 +39,231 @@
   margin-bottom: 6px;
 }
 .atelier-tip {
+  /* La légende sous l'objet survolé, comme dans la vitrine (.library-caption) : nom doré en petites capitales, sans cadre. */
   position: absolute;
+  transform: translate(-50%, 4px);
   pointer-events: none;
-  background: rgba(20, 14, 9, 0.92);
-  border: 1px solid #6a5232;
-  color: #efe3c8;
-  font-size: 12px;
-  padding: 3px 8px;
-  border-radius: 3px;
   white-space: nowrap;
-  display: none;
+  text-align: center;
+  font-size: 1.08rem;
+  font-variant: small-caps;
+  letter-spacing: 0.1em;
+  color: #f2d68e;
+  /* Sur le bois sombre, une ombre seule ne suffit pas : un halo noir flou derrière les lettres, sans bord visible. */
+  padding: 6px 18px 8px;
+  background: radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.6) 60%, rgba(0, 0, 0, 0));
+  text-shadow:
+    0 1px 2px #000,
+    0 0 6px #000;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.atelier-tip.shown {
+  opacity: 1;
+}
+.atelier-tip i {
+  display: block;
+  font-variant: normal;
+  letter-spacing: 0;
+  font-size: 0.92rem;
+  color: #f4ead6;
 }
 
-/* La fiche : une fiche de catalogue de bibliothèque (bristol, filet rouge), tapée à la machine. */
-.atelier-card {
+/*
+ * Les écrins de l'atelier (l'auteur, 28/10 : « cohérent avec le reste du jeu », mais les modales y sont « too much ») :
+ * le cuir, les coins coupés et le double filet des modales (modal.css : .modal, .modal-filet), la police et les boutons
+ * du jeu ; ni fond assombri, ni filigranes, ni symboles qui débordent. Échap ou un clic à côté les ferment.
+ */
+.atelier-ecrin-frame {
   position: absolute;
-  left: 18px;
-  top: 18px;
-  width: 318px;
-  max-height: calc(100% - 36px);
-  overflow-y: auto;
-  background: var(--card);
-  color: var(--card-ink);
-  font-family: 'Special Elite', 'Courier New', monospace;
-  font-size: 13px;
+  z-index: 2;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.8));
+}
+.atelier-ecrin {
+  --cut: 14px;
+  display: block;
+  gap: 0;
+  padding: 18px 22px 20px;
+  text-align: left;
+  font-size: 0.95rem;
   line-height: 1.45;
-  padding: 16px 18px 30px;
-  border-radius: 3px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
-  transform: translateX(-120%) rotate(-1deg);
-  transition: transform 0.45s ease;
-  background-image:
-    linear-gradient(transparent 33px, var(--card-red) 33px, var(--card-red) 34px, transparent 34px),
-    radial-gradient(rgba(120, 90, 40, 0.06) 1px, transparent 1px);
-  background-size:
-    100% 100%,
-    5px 5px;
+  color: #e6d6b4;
 }
-.atelier-card.open {
-  transform: translateX(0) rotate(-1deg);
+.atelier-ecrin .modal-filet {
+  --cut: 10px;
+  inset: 6px;
 }
-.atelier-card .close {
-  position: absolute;
-  right: 8px;
-  top: 6px;
-  background: none;
-  border: 0;
-  color: var(--card-ink);
-  font-size: 20px;
-  padding: 0 6px;
-  font-family: inherit;
-  cursor: pointer;
+.atelier-ecrin .modal-filet::before {
+  --cut: 9px;
 }
-.atelier-card .close:hover {
-  color: var(--card-red);
+.atelier-ecrin-body {
+  position: relative;
 }
+.atelier-ecrin .ecrin-title,
 .atelier-card h3 {
+  margin: 0 26px 10px 0;
   font-family: inherit;
   font-weight: normal;
-  font-size: 15px;
-  margin: 0 26px 14px 0;
-  height: 18px;
+  font-size: 1.15rem;
+  font-variant: small-caps;
+  letter-spacing: 0.12em;
+  color: #e0b870;
+  text-shadow: 0 1px 0 #000;
+}
+.atelier-ecrin p {
+  margin: 0 0 8px;
+}
+.atelier-ecrin p:last-child {
+  margin-bottom: 0;
+}
+.atelier-ecrin .big {
+  font-size: 1.05rem;
+  color: #f3dc9c;
+}
+.atelier-ecrin .small,
+.atelier-ecrin small {
+  font-size: 0.82rem;
+  color: #a8957a;
+}
+.atelier-ecrin .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 12px;
+}
+/* Les boutons du jeu (modal.css, .modal-button). */
+.atelier-ecrin button {
+  padding: 5px 12px;
+  font: inherit;
+  font-size: 0.9rem;
+  color: #cdb892;
+  background: linear-gradient(180deg, #4a2c1c, #2a170d);
+  border: 1px solid rgba(224, 184, 112, 0.35);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.atelier-ecrin button:hover:not(:disabled) {
+  border-color: #e0b870;
+  color: #e0b870;
+}
+.atelier-ecrin button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.atelier-ecrin button.danger {
+  color: #f0a48a;
+  border-color: rgba(224, 138, 106, 0.7);
+}
+/* La croix qui ferme : sans cadre, dans l'angle. */
+.atelier-ecrin .x,
+.atelier-ecrin .close {
+  position: absolute;
+  right: -6px;
+  top: -6px;
+  padding: 0 6px;
+  font-size: 1.3rem;
+  line-height: 1;
+  background: none;
+  border: 0;
+  color: #a8957a;
+}
+.atelier-ecrin select {
+  padding: 3px 6px;
+  font: inherit;
+  font-size: 0.9rem;
+  color: #f3dc9c;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(224, 184, 112, 0.4);
+  border-radius: 3px;
+}
+.atelier-ecrin select:focus {
+  outline: none;
+  border-color: #e0b870;
+}
+
+/* Le rebut et le pilon : une bulle posée au-dessus de l'objet cliqué (atelierPage.ts, above). */
+.atelier-sheet {
+  display: none;
+}
+.atelier-sheet.open {
+  display: block;
+}
+.atelier-paper {
+  width: min(400px, 92%);
+  transform: translate(-50%, calc(-100% - 12px));
+}
+/* Le carnet : au milieu de la scène, plus grand. */
+.atelier-notebook {
+  left: 50%;
+  top: 50%;
+  width: min(760px, 94%);
+  transform: translate(-50%, -50%);
+}
+.atelier-notebook .atelier-ecrin {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.atelier-notebook .set {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, 92px);
+  gap: 4px 6px;
+  align-items: center;
+  padding: 3px 0;
+  line-height: 1.2;
+}
+.atelier-notebook .set .name {
+  color: #f3dc9c;
+}
+.atelier-notebook .set .slot {
+  font-size: 0.85rem;
+  text-align: center;
+  border: 1px dashed rgba(224, 184, 112, 0.25);
+  border-radius: 3px;
+  padding: 2px;
+  min-height: 24px;
+}
+.atelier-notebook .set .slot.have {
+  border-style: solid;
+  border-color: rgba(224, 184, 112, 0.6);
+  color: #f3dc9c;
+  cursor: pointer;
+}
+.atelier-notebook .set .slot.have:hover {
+  background: rgba(224, 184, 112, 0.1);
+}
+.atelier-notebook .set .slot.busy {
+  opacity: 0.55;
+}
+.atelier-notebook .set .slot small {
+  display: block;
+}
+.atelier-notebook .hd {
+  font-size: 0.82rem;
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+  color: #a8957a;
+}
+.atelier-notebook .line {
+  margin: 6px 0 0;
+}
+
+/* La fiche du livre déplié sur le pupitre : sortie à gauche. */
+.atelier-card {
+  left: 18px;
+  top: 18px;
+  width: 330px;
+  max-height: calc(100% - 36px);
+  display: flex;
+  transform: translateX(-120%);
+  transition: transform 0.45s ease;
+}
+.atelier-card.open {
+  transform: none;
+}
+.atelier-card .atelier-ecrin {
+  overflow-y: auto;
+}
+.atelier-card h3 {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -113,41 +274,42 @@
   align-items: center;
   margin-bottom: 8px;
 }
+/* Le rang : un sceau doré. */
 .atelier-card .stamp {
-  width: 52px;
-  height: 52px;
-  border: 3px solid var(--card-red);
+  width: 48px;
+  height: 48px;
+  border: 2px solid rgba(224, 184, 112, 0.8);
   border-radius: 50%;
-  color: var(--card-red);
+  color: #e0b870;
   display: grid;
   place-items: center;
   font-family: 'Cinzel', serif;
-  font-size: 28px;
-  font-weight: 600;
-  transform: rotate(-9deg);
-  opacity: 0.85;
+  font-size: 24px;
+  font-weight: 700;
   flex: none;
+  box-shadow: 0 0 8px rgba(224, 184, 112, 0.25);
 }
 .atelier-card .stamp.S {
-  border-color: #a07818;
-  color: #a07818;
+  color: #f6e3a1;
+  border-color: #f6e3a1;
+  box-shadow: 0 0 12px rgba(246, 227, 161, 0.5);
 }
 .atelier-card .sec {
-  margin: 12px 0 3px;
-  text-transform: uppercase;
+  margin: 12px 0 4px;
+  font-size: 0.8rem;
+  font-variant: small-caps;
   letter-spacing: 0.12em;
-  font-size: 11px;
-  color: #6a5a44;
-  border-bottom: 1px dotted #9a8a6a;
+  color: #e0b870;
+  border-bottom: 1px solid rgba(224, 184, 112, 0.25);
 }
 .atelier-card .good {
-  color: #2c4a22;
+  color: #b8d49a;
 }
 .atelier-card .bad {
-  color: var(--card-red);
+  color: #f0a48a;
 }
 .atelier-card .dim {
-  color: #7a6a50;
+  color: #a8957a;
 }
 .atelier-card .parts {
   list-style: none;
@@ -155,15 +317,15 @@
   padding: 0;
 }
 .atelier-card .parts li {
-  padding: 2px 4px;
+  padding: 2px 6px;
   cursor: pointer;
   border-radius: 2px;
 }
 .atelier-card .parts li:hover {
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(224, 184, 112, 0.08);
 }
 .atelier-card .parts li.on {
-  background: rgba(142, 47, 34, 0.12);
+  background: rgba(224, 184, 112, 0.16);
 }
 .atelier-card .dot {
   display: inline-block;
@@ -172,7 +334,7 @@
   border-radius: 50%;
   margin-right: 6px;
   vertical-align: middle;
-  border: 1px solid rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.5);
 }
 .atelier-card .st0 {
   background: #9a5a3c;
@@ -187,168 +349,16 @@
   background: #f2e6bb;
 }
 .atelier-card .s-mark {
-  color: #a07818;
+  color: #f6e3a1;
 }
 .atelier-card .act {
   display: block;
   width: 100%;
-  text-align: left;
   margin: 5px 0;
-  background: transparent;
-  color: var(--card-ink);
-  border: 1px solid #9a8a6a;
-  font-family: 'Special Elite', monospace;
-  letter-spacing: 0;
-  font-size: 12.5px;
-  padding: 5px 8px;
-  cursor: pointer;
-}
-.atelier-card .act:hover:not(:disabled) {
-  background: rgba(0, 0, 0, 0.06);
-}
-.atelier-card .act:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-.atelier-card .act.danger {
-  border-color: var(--card-red);
-  color: var(--card-red);
+  text-align: left;
 }
 .atelier-card .note {
-  font-size: 11.5px;
-  color: #6a5a44;
+  font-size: 0.82rem;
+  color: #a8957a;
   margin: 2px 0 6px;
-}
-
-/* Le carnet des pièces S, et les notes du rebut et du pilon : du papier posé sur la scène. */
-.atelier-sheet {
-  position: absolute;
-  inset: 0;
-  display: none;
-  place-items: center;
-  background: rgba(0, 0, 0, 0.55);
-}
-.atelier-sheet.open {
-  display: grid;
-}
-.atelier-notebook {
-  width: min(760px, 94%);
-  max-height: 92%;
-  overflow-y: auto;
-  background: #f1e8d0;
-  color: #2a2a3a;
-  font-family: 'Caveat', cursive;
-  font-size: 21px;
-  padding: 22px 30px 26px 56px;
-  border-radius: 3px;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9);
-  position: relative;
-  background-image:
-    linear-gradient(90deg, transparent 40px, rgba(160, 60, 50, 0.45) 40px, rgba(160, 60, 50, 0.45) 42px, transparent 42px),
-    repeating-linear-gradient(transparent 0 31px, rgba(80, 110, 160, 0.25) 31px 32px);
-}
-.atelier-notebook h2 {
-  font-family: 'Caveat', cursive;
-  font-weight: 600;
-  font-size: 32px;
-  margin: 0 0 4px;
-}
-.atelier-notebook .x {
-  position: absolute;
-  right: 10px;
-  top: 6px;
-  background: none;
-  border: 0;
-  color: #2a2a3a;
-  font-size: 22px;
-  cursor: pointer;
-}
-.atelier-notebook .set {
-  display: grid;
-  grid-template-columns: 1fr repeat(4, 92px);
-  gap: 4px 6px;
-  align-items: center;
-  padding: 3px 0;
-  line-height: 1.15;
-}
-.atelier-notebook .set .name {
-  font-weight: 600;
-}
-.atelier-notebook .set .slot {
-  font-size: 17px;
-  text-align: center;
-  border: 1px dashed rgba(42, 42, 58, 0.3);
-  border-radius: 3px;
-  padding: 1px 2px;
-  min-height: 26px;
-}
-.atelier-notebook .set .slot.have {
-  border-style: solid;
-  border-color: rgba(42, 42, 58, 0.55);
-  cursor: pointer;
-}
-.atelier-notebook .set .slot.have:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-.atelier-notebook .set .slot.busy {
-  opacity: 0.55;
-}
-.atelier-notebook .set .slot small {
-  display: block;
-  font-size: 14px;
-  color: #555;
-}
-.atelier-notebook .hd {
-  font-size: 16px;
-  color: #555;
-}
-.atelier-notebook button,
-.atelier-paper button {
-  font-family: 'Caveat', cursive;
-  font-size: 19px;
-  letter-spacing: 0;
-  background: #e4d6b2;
-  color: #2a2a3a;
-  border: 1px solid #8a7a5a;
-  padding: 1px 10px;
-  margin: 2px 0;
-  cursor: pointer;
-}
-.atelier-notebook button:hover:not(:disabled),
-.atelier-paper button:hover:not(:disabled) {
-  background: #d8c79c;
-}
-.atelier-notebook button:disabled,
-.atelier-paper button:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-.atelier-notebook .line {
-  margin: 6px 0 0;
-  font-size: 18px;
-}
-.atelier-paper {
-  background: #f1e8d0;
-  color: #2a2a3a;
-  font-family: 'Caveat', cursive;
-  font-size: 22px;
-  padding: 18px 26px 22px;
-  border-radius: 2px;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9);
-  transform: rotate(-1.5deg);
-  max-width: 94%;
-}
-.atelier-paper button {
-  font-size: 20px;
-}
-.atelier-paper select {
-  background: #f8f0dc;
-  color: #2a2a3a;
-  border: 1px solid #8a7a5a;
-  font-family: 'Caveat', cursive;
-  font-size: 20px;
-}
-.atelier-paper .small {
-  font-size: 18px;
-  color: #555;
 }

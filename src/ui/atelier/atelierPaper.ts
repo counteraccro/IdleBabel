@@ -18,10 +18,18 @@ export const canvasOf = (width: number, height: number): [HTMLCanvasElement, Can
   return [canvas, canvas.getContext('2d')!];
 };
 
-export const textureOf = (canvas: HTMLCanvasElement): THREE.CanvasTexture => {
+/**
+ * La texture d'une toile. Un papier se lit sans paliers réduits (mipmaps) : la carte graphique les prend dès que la toile
+ * dépasse sa taille à l'écran, et l'écriture devient floue. `mipmaps` : pour ce qui se voit de près et de loin (les pièces).
+ */
+export const textureOf = (canvas: HTMLCanvasElement, mipmaps = false): THREE.CanvasTexture => {
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 8;
+  if (!mipmaps) {
+    texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+  }
   return texture;
 };
 
@@ -303,7 +311,7 @@ export const createPieceTextures = () => {
     if (part === 'spine') spine(x, w, title, set);
     if (part === 'endpaper' && set) exlibris(x, w, h, set);
     wear(x, w, h, p.state, r, part === 'endpaper');
-    const texture = textureOf(canvas);
+    const texture = textureOf(canvas, true);
     cache.set(key, texture);
     return texture;
   };
@@ -313,6 +321,9 @@ export const createPieceTextures = () => {
 /** Une ligne de papier écrit à la main : son texte, et ses options (taille, gras, couleur, pas jusqu'à la suivante). */
 export type NoteLine = string | [string, { size?: number; bold?: boolean; color?: string; step?: number }];
 
+/** Les lettres des papiers, plus grosses que dans la maquette : elle se lisait de près, l'atelier se voit de loin. */
+const GROW = 1.45;
+
 /** Du papier écrit à la main (étiquettes, cartes, notes), comme la maquette. */
 export const note = (
   w: number,
@@ -321,7 +332,7 @@ export const note = (
   {
     frame = false,
     size = 30,
-    bg = '#efe4c6',
+    bg = '#e8dcbc',
     align = 'center',
     top = null,
   }: { frame?: boolean; size?: number; bg?: string; align?: CanvasTextAlign; top?: number | null } = {},
@@ -350,9 +361,17 @@ export const note = (
   const step = h / (lines.length + 1);
   lines.forEach((line, i) => {
     const [text, options = {}] = typeof line === 'string' ? [line] : line;
-    x.font = `${options.bold ? 600 : 400} ${options.size ?? size}px 'Caveat'`;
-    x.fillStyle = options.color ?? '#2a2a3a';
-    x.fillText(text, align === 'center' ? w / 2 : 22, (top ?? step) + i * (top !== null ? (options.step ?? size * 1.1) : step));
+    // Vu de loin, dans la pénombre : tout s'écrit plus gros (GROW), en trait épais, et rétrécit seulement s'il déborde.
+    let px = (options.size ?? size) * GROW;
+    x.font = `600 ${px}px 'Caveat'`;
+    const room = w - (align === 'center' ? 24 : 44);
+    const width = x.measureText(text).width;
+    if (width > room) {
+      px *= room / width;
+      x.font = `600 ${px}px 'Caveat'`;
+    }
+    x.fillStyle = options.color ?? '#1c1820';
+    x.fillText(text, align === 'center' ? w / 2 : 22, (top ?? step) + i * (top !== null ? (options.step ?? size * 1.1) * GROW : step));
   });
   return canvas;
 };

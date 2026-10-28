@@ -44,6 +44,18 @@
     "away": "Reading while away",
     "ether": "Ether at the next prestige"
   },
+  "familiesShort": {
+    "pages": "Reading",
+    "click": "Click",
+    "finds": "Finds",
+    "knowledge": "Knowledge",
+    "price": "Prices",
+    "letter": "Letter",
+    "boons": "Letter boosts",
+    "mimic": "Mimic",
+    "away": "Away",
+    "ether": "Ether"
+  },
   "points": "pts",
   "sets": [
     "Journey to the Centre of the Sea",
@@ -82,13 +94,13 @@
     "more": "and {n} more"
   },
   "tips": {
-    "book": "{name} · rank {rank} · {state}",
+    "book": "rank {rank} · {state}",
     "locked": "padlocked",
-    "drawer": "Drawer: {part} {state} ({n})",
-    "piece": "{part}: {state}",
+    "drawer": "{n} in the drawer",
     "notebook": "The notebook of S pieces",
     "scrap": "The scrap rule",
-    "pulp": "The pulper: +{n}% Ether at the next prestige"
+    "pulp": "The pulper",
+    "pulpLine": "+{n}% Ether at the next prestige"
   },
   "card": {
     "close": "Put back",
@@ -147,8 +159,7 @@
     "rank": "rank ≤",
     "state": "and state ≤",
     "none": "(nothing)",
-    "never": "Never a book with an S piece.",
-    "ok": "Noted"
+    "never": "Never a book with an S piece."
   },
   "pulpForm": {
     "title": "The pulper",
@@ -158,8 +169,7 @@
     "pulpState": "Pulp the {state} ones ({n})",
     "keep": "Keep per drawer:",
     "keepAll": "everything (nothing pulped on its own)",
-    "beyond": "Beyond that, the surplus goes to the pulper on its own.",
-    "ok": "Noted"
+    "beyond": "Beyond that, the surplus goes to the pulper on its own."
   },
   "log": {
     "arrived": "A rank {r} curiosity arrives on the trolley.",

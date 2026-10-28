@@ -1,11 +1,14 @@
 import * as THREE from 'three';
+import { createCartouche, type Cartouche } from '../library/cartouche';
+import { createTitlePiece, type TitleLine, type TitlePiece } from './atelierTitlePiece';
+import { disposeObject } from '../book3d/renderer3d';
 import { oldWood } from '../library/oldWood';
 import { PARTS, PULP_MAX_PERCENT, PULP_PER_PERCENT, type PieceId } from '../../data/curiosities';
 import { pulpFull, pulpPercent } from '../../systems/curiosityPulp';
 import { pressCount } from '../../systems/curiosityPresses';
 import { curiosityEffects } from '../../systems/curiosityEffects';
 import { canvasOf, note, repaint, textureOf, type NoteLine } from './atelierPaper';
-import { at, bonusText, malusText, minutesText, partName, rankName, stateName } from './atelierText';
+import { at, bonusText, malusText, minutesText, partName, rankName, shortBonusText, shortMalusText, stateName } from './atelierText';
 import type { FamilyId } from '../../data/curiosities';
 import type { CuriosityPiece, GameState, PressJob } from '../../core/state';
 
@@ -24,6 +27,8 @@ export type Pick =
   | { kind: 'scrap' }
   | { kind: 'pulp' };
 
+/** L'ampoule de la lampe suspendue au-dessus de l'établi : d'où vient la lumière de l'atelier (atelierPage.ts). */
+export const LAMP_BULB = new THREE.Vector3(0.9, 3.37, 0.2);
 const PIECE = 0xc8a080;
 const DARK = 0x6a5446;
 /** Les mesures : un livre debout = 0,9 de haut (la vitrine : 1). */
@@ -78,7 +83,7 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
   };
 
   // Le mur de l'atelier : un lambris derrière l'établi.
-  const wall = new THREE.Mesh(new THREE.BoxGeometry(4.6, 3.8, 0.05), oldWood('atelier-wall', { whole: true, color: 0x4a3a2c }, redraw));
+  const wall = new THREE.Mesh(new THREE.BoxGeometry(4.6, 3.8, 0.05), oldWood('atelier-wall', { whole: true, color: 0x2e241b }, redraw));
   wall.position.set(0, 1.9, -0.58);
   wall.receiveShadow = true;
   scene.add(wall);
@@ -110,6 +115,8 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
 
   // Le casier des pièces : seize tiroirs (quatre pièces × quatre états), au mur, au-dessus du pupitre.
   const drawers: { part: PieceId; state: number; group: THREE.Group; canvas: HTMLCanvasElement; texture: THREE.Texture; z: number }[] = [];
+  // Au-dessus de chaque colonne, la pièce qu'elle range : un cartouche posé sur le casier.
+  const heads: { part: PieceId; plate: Cartouche }[] = [];
   {
     const w = 4 * CAB.colW + 0.12;
     const h = 4 * CAB.rowH + 0.12;
@@ -126,8 +133,9 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
         const g = new THREE.Group();
         g.position.set(-w / 2 + 0.06 + c * CAB.colW + CAB.colW / 2, 0.06 + (3 - r) * CAB.rowH + CAB.rowH / 2, d / 2 - 0.015);
         wood(g, `drawer-${part}-${state}`, CAB.colW - 0.02, CAB.rowH - 0.02, 0.03, 0, 0, 0, 0xb08860);
-        const tag = label(300, 140);
-        plane(0.4, 0.187, tag.texture, g, 0, 0.03, 0.017);
+        // Sur chaque tiroir, une petite étiquette de papier : son état et ce qu'il garde (la pièce est au-dessus de la colonne).
+        const tag = label(260, 120);
+        plane(0.38, 0.175, tag.texture, g, 0, 0.035, 0.017);
         const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.16, 12), brass);
         handle.rotation.z = Math.PI / 2;
         handle.position.set(0, -0.1, 0.035);
@@ -147,6 +155,12 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
         drawers.push({ part, state, group: g, canvas: tag.canvas, texture: tag.texture, z: g.position.z });
       }),
     );
+    PARTS.forEach((part, c) => {
+      const plate = createCartouche(redraw, { width: 0.5, height: 0.135 });
+      plate.mesh.position.set(-w / 2 + 0.06 + c * CAB.colW + CAB.colW / 2, h + 0.12, d / 2 - 0.02);
+      cab.add(plate.mesh);
+      heads.push({ part, plate });
+    });
   }
 
   // Le carnet des pièces S, pendu à un clou au mur.
@@ -187,7 +201,7 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
     shade.position.set(0.9, 3.45, 0.2);
     scene.add(shade);
     const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), new THREE.MeshBasicMaterial({ color: 0xfff0c8 }));
-    bulb.position.set(0.9, 3.37, 0.2);
+    bulb.position.copy(LAMP_BULB);
     scene.add(bulb);
     const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.5, 6), iron);
     cord.position.set(0.9, 3.8, 0.2);
@@ -240,7 +254,7 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
     new THREE.CylinderGeometry(0.285, 0.285, 1, 28),
     new THREE.MeshStandardMaterial({ color: 0xd9cdb0, roughness: 1 }),
   );
-  const pulpLabel = label(300, 170);
+  const pulpLabel = label(360, 210);
   {
     const g = new THREE.Group();
     g.position.set(PULP.x, PULP.y, 0.0);
@@ -280,7 +294,7 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
     handle.position.y = 0.45;
     handle.castShadow = true;
     pestle.add(handle);
-    const tag = plane(0.3, 0.17, pulpLabel.texture, g, -0.02, 0.2, 0.32);
+    const tag = plane(0.44, 0.257, pulpLabel.texture, g, 0, 0.22, 0.33);
     tag.rotation.x = -0.1;
     tag.castShadow = true;
     pickable(g, { kind: 'pulp' });
@@ -331,15 +345,24 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
     pickable(card, { kind: 'scrap' });
   }
 
-  // Le lutrin : trois pupitres l'un au-dessus de l'autre, chacun sa lampe ; la carte du total en haut.
-  const lecternLamps: { light: THREE.SpotLight; glow: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial> }[] = [];
-  const totalLabel = label(380, 260);
+  // Le lutrin : trois pupitres l'un au-dessus de l'autre, chacun sa lampe et, sous son rebord, les pièces de titre de ce
+  // que donne le livre posé (cuir rouge, cuir noir pour un malus ; dorées, elles brillent avec la lampe) ; en haut, la
+  // grande pièce du total.
+  const lecternLamps: {
+    light: THREE.SpotLight;
+    glow: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
+    tags: THREE.Group;
+    pieces: TitlePiece[];
+    key: string;
+    lit: boolean;
+  }[] = [];
+  const totalPiece = createTitlePiece(redraw, 0.84, 0.46);
   {
     const g = new THREE.Group();
     g.position.set(LECTERN_X, 0, 0);
     scene.add(g);
     wood(g, 'lectern-base', 0.9, 0.08, 0.6, 0, 0.04, 0, DARK);
-    for (const s of [-0.4, 0.4]) wood(g, `lectern-post-${s}`, 0.05, 3.25, 0.06, s, 1.66, -0.2, DARK);
+    for (const s of [-0.4, 0.4]) wood(g, `lectern-post-${s}`, 0.05, 3.31, 0.06, s, 1.69, -0.2, DARK);
     LECTERN_Y.forEach((y, i) => {
       const desk = new THREE.Group();
       desk.position.set(0, y, 0.0);
@@ -362,11 +385,15 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
       light.position.set(LECTERN_X, y + 1.05, 0.5);
       light.target.position.set(LECTERN_X, y + 0.45, 0);
       scene.add(light, light.target);
-      lecternLamps.push({ light, glow });
+      const tags = new THREE.Group();
+      tags.position.set(0, -0.085, 0.07);
+      desk.add(tags);
+      lecternLamps.push({ light, glow, tags, pieces: [], key: '', lit: false });
     });
-    const card = plane(0.78, 0.53, totalLabel.texture, g, 0, 3.32, -0.14);
-    card.castShadow = true;
-    wood(g, 'lectern-crest', 0.9, 0.05, 0.1, 0, 3.03, -0.18, DARK);
+    totalPiece.mesh.position.set(0, 3.61, -0.15);
+    totalPiece.mesh.castShadow = true;
+    g.add(totalPiece.mesh);
+    wood(g, 'lectern-crest', 0.9, 0.05, 0.1, 0, 3.35, -0.18, DARK);
   }
 
   // Les dessins des étiquettes, d'après la partie.
@@ -374,7 +401,7 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
     repaint(
       idleLabel.canvas,
       idleLabel.texture,
-      note(400, 100, [[at('scene.idle'), { size: 34, color: 'rgba(30,22,14,0.7)' }]], { bg: 'rgba(0,0,0,0)' }),
+      note(400, 100, [[at('scene.idle'), { size: 34, color: 'rgba(236,222,192,0.55)' }]], { bg: 'rgba(0,0,0,0)' }),
     );
   const drawNotebook = (): void =>
     repaint(
@@ -384,26 +411,27 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
         210,
         280,
         [
-          [at('scene.notebookTitle'), { size: 44, bold: true, color: '#e8dcc0' }],
-          [at('scene.notebookSub'), { size: 30, color: '#d8ccb0' }],
+          [at('scene.notebookTitle'), { size: 36, bold: true, color: '#e8dcc0' }],
+          [at('scene.notebookSub'), { size: 24, color: '#d8ccb0' }],
         ],
         { bg: '#2f3d2c' },
       ),
     );
   const drawDrawers = (state: GameState): void => {
+    for (const head of heads) head.plate.write(partName(head.part));
     for (const d of drawers) {
       const n = state.atelier.drawers[d.part][d.state];
       repaint(
         d.canvas,
         d.texture,
         note(
-          300,
-          140,
+          260,
+          120,
           [
-            [at('scene.drawer', { part: partName(d.part), state: stateName(d.state) }), { size: 34, bold: true, step: 54 }],
-            [n ? `${n}` : '—', { size: 60, bold: true, color: n ? '#1a1a28' : 'rgba(42,42,58,0.35)' }],
+            [stateName(d.state), { size: 38, bold: true, step: 50 }],
+            [n ? `${n}` : '—', { size: 52, bold: true, color: n ? '#1a1a28' : 'rgba(42,42,58,0.35)' }],
           ],
-          { frame: true, top: 40, size: 34 },
+          { frame: true, top: 38, size: 38 },
         ),
       );
     }
@@ -456,20 +484,26 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
     const h = 0.02 + 0.36 * Math.min(1, state.atelier.pulp / (PULP_MAX_PERCENT * PULP_PER_PERCENT));
     pulp.scale.y = h;
     pulp.position.y = 0.02 + h / 2;
-    const paper = note(300, 170, [
-      [at('scene.pulp'), { size: 30 }],
-      [at('scene.pulpEther', { n: pct }), { size: 38, bold: true }],
-      [pulpFull(state) ? at('scene.pulpFull') : at('scene.pulpNext', { a: into, b: PULP_PER_PERCENT, n: pct + 1 }), { size: 24 }],
-    ]);
+    const paper = note(
+      360,
+      210,
+      [
+        [at('scene.pulp'), { size: 28, step: 40 }],
+        [at('scene.pulpEther', { n: pct }), { size: 38, bold: true, step: 40 }],
+        [pulpFull(state) ? at('scene.pulpFull') : at('scene.pulpNext', { a: into, b: PULP_PER_PERCENT, n: pct + 1 }), { size: 26 }],
+      ],
+      { top: 34 },
+    );
     // Les cinq crans, au crayon sous le texte.
     const x = paper.getContext('2d')!;
+    const left = (360 - (PULP_MAX_PERCENT * 40 - 8)) / 2;
     for (let i = 0; i < PULP_MAX_PERCENT; i++) {
       x.strokeStyle = '#3a2e22';
-      x.lineWidth = 2;
-      x.strokeRect(70 + i * 34, 148, 26, 12);
+      x.lineWidth = 3;
+      x.strokeRect(left + i * 40, 182, 32, 14);
       if (i < pct) {
         x.fillStyle = '#3a2e22';
-        x.fillRect(70 + i * 34, 148, 26, 12);
+        x.fillRect(left + i * 40, 182, 32, 14);
       }
     }
     repaint(pulpLabel.canvas, pulpLabel.texture, paper);
@@ -498,11 +532,45 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
       for (const effect of bonus) sum.set(effect.family, (sum.get(effect.family) ?? 0) + effect.value * effect.factor);
       for (const effect of malus) minus.set(effect.family, (minus.get(effect.family) ?? 0) + effect.value);
     }
-    const lines: NoteLine[] = [[at('scene.lectern'), { size: 34, bold: true, step: 36 }]];
-    for (const [family, value] of sum) lines.push([bonusText(family, value), { size: 25, step: 30 }]);
-    for (const [family, value] of minus) lines.push([malusText(family, value), { size: 25, color: '#8e2f22', step: 30 }]);
-    if (!on.length) lines.push([at('scene.lecternEmpty'), { size: 26, color: 'rgba(42,42,58,0.5)' }]);
-    repaint(totalLabel.canvas, totalLabel.texture, note(380, 260, lines, { top: 34, size: 25, align: 'left' }));
+    const lines: TitleLine[] = [{ text: at('scene.lectern'), big: true }];
+    for (const [family, value] of sum) lines.push({ text: shortBonusText(family, value) });
+    for (const [family, value] of minus) lines.push({ text: shortMalusText(family, value), silver: true });
+    if (!on.length) lines.push({ text: at('scene.lecternEmpty') });
+    // Au-delà de quatre lignes, deux colonnes : la pièce garde sa taille, les lettres restent lisibles.
+    totalPiece.write(lines, 'red', lines.length > 5 ? 2 : 1);
+    totalPiece.glow(on.length ? 0.5 : 0);
+    // Sous chaque pupitre, une pièce par effet du livre posé là, côte à côte (pupitre vide : rien).
+    lecternLamps.forEach((lamp, slot) => {
+      const book = on.find((candidate) => candidate.slot === slot);
+      const tags: { text: string; leather: 'red' | 'black' }[] = [];
+      if (book) {
+        const { bonus, malus } = curiosityEffects(book);
+        for (const effect of bonus) tags.push({ text: shortBonusText(effect.family, effect.value * effect.factor), leather: 'red' });
+        for (const effect of malus) tags.push({ text: shortMalusText(effect.family, effect.value), leather: 'black' });
+      }
+      const key = JSON.stringify(tags);
+      if (key === lamp.key) return;
+      lamp.key = key;
+      for (const piece of lamp.pieces) disposeObject(piece.mesh);
+      lamp.tags.clear();
+      lamp.pieces = [];
+      const width = tags.length >= 3 ? 0.26 : tags.length === 2 ? 0.39 : 0.5;
+      const gap = 0.02;
+      tags.forEach((tag, i) => {
+        const piece = createTitlePiece(redraw, width, 0.12);
+        piece.write([{ text: tag.text }], tag.leather);
+        piece.glow(lamp.lit ? 1 : 0);
+        piece.mesh.position.x = (i - (tags.length - 1) / 2) * (width + gap);
+        lamp.tags.add(piece.mesh);
+        lamp.pieces.push(piece);
+      });
+    });
+  };
+  /** La lampe d'un pupitre allumée ou non : ses pièces de titre brillent avec elle. */
+  const lightLectern = (slot: number, on: boolean): void => {
+    const lamp = lecternLamps[slot];
+    lamp.lit = on;
+    for (const piece of lamp.pieces) piece.glow(on ? 1 : 0);
   };
 
   return {
@@ -519,7 +587,9 @@ export const createFurniture = (scene: THREE.Scene, redraw: () => void) => {
     drawPulp,
     drawScrap,
     drawTotal,
+    lightLectern,
     plane,
+    brass,
   };
 };
 
