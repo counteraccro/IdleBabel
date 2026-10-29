@@ -333,6 +333,8 @@ export const play = (run: Run, seconds: number): void => {
     letter.clicks;
   // La lettre : l'Éclair (des secondes de lecture d'un coup) et le mot BABEL (une part des pages en réserve).
   gain(run, (pps * (1 + letter.flash) + clicking * perClick) * seconds + run.pages * letter.word * seconds);
+  // Et les jetons qu'elle lâche.
+  if (letter.tokens > 0) addTokens(run, letter.tokens * seconds, pps);
   credit(run, seconds);
   run.life.clicks += clicking * seconds;
   run.life.handPages += clicking * perClick * seconds;

@@ -564,12 +564,12 @@
       },
       "p1": {
         "name": "Tip",
-        "value": "×3",
+        "value": "×6",
         "effect": "reading during the Trance"
       },
       "p2": {
         "name": "Tip, at the very top",
-        "value": "×4",
+        "value": "×8",
         "effect": "reading during the Trance"
       },
       "l1": {
@@ -595,7 +595,7 @@
       "r2": {
         "name": "Right barb, second",
         "value": "The letter learns",
-        "effect": "the Light Hand: clicks ×10"
+        "effect": "the Light Hand: clicks ×410"
       },
       "r3": {
         "name": "Right barb, third",
@@ -610,7 +610,7 @@
       "r5": {
         "name": "Right barb, fifth",
         "value": "The letter learns",
-        "effect": "the Flash: three minutes of reading at once"
+        "effect": "the Flash: ten minutes of reading at once"
       },
       "r6": {
         "name": "Right barb, at the top",

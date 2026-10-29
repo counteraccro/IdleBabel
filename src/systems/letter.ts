@@ -9,6 +9,7 @@ import {
   FLOCK_THIRD,
   LAST_INSTANT,
   LETTER_STAYS,
+  LETTER_TOKEN_ODDS,
   LETTER_WAIT,
   UNDERSTOOD_STEP,
   WATCH_STEP,
@@ -148,10 +149,13 @@ export interface Gift {
   boon: BoonId;
   /** Pages données d'un coup (l'Éclair). */
   pages?: number;
+  /** Un jeton de la Loterie lâché avec le bonus. */
+  token?: boolean;
 }
 
 /**
- * Une lettre attrapée, `left` secondes avant qu'elle s'éteigne : son bonus commence (ou agit d'un coup). Dans ses
+ * Une lettre attrapée, `left` secondes avant qu'elle s'éteigne : son bonus commence (ou agit d'un coup), et parfois
+ * elle lâche un jeton de la Loterie (l'auteur, 29/10 : les deux se répondent au lieu de se concurrencer). Dans ses
  * dernières secondes, un sceau secret ; trois bonus à la fois, un sceau. D'une volée (`flock`, la Volée) : les bonus se
  * cumulent (le même deux fois : les durées s'ajoutent) ; deux, puis trois lettres de la volée attrapées, un sceau chacun.
  */
@@ -171,6 +175,10 @@ export const catchLetter = (state: GameState, left: number, random: () => number
     gift.pages = pagesPerSecond(state) * BOON.flash;
     gainPages(state, gift.pages);
   } else gainFind(state, drawFind(state, random));
+  if (random() < 1 / LETTER_TOKEN_ODDS) {
+    state.lottery.tokens += 1;
+    gift.token = true;
+  }
   if (activeBoons(now).length >= 3) sealEvent(state, 'threeLights', now);
   runHooks('boon', seconds === undefined ? { id: boon } : { id: boon, seconds });
   return gift;

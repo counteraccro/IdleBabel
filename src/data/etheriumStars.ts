@@ -445,7 +445,7 @@ export const EFFECT = {
   /** ×durée des bonus de la lettre (barbes de gauche). */
   boonLength: { 'quill.l1': 1.5, 'quill.l2': 2 },
   /** ×lecture de la Transe (la pointe ; la plus haute compte). */
-  trance: { 'quill.p1': 3, 'quill.p2': 4 },
+  trance: { 'quill.p1': 6, 'quill.p2': 8 },
   /** ×apparitions de la Mimic (les dents du haut ; la plus haute compte). */
   mimicComes: { 'mimic.t1': 1.25, 'mimic.t2': 1.5, 'mimic.t3': 2 },
   /** + part rendue par la Mimic, en plus des 10 % (les dents du bas ; la plus haute compte). */

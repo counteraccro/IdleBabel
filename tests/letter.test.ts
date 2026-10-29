@@ -18,6 +18,7 @@ import { pagesPerSecond, toolRate } from '../src/systems/production';
 import { nextToolCost } from '../src/systems/tools';
 import { MAX_FINDS_PER_PAGE, findChance, findWhileAway, pagesTurnedAway, rollFinds } from '../src/systems/knowledge';
 import { nextPrice } from '../src/systems/technologies';
+import { STORY } from '../src/ui/rareBooks/idleBabel/idleBabelStory';
 import { readPage } from '../src/systems/click';
 import { prestige } from '../src/systems/prestige';
 import { intuitionVisible } from '../src/systems/technologies';
@@ -74,18 +75,18 @@ describe('La lettre qui s’échappe', () => {
     expect(advanceLetter(state, 1200, () => 0.01)).toBe('word');
   });
 
-  it('la Transe double la lecture (×4 avec la pointe de la Plume)', () => {
+  it('la Transe : lecture ×5 (×8 avec la pointe de la Plume)', () => {
     const state = game();
     const before = toolRate(state, 'diagonal');
     forceBoon('trance');
     catchLetter(state, 5, Math.random, Date.now());
     expect(state.letters).toBe(1);
-    expect(toolRate(state, 'diagonal')).toBeCloseTo(before * 2);
+    expect(toolRate(state, 'diagonal')).toBeCloseTo(before * 5);
     state.etherium.push('quill.p1', 'quill.p2');
-    expect(toolRate(state, 'diagonal')).toBeCloseTo(before * 4);
+    expect(toolRate(state, 'diagonal')).toBeCloseTo(before * 8);
   });
 
-  it('les autres bonus : trouvailles ×3, clics ×10, méthodes à moitié prix', () => {
+  it('les autres bonus : trouvailles ×3, clics ×410, méthodes à moitié prix', () => {
     const state = game();
     const chance = findChance(state);
     const price = nextToolCost(state, 'diagonal');
@@ -97,16 +98,27 @@ describe('La lettre qui s’échappe', () => {
     const one = state.pages;
     startBoon('hand', 10);
     readPage(state);
-    expect(state.pages - one).toBeCloseTo(one * 10);
+    expect(state.pages - one).toBeCloseTo(one * 410);
   });
 
-  it('l’Éclair donne trois minutes de lecture d’un coup', () => {
+  it('l’Éclair donne dix minutes de lecture d’un coup', () => {
     const state = game('quill.r5');
     forceBoon('flash');
     const gift = catchLetter(state, 5);
-    expect(gift.pages).toBeCloseTo(pagesPerSecond(state) * 180);
-    expect(state.pages).toBeCloseTo(pagesPerSecond(state) * 180);
+    expect(gift.pages).toBeCloseTo(pagesPerSecond(state) * 600);
+    expect(state.pages).toBeCloseTo(pagesPerSecond(state) * 600);
     expect(activeBoons()).toEqual([]);
+  });
+
+  it('une lettre sur cinquante lâche un jeton de la Loterie', () => {
+    const state = game();
+    const before = state.lottery.tokens;
+    forceBoon('trance');
+    expect(catchLetter(state, 5, () => 0.5).token).toBeUndefined();
+    expect(state.lottery.tokens).toBe(before);
+    forceBoon('trance');
+    expect(catchLetter(state, 5, () => 0.01).token).toBe(true);
+    expect(state.lottery.tokens).toBe(before + 1);
   });
 
   it('un bonus repris repart à sa durée entière ; trois à la fois : un sceau', () => {
@@ -211,5 +223,10 @@ describe('La lettre qui s’échappe', () => {
     // Une minute d'absence : pas plus de 100 trouvailles par page tournée (et une de plus, l'arrondi au hasard).
     const turned = pagesTurnedAway(state, 60);
     expect(findWhileAway(state, 60)).toBeLessThanOrEqual(Math.ceil(turned * MAX_FINDS_PER_PAGE) + 1);
+  });
+
+  it('le livre « Idle Babel » raconte la lettre rendue forte, juste avant sa dernière partie', () => {
+    const sections = STORY.flatMap((chapter) => chapter.sections ?? []).map((section) => section.key);
+    expect(sections.slice(-2)).toEqual(['letterAgain', 'thisBook']);
   });
 });

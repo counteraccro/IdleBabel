@@ -184,6 +184,7 @@ export const STORY: StoryChapter[] = [
       { key: 'quantumAge' },
       { key: 'relicCompass', drafts: ['relicCompass'] },
       { key: 'relicLook' },
+      { key: 'letterAgain' },
       // Toujours la dernière partie du livre : il s'écrit encore.
       { key: 'thisBook' },
     ],

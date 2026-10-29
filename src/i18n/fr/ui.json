@@ -220,8 +220,8 @@
       },
       "hand": {
         "name": "Main légère",
-        "what": "Clics ×10 pendant {d}",
-        "short": "Main légère · clics ×10"
+        "what": "Clics ×410 pendant {d}",
+        "short": "Main légère · clics ×410"
       },
       "mind": {
         "name": "Mémoire vive",
@@ -235,7 +235,7 @@
       },
       "flash": {
         "name": "Éclair",
-        "what": "Trois minutes de lecture, d’un coup"
+        "what": "Dix minutes de lecture, d’un coup"
       },
       "find": {
         "name": "Trouvaille",

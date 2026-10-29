@@ -19,8 +19,9 @@ describe('Regarder les reliques', () => {
     expect('choose' in LOCALES.fr.ui.relics).toBe(false);
   });
 
-  it('le livre « Idle Babel » le raconte, juste avant sa dernière partie', () => {
+  it('le livre « Idle Babel » le raconte, avant sa dernière partie', () => {
     const sections = STORY.flatMap((chapter) => chapter.sections ?? []).map((section) => section.key);
-    expect(sections.slice(-2)).toEqual(['relicLook', 'thisBook']);
+    expect(sections.indexOf('relicLook')).toBeLessThan(sections.indexOf('thisBook'));
+    expect(sections.indexOf('relicLook')).toBeGreaterThan(-1);
   });
 });

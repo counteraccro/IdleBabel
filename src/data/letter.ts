@@ -33,17 +33,17 @@ export interface BoonDef {
 }
 
 export const BOONS: readonly BoonDef[] = [
-  // Transe : lecture ×2 (×3, ×4 avec la pointe de la Plume).
+  // Transe : lecture ×5 (×6, ×8 avec la pointe de la Plume).
   { id: 'trance', seconds: 30, weight: 35 },
   // Œil vif : chance de trouvaille +200 %.
   { id: 'eye', star: 'quill.r1', seconds: 15, weight: 15 },
-  // Main légère : pages d'un clic ×10.
+  // Main légère : pages d'un clic ×410.
   { id: 'hand', star: 'quill.r2', seconds: 10, weight: 15 },
   // Mémoire vive : Connaissance par trouvaille ×3.
   { id: 'mind', star: 'quill.r3', seconds: 15, weight: 12 },
   // Aubaine : méthodes à moitié prix.
   { id: 'deal', star: 'quill.r4', seconds: 10, weight: 10 },
-  // Éclair : d'un coup, trois minutes de lecture.
+  // Éclair : d'un coup, dix minutes de lecture.
   { id: 'flash', star: 'quill.r5', weight: 10 },
   // Trouvaille : une trouvaille, tout de suite.
   { id: 'find', star: 'quill.r6', weight: 3 },
@@ -53,21 +53,24 @@ export const BOONS: readonly BoonDef[] = [
 
 /** Ce que font les bonus. */
 export const BOON = {
-  /** Transe : ×lecture, sans la pointe de la Plume. */
-  trance: 2,
+  /** Transe : ×lecture, sans la pointe de la Plume (l'auteur, 29/10 : ×2 ne valait plus rien à côté de la Loterie). */
+  trance: 5,
   /** Œil vif : ×chance de trouvaille (+200 %). */
   eye: 3,
-  /** Main légère : ×pages d'un clic. */
-  hand: 10,
+  /** Main légère : ×pages d'un clic (l'auteur, 29/10 : ×410). */
+  hand: 410,
   /** Mémoire vive : ×Connaissance par trouvaille. */
   mind: 3,
   /** Aubaine : ×prix des méthodes. */
   deal: 0.5,
-  /** Éclair : secondes de lecture données d'un coup. */
-  flash: 180,
+  /** Éclair : secondes de lecture données d'un coup (29/10 : dix minutes, au lieu de trois). */
+  flash: 600,
   /** Quatre cent dix : ×pages lues (méthodes et clics) et ×chance de trouvaille. */
   fourTen: 410,
 } as const;
+
+/** Une lettre attrapée lâche aussi un jeton de la Loterie, une fois sur tant (l'auteur, 29/10). Pas le mot BABEL. */
+export const LETTER_TOKEN_ODDS = 50;
 
 /**
  * Le mot BABEL (idée de l'auteur, 08/10) : rarement, à la place d'une lettre, il vient lettre par lettre. Chacune

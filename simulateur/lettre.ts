@@ -6,6 +6,7 @@ import {
   BREATH_STEP,
   FLOCK_STEP,
   FLOCK_THIRD,
+  LETTER_TOKEN_ODDS,
   LETTER_WAIT,
   UNDERSTOOD_STEP,
   WATCH_STEP,
@@ -36,9 +37,11 @@ export interface LetterAverage {
   flash: number;
   /** Part des pages en réserve donnée par seconde de jeu (le mot BABEL). */
   word: number;
+  /** Jetons de la Loterie lâchés par seconde de jeu. */
+  tokens: number;
 }
 
-const NONE: LetterAverage = { reading: 1, finds: 1, clicks: 1, fourTen: 1, knowledge: 1, price: 1, flash: 0, word: 0 };
+const NONE: LetterAverage = { reading: 1, finds: 1, clicks: 1, fourTen: 1, knowledge: 1, price: 1, flash: 0, word: 0, tokens: 0 };
 
 /**
  * Gardée tant que les étoiles, la relique et les intuitions de la lettre ne changent pas (24/10 : recalculée à chaque pas,
@@ -104,5 +107,6 @@ const letterAverageNow = (run: Run): LetterAverage => {
     flash: lettersPerSecond * (1 - 1 / BABEL_ODDS) * share('flash') * BOON.flash,
     // Le mot entier : une lettre ratée l'arrête (chacune attrapée à la même part).
     word: (perSecond / BABEL_ODDS) * caught ** (BABEL_WORD.length - 1) * wordGain,
+    tokens: (lettersPerSecond * (1 - 1 / BABEL_ODDS)) / LETTER_TOKEN_ODDS,
   };
 };
