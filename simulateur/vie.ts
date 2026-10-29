@@ -15,6 +15,7 @@ import { relicById } from '../src/data/relics';
 import { PLAYER } from './config';
 import { etherNeeded } from '../src/systems/etherium';
 import { TASK_STAR_IDS, countLast, newTasks, openTaskStars, type Tasks } from './taches';
+import { newLevels, type Levels } from './niveaux';
 
 /** Ce qui survit au prestige : les pages à vie, l'Éther, les étoiles allumées, la Page Cornée une fois retrouvée. */
 export interface Life {
@@ -59,6 +60,8 @@ export interface Life {
   lottery: { tokens: number; draws: number; openedAt?: number; tokenAt?: number; daily: number };
   /** Les tâches (simulateur/taches.ts). */
   tasks: Tasks;
+  /** Les tâches par niveaux (29/10). */
+  levels: Levels;
 }
 
 export const newLife = (): Life => ({
@@ -88,6 +91,7 @@ export const newLife = (): Life => ({
   mimic: { caught: 0, bonus: 0, seconds: 0 },
   lottery: { tokens: 0, draws: 0, daily: 0 },
   tasks: newTasks(),
+  levels: newLevels(),
 });
 
 /** Conception §4.1 : floor(∛(pages à vie / 1 Md)), moins ce qui est déjà reçu. */

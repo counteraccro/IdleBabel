@@ -17,6 +17,7 @@
  *   npm run simule -- --methode=voice:12000:18 une méthode du jeu à un autre prix (et une autre lecture)
  *   npm run simule -- --etoile=weight.w5:4e6   une étoile de l'Etherium à un autre prix
  *   npm run simule -- --sans-taches          sans les tâches (simulateur/taches.ts, pas encore dans le jeu)
+ *   npm run simule -- --taches-sans-jetons   les tâches ne donnent plus de jetons (22/10) ; quand vient chaque niveau (niveaux.ts)
  *   npm run simule -- --avec-jeton           le bot pose le Jeton (la relique de la Loterie) à la place de la Loupe
  *   npm run simule -- --reminiscence=gratuite  les intuitions reviennent gratuitement à leur meilleur niveau
  *   npm run simule -- --achat-main=300       le bot n'achète ses méthodes à la main que toutes les 300 s de jeu
@@ -31,6 +32,7 @@ import { buyIntuitions } from './intuitions';
 import { etherGain, litPerPage, newLife, spendEther } from './vie';
 import { checkSeals, sealCount, sealsPerPlate } from './sceaux';
 import { LAST_TASK, ONCE_TASKS, TASK_STARS } from './taches';
+import { LADDERS } from './niveaux';
 import { GEAR_STARS, gearLog, turnGear } from './rouage';
 import { PUZZLE_MINUTES, puzzleLog } from './jeux';
 
@@ -53,6 +55,7 @@ if (option('sans-bit') !== undefined) PLAYER.bit = false;
 if (option('quantique')) PLAYER.quantumAge = Number(option('quantique'));
 if (option('sans-qubit') !== undefined) PLAYER.qubit = false;
 if (option('sans-taches') !== undefined) PLAYER.tasks = false;
+if (option('taches-sans-jetons') !== undefined) PLAYER.taskTokens = false;
 if (option('avec-jeton') !== undefined) PLAYER.tokenRelic = true;
 if (option('reminiscence') === 'gratuite') PLAYER.reminiscence = 'gratuite';
 if (option('achat-main')) PLAYER.handBuyEvery = Number(option('achat-main'));
@@ -213,6 +216,14 @@ if (PLAYER.tasks) {
     const followed = task.count ? '' : ' (pas suivie)';
     console.log(
       `  ${String(task.n).padStart(2)}. ${task.label.padEnd(36)} apparue ${duration(shown?.at).padEnd(7)} faite ${done === undefined ? '—' : `${duration(done)} (en ${duration(done - shown.at)})`}${followed}`,
+    );
+  }
+  console.log('Tâches par niveaux (chaque niveau compte depuis son apparition) :');
+  for (const ladder of LADDERS) {
+    const shown = life.levels.shownAt[ladder.n];
+    const done = life.levels.doneAt[ladder.n] ?? [];
+    console.log(
+      `  ${String(ladder.n).padStart(2)}. ${ladder.label.padEnd(28)} apparue ${duration(shown).padEnd(7)} niveaux ${done.map((at, i) => `${i + 1} : ${duration(at)}`).join(' · ') || '—'}`,
     );
   }
   const last = tasks.last;

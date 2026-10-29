@@ -9,6 +9,7 @@ import { PLAYER } from './config';
 import type { Life } from './vie';
 import type { Run } from './partie';
 import { sealsPerPlate } from './sceaux';
+import { tickLevels } from './niveaux';
 
 /**
  * Les tâches (17/10, .ai/plan-taches.md), pas encore dans le jeu : leurs étoiles, les tâches du jour et les tâches
@@ -53,7 +54,7 @@ interface OnceTask {
 
 const books = (pages: number): number => pages / PAGES_PER_BOOK;
 const ALL_PAGES = [...new Set(STARS.map((star) => star.page))];
-const fullFigures = (life: Life): number =>
+export const fullFigures = (life: Life): number =>
   ALL_PAGES.filter((page: PageId) => {
     const stars = STARS.filter((star) => star.page === page && !CLOSED.has(star.id));
     return stars.length > 0 && stars.every((star) => life.stars.has(star.id));
@@ -253,7 +254,7 @@ type Give = { tokens: (n: number) => void; pages: (seconds: number) => void; kno
 const give = (run: Run, reward: Reward, to: Give, once: boolean): void => {
   const tasks = run.life.tasks;
   if (reward.tokens) {
-    to.tokens(reward.tokens);
+    if (PLAYER.taskTokens) to.tokens(reward.tokens);
     if (once) tasks.onceTokens += reward.tokens;
   }
   if (reward.reading) to.pages(reward.reading * 3600);
@@ -280,11 +281,12 @@ export const tickTasks = (run: Run, seconds: number, onScreen: boolean, to: Give
     if (value < 0 || tasks.screen < value * MINUTES_PER_TOKEN * 60) return value;
     tasks.dailyDone += 1;
     tasks.dailyTokens += value;
-    to.tokens(value);
+    if (PLAYER.taskTokens) to.tokens(value);
     return -value;
   });
   // Les tâches « une seule fois » : regardées une fois par minute (le compte des sceaux coûte).
   if (onScreen && Math.floor(life.clock / 60) === Math.floor((life.clock - seconds) / 60)) return;
+  tickLevels(life, life.levels);
   for (const task of ONCE_TASKS) {
     if (tasks.done[task.n] !== undefined || !life.stars.has(task.star)) continue;
     if (!tasks.shown[task.n]) {

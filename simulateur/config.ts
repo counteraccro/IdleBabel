@@ -68,6 +68,8 @@ export const PLAYER = {
   bit: true,
   /** Les tâches (17/10, simulateur/taches.ts, pas encore dans le jeu) : --sans-taches pour s'en passer. */
   tasks: true,
+  /** Les tâches donnent des jetons de la Loterie (avant le 22/10) : --taches-sans-jetons pour s'en passer (tranché le 22/10). */
+  taskTokens: true,
   /**
    * Le Jeton (18/10) : trouvé au 50e jeton joué (une chance sur 50 par tirage) ; --avec-jeton : le bot le pose à la place
    * de sa relique et joue ses jetons du jour. Par défaut il garde la Loupe ou l'Astrolabe (19/10 : poser le Jeton divise
