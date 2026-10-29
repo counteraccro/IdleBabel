@@ -58,15 +58,15 @@ describe('La Loterie dans l’Etherium', () => {
   });
 
   it('la valeur : les bonus ajoutent plus, mais la production tombe plus bas pendant le malus', () => {
-    expect([boonFactor(rich(), 'all15'), boonFactor(rich(), 'method10'), halfFactor(rich())]).toEqual([1.5, 10, 0.5]);
+    expect([boonFactor(rich(), 'all15'), boonFactor(rich(), 'method10'), halfFactor(rich())]).toEqual([1.5, 5, 0.5]);
     const once = rich(['m1']);
     expect([boonFactor(once, 'all15'), boonFactor(once, 'all2'), boonFactor(once, 'all3'), boonFactor(once, 'method10')]).toEqual([
-      1.75, 2.5, 4, 14.5,
+      1.75, 2.5, 4, 7,
     ]);
     expect(halfFactor(once)).toBeCloseTo(1 / 3);
     const twice = rich(['m1', 'm2']);
     expect([boonFactor(twice, 'all15'), boonFactor(twice, 'all2'), boonFactor(twice, 'all3'), boonFactor(twice, 'method10')]).toEqual([
-      2, 3, 5, 19,
+      2, 3, 5, 9,
     ]);
     expect(halfFactor(twice)).toBe(0.25);
     // Ce que lit la production pendant le bonus ×1,5, avec la valeur.

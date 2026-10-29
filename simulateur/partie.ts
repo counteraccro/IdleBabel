@@ -228,8 +228,7 @@ const find = (run: Run, turned: number, away = false): void => {
   const chance = findChance(run, away);
   const finds = turned * chance;
   // La Loupe : des connaissances garanties en plus, à chaque trouvaille.
-  const found =
-    finds * (product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) + relicBonus(run.life, 'loupe', 0));
+  const found = finds * product(run.life, EFFECT.knowledge) * (away ? 1 : letterAverage(run).knowledge) * relicBonus(run.life, 'loupe', 1);
   const mimicBonus = away ? 0 : found * mimicGives(run.life) * mimicPresence(run.life);
   run.life.mimic.bonus += mimicBonus;
   const knowledge = (found + mimicBonus) * (1 + run.life.tasks.knowledgeBonus);
@@ -280,7 +279,7 @@ const addTokens = (run: Run, tokens: number, pps: number): void => {
   }
   for (let i = before; i < lottery.draws; i++) drawn(run.life);
   // Autant de secondes de la production du moment.
-  gain(run, pps * lotteryAverage(run.life) * (lottery.draws - before));
+  gain(run, pps * lotteryAverage(run) * (lottery.draws - before));
 };
 
 /**
@@ -361,8 +360,16 @@ export const play = (run: Run, seconds: number): void => {
   tasksFor(run, seconds, true);
 };
 
-/** Part de la production que lit la méthode visée par « une méthode ×10 » (au hasard) ou arrêtée (la meilleure). */
-const ONE_METHOD = 0.2;
+/**
+ * Part de la production que lit la méthode du ×10, en moyenne : tirée en proportion de ce qu'elle lit (29/10), chacune
+ * l'est d'autant plus qu'elle compte (la somme des carrés des parts).
+ */
+const oneMethod = (run: Run): number => {
+  const reading = allMethods(run).map((method) => (run.owned[method.id] ?? 0) * rate(run, method));
+  const total = reading.reduce((sum, one) => sum + one, 0);
+  return total > 0 ? reading.reduce((sum, one) => sum + (one / total) ** 2, 0) : 0;
+};
+/** Part de la production que lit la méthode arrêtée par le malus (la meilleure). */
 const BEST_METHOD = 0.5;
 
 /**
@@ -371,7 +378,8 @@ const BEST_METHOD = 0.5;
  * qui mange tout), avec les étoiles de la page « La Loterie ». Approché : les bonus en cours qui ne se retirent pas, et
  * la Connaissance du gain, n'y sont pas.
  */
-const lotteryAverage = (life: Life): number => {
+const lotteryAverage = (run: Run): number => {
+  const life = run.life;
   const level = (effect: Record<string, number>): number =>
     Math.max(0, ...Object.entries(effect).map(([id, v]) => (lit(life, id) ? v : 0)));
   const time = level(EFFECT.lotteryTime);
@@ -381,7 +389,7 @@ const lotteryAverage = (life: Life): number => {
   const weights = (list: readonly { weight: number }[]) => list.reduce((total, one) => total + one.weight, 0);
   const boost = LOTTERY_STARS.value.boost[value];
   const boons =
-    LOTTERY_BOONS.reduce((total, one) => total + one.weight * (one.factor - 1) * boost * (one.id === 'method10' ? ONE_METHOD : 1), 0) /
+    LOTTERY_BOONS.reduce((total, one) => total + one.weight * (one.factor - 1) * boost * (one.id === 'method10' ? oneMethod(run) : 1), 0) /
     weights(LOTTERY_BOONS);
   const half = 1 - 1 / LOTTERY_STARS.value.half[value];
   const { gain: gainSeconds, boon, curse, golden } = LOTTERY_STARS.time;

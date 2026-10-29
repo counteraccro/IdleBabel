@@ -299,8 +299,7 @@
       "compass": "Poser la boussole ?"
     },
     "bonus": {
-      "loupe": "+{n} de Connaissance garantie à chaque trouvaille",
-      "loupeOne": "+1 de Connaissance garantie à chaque trouvaille",
+      "loupe": "Connaissance ×{n} à chaque trouvaille",
       "astrolabe": "lettre +{n} %",
       "hourglass": "pages lues +{n} %",
       "pencil": "tâches du jour −{n} %",

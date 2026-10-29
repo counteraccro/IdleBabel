@@ -148,14 +148,20 @@ export const drawableCurses = (state: GameState, now = Date.now()): (typeof LOTT
   );
 };
 
+/** Une méthode qu'on a, au hasard, en proportion de ce qu'elle lit ; aucune ne lit (toutes arrêtées), à parts égales. */
+const pickByReading = (state: GameState, random: () => number): ToolId => {
+  const owned = ownedMethods(state);
+  const reading = owned.map((id) => ({ id, weight: state.tools[id] * toolRate(state, id) }));
+  return reading.some((one) => one.weight > 0) ? pick(reading, random).id : owned[Math.floor(random() * owned.length)];
+};
+
 /** Le bonus que donnera le tirage (et la méthode du ×10). */
 const pickBoon = (state: GameState, plan: PendingDraw, random: () => number, now: number): void => {
   const drawable = drawableBoons(state, now);
   plan.boon = (drawable.find((one) => one.id === forced) ?? pick(drawable, random)).id;
-  if (plan.boon === 'method10') {
-    const owned = ownedMethods(state);
-    plan.method = owned[Math.floor(random() * owned.length)];
-  }
+  // La méthode du ×10 : tirée en proportion de ce qu'elle lit (l'auteur, 29/10 : à parts égales, elle tombait presque
+  // toujours sur une vieille méthode qui ne lisait plus rien).
+  if (plan.boon === 'method10') plan.method = pickByReading(state, random);
 };
 
 /** Le malus que donnera le tirage (et la méthode qu'il arrête : la mieux lisante). */

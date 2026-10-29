@@ -7,11 +7,14 @@ import type { GameState } from '../../core/state';
 /** Le nom d'une relique (« La Loupe »). */
 export const relicName = (id: RelicId): string => t(`ui.relics.names.${id}`);
 
-/** Ce qu'elle donne, au niveau de ses étoiles : « +1 connaissance garantie à chaque trouvaille », « lettre +40 % ». */
+/** Ce qu'elle donne, au niveau de ses étoiles : « Connaissance ×1,5 à chaque trouvaille », « lettre +40 % ». */
 export const relicBonusText = (state: GameState, id: RelicId): string => {
   const value = relicBonus(state, id);
+  // ×1,75 : deux décimales (formatNumber arrondit à une).
   if (id === 'loupe')
-    return writeDigits(value === 1 ? t('ui.relics.bonus.loupeOne') : t('ui.relics.bonus.loupe').replace('{n}', String(value)));
+    return writeDigits(
+      t('ui.relics.bonus.loupe').replace('{n}', new Intl.NumberFormat(getLocale(), { maximumFractionDigits: 2 }).format(value)),
+    );
   // Le Jeton : des jetons, pas un pourcentage.
   if (id === 'token') return writeDigits(t('ui.relics.bonus.token').replace('{n}', String(value)));
   return writeDigits(t(`ui.relics.bonus.${id}`).replace('{n}', formatNumber(Math.round(value * 100), getLocale())));

@@ -28,7 +28,7 @@ export const GAIN_SECONDS = 30 * 60;
 export const LOTTERY_BOONS = [
   { id: 'all15', weight: 40, factor: 1.5 },
   { id: 'all2', weight: 30, factor: 2 },
-  { id: 'method10', weight: 20, factor: 10 },
+  { id: 'method10', weight: 20, factor: 5 },
   { id: 'all3', weight: 10, factor: 3 },
 ] as const;
 export const BOON_SECONDS = 3600;

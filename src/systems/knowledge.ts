@@ -212,8 +212,8 @@ export const findKnowledge = (state: GameState): number =>
       tomeKnowledgeMultiplier(state) *
       knowledgeBoon() *
       curiosityKnowledge(state) *
-      modded('knowledge') +
-      relicKnowledge(state),
+      relicKnowledge(state) *
+      modded('knowledge'),
   );
 
 /**

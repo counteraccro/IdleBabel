@@ -724,12 +724,12 @@
       "l1": {
         "name": "Loupe 1",
         "value": "La Loupe :",
-        "effect": "2 de Connaissance garantie par trouvaille (au lieu d’1)"
+        "effect": "Connaissance ×1,75 par trouvaille (au lieu de ×1,5)"
       },
       "l2": {
         "name": "Loupe 2",
         "value": "La Loupe :",
-        "effect": "3 de Connaissance garantie par trouvaille"
+        "effect": "Connaissance ×2 par trouvaille"
       },
       "a1": {
         "name": "Astrolabe 1",

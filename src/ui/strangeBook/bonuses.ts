@@ -180,7 +180,7 @@ export const BONUS_FIGURES: Figure[] = [
   factorRow('knowledge', 'knowledgeLetter', 'lettra vimo', () => knowledgeBoon()),
   factorRow('knowledge', 'knowledgeStory', 'vuntal babel', tomeKnowledgeMultiplier),
   {
-    ...addRow('knowledge', 'knowledgeRelic', 'relva lupa', relicKnowledge, (value) => writeDigits(`+${formatNumber(value, getLocale())}`)),
+    ...factorRow('knowledge', 'knowledgeRelic', 'relva lupa', relicKnowledge),
     label: () => relicName('loupe'),
   },
   factorRow('knowledge', 'knowledgeAtelier', 'curio lutra', curiosityKnowledge),

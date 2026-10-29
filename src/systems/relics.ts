@@ -77,8 +77,8 @@ export const relicBonus = (state: GameState, id: RelicId): number => relicById(i
 /** Ce que donne la relique `id` si c'est elle qui agit ; sinon `none`. */
 const activeBonus = (state: GameState, id: RelicId, none: number): number => (state.relics.active === id ? relicBonus(state, id) : none);
 
-/** La Loupe : connaissances garanties en plus, à chaque trouvaille. */
-export const relicKnowledge = (state: GameState): number => activeBonus(state, 'loupe', 0);
+/** La Loupe : ×Connaissance de chaque trouvaille (×1 sans elle). */
+export const relicKnowledge = (state: GameState): number => activeBonus(state, 'loupe', 1);
 /** L'Astrolabe : ce qu'il fait à l'attente entre deux lettres (+40 % d'apparitions : l'attente ÷ 1,4). */
 export const relicLetterWait = (state: GameState): number => 1 / (1 + activeBonus(state, 'astrolabe', 0));
 /** Le Sablier : ×pages lues, des méthodes et des clics. */

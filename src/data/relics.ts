@@ -48,8 +48,8 @@ export const RELICS: readonly RelicDef[] = [
     cell: 21,
     // Le rebord de la fenêtre de gauche (x 230, y 1085, à 0,85 m), appuyée.
     spot: { X: -3.479, Y: 0.85, Z: 4.684, yaw: -30, pose: 'lean' },
-    // + connaissances à chaque trouvaille.
-    bonus: [1, 2, 3],
+    // ×Connaissance de chaque trouvaille (l'auteur, 29/10 : +1, +2, +3 fixes écrasaient tout au début, puis ne valaient plus rien).
+    bonus: [1.5, 1.75, 2],
   },
   {
     id: 'astrolabe',

@@ -142,15 +142,15 @@ const etherSpentParts = (state: GameState, readable: boolean): string => {
   return readable ? t('strangeBook.figures.etherSpent').replace('{n}', spent) : spent;
 };
 /**
- * La relique qui agit (demande de l'auteur, 12/10) : ce qu'elle donne en grand (+3, +40 %), son nom et ce sur quoi elle
+ * La relique qui agit (demande de l'auteur, 12/10) : ce qu'elle donne en grand (×1,5, +40 %), son nom et ce sur quoi elle
  * agit en dessous. La Loupe et l'Astrolabe n'ont pas d'autre chiffre où se montrer.
  */
 const relicValue = (state: GameState): string => {
   const id = state.relics.active;
   if (!id) return '';
   const bonus = relicBonus(state, id);
-  // La Loupe : « +3 » ; le Jeton : « 5 » (jetons par jour).
-  if (id === 'loupe') return writeDigits(`+${number(bonus)}`);
+  // La Loupe : « ×1,5 » ; le Jeton : « 5 » (jetons par jour).
+  if (id === 'loupe') return boost(bonus);
   if (id === 'token') return writeDigits(number(bonus));
   // Le Crayon raccourcit : « −25 % ».
   return `${id === 'pencil' ? '−' : '+'}${percent(bonus)}`;

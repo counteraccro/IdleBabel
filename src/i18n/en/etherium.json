@@ -724,12 +724,12 @@
       "l1": {
         "name": "Magnifying Glass 1",
         "value": "The Magnifying Glass:",
-        "effect": "2 guaranteed Knowledge per find (instead of 1)"
+        "effect": "Knowledge ×1.75 per find (instead of ×1.5)"
       },
       "l2": {
         "name": "Magnifying Glass 2",
         "value": "The Magnifying Glass:",
-        "effect": "3 guaranteed Knowledge per find"
+        "effect": "Knowledge ×2 per find"
       },
       "a1": {
         "name": "Astrolabe 1",

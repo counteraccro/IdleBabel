@@ -79,15 +79,16 @@ describe('Les reliques', () => {
     const state = unlocked();
     for (const relic of RELICS) state.relics.found[relic.id] = 0;
     state.relics.active = 'loupe';
-    expect(relicKnowledge(state)).toBe(1);
+    expect(relicKnowledge(state)).toBe(1.5);
     expect(relicLetterWait(state)).toBe(1);
     expect(relicReading(state)).toBe(1);
     gainFind(state, find);
+    // 1 × 1,5, arrondi au supérieur.
     expect(state.knowledge).toBe(2);
     state.etherium.push('relics.l1', 'relics.l2');
-    expect(relicKnowledge(state)).toBe(3);
+    expect(relicKnowledge(state)).toBe(2);
     state.relics.active = 'astrolabe';
-    expect(relicKnowledge(state)).toBe(0);
+    expect(relicKnowledge(state)).toBe(1);
     expect(relicLetterWait(state)).toBeCloseTo(1 / 1.4);
     const before = letterWait(state, 0).min;
     state.relics.active = null;

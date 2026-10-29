@@ -293,8 +293,7 @@
       "compass": "Set out the compass?"
     },
     "bonus": {
-      "loupe": "+{n} guaranteed Knowledge per find",
-      "loupeOne": "+1 guaranteed Knowledge per find",
+      "loupe": "Knowledge ×{n} per find",
       "astrolabe": "letter +{n}%",
       "hourglass": "pages read +{n}%",
       "pencil": "tasks of the day −{n}%",

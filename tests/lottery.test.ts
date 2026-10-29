@@ -133,16 +133,20 @@ describe('La Loterie', () => {
     expect(reached('tokensSpent-1000')).toBe(true);
   });
 
-  it('×10 pour une méthode qu’on a ; la méthode qui lit le plus s’arrête (malus)', () => {
+  it('×5 pour une méthode qu’on a, tirée selon ce qu’elle lit ; la méthode qui lit le plus s’arrête (malus)', () => {
     const state = reading();
     forceDraw('method10');
     const draw = drawLottery(state, Math.random, 0)!;
     expect(['diagonal', 'finger']).toContain(draw.method);
-    expect(lotteryMethod(state, draw.method!, 1)).toBe(10);
+    expect(lotteryMethod(state, draw.method!, 1)).toBe(5);
     const other = reading();
     other.tools.finger = 4;
     // Les doigts lisent plus que les diagonales.
     expect(4 * toolRate(other, 'finger')).toBeGreaterThan(10 * toolRate(other, 'diagonal'));
+    // Le ×5 tombe d'autant plus sur une méthode qu'elle lit : à mi-tirage, sur les doigts, qui lisent plus de la moitié.
+    forceDraw('method10');
+    expect(drawLottery(other, () => 0.5, 0)!.method).toBe('finger');
+    other.lottery.effects = [];
     forceDraw('stopped');
     expect(drawLottery(other, Math.random, 0)!.method).toBe('finger');
     expect(lotteryMethod(other, 'finger', 1)).toBe(0);
