@@ -16,7 +16,7 @@ import {
 } from '../src/systems/letter';
 import { pagesPerSecond, toolRate } from '../src/systems/production';
 import { nextToolCost } from '../src/systems/tools';
-import { MAX_FINDS_PER_PAGE, findChance, findWhileAway, pagesTurnedAway, rollFinds } from '../src/systems/knowledge';
+import { MAX_FINDS_PER_PAGE, findChance, findKnowledge, findWhileAway, pagesTurnedAway, rollFinds } from '../src/systems/knowledge';
 import { nextPrice } from '../src/systems/technologies';
 import { STORY } from '../src/ui/rareBooks/idleBabel/idleBabelStory';
 import { readPage } from '../src/systems/click';
@@ -86,13 +86,17 @@ describe('La lettre qui s’échappe', () => {
     expect(toolRate(state, 'diagonal')).toBeCloseTo(before * 8);
   });
 
-  it('les autres bonus : trouvailles ×3, clics ×410, méthodes à moitié prix', () => {
+  it('les autres bonus : trouvailles ×5, Connaissance ×5, clics ×410, méthodes à moitié prix', () => {
     const state = game();
     const chance = findChance(state);
     const price = nextToolCost(state, 'diagonal');
+    const knowledge = findKnowledge(state);
     startBoon('eye', 10);
     startBoon('deal', 10);
-    expect(findChance(state)).toBeCloseTo(chance * 3);
+    startBoon('mind', 10);
+    // La chance est petite (0,002) : comparée au rapport, pas à deux décimales.
+    expect(findChance(state) / chance).toBeCloseTo(5);
+    expect(findKnowledge(state)).toBe(Math.ceil(knowledge * 5));
     expect(nextToolCost(state, 'diagonal')).toBeCloseTo(price / 2);
     readPage(state);
     const one = state.pages;
@@ -108,6 +112,20 @@ describe('La lettre qui s’échappe', () => {
     expect(gift.pages).toBeCloseTo(pagesPerSecond(state) * 600);
     expect(state.pages).toBeCloseTo(pagesPerSecond(state) * 600);
     expect(activeBoons()).toEqual([]);
+  });
+
+  it('la Trouvaille donne cinq minutes de trouvailles d’un coup, au moins une', () => {
+    const state = game('quill.r6');
+    const expected = Math.floor(pagesTurnedAway(state, 300) * findChance(state) + 0.5);
+    forceBoon('find');
+    const gift = catchLetter(state, 5, () => 0.5);
+    expect(gift.finds).toBe(Math.max(1, expected));
+    expect(activeBoons()).toEqual([]);
+    // Beaucoup de pages tournées seules : bien plus d'une.
+    state.tools.diagonal = 10_000;
+    forceBoon('find');
+    expect(catchLetter(state, 5, () => 0.5).finds).toBe(Math.floor(pagesTurnedAway(state, 300) * findChance(state) + 0.5));
+    expect(pagesTurnedAway(state, 300) * findChance(state)).toBeGreaterThan(1);
   });
 
   it('une lettre sur cinquante lâche un jeton de la Loterie', () => {

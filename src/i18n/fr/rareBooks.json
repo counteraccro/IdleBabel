@@ -1057,7 +1057,7 @@
             {
               "heading": "Nouveautés",
               "items": [
-                "Les bonus de la lettre qui s’échappe sont bien plus forts : Transe ×5, Main légère ×410, Éclair de dix minutes ; la pointe de la Plume porte la Transe à ×6 puis ×8.",
+                "Les bonus de la lettre qui s’échappe sont bien plus forts : Transe ×5, Œil vif ×5, Main légère ×410, Mémoire vive ×5, Éclair de dix minutes ; la Trouvaille donne cinq minutes de trouvailles d’un coup ; la pointe de la Plume porte la Transe à ×6 puis ×8.",
                 "Une lettre attrapée lâche parfois un jeton."
               ]
             },
@@ -3701,6 +3701,7 @@
           "text": [
             "L’auteur l’a vu en jouant : depuis la Loterie, plus personne ne courait après la lettre. La machine donnait un bonus d’une heure pour un jeton ; la lettre, quelques secondes pour un clic au bon moment. Celle qui demandait le plus d’attention rapportait le moins.",
             "Plutôt que de rendre la machine avare, on a rendu la lettre forte : un bonus bref mais violent, la récompense de qui regarde l’écran. Un premier essai a fait sauter tout un Âge au simulateur ; on a calmé la Plume, gardé la Main légère à ×410, et l’Éther ne fait plus que tripler.",
+            "Puis les bonus de la Connaissance ont été remis au même niveau : l’Œil vif et la Mémoire vive à ×5, et la Trouvaille, qui ne donnait qu’une trouvaille, en donne cinq minutes d’un coup. À ×10, ils desserraient trop le frein du jeu : l’Âge suivant tombait en un mois.",
             "Et les deux se répondent maintenant : une lettre attrapée lâche parfois un jeton."
           ]
         },

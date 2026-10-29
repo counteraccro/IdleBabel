@@ -99,7 +99,8 @@ const letterAverageNow = (run: Run): LetterAverage => {
   const fourTen = 1 + uptime('fourTen') * (BOON.fourTen - 1);
   return {
     reading: (1 + uptime('trance') * (trance - 1)) * fourTen,
-    finds: (1 + uptime('eye') * (BOON.eye - 1)) * fourTen,
+    // La Trouvaille : des secondes de trouvailles d'un coup, comptées comme autant de chance en plus.
+    finds: (1 + uptime('eye') * (BOON.eye - 1)) * fourTen + lettersPerSecond * (1 - 1 / BABEL_ODDS) * share('find') * BOON.find,
     clicks: 1 + uptime('hand') * (BOON.hand - 1),
     fourTen,
     knowledge: 1 + uptime('mind') * (BOON.mind - 1),

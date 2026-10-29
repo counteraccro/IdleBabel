@@ -590,7 +590,7 @@
       "r1": {
         "name": "Right barb",
         "value": "The letter learns",
-        "effect": "the Sharp Eye: finds +200%"
+        "effect": "the Sharp Eye: finds ×5"
       },
       "r2": {
         "name": "Right barb, second",
@@ -600,7 +600,7 @@
       "r3": {
         "name": "Right barb, third",
         "value": "The letter learns",
-        "effect": "the Quick Memory: Knowledge ×3"
+        "effect": "the Quick Memory: Knowledge ×5"
       },
       "r4": {
         "name": "Right barb, fourth",
@@ -615,7 +615,7 @@
       "r6": {
         "name": "Right barb, at the top",
         "value": "The letter learns",
-        "effect": "the Find: a find right away"
+        "effect": "the Find: five minutes of finds at once"
       }
     },
     "explore": {

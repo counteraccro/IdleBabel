@@ -590,7 +590,7 @@
       "r1": {
         "name": "Barbe droite",
         "value": "La lettre apprend",
-        "effect": "l’Œil vif : trouvailles +200 %"
+        "effect": "l’Œil vif : trouvailles ×5"
       },
       "r2": {
         "name": "Barbe droite, deuxième",
@@ -600,7 +600,7 @@
       "r3": {
         "name": "Barbe droite, troisième",
         "value": "La lettre apprend",
-        "effect": "la Mémoire vive : Connaissance ×3"
+        "effect": "la Mémoire vive : Connaissance ×5"
       },
       "r4": {
         "name": "Barbe droite, quatrième",
@@ -615,7 +615,7 @@
       "r6": {
         "name": "Barbe droite, en haut",
         "value": "La lettre apprend",
-        "effect": "la Trouvaille : une trouvaille tout de suite"
+        "effect": "la Trouvaille : cinq minutes de trouvailles d’un coup"
       }
     },
     "explore": {

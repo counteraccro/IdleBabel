@@ -179,7 +179,7 @@ export const createLetter = (state: GameState): Component => {
           .replace('{x}', String(tranceFactor(state, BOON.trance)))
           .replace('{d}', seconds === undefined ? '' : durationText(seconds));
         gift(x, y, t(`ui.letter.boons.${given.boon}.name`), given.token ? `${what} · ${t('ui.lottery.token')}` : what);
-        if (given.pages !== undefined) glowCounter();
+        if (given.pages !== undefined || given.finds !== undefined) glowCounter();
         if (flockGoesOn(state, flock)) window.setTimeout(() => nextInFlock(flock), FLOCK_GAP * 1000);
         else busy = false;
       },

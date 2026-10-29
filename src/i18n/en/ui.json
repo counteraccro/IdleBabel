@@ -212,8 +212,8 @@
       },
       "eye": {
         "name": "Sharp Eye",
-        "what": "Finds +200% for {d}",
-        "short": "Sharp Eye · finds +200%"
+        "what": "Finds ×5 for {d}",
+        "short": "Sharp Eye · finds ×5"
       },
       "hand": {
         "name": "Light Hand",
@@ -222,8 +222,8 @@
       },
       "mind": {
         "name": "Quick Memory",
-        "what": "Knowledge ×3 for {d}",
-        "short": "Quick Memory · Knowledge ×3"
+        "what": "Knowledge ×5 for {d}",
+        "short": "Quick Memory · Knowledge ×5"
       },
       "deal": {
         "name": "Windfall",
@@ -236,7 +236,7 @@
       },
       "find": {
         "name": "Find",
-        "what": "A find, right away"
+        "what": "Five minutes of finds, all at once"
       },
       "fourTen": {
         "name": "Four Hundred Ten",

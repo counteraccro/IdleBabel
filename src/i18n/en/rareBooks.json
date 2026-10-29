@@ -1048,7 +1048,7 @@
             {
               "heading": "New",
               "items": [
-                "The escaping letter’s boons are much stronger: Trance ×5, Light Hand ×410, a ten-minute Flash; the Quill’s tip raises the Trance to ×6, then ×8.",
+                "The escaping letter’s boons are much stronger: Trance ×5, Sharp Eye ×5, Light Hand ×410, Quick Memory ×5, a ten-minute Flash; the Find gives five minutes of finds at once; the Quill’s tip raises the Trance to ×6, then ×8.",
                 "A caught letter sometimes drops a token."
               ]
             },
@@ -3696,6 +3696,7 @@
           "text": [
             "The author saw it while playing: since the Lottery, nobody chased the letter any more. The machine gave an hour-long boon for a token; the letter, a few seconds for a click at the right moment. The one that asked for the most attention paid the least.",
             "Rather than make the machine stingy, we made the letter strong: a short but fierce boon, the reward for whoever is watching the screen. A first try skipped a whole Age in the simulator; we calmed the Quill, kept the Light Hand at ×410, and the Ether now only triples.",
+            "Then the Knowledge boons were brought up to the same level: the Sharp Eye and the Quick Memory at ×5, and the Find, which gave a single find, now gives five minutes of them at once. At ×10 they loosened the game’s brake too much: the next Age came within a month.",
             "And the two answer each other now: a caught letter sometimes drops a token."
           ]
         },

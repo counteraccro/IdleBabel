@@ -215,8 +215,8 @@
       },
       "eye": {
         "name": "Œil vif",
-        "what": "Trouvailles +200 % pendant {d}",
-        "short": "Œil vif · trouvailles +200 %"
+        "what": "Trouvailles ×5 pendant {d}",
+        "short": "Œil vif · trouvailles ×5"
       },
       "hand": {
         "name": "Main légère",
@@ -225,8 +225,8 @@
       },
       "mind": {
         "name": "Mémoire vive",
-        "what": "Connaissance ×3 pendant {d}",
-        "short": "Mémoire vive · Connaissance ×3"
+        "what": "Connaissance ×5 pendant {d}",
+        "short": "Mémoire vive · Connaissance ×5"
       },
       "deal": {
         "name": "Aubaine",
@@ -239,7 +239,7 @@
       },
       "find": {
         "name": "Trouvaille",
-        "what": "Une trouvaille, tout de suite"
+        "what": "Cinq minutes de trouvailles, d’un coup"
       },
       "fourTen": {
         "name": "Quatre cent dix",

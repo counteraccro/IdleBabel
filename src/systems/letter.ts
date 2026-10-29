@@ -21,7 +21,7 @@ import { relicLetterWait } from './relics';
 import { curiosityBoonLength, curiosityLetterWait } from './curiosityEffects';
 import { levelOf } from './technologies';
 import { gainPages, pagesPerSecond } from './production';
-import { drawFind, gainFind } from './knowledge';
+import { drawFind, findWhileAway, gainFind } from './knowledge';
 import { sealEvent } from './seals';
 import { runHooks } from '../mods/hooks';
 import { modded } from '../mods/quantities';
@@ -149,6 +149,8 @@ export interface Gift {
   boon: BoonId;
   /** Pages données d'un coup (l'Éclair). */
   pages?: number;
+  /** Trouvailles données d'un coup (la Trouvaille). */
+  finds?: number;
   /** Un jeton de la Loterie lâché avec le bonus. */
   token?: boolean;
 }
@@ -174,7 +176,14 @@ export const catchLetter = (state: GameState, left: number, random: () => number
   else if (boon === 'flash') {
     gift.pages = pagesPerSecond(state) * BOON.flash;
     gainPages(state, gift.pages);
-  } else gainFind(state, drawFind(state, random));
+  } else {
+    // La Trouvaille : les trouvailles de cinq minutes de lecture, au moins une (peu de pages, ou pas tournées seules).
+    gift.finds = findWhileAway(state, BOON.find, random);
+    if (gift.finds === 0) {
+      gainFind(state, drawFind(state, random));
+      gift.finds = 1;
+    }
+  }
   if (random() < 1 / LETTER_TOKEN_ODDS) {
     state.lottery.tokens += 1;
     gift.token = true;

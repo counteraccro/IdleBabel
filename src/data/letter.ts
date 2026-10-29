@@ -35,17 +35,17 @@ export interface BoonDef {
 export const BOONS: readonly BoonDef[] = [
   // Transe : lecture ×5 (×6, ×8 avec la pointe de la Plume).
   { id: 'trance', seconds: 30, weight: 35 },
-  // Œil vif : chance de trouvaille +200 %.
+  // Œil vif : chance de trouvaille ×5.
   { id: 'eye', star: 'quill.r1', seconds: 15, weight: 15 },
   // Main légère : pages d'un clic ×410.
   { id: 'hand', star: 'quill.r2', seconds: 10, weight: 15 },
-  // Mémoire vive : Connaissance par trouvaille ×3.
+  // Mémoire vive : Connaissance par trouvaille ×5.
   { id: 'mind', star: 'quill.r3', seconds: 15, weight: 12 },
   // Aubaine : méthodes à moitié prix.
   { id: 'deal', star: 'quill.r4', seconds: 10, weight: 10 },
   // Éclair : d'un coup, dix minutes de lecture.
   { id: 'flash', star: 'quill.r5', weight: 10 },
-  // Trouvaille : une trouvaille, tout de suite.
+  // Trouvaille : d'un coup, cinq minutes de trouvailles.
   { id: 'find', star: 'quill.r6', weight: 3 },
   // Quatre cent dix (l'auteur, 12/10) : pages lues et trouvailles ×410, trente secondes ; appris avec la Volée.
   { id: 'fourTen', seconds: 30, weight: 3, afterFlock: true, fixed: true },
@@ -55,16 +55,18 @@ export const BOONS: readonly BoonDef[] = [
 export const BOON = {
   /** Transe : ×lecture, sans la pointe de la Plume (l'auteur, 29/10 : ×2 ne valait plus rien à côté de la Loterie). */
   trance: 5,
-  /** Œil vif : ×chance de trouvaille (+200 %). */
-  eye: 3,
+  /** Œil vif : ×chance de trouvaille (29/10 : ×5, au lieu de ×3). */
+  eye: 5,
   /** Main légère : ×pages d'un clic (l'auteur, 29/10 : ×410). */
   hand: 410,
-  /** Mémoire vive : ×Connaissance par trouvaille. */
-  mind: 3,
+  /** Mémoire vive : ×Connaissance par trouvaille (29/10 : ×5, au lieu de ×3). */
+  mind: 5,
   /** Aubaine : ×prix des méthodes. */
   deal: 0.5,
   /** Éclair : secondes de lecture données d'un coup (29/10 : dix minutes, au lieu de trois). */
   flash: 600,
+  /** Trouvaille : secondes de trouvailles données d'un coup, comme le gain de la Loterie (29/10 : au lieu d'une seule). */
+  find: 300,
   /** Quatre cent dix : ×pages lues (méthodes et clics) et ×chance de trouvaille. */
   fourTen: 410,
 } as const;
