@@ -1051,8 +1051,8 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
-          "title": "Alpha 3.1",
-          "date": "27 octobre 2026",
+          "title": "Alpha 3.2",
+          "date": "29 octobre 2026",
           "sections": [
             {
               "heading": "Nouveautés",
@@ -1062,7 +1062,13 @@
                 "La Loupe multiplie la Connaissance de chaque trouvaille : ×1,5, puis ×1,75 et ×2 avec ses étoiles.",
                 "Loterie : le bonus d’une seule méthode vaut ×5, et tombe plus souvent sur une méthode qui lit beaucoup."
               ]
-            },
+            }
+          ]
+        },
+        {
+          "title": "Alpha 3.1",
+          "date": "27 octobre 2026",
+          "sections": [
             {
               "heading": "Corrections",
               "items": [

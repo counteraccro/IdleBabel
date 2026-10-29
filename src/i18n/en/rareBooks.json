@@ -1042,8 +1042,8 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
-          "title": "Alpha 3.1",
-          "date": "27 October 2026",
+          "title": "Alpha 3.2",
+          "date": "29 October 2026",
           "sections": [
             {
               "heading": "New",
@@ -1053,7 +1053,13 @@
                 "The Magnifying Glass multiplies the Knowledge of each find: ×1.5, then ×1.75 and ×2 with its stars.",
                 "Lottery: the single-method boon is worth ×5, and lands more often on a method that reads a lot."
               ]
-            },
+            }
+          ]
+        },
+        {
+          "title": "Alpha 3.1",
+          "date": "27 October 2026",
+          "sections": [
             {
               "heading": "Fixes",
               "items": [
