@@ -20,12 +20,12 @@ interface Ladder {
 const same = (goal: number): number[] => [goal, goal, goal, goal, goal];
 
 export const LADDERS: readonly Ladder[] = [
-  { n: 16, label: 'Lis N livres', star: 'tasks.p1', goals: [410, 4_104, 41_041, 82_082, 123_123], count: (life) => life.turned / PAGES_PER_BOOK },
-  { n: 22, label: 'Trouve N de Connaissance', star: 'explore.n', goals: [410, 410_410, 410_410_410, 4.1041e11, 4.1041e14], count: (life) => life.knowledge },
+  { n: 16, label: 'Lis N livres', star: 'tasks.p1', goals: [4_104, 41_041, 82_082, 123_123, 164_164], count: (life) => life.turned / PAGES_PER_BOOK },
+  { n: 22, label: 'Trouve N de Connaissance', star: 'explore.n', goals: [410, 410_410, 410_410_410, 4_104_104_104, 41_041_041_041], count: (life) => life.knowledge },
   { n: 2, label: 'Tourne N pages à la main', star: 'explore.n', goals: same(10_000), count: (life) => life.clicks },
   { n: 4, label: 'Attrape N fois la Mimic', star: 'explore.n', goals: same(100), count: (life) => life.mimic.caught },
   { n: 6, label: 'Joue N jetons', star: 'explore.n', goals: same(100), count: (life) => life.lottery.draws },
-  { n: 10, label: 'Nourris-le N fois', star: 'explore.n', goals: same(10), count: (life) => life.prestiges },
+  { n: 10, label: 'Nourris-le N fois', star: 'explore.n', goals: same(5), count: (life) => life.prestiges },
   { n: 15, label: 'Fais N tâches du jour', star: 'tasks.p1', goals: same(30), count: (life) => life.tasks.dailyDone },
   { n: 12, label: 'Allume N étoiles (finit)', star: 'explore.n', goals: same(50), count: (life) => life.stars.size },
   { n: 18, label: 'Allume N figures (finit)', star: 'tasks.p2', goals: same(3), count: (life) => fullFigures(life) },
