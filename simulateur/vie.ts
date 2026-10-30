@@ -62,6 +62,9 @@ export interface Life {
   tasks: Tasks;
   /** Les tâches par niveaux (29/10). */
   levels: Levels;
+  /** Tampons gagnés, jour par jour, et semaines de tâches payées (30/10, tampons.ts). */
+  stamps: number[];
+  weeksPaid: number;
 }
 
 export const newLife = (): Life => ({
@@ -92,6 +95,8 @@ export const newLife = (): Life => ({
   lottery: { tokens: 0, draws: 0, daily: 0 },
   tasks: newTasks(),
   levels: newLevels(),
+  stamps: [],
+  weeksPaid: 0,
 });
 
 /** Conception §4.1 : floor(∛(pages à vie / 1 Md)), moins ce qui est déjà reçu. */

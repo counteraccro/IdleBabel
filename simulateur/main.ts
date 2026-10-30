@@ -33,6 +33,7 @@ import { etherGain, litPerPage, newLife, spendEther } from './vie';
 import { checkSeals, sealCount, sealsPerPlate } from './sceaux';
 import { LAST_TASK, ONCE_TASKS, TASK_STARS } from './taches';
 import { LADDERS } from './niveaux';
+import { stampsReport } from './tampons';
 import { GEAR_STARS, gearLog, turnGear } from './rouage';
 import { PUZZLE_MINUTES, puzzleLog } from './jeux';
 
@@ -218,6 +219,7 @@ if (PLAYER.tasks) {
       `  ${String(task.n).padStart(2)}. ${task.label.padEnd(36)} apparue ${duration(shown?.at).padEnd(7)} faite ${done === undefined ? '—' : `${duration(done)} (en ${duration(done - shown.at)})`}${followed}`,
     );
   }
+  console.log(`Tampons : ${stampsReport(life, [7, 14, 30, 60, 90, days].filter((day, i, all) => day <= days && all.indexOf(day) === i))}`);
   console.log('Tâches par niveaux (chaque niveau compte depuis son apparition) :');
   for (const ladder of LADDERS) {
     const shown = life.levels.shownAt[ladder.n];

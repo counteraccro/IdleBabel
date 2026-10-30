@@ -10,6 +10,7 @@ import type { Life } from './vie';
 import type { Run } from './partie';
 import { sealsPerPlate } from './sceaux';
 import { tickLevels } from './niveaux';
+import { STAMPS, earnStamps, tickWeeks } from './tampons';
 
 /**
  * Les tâches (17/10, .ai/plan-taches.md), pas encore dans le jeu : leurs étoiles, les tâches du jour et les tâches
@@ -280,6 +281,7 @@ export const tickTasks = (run: Run, seconds: number, onScreen: boolean, to: Give
   tasks.today = tasks.today.map((value) => {
     if (value < 0 || tasks.screen < value * MINUTES_PER_TOKEN * 60) return value;
     tasks.dailyDone += 1;
+    earnStamps(life, value);
     tasks.dailyTokens += value;
     if (PLAYER.taskTokens) to.tokens(value);
     return -value;
@@ -287,6 +289,7 @@ export const tickTasks = (run: Run, seconds: number, onScreen: boolean, to: Give
   // Les tâches « une seule fois » : regardées une fois par minute (le compte des sceaux coûte).
   if (onScreen && Math.floor(life.clock / 60) === Math.floor((life.clock - seconds) / 60)) return;
   tickLevels(life, life.levels);
+  tickWeeks(life, tasks.boughtAt['explore.n']);
   for (const task of ONCE_TASKS) {
     if (tasks.done[task.n] !== undefined || !life.stars.has(task.star)) continue;
     if (!tasks.shown[task.n]) {
@@ -295,6 +298,7 @@ export const tickTasks = (run: Run, seconds: number, onScreen: boolean, to: Give
     }
     if (!task.count || task.count(run) - tasks.shown[task.n].base < task.goal) continue;
     tasks.done[task.n] = life.clock;
+    earnStamps(life, STAMPS.once);
     give(run, task.reward, to, true);
   }
 };

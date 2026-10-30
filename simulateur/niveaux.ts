@@ -1,6 +1,7 @@
 import { PAGES_PER_BOOK } from '../src/systems/books';
 import { fullFigures } from './taches';
 import type { Life } from './vie';
+import { STAMPS, earnStamps } from './tampons';
 
 /**
  * Les tâches par niveaux (l'auteur, 29/10 ; liste validée dans .ai/plan-taches.md, « Tâches par niveaux ») : chaque niveau
@@ -54,6 +55,7 @@ export const tickLevels = (life: Life, levels: Levels): void => {
     let needed = ladder.goals.slice(0, done.length + 1).reduce((sum, goal) => sum + goal, 0);
     while (done.length < ladder.goals.length && counted >= needed) {
       done.push(life.clock);
+      earnStamps(life, STAMPS.level * done.length);
       needed += ladder.goals[done.length] ?? 0;
     }
   }
