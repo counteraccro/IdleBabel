@@ -118,6 +118,8 @@ const PENCIL_GHOST = 'rgba(74, 70, 63, 0.14)';
 export const NOISE_INK = '#d8d0bd';
 const GHOST_INK = '#bdb39c';
 export const SERIF_FONT = SERIF;
+export const TITLE_FONT = TITLE;
+export const GOLD_INK = GOLD;
 
 const ROMAN: readonly [number, string][] = [
   [10, 'X'],

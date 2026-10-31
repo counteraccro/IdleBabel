@@ -2,6 +2,7 @@ import { LAST_TASK, ONCE_TASKS, type OnceTaskDef } from '../data/tasks';
 import { CLOSED, STARS } from '../data/etheriumStars';
 import { SENTENCES } from '../data/sentences';
 import { SEALS } from '../data/seals';
+import { RARE_BOOKS } from '../data/rareBooks';
 import { ROOM_RELICS } from '../data/relics';
 import { isComplete } from './sentences';
 import { drawingsDone } from './coloring';
@@ -43,6 +44,9 @@ export const fullFigures = (state: GameState): number => {
   return [...pages.values()].filter(Boolean).length;
 };
 
+/** Les figures de l'Etherium : ses pages qui ont des étoiles qui s'allument. */
+const figureCount = (): number => new Set(STARS.filter((star) => !CLOSED.has(star.id)).map((star) => star.page)).size;
+
 /** Les planches de sceaux remplies (celles du jeu, sans les mods). */
 export const fullPlates = (state: GameState): number => {
   const plates = new Map<string, boolean>();
@@ -64,6 +68,11 @@ export const roadReached = (state: GameState, task: OnceTask): number => {
 };
 
 interface Counting {
+  /**
+   * Ce qu'il reste à faire dans tout le jeu, pour une échelle qui finit (phrases, livres rares, étoiles, figures) : son
+   * dernier niveau demande ce qui reste, et elle s'arrête quand il ne reste rien (elle reprend si le jeu en ajoute).
+   */
+  left?: (state: GameState) => number;
   /** Son compte, depuis toujours (on en ôte ce qu'il valait à son apparition). */
   count: (state: GameState, task: OnceTask) => number;
   /** Ce qu'elle fait à son apparition (une série, une absence qui repart de zéro). */
@@ -93,9 +102,14 @@ const COUNTING: Record<number, Counting> = {
       task.skip = completeSentences(state);
     },
     before: true,
+    left: (state) => SENTENCES.length - completeSentences(state).length,
   },
   4: { count: (state) => state.mimic.caught, met: mimicUnlocked },
-  5: { count: (state) => Object.keys(state.rareBooks).length, met: (state) => Object.keys(state.rareBooks).length > 0 },
+  5: {
+    count: (state) => Object.keys(state.rareBooks).length,
+    met: (state) => Object.keys(state.rareBooks).length > 0,
+    left: (state) => RARE_BOOKS.filter((book) => !(book.id in state.rareBooks)).length,
+  },
   6: { count: (state) => state.lottery.draws, met: (state) => state.lottery.draws > 0 || state.lottery.tokens > 0 },
   // Exemplaires achetés d'une même méthode, à travers les prestiges.
   7: {
@@ -111,7 +125,10 @@ const COUNTING: Record<number, Counting> = {
     before: true,
     met: (state) => relicsUnlocked(state) || Object.keys(state.relics.found).length > 0,
   },
-  12: { count: (state) => state.etherium.length },
+  12: {
+    count: (state) => state.etherium.length,
+    left: (state) => STARS.filter((star) => !CLOSED.has(star.id) && !lit(state, star.id)).length,
+  },
   13: {
     count: (state) => PLAYABLE.filter(([, seal]) => seal in state.seals).length,
     before: true,
@@ -129,7 +146,7 @@ const COUNTING: Record<number, Counting> = {
     },
     before: true,
   },
-  18: { count: fullFigures },
+  18: { count: fullFigures, left: (state) => figureCount() - fullFigures(state) },
   19: { count: fullPlates },
   20: {
     count: (state) => state.tasks.counters.streak,
@@ -139,6 +156,7 @@ const COUNTING: Record<number, Counting> = {
   },
   // « Une dernière pour la route » : ses trois buts, comptés depuis son apparition, à travers les prestiges.
   21: { count: roadReached, start: (state, task) => (task.bases = roadTotals(state)), before: true },
+  22: { count: (state) => state.lifetimeKnowledge },
 };
 
 /** La tâche est là (son étoile allumée), en Babel ou en clair. */
@@ -147,30 +165,70 @@ export const onceShown = (state: GameState, def: OnceTaskDef): boolean => lit(st
 /** Elle s'écrit en clair : son étoile, et ce dont elle parle, rencontré. */
 export const onceMet = (state: GameState, def: OnceTaskDef): boolean => onceShown(state, def) && (COUNTING[def.n].met?.(state) ?? true);
 
+/** Son niveau (une échelle ; le niveau I pour une tâche unique ou pas encore apparue). */
+export const onceLevel = (state: GameState, def: OnceTaskDef): number => state.tasks.once[def.n]?.level ?? 1;
+
+/** Le but de son niveau en cours. */
+export const onceGoal = (state: GameState, def: OnceTaskDef): number => {
+  const task = state.tasks.once[def.n];
+  return task?.goal ?? def.levels?.(task?.level ?? 1) ?? def.goal;
+};
+
 /** Où en est son compte (0 avant son apparition). */
 export const onceCount = (state: GameState, def: OnceTaskDef): number => {
   const task = state.tasks.once[def.n];
   if (!task) return 0;
-  if (task.done !== undefined) return def.goal;
+  const goal = onceGoal(state, def);
+  if (task.done !== undefined) return goal;
   const counting = COUNTING[def.n];
-  return Math.min(def.goal, Math.max(0, counting.count(state, task) - (counting.before ? 0 : task.base)));
+  return Math.min(goal, Math.max(0, counting.count(state, task) - (counting.before ? 0 : task.base)));
 };
 
-/** Les tâches qui s'écrivent en clair apparaissent (leur compte commence) ; celles qui atteignent leur but sont faites. */
+/**
+ * Elle commence (à son apparition, ou à un nouveau niveau) : son compte part de là. Une échelle qui finit demande au plus
+ * ce qui reste ; s'il ne reste rien, elle ne commence pas (undefined).
+ */
+const begin = (state: GameState, def: OnceTaskDef, now: number, level: number): OnceTask | undefined => {
+  const counting = COUNTING[def.n];
+  const left = counting.left?.(state);
+  if (left !== undefined && left <= 0) return undefined;
+  const task: OnceTask = { at: now, base: 0 };
+  if (level > 1) task.level = level;
+  if (left !== undefined && def.levels && left < def.levels(level)) task.goal = left;
+  if (!counting.before) task.base = counting.count(state, task);
+  counting.start?.(state, task);
+  return task;
+};
+
+/**
+ * Le niveau suivant d'une échelle dont la récompense est prise : il s'écrit à sa place, compté de zéro. Une échelle qui
+ * finit et n'a plus rien à faire reste faite. Renvoie true si un niveau s'est ouvert.
+ */
+export const nextLevel = (state: GameState, def: OnceTaskDef, now: number): boolean => {
+  const task = state.tasks.once[def.n];
+  if (!def.levels || !task?.taken) return false;
+  const next = begin(state, def, now, (task.level ?? 1) + 1);
+  if (next) state.tasks.once[def.n] = next;
+  return next !== undefined;
+};
+
+/**
+ * Les tâches qui s'écrivent en clair apparaissent (leur compte commence) ; celles qui atteignent leur but sont faites.
+ * Une échelle prise (une partie d'avant les niveaux, ou qui attendait qu'il reste à faire) ouvre son niveau suivant.
+ */
 export const advanceOnce = (state: GameState, now: number): OnceTaskDef[] => {
   const finished: OnceTaskDef[] = [];
   for (const def of ONCE_TASKS) {
     let task = state.tasks.once[def.n];
-    if (task?.done !== undefined) continue;
+    if (task?.done !== undefined && !nextLevel(state, def, now)) continue;
+    task = state.tasks.once[def.n];
     if (!task) {
       if (!onceMet(state, def)) continue;
-      const counting = COUNTING[def.n];
-      task = { at: now, base: 0 };
-      if (!counting.before) task.base = counting.count(state, task);
-      counting.start?.(state, task);
-      state.tasks.once[def.n] = task;
+      const started = begin(state, def, now, 1);
+      if (!started) continue;
+      task = state.tasks.once[def.n] = started;
     }
-    if (onceCount(state, def) < def.goal) continue;
+    if (onceCount(state, def) < onceGoal(state, def)) continue;
     task.done = now;
     finished.push(def);
   }

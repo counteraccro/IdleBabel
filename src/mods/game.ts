@@ -19,7 +19,7 @@ import { formatCount } from '../core/format';
 import { ONCE_TASKS } from '../data/tasks';
 import { tasksOpen } from '../systems/tasks';
 import { dailyLeft } from '../systems/dailyTasks';
-import { onceCount, onceMet, onceShown } from '../systems/onceTasks';
+import { onceCount, onceGoal, onceLevel, onceMet, onceShown } from '../systems/onceTasks';
 import { modTaskCount, modTasks } from './modTasks';
 import { modText } from './modSeals';
 import type { GameState } from '../core/state';
@@ -137,7 +137,8 @@ export const modGame = (state: GameState) => ({
       n: def.n,
       text: t(`whiteBook.tasks.onceTasks.${def.n}`),
       met: onceMet(state, def),
-      goal: def.goal,
+      level: onceLevel(state, def),
+      goal: onceGoal(state, def),
       count: onceCount(state, def),
       done: state.tasks.once[def.n]?.done !== undefined,
       taken: !!state.tasks.once[def.n]?.taken,

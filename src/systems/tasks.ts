@@ -1,7 +1,7 @@
 import { ONCE_TASKS, TASK_STAR, onceStamps, type TaskReward } from '../data/tasks';
 import { TOOLS } from '../data/tools';
 import { advanceDaily, dailyAfterPrestige, refreshDay } from './dailyTasks';
-import { advanceOnce } from './onceTasks';
+import { advanceOnce, nextLevel } from './onceTasks';
 import { creditMethods, gainPages, pagesPerSecond } from './production';
 import { addKnowledge, findKnowledge, findChance, maxTurnsPerSecond, MAX_FINDS_PER_PAGE } from './knowledge';
 import { PAGES_PER_LEAF } from './books';
@@ -135,14 +135,19 @@ export const takeDaily = (state: GameState, index: number, now = Date.now()): nu
   return task.value;
 };
 
-/** La récompense d'une tâche « une seule fois » faite, prise au clic. Renvoie true si elle a été donnée. */
+/**
+ * La récompense d'une tâche « une seule fois » faite, prise au clic : ses tampons (selon son niveau), et au niveau I ce
+ * qu'elle donne d'autre ; une échelle ouvre alors son niveau suivant. Renvoie true si elle a été donnée.
+ */
 export const takeOnce = (state: GameState, n: number, now = Date.now()): boolean => {
   const task = state.tasks.once[n];
   const def = ONCE_TASKS.find((one) => one.n === n);
   if (!def || !task || task.done === undefined || task.taken || !takeable(state, def.reward)) return false;
+  const level = task.level ?? 1;
   task.taken = true;
-  addStamps(state, onceStamps(def), now);
-  give(state, def.reward);
+  addStamps(state, onceStamps(def, level), now);
+  if (level === 1) give(state, def.reward);
+  nextLevel(state, def, now);
   return true;
 };
 

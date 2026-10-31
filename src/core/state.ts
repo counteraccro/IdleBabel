@@ -249,6 +249,10 @@ export interface OnceTask {
   at: number;
   /** Ce que valait son compte alors. */
   base: number;
+  /** Son niveau, pour une échelle (absent : le niveau I). */
+  level?: number;
+  /** Le but de son niveau, quand il en reste moins à faire (une échelle qui finit : les dernières phrases…). */
+  goal?: number;
   /** Les phrases complétées depuis (tâche 3), celles qui l'étaient déjà ; la partie et ses livres (tâche 17). */
   ids?: string[];
   skip?: string[];

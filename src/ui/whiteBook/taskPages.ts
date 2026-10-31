@@ -1,12 +1,12 @@
 import { getLocale, t } from '../../i18n';
 import { currentNotation, formatCount, formatNumber, writeDigits } from '../../core/format';
-import { ONCE_TASKS, onceStamps, type OnceTaskDef } from '../../data/tasks';
+import { ONCE_TASKS, levelsDone, onceStamps, type OnceTaskDef } from '../../data/tasks';
 import { modTaskCount, modTasks, takeModTask } from '../../mods/modTasks';
 import { modText } from '../../mods/modSeals';
 import { dailyLeft, dailyProgress } from '../../systems/dailyTasks';
-import { onceCount, onceMet, onceShown } from '../../systems/onceTasks';
+import { onceCount, onceGoal, onceLevel, onceMet, onceShown } from '../../systems/onceTasks';
 import { takeDaily, takeOnce } from '../../systems/tasks';
-import { folio, heading, roman, type Item } from '../strangeBook/pageItems';
+import { GOLD_INK, TITLE_FONT, folio, heading, roman, type Item } from '../strangeBook/pageItems';
 import { babelize, seedOf } from './babelMask';
 import {
   GHOST_INK,
@@ -43,7 +43,7 @@ export const pencilNumber = (value: number, counted = false): string =>
 export const taskTitleItems = (state: GameState, number: number): Item[] => {
   const today = state.tasks.today;
   const shown = ONCE_TASKS.filter((def) => onceShown(state, def));
-  const onceDone = shown.filter((def) => state.tasks.once[def.n]?.done !== undefined).length;
+  const onceDone = shown.filter((def) => levelsDone(state.tasks.once[def.n]) > 0).length;
   const fill = (key: string, n: number, total: number): string =>
     t(key)
       .replace('{n}', writeDigits(String(n)))
@@ -222,17 +222,18 @@ export const todayItems = (state: GameState, number: number): Item[] => {
 
 /**
  * Ce que rapporte une tâche « une seule fois », écrit au bout de sa ligne (maquette validée le 31/10) : son bonus pour
- * toujours ou sa relique s'il y en a un, sinon ses tampons.
+ * toujours ou sa relique s'il y en a un (au niveau I), sinon ses tampons.
  */
-export const rewardText = (def: OnceTaskDef): string => {
+export const rewardText = (def: OnceTaskDef, level = 1): string => {
   const n = (key: string, value: number): string => t(`whiteBook.tasks.rewards.${key}`).replace('{n}', writeDigits(String(value)));
-  const { reward } = def;
+  // Le bonus pour toujours, la relique : au niveau I seulement.
+  const reward = level === 1 ? def.reward : {};
   if (reward.readingBonus) return n('reading', Math.round(reward.readingBonus * 100));
   if (reward.knowledgeBonus) return n('knowledge', Math.round(reward.knowledgeBonus * 100));
   if (reward.crayon) return t('whiteBook.tasks.rewards.relic');
   // Le tome de « Une dernière pour la route » : rien ne dit ce qu'elle donne (l'auteur, 17/10).
   if (reward.tome) return t('whiteBook.tasks.rewards.unknown');
-  return n('stamps', onceStamps(def));
+  return n('stamps', onceStamps(def, level));
 };
 
 type RowState = 'done' | 'waiting' | 'now' | 'ghost';
@@ -241,6 +242,8 @@ interface Row {
   /** Son nom, pour le hasard de ses traits (« once:7 », « mod:<mod>:<id> »), et celui de son clic. */
   key: string;
   state: RowState;
+  /** Le niveau d'une échelle, en chiffre romain, devant la consigne (maquette validée le 31/10). */
+  level?: string;
   lines: string[];
   reward: string;
   /** Où elle en est, tant qu'elle n'est pas faite (« 3 412 / 10 000 ») ; sans, pas de ligne d'avancement. */
@@ -278,11 +281,19 @@ const wrap = (text: string, width: number): string[] => {
 };
 
 /** Une ligne de la liste : sa consigne coupée pour laisser la place à sa récompense, et son avancement dessous. */
-const row = (key: string, rowState: RowState, text: string, reward: string, progress?: Progress): Row => {
+const row = (key: string, rowState: RowState, text: string, reward: string, progress?: Progress, level?: string): Row => {
   const room = REWARD_RIGHT - TEXT_LEFT - (reward ? handWidth(measure(), reward, 22) + 18 : 0);
   const lines = wrap(text, room);
   const shown = rowState === 'now' ? progress : undefined;
-  return { key, state: rowState, lines, reward, progress: shown, height: lines.length * ROW_LINE + 10 + (shown ? PROGRESS_LINE : 0) };
+  return {
+    key,
+    state: rowState,
+    level,
+    lines,
+    reward,
+    progress: shown,
+    height: lines.length * ROW_LINE + 10 + (shown ? PROGRESS_LINE : 0),
+  };
 };
 
 /**
@@ -304,6 +315,13 @@ const UNITS: Record<NonNullable<OnceTaskDef['unit']>, [number, string]> = {
   hours: [3600, 'progressHours'],
 };
 
+/** La consigne d'une tâche « une seule fois », le but de son niveau écrit dedans (« Lis 41 041 livres. »). */
+const onceText = (def: OnceTaskDef, goal: number): string => {
+  const one = `whiteBook.tasks.onceOne.${def.n}`;
+  if (goal === 1 && t(one) !== one) return t(one);
+  return t(`whiteBook.tasks.onceTasks.${def.n}`).replace('{n}', pencilNumber(goal, true));
+};
+
 /**
  * Les lignes de la liste : celles dont l'étoile est allumée, en Babel tant que ce dont elles parlent n'est pas rencontré ;
  * puis celles des mods (src/mods/modTasks.ts), avec la récompense qu'ils donnent.
@@ -312,15 +330,17 @@ const onceRows = (state: GameState): Row[] => [
   ...ONCE_TASKS.filter((def) => onceShown(state, def)).map((def) => {
     const task = state.tasks.once[def.n];
     const rowState: RowState = task?.done !== undefined ? (task.taken ? 'done' : 'waiting') : onceMet(state, def) ? 'now' : 'ghost';
-    const text = t(`whiteBook.tasks.onceTasks.${def.n}`);
+    const level = onceLevel(state, def);
+    const text = onceText(def, onceGoal(state, def));
     const ghost = rowState === 'ghost';
     const [unit, key] = def.unit ? UNITS[def.unit] : [1, 'progress'];
     return row(
-      `once:${def.n}`,
+      `once:${def.n}:${level}`,
       rowState,
       ghost ? babelize(text, seedOf(`task:${def.n}`)) : text,
-      ghost ? '' : rewardText(def),
-      progressOf(onceCount(state, def), def.goal, unit, key),
+      ghost ? '' : rewardText(def, level),
+      progressOf(onceCount(state, def), onceGoal(state, def), unit, key),
+      def.levels && !ghost ? roman(level) : undefined,
     );
   }),
   ...modTasks().map((task) => {
@@ -353,6 +373,16 @@ const rowPages = (rows: Row[]): Row[][] => {
 /** Les pages de la liste « Une seule fois », à cette heure. */
 export const oncePageCount = (state: GameState): number => rowPages(onceRows(state)).length;
 
+/** Le niveau d'une échelle : son chiffre romain doré, à la place de la case. */
+const levelMark = (context: CanvasRenderingContext2D, level: string, y: number): void => {
+  context.font = `600 15px ${TITLE_FONT}`;
+  context.letterSpacing = '1px';
+  context.fillStyle = GOLD_INK;
+  context.textAlign = 'center';
+  context.textBaseline = 'top';
+  context.fillText(level, 70, y + 4);
+};
+
 /** Une ligne : sa case (cochée ✓ une fois faite), sa consigne au crayon, sa récompense au bout (entourée tant qu'elle attend). */
 const drawRow = (context: CanvasRenderingContext2D, row: Row, y: number): void => {
   const random = seeded(seedOf(`row:${row.key}`));
@@ -381,8 +411,10 @@ const drawRow = (context: CanvasRenderingContext2D, row: Row, y: number): void =
       progressBar(context, TEXT_LEFT, barY + 3, PROGRESS_BAR, row.progress.share);
       handText(context, row.progress.text, TEXT_LEFT + PROGRESS_BAR + 14, barY - 4, { size: 21, color: PENCIL_FADED });
     }
-    return pencilCircle(context, 70, y + 16, 10);
+    return row.level ? levelMark(context, row.level, y) : pencilCircle(context, 70, y + 16, 10);
   }
+  // Un niveau fait, qui attend son clic : son chiffre reste (le suivant s'écrira à sa place).
+  if (row.level && row.state === 'waiting') return levelMark(context, row.level, y);
   row.lines.forEach((line, index) =>
     pencilLine(context, TEXT_LEFT - 4, y + index * ROW_LINE + 16, TEXT_LEFT + 4 + handWidth(context, line, ROW_SIZE), random),
   );

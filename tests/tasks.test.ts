@@ -2,8 +2,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../src/core/state';
 import { CLICKS_PER_TOKEN, RECALC_AFTER_WAKE } from '../src/data/tasks';
 import { dailyCount, dailyProgress, dayOf, drawValue } from '../src/systems/dailyTasks';
-import { onceCount } from '../src/systems/onceTasks';
-import { ONCE_TASKS } from '../src/data/tasks';
+import { advanceOnce, onceCount, onceGoal, onceLevel } from '../src/systems/onceTasks';
+import { RARE_BOOKS } from '../src/data/rareBooks';
+import { ONCE_TASKS, levelsDone } from '../src/data/tasks';
 import { takeDaily, takeOnce, taskDraw, taskTouched, tasksAfterPrestige, taskWaiting, tickTasks } from '../src/systems/tasks';
 import { pagesPerSecond } from '../src/systems/production';
 import { findKnowledge } from '../src/systems/knowledge';
@@ -282,5 +283,65 @@ describe('Les tampons', () => {
     };
     expect(payDoneTasks(once)).toEqual({ balance: 20, earned: 20, card: 1, cells: [] });
     expect(payDoneTasks(undefined).balance).toBe(0);
+  });
+});
+
+describe('Les tâches par niveaux (29/10)', () => {
+  it('les paliers validés : livres 4 104, 41 041, puis +41 041 ; Connaissance « 410… » ; nourrir 5', () => {
+    expect([1, 2, 3, 4].map((level) => def(16).levels!(level))).toEqual([4_104, 41_041, 82_082, 123_123]);
+    expect([1, 2, 3, 4, 5].map((level) => def(22).levels!(level))).toEqual([410, 410_410, 410_410_410, 4_104_104_104, 41_041_041_041]);
+    expect(def(10).levels!(7)).toBe(5);
+    expect(def(7).levels).toBeUndefined();
+    expect(def(7).goal).toBe(410);
+  });
+
+  it('un niveau fait, pris : 5 × son niveau en tampons, et le suivant s’ouvre à zéro', () => {
+    const state = withNorth();
+    tickTasks(state, 0.1, true, DAY);
+    state.stats.clicks = 10_000;
+    tickTasks(state, 0.1, true, DAY + 2000);
+    expect(takeOnce(state, 2, DAY + 3000)).toBe(true);
+    expect(onceLevel(state, def(2))).toBe(2);
+    expect(state.tasks.once[2].done).toBeUndefined();
+    expect(onceCount(state, def(2))).toBe(0);
+    state.stats.clicks = 20_000;
+    tickTasks(state, 0.1, true, DAY + 5000);
+    expect(takeOnce(state, 2, DAY + 6000)).toBe(true);
+    expect(state.tasks.stamps.cells.map((cell) => cell.n)).toEqual([5, 10]);
+    expect(onceLevel(state, def(2))).toBe(3);
+    expect(levelsDone(state.tasks.once[2])).toBe(2);
+  });
+
+  it('le bonus pour toujours au niveau I seulement', () => {
+    const state = withNorth();
+    state.tasks.once[12] = { at: DAY, base: 0, done: DAY };
+    takeOnce(state, 12, DAY);
+    expect(state.tasks.bonus.knowledge).toBeCloseTo(0.05);
+    state.tasks.once[12].done = DAY;
+    takeOnce(state, 12, DAY);
+    expect(state.tasks.bonus.knowledge).toBeCloseTo(0.05);
+    expect(state.tasks.stamps.balance).toBe(5 + 10);
+  });
+
+  it('une partie d’avant les niveaux : une échelle prise ouvre son niveau II', () => {
+    const state = withNorth();
+    state.tasks.once[4] = { at: DAY, base: 0, done: DAY, taken: true };
+    state.mimic.caught = 40;
+    advanceOnce(state, DAY + 60_000);
+    expect(onceLevel(state, def(4))).toBe(2);
+    expect(onceCount(state, def(4))).toBe(0);
+  });
+
+  it('une échelle qui finit demande ce qui reste, puis s’arrête', () => {
+    const state = withNorth();
+    const left = 3;
+    state.rareBooks = Object.fromEntries(RARE_BOOKS.slice(left).map((book) => [book.id, DAY])) as typeof state.rareBooks;
+    advanceOnce(state, DAY + 60_000);
+    expect(onceGoal(state, def(5))).toBe(left);
+    for (const book of RARE_BOOKS.slice(0, left)) state.rareBooks[book.id] = DAY;
+    advanceOnce(state, DAY + 120_000);
+    expect(takeOnce(state, 5, DAY + 130_000)).toBe(true);
+    expect(onceLevel(state, def(5))).toBe(1);
+    expect(state.tasks.once[5].taken).toBe(true);
   });
 });

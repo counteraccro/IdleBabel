@@ -85,6 +85,8 @@ describe('« Dedans », le tome 4, et « Une dernière pour la route » (18/10)'
     advanceOnce(state, DAY);
     expect(state.tasks.once[21].done).toBe(DAY);
     expect(nextTome(state)).toBeUndefined();
+    // « Trouve N de Connaissance » s'est faite aussi : seule celle-ci compte ici.
+    delete state.tasks.once[22];
     expect(taskWaiting(state)).toBe(false);
     expect(takeOnce(state, 21)).toBe(false);
     state.etherium.push(S.trueStory);

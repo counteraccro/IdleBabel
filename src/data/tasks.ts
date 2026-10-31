@@ -1,7 +1,21 @@
+import type { OnceTask } from '../core/state';
+
 /**
  * Les tâches (l'auteur, 17/10/2026 ; .ai/plan-taches.md, simulateur/taches.ts) : celles du jour, tirées chaque jour, et
  * celles qui ne se font qu'une fois. Leurs chiffres sont ceux validés après la simulation du 17/10.
  */
+
+/** Le même but à chaque niveau (les compteurs lents). */
+const same = (goal: number) => (): number => goal;
+
+/** Les livres lus (validés le 30/10) : 4 104, 41 041, puis 41 041 de plus à chaque niveau (82 082, 123 123…). */
+const books = (level: number): number => (level === 1 ? 4_104 : 41_041 * (level - 1));
+
+/**
+ * La Connaissance (validée le 30/10) : « 410 410 410… » coupé à 3, 6, 9 chiffres (×1 000 par niveau), puis un chiffre de
+ * plus à chaque niveau (×10) : 410 · 410 410 · 410 410 410 · 4 104 104 104 · 41 041 041 041…
+ */
+const knowledge = (level: number): number => Number('410'.repeat(level + 4).slice(0, level <= 3 ? 3 * level : level + 6));
 
 /** Les tâches du jour, sans étoile ; la branche « le nombre » en ajoute une, puis deux. */
 export const DAILY_TASKS = 3;
@@ -60,15 +74,18 @@ export const GAIN_STARS = ['tasks.g2', 'tasks.g3'] as const;
 export const TASK_STAR = { north: 'explore.n', once1: 'tasks.p1', once2: 'tasks.p2', last: 'tasks.p3' } as const;
 
 export interface OnceTaskDef {
-  /** Son numéro dans la liste validée (1 à 20) : ses textes, tasks.once.<n>. */
+  /** Son numéro dans la liste validée (1 à 22) : ses textes, tasks.onceTasks.<n>. */
   n: number;
   /** L'étoile qui la fait apparaître. */
   star: string;
   goal: number;
   /** Son avancement se compte en minutes ou en heures (son but est en secondes) ; sinon tel quel. */
   unit?: 'minutes' | 'hours';
-  /** Une échelle (l'auteur, 29/10 : les tâches par niveaux) : faite, son niveau suivant s'ouvre ; sinon, une tâche unique. */
-  ladder?: true;
+  /**
+   * Une échelle (l'auteur, 29/10 : les tâches par niveaux) : le but de chaque niveau (1, 2…) ; faite, son niveau suivant
+   * s'ouvre. Sans : une tâche unique (son but, `goal`).
+   */
+  levels?: (level: number) => number;
   reward: TaskReward;
 }
 
@@ -78,34 +95,39 @@ export interface OnceTaskDef {
  */
 export const ONCE_TASKS: readonly OnceTaskDef[] = [
   { n: 1, star: TASK_STAR.north, goal: 10_000, reward: {} },
-  { n: 2, star: TASK_STAR.north, goal: 10_000, ladder: true, reward: {} },
-  { n: 3, star: TASK_STAR.north, goal: 10, ladder: true, reward: {} },
-  { n: 4, star: TASK_STAR.north, goal: 100, ladder: true, reward: {} },
-  { n: 5, star: TASK_STAR.north, goal: 10, ladder: true, reward: {} },
-  { n: 6, star: TASK_STAR.north, goal: 100, ladder: true, reward: {} },
-  { n: 7, star: TASK_STAR.north, goal: 500, reward: { readingBonus: 0.05 } },
+  { n: 2, star: TASK_STAR.north, goal: 10_000, levels: same(10_000), reward: {} },
+  // Les phrases, les livres rares, les étoiles, les figures : des échelles qui finissent (systems/onceTasks.ts, `left`).
+  { n: 3, star: TASK_STAR.north, goal: 10, levels: same(10), reward: {} },
+  { n: 4, star: TASK_STAR.north, goal: 100, levels: same(100), reward: {} },
+  { n: 5, star: TASK_STAR.north, goal: 10, levels: same(10), reward: {} },
+  { n: 6, star: TASK_STAR.north, goal: 100, levels: same(100), reward: {} },
+  // 410 au lieu de 500 (l'auteur, 29/10).
+  { n: 7, star: TASK_STAR.north, goal: 410, reward: { readingBonus: 0.05 } },
   { n: 8, star: TASK_STAR.north, goal: 3600, unit: 'minutes', reward: {} },
   { n: 9, star: TASK_STAR.north, goal: 24 * 3600, unit: 'hours', reward: {} },
-  { n: 10, star: TASK_STAR.north, goal: 10, ladder: true, reward: {} },
+  // Nourris-le : 5 par niveau (validé le 30/10 ; 10 était trop lent).
+  { n: 10, star: TASK_STAR.north, goal: 5, levels: same(5), reward: {} },
   // Les reliques des salles (ROOM_RELICS) : quatre depuis la Boussole (24/10).
   { n: 11, star: TASK_STAR.north, goal: 4, reward: {} },
-  { n: 12, star: TASK_STAR.north, goal: 50, ladder: true, reward: { knowledgeBonus: 0.05 } },
+  { n: 12, star: TASK_STAR.north, goal: 50, levels: same(50), reward: { knowledgeBonus: 0.05 } },
   // « Finis tous les livres qui se jouent » : le lapin, les dark patterns, le livre-jeu, le coloriage.
   { n: 13, star: TASK_STAR.once1, goal: 4, reward: {} },
   // « Colorie les neuf dessins du cahier » (l'auteur, 17/10 : au lieu de « 10 pages », le cahier n'en a que neuf).
   { n: 14, star: TASK_STAR.once1, goal: 9, reward: {} },
-  { n: 15, star: TASK_STAR.once1, goal: 30, ladder: true, reward: { crayon: true } },
-  { n: 16, star: TASK_STAR.once1, goal: 100_000, ladder: true, reward: {} },
+  { n: 15, star: TASK_STAR.once1, goal: 30, levels: same(30), reward: { crayon: true } },
+  { n: 16, star: TASK_STAR.once1, goal: books(1), levels: books, reward: {} },
   { n: 17, star: TASK_STAR.once2, goal: 10_000, reward: {} },
-  { n: 18, star: TASK_STAR.once2, goal: 3, ladder: true, reward: {} },
+  { n: 18, star: TASK_STAR.once2, goal: 3, levels: same(3), reward: {} },
   { n: 19, star: TASK_STAR.once2, goal: 1, reward: { readingBonus: 0.1 } },
   { n: 20, star: TASK_STAR.once2, goal: 10, reward: {} },
   // « Une dernière pour la route » (l'auteur, 18/10) : ses trois buts (LAST_TASK) ; son compte, ceux qui sont atteints.
   { n: 21, star: TASK_STAR.last, goal: 3, reward: { tome: true } },
+  // « Trouve N de Connaissance » (l'auteur, 29/10 : nouvelle, une échelle).
+  { n: 22, star: TASK_STAR.north, goal: knowledge(1), levels: knowledge, reward: {} },
 ];
 
-/** Les tampons d'une tâche « une seule fois » faite (son niveau I, pour une échelle). */
-export const onceStamps = (def: OnceTaskDef): number => (def.ladder ? LEVEL_STAMPS : UNIQUE_STAMPS);
+/** Les tampons d'une tâche « une seule fois » faite, à ce niveau (5 × le niveau d'une échelle, 15 pour une unique). */
+export const onceStamps = (def: OnceTaskDef, level = 1): number => (def.levels ? LEVEL_STAMPS * level : UNIQUE_STAMPS);
 
 /**
  * Les trois buts de « Une dernière pour la route », comptés depuis son apparition, à travers les prestiges (validés par
@@ -113,3 +135,6 @@ export const onceStamps = (def: OnceTaskDef): number => (def.ladder ? LEVEL_STAM
  * l'Etherium, les pages lues, la Connaissance trouvée.
  */
 export const LAST_TASK = { ether: 15_000, pages: 5e21, knowledge: 400e6 } as const;
+
+/** Les niveaux faits d'une tâche « une seule fois » (une tâche unique : 0 ou 1). */
+export const levelsDone = (task: OnceTask | undefined): number => (task ? (task.level ?? 1) - 1 + (task.done !== undefined ? 1 : 0) : 0);

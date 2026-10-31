@@ -14,7 +14,7 @@ import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE, TOOLS, type ToolId } from './t
 import { mimicSeconds } from '../systems/mimic';
 import { RELICS } from './relics';
 import { TOKENS_SPENT_STEPS } from './lottery';
-import { ONCE_TASKS } from './tasks';
+import { ONCE_TASKS, levelsDone } from './tasks';
 import { allLotteryBoons, allLotteryCurses } from '../systems/lotteryEffects';
 import type { ModText } from '../mods/modSeals';
 import type { TomeSource } from '../systems/endings';
@@ -85,8 +85,8 @@ const SEALS_OF_SEALS = 6;
 /** Sceaux du jeu apposés, hors planche « Les sceaux » (lue à chaque appel : SEALS est défini plus bas). */
 const sealsApplied = (state: GameState): number => SEALS.filter((seal) => seal.plate !== 'seals' && seal.id in state.seals).length;
 
-/** Les tâches « une seule fois » faites. */
-const onceDone = (state: GameState): number => Object.values(state.tasks.once).filter((task) => task.done !== undefined).length;
+/** Les tâches « une seule fois » faites (une échelle : au moins son niveau I). */
+const onceDone = (state: GameState): number => Object.values(state.tasks.once).filter((task) => levelsDone(task) > 0).length;
 
 /** Un sceau seul. */
 const seal = (id: string, plate: PlateId, reached: (state: GameState) => boolean): SealDef => ({ id, plate, text: id, reached });
