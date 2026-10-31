@@ -16,13 +16,14 @@ import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { mimicUnlocked } from './etherium';
 import { mimicEvery } from './mimic';
 import { relicTaskLength } from './relics';
+import { addStamps } from './stamps';
 import { PUZZLES_ID } from '../data/puzzles';
 import type { DailyTask, GameState } from '../core/state';
 
 /**
  * Les tâches du jour (.ai/plan-taches.md) : trois par jour (la branche « le nombre » en ajoute deux), tirées au hasard,
- * effacées à minuit (heure du joueur). Ce que vaut chacune est tiré : 1, 2 ou 3 jetons, d'autant plus longue. Elles
- * avancent toutes en même temps ; une tâche faite garde son jeton jusqu'au clic.
+ * effacées à minuit (heure du joueur). Ce que vaut chacune est tiré : 1, 2 ou 3 tampons, d'autant plus longue. Elles
+ * avancent toutes en même temps ; une tâche faite garde ses tampons jusqu'au clic.
  */
 
 /** Le jour, heure du joueur : « AAAA-MM-JJ ». */
@@ -39,7 +40,7 @@ export const dailyCount = (state: GameState): number => DAILY_TASKS + COUNT_STAR
 /** Le niveau de la branche « le gain » : la plus haute étoile allumée. */
 const gainLevel = (state: GameState): number => (lit(state, GAIN_STARS[1]) ? 2 : lit(state, GAIN_STARS[0]) ? 1 : 0);
 
-/** Ce que vaut une tâche tirée : 1, 2 ou 3 jetons, selon la branche « le gain ». */
+/** Ce que vaut une tâche tirée : 1, 2 ou 3 tampons, selon la branche « le gain ». */
 export const drawValue = (state: GameState, random: () => number): number => {
   const odds = GAIN_ODDS[gainLevel(state)];
   let roll = random();
@@ -116,25 +117,19 @@ const newTask = (state: GameState, random: () => number): DailyTask => {
   return { kind, value, goal: goalFor(state, kind, value), base: METRIC[kind](state) };
 };
 
-/** Jetons laissés sur les tâches faites et pas prises : à minuit, ils sont donnés (pas perdus). */
-const leftTokens = (state: GameState): number =>
-  state.tasks.today.reduce((sum, task) => sum + (task.done !== undefined && !task.taken ? task.value : 0), 0);
-
 /**
- * Le jour : à minuit, les tâches d'hier s'effacent (leurs jetons pas pris sont donnés) et celles du jour se tirent ; une
- * étoile allumée dans la journée en ajoute. Renvoie les jetons donnés.
+ * Le jour : à minuit, les tâches d'hier s'effacent (leurs tampons pas pris sont donnés, à la date où elles ont été
+ * faites : pas perdus) et celles du jour se tirent ; une étoile allumée dans la journée en ajoute.
  */
-export const refreshDay = (state: GameState, random: () => number, now: number): number => {
+export const refreshDay = (state: GameState, random: () => number, now: number): void => {
   const tasks = state.tasks;
   const day = dayOf(now);
-  let given = 0;
   if (tasks.day !== day) {
-    given = leftTokens(state);
+    for (const task of tasks.today) if (task.done !== undefined && !task.taken) addStamps(state, task.value, task.done);
     tasks.day = day;
     tasks.today = [];
   }
   while (tasks.today.length < dailyCount(state)) tasks.today.push(newTask(state, random));
-  return given;
 };
 
 /** Où en est une tâche du jour, de 0 à 1. */

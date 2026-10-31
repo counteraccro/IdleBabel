@@ -532,8 +532,9 @@
     "once": "Just once",
     "midnight": "What is not done fades at midnight.",
     "allDone": "That is all for today.",
-    "token": "The token.",
-    "tokens": "The tokens.",
+    "stamps1": "One stamp.",
+    "stamps2": "Two stamps.",
+    "stamps3": "Three stamps.",
     "keepGoing": "Do not stop.",
     "daily": {
       "pages": "Read {n} more pages.",
@@ -573,13 +574,7 @@
       "21": "Pour 15,000 Ether into the Etherium, read 5 sextillion pages and find 400 million Knowledge."
     },
     "rewards": {
-      "tokens": "{n} tokens",
-      "hours": "{n} h of reading",
-      "days": "{n} days of reading",
-      "day": "1 day of reading",
-      "kHours": "{n} h of Knowledge",
-      "kDays": "{n} days of Knowledge",
-      "kDay": "1 day of Knowledge",
+      "stamps": "{n} stamps",
       "reading": "Reading +{n} %, for good",
       "knowledge": "Knowledge +{n} %, for good",
       "relic": "a relic",
@@ -590,6 +585,16 @@
     "progressHours": "{n} / {total} h",
     "running": "{n} tasks under way",
     "runningOne": "1 task under way",
-    "allDoneShort": "That is all for today"
+    "allDoneShort": "That is all for today",
+    "card": {
+      "title": "Reader’s card",
+      "library": "LIBRARY",
+      "name": "Reader’s card",
+      "number": "no.",
+      "hexagon": "hexagon",
+      "left": "I have {n} stamps left.",
+      "leftOne": "I have one stamp left.",
+      "leftNone": "Not a stamp to spend."
+    }
   }
 }

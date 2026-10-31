@@ -1,4 +1,4 @@
-import { ONCE_TASKS, TASK_STAR, type TaskReward } from '../data/tasks';
+import { ONCE_TASKS, TASK_STAR, onceStamps, type TaskReward } from '../data/tasks';
 import { TOOLS } from '../data/tools';
 import { advanceDaily, dailyAfterPrestige, refreshDay } from './dailyTasks';
 import { advanceOnce } from './onceTasks';
@@ -6,6 +6,7 @@ import { creditMethods, gainPages, pagesPerSecond } from './production';
 import { addKnowledge, findKnowledge, findChance, maxTurnsPerSecond, MAX_FINDS_PER_PAGE } from './knowledge';
 import { PAGES_PER_LEAF } from './books';
 import { findRelic } from './relics';
+import { addStamps } from './stamps';
 import { giveTome, nextTome } from './endings';
 import { runHooks } from '../mods/hooks';
 import { advanceModTasks, modTaskWaiting } from '../mods/modTasks';
@@ -14,7 +15,8 @@ import type { GameState } from '../core/state';
 /**
  * Les tâches (.ai/plan-taches.md) : elles apparaissent dans le livre blanc quand le Nord de la Rose des vents s'allume.
  * Celles du jour (systems/dailyTasks.ts) et celles qui ne se font qu'une fois (systems/onceTasks.ts) avancent ici, à
- * chaque pas de la partie ; ce qu'elles rapportent attend sur la tâche qu'on le prenne (au clic).
+ * chaque pas de la partie ; ce qu'elles rapportent (des tampons, systems/stamps.ts) attend sur la tâche qu'on le prenne
+ * (au clic).
  */
 
 /** Le Nord est allumé : les tâches existent. */
@@ -43,7 +45,7 @@ const follow = (state: GameState, seconds: number, onScreen: boolean): void => {
 
 /**
  * Un pas de la partie : `seconds` écoulées, l'écran visible ou non. Minuit efface les tâches du jour ; les buts atteints
- * font les tâches. Renvoie les tâches faites (le jeton de la clé brille).
+ * font les tâches. Renvoie les tâches faites (le raccourci de la pile brille).
  */
 export const tickTasks = (
   state: GameState,
@@ -54,7 +56,7 @@ export const tickTasks = (
 ): number => {
   if (!tasksOpen(state)) return 0;
   if (seconds > 0) state.tasks.sinceWake += seconds;
-  state.lottery.tokens += refreshDay(state, random, now);
+  refreshDay(state, random, now);
   follow(state, seconds, onScreen);
   const daily = advanceDaily(state, now);
   for (const task of daily) runHooks('task', { kind: 'daily', id: task.kind, value: task.value });
@@ -93,21 +95,8 @@ export const tasksAfterPrestige = (state: GameState): void => {
   dailyAfterPrestige(state);
 };
 
-/** Connaissance trouvée par seconde au rythme du moment (pages qui tournent seules, chance, Connaissance par trouvaille). */
-const knowledgePerSecond = (state: GameState): number =>
-  (state.settings.autoTurn ? Math.min(pagesPerSecond(state), maxTurnsPerSecond(state) * PAGES_PER_LEAF) : 0) *
-  Math.min(MAX_FINDS_PER_PAGE, findChance(state)) *
-  findKnowledge(state);
-
-/** Une récompense : jetons, heures de lecture ou de Connaissance au rythme du moment, bonus pour toujours. */
+/** Ce que rapporte une tâche « une seule fois » en plus de ses tampons : bonus pour toujours, le Crayon, le tome. */
 const give = (state: GameState, reward: TaskReward): void => {
-  if (reward.tokens) state.lottery.tokens += reward.tokens;
-  if (reward.readingHours) {
-    const seconds = reward.readingHours * 3600;
-    gainPages(state, pagesPerSecond(state) * seconds);
-    creditMethods(state, seconds);
-  }
-  if (reward.knowledgeHours) addKnowledge(state, Math.ceil(knowledgePerSecond(state) * reward.knowledgeHours * 3600));
   state.tasks.bonus.reading += reward.readingBonus ?? 0;
   state.tasks.bonus.knowledge += reward.knowledgeBonus ?? 0;
   // Le Crayon : rangé dans la vitrine, son récit (une fois), son sceau.
@@ -118,8 +107,18 @@ const give = (state: GameState, reward: TaskReward): void => {
 };
 
 /** Des minutes de la partie, en lecture ET en Connaissance au rythme du moment : une grille juste du livre de jeux. */
-export const giveMinutes = (state: GameState, minutes: number): void =>
-  give(state, { readingHours: minutes / 60, knowledgeHours: minutes / 60 });
+export const giveMinutes = (state: GameState, minutes: number): void => {
+  const seconds = minutes * 60;
+  gainPages(state, pagesPerSecond(state) * seconds);
+  creditMethods(state, seconds);
+  addKnowledge(state, Math.ceil(knowledgePerSecond(state) * seconds));
+};
+
+/** Connaissance trouvée par seconde au rythme du moment (pages qui tournent seules, chance, Connaissance par trouvaille). */
+const knowledgePerSecond = (state: GameState): number =>
+  (state.settings.autoTurn ? Math.min(pagesPerSecond(state), maxTurnsPerSecond(state) * PAGES_PER_LEAF) : 0) *
+  Math.min(MAX_FINDS_PER_PAGE, findChance(state)) *
+  findKnowledge(state);
 
 /**
  * La récompense d'une tâche faite peut être prise : toujours, sauf le tome de « Une dernière pour la route » tant qu'aucun
@@ -127,26 +126,27 @@ export const giveMinutes = (state: GameState, minutes: number): void =>
  */
 const takeable = (state: GameState, reward: TaskReward): boolean => !reward.tome || nextTome(state) !== undefined;
 
-/** Le jeton d'une tâche du jour faite, pris au clic. Renvoie ce qu'elle valait (0 : rien à prendre). */
-export const takeDaily = (state: GameState, index: number): number => {
+/** Les tampons d'une tâche du jour faite, pris au clic. Renvoie ce qu'elle valait (0 : rien à prendre). */
+export const takeDaily = (state: GameState, index: number, now = Date.now()): number => {
   const task = state.tasks.today[index];
   if (!task || task.done === undefined || task.taken) return 0;
   task.taken = true;
-  state.lottery.tokens += task.value;
+  addStamps(state, task.value, now);
   return task.value;
 };
 
 /** La récompense d'une tâche « une seule fois » faite, prise au clic. Renvoie true si elle a été donnée. */
-export const takeOnce = (state: GameState, n: number): boolean => {
+export const takeOnce = (state: GameState, n: number, now = Date.now()): boolean => {
   const task = state.tasks.once[n];
   const def = ONCE_TASKS.find((one) => one.n === n);
   if (!def || !task || task.done === undefined || task.taken || !takeable(state, def.reward)) return false;
   task.taken = true;
+  addStamps(state, onceStamps(def), now);
   give(state, def.reward);
   return true;
 };
 
-/** Une tâche faite attend qu'on prenne ce qu'elle rapporte : le jeton de la clé brille. */
+/** Une tâche faite attend qu'on prenne ce qu'elle rapporte : le raccourci de la pile brille. */
 export const taskWaiting = (state: GameState): boolean =>
   state.tasks.today.some((task) => task.done !== undefined && !task.taken) ||
   ONCE_TASKS.some((def) => {

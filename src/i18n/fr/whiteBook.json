@@ -532,8 +532,9 @@
     "once": "Une seule fois",
     "midnight": "Ce qui n’est pas fait s’efface à minuit.",
     "allDone": "C’est tout pour aujourd’hui.",
-    "token": "Le jeton.",
-    "tokens": "Les jetons.",
+    "stamps1": "Un tampon.",
+    "stamps2": "Deux tampons.",
+    "stamps3": "Trois tampons.",
     "keepGoing": "Ne t’arrête pas.",
     "daily": {
       "pages": "Lis encore {n} pages.",
@@ -573,13 +574,7 @@
       "21": "Verse 15 000 d’Éther dans l’Etherium, lis 5 trilliards de pages et trouve 400 millions de Connaissance."
     },
     "rewards": {
-      "tokens": "{n} jetons",
-      "hours": "{n} h de lecture",
-      "days": "{n} jours de lecture",
-      "day": "1 jour de lecture",
-      "kHours": "{n} h de Connaissance",
-      "kDays": "{n} jours de Connaissance",
-      "kDay": "1 jour de Connaissance",
+      "stamps": "{n} tampons",
       "reading": "Lecture +{n} %, pour toujours",
       "knowledge": "Connaissance +{n} %, pour toujours",
       "relic": "une relique",
@@ -590,6 +585,16 @@
     "progressHours": "{n} / {total} h",
     "running": "{n} tâches en cours",
     "runningOne": "1 tâche en cours",
-    "allDoneShort": "C’est tout pour aujourd’hui"
+    "allDoneShort": "C’est tout pour aujourd’hui",
+    "card": {
+      "title": "Carte de lecteur",
+      "library": "BIBLIOTHÈQUE",
+      "name": "Carte de lecteur",
+      "number": "n°",
+      "hexagon": "hexagone",
+      "left": "Il me reste {n} tampons.",
+      "leftOne": "Il me reste un tampon.",
+      "leftNone": "Pas un tampon à dépenser."
+    }
   }
 }

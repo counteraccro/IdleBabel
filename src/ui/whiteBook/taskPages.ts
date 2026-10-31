@@ -1,6 +1,6 @@
 import { getLocale, t } from '../../i18n';
 import { currentNotation, formatCount, formatNumber, writeDigits } from '../../core/format';
-import { ONCE_TASKS, type OnceTaskDef, type TaskReward } from '../../data/tasks';
+import { ONCE_TASKS, onceStamps, type OnceTaskDef } from '../../data/tasks';
 import { modTaskCount, modTasks, takeModTask } from '../../mods/modTasks';
 import { modText } from '../../mods/modSeals';
 import { dailyLeft, dailyProgress } from '../../systems/dailyTasks';
@@ -19,7 +19,8 @@ import {
   progressBar,
   seeded,
   slip,
-  token,
+  dateStamp,
+  stampDate,
   worth,
 } from './taskDrawing';
 import type { DailyTask, GameState } from '../../core/state';
@@ -31,7 +32,7 @@ import type { DailyTask, GameState } from '../../core/state';
  */
 
 /** Un nombre écrit au crayon : les chiffres de Babel ne s'écrivent pas à la main, ils restent en chiffres. */
-const pencilNumber = (value: number, counted = false): string =>
+export const pencilNumber = (value: number, counted = false): string =>
   currentNotation() === 'babel'
     ? formatNumber(value, getLocale(), 'full')
     : counted
@@ -131,11 +132,11 @@ const slipBoxes = (tasks: readonly DailyTask[]) => {
   });
 };
 
-/** Un bout de papier : la consigne, ce qu'elle vaut, où elle en est ; faite, barrée, et son jeton posé dessus. */
+/** Un bout de papier : la consigne, ce qu'elle vaut, où elle en est ; faite, barrée, et ses tampons posés dessus. */
 const drawSlip = (context: CanvasRenderingContext2D, state: GameState, task: DailyTask, width: number): void => {
   const done = task.done !== undefined;
   const text = dailyText(task);
-  const coins = task.value * 21 + 20;
+  const coins = task.value * 22 + 20;
   const size = Math.min(34, Math.floor((34 * (width - 52 - coins)) / Math.max(1, handWidth(context, text, 34))));
   const textY = task.kind === 'pages' ? 26 : 28;
   if (!done || task.taken) worth(context, width - 22, 17, task.value, !!task.taken);
@@ -145,8 +146,19 @@ const drawSlip = (context: CanvasRenderingContext2D, state: GameState, task: Dai
   if (done) {
     pencilLine(context, 22, textY + 22, Math.min(width - 30, 26 + textWidth + 8), random);
     if (task.taken) return;
-    for (let i = 0; i < task.value; i++) token(context, width - 60 - i * 26, 96, 30);
-    handText(context, t(task.value > 1 ? 'whiteBook.tasks.tokens' : 'whiteBook.tasks.token'), 26, 86, { size: 26 });
+    // Ses tampons dateurs, posés sur le papier tant qu'on ne les a pas pris.
+    const date = stampDate(task.done!, getLocale());
+    for (let i = 0; i < task.value; i++)
+      dateStamp(
+        context,
+        width - 68 - i * (task.value > 2 ? 88 : 100),
+        96 + (i % 2) * 4,
+        date,
+        (random() - 0.5) * 0.24,
+        0.8,
+        seedOf(`${task.base}:${i}`),
+      );
+    handText(context, t(`whiteBook.tasks.stamps${task.value}`), 26, 86, { size: 26 });
     return;
   }
   if (task.goal <= 0) return;
@@ -179,7 +191,7 @@ export const todayItems = (state: GameState, number: number): Item[] => {
           slip(context, boxes[index], seeded(11 + index * 7), (inner, width) => drawSlip(inner, state, task, width)),
         ),
     },
-    // Une tâche faite : un clic sur son papier prend son jeton.
+    // Une tâche faite : un clic sur son papier prend ses tampons.
     ...tasks.flatMap((task, index): Item[] =>
       task.done !== undefined && !task.taken
         ? [
@@ -208,27 +220,19 @@ export const todayItems = (state: GameState, number: number): Item[] => {
   ];
 };
 
-/** Ce que rapporte une tâche « une seule fois », écrit au bout de sa ligne. */
-export const rewardText = (reward: TaskReward): string => {
+/**
+ * Ce que rapporte une tâche « une seule fois », écrit au bout de sa ligne (maquette validée le 31/10) : son bonus pour
+ * toujours ou sa relique s'il y en a un, sinon ses tampons.
+ */
+export const rewardText = (def: OnceTaskDef): string => {
   const n = (key: string, value: number): string => t(`whiteBook.tasks.rewards.${key}`).replace('{n}', writeDigits(String(value)));
-  if (reward.tokens) return n('tokens', reward.tokens);
-  if (reward.readingHours)
-    return reward.readingHours < 24
-      ? n('hours', reward.readingHours)
-      : reward.readingHours === 24
-        ? n('day', 1)
-        : n('days', reward.readingHours / 24);
-  if (reward.knowledgeHours)
-    return reward.knowledgeHours < 24
-      ? n('kHours', reward.knowledgeHours)
-      : reward.knowledgeHours === 24
-        ? n('kDay', 1)
-        : n('kDays', reward.knowledgeHours / 24);
+  const { reward } = def;
   if (reward.readingBonus) return n('reading', Math.round(reward.readingBonus * 100));
   if (reward.knowledgeBonus) return n('knowledge', Math.round(reward.knowledgeBonus * 100));
+  if (reward.crayon) return t('whiteBook.tasks.rewards.relic');
   // Le tome de « Une dernière pour la route » : rien ne dit ce qu'elle donne (l'auteur, 17/10).
   if (reward.tome) return t('whiteBook.tasks.rewards.unknown');
-  return t('whiteBook.tasks.rewards.relic');
+  return n('stamps', onceStamps(def));
 };
 
 type RowState = 'done' | 'waiting' | 'now' | 'ghost';
@@ -315,7 +319,7 @@ const onceRows = (state: GameState): Row[] => [
       `once:${def.n}`,
       rowState,
       ghost ? babelize(text, seedOf(`task:${def.n}`)) : text,
-      ghost ? '' : rewardText(def.reward),
+      ghost ? '' : rewardText(def),
       progressOf(onceCount(state, def), def.goal, unit, key),
     );
   }),
@@ -404,7 +408,7 @@ export const onceItems = (state: GameState, part: number, number: number): Item[
   ];
 };
 
-/** Un clic sur une tâche faite : son jeton, ou sa récompense, est pris. */
+/** Un clic sur une tâche faite : ses tampons, et ce qu'elle rapporte d'autre, sont pris. */
 export const actOnTask = (state: GameState, id: string): void => {
   const [kind, value] = id.split(':');
   if (kind === 'daily') takeDaily(state, Number(value));

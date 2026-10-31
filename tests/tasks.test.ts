@@ -11,6 +11,8 @@ import { pageOpen, starOpen } from '../src/systems/etherium';
 import { starById } from '../src/data/etheriumStars';
 import { checkSeals } from '../src/systems/seals';
 import { relicTaskLength } from '../src/systems/relics';
+import { addStamps } from '../src/systems/stamps';
+import { payDoneTasks } from '../src/core/stampsPaid';
 
 vi.stubGlobal('window', new EventTarget());
 
@@ -50,14 +52,14 @@ describe('Les tâches du jour', () => {
     expect(state.tasks.today).toHaveLength(4);
   });
 
-  it('valent 1 jeton sans étoile, puis jusqu’à 2 et 3', () => {
+  it('valent 1 tampon sans étoile, puis jusqu’à 2 et 3', () => {
     expect(drawValue(withNorth(), () => 0.99)).toBe(1);
     expect(drawValue(withNorth(['tasks.g2']), () => 0.99)).toBe(2);
     expect(drawValue(withNorth(['tasks.g2', 'tasks.g3']), () => 0.99)).toBe(3);
     expect(drawValue(withNorth(['tasks.g2', 'tasks.g3']), () => 0.1)).toBe(1);
   });
 
-  it('se font, et leur jeton se prend au clic', () => {
+  it('se font, et leurs tampons se prennent au clic : un tampon dateur sur la carte de lecteur', () => {
     const state = withNorth();
     tickTasks(state, 0.1, true, DAY);
     const index = state.tasks.today.findIndex((task) => task.kind === 'clicks');
@@ -73,26 +75,28 @@ describe('Les tâches du jour', () => {
     expect(state.tasks.today[at].done).toBeDefined();
     expect(state.tasks.dailyDone).toBe(1);
     expect(taskWaiting(state)).toBe(true);
-    expect(takeDaily(state, at)).toBe(task.value);
-    expect(state.lottery.tokens).toBe(task.value);
+    expect(takeDaily(state, at, DAY + 2000)).toBe(task.value);
+    expect(state.lottery.tokens).toBe(0);
+    expect(state.tasks.stamps).toEqual({ balance: task.value, earned: task.value, card: 1, cells: [{ at: DAY + 2000, n: task.value }] });
     expect(takeDaily(state, at)).toBe(0);
     expect(taskWaiting(state)).toBe(false);
   });
 
-  it('« Lis encore N pages » : 20 minutes de la production par jeton', () => {
+  it('« Lis encore N pages » : 20 minutes de la production par tampon', () => {
     const state = withNorth();
     tickTasks(state, 0.1, true, DAY, () => 0);
     const pages = state.tasks.today.find((task) => task.kind === 'pages')!;
     expect(pages.goal / (pagesPerSecond(state) * 20 * 60)).toBeCloseTo(1, 1);
   });
 
-  it('à minuit, elles s’effacent : un jeton pas pris est donné, les autres tâches se tirent', () => {
+  it('à minuit, elles s’effacent : des tampons pas pris sont donnés, à leur date, les autres tâches se tirent', () => {
     const state = withNorth();
     tickTasks(state, 0.1, true, DAY, clicksOnly);
     const task = state.tasks.today[0];
     task.done = DAY;
     tickTasks(state, 0.1, true, DAY + 24 * 3600 * 1000, clicksOnly);
-    expect(state.lottery.tokens).toBe(task.value);
+    expect(state.tasks.stamps.balance).toBe(task.value);
+    expect(state.tasks.stamps.cells).toEqual([{ at: DAY, n: task.value }]);
     expect(state.tasks.today).toHaveLength(3);
     expect(state.tasks.today.every((one) => one.done === undefined)).toBe(true);
   });
@@ -158,21 +162,23 @@ describe('Les tâches « une seule fois »', () => {
     expect(onceCount(state, def(20))).toBe(0);
   });
 
-  it('faites, leur récompense attend le clic : jetons, heures de lecture, bonus pour toujours', () => {
+  it('faites, leur récompense attend le clic : des tampons (5 au niveau I d’une échelle, 15 unique), bonus pour toujours', () => {
     const state = withNorth();
     tickTasks(state, 0.1, true, DAY);
     state.stats.clicks = 10_000;
     tickTasks(state, 0.1, true, DAY + 2000);
     expect(state.tasks.once[2].done).toBeDefined();
-    const tokens = state.lottery.tokens;
-    expect(takeOnce(state, 2)).toBe(true);
-    expect(state.lottery.tokens).toBe(tokens + 10);
+    expect(takeOnce(state, 2, DAY + 3000)).toBe(true);
+    expect(state.lottery.tokens).toBe(0);
+    expect(state.tasks.stamps.balance).toBe(5);
     expect(takeOnce(state, 2)).toBe(false);
 
     state.tasks.once[1].done = DAY;
     const before = state.pages;
-    takeOnce(state, 1);
-    expect(state.pages - before).toBeCloseTo(pagesPerSecond(state) * 12 * 3600, 0);
+    takeOnce(state, 1, DAY + 4000);
+    expect(state.pages).toBe(before);
+    expect(state.tasks.stamps.balance).toBe(20);
+    expect(state.tasks.stamps.cells.map((cell) => cell.n)).toEqual([5, 15]);
 
     const reading = pagesPerSecond(state);
     const knowledge = findKnowledge(state);
@@ -255,5 +261,26 @@ describe('Le Crayon', () => {
     // Les tâches « une seule fois » se regardent au plus une fois par seconde.
     tickTasks(state, 0.1, true, DAY + 60_000);
     expect(onceCount(state, def(11))).toBe(1);
+  });
+});
+
+describe('Les tampons', () => {
+  it('une carte pleine (24 cases) est rangée, une neuve la remplace ; le solde continue', () => {
+    const state = withNorth();
+    for (let i = 0; i < 25; i++) addStamps(state, 2, DAY + i);
+    expect(state.tasks.stamps.card).toBe(2);
+    expect(state.tasks.stamps.cells).toEqual([{ at: DAY + 24, n: 2 }]);
+    expect(state.tasks.stamps.balance).toBe(50);
+    expect(state.tasks.stamps.earned).toBe(50);
+  });
+
+  it('une partie d’avant les tampons reçoit une fois ceux de ses tâches « une seule fois » prises', () => {
+    const once = {
+      2: { at: DAY, base: 0, done: DAY, taken: true },
+      8: { at: DAY, base: 0, done: DAY, taken: true },
+      9: { at: DAY, base: 0, done: DAY },
+    };
+    expect(payDoneTasks(once)).toEqual({ balance: 20, earned: 20, card: 1, cells: [] });
+    expect(payDoneTasks(undefined).balance).toBe(0);
   });
 });

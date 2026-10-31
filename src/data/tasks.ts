@@ -6,10 +6,10 @@
 /** Les tâches du jour, sans étoile ; la branche « le nombre » en ajoute une, puis deux. */
 export const DAILY_TASKS = 3;
 
-/** Minutes de la partie que demande une tâche du jour, par jeton qu'elle vaut. */
+/** Minutes de la partie que demande une tâche du jour, par tampon qu'elle vaut. */
 export const MINUTES_PER_TOKEN = 20;
 
-/** Ce que vaut une tâche du jour (1, 2 ou 3 jetons) : ses chances, selon le niveau de la branche « le gain ». */
+/** Ce que vaut une tâche du jour (1, 2 ou 3 tampons) : ses chances, selon le niveau de la branche « le gain ». */
 export const GAIN_ODDS: readonly (readonly number[])[] = [[1], [0.6, 0.4], [0.45, 0.35, 0.2]];
 
 /** Après un prestige, les tâches qui suivent le rythme de la partie se recalculent après tant de secondes. */
@@ -31,11 +31,11 @@ export const CLICKS_PER_TOKEN = 600;
  */
 export const GRIDS_PER_TOKEN = 1;
 
-/** Une récompense de tâche « une seule fois » (heures de lecture ou de Connaissance au rythme du moment). */
+/**
+ * Ce que rapporte une tâche « une seule fois », en plus de ses tampons (l'auteur, 22/10 : plus de jetons ; 29/10 : plus
+ * d'heures de lecture ni de Connaissance, des tampons). Les bonus pour toujours restent, au niveau I seulement.
+ */
 export interface TaskReward {
-  tokens?: number;
-  readingHours?: number;
-  knowledgeHours?: number;
   /** Bonus pour toujours (gardés au prestige) : part de lecture, part de Connaissance en plus. */
   readingBonus?: number;
   knowledgeBonus?: number;
@@ -44,6 +44,13 @@ export interface TaskReward {
   /** Le tome suivant de « L'histoire de Babel » (« Une dernière pour la route ») ; la liste ne le dit pas : « ? ». */
   tome?: true;
 }
+
+/**
+ * Les tampons d'une tâche (validés le 30/10, .ai/plan-taches.md, « Le guichet et les tampons ») : une tâche du jour en
+ * vaut autant que son tirage (1, 2 ou 3) ; le niveau n d'une échelle, 5 × n ; une tâche unique, 15.
+ */
+export const LEVEL_STAMPS = 5;
+export const UNIQUE_STAMPS = 15;
 
 /** Les étoiles de la branche « le nombre » (une tâche du jour de plus chacune) et de la branche « le gain » (son niveau). */
 export const COUNT_STARS = ['tasks.n4', 'tasks.n5'] as const;
@@ -60,37 +67,45 @@ export interface OnceTaskDef {
   goal: number;
   /** Son avancement se compte en minutes ou en heures (son but est en secondes) ; sinon tel quel. */
   unit?: 'minutes' | 'hours';
+  /** Une échelle (l'auteur, 29/10 : les tâches par niveaux) : faite, son niveau suivant s'ouvre ; sinon, une tâche unique. */
+  ladder?: true;
   reward: TaskReward;
 }
 
-/** Les vingt tâches « une seule fois » (liste validée le 17/10) : ce qu'elles comptent est dans systems/onceTasks.ts. */
+/**
+ * Les tâches « une seule fois » (liste validée le 17/10, échelles le 29/10) : ce qu'elles comptent est dans
+ * systems/onceTasks.ts.
+ */
 export const ONCE_TASKS: readonly OnceTaskDef[] = [
-  { n: 1, star: TASK_STAR.north, goal: 10_000, reward: { readingHours: 12 } },
-  { n: 2, star: TASK_STAR.north, goal: 10_000, reward: { tokens: 10 } },
-  { n: 3, star: TASK_STAR.north, goal: 10, reward: { knowledgeHours: 24 } },
-  { n: 4, star: TASK_STAR.north, goal: 100, reward: { tokens: 15 } },
-  { n: 5, star: TASK_STAR.north, goal: 10, reward: { readingHours: 24 } },
-  { n: 6, star: TASK_STAR.north, goal: 100, reward: { tokens: 20 } },
+  { n: 1, star: TASK_STAR.north, goal: 10_000, reward: {} },
+  { n: 2, star: TASK_STAR.north, goal: 10_000, ladder: true, reward: {} },
+  { n: 3, star: TASK_STAR.north, goal: 10, ladder: true, reward: {} },
+  { n: 4, star: TASK_STAR.north, goal: 100, ladder: true, reward: {} },
+  { n: 5, star: TASK_STAR.north, goal: 10, ladder: true, reward: {} },
+  { n: 6, star: TASK_STAR.north, goal: 100, ladder: true, reward: {} },
   { n: 7, star: TASK_STAR.north, goal: 500, reward: { readingBonus: 0.05 } },
-  { n: 8, star: TASK_STAR.north, goal: 3600, unit: 'minutes', reward: { readingHours: 12 } },
-  { n: 9, star: TASK_STAR.north, goal: 24 * 3600, unit: 'hours', reward: { tokens: 15 } },
-  { n: 10, star: TASK_STAR.north, goal: 10, reward: { tokens: 25 } },
+  { n: 8, star: TASK_STAR.north, goal: 3600, unit: 'minutes', reward: {} },
+  { n: 9, star: TASK_STAR.north, goal: 24 * 3600, unit: 'hours', reward: {} },
+  { n: 10, star: TASK_STAR.north, goal: 10, ladder: true, reward: {} },
   // Les reliques des salles (ROOM_RELICS) : quatre depuis la Boussole (24/10).
-  { n: 11, star: TASK_STAR.north, goal: 4, reward: { knowledgeHours: 48 } },
-  { n: 12, star: TASK_STAR.north, goal: 50, reward: { knowledgeBonus: 0.05 } },
+  { n: 11, star: TASK_STAR.north, goal: 4, reward: {} },
+  { n: 12, star: TASK_STAR.north, goal: 50, ladder: true, reward: { knowledgeBonus: 0.05 } },
   // « Finis tous les livres qui se jouent » : le lapin, les dark patterns, le livre-jeu, le coloriage.
-  { n: 13, star: TASK_STAR.once1, goal: 4, reward: { readingHours: 48 } },
+  { n: 13, star: TASK_STAR.once1, goal: 4, reward: {} },
   // « Colorie les neuf dessins du cahier » (l'auteur, 17/10 : au lieu de « 10 pages », le cahier n'en a que neuf).
-  { n: 14, star: TASK_STAR.once1, goal: 9, reward: { knowledgeHours: 24 } },
-  { n: 15, star: TASK_STAR.once1, goal: 30, reward: { crayon: true } },
-  { n: 16, star: TASK_STAR.once1, goal: 100_000, reward: { tokens: 30 } },
-  { n: 17, star: TASK_STAR.once2, goal: 10_000, reward: { readingHours: 72 } },
-  { n: 18, star: TASK_STAR.once2, goal: 3, reward: { tokens: 40 } },
+  { n: 14, star: TASK_STAR.once1, goal: 9, reward: {} },
+  { n: 15, star: TASK_STAR.once1, goal: 30, ladder: true, reward: { crayon: true } },
+  { n: 16, star: TASK_STAR.once1, goal: 100_000, ladder: true, reward: {} },
+  { n: 17, star: TASK_STAR.once2, goal: 10_000, reward: {} },
+  { n: 18, star: TASK_STAR.once2, goal: 3, ladder: true, reward: {} },
   { n: 19, star: TASK_STAR.once2, goal: 1, reward: { readingBonus: 0.1 } },
-  { n: 20, star: TASK_STAR.once2, goal: 10, reward: { tokens: 50 } },
+  { n: 20, star: TASK_STAR.once2, goal: 10, reward: {} },
   // « Une dernière pour la route » (l'auteur, 18/10) : ses trois buts (LAST_TASK) ; son compte, ceux qui sont atteints.
   { n: 21, star: TASK_STAR.last, goal: 3, reward: { tome: true } },
 ];
+
+/** Les tampons d'une tâche « une seule fois » faite (son niveau I, pour une échelle). */
+export const onceStamps = (def: OnceTaskDef): number => (def.ladder ? LEVEL_STAMPS : UNIQUE_STAMPS);
 
 /**
  * Les trois buts de « Une dernière pour la route », comptés depuis son apparition, à travers les prestiges (validés par

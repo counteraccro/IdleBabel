@@ -277,6 +277,20 @@ export interface TasksState {
   counters: TaskCounters;
   /** Les tâches des mods faites (src/mods/modTasks.ts), par « mod:<mod>:<id> » ; effacées si le mod est supprimé. */
   mods: Record<string, { done: number; taken?: boolean }>;
+  /** Les tampons (systems/stamps.ts) : ce que rapportent les tâches, et la carte de lecteur. */
+  stamps: StampsState;
+}
+
+/** Les tampons gagnés aux tâches (systems/stamps.ts), à dépenser au guichet. */
+export interface StampsState {
+  /** Ceux qu'il reste à dépenser. */
+  balance: number;
+  /** Tous ceux gagnés, depuis toujours. */
+  earned: number;
+  /** Le numéro de la carte de lecteur en cours (une carte pleine est rangée, une neuve la remplace). */
+  card: number;
+  /** Ses cases tamponnées : une par tâche faite, sa date (ms) et ce qu'elle a rapporté. */
+  cells: { at: number; n: number }[];
 }
 
 export interface TaskCounters {
@@ -302,6 +316,7 @@ export const noTasks = (): TasksState => ({
   sinceWake: RECALC_AFTER_WAKE,
   counters: { noHandFrom: 0, clicks: 0, untouched: 0, longestAway: 0, streak: 0, bought: {}, owned: {} },
   mods: {},
+  stamps: { balance: 0, earned: 0, card: 1, cells: [] },
 });
 
 export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0, pending: null };

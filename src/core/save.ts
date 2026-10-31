@@ -7,6 +7,7 @@ import { refundClosedStars } from './closedStars';
 import { refundCurtain } from './removedCurtain';
 import { keepJackpotTome } from './tomeSources';
 import { keepStarsLitSeal } from './starsLitSeal';
+import { payDoneTasks } from './stampsPaid';
 import { PAGES_PER_CLICK } from '../systems/click';
 import { countSavedFinds } from './countedFinds';
 import type { Find } from '../data/knowledge';
@@ -57,6 +58,10 @@ const readSave = (raw: string, defaultLocale: Locale): GameState | null => {
                     bonus: { ...initial.tasks.bonus, ...saved.tasks?.bonus },
                     counters: { ...initial.tasks.counters, ...saved.tasks?.counters },
                     mods: { ...saved.tasks?.mods },
+                    // Une partie d'avant les tampons (31/10) : core/stampsPaid.ts lui verse ceux de ses tâches faites.
+                    stamps: saved.tasks?.stamps
+                      ? { ...initial.tasks.stamps, ...saved.tasks.stamps, cells: [...saved.tasks.stamps.cells] }
+                      : payDoneTasks(saved.tasks?.once),
                   },
                   // Les nœuds des anciens arbres, ou les étoiles : core/etheriumTrees.ts ; les étoiles fermées : core/closedStars.ts.
                   etherium: saved.etherium ?? [],

@@ -18,6 +18,7 @@ import { folio, type Item, type TextItem } from '../strangeBook/pageItems';
 import { createLeafPage, pencilOffer, priceNote, type LeafPage, type PageHooks } from '../strangeBook/pages';
 import { tasksOpen } from '../../systems/tasks';
 import { actOnTask, onceItems, oncePageCount, taskTitleItems, todayItems } from './taskPages';
+import { readerCardItems } from './readerCard';
 import type { GameState } from '../../core/state';
 
 /** Sceau de la phrase, et nom de la méthode dessous (repère de la page : 640 × 800). */
@@ -308,6 +309,13 @@ const buildWhiteBook = (
       const number = pages.length;
       pages.push(createLeafPage(() => onceItems(state, part, number), goTo, onTasks));
     }
+    // La carte de lecteur, à gauche (une page blanche avant s'il le faut).
+    if (pages.length % 2 === 1) {
+      const blank = pages.length;
+      pages.push(createLeafPage(() => [folio(blank)], goTo));
+    }
+    const card = pages.length;
+    pages.push(createLeafPage(() => readerCardItems(state, card), goTo));
   }
   return { pages: pages.length % 2 === 1 ? [...pages, null] : pages, entries };
 };

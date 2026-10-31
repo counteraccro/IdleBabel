@@ -1,8 +1,8 @@
-import { HAND } from '../strangeBook/pageItems';
+import { HAND, SERIF_FONT } from '../strangeBook/pageItems';
 
 /**
  * Ce que le chercheur trace à la main sur les pages des tâches (maquette validée .ai/maquette-taches.html, son code repris
- * tel quel) : les bouts de papier glissés entre les pages, les jetons de laiton, les traits de crayon. Dans le repère de
+ * tel quel) : les bouts de papier glissés entre les pages, les tampons dateurs, les traits de crayon. Dans le repère de
  * la page (640 × 800), textes calés par le haut.
  */
 
@@ -66,41 +66,103 @@ export const pencilCircle = (context: CanvasRenderingContext2D, x: number, y: nu
   context.stroke();
 };
 
-/** Le jeton : une pièce de laiton, l'hexagone de Babel frappé dessus. */
-export const token = (context: CanvasRenderingContext2D, x: number, y: number, radius: number): void => {
-  context.save();
-  context.shadowColor = 'rgba(40,25,5,0.45)';
-  context.shadowBlur = 6;
-  context.shadowOffsetY = 2;
-  const gradient = context.createRadialGradient(x - radius * 0.35, y - radius * 0.4, radius * 0.1, x, y, radius);
-  gradient.addColorStop(0, '#f7dc94');
-  gradient.addColorStop(0.55, '#c99a3e');
-  gradient.addColorStop(1, '#7c5a1e');
-  context.fillStyle = gradient;
+/** L'encre violette des tampons dateurs (maquette validée .ai/maquette-guichet.html). */
+export const STAMP_INK = 'rgba(92, 52, 140, 0.82)';
+
+/** Le tampon dateur, dessiné une fois par date et par graine (l'encre qui manque par endroits se tire au hasard). */
+const STAMP_WIDTH = 96;
+const STAMP_HEIGHT = 44;
+const STAMP_SCALE = 2;
+const stampCache = new Map<string, HTMLCanvasElement>();
+
+const stampImage = (label: string, seed: number): HTMLCanvasElement => {
+  const key = `${label}:${seed}`;
+  const cached = stampCache.get(key);
+  if (cached) return cached;
+  const random = seeded(seed);
+  const canvas = document.createElement('canvas');
+  canvas.width = (STAMP_WIDTH + 8) * STAMP_SCALE;
+  canvas.height = (STAMP_HEIGHT + 8) * STAMP_SCALE;
+  const context = canvas.getContext('2d')!;
+  context.scale(STAMP_SCALE, STAMP_SCALE);
+  context.translate(4, 4);
+  context.strokeStyle = STAMP_INK;
+  context.fillStyle = STAMP_INK;
+  context.lineWidth = 2.2;
   context.beginPath();
-  context.arc(x, y, radius, 0, Math.PI * 2);
-  context.fill();
-  context.restore();
-  context.strokeStyle = 'rgba(90,60,15,0.8)';
-  context.lineWidth = 1.2;
-  context.beginPath();
-  context.arc(x, y, radius * 0.84, 0, Math.PI * 2);
+  context.roundRect(0, 0, STAMP_WIDTH, STAMP_HEIGHT, 5);
   context.stroke();
+  context.lineWidth = 0.9;
   context.beginPath();
-  for (let i = 0; i < 6; i++) {
-    const angle = Math.PI / 6 + (i * Math.PI) / 3;
-    context.lineTo(x + Math.cos(angle) * radius * 0.48, y + Math.sin(angle) * radius * 0.48);
+  context.roundRect(4, 4, STAMP_WIDTH - 8, STAMP_HEIGHT - 8, 3);
+  context.stroke();
+  context.textAlign = 'center';
+  context.textBaseline = 'top';
+  context.font = `bold 9px ${SERIF_FONT}`;
+  context.letterSpacing = '2px';
+  context.fillText('BABEL', STAMP_WIDTH / 2, 8);
+  context.font = `bold 17px ${SERIF_FONT}`;
+  context.letterSpacing = '1px';
+  context.fillText(label, STAMP_WIDTH / 2, 19);
+  // L'encre manque par endroits.
+  context.globalCompositeOperation = 'destination-out';
+  for (let i = 0; i < 90; i++) {
+    context.globalAlpha = 0.3 + random() * 0.6;
+    context.beginPath();
+    context.arc(random() * STAMP_WIDTH, random() * STAMP_HEIGHT, 0.4 + random() * 1.6, 0, Math.PI * 2);
+    context.fill();
   }
-  context.closePath();
-  context.stroke();
+  if (stampCache.size > 200) stampCache.clear();
+  stampCache.set(key, canvas);
+  return canvas;
 };
 
-/** Ce que vaut une tâche : ses jetons, en petites pièces au coin du papier (cerclées tant qu'ils ne sont pas pris). */
+/** Un tampon dateur à l'encre violette (« 31 OCT. »), centré sur (x, y), de travers, un peu baveux. */
+export const dateStamp = (
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  label: string,
+  angle: number,
+  scale = 1,
+  seed = 7,
+): void => {
+  const width = (STAMP_WIDTH + 8) * scale;
+  const height = (STAMP_HEIGHT + 8) * scale;
+  context.save();
+  context.translate(x, y);
+  context.rotate(angle);
+  context.globalAlpha = 0.92;
+  context.drawImage(stampImage(label, seed), -width / 2, -height / 2, width, height);
+  context.restore();
+};
+
+/** La date d'un tampon dateur, dans la langue du jeu : « 31 OCT. », « 31 OCT ». */
+export const stampDate = (at: number, locale: string): string =>
+  new Date(at).toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'short' }).toLocaleUpperCase();
+
+/** Ce que vaut une tâche : de petits tampons au coin du papier, au crayon tant qu'ils ne sont pas gagnés. */
 export const worth = (context: CanvasRenderingContext2D, right: number, y: number, count: number, filled: boolean): void => {
   for (let i = 0; i < count; i++) {
-    const x = right - i * 21;
-    if (filled) token(context, x, y, 8);
-    else pencilCircle(context, x, y, 8);
+    context.save();
+    context.translate(right - i * 22, y);
+    context.rotate(-0.08 + i * 0.05);
+    context.beginPath();
+    context.roundRect(-8, -6, 16, 12, 2);
+    if (filled) {
+      context.fillStyle = STAMP_INK;
+      context.globalAlpha = 0.85;
+      context.fill();
+      context.globalAlpha = 1;
+      context.strokeStyle = '#f6eedb';
+      context.lineWidth = 0.8;
+      context.strokeRect(-5, -3, 10, 6);
+    } else {
+      context.strokeStyle = PENCIL;
+      context.lineWidth = 1.3;
+      context.stroke();
+    }
+    context.restore();
   }
 };
 
