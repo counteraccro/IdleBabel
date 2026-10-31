@@ -741,7 +741,7 @@ export const FIGURES: Record<PageId, Figure> = {
     },
   },
   // Les Tâches, « Le Cadran solaire » : le pied du style offert ; le style porte le nombre, la ligne d'heure de gauche le
-  // gain, celle de droite « une seule fois » ; le nom de chaque branche au bord du cadran.
+  // gain, celle de droite « une seule fois », l'heure suivante à gauche la semaine ; le nom de chaque branche au bord du cadran.
   tasks: {
     spots: {
       o: DIAL,
@@ -752,9 +752,10 @@ export const FIGURES: Record<PageId, Figure> = {
       p1: dial(330, 90),
       p2: dial(330, 155),
       p3: dial(330, 220),
+      w3: dial(240, 165),
     },
     deco: [],
-    given: { id: 'o', opens: ['n4', 'g2', 'p1'] },
+    given: { id: 'o', opens: ['n4', 'g2', 'p1', 'w3'] },
     sketch: {
       lines: [
         // Le demi-cercle du jour et son bord intérieur ; les lignes d'heures ; le style, en triangle fin ; la pierre dessous.
@@ -777,6 +778,7 @@ export const FIGURES: Record<PageId, Figure> = {
       ],
       labels: [
         ['gain', dial(210, DIAL_R + 30)],
+        ['week', dial(240, DIAL_R + 28)],
         ['count', dial(270, DIAL_R + 26)],
         ['once', dial(330, DIAL_R + 30)],
       ],

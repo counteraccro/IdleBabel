@@ -141,7 +141,8 @@
       "branches": {
         "gain": "THE GAIN",
         "count": "THE NUMBER",
-        "once": "ONLY ONCE"
+        "once": "ONLY ONCE",
+        "week": "THE WEEK"
       }
     },
     "screen": {
@@ -890,7 +891,7 @@
       "o": {
         "name": "The foot of the gnomon",
         "value": "Tasks:",
-        "effect": "three a day, one token each"
+        "effect": "three a day, one stamp each"
       },
       "n4": {
         "name": "The gnomon, low",
@@ -905,12 +906,12 @@
       "g2": {
         "name": "The left hour, near the gnomon",
         "value": "The gain:",
-        "effect": "tasks worth 2 tokens, twice as long"
+        "effect": "tasks worth 2 stamps, twice as long"
       },
       "g3": {
         "name": "The left hour, at the edge",
         "value": "The gain:",
-        "effect": "tasks worth 3 tokens, three times as long"
+        "effect": "tasks worth 3 stamps, three times as long"
       },
       "p1": {
         "name": "The right hour, near the gnomon",
@@ -926,6 +927,11 @@
         "name": "The right hour, at the edge",
         "value": "One for the road",
         "effect": ""
+      },
+      "w3": {
+        "name": "The second hour on the left",
+        "value": "The week:",
+        "effect": "a 3rd task of the week"
       }
     },
     "weight": {

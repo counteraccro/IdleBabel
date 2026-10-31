@@ -602,6 +602,28 @@
       "left": "I have {n} stamps left.",
       "leftOne": "I have one stamp left.",
       "leftNone": "Not a stamp to spend."
+    },
+    "weekly": {
+      "daily": "Do all your tasks of the day on {n} days.",
+      "letters": "Catch {n} letters.",
+      "mimic": "Catch the Mimic {n} times.",
+      "grids": "Solve {n} grids.",
+      "coloring": "Colour a drawing of the book.",
+      "rare": "Shelve a rare book in the display case.",
+      "sentence": "Complete a sentence of the white book.",
+      "feed": "Feed it {n} times.",
+      "feedOne": "Feed it.",
+      "star": "Light a star.",
+      "boons": "Win {n} boons at the Lottery.",
+      "clicks": "Turn {n} pages by hand."
+    },
+    "week": {
+      "title": "This week",
+      "days": "{n} more days.",
+      "lastDay": "Last day.",
+      "done": "Week done.",
+      "all": "All of them: {n} more.",
+      "monday": "A new card every Monday."
     }
   }
 }

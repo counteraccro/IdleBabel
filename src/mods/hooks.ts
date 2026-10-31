@@ -47,7 +47,7 @@ export interface Hooks {
    * Une tâche faite (sa récompense attend le clic) : du jour (son modèle, ce qu'elle vaut en jetons), une seule fois (son
    * numéro), ou d'un mod (« mod:<mod>:<id> »).
    */
-  task: (task: { kind: 'daily' | 'once' | 'mod'; id: string; value?: number }) => void;
+  task: (task: { kind: 'daily' | 'weekly' | 'once' | 'mod'; id: string; value?: number }) => void;
 }
 
 export type HookName = keyof Hooks;

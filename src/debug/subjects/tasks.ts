@@ -10,7 +10,7 @@ export const TASK_SUBJECT: DebugSubject = {
   id: 'resources:tasks',
   chapter: 'resources',
   name: 'Les tâches',
-  description: 'Allumer le Nord, finir les tâches du jour, tamponner la carte de lecteur.',
+  description: 'Allumer le Nord, finir les tâches du jour et de la semaine, tamponner la carte de lecteur.',
   peek: (state) => `${state.tasks.stamps.balance} tampon(s), carte n° ${state.tasks.stamps.card}`,
   build: (kit, state) => {
     kit.row(
@@ -30,6 +30,19 @@ export const TASK_SUBJECT: DebugSubject = {
         ['Demain', () => (state.tasks.day = null)],
       ]),
       '« Demain » efface les tâches du jour (leurs tampons pas pris sont donnés) et en tire d’autres.',
+    );
+    kit.row(
+      'Cette semaine',
+      chips([
+        [
+          'Tout finir',
+          () => {
+            for (const task of state.tasks.week.tasks) if (task.done === undefined) task.base -= task.goal;
+          },
+        ],
+        ['Semaine suivante', () => (state.tasks.week.start = null)],
+      ]),
+      '« Semaine suivante » efface la fiche (ses tampons pas pris sont donnés) et en tire une autre.',
     );
     kit.row(
       'Tamponner',

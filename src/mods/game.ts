@@ -20,6 +20,7 @@ import { ONCE_TASKS } from '../data/tasks';
 import { tasksOpen } from '../systems/tasks';
 import { dailyLeft } from '../systems/dailyTasks';
 import { onceCount, onceGoal, onceLevel, onceMet, onceShown } from '../systems/onceTasks';
+import { weeklyCountOf } from '../systems/weeklyTasks';
 import { modTaskCount, modTasks } from './modTasks';
 import { modText } from './modSeals';
 import type { GameState } from '../core/state';
@@ -143,6 +144,14 @@ export const modGame = (state: GameState) => ({
       done: state.tasks.once[def.n]?.done !== undefined,
       taken: !!state.tasks.once[def.n]?.taken,
     })),
+    week: state.tasks.week.tasks.map((task) => ({
+      kind: task.kind,
+      goal: task.goal,
+      count: weeklyCountOf(state, task),
+      done: task.done !== undefined,
+      taken: !!task.taken,
+    })),
+    stamps: state.tasks.stamps.balance,
     mods: modTasks().map((task) => ({
       id: task.key,
       text: modText(task.text, getLocale()),

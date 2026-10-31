@@ -6,6 +6,7 @@ import { modText } from '../../mods/modSeals';
 import { dailyLeft, dailyProgress } from '../../systems/dailyTasks';
 import { onceCount, onceGoal, onceLevel, onceMet, onceShown } from '../../systems/onceTasks';
 import { takeDaily, takeOnce } from '../../systems/tasks';
+import { takeWeek } from '../../systems/weeklyTasks';
 import { GOLD_INK, TITLE_FONT, folio, heading, roman, type Item } from '../strangeBook/pageItems';
 import { babelize, seedOf } from './babelMask';
 import {
@@ -444,6 +445,7 @@ export const onceItems = (state: GameState, part: number, number: number): Item[
 export const actOnTask = (state: GameState, id: string): void => {
   const [kind, value] = id.split(':');
   if (kind === 'daily') takeDaily(state, Number(value));
+  else if (kind === 'week') takeWeek(state);
   else if (kind === 'once') takeOnce(state, Number(value));
   else if (kind === 'mod') takeModTask(state, id);
 };

@@ -8,7 +8,7 @@ import type { PartId } from '../data/decipher';
 import { newGameSeed } from './random';
 import type { SceneId } from '../scene/scenes';
 import type { RelicId } from '../data/relics';
-import { RECALC_AFTER_WAKE, type DailyKind } from '../data/tasks';
+import { RECALC_AFTER_WAKE, type DailyKind, type WeeklyKind } from '../data/tasks';
 import type { LotteryBoonId, LotteryCurseId, LotteryEffectId, OutcomeId } from '../data/lottery';
 import type { TomeSource } from '../systems/endings';
 import { PARTS, PULP_KEEP, SETS, type FamilyId, type PieceId } from '../data/curiosities';
@@ -243,6 +243,27 @@ export interface DailyTask {
   taken?: boolean;
 }
 
+/** Une tâche de la semaine (systems/weeklyTasks.ts). */
+export interface WeeklyTask {
+  kind: WeeklyKind;
+  goal: number;
+  /** Ce que valait son compte quand elle a été tirée. */
+  base: number;
+  /** « Fais tes tâches du jour 5 jours » : les jours où toutes l'ont été. */
+  days?: string[];
+  done?: number;
+  taken?: boolean;
+}
+
+/** Les tâches de la semaine en cours. */
+export interface WeekState {
+  /** Le lundi de la semaine (« AAAA-MM-JJ ») ; null : jamais tirées. */
+  start: string | null;
+  tasks: WeeklyTask[];
+  /** Toutes faites : les 10 tampons de plus, pris au clic. */
+  bonusTaken?: boolean;
+}
+
 /** Une tâche « une seule fois » apparue (systems/onceTasks.ts) : son compte part de là. */
 export interface OnceTask {
   /** Apparue (écrite en clair) à ce moment (ms). */
@@ -283,6 +304,10 @@ export interface TasksState {
   mods: Record<string, { done: number; taken?: boolean }>;
   /** Les tampons (systems/stamps.ts) : ce que rapportent les tâches, et la carte de lecteur. */
   stamps: StampsState;
+  /** Les tâches de la semaine (systems/weeklyTasks.ts) ; celles faites depuis toujours, et les semaines où toutes l'ont été. */
+  week: WeekState;
+  weeklyDone: number;
+  perfectWeeks: number;
 }
 
 /** Les tampons gagnés aux tâches (systems/stamps.ts), à dépenser au guichet. */
@@ -305,6 +330,8 @@ export interface TaskCounters {
   untouched: number;
   longestAway: number;
   streak: number;
+  /** Bonus gagnés à la Loterie, depuis toujours (« Gagne 3 bonus à la Loterie », tâche de la semaine). */
+  boons: number;
   /** Exemplaires achetés de chaque méthode (tâche 7), et ce qu'on en avait au dernier regard. */
   bought: Partial<Record<ToolId, number>>;
   owned: Partial<Record<ToolId, number>>;
@@ -318,9 +345,12 @@ export const noTasks = (): TasksState => ({
   bonus: { reading: 0, knowledge: 0 },
   // Une partie qui n'a pas encore fait de prestige depuis les tâches : son rythme est déjà là.
   sinceWake: RECALC_AFTER_WAKE,
-  counters: { noHandFrom: 0, clicks: 0, untouched: 0, longestAway: 0, streak: 0, bought: {}, owned: {} },
+  counters: { noHandFrom: 0, clicks: 0, untouched: 0, longestAway: 0, streak: 0, boons: 0, bought: {}, owned: {} },
   mods: {},
   stamps: { balance: 0, earned: 0, card: 1, cells: [] },
+  week: { start: null, tasks: [] },
+  weeklyDone: 0,
+  perfectWeeks: 0,
 });
 
 export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0, pending: null };

@@ -138,3 +138,44 @@ export const LAST_TASK = { ether: 15_000, pages: 5e21, knowledge: 400e6 } as con
 
 /** Les niveaux faits d'une tâche « une seule fois » (une tâche unique : 0 ou 1). */
 export const levelsDone = (task: OnceTask | undefined): number => (task ? (task.level ?? 1) - 1 + (task.done !== undefined ? 1 : 0) : 0);
+
+/**
+ * Les tâches de la semaine (validées le 30/10, .ai/plan-taches.md) : deux, tirées le lundi à minuit (heure du joueur) parmi
+ * ce que le joueur a rencontré, effacées le dimanche soir ; une troisième avec l'étoile « la semaine » du Cadran solaire.
+ * Chacune vaut 10 tampons, et 10 de plus si toutes sont faites.
+ */
+export const WEEKLY_TASKS = 2;
+export const WEEK_STAR = 'tasks.w3';
+export const WEEKLY_STAMPS = 10;
+export const WEEK_BONUS = 10;
+
+/** Les modèles des tâches de la semaine (l'auteur, 30/10 ; le 11e, les pages à la main, ajouté par lui). */
+export const WEEKLY_KINDS = [
+  'daily',
+  'letters',
+  'mimic',
+  'grids',
+  'coloring',
+  'rare',
+  'sentence',
+  'feed',
+  'star',
+  'boons',
+  'clicks',
+] as const;
+export type WeeklyKind = (typeof WEEKLY_KINDS)[number];
+
+/** Le but de chaque modèle, tiré dans sa fourchette (les pages à la main par centaines). */
+export const WEEKLY_GOALS: Record<WeeklyKind, readonly [number, number]> = {
+  daily: [5, 5],
+  letters: [20, 40],
+  mimic: [10, 20],
+  grids: [3, 5],
+  coloring: [1, 1],
+  rare: [1, 1],
+  sentence: [1, 1],
+  feed: [1, 2],
+  star: [1, 1],
+  boons: [3, 3],
+  clicks: [1_000, 2_000],
+};

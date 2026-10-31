@@ -19,6 +19,7 @@ import { createLeafPage, pencilOffer, priceNote, type LeafPage, type PageHooks }
 import { tasksOpen } from '../../systems/tasks';
 import { actOnTask, onceItems, oncePageCount, taskTitleItems, todayItems } from './taskPages';
 import { readerCardItems } from './readerCard';
+import { weekItems } from './weekPage';
 import type { GameState } from '../../core/state';
 
 /** Sceau de la phrase, et nom de la méthode dessous (repère de la page : 640 × 800). */
@@ -297,7 +298,8 @@ const buildWhiteBook = (
     })),
   );
   pages.push(...anomalyPart.pages.map((layout) => createLeafPage(layout, goTo)));
-  // Les tâches, dès le Nord de la Rose des vents : leur page de titre, « Aujourd'hui » à gauche, « Une seule fois » en face.
+  // Les tâches, dès le Nord de la Rose des vents : leur page de titre, « Aujourd'hui » à gauche, « Cette semaine » en face,
+  // puis « Une seule fois » et la carte de lecteur.
   if (tasksOpen(state)) {
     const onTasks = { onAct: (id: string) => actOnTask(state, id) };
     const title = pages.length + (pages.length % 2 === 0 ? 1 : 0);
@@ -305,6 +307,9 @@ const buildWhiteBook = (
     const today = pages.length;
     tasksPage = today;
     pages.push(createLeafPage(() => todayItems(state, today), goTo, onTasks));
+    // « Cette semaine » en face ; « Une seule fois » commence à la double page suivante.
+    const week = pages.length;
+    pages.push(createLeafPage(() => weekItems(state, week), goTo, onTasks));
     for (let part = 0; part < oncePageCount(state); part++) {
       const number = pages.length;
       pages.push(createLeafPage(() => onceItems(state, part, number), goTo, onTasks));

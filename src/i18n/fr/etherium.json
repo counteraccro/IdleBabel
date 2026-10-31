@@ -141,7 +141,8 @@
       "branches": {
         "gain": "LE GAIN",
         "count": "LE NOMBRE",
-        "once": "UNE SEULE FOIS"
+        "once": "UNE SEULE FOIS",
+        "week": "LA SEMAINE"
       }
     },
     "screen": {
@@ -890,7 +891,7 @@
       "o": {
         "name": "Le pied du style",
         "value": "Les Tâches :",
-        "effect": "trois par jour, un jeton chacune"
+        "effect": "trois par jour, un tampon chacune"
       },
       "n4": {
         "name": "Le style, en bas",
@@ -905,12 +906,12 @@
       "g2": {
         "name": "L’heure de gauche, près du style",
         "value": "Le gain :",
-        "effect": "des tâches à 2 jetons, deux fois plus longues"
+        "effect": "des tâches à 2 tampons, deux fois plus longues"
       },
       "g3": {
         "name": "L’heure de gauche, au bord",
         "value": "Le gain :",
-        "effect": "des tâches à 3 jetons, trois fois plus longues"
+        "effect": "des tâches à 3 tampons, trois fois plus longues"
       },
       "p1": {
         "name": "L’heure de droite, près du style",
@@ -926,6 +927,11 @@
         "name": "L’heure de droite, au bord",
         "value": "Une dernière pour la route",
         "effect": ""
+      },
+      "w3": {
+        "name": "L’heure de gauche, la deuxième",
+        "value": "La semaine :",
+        "effect": "une 3e tâche de la semaine"
       }
     },
     "weight": {

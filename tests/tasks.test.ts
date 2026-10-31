@@ -4,7 +4,8 @@ import { CLICKS_PER_TOKEN, RECALC_AFTER_WAKE } from '../src/data/tasks';
 import { dailyCount, dailyProgress, dayOf, drawValue } from '../src/systems/dailyTasks';
 import { advanceOnce, onceCount, onceGoal, onceLevel } from '../src/systems/onceTasks';
 import { RARE_BOOKS } from '../src/data/rareBooks';
-import { ONCE_TASKS, levelsDone } from '../src/data/tasks';
+import { ONCE_TASKS, WEEK_STAR, levelsDone } from '../src/data/tasks';
+import { takeWeek, weekDaysLeft, weekOf } from '../src/systems/weeklyTasks';
 import { takeDaily, takeOnce, taskDraw, taskTouched, tasksAfterPrestige, taskWaiting, tickTasks } from '../src/systems/tasks';
 import { pagesPerSecond } from '../src/systems/production';
 import { findKnowledge } from '../src/systems/knowledge';
@@ -343,5 +344,63 @@ describe('Les tâches par niveaux (29/10)', () => {
     expect(takeOnce(state, 5, DAY + 130_000)).toBe(true);
     expect(onceLevel(state, def(5))).toBe(1);
     expect(state.tasks.once[5].taken).toBe(true);
+  });
+});
+
+describe('Les tâches de la semaine (30/10)', () => {
+  // Le lundi 2 novembre 2026, midi.
+  const MONDAY = new Date(2026, 10, 2, 12).getTime();
+  const WEEK = 7 * 24 * 3600 * 1000;
+
+  it('deux le lundi, une troisième avec l’étoile « la semaine » ; le lundi suivant, d’autres', () => {
+    expect(weekOf(MONDAY + 5 * 24 * 3600 * 1000)).toBe(weekOf(MONDAY));
+    expect(weekDaysLeft(MONDAY)).toBe(7);
+    const state = withNorth();
+    tickTasks(state, 0.1, true, MONDAY);
+    expect(state.tasks.week.tasks).toHaveLength(2);
+    state.etherium.push(WEEK_STAR);
+    tickTasks(state, 0.1, true, MONDAY + 1000);
+    expect(state.tasks.week.tasks).toHaveLength(3);
+    expect(new Set(state.tasks.week.tasks.map((task) => task.kind)).size).toBe(3);
+    tickTasks(state, 0.1, true, MONDAY + WEEK);
+    expect(state.tasks.week.start).toBe(weekOf(MONDAY + WEEK));
+  });
+
+  it('faites : 10 tampons chacune, 10 de plus si toutes, pris au clic sur la fiche', () => {
+    const state = withNorth();
+    tickTasks(state, 0.1, true, MONDAY, () => 0.99);
+    for (const task of state.tasks.week.tasks) task.base -= task.goal;
+    tickTasks(state, 0.1, true, MONDAY + 1000);
+    expect(state.tasks.weeklyDone).toBe(2);
+    expect(state.tasks.perfectWeeks).toBe(1);
+    expect(taskWaiting(state)).toBe(true);
+    expect(takeWeek(state, MONDAY + 2000)).toBe(30);
+    expect(state.tasks.stamps.cells.map((cell) => cell.n)).toEqual([10, 10, 10]);
+    expect(takeWeek(state)).toBe(0);
+  });
+
+  it('« Fais tes tâches du jour 5 jours » compte les jours où toutes l’ont été', () => {
+    const state = withNorth();
+    tickTasks(state, 0.1, true, MONDAY, () => 0);
+    state.tasks.week.tasks = [{ kind: 'daily', goal: 5, base: 0, days: [] }];
+    for (const task of state.tasks.today) task.done = MONDAY;
+    tickTasks(state, 0.1, true, MONDAY + 1000);
+    tickTasks(state, 0.1, true, MONDAY + 2000);
+    expect(state.tasks.week.tasks[0].days).toEqual([dayOf(MONDAY)]);
+  });
+
+  it('les tampons pas pris sont donnés le lundi suivant', () => {
+    const state = withNorth();
+    tickTasks(state, 0.1, true, MONDAY);
+    state.tasks.week.tasks[0].done = MONDAY;
+    tickTasks(state, 0.1, true, MONDAY + WEEK);
+    expect(state.tasks.stamps.balance).toBe(10);
+  });
+
+  it('les bonus de la Loterie se comptent', () => {
+    const state = withNorth();
+    taskDraw(state, 'boon');
+    taskDraw(state, 'gain');
+    expect(state.tasks.counters.boons).toBe(1);
   });
 });

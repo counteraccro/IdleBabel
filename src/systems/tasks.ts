@@ -2,6 +2,7 @@ import { ONCE_TASKS, TASK_STAR, onceStamps, type TaskReward } from '../data/task
 import { TOOLS } from '../data/tools';
 import { advanceDaily, dailyAfterPrestige, refreshDay } from './dailyTasks';
 import { advanceOnce, nextLevel } from './onceTasks';
+import { advanceWeekly, refreshWeek, weekWaiting } from './weeklyTasks';
 import { creditMethods, gainPages, pagesPerSecond } from './production';
 import { addKnowledge, findKnowledge, findChance, maxTurnsPerSecond, MAX_FINDS_PER_PAGE } from './knowledge';
 import { PAGES_PER_LEAF } from './books';
@@ -57,10 +58,13 @@ export const tickTasks = (
   if (!tasksOpen(state)) return 0;
   if (seconds > 0) state.tasks.sinceWake += seconds;
   refreshDay(state, random, now);
+  refreshWeek(state, random, now);
   follow(state, seconds, onScreen);
   const daily = advanceDaily(state, now);
   for (const task of daily) runHooks('task', { kind: 'daily', id: task.kind, value: task.value });
-  let finished = daily.length;
+  const weekly = advanceWeekly(state, now);
+  for (const task of weekly) runHooks('task', { kind: 'weekly', id: task.kind, value: task.goal });
+  let finished = daily.length + weekly.length;
   if (now - onceAt >= ONCE_EVERY_MS || now < onceAt) {
     onceAt = now;
     const once = advanceOnce(state, now);
@@ -82,9 +86,10 @@ export const taskAbsence = (state: GameState, seconds: number): void => {
   if (tasksOpen(state)) state.tasks.counters.longestAway = Math.max(state.tasks.counters.longestAway, seconds);
 };
 
-/** Un tirage de la Loterie compté : un gain ou un bonus allonge la série sans malus, un malus la casse, « rien » la laisse. */
+/** Un tirage de la Loterie compté : un gain ou un bonus allonge la série sans malus, un malus la casse, « rien » la laisse ; les bonus se comptent (tâche de la semaine). */
 export const taskDraw = (state: GameState, outcome: string): void => {
   const counters = state.tasks.counters;
+  if (outcome === 'boon') counters.boons += 1;
   if (outcome === 'curse') counters.streak = 0;
   else if (outcome === 'gain' || outcome === 'boon' || outcome === 'jackpot') counters.streak += 1;
 };
@@ -154,6 +159,7 @@ export const takeOnce = (state: GameState, n: number, now = Date.now()): boolean
 /** Une tâche faite attend qu'on prenne ce qu'elle rapporte : le raccourci de la pile brille. */
 export const taskWaiting = (state: GameState): boolean =>
   state.tasks.today.some((task) => task.done !== undefined && !task.taken) ||
+  weekWaiting(state) ||
   ONCE_TASKS.some((def) => {
     const task = state.tasks.once[def.n];
     return task?.done !== undefined && !task.taken && takeable(state, def.reward);

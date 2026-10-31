@@ -602,6 +602,28 @@
       "left": "Il me reste {n} tampons.",
       "leftOne": "Il me reste un tampon.",
       "leftNone": "Pas un tampon à dépenser."
+    },
+    "weekly": {
+      "daily": "Fais tes tâches du jour {n} jours.",
+      "letters": "Attrape {n} lettres.",
+      "mimic": "Attrape {n} fois la Mimic.",
+      "grids": "Résous {n} grilles.",
+      "coloring": "Colorie un dessin du cahier.",
+      "rare": "Range un livre rare dans la vitrine.",
+      "sentence": "Complète une phrase du livre blanc.",
+      "feed": "Nourris-le {n} fois.",
+      "feedOne": "Nourris-le.",
+      "star": "Allume une étoile.",
+      "boons": "Gagne {n} bonus à la Loterie.",
+      "clicks": "Tourne {n} pages à la main."
+    },
+    "week": {
+      "title": "Cette semaine",
+      "days": "Encore {n} jours.",
+      "lastDay": "Dernier jour.",
+      "done": "Semaine finie.",
+      "all": "Toutes : {n} de plus.",
+      "monday": "Une nouvelle fiche chaque lundi."
     }
   }
 }
