@@ -141,7 +141,7 @@
       "branches": {
         "gain": "THE GAIN",
         "count": "THE NUMBER",
-        "once": "ONLY ONCE",
+        "once": "THE LONG HAUL",
         "week": "THE WEEK"
       }
     },
@@ -915,12 +915,12 @@
       },
       "p1": {
         "name": "The right hour, near the gnomon",
-        "value": "Only once:",
+        "value": "The long haul:",
         "effect": "4 new tasks are written"
       },
       "p2": {
         "name": "The right hour, in the middle",
-        "value": "Only once:",
+        "value": "The long haul:",
         "effect": "4 more tasks are written"
       },
       "p3": {

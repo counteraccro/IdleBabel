@@ -25,7 +25,7 @@ export interface IdleBabelApi {
   loadMod: (address: string) => Promise<boolean>;
   notify: (title: string, text?: string) => void;
   addSeal: (seal: ModSealInput) => boolean;
-  /** Une tâche à vous, au bout de la liste « Une seule fois » du livre blanc (src/mods/modTasks.ts). */
+  /** Une tâche à vous, au bout de la liste « Au long cours » du livre blanc (src/mods/modTasks.ts). */
   addTask: (task: ModTaskInput) => boolean;
   format: (value: number) => string;
   /** Remplace le livre en main (livres ordinaires seulement) par la vue que rend `factory`. */

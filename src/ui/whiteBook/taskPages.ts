@@ -28,7 +28,7 @@ import type { DailyTask, GameState } from '../../core/state';
 
 /**
  * La partie V du livre blanc, « Tâches » (maquette validée .ai/maquette-taches.html) : sa page de titre, puis la double
- * page : à gauche « Aujourd'hui » (les tâches du jour sur des bouts de papier), à droite « Une seule fois » (la liste,
+ * page : à gauche « Aujourd'hui » (les tâches du jour sur des bouts de papier), à droite « Au long cours » (la liste,
  * continuée sur les pages suivantes si elle est trop longue). Un clic sur une tâche faite prend ce qu'elle rapporte.
  */
 
@@ -371,7 +371,7 @@ const rowPages = (rows: Row[]): Row[][] => {
   return pages;
 };
 
-/** Les pages de la liste « Une seule fois », à cette heure. */
+/** Les pages de la liste « Au long cours », à cette heure. */
 export const oncePageCount = (state: GameState): number => rowPages(onceRows(state)).length;
 
 /** Le niveau d'une échelle : son chiffre romain doré, à la place de la case. */
@@ -422,7 +422,7 @@ const drawRow = (context: CanvasRenderingContext2D, row: Row, y: number): void =
   handText(context, '✓', 70, y - 2, { size: 28, align: 'center' });
 };
 
-/** Une page de la liste « Une seule fois » (`part` : 0 pour la première, en face d'« Aujourd'hui »). */
+/** Une page de la liste « Au long cours » (`part` : 0 pour la première, en face d'« Aujourd'hui »). */
 export const onceItems = (state: GameState, part: number, number: number): Item[] => {
   const rows = rowPages(onceRows(state))[part] ?? [];
   const tops: number[] = [];
