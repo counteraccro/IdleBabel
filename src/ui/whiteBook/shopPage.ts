@@ -7,6 +7,9 @@ import { folio, heading, textWidth, type Item, type TextItem } from '../strangeB
 import { GHOST_INK, STAMP_INK } from './taskDrawing';
 import { babelize, seedOf } from './babelMask';
 import { pencilNumber } from './taskPages';
+import { scanInBackground } from '../rareBooks/stickerAlbum/albumScan';
+import { idle } from '../rareBooks/slowDrawing';
+import { POUCH_LOOKAHEAD, POUCH_STEP, findPouchSticker, pouchSlots, type PouchSticker } from '../../systems/stickerAlbum';
 import type { BoonId } from '../../data/letter';
 import type { GameState } from '../../core/state';
 
@@ -24,7 +27,17 @@ const BOON_ROW = 28;
 const ROW = 64;
 
 /** Une ligne d'action du guichet : « shop:boon:trance », « shop:hour:reading »… */
-const actionId = (item: ShopItem): string => (item.kind === 'boon' ? `shop:boon:${item.id}` : `shop:hour:${item.of}`);
+const actionId = (item: ShopItem): string =>
+  item.kind === 'boon' ? `shop:boon:${item.id}` : item.kind === 'pouch' ? 'shop:pouch' : `shop:hour:${item.of}`;
+
+/**
+ * La dernière pochette achetée, notée au crayon sous sa ligne : en train de s'ouvrir (l'album passe les livres lus en
+ * revue, puis cherche sa couverture), puis le numéro de la case remplie (rien : plus rien à coller, elle n'est pas payée).
+ */
+let pouchNote: 'opening' | 'none' | number | undefined;
+
+const pouchText = (note: 'none' | number): string =>
+  note === 'none' ? t('whiteBook.tasks.shop.pouchNone') : t('whiteBook.tasks.shop.pouchGiven').replace('{n}', pencilNumber(note));
 
 const printed = (text: string, x: number, y: number, size: number, style: Partial<TextItem> = {}): TextItem => ({
   kind: 'text',
@@ -91,6 +104,27 @@ export const shopItems = (state: GameState, number: number): Item[] => {
     items.push({ kind: 'action', id: actionId(item), x, y: rowY - 4, width: 210, height: 26 });
   });
   y += Math.ceil(BOON_PRICES.length / 2) * BOON_ROW + 16;
+  // Une pochette d'autocollants : en lettres de Babel tant que l'album n'a pas été trouvé.
+  const pouch: ShopItem = { kind: 'pouch' };
+  const pouchPrice = shopPrice(state, pouch, now);
+  const pouchName = t('whiteBook.tasks.shop.pouch');
+  const pouchDetail = t('whiteBook.tasks.shop.pouchDetail');
+  if (pouchPrice === undefined) {
+    items.push(printed(babelize(pouchName, seedOf('shop:pouch')), LEFT, y, 23, { ink: 'ghost' }));
+    items.push(printed(babelize(pouchDetail, seedOf('shop:pouchDetail')), LEFT, y + 30, 16, { italic: true, ink: 'ghost' }));
+  } else {
+    const faded = !canBuy(state, pouch, now) || pouchNote === 'opening';
+    items.push(printed(pouchName, LEFT, y, 23, faded ? { ink: 'ghost' } : {}));
+    if (pouchNote === undefined)
+      items.push(printed(pouchDetail, LEFT, y + 30, 16, { italic: true, ...(faded ? { ink: 'ghost' as const } : { faded: true }) }));
+    else {
+      const note = pouchNote === 'opening' ? '…' : pouchText(pouchNote);
+      items.push(printed(note, LEFT, y + 26, 22, { face: 'hand' }));
+    }
+    items.push(priceTag(pouchPrice, RIGHT, y, state.tasks.stamps.balance < pouchPrice, marks));
+    items.push({ kind: 'action', id: actionId(pouch), x: 60, y: y - 4, width: RIGHT - 60, height: 58 });
+  }
+  y += ROW;
   // Une heure de lecture (la ligne du titre), ou de Connaissance (le début de la ligne d'en dessous).
   const reading: ShopItem = { kind: 'hour', of: 'reading' };
   const knowledge: ShopItem = { kind: 'hour', of: 'knowledge' };
@@ -114,9 +148,28 @@ export const shopItems = (state: GameState, number: number): Item[] => {
   return items;
 };
 
+/**
+ * Une pochette achetée : l'album passe d'abord tous les livres lus en revue, puis elle cherche sa couverture dans les
+ * livres pas encore lus ; par petits bouts, dans les moments libres. Payée seulement si elle en trouve une.
+ */
+const openPouchLater = async (state: GameState): Promise<void> => {
+  if (pouchNote === 'opening' || !canBuy(state, { kind: 'pouch' })) return;
+  pouchNote = 'opening';
+  await scanInBackground(state);
+  const from = state.booksFinished;
+  let sticker: PouchSticker | undefined;
+  for (let start = from; !sticker && start < from + POUCH_LOOKAHEAD && pouchSlots(state).length > 0; start += POUCH_STEP) {
+    sticker = findPouchSticker(state, start, start + POUCH_STEP);
+    if (!sticker) await idle();
+  }
+  pouchNote = sticker && buy(state, { kind: 'pouch' }, Math.random, Date.now(), sticker) ? sticker.slot.number : 'none';
+};
+
 /** Un clic sur une ligne du guichet : l'achat, s'il se peut. */
 export const actOnShop = (state: GameState, id: string): void => {
   const [, kind, value] = id.split(':');
+  if (kind !== 'pouch') pouchNote = undefined;
   if (kind === 'boon') buy(state, { kind: 'boon', id: value as BoonId });
+  else if (kind === 'pouch') void openPouchLater(state);
   else if (kind === 'hour') buy(state, { kind: 'hour', of: value === 'knowledge' ? 'knowledge' : 'reading' });
 };

@@ -633,7 +633,11 @@
       "hourMore": " ; plus chère à chaque fois, jusqu’à minuit",
       "onCard": "{n} tampons sur ma carte.",
       "onCardOne": "Un tampon sur ma carte.",
-      "onCardNone": "Pas un tampon sur ma carte."
+      "onCardNone": "Pas un tampon sur ma carte.",
+      "pouch": "Une pochette d’autocollants",
+      "pouchDetail": "une couverture qui manque à l’album",
+      "pouchGiven": "Collé : n° {n} de l’album.",
+      "pouchNone": "Plus rien à coller."
     }
   }
 }

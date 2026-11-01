@@ -4,6 +4,8 @@ import { BOON } from '../src/data/letter';
 import { activeBoons, boonOn, forgetBoons } from '../src/systems/boons';
 import { buy, canBuy, hourPrice, hoursToday, shopPrice } from '../src/systems/stampShop';
 import { pagesPerSecond } from '../src/systems/production';
+import { albumSticker, pouchSlots, scanAlbum, searchPouchSticker } from '../src/systems/stickerAlbum';
+import { coverDesign } from '../src/systems/coverDesign';
 
 /** Une partie qui lit seule (une Lecture Diagonale), `balance` tampons sur la carte, les étoiles `stars` allumées. */
 const game = (balance: number, ...stars: string[]): GameState => {
@@ -75,5 +77,62 @@ describe('le guichet', () => {
     expect(state.knowledge).toBeGreaterThan(knowledge);
     state.settings.autoTurn = false;
     expect(canBuy(state, { kind: 'hour', of: 'knowledge' }, NOON)).toBe(false);
+  });
+});
+
+describe('la pochette d’autocollants', () => {
+  /** Une partie de `books` livres lus, l'album trouvé, tous les livres passés en revue. */
+  const reader = (books: number, balance = 100): GameState => {
+    const state = game(balance);
+    state.booksFinished = books;
+    state.rareBooks.stickerAlbum = 0;
+    scanAlbum(state);
+    return state;
+  };
+
+  it('ne se vend pas tant que l’album n’a pas été trouvé ; 50 tampons sinon', () => {
+    expect(shopPrice(game(100), { kind: 'pouch' })).toBeUndefined();
+    expect(shopPrice(reader(10), { kind: 'pouch' })).toBe(50);
+  });
+
+  it('colle la couverture du premier livre pas encore lu qui remplit une case vide', () => {
+    const state = reader(50);
+    const empty = pouchSlots(state).length;
+    const sticker = searchPouchSticker(state)!;
+    expect(sticker.book).toBeGreaterThanOrEqual(50);
+    expect(sticker.slot.test!(coverDesign(sticker.book), sticker.book)).toBe(true);
+    for (let book = 50; book < sticker.book; book++)
+      expect(pouchSlots(state).some((slot) => slot.test!(coverDesign(book), book))).toBe(false);
+    expect(buy(state, { kind: 'pouch' }, Math.random, NOON, sticker)).toBe(true);
+    expect(state.tasks.stamps.balance).toBe(50);
+    expect(state.stickers).toEqual({ [sticker.slot.number]: sticker.book });
+    expect(albumSticker(state, sticker.slot).book).toBe(sticker.book);
+    expect(pouchSlots(state)).toHaveLength(empty - 1);
+  });
+
+  it('cherche aussi les introuvables, une fois les couvertures ordinaires toutes trouvées', () => {
+    const state = reader(50);
+    for (const slot of pouchSlots(state)) if (slot.part !== 'rarest') state.stickers[slot.number] = 0;
+    const sticker = searchPouchSticker(state)!;
+    expect(sticker.slot.part).toBe('rarest');
+    expect(sticker.slot.test!(coverDesign(sticker.book), sticker.book)).toBe(true);
+  });
+
+  it('le livre lu plus tard garde sa case, sans double', () => {
+    const state = reader(50);
+    const sticker = searchPouchSticker(state)!;
+    buy(state, { kind: 'pouch' }, Math.random, NOON, sticker);
+    state.booksFinished = sticker.book + 1;
+    scanAlbum(state);
+    expect(albumSticker(state, sticker.slot)).toEqual({ book: sticker.book, doubles: 0 });
+  });
+
+  it('sans couverture trouvée, ou plus rien à coller : rien n’est payé', () => {
+    const state = reader(50);
+    expect(buy(state, { kind: 'pouch' })).toBe(false);
+    for (const slot of pouchSlots(state)) state.stickers[slot.number] = 0;
+    expect(canBuy(state, { kind: 'pouch' })).toBe(false);
+    expect(searchPouchSticker(state)).toBeUndefined();
+    expect(state.tasks.stamps.balance).toBe(100);
   });
 });

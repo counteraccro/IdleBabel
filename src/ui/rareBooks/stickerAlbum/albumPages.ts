@@ -3,18 +3,16 @@ import { PAGES_PER_BOOK } from '../../../systems/books';
 import { STRANGE_BOOK_INDEX } from '../../../systems/strangeBook';
 import {
   ALBUM_SLOTS,
-  ALBUM_STEP,
   MODERN_COLORS,
   RAREST,
   albumSticker,
   checkAlbumFull,
   partSlots,
   rareAt,
-  scanAlbum,
   type AlbumPart,
   type AlbumSlot,
 } from '../../../systems/stickerAlbum';
-import { idle } from '../slowDrawing';
+import { scanInBackground } from './albumScan';
 import { BLUE, C, H, HAND, PENCIL, POP, RED, SANS, SERIF, W, YELLOW, group, header, paper, subHeader, text } from './albumDraw';
 import { ROW_H, grid, type Cell } from './albumStickers';
 import type { GameState } from '../../../core/state';
@@ -72,18 +70,6 @@ const DARK = '#2d2a26';
 
 /** La première page de la partie `part` (le sommaire). */
 const pageOf = (part: AlbumPart): number => FIRST_COLLECTION_PAGE + COLLECTION.findIndex((page) => page.parts.includes(part));
-
-/** L'album passe les livres lus en revue par petits bouts, dans les moments libres, tant qu'il en reste. */
-let scanning = false;
-const keepScanning = (state: GameState): void => {
-  if (scanning || scanAlbum(state, 0)) return;
-  scanning = true;
-  const step = async (): Promise<void> => {
-    while (!scanAlbum(state, ALBUM_STEP)) await idle();
-    scanning = false;
-  };
-  void step();
-};
 
 const fill = (template: string, values: Record<string, string | number>): string =>
   template.replace(/\{(\w+)\}/g, (_, key: string) => String(values[key] ?? ''));
@@ -324,7 +310,7 @@ const colorOf = (page: number): string => {
 /** Peint la page `page` sur le papier déjà préparé ; false : au-delà de l'album. */
 export const paintAlbumPage = (context: CanvasRenderingContext2D, state: GameState, page: number, spineOnLeft: boolean): boolean => {
   if (page < 1 || page > PAGES_PER_BOOK) return false;
-  keepScanning(state);
+  void scanInBackground(state);
   checkAlbumFull(state);
   const book = texts();
   paper(context, colorOf(page), page, spineOnLeft);

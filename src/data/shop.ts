@@ -16,6 +16,13 @@ export const BOON_PRICES: readonly [BoonId, number][] = [
   ['find', 25],
 ];
 
+/**
+ * Une pochette d'autocollants : la couverture d'un livre pas encore lu pour l'album « Les Couvertures de Babel », la case
+ * vide la plus proche (l'auteur, 01/11 : un introuvable, les couvertures ordinaires étant toutes trouvées bien avant le
+ * guichet ; 50 au lieu de 15, prix proposé).
+ */
+export const POUCH_PRICE = 50;
+
 /** Une heure de lecture, ou de Connaissance, au rythme du moment : 10, puis 10 de plus à chaque achat, jusqu'à minuit. */
 export const HOUR_PRICE = 10;
 export const HOUR_STEP = 10;

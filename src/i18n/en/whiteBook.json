@@ -633,7 +633,11 @@
       "hourMore": "; dearer each time, until midnight",
       "onCard": "{n} stamps on my card.",
       "onCardOne": "One stamp on my card.",
-      "onCardNone": "Not a stamp on my card."
+      "onCardNone": "Not a stamp on my card.",
+      "pouch": "A packet of stickers",
+      "pouchDetail": "a cover the album is missing",
+      "pouchGiven": "Stuck in: no. {n} of the album.",
+      "pouchNone": "Nothing left to stick."
     }
   }
 }

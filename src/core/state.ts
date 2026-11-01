@@ -480,6 +480,11 @@ export interface GameState {
    */
   rareBooks: Record<string, number>;
   /**
+   * Les autocollants des pochettes du guichet (systems/stickerAlbum.ts) : par numéro de case, le livre pas encore lu dont la
+   * couverture la remplit.
+   */
+  stickers: Record<string, number>;
+  /**
    * Pages du Catalogue des catalogues lues dans la bibliothèque (systems/catalogue.ts) : à vingt, un sceau secret.
    */
   catalogueRead: number[];
@@ -610,6 +615,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   partsRead: [],
   seals: {},
   rareBooks: {},
+  stickers: {},
   catalogueRead: [],
   darkPatternsFoiled: [],
   rabbitCaught: 0,

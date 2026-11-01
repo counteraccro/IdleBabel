@@ -163,12 +163,60 @@ export const scanAlbum = (state: GameState, limit = Infinity): boolean => {
 /** Livres passés en revue à la fois : ~7 ms. */
 export const ALBUM_STEP = 400;
 
-/** L'autocollant d'une case : le livre d'où il vient (rien : la case est vide) et ses doubles. */
+/**
+ * L'autocollant d'une case : le livre d'où il vient (rien : la case est vide) et ses doubles. Une case remplie par une
+ * pochette (`state.stickers`) garde son livre tant qu'aucun livre lu ne la remplit.
+ */
 export const albumSticker = (state: GameState, slot: AlbumSlot): { book?: number; doubles: number } => {
   if (slot.rare) return { book: state.rareBooks[slot.rare], doubles: 0 };
   if (slot.at !== undefined) return { book: slot.at < state.booksFinished ? slot.at : undefined, doubles: 0 };
-  if (scan.seed !== state.seed) return { doubles: 0 };
-  return { book: scan.first.get(slot.number), doubles: scan.doubles.get(slot.number) ?? 0 };
+  const given = state.stickers[slot.number];
+  if (scan.seed !== state.seed) return { book: given, doubles: 0 };
+  return { book: scan.first.get(slot.number) ?? given, doubles: scan.doubles.get(slot.number) ?? 0 };
+};
+
+/**
+ * Une pochette du guichet cherche sa couverture dans les livres pas encore lus, par bouts de POUCH_STEP, jusqu'à
+ * POUCH_LOOKAHEAD plus loin (l'introuvable le plus rare : ~1 livre sur 500 000).
+ */
+export const POUCH_STEP = 2_000;
+export const POUCH_LOOKAHEAD = 5_000_000;
+
+/**
+ * Les cases vides qu'une pochette peut remplir (couvertures ordinaires et introuvables ; pas les livres rares ni les
+ * dates). Tous les livres lus doivent avoir été passés en revue (scanAlbum).
+ */
+export const pouchSlots = (state: GameState): AlbumSlot[] => SCANNED.filter((slot) => albumSticker(state, slot).book === undefined);
+
+/** Une couverture pour une pochette : la case vide qu'elle remplit, et le livre pas encore lu d'où elle vient. */
+export interface PouchSticker {
+  slot: AlbumSlot;
+  book: number;
+}
+
+/**
+ * Le premier livre de [`from`, `to`[, pas encore lu, dont la couverture remplit une case vide (l'introuvable le plus
+ * proche) ; rien dans ce bout.
+ */
+export const findPouchSticker = (state: GameState, from: number, to: number): PouchSticker | undefined => {
+  const wanted = pouchSlots(state);
+  if (wanted.length === 0) return undefined;
+  for (let book = Math.max(from, state.booksFinished); book < to; book++) {
+    if (book === STRANGE_BOOK_INDEX) continue;
+    const design = coverDesign(book);
+    const slot = wanted.find((candidate) => candidate.test!(design, book));
+    if (slot) return { slot, book };
+  }
+  return undefined;
+};
+
+/** Cherche d'un coup, jusqu'à `lookahead` livres plus loin (tests, débogage). */
+export const searchPouchSticker = (state: GameState, lookahead = POUCH_LOOKAHEAD): PouchSticker | undefined =>
+  findPouchSticker(state, state.booksFinished, state.booksFinished + lookahead);
+
+/** L'autocollant d'une pochette collé dans sa case. */
+export const stickPouch = (state: GameState, { slot, book }: PouchSticker): void => {
+  state.stickers[slot.number] = book;
 };
 
 /** Le livre rare trouvé au livre n° `book`, s'il y en a un. */
