@@ -141,7 +141,7 @@
       "branches": {
         "gain": "LE GAIN",
         "count": "LE NOMBRE",
-        "once": "AU LONG COURS",
+        "once": "PAS À PAS",
         "week": "LA SEMAINE"
       }
     },
@@ -915,12 +915,12 @@
       },
       "p1": {
         "name": "L’heure de droite, près du style",
-        "value": "Au long cours :",
+        "value": "Pas à pas :",
         "effect": "4 nouvelles tâches s’écrivent"
       },
       "p2": {
         "name": "L’heure de droite, au milieu",
-        "value": "Au long cours :",
+        "value": "Pas à pas :",
         "effect": "4 autres tâches s’écrivent"
       },
       "p3": {

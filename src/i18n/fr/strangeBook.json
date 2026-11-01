@@ -313,7 +313,7 @@
     "cheat": "Glisse dans la Bibliothèque une page qu'elle n'a pas écrite",
     "tokensSpent": "Joue {n} jetons",
     "dailyTasks": "Fais {n} tâches du jour",
-    "onceTasks": ["Fais une chose pour de bon", "La moitié : {n} choses faites pour de bon", "Tout : {n} choses faites pour de bon"],
+    "onceTasks": ["Fais un premier pas", "La moitié : un premier pas sur {n} tâches", "Toutes : un premier pas sur {n} tâches"],
     "mimicsCaught": "Attrape {n} Mimics",
     "mimicBonus": "Reprends-lui {n} de Connaissance de plus",
     "mimicHours": "Laisse-la manger {n} heures",

@@ -313,7 +313,7 @@
     "cheat": "Slip into the Library a page it did not write",
     "tokensSpent": "Play {n} tokens",
     "dailyTasks": "Do {n} tasks of the day",
-    "onceTasks": ["Do one thing for good", "Half of it: {n} things done for good", "All of it: {n} things done for good"],
+    "onceTasks": ["Take a first step", "Half of it: a first step on {n} tasks", "All of it: a first step on {n} tasks"],
     "mimicsCaught": "Catch {n} Mimics",
     "mimicBonus": "Take back {n} more Knowledge from it",
     "mimicHours": "Let it eat for {n} hours",

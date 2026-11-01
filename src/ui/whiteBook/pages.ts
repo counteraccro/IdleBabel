@@ -300,7 +300,7 @@ const buildWhiteBook = (
   );
   pages.push(...anomalyPart.pages.map((layout) => createLeafPage(layout, goTo)));
   // Les tâches, dès le Nord de la Rose des vents : leur page de titre, « Aujourd'hui » à gauche, « Cette semaine » en face,
-  // puis « Au long cours », la carte de lecteur et le guichet en face.
+  // puis « Pas à pas », la carte de lecteur et le guichet en face.
   if (tasksOpen(state)) {
     const onTasks = { onAct: (id: string) => actOnTask(state, id) };
     const title = pages.length + (pages.length % 2 === 0 ? 1 : 0);
@@ -308,7 +308,7 @@ const buildWhiteBook = (
     const today = pages.length;
     tasksPage = today;
     pages.push(createLeafPage(() => todayItems(state, today), goTo, onTasks));
-    // « Cette semaine » en face ; « Au long cours » commence à la double page suivante.
+    // « Cette semaine » en face ; « Pas à pas » commence à la double page suivante.
     const week = pages.length;
     pages.push(createLeafPage(() => weekItems(state, week), goTo, onTasks));
     for (let part = 0; part < oncePageCount(state); part++) {
