@@ -624,6 +624,16 @@
       "done": "Semaine finie.",
       "all": "Toutes : {n} de plus.",
       "monday": "Une nouvelle fiche chaque lundi."
+    },
+    "shop": {
+      "title": "Le guichet",
+      "boon": "Réserver un bonus",
+      "hour": "Une heure de lecture",
+      "hourKnowledge": "ou de Connaissance",
+      "hourMore": " ; plus chère à chaque fois, jusqu’à minuit",
+      "onCard": "{n} tampons sur ma carte.",
+      "onCardOne": "Un tampon sur ma carte.",
+      "onCardNone": "Pas un tampon sur ma carte."
     }
   }
 }

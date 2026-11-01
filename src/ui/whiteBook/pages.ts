@@ -20,6 +20,7 @@ import { tasksOpen } from '../../systems/tasks';
 import { actOnTask, onceItems, oncePageCount, taskTitleItems, todayItems } from './taskPages';
 import { readerCardItems } from './readerCard';
 import { weekItems } from './weekPage';
+import { actOnShop, shopItems } from './shopPage';
 import type { GameState } from '../../core/state';
 
 /** Sceau de la phrase, et nom de la méthode dessous (repère de la page : 640 × 800). */
@@ -299,7 +300,7 @@ const buildWhiteBook = (
   );
   pages.push(...anomalyPart.pages.map((layout) => createLeafPage(layout, goTo)));
   // Les tâches, dès le Nord de la Rose des vents : leur page de titre, « Aujourd'hui » à gauche, « Cette semaine » en face,
-  // puis « Une seule fois » et la carte de lecteur.
+  // puis « Une seule fois », la carte de lecteur et le guichet en face.
   if (tasksOpen(state)) {
     const onTasks = { onAct: (id: string) => actOnTask(state, id) };
     const title = pages.length + (pages.length % 2 === 0 ? 1 : 0);
@@ -321,6 +322,9 @@ const buildWhiteBook = (
     }
     const card = pages.length;
     pages.push(createLeafPage(() => readerCardItems(state, card), goTo));
+    // Le guichet en face.
+    const shop = pages.length;
+    pages.push(createLeafPage(() => shopItems(state, shop), goTo, { onAct: (id: string) => actOnShop(state, id) }));
   }
   return { pages: pages.length % 2 === 1 ? [...pages, null] : pages, entries };
 };

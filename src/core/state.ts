@@ -308,6 +308,17 @@ export interface TasksState {
   week: WeekState;
   weeklyDone: number;
   perfectWeeks: number;
+  /** Le guichet (systems/stampShop.ts). */
+  shop: ShopState;
+}
+
+/** Ce qui a été acheté au guichet (systems/stampShop.ts). */
+export interface ShopState {
+  /** Le jour des heures achetées (« AAAA-MM-JJ ») et leur nombre ce jour-là : le prix de la suivante. */
+  day: string | null;
+  hours: number;
+  /** Achats au guichet, depuis toujours. */
+  purchases: number;
 }
 
 /** Les tampons gagnés aux tâches (systems/stamps.ts), à dépenser au guichet. */
@@ -351,6 +362,7 @@ export const noTasks = (): TasksState => ({
   week: { start: null, tasks: [] },
   weeklyDone: 0,
   perfectWeeks: 0,
+  shop: { day: null, hours: 0, purchases: 0 },
 });
 
 export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0, pending: null };

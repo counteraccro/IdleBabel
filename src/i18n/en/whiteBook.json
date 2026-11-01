@@ -624,6 +624,16 @@
       "done": "Week done.",
       "all": "All of them: {n} more.",
       "monday": "A new card every Monday."
+    },
+    "shop": {
+      "title": "The Desk",
+      "boon": "Reserve a boon",
+      "hour": "An hour of reading",
+      "hourKnowledge": "or of Knowledge",
+      "hourMore": "; dearer each time, until midnight",
+      "onCard": "{n} stamps on my card.",
+      "onCardOne": "One stamp on my card.",
+      "onCardNone": "Not a stamp on my card."
     }
   }
 }

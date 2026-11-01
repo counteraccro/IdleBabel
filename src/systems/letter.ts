@@ -156,23 +156,13 @@ export interface Gift {
 }
 
 /**
- * Une lettre attrapée, `left` secondes avant qu'elle s'éteigne : son bonus commence (ou agit d'un coup), et parfois
- * elle lâche un jeton de la Loterie (l'auteur, 29/10 : les deux se répondent au lieu de se concurrencer). Dans ses
- * dernières secondes, un sceau secret ; trois bonus à la fois, un sceau. D'une volée (`flock`, la Volée) : les bonus se
- * cumulent (le même deux fois : les durées s'ajoutent) ; deux, puis trois lettres de la volée attrapées, un sceau chacun.
+ * Un bonus donné (par une lettre, ou réservé au guichet) : il commence (`stack` : sa durée s'ajoute à ce qui restait), ou
+ * agit d'un coup. Trois bonus à la fois, un sceau.
  */
-export const catchLetter = (state: GameState, left: number, random: () => number = Math.random, now = Date.now(), flock?: Flock): Gift => {
-  state.letters += 1;
-  if (left <= LAST_INSTANT) sealEvent(state, 'lastInstant', now);
-  if (flock) {
-    flock.caught += 1;
-    if (flock.caught >= 2) sealEvent(state, 'twoLetters', now);
-    if (flock.caught >= 3) sealEvent(state, 'threeLetters', now);
-  }
-  const boon = drawBoon(state, random);
+export const giveBoon = (state: GameState, boon: BoonId, random: () => number = Math.random, now = Date.now(), stack = false): Gift => {
   const seconds = boonSeconds(state, boon);
   const gift: Gift = { boon };
-  if (seconds !== undefined) startBoon(boon, seconds, now, (flock?.caught ?? 0) > 1);
+  if (seconds !== undefined) startBoon(boon, seconds, now, stack);
   else if (boon === 'flash') {
     gift.pages = pagesPerSecond(state) * BOON.flash;
     gainPages(state, gift.pages);
@@ -184,12 +174,31 @@ export const catchLetter = (state: GameState, left: number, random: () => number
       gift.finds = 1;
     }
   }
+  if (activeBoons(now).length >= 3) sealEvent(state, 'threeLights', now);
+  runHooks('boon', seconds === undefined ? { id: boon } : { id: boon, seconds });
+  return gift;
+};
+
+/**
+ * Une lettre attrapée, `left` secondes avant qu'elle s'éteigne : son bonus commence (ou agit d'un coup), et parfois
+ * elle lâche un jeton de la Loterie (l'auteur, 29/10 : les deux se répondent au lieu de se concurrencer). Dans ses
+ * dernières secondes, un sceau secret. D'une volée (`flock`, la Volée) : les bonus se cumulent (le même deux fois : les
+ * durées s'ajoutent) ; deux, puis trois lettres de la volée attrapées, un sceau chacun.
+ */
+export const catchLetter = (state: GameState, left: number, random: () => number = Math.random, now = Date.now(), flock?: Flock): Gift => {
+  state.letters += 1;
+  if (left <= LAST_INSTANT) sealEvent(state, 'lastInstant', now);
+  if (flock) {
+    flock.caught += 1;
+    if (flock.caught >= 2) sealEvent(state, 'twoLetters', now);
+    if (flock.caught >= 3) sealEvent(state, 'threeLetters', now);
+  }
+  const boon = drawBoon(state, random);
+  const gift = giveBoon(state, boon, random, now, (flock?.caught ?? 0) > 1);
   if (random() < 1 / LETTER_TOKEN_ODDS) {
     state.lottery.tokens += 1;
     gift.token = true;
   }
-  if (activeBoons(now).length >= 3) sealEvent(state, 'threeLights', now);
-  runHooks('boon', seconds === undefined ? { id: boon } : { id: boon, seconds });
   return gift;
 };
 

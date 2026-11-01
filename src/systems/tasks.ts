@@ -120,7 +120,7 @@ export const giveMinutes = (state: GameState, minutes: number): void => {
 };
 
 /** Connaissance trouvée par seconde au rythme du moment (pages qui tournent seules, chance, Connaissance par trouvaille). */
-const knowledgePerSecond = (state: GameState): number =>
+export const knowledgePerSecond = (state: GameState): number =>
   (state.settings.autoTurn ? Math.min(pagesPerSecond(state), maxTurnsPerSecond(state) * PAGES_PER_LEAF) : 0) *
   Math.min(MAX_FINDS_PER_PAGE, findChance(state)) *
   findKnowledge(state);
