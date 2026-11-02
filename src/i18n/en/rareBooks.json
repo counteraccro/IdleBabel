@@ -1042,6 +1042,22 @@
       "fontsIntro": "Under a free licence (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 3.3",
+          "date": "2 November 2026",
+          "sections": [
+            {
+              "heading": "New",
+              "items": [
+                "Stamps: each task done puts a stamp on the reader’s card, in the white book.",
+                "The “Just once” tasks become “Step by step”: they go by levels, a longer one written in place of the one done.",
+                "Tasks of the week: two every Monday, on a card opposite the daily ones, and one more star on the “Tasks” page of the Etherium.",
+                "The desk, opposite the reader’s card: stamps are spent there (a boon of the letter, a packet of stickers, a catalogue card, the double hook, an hour of reading or of Knowledge).",
+                "Mods: the tasks of the week, the stamps and the double hook in the API."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 3.2",
           "date": "29 October 2026",
           "sections": [

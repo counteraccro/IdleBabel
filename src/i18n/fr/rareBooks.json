@@ -1051,6 +1051,22 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 3.3",
+          "date": "2 novembre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Les tampons : chaque tâche faite met un tampon sur la carte de lecteur, dans le livre blanc.",
+                "Les tâches « Une seule fois » deviennent « Pas à pas » : elles passent par niveaux, une plus longue s’écrit à la place de celle qui est faite.",
+                "Les tâches de la semaine : deux chaque lundi, sur une fiche en face de celles du jour, et une étoile de plus sur la page « Les Tâches » de l’Etherium.",
+                "Le guichet, en face de la carte de lecteur : les tampons s’y dépensent (un bonus de la lettre, une pochette d’autocollants, une fiche du catalogue, le double crochet, une heure de lecture ou de Connaissance).",
+                "Mods : les tâches de la semaine, les tampons et le double crochet dans l’API."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 3.2",
           "date": "29 octobre 2026",
           "sections": [
