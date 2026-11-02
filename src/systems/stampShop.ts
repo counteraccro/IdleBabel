@@ -1,4 +1,4 @@
-import { BOON_PRICES, CARD_PRICE, HOUR_PRICE, HOUR_SECONDS, HOUR_STEP, POUCH_PRICE } from '../data/shop';
+import { BOON_PRICES, CARD_PRICE, HOOK_PRICE, HOUR_PRICE, HOUR_SECONDS, HOUR_STEP, POUCH_PRICE } from '../data/shop';
 import { RARE_BOOKS } from '../data/rareBooks';
 import { boonKnown, giveBoon } from './letter';
 import { dayOf } from './dailyTasks';
@@ -7,6 +7,7 @@ import { creditMethods, gainPages, pagesPerSecond } from './production';
 import { addKnowledge, maxTurnsPerSecond } from './knowledge';
 import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { isRareBookFound } from './rareBooks';
+import { doubleHookOn, startDoubleHook } from './relics';
 import { pouchSlots, scanAlbum, stickPouch, type PouchSticker } from './stickerAlbum';
 import type { BoonId } from '../data/letter';
 import type { GameState } from '../core/state';
@@ -17,7 +18,8 @@ import type { GameState } from '../core/state';
  */
 
 /** Ce qui s'achète au guichet. */
-export type ShopItem = { kind: 'boon'; id: BoonId } | { kind: 'pouch' } | { kind: 'card' } | { kind: 'hour'; of: 'reading' | 'knowledge' };
+export type ShopItem =
+  { kind: 'boon'; id: BoonId } | { kind: 'pouch' } | { kind: 'card' } | { kind: 'hook' } | { kind: 'hour'; of: 'reading' | 'knowledge' };
 
 /** Les heures achetées aujourd'hui (les autres jours ne comptent plus). */
 export const hoursToday = (state: GameState, now = Date.now()): number =>
@@ -40,7 +42,7 @@ export const cardWaiting = (state: GameState): boolean => {
 };
 
 /** Les livres rares qu'une fiche peut faire paraître : ceux pas encore trouvés. */
-const cardBooks = (state: GameState) => RARE_BOOKS.filter((book) => (book.weight ?? 1) > 0 && !isRareBookFound(state, book.id));
+export const cardBooks = (state: GameState) => RARE_BOOKS.filter((book) => (book.weight ?? 1) > 0 && !isRareBookFound(state, book.id));
 
 /** Les livres lus en une heure, au rythme du moment (les feuilles tournées seules, plafonnées par la Lecture rapide). */
 export const booksPerHour = (state: GameState): number =>
@@ -64,6 +66,7 @@ export const shopPrice = (state: GameState, item: ShopItem, now = Date.now()): n
   if (item.kind === 'hour') return hourPrice(state, now);
   if (item.kind === 'pouch') return albumFound(state) ? POUCH_PRICE : undefined;
   if (item.kind === 'card') return CARD_PRICE;
+  if (item.kind === 'hook') return HOOK_PRICE;
   if (!boonKnown(state, item.id)) return undefined;
   return BOON_PRICES.find(([id]) => id === item.id)?.[1];
 };
@@ -74,6 +77,8 @@ export const canBuy = (state: GameState, item: ShopItem, now = Date.now()): bool
   if (price === undefined || state.tasks.stamps.balance < price) return false;
   if (item.kind === 'hour') return hourGain(state, item.of) > 0;
   if (item.kind === 'card') return !cardWaiting(state) && cardBooks(state).length > 0;
+  // Le double crochet : deux reliques trouvées au moins, et pas déjà en cours.
+  if (item.kind === 'hook') return Object.keys(state.relics.found).length >= 2 && !doubleHookOn(state, now);
   // Une pochette : des cases vides (tant que l'album n'a pas passé tous les livres lus en revue, on ne le sait pas encore).
   if (item.kind === 'pouch') return !scanAlbum(state, 0) || pouchSlots(state).length > 0;
   return true;
@@ -100,6 +105,10 @@ export const buy = (
   }
   if (item.kind === 'card') {
     shop.card = fillCard(state, random);
+    return true;
+  }
+  if (item.kind === 'hook') {
+    startDoubleHook(state, now);
     return true;
   }
   if (item.kind === 'boon') {

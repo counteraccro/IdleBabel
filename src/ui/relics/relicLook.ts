@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { messages, t } from '../../i18n';
 import { el } from '../dom';
 import { RELICS, type RelicId } from '../../data/relics';
-import { relicWait } from '../../systems/relics';
+import { doubleHookOn, relicCanBePut, relicWait, relicWorn } from '../../systems/relics';
 import { releaseSharedTextures, disposeObject } from '../book3d/renderer3d';
 import { animationNow } from '../animationClock';
 import { modalOpen } from '../modal/modal';
@@ -102,8 +102,8 @@ export const createRelicLook = (
   } | null = null;
 
   const stateText = (id: RelicId): { text: string; acts: boolean } => {
-    if (state.relics.active === id) return { text: t('ui.relics.acts'), acts: true };
-    const wait = relicWait(state);
+    if (relicWorn(state, id)) return { text: t('ui.relics.acts'), acts: true };
+    const wait = doubleHookOn(state) ? 0 : relicWait(state);
     return { text: wait > 0 ? t('ui.relics.wait').replace('{t}', waitText(wait)) : '', acts: false };
   };
   const stateLine = el('div', 'relic-look-state');
@@ -117,7 +117,7 @@ export const createRelicLook = (
     open.state = key;
     stateLine.textContent = text;
     stateLine.classList.toggle('acts', acts);
-    put.disabled = acts || relicWait(state) > 0;
+    put.disabled = !relicCanBePut(state, open.id);
   };
   const fill = (id: RelicId): void => {
     const relic = RELICS.find((candidate) => candidate.id === id)!;

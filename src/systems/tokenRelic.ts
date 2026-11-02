@@ -1,5 +1,5 @@
 import { dayOf } from './dailyTasks';
-import { relicBonus } from './relics';
+import { relicBonus, relicWorn } from './relics';
 import type { GameState } from '../core/state';
 
 /**
@@ -9,10 +9,10 @@ import type { GameState } from '../core/state';
  * jour ne les redonne pas).
  */
 
-/** Les jetons du jour qui restent : ceux d'aujourd'hui, si le Jeton agit. */
+/** Les jetons du jour qui restent : ceux d'aujourd'hui, si le Jeton agit (en seconde aussi, au double crochet). */
 export const dailyTokensLeft = (state: GameState, now = Date.now()): number => {
   const daily = state.lottery.daily;
-  return state.relics.active === 'token' && daily?.day === dayOf(now) ? daily.left : 0;
+  return relicWorn(state, 'token', now) && daily?.day === dayOf(now) ? daily.left : 0;
 };
 
 /** Tous les jetons qu'on peut jouer : ceux du jour, puis ceux gagnés (l'écran de la machine). */
@@ -29,7 +29,7 @@ export const spendToken = (state: GameState, now = Date.now()): void => {
  * ce qui manque. Renvoie les jetons donnés.
  */
 export const refreshTokenDay = (state: GameState, now = Date.now()): number => {
-  if (state.relics.active !== 'token') return 0;
+  if (!relicWorn(state, 'token', now)) return 0;
   const day = dayOf(now);
   const daily = state.lottery.daily?.day === day ? state.lottery.daily : (state.lottery.daily = { day, left: 0, given: 0 });
   const more = relicBonus(state, 'token') - daily.given;

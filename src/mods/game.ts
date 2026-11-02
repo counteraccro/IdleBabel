@@ -7,7 +7,7 @@ import { intuitionVisible, levelOf, maxLevel, nextPrice, technology } from '../s
 import { letterCountdown } from '../systems/letter';
 import { mimicEvery, mimicHere } from '../systems/mimic';
 import { mimicUnlocked } from '../systems/etherium';
-import { relicFound, relicWait } from '../systems/relics';
+import { doubleHookOn, relicFound, relicWait, secondRelic } from '../systems/relics';
 import { RELICS } from '../data/relics';
 import { nextEtherPages, prestigeGain } from '../systems/prestige';
 import { lotteryBlocked } from '../systems/lottery';
@@ -90,13 +90,16 @@ export const modGame = (state: GameState) => ({
   ether: () => ({ gain: prestigeGain(state), total: state.totalPagesRead, next: nextEtherPages(state) }),
   /**
    * Les reliques : celle qui agit (son id et son nom, null : aucune), combien sont trouvées, et les secondes avant de
-   * pouvoir en changer (0 : on peut ; le délai compte en temps réel, absences comprises).
+   * pouvoir en changer (0 : on peut ; le délai compte en temps réel, absences comprises) ; le double crochet du guichet :
+   * la seconde relique portée (null : aucune) et les secondes qui lui restent (0 : pas de double crochet).
    */
   relics: () => ({
     active: state.relics.active,
     name: state.relics.active ? t(`ui.relics.names.${state.relics.active}`) : null,
     found: RELICS.filter(({ id }) => relicFound(state, id)).length,
     changeIn: relicWait(state) / 1000,
+    second: secondRelic(state),
+    hookLeft: doubleHookOn(state) ? (state.relics.hook!.until - Date.now()) / 1000 : 0,
   }),
   /**
    * La Loterie : les jetons gagnés, ceux offerts aujourd'hui par le Jeton (joués d'abord), ceux déjà joués, la machine bloquée (tous les bonus en cours), les bonus et malus en cours

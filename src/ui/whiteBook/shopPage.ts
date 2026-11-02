@@ -2,11 +2,13 @@ import { getLocale, t } from '../../i18n';
 import { currentNotation, writeDigits } from '../../core/format';
 import { BOON_PRICES } from '../../data/shop';
 import { boonKnown } from '../../systems/letter';
-import { buy, canBuy, cardWaiting, shopPrice, type ShopItem } from '../../systems/stampShop';
+import { buy, canBuy, cardBooks, cardWaiting, shopPrice, type ShopItem } from '../../systems/stampShop';
 import { folio, heading, textWidth, type Item, type TextItem } from '../strangeBook/pageItems';
 import { GHOST_INK, STAMP_INK } from './taskDrawing';
 import { babelize, seedOf } from './babelMask';
 import { pencilNumber } from './taskPages';
+import { doubleHookOn, secondRelic } from '../../systems/relics';
+import { waitText } from '../relics/relicText';
 import { scanInBackground } from '../rareBooks/stickerAlbum/albumScan';
 import { idle } from '../rareBooks/slowDrawing';
 import { POUCH_LOOKAHEAD, POUCH_STEP, findPouchSticker, pouchSlots, type PouchSticker } from '../../systems/stickerAlbum';
@@ -132,6 +134,7 @@ export const shopItems = (state: GameState, number: number): Item[] => {
   const cardFaded = !canBuy(state, card, now);
   items.push(printed(t('whiteBook.tasks.shop.card'), LEFT, y, 23, cardFaded ? { ink: 'ghost' } : {}));
   if (waiting) items.push(printed(t('whiteBook.tasks.shop.cardWaiting'), LEFT, y + 26, 22, { face: 'hand' }));
+  else if (cardBooks(state).length === 0) items.push(printed(t('whiteBook.tasks.shop.cardNone'), LEFT, y + 26, 22, { face: 'hand' }));
   else
     items.push(
       printed(t('whiteBook.tasks.shop.cardDetail'), LEFT, y + 30, 16, {
@@ -141,6 +144,25 @@ export const shopItems = (state: GameState, number: number): Item[] => {
     );
   items.push(priceTag(cardPrice, RIGHT, y, balance < cardPrice, marks));
   items.push({ kind: 'action', id: actionId(card), x: 60, y: y - 4, width: RIGHT - 60, height: 58 });
+  y += ROW;
+  // Le double crochet : pendant ses 24 h, une note au crayon (la seconde relique à choisir, puis le temps qui reste).
+  const hook: ShopItem = { kind: 'hook' };
+  const hookPrice = shopPrice(state, hook, now)!;
+  const hookFaded = !canBuy(state, hook, now);
+  items.push(printed(t('whiteBook.tasks.shop.hook'), LEFT, y, 23, hookFaded ? { ink: 'ghost' } : {}));
+  if (doubleHookOn(state, now)) {
+    const left = waitText(state.relics.hook!.until - now);
+    const note = t(secondRelic(state, now) ? 'whiteBook.tasks.shop.hookOn' : 'whiteBook.tasks.shop.hookChoose').replace('{t}', left);
+    items.push(printed(note, LEFT, y + 26, 22, { face: 'hand' }));
+  } else
+    items.push(
+      printed(t('whiteBook.tasks.shop.hookDetail'), LEFT, y + 30, 16, {
+        italic: true,
+        ...(hookFaded ? { ink: 'ghost' as const } : { faded: true }),
+      }),
+    );
+  items.push(priceTag(hookPrice, RIGHT, y, balance < hookPrice, marks));
+  items.push({ kind: 'action', id: actionId(hook), x: 60, y: y - 4, width: RIGHT - 60, height: 58 });
   y += ROW;
   // Une heure de lecture (la ligne du titre), ou de Connaissance (le début de la ligne d'en dessous).
   const reading: ShopItem = { kind: 'hour', of: 'reading' };
@@ -189,5 +211,6 @@ export const actOnShop = (state: GameState, id: string): void => {
   if (kind === 'boon') buy(state, { kind: 'boon', id: value as BoonId });
   else if (kind === 'pouch') void openPouchLater(state);
   else if (kind === 'card') buy(state, { kind: 'card' });
+  else if (kind === 'hook') buy(state, { kind: 'hook' });
   else if (kind === 'hour') buy(state, { kind: 'hour', of: value === 'knowledge' ? 'knowledge' : 'reading' });
 };

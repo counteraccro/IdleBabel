@@ -628,6 +628,10 @@
     "shop": {
       "title": "The Desk",
       "boon": "Reserve a boon",
+      "hook": "The double hook",
+      "hookDetail": "two relics worn for twenty-four hours",
+      "hookChoose": "{t} left: the second one, in the showcase.",
+      "hookOn": "Two relics for {t} more.",
       "hour": "An hour of reading",
       "hourKnowledge": "or of Knowledge",
       "hourMore": "; dearer each time, until midnight",
@@ -636,6 +640,7 @@
       "onCardNone": "Not a stamp on my card.",
       "card": "A catalogue card",
       "cardDetail": "a rare book will wait for you in the library",
+      "cardNone": "Nothing left in the catalogue.",
       "cardWaiting": "Card filled in: a rare book awaits me.",
       "pouch": "A packet of stickers",
       "pouchDetail": "a cover the album is missing",

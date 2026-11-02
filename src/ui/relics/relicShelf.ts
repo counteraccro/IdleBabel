@@ -3,7 +3,17 @@ import { t } from '../../i18n';
 import { openModal } from '../modal/modal';
 import { FRONT, type BookcaseCell } from '../library/bookcase3d';
 import { RELICS, type RelicId } from '../../data/relics';
-import { relicFound, relicLockHours, relicWait, setRelic } from '../../systems/relics';
+import {
+  doubleHookOn,
+  relicCanBePut,
+  relicFound,
+  relicLockHours,
+  relicWait,
+  relicWorn,
+  secondRelic,
+  setRelic,
+  setSecondRelic,
+} from '../../systems/relics';
 import { relicModel } from './relicModels';
 import { tokenOnEasel } from './tokenModel';
 import { COMPASS_SET_BACK, compassOnShelf } from './compassModel';
@@ -75,9 +85,9 @@ export const createRelicShelf = (
     holders.set(relic.id, holder);
   }
 
-  /** Seule la case de la relique qui agit garde son spot. */
+  /** Seule la case de la relique qui agit garde son spot (et celle de la seconde, au double crochet). */
   const lightCells = (): void => {
-    for (const relic of RELICS) lights.setDark(relic.cell, relicFound(state, relic.id) && state.relics.active !== relic.id);
+    for (const relic of RELICS) lights.setDark(relic.cell, relicFound(state, relic.id) && !relicWorn(state, relic.id));
     onChange();
   };
   lightCells();
@@ -91,13 +101,12 @@ export const createRelicShelf = (
     },
     caption: (id) => {
       const bonus = relicBonusText(state, id);
-      const wait = relicWait(state);
-      const line =
-        state.relics.active === id
-          ? `${bonus} · ${t('ui.relics.acts')}`
-          : wait > 0
-            ? `${bonus} · ${t('ui.relics.wait').replace('{t}', waitText(wait))}`
-            : `${bonus} · ${t('ui.relics.look')}`;
+      const wait = doubleHookOn(state) ? 0 : relicWait(state);
+      const line = relicWorn(state, id)
+        ? `${bonus} · ${t('ui.relics.acts')}`
+        : wait > 0
+          ? `${bonus} · ${t('ui.relics.wait').replace('{t}', waitText(wait))}`
+          : `${bonus} · ${t('ui.relics.look')}`;
       return { name: relicName(id), line };
     },
     anchor: (id) => {
@@ -111,12 +120,18 @@ export const createRelicShelf = (
       onChange();
     },
     choose: (id, after) => {
-      if (state.relics.active === id || relicWait(state) > 0) return;
-      const before = state.relics.active;
+      if (!relicCanBePut(state, id)) return;
+      // Le double crochet : elle se pose en seconde, avec celle qui agit, sans délai ensuite.
+      const hook = doubleHookOn(state) && state.relics.active !== null;
+      const before = hook ? secondRelic(state) : state.relics.active;
       const text = document.createElement('p');
       text.textContent = [
         before ? t('ui.relics.stops').replace('{name}', relicName(before)) : '',
-        t('ui.relics.then').replace('{h}', String(relicLockHours(state))),
+        hook
+          ? t('ui.relics.hookWith')
+              .replace('{name}', relicName(state.relics.active!))
+              .replace('{t}', waitText(state.relics.hook!.until - Date.now()))
+          : t('ui.relics.then').replace('{h}', String(relicLockHours(state))),
       ]
         .filter(Boolean)
         .join(' ');
@@ -133,7 +148,8 @@ export const createRelicShelf = (
             // Refusé (une autre vue l'a changée pendant la question) : la vitrine montre quand même celle qui agit, et
             // sa légende, le délai.
             onClick: () => {
-              setRelic(state, id);
+              if (hook) setSecondRelic(state, id);
+              else setRelic(state, id);
               lightCells();
             },
           },

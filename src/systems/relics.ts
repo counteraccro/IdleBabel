@@ -71,11 +71,44 @@ export const setRelic = (state: GameState, id: RelicId, now = Date.now()): boole
   return true;
 };
 
+/** Le double crochet (le guichet) : 24 h pendant lesquelles une seconde relique se porte avec la première. */
+export const DOUBLE_HOOK_HOURS = 24;
+
+/** Le double crochet est en cours. */
+export const doubleHookOn = (state: GameState, now = Date.now()): boolean => (state.relics.hook?.until ?? 0) > now;
+
+/** Le double crochet commence (ou recommence) : 24 h, la seconde relique encore à choisir. */
+export const startDoubleHook = (state: GameState, now = Date.now()): void => {
+  state.relics.hook = { until: now + DOUBLE_HOOK_HOURS * HOUR_MS, second: null };
+};
+
+/** La seconde relique portée, pendant le double crochet ; null : pas de double crochet, ou pas encore choisie. */
+export const secondRelic = (state: GameState, now = Date.now()): RelicId | null =>
+  doubleHookOn(state, now) ? (state.relics.hook!.second ?? null) : null;
+
+/** La relique `id` agit : celle qui agit, ou la seconde du double crochet. */
+export const relicWorn = (state: GameState, id: RelicId, now = Date.now()): boolean =>
+  state.relics.active === id || secondRelic(state, now) === id;
+
+/**
+ * Pendant le double crochet, la relique `id` se porte en seconde, sans délai, à la place d'une seconde déjà choisie (choix
+ * de l'auteur, 31/10). Renvoie false si ce n'est pas possible (pas de double crochet, pas trouvée, déjà portée).
+ */
+export const setSecondRelic = (state: GameState, id: RelicId, now = Date.now()): boolean => {
+  if (!doubleHookOn(state, now) || !relicFound(state, id) || relicWorn(state, id, now)) return false;
+  state.relics.hook!.second = id;
+  return true;
+};
+
+/** La relique `id` peut se poser maintenant : pas déjà portée, et le délai passé, ou le double crochet en cours. */
+export const relicCanBePut = (state: GameState, id: RelicId, now = Date.now()): boolean =>
+  relicFound(state, id) && !relicWorn(state, id, now) && (doubleHookOn(state, now) || relicWait(state, now) === 0);
+
 /** Ce que donne une relique, au niveau de ses étoiles (qu'elle agisse ou non). */
 export const relicBonus = (state: GameState, id: RelicId): number => relicById(id)!.bonus[relicStarLevel(state, id)];
 
-/** Ce que donne la relique `id` si c'est elle qui agit ; sinon `none`. */
-const activeBonus = (state: GameState, id: RelicId, none: number): number => (state.relics.active === id ? relicBonus(state, id) : none);
+/** Ce que donne la relique `id` si elle agit (en seconde aussi, pendant le double crochet) ; sinon `none`. */
+const activeBonus = (state: GameState, id: RelicId, none: number): number => (relicWorn(state, id) ? relicBonus(state, id) : none);
 
 /** La Loupe : ×Connaissance de chaque trouvaille (×1 sans elle). */
 export const relicKnowledge = (state: GameState): number => activeBonus(state, 'loupe', 1);

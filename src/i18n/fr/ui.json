@@ -311,6 +311,7 @@
     "look": "la regarder",
     "wait": "on pourra la poser dans {t}",
     "stops": "{name} cessera d’agir.",
+    "hookWith": "Le double crochet : elle agira avec {name}, encore {t}, sans délai ensuite.",
     "then": "Ensuite, plus de changement avant {h} h.",
     "keep": "Laisser",
     "confirm": "Poser",

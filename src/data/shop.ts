@@ -26,6 +26,9 @@ export const POUCH_PRICE = 50;
 /** Une fiche du catalogue : un livre rare pas encore trouvé paraîtra dans la bibliothèque dans l'heure (validé le 30/10). */
 export const CARD_PRICE = 50;
 
+/** Le double crochet : deux reliques portées pendant 24 h, la seconde choisie dans la vitrine sans délai (validé le 30/10). */
+export const HOOK_PRICE = 40;
+
 /** Une heure de lecture, ou de Connaissance, au rythme du moment : 10, puis 10 de plus à chaque achat, jusqu'à minuit. */
 export const HOUR_PRICE = 10;
 export const HOUR_STEP = 10;

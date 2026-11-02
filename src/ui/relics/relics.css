@@ -63,13 +63,14 @@ html.relic-hover * {
   z-index: 3;
 }
 
-/* Le médaillon de la relique qui agit, à côté du titre (ui/medalsBar.ts), avant les bonus ; sans usure. */
+/* Le médaillon de la relique qui agit (et de la seconde, au double crochet), à côté du titre (ui/medalsBar.ts), avant les bonus ; sans usure. */
 .relic-medals {
   position: absolute;
   right: 100%;
   top: 0.23em;
   margin-right: 0.47em;
   display: flex;
+  gap: 0.27em;
   font-size: 2.6rem;
   pointer-events: auto;
 }

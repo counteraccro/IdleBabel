@@ -76,7 +76,7 @@ describe('IdleBabel.game', () => {
 
   it('dit la relique qui agit et le temps avant de pouvoir en changer', () => {
     const state = createInitialState('fr');
-    expect(modGame(state).relics()).toEqual({ active: null, name: null, found: 0, changeIn: 0 });
+    expect(modGame(state).relics()).toEqual({ active: null, name: null, found: 0, changeIn: 0, second: null, hookLeft: 0 });
     state.relics.found = { loupe: 1, hourglass: 2 };
     state.relics.active = 'hourglass';
     state.relics.lockedUntil = Date.now() + 3_600_000;
@@ -85,5 +85,9 @@ describe('IdleBabel.game', () => {
     expect(relics.name).toBeTruthy();
     expect(relics.changeIn).toBeGreaterThan(3590);
     expect(relics.changeIn).toBeLessThanOrEqual(3600);
+    // Le double crochet : la seconde relique, et ses secondes.
+    state.relics.hook = { until: Date.now() + 7_200_000, second: 'loupe' };
+    expect(modGame(state).relics()).toMatchObject({ second: 'loupe' });
+    expect(modGame(state).relics().hookLeft).toBeGreaterThan(7190);
   });
 });

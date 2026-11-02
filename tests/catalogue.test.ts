@@ -36,6 +36,24 @@ describe('le Catalogue des catalogues', () => {
     expect([...catalogueRares(state)]).toEqual([...predicted]);
   });
 
+  it('une fiche du catalogue achetée : son livre rare s’y inscrit à sa place, et il dit toujours vrai', () => {
+    const state = foundAt(3000);
+    const left = ['wiskyPedia', 'comicNotice', 'stickerAlbum'].find((id) => !(id in state.rareBooks))!;
+    state.tasks.shop.card = { id: left, index: 3100 };
+    const predicted = catalogueRares(state);
+    expect(predicted.get(3100)).toBe(left);
+    expect([...predicted].filter(([, id]) => id === left)).toHaveLength(1);
+    const last = firstOn(3000, PAGES_PER_BOOK) + rowsOn(PAGES_PER_BOOK);
+    const taken = new Map<number, string>();
+    for (let index = 3001; index < last; index++) {
+      const id = rareBookAt(state, index);
+      if (id && !(id in state.rareBooks)) taken.set(index, id);
+      takeBook(state, index);
+    }
+    expect([...taken]).toEqual([...predicted]);
+    expect([...catalogueRares(state)]).toEqual([...predicted]);
+  });
+
   it('vingt pages différentes lues dans la bibliothèque : le sceau secret', () => {
     const state = foundAt(3000);
     for (let page = 1; page < CATALOGUE_PAGES; page++) readCatalogue(state, page);

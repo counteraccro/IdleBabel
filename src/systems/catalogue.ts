@@ -8,7 +8,8 @@ import type { GameState } from '../core/state';
  * Le Catalogue des catalogues est vrai : son registre recense, dans l'ordre, les livres que le joueur prendra
  * après lui, à partir du livre où il l'a trouvé. Chaque ligne vient de la couverture du livre à ce numéro
  * (même graine, même tirage). Les livres rares y sont à leur place : on les tire à la suite, comme le jeu le
- * fera, à partir de ceux déjà trouvés ce jour-là ; la liste ne change donc pas quand on le relit plus tard.
+ * fera, à partir de ceux déjà trouvés ce jour-là ; la liste ne change donc pas quand on le relit plus tard (sauf une fiche
+ * du catalogue achetée au guichet : le livre rare qu'elle fait paraître s'y inscrit à sa place).
  * Décidé avec l'auteur le 04/10/2026 (maquette .ai/maquette-catalogue-pages.html).
  */
 
@@ -46,11 +47,18 @@ export const catalogueRares = (state: GameState): Map<number, string> => {
   // Ceux qu'on avait le jour où on l'a trouvé (lui compris) : la suite en découle.
   const had = Object.keys(state.rareBooks).filter((id) => state.rareBooks[id] <= found);
   const chance = rareChance(state);
-  const key = `${state.seed}:${found}:${chance}:${had.sort().join(',')}`;
+  // Une fiche du catalogue (le guichet) : son livre rare est à sa place, qu'il ait paru ou qu'il l'attende encore.
+  const card = state.tasks.shop.card;
+  const fixed = card && (state.rareBooks[card.id] ?? card.index) === card.index ? card : undefined;
+  const key = `${state.seed}:${found}:${chance}:${had.sort().join(',')}:${fixed ? `${fixed.id}@${fixed.index}` : ''}`;
   if (cached?.key === key) return cached.rares;
-  const taken = new Set([...had, CATALOGUE_ID]);
+  const taken = new Set([...had, CATALOGUE_ID, ...(fixed ? [fixed.id] : [])]);
   const rares = new Map<number, string>();
   for (let index = found + 1; index <= lastListed(found); index++) {
+    if (index === fixed?.index) {
+      rares.set(index, fixed.id);
+      continue;
+    }
     const id = drawRareBook(index, (rare) => taken.has(rare), chance);
     if (!id) continue;
     rares.set(index, id);

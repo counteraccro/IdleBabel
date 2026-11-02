@@ -305,6 +305,7 @@
     "look": "look at it",
     "wait": "can be set out in {t}",
     "stops": "{name} will stop working.",
+    "hookWith": "The double hook: it will work alongside {name} for {t} more, with no wait afterwards.",
     "then": "After that, no change for {h} h.",
     "keep": "Leave it",
     "confirm": "Set it out",

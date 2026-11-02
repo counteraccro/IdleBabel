@@ -5,6 +5,7 @@ import { activeBoons, boonOn, forgetBoons } from '../src/systems/boons';
 import { booksPerHour, buy, canBuy, cardWaiting, hourPrice, hoursToday, shopPrice } from '../src/systems/stampShop';
 import { rareBookAt, takeBook } from '../src/systems/rareBooks';
 import { RARE_BOOKS } from '../src/data/rareBooks';
+import { findRelic, relicCanBePut, relicWorn, secondRelic, setSecondRelic } from '../src/systems/relics';
 import { pagesPerSecond } from '../src/systems/production';
 import { albumSticker, pouchSlots, scanAlbum, searchPouchSticker } from '../src/systems/stickerAlbum';
 import { coverDesign } from '../src/systems/coverDesign';
@@ -168,5 +169,44 @@ describe('la fiche du catalogue', () => {
     const state = game(100);
     for (const book of RARE_BOOKS) state.rareBooks[book.id] = 0;
     expect(canBuy(state, { kind: 'card' })).toBe(false);
+  });
+});
+
+describe('le double crochet', () => {
+  /** Une partie avec la Loupe (qui agit, le délai en cours) et le Sablier trouvés, `balance` tampons. */
+  const twoRelics = (balance = 100) => {
+    const state = game(balance);
+    findRelic(state, 'loupe', NOON);
+    findRelic(state, 'hourglass', NOON);
+    state.relics.lockedUntil = NOON + 10 * 3_600_000;
+    return state;
+  };
+
+  it('40 tampons, deux reliques trouvées au moins, pas déjà en cours', () => {
+    const one = game(100);
+    findRelic(one, 'loupe', NOON);
+    expect(canBuy(one, { kind: 'hook' }, NOON)).toBe(false);
+    const state = twoRelics();
+    expect(shopPrice(state, { kind: 'hook' })).toBe(40);
+    expect(buy(state, { kind: 'hook' }, Math.random, NOON)).toBe(true);
+    expect(state.tasks.stamps.balance).toBe(60);
+    expect(canBuy(state, { kind: 'hook' }, NOON + 1000)).toBe(false);
+    expect(canBuy(state, { kind: 'hook' }, NOON + 25 * 3_600_000)).toBe(true);
+  });
+
+  it('pendant 24 h, une seconde relique se pose sans délai et agit avec la première ; puis elle s’arrête', () => {
+    const state = twoRelics();
+    expect(relicCanBePut(state, 'hourglass', NOON)).toBe(false);
+    buy(state, { kind: 'hook' }, Math.random, NOON);
+    expect(relicCanBePut(state, 'hourglass', NOON)).toBe(true);
+    expect(setSecondRelic(state, 'loupe', NOON)).toBe(false);
+    expect(setSecondRelic(state, 'hourglass', NOON)).toBe(true);
+    expect(secondRelic(state, NOON)).toBe('hourglass');
+    expect(relicWorn(state, 'loupe', NOON) && relicWorn(state, 'hourglass', NOON)).toBe(true);
+    // Le délai de la première n'a pas bougé.
+    expect(state.relics.lockedUntil).toBe(NOON + 10 * 3_600_000);
+    const after = NOON + 24 * 3_600_000 + 1;
+    expect(relicWorn(state, 'hourglass', after)).toBe(false);
+    expect(secondRelic(state, after)).toBeNull();
   });
 });

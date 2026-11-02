@@ -628,6 +628,10 @@
     "shop": {
       "title": "Le guichet",
       "boon": "Réserver un bonus",
+      "hook": "Le double crochet",
+      "hookDetail": "deux reliques portées pendant vingt-quatre heures",
+      "hookChoose": "Encore {t} : la seconde, dans la vitrine.",
+      "hookOn": "Deux reliques encore {t}.",
       "hour": "Une heure de lecture",
       "hourKnowledge": "ou de Connaissance",
       "hourMore": " ; plus chère à chaque fois, jusqu’à minuit",
@@ -636,6 +640,7 @@
       "onCardNone": "Pas un tampon sur ma carte.",
       "card": "Une fiche du catalogue",
       "cardDetail": "un livre rare t’attendra dans la bibliothèque",
+      "cardNone": "Plus rien au catalogue.",
       "cardWaiting": "Fiche remplie : un livre rare m’attend.",
       "pouch": "Une pochette d’autocollants",
       "pouchDetail": "une couverture qui manque à l’album",

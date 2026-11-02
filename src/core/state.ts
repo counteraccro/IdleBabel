@@ -81,6 +81,8 @@ export interface RelicsState {
   lockedUntil: number;
   /** Changements de relique, depuis toujours (ses sceaux). */
   changes: number;
+  /** Le double crochet (le guichet) : jusqu'à quand (ms, temps réel), et la seconde relique portée (null : pas choisie). */
+  hook?: { until: number; second: RelicId | null };
 }
 
 /** Un bonus ou un malus de la Loterie en cours (data/lottery.ts) : temps réel, les absences comptent. */
