@@ -47,12 +47,17 @@ export const drawRareBook = (index: number, found: (id: string) => boolean, chan
 
 /**
  * Le livre rare que cache le livre n° `index`, s'il y en a un, parmi ceux pas encore trouvés ; un livre où
- * l'on en a déjà trouvé un le garde. Le premier pris au réveil a plus de chance (la Poignée de l'Etherium).
+ * l'on en a déjà trouvé un le garde, celui d'une fiche du catalogue (le guichet) l'attend. Le premier pris au réveil a
+ * plus de chance (la Poignée de l'Etherium).
  */
 export const rareBookAt = (state: GameState, index: number): string | undefined => {
   const kept = Object.keys(state.rareBooks).find((id) => state.rareBooks[id] === index);
   if (kept) return kept;
-  return drawRareBook(index, (id) => isRareBookFound(state, id), rareChance(state) * handleMultiplier(state, index));
+  const card = state.tasks.shop.card;
+  const waiting = card && !isRareBookFound(state, card.id) ? card : undefined;
+  if (waiting?.index === index) return waiting.id;
+  // Celui de la fiche n'est tiré nulle part ailleurs : il attend son livre.
+  return drawRareBook(index, (id) => id === waiting?.id || isRareBookFound(state, id), rareChance(state) * handleMultiplier(state, index));
 };
 
 /** Le livre n° `index` arrive en main : s'il est rare, il est trouvé (pour toujours). */

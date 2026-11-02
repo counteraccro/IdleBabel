@@ -2,7 +2,7 @@ import { getLocale, t } from '../../i18n';
 import { currentNotation, writeDigits } from '../../core/format';
 import { BOON_PRICES } from '../../data/shop';
 import { boonKnown } from '../../systems/letter';
-import { buy, canBuy, shopPrice, type ShopItem } from '../../systems/stampShop';
+import { buy, canBuy, cardWaiting, shopPrice, type ShopItem } from '../../systems/stampShop';
 import { folio, heading, textWidth, type Item, type TextItem } from '../strangeBook/pageItems';
 import { GHOST_INK, STAMP_INK } from './taskDrawing';
 import { babelize, seedOf } from './babelMask';
@@ -28,7 +28,7 @@ const ROW = 64;
 
 /** Une ligne d'action du guichet : « shop:boon:trance », « shop:hour:reading »… */
 const actionId = (item: ShopItem): string =>
-  item.kind === 'boon' ? `shop:boon:${item.id}` : item.kind === 'pouch' ? 'shop:pouch' : `shop:hour:${item.of}`;
+  item.kind === 'boon' ? `shop:boon:${item.id}` : item.kind === 'hour' ? `shop:hour:${item.of}` : `shop:${item.kind}`;
 
 /**
  * La dernière pochette achetée, notée au crayon sous sa ligne : en train de s'ouvrir (l'album passe les livres lus en
@@ -125,6 +125,23 @@ export const shopItems = (state: GameState, number: number): Item[] => {
     items.push({ kind: 'action', id: actionId(pouch), x: 60, y: y - 4, width: RIGHT - 60, height: 58 });
   }
   y += ROW;
+  // Une fiche du catalogue : une à la fois ; tant que son livre rare n'a pas paru, une note au crayon à la place du détail.
+  const card: ShopItem = { kind: 'card' };
+  const cardPrice = shopPrice(state, card, now)!;
+  const waiting = cardWaiting(state);
+  const cardFaded = !canBuy(state, card, now);
+  items.push(printed(t('whiteBook.tasks.shop.card'), LEFT, y, 23, cardFaded ? { ink: 'ghost' } : {}));
+  if (waiting) items.push(printed(t('whiteBook.tasks.shop.cardWaiting'), LEFT, y + 26, 22, { face: 'hand' }));
+  else
+    items.push(
+      printed(t('whiteBook.tasks.shop.cardDetail'), LEFT, y + 30, 16, {
+        italic: true,
+        ...(cardFaded ? { ink: 'ghost' as const } : { faded: true }),
+      }),
+    );
+  items.push(priceTag(cardPrice, RIGHT, y, balance < cardPrice, marks));
+  items.push({ kind: 'action', id: actionId(card), x: 60, y: y - 4, width: RIGHT - 60, height: 58 });
+  y += ROW;
   // Une heure de lecture (la ligne du titre), ou de Connaissance (le début de la ligne d'en dessous).
   const reading: ShopItem = { kind: 'hour', of: 'reading' };
   const knowledge: ShopItem = { kind: 'hour', of: 'knowledge' };
@@ -171,5 +188,6 @@ export const actOnShop = (state: GameState, id: string): void => {
   if (kind !== 'pouch') pouchNote = undefined;
   if (kind === 'boon') buy(state, { kind: 'boon', id: value as BoonId });
   else if (kind === 'pouch') void openPouchLater(state);
+  else if (kind === 'card') buy(state, { kind: 'card' });
   else if (kind === 'hour') buy(state, { kind: 'hour', of: value === 'knowledge' ? 'knowledge' : 'reading' });
 };

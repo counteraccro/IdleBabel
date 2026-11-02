@@ -319,6 +319,8 @@ export interface ShopState {
   hours: number;
   /** Achats au guichet, depuis toujours. */
   purchases: number;
+  /** La fiche du catalogue achetée : le livre rare qui paraîtra au livre n° `index` (tant qu'il n'est pas trouvé). */
+  card?: { id: string; index: number };
 }
 
 /** Les tampons gagnés aux tâches (systems/stamps.ts), à dépenser au guichet. */

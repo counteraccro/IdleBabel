@@ -23,6 +23,9 @@ export const BOON_PRICES: readonly [BoonId, number][] = [
  */
 export const POUCH_PRICE = 50;
 
+/** Une fiche du catalogue : un livre rare pas encore trouvé paraîtra dans la bibliothèque dans l'heure (validé le 30/10). */
+export const CARD_PRICE = 50;
+
 /** Une heure de lecture, ou de Connaissance, au rythme du moment : 10, puis 10 de plus à chaque achat, jusqu'à minuit. */
 export const HOUR_PRICE = 10;
 export const HOUR_STEP = 10;

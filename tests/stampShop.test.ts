@@ -2,7 +2,9 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createInitialState, type GameState } from '../src/core/state';
 import { BOON } from '../src/data/letter';
 import { activeBoons, boonOn, forgetBoons } from '../src/systems/boons';
-import { buy, canBuy, hourPrice, hoursToday, shopPrice } from '../src/systems/stampShop';
+import { booksPerHour, buy, canBuy, cardWaiting, hourPrice, hoursToday, shopPrice } from '../src/systems/stampShop';
+import { rareBookAt, takeBook } from '../src/systems/rareBooks';
+import { RARE_BOOKS } from '../src/data/rareBooks';
 import { pagesPerSecond } from '../src/systems/production';
 import { albumSticker, pouchSlots, scanAlbum, searchPouchSticker } from '../src/systems/stickerAlbum';
 import { coverDesign } from '../src/systems/coverDesign';
@@ -134,5 +136,37 @@ describe('la pochette d’autocollants', () => {
     expect(canBuy(state, { kind: 'pouch' })).toBe(false);
     expect(searchPouchSticker(state)).toBeUndefined();
     expect(state.tasks.stamps.balance).toBe(100);
+  });
+});
+
+describe('la fiche du catalogue', () => {
+  it('50 tampons : un livre rare pas encore trouvé, au livre suivant ou à l’un de ceux lus dans l’heure', () => {
+    const state = game(100);
+    state.booksFinished = 500;
+    expect(shopPrice(state, { kind: 'card' })).toBe(50);
+    expect(buy(state, { kind: 'card' }, () => 0.999, NOON)).toBe(true);
+    expect(state.tasks.stamps.balance).toBe(50);
+    const card = state.tasks.shop.card!;
+    expect(card.index).toBeGreaterThan(500);
+    expect(card.index).toBeLessThanOrEqual(501 + booksPerHour(state));
+    expect(rareBookAt(state, card.index)).toBe(card.id);
+  });
+
+  it('une à la fois : la suivante quand son livre a paru ; il n’est tiré à aucun autre livre', () => {
+    const state = game(200);
+    buy(state, { kind: 'card' }, () => 0, NOON);
+    const card = state.tasks.shop.card!;
+    expect(cardWaiting(state)).toBe(true);
+    expect(canBuy(state, { kind: 'card' })).toBe(false);
+    for (let index = 0; index < 20_000; index++) if (index !== card.index) expect(rareBookAt(state, index)).not.toBe(card.id);
+    expect(takeBook(state, card.index)).toBe(card.id);
+    expect(cardWaiting(state)).toBe(false);
+    expect(canBuy(state, { kind: 'card' })).toBe(true);
+  });
+
+  it('plus de livre rare à trouver : plus de fiche', () => {
+    const state = game(100);
+    for (const book of RARE_BOOKS) state.rareBooks[book.id] = 0;
+    expect(canBuy(state, { kind: 'card' })).toBe(false);
   });
 });
