@@ -1051,6 +1051,19 @@
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
         {
+          "title": "Alpha 3.4",
+          "date": "3 novembre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "En haut de l’écran, le raccourci des tâches devient un petit tampon encreur.",
+                "Dix-sept sceaux de plus sur la planche « Les tâches », sur une page à eux : le niveau V de huit tâches « Pas à pas », les tâches de la semaine, une carte de lecteur pleine, les tampons gagnés, un premier achat au guichet."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Alpha 3.3",
           "date": "2 novembre 2026",
           "sections": [

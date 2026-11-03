@@ -10,6 +10,7 @@
  * médaillons, le récit de la première intuition, l'autre bibliothèque et les titres des sceaux, le même jour ; l'Alpha 2.12 :
  * les tomes 5 et 6 de « L'histoire de Babel », 23/10 ; l'Alpha 3 : l'Âge Quantique, 24/10 ;
  * l'Alpha 3.1 : les tomes gagnés corrigés, 27/10 ; l'Alpha 3.2 : l'équilibrage de la lettre, de la Loupe et de la Loterie, 29/10 ;
- * l'Alpha 3.3 : les tampons, les tâches par niveaux, les tâches de la semaine et le guichet, 02/11).
+ * l'Alpha 3.3 : les tampons, les tâches par niveaux, les tâches de la semaine et le guichet, 02/11 ; l'Alpha 3.4 : le tampon
+ * encreur et les sceaux des tâches, 03/11).
  */
-export const VERSION = 'Alpha 3.3';
+export const VERSION = 'Alpha 3.4';
