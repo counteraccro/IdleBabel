@@ -272,7 +272,7 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['tasks', 'p1', null, 20],
   ['tasks', 'p2', 'p1', 60],
   ['tasks', 'p3', 'p2', 200],
-  // La semaine (30/10) : une 3e tâche de la semaine (prix proposé, à valider).
+  // La semaine (30/10) : une 3e tâche de la semaine (50, validé par l'auteur le 03/11).
   ['tasks', 'w3', null, 50],
   // L'atelier, « La Presse » (27/10, .ai/plan-curiosites.md, validée par l'auteur : « je valide, prix hauts pour le flair 2 et
   // l'arrivage 2 ») : la vis est offerte quand le Sud s'allume ; le montant gauche porte le flair (les pièces S), le droit
