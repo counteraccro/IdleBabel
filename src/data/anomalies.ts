@@ -147,6 +147,8 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintAllBoons',
     'hintAllEffects',
     'hintCheat',
+    // Le guichet (31/10) : une cinquième heure achetée le même jour.
+    'hintFifthHour',
     // Les reliques (12/10) : chaque phrase pose sa relique dans sa salle (systems/relics.ts) ; elle ne se lit qu'avec
     // l'Ouest de l'Exploration, et sa salle déjà vue.
     'hintRelicLoupe',
@@ -209,6 +211,9 @@ export const HINTS_AFTER_FIRST_TOME: readonly string[] = [
 
 /** L'indice du tome de la Mimic ne tombe qu'une fois la Mimic achetée (l'Est de l'Exploration). */
 export const HINTS_AFTER_MIMIC: readonly string[] = ['hintTomeMimic'];
+
+/** L'indice du guichet ne tombe qu'une fois un premier tampon gagné : avant, le guichet n'a rien à vendre. */
+export const HINTS_AFTER_STAMPS: readonly string[] = ['hintFifthHour'];
 
 /** L'indice du tome de « Une dernière pour la route » ne tombe qu'une fois son étoile allumée. */
 export const HINTS_AFTER_LAST_TASK: readonly string[] = ['hintTomeTask'];

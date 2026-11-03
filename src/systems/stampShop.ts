@@ -9,6 +9,7 @@ import { PAGES_PER_BOOK, PAGES_PER_LEAF } from './books';
 import { isRareBookFound } from './rareBooks';
 import { doubleHookOn, startDoubleHook } from './relics';
 import { pouchSlots, scanAlbum, stickPouch, type PouchSticker } from './stickerAlbum';
+import { sealEvent } from './seals';
 import type { BoonId } from '../data/letter';
 import type { GameState } from '../core/state';
 
@@ -20,6 +21,9 @@ import type { GameState } from '../core/state';
 /** Ce qui s'achète au guichet. */
 export type ShopItem =
   { kind: 'boon'; id: BoonId } | { kind: 'pouch' } | { kind: 'card' } | { kind: 'hook' } | { kind: 'hour'; of: 'reading' | 'knowledge' };
+
+/** L'heure du jour qui vaut un sceau secret (la cinquième, à 50 tampons). */
+const FIFTH_HOUR = 5;
 
 /** Les heures achetées aujourd'hui (les autres jours ne comptent plus). */
 export const hoursToday = (state: GameState, now = Date.now()): number =>
@@ -122,5 +126,7 @@ export const buy = (
   } else addKnowledge(state, hourGain(state, 'knowledge'));
   shop.hours = hoursToday(state, now) + 1;
   shop.day = dayOf(now);
+  // Le secret : une cinquième heure le même jour, payée 50.
+  if (shop.hours === FIFTH_HOUR) sealEvent(state, 'fifthHour', now);
   return true;
 };

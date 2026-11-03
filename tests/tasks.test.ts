@@ -285,6 +285,20 @@ describe('Les tampons', () => {
     expect(payDoneTasks(once)).toEqual({ balance: 20, earned: 20, card: 1, cells: [] });
     expect(payDoneTasks(undefined).balance).toBe(0);
   });
+
+  it('les sceaux de la refonte (31/10) : niveau V, semaine, carte pleine, tampons gagnés, premier achat', () => {
+    const state = withNorth();
+    state.tasks.once[16] = { at: DAY, base: 0, level: 5, done: DAY };
+    state.tasks.once[22] = { at: DAY, base: 0, level: 5 };
+    state.tasks.weeklyDone = 10;
+    state.tasks.perfectWeeks = 1;
+    for (let i = 0; i < 24; i++) addStamps(state, 5, DAY + i);
+    state.tasks.shop.purchases = 1;
+    checkSeals(state, DAY);
+    for (const id of ['level5-16', 'weeklyTasks-1', 'weeklyTasks-10', 'perfectWeek', 'fullCard', 'stampsEarned-100', 'firstPurchase'])
+      expect(id in state.seals, id).toBe(true);
+    for (const id of ['level5-22', 'weeklyTasks-52', 'stampsEarned-1000']) expect(id in state.seals, id).toBe(false);
+  });
 });
 
 describe('Les tâches par niveaux (29/10)', () => {

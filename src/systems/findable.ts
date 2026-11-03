@@ -6,6 +6,7 @@ import {
   HINTS_AFTER_LAST_TASK,
   HINTS_AFTER_MIMIC,
   HINTS_AFTER_PRESTIGE,
+  HINTS_AFTER_STAMPS,
   HINT_ATELIER,
 } from '../data/anomalies';
 import { TASK_STAR } from '../data/tasks';
@@ -48,7 +49,7 @@ export const waitingFor = (state: GameState, id: string): ToolId | undefined => 
 /**
  * Un indice qui mène à un livre rare attend que ce livre soit trouvé (data/anomalies.ts, HINT_BOOKS) ; celui d'un
  * secret de l'Etherium, un premier prestige ; celui de la Mimic dorée, un premier tirage de la Loterie (et celui du tome du gros
- * lot, le tome 1 aussi) ; celui du tome de la Mimic, la Mimic et le tome 1 ; celui de la dernière tâche, son étoile et le tome 1 ; celui d'une relique, l'Ouest de l'Exploration et sa salle déjà vue.
+ * lot, le tome 1 aussi) ; celui du tome de la Mimic, la Mimic et le tome 1 ; celui de la dernière tâche, son étoile et le tome 1 ; celui du guichet, un premier tampon ; celui d'une relique, l'Ouest de l'Exploration et sa salle déjà vue.
  */
 export const hintFindable = (state: GameState, id: string): boolean => {
   if (HINTS_AFTER_PRESTIGE.includes(id) && state.etherReceived === 0) return false;
@@ -56,6 +57,7 @@ export const hintFindable = (state: GameState, id: string): boolean => {
   if (HINTS_AFTER_FIRST_TOME.includes(id) && !tomeFound(state, 0)) return false;
   if (HINTS_AFTER_MIMIC.includes(id) && !mimicUnlocked(state)) return false;
   if (HINTS_AFTER_LAST_TASK.includes(id) && !state.etherium.includes(TASK_STAR.last)) return false;
+  if (HINTS_AFTER_STAMPS.includes(id) && state.tasks.stamps.earned === 0) return false;
   if (id === HINT_ATELIER && !(ATELIER_ON && atelierLit(state))) return false;
   if (!relicHintFindable(state, id)) return false;
   const books = HINT_BOOKS[id];

@@ -15,6 +15,7 @@ import { mimicSeconds } from '../systems/mimic';
 import { RELICS } from './relics';
 import { TOKENS_SPENT_STEPS } from './lottery';
 import { ONCE_TASKS, levelsDone } from './tasks';
+import { CARD_CELLS } from '../systems/stamps';
 import { allLotteryBoons, allLotteryCurses } from '../systems/lotteryEffects';
 import type { ModText } from '../mods/modSeals';
 import type { TomeSource } from '../systems/endings';
@@ -87,6 +88,10 @@ const sealsApplied = (state: GameState): number => SEALS.filter((seal) => seal.p
 
 /** Les tâches « une seule fois » faites (une échelle : au moins son niveau I). */
 const onceDone = (state: GameState): number => Object.values(state.tasks.once).filter((task) => levelsDone(task) > 0).length;
+
+/** Le niveau d'une échelle qui vaut un sceau, et les échelles qui en ont un (validées le 31/10 ; les étoiles n'ont que 3 niveaux). */
+const LEVEL_SEAL = 5;
+const LEVEL_SEAL_TASKS = [16, 22, 2, 4, 6, 10, 15, 18];
 
 /** Un sceau seul. */
 const seal = (id: string, plate: PlateId, reached: (state: GameState) => boolean): SealDef => ({ id, plate, text: id, reached });
@@ -277,6 +282,14 @@ export const SEALS: readonly SealDef[] = [
     ...seal,
     phrases: true,
   })),
+  // La refonte des tâches (l'auteur, 31/10 : « on garde tous les sceaux proposés ») : le niveau V de huit échelles, les tâches
+  // de la semaine, la carte de lecteur, les tampons gagnés, le guichet.
+  ...LEVEL_SEAL_TASKS.map((n) => seal(`level5-${n}`, 'tasks', (s) => levelsDone(s.tasks.once[n]) >= LEVEL_SEAL)),
+  ...series('weeklyTasks', 'tasks', (s) => s.tasks.weeklyDone, [1, 10, 52]),
+  seal('perfectWeek', 'tasks', (s) => s.tasks.perfectWeeks > 0),
+  seal('fullCard', 'tasks', (s) => s.tasks.stamps.card > 1 || s.tasks.stamps.cells.length >= CARD_CELLS),
+  ...series('stampsEarned', 'tasks', (s) => s.tasks.stamps.earned, [100, K, 10 * K]),
+  seal('firstPurchase', 'tasks', (s) => s.tasks.shop.purchases > 0),
 
   // L'atelier (27/10, .ai/plan-curiosites.md ; l'auteur : « je valide les sceaux ») : seulement en débogage pour l'instant.
   ...(ATELIER_ON ? ATELIER_SEALS : []),
@@ -346,6 +359,8 @@ export const SEALS: readonly SealDef[] = [
   secret('foundTypo'),
   // Les deux collègues, AlexH et Oriana, trouvés tous les deux (ils travaillent ensemble, jusque dans leurs livres).
   seal('colleagues', 'secrets', (s) => 'alexH' in s.rareBooks && 'oriana' in s.rareBooks),
+  // Une cinquième heure achetée au guichet le même jour, à 50 tampons (systems/stampShop.ts ; l'auteur, 31/10).
+  secret('fifthHour'),
   // L'Etherium refermé sans y allumer une étoile (systems/prestige.ts, closeEtherium).
   secret('emptyEtherium'),
   // Toute une partie, d'un réveil au prestige suivant, sans tourner une page à la main (systems/prestige.ts).

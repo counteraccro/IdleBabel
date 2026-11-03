@@ -81,6 +81,15 @@ describe('le guichet', () => {
     state.settings.autoTurn = false;
     expect(canBuy(state, { kind: 'hour', of: 'knowledge' }, NOON)).toBe(false);
   });
+
+  it('le secret : une cinquième heure le même jour, à 50 tampons ; quatre ne suffisent pas', () => {
+    const state = game(500);
+    for (let hour = 0; hour < 4; hour += 1) buy(state, { kind: 'hour', of: 'reading' }, Math.random, NOON);
+    expect('fifthHour' in state.seals).toBe(false);
+    expect(hourPrice(state, NOON)).toBe(50);
+    buy(state, { kind: 'hour', of: 'knowledge' }, Math.random, NOON);
+    expect('fifthHour' in state.seals).toBe(true);
+  });
 });
 
 describe('la pochette d’autocollants', () => {
