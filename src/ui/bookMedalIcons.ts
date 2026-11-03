@@ -8,8 +8,8 @@ const VIOLET = '#c9a2ff';
 const BOOK_MEDAL_ICONS: Record<string, string> = {
   // Le livre blanc : un livre ouvert.
   white: `<path d="M10 5.5Q6.5 3.8 3 4.6V15.4Q6.5 14.6 10 16.3Q13.5 14.6 17 15.4V4.6Q13.5 3.8 10 5.5Z M10 5.5V16.3" fill="none" stroke="${GOLD}" stroke-width="1.2" stroke-linejoin="round"/>`,
-  // Le jeton des tâches : le dessin du Jeton (relics/relicIcons.ts).
-  tasks: `<circle cx="10" cy="10" r="6.2" fill="none" stroke="${GOLD}" stroke-width="1.3"/><circle cx="10" cy="10" r="4.6" fill="none" stroke="${GOLD}" stroke-width="0.7"/><path d="M10 7L12.6 8.5V11.5L10 13L7.4 11.5V8.5Z" fill="none" stroke="${GOLD}" stroke-width="0.9" stroke-linejoin="round"/>`,
+  // Le tampon encreur des tâches (maquette .ai/maquette-guichet.html, validée le 31/10) : la poignée, le sabot, son empreinte.
+  tasks: `<circle cx="10" cy="4.4" r="2.1" fill="none" stroke="${GOLD}" stroke-width="1.2"/><path d="M8.9 6.3L8.3 10.2M11.1 6.3L11.7 10.2" fill="none" stroke="${GOLD}" stroke-width="1.1" stroke-linecap="round"/><rect x="4.8" y="10.2" width="10.4" height="2.7" rx=".6" fill="none" stroke="${GOLD}" stroke-width="1.2"/><path d="M5.9 12.9V14.3H14.1V12.9" fill="none" stroke="${GOLD}" stroke-width=".9" stroke-linejoin="round"/><path d="M5 16.8H15" stroke="${GOLD}" stroke-width=".8" stroke-linecap="round" stroke-dasharray="1.4 1"/>`,
   // Le Grand Livre : un gros livre fermé, son sceau au milieu.
   strange: `<rect x="4.5" y="2.8" width="11" height="14.4" rx="1" fill="none" stroke="${GOLD}" stroke-width="1.3"/><path d="M6.3 3V17" stroke="${GOLD}" stroke-width=".8"/><circle cx="11" cy="10" r="2.6" fill="none" stroke="${GOLD}" stroke-width="1"/><circle cx="11" cy="10" r=".9" fill="${GOLD}"/>`,
   // L'Etherium : la goutte.

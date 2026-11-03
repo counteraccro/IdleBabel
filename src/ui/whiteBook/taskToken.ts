@@ -5,7 +5,7 @@ import type { BookMedalSpec } from '../bookMedals';
 import type { GameState } from '../../core/state';
 
 /**
- * Le raccourci des tâches : le médaillon du Jeton, juste après celui du livre blanc (ses tâches y sont), là dès le Nord
+ * Le raccourci des tâches : le médaillon du tampon encreur (le Jeton jusqu'au 03/11), juste après celui du livre blanc (ses tâches y sont), là dès le Nord
  * allumé. Son étoile quand une tâche faite attend qu'on prenne ce qu'elle rapporte ; au survol, « 2 tâches en cours » ; au
  * clic, le livre blanc s'ouvre sur les tâches (`onOpen`).
  */
