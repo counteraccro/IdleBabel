@@ -66,6 +66,8 @@ export interface SealDef {
   phrases?: boolean;
   /** Sceau d'un mod (src/mods/modSeals.ts) : son nom et son texte, donnés par le mod (pas de clé i18n). */
   mod?: { name: ModText; text: ModText };
+  /** Sa planche reprend sur une nouvelle page à partir de lui, même si la page d'avant n'est pas pleine. */
+  newPage?: boolean;
   /** Sceau d'une source de tomes : son nom est la phrase du premier tome qu'elle a donné (state.tomeFrom). */
   tomeFrom?: TomeSource;
   reached: (state: GameState) => boolean;
@@ -283,8 +285,12 @@ export const SEALS: readonly SealDef[] = [
     phrases: true,
   })),
   // La refonte des tâches (l'auteur, 31/10 : « on garde tous les sceaux proposés ») : le niveau V de huit échelles, les tâches
-  // de la semaine, la carte de lecteur, les tampons gagnés, le guichet.
-  ...LEVEL_SEAL_TASKS.map((n) => seal(`level5-${n}`, 'tasks', (s) => levelsDone(s.tasks.once[n]) >= LEVEL_SEAL)),
+  // de la semaine, la carte de lecteur, les tampons gagnés, le guichet ; sur une page à eux (l'auteur, 03/11 : « coupe à la
+  // fin des sceaux d'avant »).
+  ...LEVEL_SEAL_TASKS.map((n, index): SealDef => ({
+    ...seal(`level5-${n}`, 'tasks', (s) => levelsDone(s.tasks.once[n]) >= LEVEL_SEAL),
+    newPage: index === 0,
+  })),
   ...series('weeklyTasks', 'tasks', (s) => s.tasks.weeklyDone, [1, 10, 52]),
   seal('perfectWeek', 'tasks', (s) => s.tasks.perfectWeeks > 0),
   seal('fullCard', 'tasks', (s) => s.tasks.stamps.card > 1 || s.tasks.stamps.cells.length >= CARD_CELLS),

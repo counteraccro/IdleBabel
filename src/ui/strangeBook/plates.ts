@@ -16,7 +16,8 @@ import { LINE_SIZE, LINE_STEP, LINE_TOP, MORE_TOP, plateListPages } from './plat
 
 /**
  * Les sceaux dans le livre étrange : une page d'avancement, puis une planche par thème, en alvéoles
- * (cinq rangées de 4 et 5 sceaux par page ; une planche ne passe à la page suivante qu'une fois ses cinq rangées pleines).
+ * (cinq rangées de 4 et 5 sceaux par page ; une planche ne passe à la page suivante qu'une fois ses cinq rangées pleines,
+ * ou devant un sceau qui ouvre une nouvelle page).
  */
 const ROWS = [4, 5, 4, 5, 4];
 const PER_PAGE = ROWS.reduce((sum, count) => sum + count, 0);
@@ -66,6 +67,14 @@ const sealShown = (state: GameState, seal: SealDef): boolean => {
 /** Les sceaux d'une planche que le chercheur peut connaître. */
 const knownSeals = (state: GameState, plate: PlateId): SealDef[] => plateSeals(plate).filter((seal) => sealShown(state, seal));
 
+/** Les sceaux d'une planche coupés devant chaque sceau qui ouvre une nouvelle page. */
+const pageGroups = (seals: SealDef[]): SealDef[][] =>
+  seals.reduce<SealDef[][]>((groups, seal) => {
+    if (seal.newPage || groups.length === 0) groups.push([]);
+    groups[groups.length - 1].push(seal);
+    return groups;
+  }, []);
+
 /** Les pages des planches, à partir de la page `first`. */
 export const platePages = (state: GameState, first: number): PlatePage[] => {
   const pages: PlatePage[] = [];
@@ -80,9 +89,12 @@ export const platePages = (state: GameState, first: number): PlatePage[] => {
       );
       continue;
     }
-    // Les sceaux à la suite : une page pleine (cinq rangées) continue sur la suivante, jamais avant (demande de l'auteur, 06/10).
-    for (let start = 0, part = 0; start < seals.length; start += PER_PAGE, part++)
-      pages.push({ plate, seals: seals.slice(start, start + PER_PAGE), part, page: first + pages.length });
+    // Les sceaux à la suite : une page pleine (cinq rangées) continue sur la suivante, jamais avant (demande de l'auteur, 06/10),
+    // sauf devant un sceau qui ouvre une nouvelle page (`newPage`, l'auteur, 03/11).
+    let part = 0;
+    for (const group of pageGroups(seals))
+      for (let start = 0; start < group.length; start += PER_PAGE, part++)
+        pages.push({ plate, seals: group.slice(start, start + PER_PAGE), part, page: first + pages.length });
   }
   return pages;
 };
