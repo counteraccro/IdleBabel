@@ -1,0 +1,61 @@
+{
+  "name": "The Golden Book",
+  "medal": "The Golden Book",
+  "quote": "“Every letter in it is gold, and each one shines only for an instant.”",
+  "open": "Open the book",
+  "again": "Open the book again",
+  "close": "Close the book",
+  "letters": "Letters {n} · best {best}",
+  "behind": "Behind, the reading goes on · {n} pages",
+  "favorTitle": "{n} letters",
+  "favorLead": "A favour, your choice.",
+  "endTitle": "The book closes",
+  "record": "New best.",
+  "best": "Best: {n}",
+  "read": "Read it",
+  "readWhat": "{n} minutes of reading, at once. {left} more today.",
+  "readDone": "Read: {n} minutes of reading. {left} more today.",
+  "readNone": "Nothing more to read today.",
+  "feed": "Feed the tree",
+  "feedWhat": "{n} gold dust for the book’s tree.",
+  "feedDone": "{n} gold dust poured.",
+  "floats": {
+    "out": "gone out",
+    "ink": "ink!",
+    "wordOut": "the word goes out"
+  },
+  "favors": {
+    "slow": {
+      "name": "Slowdown",
+      "what": "Letters come 15% slower."
+    },
+    "pardon": {
+      "name": "Pardon",
+      "what": "One more mistake allowed."
+    },
+    "breath": {
+      "name": "Long breath",
+      "what": "The combo lasts 0.5 s longer."
+    },
+    "vein": {
+      "name": "The Vein",
+      "what": "Twice as many pure gold letters."
+    },
+    "inkPact": {
+      "name": "Ink pact",
+      "what": "Points ×2, twice as many ink letters."
+    },
+    "ceiling": {
+      "name": "Raised ceiling",
+      "what": "The combo can climb 2 more notches."
+    },
+    "name": {
+      "name": "The Name",
+      "what": "BABEL comes three times as often."
+    },
+    "mend": {
+      "name": "Mending",
+      "what": "Gives back every mistake."
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "name": "Le Livre d’or",
+  "medal": "Le Livre d’or",
+  "quote": "« Chaque lettre y est d’or, et chacune ne brille qu’un instant. »",
+  "open": "Ouvrir le livre",
+  "again": "Rouvrir le livre",
+  "close": "Refermer le livre",
+  "letters": "Lettres {n} · record {best}",
+  "behind": "En fond, la lecture continue · {n} pages",
+  "favorTitle": "{n} lettres",
+  "favorLead": "Une faveur, au choix.",
+  "endTitle": "Le livre se referme",
+  "record": "Nouveau record.",
+  "best": "Record : {n}",
+  "read": "Le lire",
+  "readWhat": "{n} minutes de lecture, d’un coup. Encore {left} aujourd’hui.",
+  "readDone": "Lu : {n} minutes de lecture. Encore {left} aujourd’hui.",
+  "readNone": "Plus rien à lire aujourd’hui.",
+  "feed": "Nourrir l’arbre",
+  "feedWhat": "{n} poussière d’or pour l’arbre du livre.",
+  "feedDone": "{n} poussière d’or versée.",
+  "floats": {
+    "out": "éteinte",
+    "ink": "encre !",
+    "wordOut": "le mot s’éteint"
+  },
+  "favors": {
+    "slow": {
+      "name": "Le Ralenti",
+      "what": "Les lettres viennent 15 % moins vite."
+    },
+    "pardon": {
+      "name": "Le Pardon",
+      "what": "Une erreur de plus."
+    },
+    "breath": {
+      "name": "La Longue haleine",
+      "what": "Le combo dure 0,5 s de plus."
+    },
+    "vein": {
+      "name": "Le Filon",
+      "what": "Deux fois plus de lettres d’or pur."
+    },
+    "inkPact": {
+      "name": "Le Pacte d’encre",
+      "what": "Points ×2, deux fois plus de lettres d’encre."
+    },
+    "ceiling": {
+      "name": "Le Plafond levé",
+      "what": "Le combo peut monter de 2 crans de plus."
+    },
+    "name": {
+      "name": "Le Nom",
+      "what": "BABEL vient trois fois plus souvent."
+    },
+    "mend": {
+      "name": "La Reprise",
+      "what": "Rend toutes les erreurs."
+    }
+  }
+}

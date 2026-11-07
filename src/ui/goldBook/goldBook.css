@@ -1,0 +1,410 @@
+/*
+ * Le Livre d'or (goldBookPage.ts) : l'écran de la partie, à l'identique de la maquette (.ai/maquette-livre-dor.html), dont la
+ * scène fait 1 372 px de large : ses mesures en --u (1 px de la maquette), comme la lettre qui s'échappe (letter.css).
+ */
+#app > .gold-book {
+  --u: calc(100vw / 1372);
+  --gb-ink: #efe3c8;
+  --gb-muted: #b8a684;
+  --gb-gold: #e8c776;
+  --gb-border: rgba(201, 164, 106, 0.35);
+  --gb-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  overflow: hidden;
+  user-select: none;
+  color: var(--gb-ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  /* La salle reste derrière, assombrie. */
+  background: linear-gradient(rgba(8, 6, 4, 0.55), rgba(8, 6, 4, 0.75));
+}
+/* Le compteur devient le score, les médaillons s'effacent : l'écran est au livre. */
+#app:has(> .gold-book:not(.screen-out)) > header,
+#app:has(> .gold-book:not(.screen-out)) > .counter {
+  visibility: hidden;
+}
+.gold-book .options-back {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  z-index: 6;
+}
+
+/* Le score, à la place du compteur. */
+.gold-book-hud {
+  position: absolute;
+  top: 1.4%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  text-shadow: var(--gb-shadow);
+}
+.gold-book-score {
+  font-size: calc(34 * var(--u));
+  color: var(--gb-gold);
+  font-variant-numeric: tabular-nums;
+}
+.gold-book-sub {
+  font-size: calc(12 * var(--u));
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Le combo : un médaillon cerclé du temps qui reste, comme ceux des bonus. */
+.gold-book-combo {
+  --left: 0;
+  position: absolute;
+  top: 2%;
+  left: calc(50% + 120 * var(--u));
+  width: calc(54 * var(--u));
+  height: calc(54 * var(--u));
+  border-radius: 50%;
+  opacity: 0.25;
+  transition:
+    opacity 0.2s,
+    transform 0.15s;
+}
+.gold-book-combo.on {
+  opacity: 1;
+}
+.gold-book-combo.pop {
+  transform: scale(1.15);
+}
+.gold-book-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--gb-gold) calc(var(--left) * 1turn), rgba(201, 164, 106, 0.18) 0);
+  mask: radial-gradient(circle, transparent calc(21 * var(--u)), #000 calc(22 * var(--u)));
+}
+.gold-book-mult {
+  position: absolute;
+  inset: calc(6 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #3a2a16, #120c06);
+  display: grid;
+  place-items: center;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: calc(17 * var(--u));
+  color: var(--gb-gold);
+}
+.gold-book-combo.max .gold-book-mult {
+  color: #fff1c8;
+  text-shadow: 0 0 8px rgba(255, 236, 180, 0.9);
+}
+
+/* Les erreurs permises : des gouttes. */
+.gold-book-lives {
+  position: absolute;
+  top: 3%;
+  right: calc(50% + 120 * var(--u));
+  display: flex;
+  gap: calc(7 * var(--u));
+}
+.gold-book-lives i {
+  width: calc(12 * var(--u));
+  height: calc(16 * var(--u));
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 40% 35%, #f3d98f, #b98a35);
+  box-shadow: 0 0 6px rgba(232, 199, 118, 0.6);
+}
+.gold-book-lives i.lost {
+  background: #2a2118;
+  box-shadow: none;
+}
+
+/* En fond, la lecture continue. */
+.gold-book-behind {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  font-size: calc(13 * var(--u));
+  font-style: italic;
+  color: var(--gb-muted);
+  text-shadow: var(--gb-shadow);
+}
+
+/* Le livre ouvert, d'où montent les lettres. */
+.gold-book-book {
+  position: absolute;
+  left: 30%;
+  width: 40%;
+  top: 70%;
+  height: 30%;
+  display: flex;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.7));
+}
+.gold-book-book.shake {
+  animation: gold-book-shake 0.3s;
+}
+.gold-book-page {
+  position: relative;
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(#0000 0 calc(8 * var(--u)), rgba(176, 122, 31, 0.28) calc(8 * var(--u)) calc(9 * var(--u))) 50%
+      calc(30 * var(--u)) / 78% 75% no-repeat,
+    linear-gradient(90deg, #e6cf92, #f6e7bd 55%, #e0c584);
+}
+.gold-book-page.right {
+  background:
+    repeating-linear-gradient(#0000 0 calc(8 * var(--u)), rgba(176, 122, 31, 0.28) calc(8 * var(--u)) calc(9 * var(--u))) 50%
+      calc(30 * var(--u)) / 78% 75% no-repeat,
+    linear-gradient(90deg, #e0c584, #f6e7bd 45%, #e6cf92);
+}
+.gold-book-edge {
+  position: absolute;
+  inset: calc(-5 * var(--u)) calc(-9 * var(--u)) 0;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(#c9973f, #7d5a22);
+  z-index: -1;
+  box-shadow: 0 0 30px rgba(232, 180, 80, 0.35);
+}
+.gold-book-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7%;
+  text-align: center;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: calc(11 * var(--u));
+  letter-spacing: 0.3em;
+  color: rgba(150, 105, 35, 0.8);
+}
+.gold-book-spelled {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  transform: translateX(-50%);
+  font-size: calc(26 * var(--u));
+  letter-spacing: 0.5em;
+  color: rgba(232, 199, 118, 0.25);
+  text-shadow: var(--gb-shadow);
+  pointer-events: none;
+}
+.gold-book-spelled b {
+  font-weight: normal;
+  color: var(--gb-gold);
+  text-shadow: 0 0 10px rgba(232, 199, 118, 0.8);
+}
+.gold-book-field {
+  position: absolute;
+  inset: 0;
+}
+
+/* Une lettre : le dessin de la lettre qui s'échappe (letter.css). */
+.gold-book-letter {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+}
+.gold-book-hit {
+  position: absolute;
+  left: calc(-32 * var(--u));
+  top: calc(-32 * var(--u));
+  width: calc(64 * var(--u));
+  height: calc(64 * var(--u));
+  border-radius: 50%;
+}
+.gold-book-glyph {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  transform-origin: center;
+  font-family: Georgia, serif;
+  font-size: calc(34 * var(--u));
+  line-height: 1;
+  margin: calc(-18 * var(--u)) 0 0 calc(-10 * var(--u));
+  color: var(--gb-gold);
+  text-shadow:
+    0 0 8px rgba(232, 199, 118, 0.9),
+    0 0 22px rgba(232, 199, 118, 0.45);
+}
+.gold-book-letter:hover .gold-book-glyph {
+  filter: brightness(1.25);
+}
+.gold-book-letter.pure .gold-book-glyph {
+  color: #fff4cf;
+  font-size: calc(40 * var(--u));
+  text-shadow:
+    0 0 10px #ffe9a8,
+    0 0 30px rgba(255, 214, 120, 0.9),
+    0 0 50px rgba(232, 180, 80, 0.5);
+}
+.gold-book-letter.ink .gold-book-glyph {
+  color: #1a0e08;
+  font-size: calc(36 * var(--u));
+  text-shadow:
+    0 0 1px #e07a52,
+    0 0 3px #c4532e,
+    0 0 12px rgba(196, 83, 46, 0.75),
+    0 0 24px rgba(120, 30, 10, 0.5);
+}
+.gold-book-letter.word .gold-book-glyph {
+  color: #fff1c8;
+  text-shadow:
+    0 0 10px rgba(255, 236, 180, 1),
+    0 0 28px rgba(232, 199, 118, 0.7);
+}
+.gold-book-letter.gone {
+  pointer-events: none;
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+.gold-book-dust {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fbe6a8;
+  box-shadow: 0 0 6px #e8c776;
+  pointer-events: none;
+}
+.gold-book-float {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  font-size: calc(15 * var(--u));
+  font-style: italic;
+  text-shadow: var(--gb-shadow);
+  animation: gold-book-up 0.9s ease-out forwards;
+  white-space: nowrap;
+}
+.gold-book-float.bad {
+  color: #e08a6a;
+}
+.gold-book-float.big {
+  font-size: calc(20 * var(--u));
+  color: var(--gb-gold);
+  font-family: 'Cinzel', Georgia, serif;
+}
+@keyframes gold-book-up {
+  0% {
+    opacity: 0;
+    margin-top: 4px;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    margin-top: -26px;
+  }
+}
+@keyframes gold-book-shake {
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Les fenêtres : l'ouverture, la faveur du palier, la fin de la partie. */
+.gold-book-over {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: radial-gradient(ellipse at center, rgba(8, 6, 4, 0.78), rgba(8, 6, 4, 0.92));
+  text-shadow: var(--gb-shadow);
+  z-index: 5;
+}
+.gold-book-over.on {
+  display: grid;
+}
+.gold-book-in {
+  text-align: center;
+  max-width: calc(820 * var(--u));
+  padding: 0 20px;
+}
+.gold-book-over h2 {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: normal;
+  letter-spacing: 0.2em;
+  font-size: calc(15 * var(--u));
+  color: #c9a45a;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+.gold-book-lead {
+  font-style: italic;
+  margin: 0 0 18px;
+  font-size: calc(16 * var(--u));
+}
+.gold-book-cards,
+.gold-book-row {
+  display: flex;
+  gap: calc(14 * var(--u));
+  justify-content: center;
+}
+.gold-book-card {
+  all: unset;
+  cursor: pointer;
+  width: calc(200 * var(--u));
+  padding: calc(14 * var(--u)) calc(14 * var(--u)) calc(16 * var(--u));
+  border: 1px solid var(--gb-border);
+  border-radius: 4px;
+  background: rgba(30, 22, 14, 0.85);
+  text-align: center;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+.gold-book-card:hover {
+  border-color: var(--gb-gold);
+  transform: translateY(-3px);
+}
+.gold-book-card[disabled] {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.gold-book-card-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: calc(12 * var(--u));
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gb-gold);
+}
+.gold-book-card-what {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(201, 164, 106, 0.3);
+  font-style: italic;
+  font-size: calc(14 * var(--u));
+  line-height: 1.35;
+}
+.gold-book-end-score {
+  font-size: calc(44 * var(--u));
+  color: var(--gb-gold);
+  font-variant-numeric: tabular-nums;
+}
+.gold-book-rec {
+  font-size: calc(13 * var(--u));
+  color: var(--gb-muted);
+  font-style: italic;
+  margin-bottom: 18px;
+}
+.gold-book-rec b {
+  font-weight: normal;
+  color: var(--gb-gold);
+}
+.gold-book-again {
+  all: unset;
+  cursor: pointer;
+  margin-top: 18px;
+  display: inline-block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: calc(13 * var(--u));
+  letter-spacing: 0.1em;
+  color: var(--gb-gold);
+  border: 1px solid var(--gb-border);
+  padding: 6px 18px;
+  border-radius: 3px;
+}

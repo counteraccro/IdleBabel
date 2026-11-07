@@ -66,6 +66,8 @@ import type { Component } from './dom';
 import { runHooks } from '../mods/hooks';
 import { atelierOpen } from '../systems/curiosities';
 import { createAtelierPage } from './atelier/atelierPage';
+import { createGoldBookPage } from './goldBook/goldBookPage';
+import { goldBookOpen } from '../systems/goldBook';
 
 const OPTIONS_HASH = '#options';
 const STRANGE_BOOK_HASH = '#livre';
@@ -77,6 +79,8 @@ const LIBRARY_HASH = '#bibliotheque';
 const LIBRARY_BOOK_HASH = '#bibliotheque:';
 /** L'atelier des curiosités (la clé de l'atelier du trousseau). */
 const ATELIER_HASH = '#atelier';
+/** Le Livre d'or (son médaillon, dès le Sud de la Rose des vents allumé). */
+const GOLD_BOOK_HASH = '#livredor';
 /** Un tome gagné arrive en main après ce délai (le temps de lire le panneau du gros lot, de voir le jeu revenir). */
 const TOME_DELAY_MS = 1800;
 /** Changement d'écran : l'ancien s'efface en fondu pendant que le nouveau apparaît (voir .screen-out). */
@@ -158,9 +162,10 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const inLibrary = (): boolean => window.location.hash === LIBRARY_HASH || window.location.hash.startsWith(LIBRARY_BOOK_HASH);
 
   /** Le livre dont la page est ouverte (null : le jeu). */
-  const openBook = (): 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'atelier' | 'notes' | null => {
+  const openBook = (): 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'atelier' | 'goldBook' | 'notes' | null => {
     const hash = window.location.hash;
     if (hash === ATELIER_HASH && atelierOpen(state)) return 'atelier';
+    if (hash === GOLD_BOOK_HASH && goldBookOpen(state)) return 'goldBook';
     if (hash === OPTIONS_HASH) return 'options';
     if (hash === ETHERIUM_HASH) return 'etherium';
     if (inLibrary()) return 'library';
@@ -197,6 +202,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     }),
     tasksShown: () => tasksOpen(state),
     tasksNews: () => taskWaiting(state),
+    onGoldBook: open(GOLD_BOOK_HASH),
+    goldBookShown: () => goldBookOpen(state),
   });
 
   // Le compteur aussi : au-dessus du jeu comme des livres ouverts, il ne clignote pas d'un écran à l'autre.
@@ -314,6 +321,7 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
   const screen = (): Component[] => {
     if (window.location.hash === OPTIONS_HASH) return options();
     if (window.location.hash === ATELIER_HASH && atelierOpen(state)) return [header, counter, createAtelierPage(state, back)];
+    if (window.location.hash === GOLD_BOOK_HASH && goldBookOpen(state)) return [header, counter, createGoldBookPage(state, back)];
     if (window.location.hash === LIBRARY_HASH) return library();
     const shelved = libraryBook();
     if (shelved) return libraryBookPage(shelved);

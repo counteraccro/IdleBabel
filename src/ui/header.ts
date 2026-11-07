@@ -22,7 +22,7 @@ export interface HeaderHandlers {
   /** Des sceaux obtenus ou une partie devenue lisible attendent d'être vus : l'étoile du Grand Livre. */
   strangeBookNews: () => boolean;
   /** Le livre ouvert en ce moment (sa page à l'écran), son médaillon pâli ; null : le jeu. */
-  openBook: () => 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'atelier' | 'notes' | null;
+  openBook: () => 'white' | 'strange' | 'options' | 'etherium' | 'debug' | 'library' | 'atelier' | 'goldBook' | 'notes' | null;
   /** Entrer dans la bibliothèque personnelle (la clé). */
   onLibrary: () => void;
   /** La clé a son médaillon : un livre rare a été trouvé (ou débogage). */
@@ -38,6 +38,9 @@ export interface HeaderHandlers {
   taskToken: Pick<BookMedalSpec, 'label' | 'onOpen'>;
   tasksShown: () => boolean;
   tasksNews: () => boolean;
+  /** Le Livre d'or (dès le Sud allumé) : il s'ouvre en grand. */
+  onGoldBook: () => void;
+  goldBookShown: () => boolean;
   /** Morceaux écrits dans le livre blanc : quand il y en a un de plus, son médaillon sursaute. */
   writtenCount: () => number;
 }
@@ -51,6 +54,7 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
     { id: 'white', label: () => t('ui.whiteBook'), flies: true, onOpen: handlers.onWhiteBook },
     { id: 'tasks', ...handlers.taskToken },
     { id: 'strange', label: () => t('ui.strangeBook'), flies: true, onOpen: handlers.onStrangeBook },
+    { id: 'goldBook', label: () => t('goldBook.medal'), onOpen: handlers.onGoldBook },
     // L'Etherium, cerclé de violet, là dès le début ; tant que l'ouvrir ne rapporte pas 1 Éther, sa couverture résiste.
     {
       id: 'etherium',
@@ -87,12 +91,14 @@ export const createHeader = (handlers: HeaderHandlers): Component => {
   let written = handlers.writtenCount();
   medals.show('library', handlers.libraryKey());
   medals.show('tasks', handlers.tasksShown());
+  medals.show('goldBook', handlers.goldBookShown());
   const update = (): void => {
     const now = handlers.strangeBookFound();
     if (now !== found) medals.show('strange', now, true);
     found = now;
     medals.show('library', handlers.libraryKey());
     medals.show('tasks', handlers.tasksShown());
+    medals.show('goldBook', handlers.goldBookShown());
     medals.news('strange', handlers.strangeBookNews());
     // Le prestige rapporte : l'étoile de l'Etherium, jusqu'à ce qu'on l'ouvre.
     medals.news('etherium', handlers.etheriumWaiting());
