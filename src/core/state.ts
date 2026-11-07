@@ -195,6 +195,21 @@ export interface PressJob {
   total: number;
 }
 
+/** Le Livre d'or (systems/goldBook.ts) : ce qui reste d'une partie à l'autre, gardé au prestige. */
+export interface GoldBookState {
+  /** La poussière d'or à dépenser dans l'arbre, et le meilleur score. */
+  dust: number;
+  best: number;
+  /** Les cases de l'arbre achetées (data/goldBook.ts, TREE). */
+  got: string[];
+  /** Le jour des lectures (« AAAA-MM-JJ ») et celles faites ce jour-là. */
+  readDay: string | null;
+  reads: number;
+  /** Les parties jouées, et les BABEL écrits en entier, depuis toujours. */
+  games: number;
+  words: number;
+}
+
 /** L'atelier des curiosités (systems/curiosities.ts) : gardé au prestige (le chariot se vide, data/curiosities.ts). */
 export interface AtelierState {
   books: Curiosity[];
@@ -371,6 +386,9 @@ export const noTasks = (): TasksState => ({
 
 export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0, pending: null };
 
+/** Le Livre d'or au départ : rien dans l'arbre, aucune partie. */
+export const NO_GOLD_BOOK: GoldBookState = { dust: 0, best: 0, got: [], readDay: null, reads: 0, games: 0, words: 0 };
+
 /** Un atelier vide : rien sur le chariot, des tiroirs vides, le carnet sans pièce. */
 export const noAtelier = (): AtelierState => ({
   books: [],
@@ -509,8 +527,10 @@ export interface GameState {
   relics: RelicsState;
   /** La Loterie : jetons, bonus et malus en cours, la Mimic dorée. */
   lottery: LotteryState;
-  /** L'atelier des curiosités (systems/curiosities.ts), ouvert par le Sud de la Rose des vents. */
+  /** L'atelier des curiosités (systems/curiosities.ts) : remplacé par le Livre d'or, n'existe plus qu'avec ?atelier. */
   atelier: AtelierState;
+  /** Le Livre d'or (systems/goldBook.ts), ouvert par le Sud de la Rose des vents. */
+  goldBook: GoldBookState;
   /** Les tâches : celles du jour, celles « une seule fois », leurs bonus pour toujours. */
   tasks: TasksState;
   /**
@@ -629,6 +649,7 @@ export const createInitialState = (locale: Locale, now = Date.now(), seed = newG
   relics: { ...NO_RELICS, found: {} },
   lottery: { ...NO_LOTTERY, effects: [] },
   atelier: noAtelier(),
+  goldBook: { ...NO_GOLD_BOOK, got: [] },
   tasks: noTasks(),
   sagaTomes: [],
   tomeToShow: null,

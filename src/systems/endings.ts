@@ -34,9 +34,9 @@ export const nextTome = (state: GameState): number | undefined => {
 
 /**
  * Ce qui fait gagner un tome : trois 7 à la Loterie, une Mimic attrapée, « Une dernière pour la route » (la tâche 21), un
- * livre pris en lisant, le centième sceau.
+ * livre pris en lisant, le centième sceau, un grand score au Livre d'or.
  */
-export type TomeSource = 'jackpot' | 'mimic' | 'task' | 'reading' | 'seals';
+export type TomeSource = 'jackpot' | 'mimic' | 'task' | 'reading' | 'seals' | 'goldBook';
 
 /**
  * Le tome `index` (1 pour le tome 2) rejoint le meuble des fins ; il sera montré, en main (state.tomeToShow). La source

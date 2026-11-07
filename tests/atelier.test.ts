@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-// L'atelier n'existe qu'en mode débogage (data/atelierOn.ts) : l'adresse ?debug, avant d'importer le jeu.
+// L'atelier n'existe qu'avec l'adresse ?atelier (data/atelierOn.ts), avant d'importer le jeu.
 vi.hoisted(() => {
-  (globalThis as { location?: unknown }).location = { search: '?debug' };
+  (globalThis as { location?: unknown }).location = { search: '?atelier' };
 });
 
 import { createInitialState, type Curiosity, type GameState } from '../src/core/state';

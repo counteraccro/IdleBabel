@@ -51,6 +51,7 @@ const readSave = (raw: string, defaultLocale: Locale): GameState | null => {
                     drawers: { ...initial.atelier.drawers, ...saved.atelier?.drawers },
                     scrap: { ...initial.atelier.scrap, ...saved.atelier?.scrap },
                   },
+                  goldBook: { ...initial.goldBook, ...saved.goldBook, got: [...(saved.goldBook?.got ?? [])] },
                   puzzles: { ...initial.puzzles, ...saved.puzzles, grids: { ...saved.puzzles?.grids } },
                   tasks: {
                     ...initial.tasks,
