@@ -310,8 +310,7 @@ export const STARS: readonly Star[] = RAW.map(([page, id, after, cost]) => ({
 export const starById = (id: string): Star | undefined => STARS.find((star) => star.id === id);
 
 /** Les étoiles d'une page (leur id complet). */
-const pageStars = (page: PageId): string[] =>
-  RAW.filter(([candidate]) => candidate === page).map(([, id]) => `${page}.${id}`);
+const pageStars = (page: PageId): string[] => RAW.filter(([candidate]) => candidate === page).map(([, id]) => `${page}.${id}`);
 
 /**
  * Étoiles fermées, tant que ce qu'elles donnent n'existe pas (revue du 08/10, décision de l'auteur) : les Âges
