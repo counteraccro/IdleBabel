@@ -57,5 +57,45 @@
       "name": "Mending",
       "what": "Gives back every mistake."
     }
+  },
+  "tree": {
+    "button": "The tree",
+    "title": "The book’s tree",
+    "dust": "Gold dust: ",
+    "hover": "Hover over a node.",
+    "cost": "{n} gold dust",
+    "short": "(not enough)",
+    "got": "owned",
+    "kinds": {
+      "points": "The Stroke",
+      "window": "The Thread",
+      "pure": "The Spangle"
+    },
+    "names": {
+      "a2": "The Binding",
+      "a1x1": "The Momentum",
+      "a1x2": "The Vault",
+      "b1x": "The Name",
+      "b1y1": "Solid Gold",
+      "b1z": "The Golden Word",
+      "c1": "The Calm",
+      "c1a1": "The Fourth",
+      "c2a": "The Margin",
+      "c2b1": "The Reader"
+    },
+    "what": {
+      "points": "points +{n}%",
+      "window": "the combo lasts {n} s longer",
+      "pure": "pure gold letters +{n}%",
+      "lives": "one more mistake allowed",
+      "startMult": "the combo starts at ×{n}",
+      "cap": "the combo climbs two notches higher",
+      "word": "BABEL comes twice as often",
+      "pureValue": "a pure gold letter is worth 100 instead of 50",
+      "babel": "BABEL is worth three times more",
+      "calm": "letters come 10% slower",
+      "choice": "four favours to choose from",
+      "read": "“Read it” gives 25% more minutes"
+    }
   }
 }

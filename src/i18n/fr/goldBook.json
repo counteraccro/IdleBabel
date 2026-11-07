@@ -57,5 +57,45 @@
       "name": "La Reprise",
       "what": "Rend toutes les erreurs."
     }
+  },
+  "tree": {
+    "button": "L’arbre",
+    "title": "L’arbre du livre",
+    "dust": "Poussière d’or : ",
+    "hover": "Survole une case.",
+    "cost": "{n} poussière d’or",
+    "short": "(pas assez)",
+    "got": "acquis",
+    "kinds": {
+      "points": "Le Trait",
+      "window": "Le Fil",
+      "pure": "La Paillette"
+    },
+    "names": {
+      "a2": "La Reliure",
+      "a1x1": "L’Élan",
+      "a1x2": "La Voûte",
+      "b1x": "Le Nom",
+      "b1y1": "L’Or massif",
+      "b1z": "Le Mot d’or",
+      "c1": "Le Calme",
+      "c1a1": "Le Quatrième",
+      "c2a": "La Marge",
+      "c2b1": "Le Lecteur"
+    },
+    "what": {
+      "points": "points +{n} %",
+      "window": "le combo dure {n} s de plus",
+      "pure": "lettres d’or pur +{n} %",
+      "lives": "une erreur de plus",
+      "startMult": "le combo part de ×{n}",
+      "cap": "le combo monte de deux crans de plus",
+      "word": "BABEL vient deux fois plus souvent",
+      "pureValue": "une lettre d’or pur vaut 100 au lieu de 50",
+      "babel": "BABEL vaut trois fois plus",
+      "calm": "les lettres viennent 10 % moins vite",
+      "choice": "quatre faveurs au choix",
+      "read": "« Le lire » donne 25 % de minutes en plus"
+    }
   }
 }

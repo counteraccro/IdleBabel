@@ -4,6 +4,7 @@ import { formatCount, writeDigits } from '../../core/format';
 import { el, type Component } from '../dom';
 import { WORD } from '../../data/goldBook';
 import { dustFor, endRun, feedRun, readMinutes, readRun, readsLeft } from '../../systems/goldBook';
+import { createGoldBookTree } from './goldBookTree';
 import {
   advanceRun,
   chooseFavor,
@@ -58,7 +59,7 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
   combo.append(el('div', 'gold-book-ring'), mult);
   const behind = el('div', 'gold-book-behind');
 
-  /** Une fenêtre par-dessus la partie : son titre, et ce qu'on y met. */
+  /** Une fenêtre par-dessus la partie : ce qu'on y met. */
   const over = (...content: HTMLElement[]): HTMLElement => {
     const box = el('div', 'gold-book-over');
     const inner = el('div', 'gold-book-in');
@@ -80,7 +81,10 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
   };
 
   const introRow = el('div', 'gold-book-row');
-  introRow.append(button('gold-book-again', t('goldBook.open'), () => start()));
+  introRow.append(
+    button('gold-book-again', t('goldBook.open'), () => start()),
+    button('gold-book-again', t('goldBook.tree.button'), () => openTree()),
+  );
   const intro = over(el('h2', '', t('goldBook.name')), el('p', 'gold-book-lead', t('goldBook.quote')), introRow);
 
   const favorTitle = el('h2');
@@ -94,10 +98,19 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
   const endCards = el('div', 'gold-book-cards');
   endCards.append(read.root, feed.root);
   const after = el('div', 'gold-book-row');
-  after.append(button('gold-book-again', t('goldBook.again'), () => start()));
+  after.append(
+    button('gold-book-again', t('goldBook.again'), () => start()),
+    button('gold-book-again', t('goldBook.tree.button'), () => openTree()),
+  );
   const end = over(el('h2', '', t('goldBook.endTitle')), endScore, endRecord, endCards, after);
 
-  root.append(back, book, spelled, field, hud, lives, combo, behind, intro, favor, end);
+  const tree = createGoldBookTree(state);
+  const treeOver = over(
+    tree.root,
+    button('gold-book-again', t('goldBook.again'), () => start()),
+  );
+
+  root.append(back, book, spelled, field, hud, lives, combo, behind, intro, favor, end, treeOver);
 
   let run: Run | null = null;
   let shown: ShownLetter[] = [];
@@ -108,7 +121,11 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
 
   /** Une fenêtre à l'écran (aucune : la partie). */
   const show = (box: HTMLElement | null): void => {
-    for (const other of [intro, favor, end]) other.classList.toggle('on', other === box);
+    for (const other of [intro, favor, end, treeOver]) other.classList.toggle('on', other === box);
+  };
+  const openTree = (): void => {
+    tree.draw();
+    show(treeOver);
   };
 
   /** Une petite inscription qui monte et s'efface : des points, une erreur. */
@@ -313,7 +330,7 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
     show(end);
   };
 
-  /** Le lire ou nourrir l'arbre : une seule fois par partie. */
+  /** Le lire ou nourrir l'arbre (qui s'ouvre alors) : une seule fois par partie. */
   const chosen = (): void => {
     read.root.disabled = true;
     feed.root.disabled = true;
@@ -329,6 +346,7 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
   feed.root.addEventListener('click', () => {
     feed.what.textContent = t('goldBook.feedDone').replace('{n}', count(feedRun(state, finished)));
     chosen();
+    openTree();
   });
 
   /** En fond, la lecture continue : les pages, au fil de la partie. */

@@ -306,7 +306,7 @@
   }
 }
 
-/* Les fenêtres : l'ouverture, la faveur du palier, la fin de la partie. */
+/* Les fenêtres : l'ouverture, la faveur du palier, la fin de la partie, l'arbre. */
 .gold-book-over {
   position: absolute;
   inset: 0;
@@ -407,4 +407,123 @@
   border: 1px solid var(--gb-border);
   padding: 6px 18px;
   border-radius: 3px;
+}
+
+/* L'arbre (goldBookTree.ts) : il pousse du centre ; rien ne dit qu'une case en cache d'autres. */
+.gold-book-treebox {
+  width: calc(820 * var(--u));
+  max-width: 100%;
+}
+.gold-book-dustline {
+  margin: 0 0 4px;
+  font-size: calc(13 * var(--u));
+  color: var(--gb-muted);
+  font-style: italic;
+}
+.gold-book-dustline span {
+  font-style: normal;
+  color: var(--gb-gold);
+  font-variant-numeric: tabular-nums;
+}
+.gold-book-tree {
+  width: calc(660 * var(--u));
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  overflow: visible;
+}
+.gold-book-tree .branch {
+  fill: none;
+  stroke: rgba(201, 164, 106, 0.4);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.gold-book-tree .branch.got {
+  stroke: #d9a94c;
+  stroke-width: 2.6;
+  filter: url(#gold-book-glow);
+}
+.gold-book-tree .branch.grow {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: gold-book-grow 0.9s ease-out forwards;
+}
+.gold-book-tree .node {
+  cursor: pointer;
+}
+.gold-book-tree .node circle {
+  fill: rgba(20, 14, 8, 0.9);
+  stroke: rgba(201, 164, 106, 0.45);
+  stroke-width: 1.2;
+}
+.gold-book-tree .node.can circle {
+  stroke: var(--gb-gold);
+  stroke-width: 1.8;
+  animation: gold-book-bud 1.6s ease-in-out infinite;
+}
+.gold-book-tree .node.got circle {
+  stroke: #e8c776;
+  stroke-width: 1.6;
+}
+.gold-book-tree .node.got {
+  cursor: default;
+}
+.gold-book-tree .node.new {
+  animation: gold-book-appear 0.6s 0.6s ease-out both;
+}
+.gold-book-tree .node .char {
+  font-family: Georgia, serif;
+  font-size: 15px;
+  fill: rgba(201, 164, 106, 0.55);
+  text-anchor: middle;
+  pointer-events: none;
+}
+.gold-book-tree .node.can .char {
+  fill: rgba(232, 199, 118, 0.85);
+}
+.gold-book-tree .node.got .char {
+  fill: #fff1c8;
+  font-size: 17px;
+  filter: url(#gold-book-glow);
+}
+.gold-book-tree .node circle.hit {
+  fill: transparent;
+  stroke: none;
+  animation: none;
+}
+.gold-book-treeinfo {
+  min-height: 2.6em;
+  margin-top: 6px;
+  font-size: calc(14 * var(--u));
+  font-style: italic;
+}
+.gold-book-treeinfo b {
+  font-weight: normal;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: calc(12 * var(--u));
+  letter-spacing: 0.14em;
+  color: var(--gb-gold);
+  text-transform: uppercase;
+  font-style: normal;
+}
+@keyframes gold-book-grow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes gold-book-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes gold-book-bud {
+  50% {
+    stroke-opacity: 0.4;
+  }
 }
