@@ -1,5 +1,6 @@
 import type { SentenceDef } from './sentences';
 import { ATELIER_ON } from './atelierOn';
+import { GOLD_BOOK_ON } from './goldBookOn';
 
 /**
  * Anomalies : des phrases qui ne débloquent rien, à collectionner sur toute la partie (le fil rouge,
@@ -12,6 +13,9 @@ export type AnomalyFamily = (typeof ANOMALY_FAMILIES)[number];
 
 /** L'indice du secret de l'atelier ne tombe qu'une fois l'atelier ouvert. */
 export const HINT_ATELIER = 'hintUnmakeMasterpiece';
+
+/** Les indices du Livre d'or (son secret, son tome) ne tombent qu'une fois le livre ouvert. */
+export const HINTS_GOLD_BOOK: readonly string[] = ['hintBabelAtCap', 'hintTomeGoldBook'];
 
 const IDS: Record<AnomalyFamily, readonly string[]> = {
   // La structure de la Bibliothèque (chiffres de Borges), qui ne tombe jamais juste.
@@ -158,6 +162,8 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintRelicCompass',
     // L'atelier (27/10) : détruire un livre S. Seulement en débogage pour l'instant, comme l'atelier (data/atelierOn.ts).
     ...(ATELIER_ON ? [HINT_ATELIER] : []),
+    // Le Livre d'or (07/11) : BABEL écrit au plafond du combo, son tome. Seulement en débogage pour l'instant.
+    ...(GOLD_BOOK_ON ? HINTS_GOLD_BOOK : []),
   ],
 };
 
@@ -207,6 +213,7 @@ export const HINTS_AFTER_FIRST_TOME: readonly string[] = [
   'hintTomeTask',
   'hintTomeReading',
   'hintTomeSeals',
+  'hintTomeGoldBook',
 ];
 
 /** L'indice du tome de la Mimic ne tombe qu'une fois la Mimic achetée (l'Est de l'Exploration). */

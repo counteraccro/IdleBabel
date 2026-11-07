@@ -21,6 +21,8 @@ import type { ModText } from '../mods/modSeals';
 import type { TomeSource } from '../systems/endings';
 import { ATELIER_ON } from './atelierOn';
 import { LECTERN_PLACES, NEW, PARTS, RANK_S, SETS } from './curiosities';
+import { GOLD_BOOK_ON } from './goldBookOn';
+import { TREE } from './goldBook';
 
 /**
  * Les sceaux (succès), rangés par planche dans le livre étrange. Pour en ajouter un :
@@ -41,6 +43,8 @@ export const PLATES = [
   'tasks',
   // L'atelier (27/10) : seulement en débogage pour l'instant (data/atelierOn.ts) ; sans sceau, la planche n'a pas de page.
   'atelier',
+  // Le Livre d'or (07/11), à la place de l'atelier : seulement en débogage pour l'instant (data/goldBookOn.ts).
+  'goldBook',
   'rare',
   'seals',
   'secrets',
@@ -163,6 +167,17 @@ export const ATELIER_SEALS: SealDef[] = [
   seal('likeNew', 'atelier', (s) => s.atelier.books.some((book) => PARTS.every((part) => book.parts[part].state === NEW))),
   seal('lecternFull', 'atelier', (s) => s.atelier.books.filter((book) => book.where === 'lectern').length >= LECTERN_PLACES),
   seal('fromScrapToTop', 'atelier', (s) => s.atelier.books.some((book) => book.startRank === 0 && book.rank === RANK_S)),
+];
+
+/**
+ * Les sceaux du Livre d'or (.ai/plan-livre-dor.md) : parties jouées, record d'une partie, BABEL écrit, l'arbre entier. Sa
+ * constellation, « La Lettrine », a son sceau avec les autres (constellation-goldBook).
+ */
+export const GOLD_BOOK_SEALS: SealDef[] = [
+  ...series('goldBookGames', 'goldBook', (s) => s.goldBook.games, [1, 10, 100]),
+  ...series('goldBookBest', 'goldBook', (s) => s.goldBook.best, [10 * K, 50 * K, 100 * K]),
+  ...series('goldBookWords', 'goldBook', (s) => s.goldBook.words, [1, 10, 100]),
+  seal('goldBookTree', 'goldBook', (s) => Object.keys(TREE).every((id) => s.goldBook.got.includes(id))),
 ];
 
 /** Le secret de l'atelier : un livre S détruit (systems/curiosities.ts). */
@@ -299,6 +314,8 @@ export const SEALS: readonly SealDef[] = [
 
   // L'atelier (27/10, .ai/plan-curiosites.md ; l'auteur : « je valide les sceaux ») : seulement en débogage pour l'instant.
   ...(ATELIER_ON ? ATELIER_SEALS : []),
+  // Le Livre d'or (07/11) : seulement en débogage pour l'instant.
+  ...(GOLD_BOOK_ON ? GOLD_BOOK_SEALS : []),
 
   // Les sceaux apposés : ceux du jeu (pas ceux des mods), sans compter ceux de cette planche ; « tous », tous les autres
   // (l'auteur, 21/10 : « débloque 10 sceaux, 25, 50, 100, 410, tous »).
@@ -396,6 +413,14 @@ export const SEALS: readonly SealDef[] = [
   { ...seal('tomeSeals', 'secrets', (s) => s.tomeFrom.seals !== undefined), tomeFrom: 'seals' },
   // Un livre S de l'atelier détruit (systems/curiosities.ts) : seulement en débogage pour l'instant, comme l'atelier.
   ...(ATELIER_ON ? [ATELIER_SECRET] : []),
+  // Le Livre d'or (07/11) : BABEL écrit avec le combo au plafond (systems/goldBook.ts, endRun) ; un tome gagné par une partie.
+  // Seulement en débogage pour l'instant.
+  ...(GOLD_BOOK_ON
+    ? [
+        secret('babelAtCap'),
+        { ...seal('tomeGoldBook', 'secrets', (s) => s.tomeFrom.goldBook !== undefined), tomeFrom: 'goldBook' as const },
+      ]
+    : []),
   // Un mod chargé, une fois dans la partie (src/mods/loader.ts) : pour toujours, même retiré (plan des mods, 14/10).
   seal('cheat', 'secrets', (s) => s.modded !== null),
 ];

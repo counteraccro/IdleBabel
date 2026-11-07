@@ -26,6 +26,11 @@ import {
 import { advanceRun, chooseFavor, comboMultiplier, comboWindow, newRun, takeLetter, type Run } from '../src/systems/goldBookRun';
 import { pagesPerSecond } from '../src/systems/production';
 import { tomeFound } from '../src/systems/endings';
+import { checkSeals, plateSeals } from '../src/systems/seals';
+import { SEALS } from '../src/data/seals';
+import { ANOMALIES, HINTS_GOLD_BOOK, hintSeal } from '../src/data/anomalies';
+import { hintFindable } from '../src/systems/findable';
+import { modGame } from '../src/mods/game';
 
 /** Un hasard qui rend toujours la même chose (0,99 : jamais d'or pur, d'encre ni de mot). */
 const always = (value: number) => () => value;
@@ -270,5 +275,58 @@ describe('la fin d’une partie', () => {
     expect(endRun(state, run).tome).toBe(1);
     expect(tomeFound(state, 1)).toBe(true);
     expect(state.tomeFrom.goldBook).toBe(2);
+  });
+});
+
+describe('ses sceaux', () => {
+  it('parties, record, BABEL écrit, l’arbre entier ; la constellation avec les autres', () => {
+    expect(plateSeals('goldBook').map((seal) => seal.id)).toEqual([
+      'goldBookGames-1',
+      'goldBookGames-10',
+      'goldBookGames-100',
+      'goldBookBest-10000',
+      'goldBookBest-50000',
+      'goldBookBest-100000',
+      'goldBookWords-1',
+      'goldBookWords-10',
+      'goldBookWords-100',
+      'goldBookTree',
+    ]);
+    const state = game();
+    Object.assign(state.goldBook, { games: 10, best: 50_000, words: 1, got: Object.keys(TREE) });
+    checkSeals(state);
+    for (const id of ['goldBookGames-10', 'goldBookBest-50000', 'goldBookWords-1', 'goldBookTree']) expect(state.seals).toHaveProperty(id);
+    expect(state.seals).not.toHaveProperty('goldBookGames-100');
+    expect(SEALS.some((seal) => seal.id === 'constellation-goldBook')).toBe(true);
+  });
+
+  it('le secret : BABEL écrit avec le combo au plafond, compté à la fin de la partie', () => {
+    const state = game();
+    const run = newRun(state);
+    run.words = 1;
+    endRun(state, run);
+    expect(state.seals).not.toHaveProperty('babelAtCap');
+    run.capWords = 1;
+    endRun(state, run);
+    expect(state.seals).toHaveProperty('babelAtCap');
+  });
+
+  it('chaque secret a son indice, qui ne tombe qu’une fois le livre ouvert', () => {
+    const ids = ANOMALIES.map((anomaly) => anomaly.id);
+    for (const hint of HINTS_GOLD_BOOK) {
+      expect(ids).toContain(hint);
+      expect(SEALS.find((seal) => seal.id === hintSeal(hint))?.plate).toBe('secrets');
+    }
+    const state = game();
+    state.etherium.push(S.trueStory);
+    expect(hintFindable(state, 'hintBabelAtCap')).toBe(true);
+    state.etherium = [S.trueStory];
+    expect(hintFindable(state, 'hintBabelAtCap')).toBe(false);
+  });
+
+  it('les mods le lisent : record, poussière d’or, parties', () => {
+    const state = game();
+    Object.assign(state.goldBook, { best: 1234, dust: 56, games: 7 });
+    expect(modGame(state).goldBook?.()).toMatchObject({ open: true, best: 1234, dust: 56, games: 7 });
   });
 });

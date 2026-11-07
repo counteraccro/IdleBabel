@@ -73,6 +73,7 @@
     "lottery": "La Loterie",
     "tasks": "Les tâches",
     "atelier": "L’atelier",
+    "goldBook": "Le Livre d’or",
     "rare": "Livres rares",
     "seals": "Les sceaux",
     "secrets": "Secrets",
@@ -117,7 +118,9 @@
     "curiositiesDestroyed": "Démonte une curiosité",
     "piecesMounted": "Remonte une pièce",
     "rankUps": "Monte un rang",
-    "sPiecesFound": "Trouve une pièce S"
+    "sPiecesFound": "Trouve une pièce S",
+    "goldBookGames": "Ouvre le Livre d’or",
+    "goldBookWords": "Écris BABEL dans le Livre d’or"
   },
   "tomeSeals": {
     "2": "Là-bas.",
@@ -369,7 +372,14 @@
     "likeNew": "Une curiosité aux quatre pièces neuves",
     "lecternFull": "Trois curiosités au lutrin",
     "fromScrapToTop": "Mène un livre arrivé F jusqu’à S",
-    "unmakeMasterpiece": "Défaire un chef-d’œuvre"
+    "unmakeMasterpiece": "Défaire un chef-d’œuvre",
+    "goldBookGames": "Ouvre le Livre d’or {n} fois",
+    "goldBookBest": "Fais {n} points en une seule partie du Livre d’or",
+    "goldBookWords": "Écris BABEL {n} fois dans le Livre d’or",
+    "goldBookTree": "Fais pousser tout l’arbre du livre",
+    "constellation-goldBook": "Allume toute la Lettrine",
+    "babelAtCap": "J’ai écrit le nom sans jamais m’arrêter.",
+    "tomeGoldBook": "Un livre est tombé."
   },
   "sealTitles": {
     "pagesRead-1": "La première page",
@@ -605,7 +615,18 @@
     "atelierBooksAll": "Les huit",
     "likeNew": "Comme neuf",
     "lecternFull": "Le lutrin plein",
-    "fromScrapToTop": "Du rebut au sommet"
+    "fromScrapToTop": "Du rebut au sommet",
+    "goldBookGames-1": "Une lettre d’or",
+    "goldBookGames-10": "Le livre de chevet",
+    "goldBookGames-100": "Cent fois rouvert",
+    "goldBookBest-10000": "Une page dorée",
+    "goldBookBest-50000": "À la feuille d’or",
+    "goldBookBest-100000": "En lettres d’or",
+    "goldBookWords-1": "Le nom en or",
+    "goldBookWords-10": "Le nom répété",
+    "goldBookWords-100": "Le nom gravé",
+    "goldBookTree": "L’arbre d’or",
+    "constellation-goldBook": "La Lettrine"
   },
   "groups": {
     "reading": "Ce que lisent tes méthodes",

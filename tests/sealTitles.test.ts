@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../src/core/state';
-import { ATELIER_SEALS, SEALS } from '../src/data/seals';
+import { ATELIER_SEALS, GOLD_BOOK_SEALS, SEALS } from '../src/data/seals';
 import { revealStats } from '../src/systems/strangeBook';
 import { setLocale } from '../src/i18n';
 import fr from '../src/i18n/fr/strangeBook.json';
@@ -16,8 +16,9 @@ describe('les titres des sceaux (21/10)', () => {
   afterEach(() => revealStats(false));
 
   it('chaque titre est celui d’un vrai sceau', () => {
-    // L'atelier, seulement en débogage (data/atelierOn.ts) : ses sceaux n'y sont pas, leurs titres si.
-    const ids = new Set([...SEALS, ...ATELIER_SEALS].map((seal) => seal.id));
+    // L'atelier et le Livre d'or, seulement en débogage (data/atelierOn.ts, data/goldBookOn.ts) : leurs sceaux n'y sont pas,
+    // leurs titres si (et celui de la constellation du Livre d'or).
+    const ids = new Set([...SEALS, ...ATELIER_SEALS, ...GOLD_BOOK_SEALS].map((seal) => seal.id).concat('constellation-goldBook'));
     for (const id of Object.keys(fr.sealTitles)) expect(ids.has(id), id).toBe(true);
   });
 

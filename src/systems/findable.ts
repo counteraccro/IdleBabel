@@ -8,6 +8,7 @@ import {
   HINTS_AFTER_PRESTIGE,
   HINTS_AFTER_STAMPS,
   HINT_ATELIER,
+  HINTS_GOLD_BOOK,
 } from '../data/anomalies';
 import { TASK_STAR } from '../data/tasks';
 import { mimicUnlocked } from './etherium';
@@ -19,6 +20,7 @@ import { relicHintFindable } from './relics';
 import { rule } from '../mods/quantities';
 import { atelierLit } from './etherium';
 import { ATELIER_ON } from '../data/atelierOn';
+import { goldBookOpen } from './goldBook';
 import type { GameState } from '../core/state';
 
 /** Exemplaires de la méthode d'avant qu'il faut : METHOD_GATE, ou ce qu'a réglé un mod (`methodGate`). */
@@ -49,7 +51,7 @@ export const waitingFor = (state: GameState, id: string): ToolId | undefined => 
 /**
  * Un indice qui mène à un livre rare attend que ce livre soit trouvé (data/anomalies.ts, HINT_BOOKS) ; celui d'un
  * secret de l'Etherium, un premier prestige ; celui de la Mimic dorée, un premier tirage de la Loterie (et celui du tome du gros
- * lot, le tome 1 aussi) ; celui du tome de la Mimic, la Mimic et le tome 1 ; celui de la dernière tâche, son étoile et le tome 1 ; celui du guichet, un premier tampon ; celui d'une relique, l'Ouest de l'Exploration et sa salle déjà vue.
+ * lot, le tome 1 aussi) ; celui du tome de la Mimic, la Mimic et le tome 1 ; celui de la dernière tâche, son étoile et le tome 1 ; celui du guichet, un premier tampon ; celui d'une relique, l'Ouest de l'Exploration et sa salle déjà vue ; ceux du Livre d'or, le livre ouvert.
  */
 export const hintFindable = (state: GameState, id: string): boolean => {
   if (HINTS_AFTER_PRESTIGE.includes(id) && state.etherReceived === 0) return false;
@@ -59,6 +61,7 @@ export const hintFindable = (state: GameState, id: string): boolean => {
   if (HINTS_AFTER_LAST_TASK.includes(id) && !state.etherium.includes(TASK_STAR.last)) return false;
   if (HINTS_AFTER_STAMPS.includes(id) && state.tasks.stamps.earned === 0) return false;
   if (id === HINT_ATELIER && !(ATELIER_ON && atelierLit(state))) return false;
+  if (HINTS_GOLD_BOOK.includes(id) && !goldBookOpen(state)) return false;
   if (!relicHintFindable(state, id)) return false;
   const books = HINT_BOOKS[id];
   return !books || books.some((book) => book in state.rareBooks);

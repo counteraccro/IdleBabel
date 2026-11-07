@@ -230,7 +230,9 @@
     "hintRelicHourglass": "Sous le verre, / le temps de quelqu’un / s’est arrêté de couler.",
     "hintRelicCompass": "Entre le jour / et la nuit, / quelqu’un a perdu le nord.",
     "hintTrueCatalogue": "Un catalogue. / Je le feuillette / comme un enfant / en décembre.",
-    "hintUnmakeMasterpiece": "Certains livres / ne valent que / leurs morceaux."
+    "hintUnmakeMasterpiece": "Certains livres / ne valent que / leurs morceaux.",
+    "hintBabelAtCap": "Le nom se dit mieux / quand on ne s’arrête pas.",
+    "hintTomeGoldBook": "Assez de lettres d’or / et le livre / en donne un autre."
   },
   "guess": "deviner · {n} de Connaissance",
   "guessShort": "il me faut {n} de Connaissance",

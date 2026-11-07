@@ -23,6 +23,8 @@ import { onceCount, onceGoal, onceLevel, onceMet, onceShown } from '../systems/o
 import { weeklyCountOf } from '../systems/weeklyTasks';
 import { modTaskCount, modTasks } from './modTasks';
 import { modText } from './modSeals';
+import { GOLD_BOOK_ON } from '../data/goldBookOn';
+import { goldBookOpen, readsLeft } from '../systems/goldBook';
 import type { GameState } from '../core/state';
 
 /** Une méthode de lecture, telle qu'un mod la voit. */
@@ -165,6 +167,24 @@ export const modGame = (state: GameState) => ({
     })),
     dailyDone: state.tasks.dailyDone,
   }),
+  /**
+   * Le Livre d'or (le Sud allumé : `open`) : le record d'une partie, la poussière d'or, les parties jouées, BABEL écrit, les
+   * cases de l'arbre achetées, les lectures qui restent aujourd'hui. Seulement en débogage pour l'instant (data/goldBookOn.ts) :
+   * sa ligne de la documentation des mods viendra avec lui.
+   */
+  ...(GOLD_BOOK_ON
+    ? {
+        goldBook: () => ({
+          open: goldBookOpen(state),
+          best: state.goldBook.best,
+          dust: state.goldBook.dust,
+          games: state.goldBook.games,
+          words: state.goldBook.words,
+          tree: [...state.goldBook.got],
+          readsLeft: readsLeft(state),
+        }),
+      }
+    : {}),
 });
 
 export type ModGame = ReturnType<typeof modGame>;

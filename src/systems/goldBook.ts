@@ -15,6 +15,7 @@ import { GOLD_BOOK_ON } from '../data/goldBookOn';
 import { dayOf } from './dailyTasks';
 import { creditMethods, gainPages, pagesPerSecond } from './production';
 import { giveTome, nextTome } from './endings';
+import { sealEvent } from './seals';
 import type { GameState } from '../core/state';
 import type { Run } from './goldBookRun';
 
@@ -73,8 +74,8 @@ export const dustFor = (state: GameState, score: number): number =>
   Math.floor((score / DUST_DIVISOR) * (state.etherium.includes(DUST_STAR) ? DUST_STAR_FACTOR : 1));
 
 /**
- * Une partie finie : comptée, le record, les mots écrits ; assez de points, le tome suivant de « L'histoire de Babel ».
- * Renvoie si c'est un record, et le tome gagné.
+ * Une partie finie : comptée, le record, les mots écrits ; assez de points, le tome suivant de « L'histoire de Babel ». BABEL
+ * écrit avec le combo au plafond : un secret. Renvoie si c'est un record, et le tome gagné.
  */
 export const endRun = (state: GameState, run: Run): { record: boolean; tome?: number } => {
   const book = state.goldBook;
@@ -82,6 +83,7 @@ export const endRun = (state: GameState, run: Run): { record: boolean; tome?: nu
   book.games += 1;
   book.words += run.words;
   book.best = Math.max(book.best, run.score);
+  if (run.capWords > 0) sealEvent(state, 'babelAtCap');
   const tome = run.score >= TOME_SCORE ? nextTome(state) : undefined;
   if (tome !== undefined) giveTome(state, tome, 'goldBook');
   return { record, ...(tome !== undefined ? { tome } : {}) };

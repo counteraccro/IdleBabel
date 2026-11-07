@@ -73,6 +73,7 @@
     "lottery": "The Lottery",
     "tasks": "Tasks",
     "atelier": "The Workshop",
+    "goldBook": "The Golden Book",
     "rare": "Rare books",
     "seals": "Seals",
     "secrets": "Secrets",
@@ -117,7 +118,9 @@
     "curiositiesDestroyed": "Take apart a curiosity",
     "piecesMounted": "Fit a piece",
     "rankUps": "Raise a rank",
-    "sPiecesFound": "Find an S piece"
+    "sPiecesFound": "Find an S piece",
+    "goldBookGames": "Open the Golden Book",
+    "goldBookWords": "Write BABEL in the Golden Book"
   },
   "tomeSeals": {
     "2": "Over there.",
@@ -369,7 +372,14 @@
     "likeNew": "A curiosity with four new pieces",
     "lecternFull": "Three curiosities on the lectern",
     "fromScrapToTop": "Take a book that arrived F all the way to S",
-    "unmakeMasterpiece": "Undoing a masterpiece"
+    "unmakeMasterpiece": "Undoing a masterpiece",
+    "goldBookGames": "Open the Golden Book {n} times",
+    "goldBookBest": "Score {n} points in a single Golden Book game",
+    "goldBookWords": "Write BABEL {n} times in the Golden Book",
+    "goldBookTree": "Grow the book’s whole tree",
+    "constellation-goldBook": "Light up the whole Initial",
+    "babelAtCap": "I wrote the name without ever stopping.",
+    "tomeGoldBook": "A book dropped."
   },
   "sealTitles": {
     "pagesRead-1": "The first page",
@@ -605,7 +615,18 @@
     "atelierBooksAll": "The eight",
     "likeNew": "Good as new",
     "lecternFull": "A full lectern",
-    "fromScrapToTop": "From scrap to the top"
+    "fromScrapToTop": "From scrap to the top",
+    "goldBookGames-1": "A golden letter",
+    "goldBookGames-10": "The bedside book",
+    "goldBookGames-100": "Reopened a hundred times",
+    "goldBookBest-10000": "A gilded page",
+    "goldBookBest-50000": "Gold leaf",
+    "goldBookBest-100000": "In letters of gold",
+    "goldBookWords-1": "The name in gold",
+    "goldBookWords-10": "The name, again",
+    "goldBookWords-100": "The name, engraved",
+    "goldBookTree": "The golden tree",
+    "constellation-goldBook": "The Initial"
   },
   "groups": {
     "reading": "What your methods read",

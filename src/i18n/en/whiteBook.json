@@ -230,7 +230,9 @@
     "hintRelicHourglass": "Under the glass, / someone’s time / stopped running.",
     "hintRelicCompass": "Between day / and night, / someone lost their bearings.",
     "hintTrueCatalogue": "A catalogue. / I leaf through it / like a child / in December.",
-    "hintUnmakeMasterpiece": "Some books / are only worth / their pieces."
+    "hintUnmakeMasterpiece": "Some books / are only worth / their pieces.",
+    "hintBabelAtCap": "The name sounds best / when you never stop.",
+    "hintTomeGoldBook": "Enough golden letters / and the book / gives another."
   },
   "guess": "guess · {n} Knowledge",
   "guessShort": "I need {n} Knowledge",
