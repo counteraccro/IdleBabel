@@ -9,7 +9,8 @@ import { createInitialState, type GameState } from '../src/core/state';
 import { ATELIER_ON } from '../src/data/atelierOn';
 import { GOLD_BOOK_ON } from '../src/data/goldBookOn';
 import { GOLD_BOOK_STAR, LIVES, TOME_SCORE, TREE } from '../src/data/goldBook';
-import { S } from '../src/data/etheriumStars';
+import { ETHERIUM_PAGES, OPEN_STARS, S } from '../src/data/etheriumStars';
+import { lightStar, pageOpen, starOpen } from '../src/systems/etherium';
 import {
   buyCase,
   canBuyCase,
@@ -50,6 +51,19 @@ describe('le Livre d’or, à la place de l’atelier', () => {
   it('en débogage, le Livre d’or ; l’atelier seulement avec ?atelier', () => {
     expect(GOLD_BOOK_ON).toBe(true);
     expect(ATELIER_ON).toBe(false);
+  });
+
+  it('la page « La Lettrine » dans l’Etherium, ouverte par le Sud ; ses étoiles s’allument', () => {
+    expect(ETHERIUM_PAGES).toContain('goldBook');
+    expect(ETHERIUM_PAGES).not.toContain('atelier');
+    expect(OPEN_STARS.filter((star) => star.page === 'goldBook')).toHaveLength(4);
+    const state = createInitialState('fr', 0, 1);
+    state.ether = 500;
+    expect(starOpen(state, 'goldBook.r4')).toBe(false);
+    expect(lightStar(state, 'explore.s')).toBe(true);
+    expect(pageOpen(state, 'goldBook')).toBe(true);
+    expect(lightStar(state, 'goldBook.r4')).toBe(true);
+    expect(lightStar(state, 'goldBook.r5')).toBe(true);
   });
 
   it('s’ouvre avec le Sud de la Rose des vents', () => {
@@ -154,6 +168,16 @@ describe('une partie', () => {
     expect(run.favors).toBeNull();
   });
 
+  it('le pied de « La Lettrine » : les 30 premières lettres viennent 15 % moins vite', () => {
+    const plain = newRun(game());
+    const state = game();
+    state.etherium.push('goldBook.s');
+    const slow = newRun(state);
+    advanceRun(plain, 600, GOLD_ONLY);
+    advanceRun(slow, 600, GOLD_ONLY);
+    expect(slow.next - 600).toBeCloseTo((plain.next - 600) * 1.15);
+  });
+
   it('les faveurs : le Ralenti ralentit, le Pardon et la Reprise rendent des erreurs', () => {
     const run = newRun(game());
     run.favors = ['slow', 'pardon', 'mend'];
@@ -223,10 +247,18 @@ describe('la fin d’une partie', () => {
 
   it('« Nourrir l’arbre » : le score ÷ 100 en poussière d’or, sans limite', () => {
     const state = game();
-    expect(dustFor(12_345)).toBe(123);
+    expect(dustFor(state, 12_345)).toBe(123);
     feedRun(state, 12_345);
     feedRun(state, 12_345);
     expect(state.goldBook.dust).toBe(246);
+  });
+
+  it('« La Lettrine » : une 4e puis une 5e lecture par jour, la poussière d’or ×1,5', () => {
+    const state = game();
+    expect(readsLeft(state, NOON)).toBe(3);
+    state.etherium.push('goldBook.r4', 'goldBook.r5', 'goldBook.d');
+    expect(readsLeft(state, NOON)).toBe(5);
+    expect(dustFor(state, 10_000)).toBe(150);
   });
 
   it('un grand score : le tome suivant, seulement après le tome 1', () => {

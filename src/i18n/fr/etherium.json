@@ -157,6 +157,12 @@
       "description": "Plus froid que la nuit entre les étoiles.",
       "locked": "Cette page attend\nun Âge nouveau."
     },
+    "goldBook": {
+      "name": "Le Livre d’or",
+      "figure": "La Lettrine",
+      "description": "Laisse ta trace.",
+      "locked": "Cette page attend\nque le Sud s’allume."
+    },
     "atelier": {
       "name": "L’atelier",
       "figure": "La Presse",
@@ -642,8 +648,8 @@
       },
       "s": {
         "name": "Sud",
-        "value": "L’atelier :",
-        "effect": "les curiosités arrivent en lisant, et sa page s’ouvre",
+        "value": "Le Livre d’or :",
+        "effect": "un livre plein de lettres dorées, et sa page s’ouvre",
         "note": "une direction, plus tard"
       },
       "d0": {
@@ -1067,6 +1073,33 @@
       "chip": {
         "name": "La puce",
         "effect": "méthode secrète : son souvenir flou"
+      }
+    },
+    "goldBook": {
+      "o": {
+        "name": "Le cœur du B",
+        "value": "Le Livre d’or :",
+        "effect": "des lettres dorées à attraper, trois lectures par jour"
+      },
+      "r4": {
+        "name": "Le fût, en haut",
+        "value": "Les lectures :",
+        "effect": "4 par jour"
+      },
+      "r5": {
+        "name": "La barre du haut",
+        "value": "Les lectures :",
+        "effect": "5 par jour"
+      },
+      "d": {
+        "name": "La barre du milieu",
+        "value": "La poussière d’or :",
+        "effect": "×1,5"
+      },
+      "s": {
+        "name": "Le pied",
+        "value": "Le départ :",
+        "effect": "les 30 premières lettres viennent 15 % moins vite"
       }
     },
     "atelier": {

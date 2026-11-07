@@ -157,6 +157,12 @@
       "description": "Colder than the night between the stars.",
       "locked": "This page is waiting\nfor a new Age."
     },
+    "goldBook": {
+      "name": "The Golden Book",
+      "figure": "The Initial",
+      "description": "Leave your mark.",
+      "locked": "This page is waiting\nfor the South to light up."
+    },
     "atelier": {
       "name": "The Workshop",
       "figure": "The Press",
@@ -642,8 +648,8 @@
       },
       "s": {
         "name": "South",
-        "value": "The workshop:",
-        "effect": "curiosities arrive as you read, and its page opens",
+        "value": "The Golden Book:",
+        "effect": "a book full of golden letters, and its page opens",
         "note": "a direction, for later"
       },
       "d0": {
@@ -1067,6 +1073,33 @@
       "chip": {
         "name": "The chip",
         "effect": "secret method: its blurry memory"
+      }
+    },
+    "goldBook": {
+      "o": {
+        "name": "The heart of the B",
+        "value": "The Golden Book:",
+        "effect": "golden letters to catch, three readings a day"
+      },
+      "r4": {
+        "name": "The stem, high",
+        "value": "Readings:",
+        "effect": "4 a day"
+      },
+      "r5": {
+        "name": "The top bar",
+        "value": "Readings:",
+        "effect": "5 a day"
+      },
+      "d": {
+        "name": "The middle bar",
+        "value": "Gold dust:",
+        "effect": "×1.5"
+      },
+      "s": {
+        "name": "The foot",
+        "value": "The start:",
+        "effect": "the first 30 letters come 15% slower"
       }
     },
     "atelier": {

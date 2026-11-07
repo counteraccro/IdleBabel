@@ -67,6 +67,17 @@ export const READ_DIVISOR = 4;
 /** « Nourrir l'arbre » : le score ÷ 100 en poussière d'or, sans limite. */
 export const DUST_DIVISOR = 100;
 
+/**
+ * Les étoiles de « La Lettrine », la page du Livre d'or dans l'Etherium (07/11) : une 4e puis une 5e lecture par jour, la
+ * poussière d'or ×1,5, un départ plus lent (les 30 premières lettres 15 % moins vite).
+ */
+export const READ_STARS = ['goldBook.r4', 'goldBook.r5'] as const;
+export const DUST_STAR = 'goldBook.d';
+export const DUST_STAR_FACTOR = 1.5;
+export const SLOW_START_STAR = 'goldBook.s';
+export const SLOW_START_LETTERS = 30;
+export const SLOW_START_FACTOR = 1.15;
+
 /** Le score d'une partie qui donne le tome suivant de « L'histoire de Babel » (l'auteur, 07/11 ; à caler en jouant). */
 export const TOME_SCORE = 50_000;
 

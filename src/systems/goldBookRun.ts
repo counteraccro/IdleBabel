@@ -21,6 +21,9 @@ import {
   PURE_CHANCE,
   PURE_LIFE,
   PURE_POINTS,
+  SLOW_START_FACTOR,
+  SLOW_START_LETTERS,
+  SLOW_START_STAR,
   WINDOW_END,
   WINDOW_START,
   WORD,
@@ -76,6 +79,8 @@ export interface Run {
   pureValue: number;
   babel: number;
   choices: number;
+  /** Le pied de « La Lettrine » : les premières lettres viennent moins vite. */
+  slowStart: boolean;
   /** Le mot en cours : la lettre où il en est ; `ready`, la suivante peut venir. */
   spelling: { i: number; ready: boolean } | null;
   letters: RunLetter[];
@@ -122,6 +127,7 @@ export const newRun = (state: GameState): Run => {
     pureValue: PURE_POINTS + treeSum(state, 'pureValue'),
     babel: treeProduct(state, 'babel'),
     choices: FAVOR_CHOICES + treeSum(state, 'choice'),
+    slowStart: state.etherium.includes(SLOW_START_STAR),
     spelling: null,
     letters: [],
     nextId: 1,
@@ -136,8 +142,10 @@ export const newRun = (state: GameState): Run => {
 /** Où en est le rythme, de 0 (début) à 1 (vers 160 lettres). */
 export const runSpeed = (run: Run): number => Math.min(1, run.count / FULL_SPEED_AT);
 const between = (start: number, end: number, run: Run): number => start + (end - start) * runSpeed(run);
-const spawnGap = (run: Run): number => between(GAP_START, GAP_END, run) * run.slow;
-const lifeOf = (run: Run): number => between(LIFE_START, LIFE_END, run) * run.slow;
+/** Le rythme : plus grand, plus lent (l'arbre, les faveurs, et le départ plus lent de « La Lettrine »). */
+const slowness = (run: Run): number => run.slow * (run.slowStart && run.count < SLOW_START_LETTERS ? SLOW_START_FACTOR : 1);
+const spawnGap = (run: Run): number => between(GAP_START, GAP_END, run) * slowness(run);
+const lifeOf = (run: Run): number => between(LIFE_START, LIFE_END, run) * slowness(run);
 
 /** La fenêtre du combo (ms) : 3 s qui descendent à 1,5 s, plus ce que donnent l'arbre et les faveurs. */
 export const comboWindow = (run: Run): number => between(WINDOW_START, WINDOW_END, run) + run.winBonus;

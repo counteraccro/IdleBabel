@@ -2,6 +2,7 @@ import { ETHER_WEIGHT } from './etherium';
 import { AUTOMATIC_AGE, DIGITAL_AGE, QUANTUM_AGE } from './tools';
 import { GEAR_AGES } from './gear';
 import { ATELIER_ON } from './atelierOn';
+import { GOLD_BOOK_ON } from './goldBookOn';
 
 /**
  * L'Etherium en constellations (validé avec l'auteur le 06/10/2026, .ai/plan-etherium-constellations.md) : une figure
@@ -23,14 +24,15 @@ export const ETHERIUM_GROUPS = [
   { id: 'methods', contents: 0, pages: ['ages', 'gear', 'reading', 'start', 'memory', 'screen', 'chandelier'] },
   { id: 'reading', contents: 1, pages: ['hands', 'quill', 'knowledge', 'finds'] },
   { id: 'time', contents: 1, pages: ['away', 'weight'] },
-  // L'atelier (27/10), après les Tâches : seulement en mode débogage pour sa première version (data/atelierOn.ts).
-  { id: 'rooms', contents: 2, pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks', 'atelier'] },
+  // Le Livre d'or (07/11), après les Tâches : en mode débogage tant qu'il n'est pas fini (data/goldBookOn.ts). L'atelier qu'il
+  // remplace, seulement avec ?atelier (data/atelierOn.ts).
+  { id: 'rooms', contents: 2, pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks', 'goldBook', 'atelier'] },
 ] as const;
 
 export type PageId = (typeof ETHERIUM_GROUPS)[number]['pages'][number];
-/** Les pages d'un groupe, telles que le livre les montre (sans l'atelier hors débogage). */
+/** Les pages d'un groupe, telles que le livre les montre (le Livre d'or et l'atelier seulement quand ils existent). */
 export const groupPages = (group: (typeof ETHERIUM_GROUPS)[number]): readonly PageId[] =>
-  group.pages.filter((page) => ATELIER_ON || page !== 'atelier');
+  group.pages.filter((page) => (page !== 'atelier' || ATELIER_ON) && (page !== 'goldBook' || GOLD_BOOK_ON));
 /** L'ordre des pages dans le livre : celui des groupes. */
 export const ETHERIUM_PAGES: readonly PageId[] = ETHERIUM_GROUPS.flatMap(groupPages);
 
@@ -216,7 +218,7 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['explore', 'e', null, 2],
   ['explore', 'w', null, 5],
   ['explore', 'n', null, 2],
-  // Le Sud, à 10 (27/10) : l'atelier des curiosités, et sa page.
+  // Le Sud, à 10 (27/10) : l'atelier des curiosités, puis le Livre d'or à sa place (07/11), et sa page.
   ['explore', 's', null, 10],
   ['explore', 'd0', null, 5],
   ['explore', 'd1', null, 0],
@@ -274,6 +276,13 @@ const RAW: readonly [PageId, string, string | null, number][] = [
   ['tasks', 'p3', 'p2', 200],
   // La semaine (30/10) : une 3e tâche de la semaine (50, validé par l'auteur le 03/11).
   ['tasks', 'w3', null, 50],
+  // Le Livre d'or, « La Lettrine » (07/11, .ai/plan-livre-dor.md ; l'auteur : une petite constellation, de confort) : le
+  // cœur du B est offert quand le Sud s'allume ; le fût porte une 4e puis une 5e lecture par jour, la panse du bas la poussière
+  // d'or, le pied un départ plus lent.
+  ['goldBook', 'r4', null, 40],
+  ['goldBook', 'r5', 'r4', 150],
+  ['goldBook', 'd', null, 60],
+  ['goldBook', 's', null, 25],
   // L'atelier, « La Presse » (27/10, .ai/plan-curiosites.md, validée par l'auteur : « je valide, prix hauts pour le flair 2 et
   // l'arrivage 2 ») : la vis est offerte quand le Sud s'allume ; le montant gauche porte le flair (les pièces S), le droit
   // l'arrivage ; la barre de la vis la main sûre ; le plateau l'œil du libraire ; le socle l'établi ; la troisième presse, au
@@ -300,6 +309,10 @@ export const STARS: readonly Star[] = RAW.map(([page, id, after, cost]) => ({
 
 export const starById = (id: string): Star | undefined => STARS.find((star) => star.id === id);
 
+/** Les étoiles d'une page (leur id complet). */
+const pageStars = (page: PageId): string[] =>
+  RAW.filter(([candidate]) => candidate === page).map(([, id]) => `${page}.${id}`);
+
 /**
  * Étoiles fermées, tant que ce qu'elles donnent n'existe pas (revue du 08/10, décision de l'auteur) : les Âges
  * Dimensionnel et Infini, et la Goutte (la méthode secrète de l'Âge Automatique, mise de côté). Elles se
@@ -309,18 +322,18 @@ export const CLOSED: ReadonlySet<string> = new Set([
   'ages.dim',
   'ages.inf',
   'memory.a0',
-  // Les pointes de la Rose des vents qui n'ouvrent encore rien ; le Sud et l'atelier, hors débogage (data/atelierOn.ts).
+  // Les pointes de la Rose des vents qui n'ouvrent encore rien ; le Sud, le Livre d'or et l'atelier quand ils n'existent pas
+  // (data/goldBookOn.ts, data/atelierOn.ts).
   ...['d1', 'd2', 'd3'].map((id) => `explore.${id}`),
-  ...(ATELIER_ON ? [] : ['explore.s', ...RAW.filter(([page]) => page === 'atelier').map(([page, id]) => `${page}.${id}`)]),
+  ...(ATELIER_ON || GOLD_BOOK_ON ? [] : ['explore.s']),
+  ...(ATELIER_ON ? [] : pageStars('atelier')),
+  ...(GOLD_BOOK_ON ? [] : pageStars('goldBook')),
   // La dent du Rouage de l'Âge Dimensionnel, tant que cet Âge n'existe pas.
   'gear.a5',
 ]);
 
-/** Les étoiles de l'atelier (le Sud compris) : fermées hors débogage, mais jamais rendues (core/closedStars.ts). */
-export const ATELIER_STARS: ReadonlySet<string> = new Set([
-  'explore.s',
-  ...RAW.filter(([page]) => page === 'atelier').map(([page, id]) => `${page}.${id}`),
-]);
+/** Les étoiles du Sud, du Livre d'or et de l'atelier : fermées quand ils n'existent pas, mais jamais rendues (core/closedStars.ts). */
+export const SOUTH_STARS: ReadonlySet<string> = new Set(['explore.s', ...pageStars('atelier'), ...pageStars('goldBook')]);
 
 /** La troisième presse ne s'allume qu'après le premier livre S monté. */
 export const THIRD_PRESS = 'atelier.p3';
@@ -354,6 +367,7 @@ export const PAGE_NEEDS: Partial<Record<PageId, string>> = {
   mimic: 'explore.e',
   relics: 'explore.w',
   tasks: 'explore.n',
+  goldBook: 'explore.s',
   atelier: 'explore.s',
   screen: DIGITAL_AGE,
   chandelier: QUANTUM_AGE,

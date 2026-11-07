@@ -1,4 +1,16 @@
-import { DUST_DIVISOR, GOLD_BOOK_STAR, READ_DIVISOR, READS_PER_DAY, TOME_SCORE, TREE, TREE_ROOT, type TreeEffects } from '../data/goldBook';
+import {
+  DUST_DIVISOR,
+  DUST_STAR,
+  DUST_STAR_FACTOR,
+  GOLD_BOOK_STAR,
+  READ_DIVISOR,
+  READ_STARS,
+  READS_PER_DAY,
+  TOME_SCORE,
+  TREE,
+  TREE_ROOT,
+  type TreeEffects,
+} from '../data/goldBook';
 import { GOLD_BOOK_ON } from '../data/goldBookOn';
 import { dayOf } from './dailyTasks';
 import { creditMethods, gainPages, pagesPerSecond } from './production';
@@ -45,19 +57,20 @@ export const treeSum = (state: GameState, key: keyof TreeEffects): number =>
 export const treeProduct = (state: GameState, key: 'word' | 'babel'): number =>
   state.goldBook.got.reduce((product, id) => product * (TREE[id]?.fx[key] ?? 1), 1);
 
-/** Les lectures permises par jour. */
-export const readsPerDay = (): number => READS_PER_DAY;
+/** Les lectures permises par jour : trois, une de plus par étoile du fût de « La Lettrine ». */
+export const readsPerDay = (state: GameState): number => READS_PER_DAY + READ_STARS.filter((id) => state.etherium.includes(id)).length;
 
 /** Les lectures qui restent aujourd'hui (remises à minuit, heure du joueur). */
 export const readsLeft = (state: GameState, now = Date.now()): number =>
-  readsPerDay() - (state.goldBook.readDay === dayOf(now) ? state.goldBook.reads : 0);
+  readsPerDay(state) - (state.goldBook.readDay === dayOf(now) ? state.goldBook.reads : 0);
 
 /** Les minutes de lecture d'un score : √score ÷ 4, plus ce qu'ajoute le Lecteur ; une au moins. */
 export const readMinutes = (state: GameState, score: number): number =>
   Math.max(1, Math.round((Math.sqrt(score) / READ_DIVISOR) * (1 + treeSum(state, 'read'))));
 
-/** La poussière d'or d'un score. */
-export const dustFor = (score: number): number => Math.floor(score / DUST_DIVISOR);
+/** La poussière d'or d'un score : un centième, ×1,5 avec la barre du milieu de « La Lettrine ». */
+export const dustFor = (state: GameState, score: number): number =>
+  Math.floor((score / DUST_DIVISOR) * (state.etherium.includes(DUST_STAR) ? DUST_STAR_FACTOR : 1));
 
 /**
  * Une partie finie : comptée, le record, les mots écrits ; assez de points, le tome suivant de « L'histoire de Babel ».
@@ -89,7 +102,7 @@ export const readRun = (state: GameState, score: number, now = Date.now()): bool
 
 /** « Nourrir l'arbre » : la poussière d'or du score. */
 export const feedRun = (state: GameState, score: number): number => {
-  const dust = dustFor(score);
+  const dust = dustFor(state, score);
   state.goldBook.dust += dust;
   return dust;
 };

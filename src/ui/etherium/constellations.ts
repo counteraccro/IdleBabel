@@ -318,6 +318,33 @@ const PRESS_SIDES = [200, 440] as const;
 const screwThread = (): (readonly [number, number])[] =>
   Array.from({ length: 14 }, (_, i) => [SCREW[0] + (i % 2 ? 8 : -8), PRESS_TOP + 36 + i * 10] as const);
 
+// Le Livre d'or, « La Lettrine » (07/11) : un grand B orné dans son cadre, comme au début d'un chapitre ; le fût, ses deux
+// panses, un fleuron dans deux coins du cadre.
+const STEM = 250;
+const B_TOP = 360;
+const B_MID = 480;
+const B_FOOT = 610;
+const FRAME = [140, 310, 360] as const;
+/** Un fleuron dans un coin du cadre : une crosse qui s'enroule ; `sx`, `sy` : vers où (1 ou -1). */
+const flourish = (x: number, y: number, sx: number, sy: number): (readonly [number, number])[][] => [
+  [
+    ...curve([x, y], [x + 40 * sx, y], [x + 40 * sx, y + 32 * sy], 8),
+    ...curve([x + 40 * sx, y + 32 * sy], [x + 40 * sx, y + 52 * sy], [x + 22 * sx, y + 48 * sy], 6),
+  ],
+  curve([x, y], [x, y + 40 * sy], [x + 30 * sx, y + 40 * sy], 8),
+];
+/** Une panse du B, du fût au fût, aussi large que `width`. */
+const bowl = (top: number, bottom: number, width: number): (readonly [number, number])[] => {
+  const right = STEM + width;
+  const middle = (top + bottom) / 2;
+  return [
+    [STEM, top],
+    ...curve([right - 60, top], [right, top], [right, middle], 8),
+    ...curve([right, middle], [right, bottom], [right - 60, bottom], 8),
+    [STEM, bottom],
+  ];
+};
+
 export const FIGURES: Record<PageId, Figure> = {
   // Le livre vu de face : le dos au milieu ; chaque page part du haut du dos, suit le haut de la page, puis le bord
   // jusqu'au coin du bas.
@@ -786,6 +813,45 @@ export const FIGURES: Record<PageId, Figure> = {
       labelKeys: 'etherium.pages.tasks.branches',
       labelSize: 11,
       labelSpacing: 1.5,
+    },
+  },
+  // Le Livre d'or, « La Lettrine » : le cœur du B offert ; le fût porte les lectures du jour (en bas la 4e, la barre du haut la
+  // 5e), la barre du milieu la poussière d'or, le pied le départ plus lent.
+  goldBook: {
+    spots: {
+      o: [STEM, B_MID],
+      r4: [STEM, B_TOP],
+      r5: [STEM + 100, B_TOP],
+      d: [STEM + 110, B_MID],
+      s: [STEM, B_FOOT],
+    },
+    deco: [],
+    given: { id: 'o', opens: ['r4', 'd', 's'] },
+    sketch: {
+      lines: [
+        // Le fût et ses empattements ; les deux panses ; les fleurons.
+        [
+          [STEM, B_TOP],
+          [STEM, B_FOOT],
+        ],
+        [
+          [STEM - 22, B_TOP],
+          [STEM, B_TOP],
+        ],
+        [
+          [STEM - 22, B_FOOT],
+          [STEM, B_FOOT],
+        ],
+        bowl(B_TOP, B_MID, 160),
+        bowl(B_MID, B_FOOT, 180),
+        ...flourish(FRAME[0] + 12, FRAME[1] + 12, 1, 1),
+        ...flourish(FRAME[0] + FRAME[2] - 12, FRAME[1] + FRAME[2] - 12, -1, -1),
+      ],
+      boxes: [
+        [FRAME[0], FRAME[1], FRAME[2], FRAME[2], 6],
+        [FRAME[0] + 12, FRAME[1] + 12, FRAME[2] - 24, FRAME[2] - 24, 4],
+      ],
+      strong: true,
     },
   },
   // L'atelier, « La Presse » : la vis offerte ; le montant gauche porte le flair, le droit l'arrivage ; la barre de la vis la
