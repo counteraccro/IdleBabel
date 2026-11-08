@@ -661,23 +661,6 @@
     ],
     "noteSign": "— O.",
     "notes": [
-      {
-        "title": "Alpha 3.5",
-        "date": "8 novembre 2026",
-        "sections": [
-          {
-            "heading": "Nouveautés",
-            "items": [
-              "Le Livre d’or : un mini-jeu de lettres d’or à attraper, ouvert par le Sud de la Rose des vents, dans l’Etherium.",
-              "Sa constellation, « La Lettrine », sur une page à elle dans les salles de l’Etherium.",
-              "Après une partie, le score se lit en minutes de lecture, ou nourrit un arbre qui pousse partie après partie.",
-              "Le Livre d’or s’ouvre par un médaillon en haut de l’écran, ou depuis la bibliothèque, où il est rangé.",
-              "Une planche de sceaux « Le Livre d’or » dans le livre étrange.",
-              "Mods : le Livre d’or dans l’API."
-            ]
-          }
-        ]
-      },
       "Ce n’est pas tout à fait ça.",
       "Trois fois, pas deux.",
       "Je précise, parce que le biographe ne le fera pas.",
@@ -1067,6 +1050,23 @@
       ],
       "fontsIntro": "Sous licence libre (SIL Open Font License).",
       "notes": [
+        {
+          "title": "Alpha 3.5",
+          "date": "8 novembre 2026",
+          "sections": [
+            {
+              "heading": "Nouveautés",
+              "items": [
+                "Le Livre d’or : un mini-jeu de lettres d’or à attraper, ouvert par le Sud de la Rose des vents, dans l’Etherium.",
+                "Sa constellation, « La Lettrine », sur une page à elle dans les salles de l’Etherium.",
+                "Après une partie, le score se lit en minutes de lecture, ou nourrit un arbre qui pousse partie après partie.",
+                "Le Livre d’or s’ouvre par un médaillon en haut de l’écran, ou depuis la bibliothèque, où il est rangé.",
+                "Une planche de sceaux « Le Livre d’or » dans le livre étrange.",
+                "Mods : le Livre d’or dans l’API."
+              ]
+            }
+          ]
+        },
         {
           "title": "Alpha 3.4",
           "date": "3 novembre 2026",
