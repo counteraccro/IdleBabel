@@ -661,6 +661,23 @@
     ],
     "noteSign": "— O.",
     "notes": [
+      {
+        "title": "Alpha 3.5",
+        "date": "8 November 2026",
+        "sections": [
+          {
+            "heading": "New",
+            "items": [
+              "The Golden Book: a mini-game of golden letters to catch, opened by the South of the Compass Rose, in the Etherium.",
+              "Its constellation, “The Initial”, on a page of its own among the Etherium’s rooms.",
+              "After a game, the score is read as minutes of reading, or feeds a tree that grows game after game.",
+              "The Golden Book opens from a medallion at the top of the screen, or from the library, where it is shelved.",
+              "A “The Golden Book” seal plate in the strange book.",
+              "Mods: the Golden Book in the API."
+            ]
+          }
+        ]
+      },
       "That’s not quite it.",
       "Three times, not two.",
       "I’m adding this because the biographer won’t.",
