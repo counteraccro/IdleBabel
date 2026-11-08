@@ -243,8 +243,8 @@ describe('La lettre qui s’échappe', () => {
     expect(findWhileAway(state, 60)).toBeLessThanOrEqual(Math.ceil(turned * MAX_FINDS_PER_PAGE) + 1);
   });
 
-  it('le livre « Idle Babel » raconte la lettre rendue forte, puis les tampons', () => {
+  it('le livre « Idle Babel » raconte la lettre rendue forte, puis les tampons, puis le Livre d’or', () => {
     const sections = STORY.flatMap((chapter) => chapter.sections ?? []).map((section) => section.key);
-    expect(sections.slice(-3)).toEqual(['letterAgain', 'stamps', 'thisBook']);
+    expect(sections.slice(-4)).toEqual(['letterAgain', 'stamps', 'goldBook', 'thisBook']);
   });
 });

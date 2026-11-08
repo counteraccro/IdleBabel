@@ -186,6 +186,7 @@ export const STORY: StoryChapter[] = [
       { key: 'relicLook' },
       { key: 'letterAgain' },
       { key: 'stamps' },
+      { key: 'goldBook' },
       // Toujours la dernière partie du livre : il s'écrit encore.
       { key: 'thisBook' },
     ],

@@ -3777,6 +3777,21 @@
             "Et des sceaux pour aller avec : le niveau V de huit tâches, chacun avec sa phrase (« Il a toujours faim. ») ; les tâches de la semaine ; une carte pleine ; les tampons gagnés ; un premier achat au guichet."
           ]
         },
+        "goldBook": {
+          "head": "Le Livre d’or",
+          "text": [
+            "L’auteur cherchait un mini-jeu dans le jeu. L’idée qui lui a plu : attraper des lettres pour faire un score. Une lettre paraît, on clique, la suivante vient, de plus en plus vite.",
+            "Pendant une partie, l’écran change : le compteur devient un score, et la lecture continue derrière. Les lettres montent du livre en se balançant, comme la lettre qui s’échappe, mais on ne peut pas les confondre.",
+            "Pas de limite au nombre de parties : rien de plus frustrant. Ce sont les récompenses qui sont comptées : le score se lit en minutes de lecture, trois fois par jour, ou il nourrit un arbre.",
+            "L’arbre, parce que l’auteur aime pouvoir progresser. Une boule d’or a été essayée (« pas très Babel »), puis un arbre en forme d’IDLE BABEL (« mauvaise idée »). Le bon : un arbre qui pousse du centre, un peu comme une constellation, mais autrement.",
+            "Ses cases restent cachées : on ne sait pas ce qu’acheter une case fera paraître, ni si elle en fera paraître. Le joueur ne sait pas où il s’embarque ; la découverte est totale.",
+            "Il prend la place d’un atelier où l’on fabriquait des livres, qui n’est jamais sorti : trop complexe, pas fait pour ce qu’est Idle Babel.",
+            "Le nom est venu des lettres : des lettres d’or, ça sort d’un livre d’or. Sa constellation, au Sud de la Rose des vents, s’appelle « La Lettrine ».",
+            "Le premier livre était plat, dessiné à même l’écran : « moche, il ne fait pas 3D comme les autres. Et il ne fait pas livre d’or. » Il est devenu un vrai livre, fermé entre deux parties ; il s’ouvre pour jouer, tourne une page de temps en temps, comme si les lettres s’en échappaient, et se referme à la fin.",
+            "Sa couverture a été refaite deux fois : trop simple, puis « cheap, livre classique ». Elle vient d’un vieux livre d’or de la ville de Saint-Étienne, de ceux qu’on trouverait dans Babel : maroquin rouge, dentelle dorée, et le sceau du jeu à la place des armoiries. « Là, ça fait vrai livre précieux. »",
+            "On peut aussi le prendre dans la bibliothèque, où il est rangé avec les livres rares ; l’ouvrir lance une partie. Et des sceaux pour aller avec, un secret, et une source de plus pour les tomes de « L’histoire de Babel »."
+          ]
+        },
         "thisBook": {
           "head": "Ce livre",
           "text": [
