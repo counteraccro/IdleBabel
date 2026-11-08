@@ -33,6 +33,7 @@ import {
   LIBRARY_DEBUG_BOOK,
   LIBRARY_FINAL_BOOK,
   LIBRARY_FIRST_BOOK,
+  LIBRARY_GOLD_BOOK,
   createLibraryPage,
   shelfBook3d,
   type LibraryPage,
@@ -81,6 +82,8 @@ const LIBRARY_BOOK_HASH = '#bibliotheque:';
 const ATELIER_HASH = '#atelier';
 /** Le Livre d'or (son médaillon, dès le Sud de la Rose des vents allumé). */
 const GOLD_BOOK_HASH = '#livredor';
+/** Le Livre d'or pris dans la vitrine : sa couverture s'ouvre, puis le mini-jeu prend la place (ms). */
+const GOLD_BOOK_OPEN_MS = 800;
 /** Un tome gagné arrive en main après ce délai (le temps de lire le panneau du gros lot, de voir le jeu revenir). */
 const TOME_DELAY_MS = 1800;
 /** Changement d'écran : l'ancien s'efface en fondu pendant que le nouveau apparaît (voir .screen-out). */
@@ -154,7 +157,8 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
       ((id === LIBRARY_DEBUG_BOOK || id === LIBRARY_FINAL_BOOK) && debugging) ||
       // Un tome de « L'histoire de Babel » rangé (le tome 1 : « Qui j'étais »).
       (tomeIndex(id) >= 0 && tomeFound(state, tomeIndex(id))) ||
-      (id === LIBRARY_FIRST_BOOK && firstBookKept(state))
+      (id === LIBRARY_FIRST_BOOK && firstBookKept(state)) ||
+      (id === LIBRARY_GOLD_BOOK && goldBookOpen(state))
       ? id
       : null;
   };
@@ -307,6 +311,20 @@ export const mountApp = (root: HTMLElement, state: GameState): (() => void) => {
     const spec = shelfBook3d(state, id, debugging);
     // Le livre de débogage, hors du mode ?debug : on le prend en main, mais il refuse de s'ouvrir.
     if (id === LIBRARY_DEBUG_BOOK && !debugging) spec.sealed = showDebugBookError;
+    // Le Livre d'or : sa couverture s'ouvre, et c'est le mini-jeu (son retour ramène à la vitrine).
+    let goldOpening = false;
+    if (id === LIBRARY_GOLD_BOOK)
+      spec.sealed = (cover) => {
+        if (goldOpening) return;
+        goldOpening = true;
+        cover.open();
+        // Rangé entre-temps (« Ranger le livre ») : le mini-jeu ne s'ouvre plus.
+        const page = window.location.hash;
+        window.setTimeout(() => {
+          goldOpening = false;
+          if (window.location.hash === page) open(GOLD_BOOK_HASH)();
+        }, GOLD_BOOK_OPEN_MS);
+      };
     return [header, counter, page, createBook3dPage(spec, leave, t('ui.shelveBook'))];
   };
 

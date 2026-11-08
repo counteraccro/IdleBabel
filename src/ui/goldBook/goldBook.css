@@ -128,50 +128,28 @@
 /* Le livre ouvert, d'où montent les lettres. */
 .gold-book-book {
   position: absolute;
-  left: 30%;
-  width: 40%;
-  top: 70%;
-  height: 30%;
-  display: flex;
-  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.7));
+  left: 50%;
+  bottom: 0;
+  width: calc(640 * var(--u));
+  height: calc(360 * var(--u));
+  transform: translateX(-50%);
+}
+/* Sa lueur dorée : un dégradé fixe derrière lui (un filtre sur le canvas se recalculerait à chaque image du livre). */
+.gold-book-book::before {
+  content: '';
+  position: absolute;
+  inset: -12% -8% -4%;
+  background: radial-gradient(closest-side, rgba(232, 180, 80, 0.28), transparent);
+  pointer-events: none;
 }
 .gold-book-book.shake {
   animation: gold-book-shake 0.3s;
 }
-.gold-book-page {
+.gold-book-canvas {
   position: relative;
-  flex: 1;
-  border-radius: 3px 3px 0 0;
-  overflow: hidden;
-  background:
-    repeating-linear-gradient(#0000 0 calc(8 * var(--u)), rgba(176, 122, 31, 0.28) calc(8 * var(--u)) calc(9 * var(--u))) 50%
-      calc(30 * var(--u)) / 78% 75% no-repeat,
-    linear-gradient(90deg, #e6cf92, #f6e7bd 55%, #e0c584);
-}
-.gold-book-page.right {
-  background:
-    repeating-linear-gradient(#0000 0 calc(8 * var(--u)), rgba(176, 122, 31, 0.28) calc(8 * var(--u)) calc(9 * var(--u))) 50%
-      calc(30 * var(--u)) / 78% 75% no-repeat,
-    linear-gradient(90deg, #e0c584, #f6e7bd 45%, #e6cf92);
-}
-.gold-book-edge {
-  position: absolute;
-  inset: calc(-5 * var(--u)) calc(-9 * var(--u)) 0;
-  border-radius: 5px 5px 0 0;
-  background: linear-gradient(#c9973f, #7d5a22);
-  z-index: -1;
-  box-shadow: 0 0 30px rgba(232, 180, 80, 0.35);
-}
-.gold-book-title {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 7%;
-  text-align: center;
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: calc(11 * var(--u));
-  letter-spacing: 0.3em;
-  color: rgba(150, 105, 35, 0.8);
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .gold-book-spelled {
   position: absolute;
@@ -202,6 +180,7 @@
   width: 0;
   height: 0;
   cursor: pointer;
+  will-change: transform;
 }
 .gold-book-hit {
   position: absolute;
@@ -225,6 +204,8 @@
   text-shadow:
     0 0 8px rgba(232, 199, 118, 0.9),
     0 0 22px rgba(232, 199, 118, 0.45);
+  /* Bougée à chaque image : sur son propre calque, son halo n'est pas repeint à chaque fois. */
+  will-change: transform, opacity;
 }
 .gold-book-letter:hover .gold-book-glyph {
   filter: brightness(1.25);
@@ -299,10 +280,10 @@
 }
 @keyframes gold-book-shake {
   25% {
-    transform: translateX(-5px);
+    transform: translateX(calc(-50% - 5px));
   }
   75% {
-    transform: translateX(5px);
+    transform: translateX(calc(-50% + 5px));
   }
 }
 

@@ -5,6 +5,7 @@ import { el, type Component } from '../dom';
 import { WORD } from '../../data/goldBook';
 import { dustFor, endRun, feedRun, readMinutes, readRun, readsLeft } from '../../systems/goldBook';
 import { createGoldBookTree } from './goldBookTree';
+import { createGoldBook3d } from './goldBook3d';
 import {
   advanceRun,
   chooseFavor,
@@ -43,9 +44,8 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
   back.addEventListener('click', onBack);
 
   const book = el('div', 'gold-book-book');
-  const left = el('div', 'gold-book-page');
-  left.append(el('div', 'gold-book-title', t('goldBook.name').toUpperCase()));
-  book.append(el('div', 'gold-book-edge'), left, el('div', 'gold-book-page right'));
+  const book3d = createGoldBook3d();
+  book.append(book3d.root);
   const spelled = el('div', 'gold-book-spelled');
   const field = el('div', 'gold-book-field');
 
@@ -162,11 +162,14 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
     book.classList.add('shake');
   };
 
-  /** Elle monte du livre en se balançant (p de 0 à 1, parts de l'écran), comme la lettre qui s'échappe. */
-  const move = (item: ShownLetter, p: number): void => {
+  /**
+   * Elle monte du livre en se balançant (p de 0 à 1, parts de l'écran), comme la lettre qui s'échappe. La taille de l'écran
+   * est lue une fois par image (`size`) : la relire après avoir bougé une lettre forcerait la mise en page à chaque lettre.
+   */
+  const move = (item: ShownLetter, p: number, size = { width: field.clientWidth, height: field.clientHeight }): void => {
     const { x0, seed } = item.letter;
-    item.x = (x0 + 0.04 * Math.sin(p * 6 + seed) + 0.03 * p * Math.sign(Math.sin(seed))) * field.clientWidth;
-    item.y = (0.74 - 0.6 * p) * field.clientHeight;
+    item.x = (x0 + 0.04 * Math.sin(p * 6 + seed) + 0.03 * p * Math.sign(Math.sin(seed))) * size.width;
+    item.y = (0.74 - 0.6 * p) * size.height;
     item.root.style.transform = `translate(${item.x}px, ${item.y}px)`;
     item.glyph.style.transform = `rotate(${18 * Math.sin(p * 4 + seed)}deg) scale(${1 - 0.35 * p})`;
     item.glyph.style.opacity = String(Math.min(1, p * 8, (1 - p) * 6));
@@ -213,6 +216,7 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
       take(item);
     });
     move(item, 0);
+    book3d.leaf();
     field.append(letterRoot);
     shown.push(item);
   };
@@ -271,6 +275,8 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
     }
     const step = Math.min(MAX_STEP, now - (last || now));
     last = now;
+    // Lue avant toute écriture de l'image (lettres nées, vies, score) : la mise en page n'est pas refaite pour elle.
+    const size = { width: field.clientWidth, height: field.clientHeight };
     for (const event of advanceRun(run, step)) {
       if (event.type === 'spawn') spawn(event.letter);
       if (event.type === 'out' || event.type === 'wordOut') {
@@ -288,13 +294,19 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
       if (event.type === 'break') drawHud();
       if (event.type === 'over') return finish();
     }
-    for (const item of shown) move(item, Math.min(1, (run.t - item.letter.born) / item.letter.life));
+    for (const item of shown) move(item, Math.min(1, (run.t - item.letter.born) / item.letter.life), size);
     combo.style.setProperty('--left', String(run.chain ? Math.max(0, 1 - (run.t - run.lastCatch) / comboWindow(run)) : 0));
   };
 
+  /** Le livre s'ouvre, puis la partie commence. */
   const start = (): void => {
     field.replaceChildren();
     shown = [];
+    show(null);
+    void book3d.open().then(begin);
+  };
+  const begin = (): void => {
+    if (!root.isConnected) return;
     run = newRun(state);
     last = 0;
     drawSpelled();
@@ -314,6 +326,7 @@ export const createGoldBookPage = (state: GameState, onBack: () => void): Compon
     run = null;
     for (const item of shown) item.root.remove();
     shown = [];
+    void book3d.close();
     endScore.textContent = count(finished);
     endRecord.innerHTML =
       record && finished > 0 ? `<b>${t('goldBook.record')}</b>` : t('goldBook.best').replace('{n}', count(state.goldBook.best));

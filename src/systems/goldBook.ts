@@ -28,6 +28,16 @@ import type { Run } from './goldBookRun';
 /** Le Sud de la Rose des vents est allumé : le livre s'ouvre (en débogage seulement pour l'instant, data/goldBookOn.ts). */
 export const goldBookOpen = (state: GameState): boolean => GOLD_BOOK_ON && state.etherium.includes(GOLD_BOOK_STAR);
 
+/**
+ * Sa place dans la vitrine (null : pas ouvert) : rangé la première fois que la vitrine le montre, à la suite des livres rares déjà
+ * trouvés, et il n'en bouge plus.
+ */
+export const goldBookShelved = (state: GameState): number | null => {
+  if (!goldBookOpen(state)) return null;
+  state.goldBook.shelved ??= state.booksFinished;
+  return state.goldBook.shelved;
+};
+
 /** La case est achetée. */
 export const caseGot = (state: GameState, id: string): boolean => state.goldBook.got.includes(id);
 

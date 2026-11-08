@@ -1,6 +1,7 @@
 {
   "name": "Le Livre d’or",
   "medal": "Le Livre d’or",
+  "cover": { "library": "BIBLIOTHÈQUE DE BABEL", "title": "LIVRE D’OR" },
   "quote": "« Chaque lettre y est d’or, et chacune ne brille qu’un instant. »",
   "open": "Ouvrir le livre",
   "again": "Rouvrir le livre",

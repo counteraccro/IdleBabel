@@ -1,6 +1,7 @@
 {
   "name": "The Golden Book",
   "medal": "The Golden Book",
+  "cover": { "library": "LIBRARY OF BABEL", "title": "GOLDEN BOOK" },
   "quote": "“Every letter in it is gold, and each one shines only for an instant.”",
   "open": "Open the book",
   "again": "Open the book again",

@@ -208,6 +208,11 @@ export interface GoldBookState {
   /** Les parties jouées, et les BABEL écrits en entier, depuis toujours. */
   games: number;
   words: number;
+  /**
+   * Sa place dans la vitrine : le nombre de livres lus quand elle l'a montré la première fois, rangé comme un livre rare trouvé
+   * à ce livre-là (null : pas encore rangé).
+   */
+  shelved: number | null;
 }
 
 /** L'atelier des curiosités (systems/curiosities.ts) : gardé au prestige (le chariot se vide, data/curiosities.ts). */
@@ -387,7 +392,7 @@ export const noTasks = (): TasksState => ({
 export const NO_LOTTERY: LotteryState = { tokens: 0, effects: [], golden: null, draws: 0, pending: null };
 
 /** Le Livre d'or au départ : rien dans l'arbre, aucune partie. */
-export const NO_GOLD_BOOK: GoldBookState = { dust: 0, best: 0, got: [], readDay: null, reads: 0, games: 0, words: 0 };
+export const NO_GOLD_BOOK: GoldBookState = { dust: 0, best: 0, got: [], readDay: null, reads: 0, games: 0, words: 0, shelved: null };
 
 /** Un atelier vide : rien sur le chariot, des tiroirs vides, le carnet sans pièce. */
 export const noAtelier = (): AtelierState => ({

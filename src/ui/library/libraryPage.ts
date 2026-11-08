@@ -14,6 +14,9 @@ import { flying, flyingHome, launchFlight } from '../book3d/bookFlight';
 import { visibleBox } from '../book3d/visibleBox';
 import { rareBook3d } from '../rareBooks/rareBook3d';
 import { rareBookArt } from '../rareBooks/arts';
+import { goldBookShelf3d } from '../goldBook/goldBookShelf';
+import { GOLD_BOOK_SHAPE } from '../goldBook/goldBook3d';
+import { goldBookShelved } from '../../systems/goldBook';
 import {
   CORNICE_FRONT,
   CORNICE_MIDDLE,
@@ -74,6 +77,8 @@ export const LIBRARY_CREDITS_BOOK = 'credits';
  * des fins, de face sur le chevalet (l'auteur, 16/10) ; il n'est pas de la collection « La Vraie Fin ».
  */
 export const LIBRARY_FINAL_BOOK = 'final';
+/** Le Livre d'or (l'auteur, 08/11) : rangé dans la vitrine comme un livre rare ; l'ouvrir lance le mini-jeu. */
+export const LIBRARY_GOLD_BOOK = 'goldBook';
 
 /**
  * Le livre de la vitrine `id` : le premier livre lu, ou un livre rare. Le livre de débogage, en mode ?debug :
@@ -86,7 +91,9 @@ export const shelfBook3d = (state: GameState, id: string, debugging: boolean): B
       ? debugBook3d()
       : id === LIBRARY_FINAL_BOOK
         ? finalBook3d(state)
-        : rareBook3d(state, id);
+        : id === LIBRARY_GOLD_BOOK
+          ? goldBookShelf3d()
+          : rareBook3d(state, id);
 
 /** Le livre qui vole de la vitrine à sa page (et retour) : son nom dans bookFlight. */
 export const libraryFlightId = (id: string): string => `library:${id}`;
@@ -251,7 +258,11 @@ export const createLibraryPage = (
   machineLamp.position.set(MACHINE_AT.x, ENDINGS_HEIGHT + 0.6, 1.6);
   machineLamp.target.position.set(MACHINE_AT.x, 1.4, 0.3);
   scene.add(endingsLamp, endingsLamp.target, machineLamp, machineLamp.target);
-  const thickness = (id: string): number => (id === LIBRARY_FIRST_BOOK ? THICKNESS : (rareBookArt(id).thickness ?? THICKNESS));
+  const thickness = (id: string): number =>
+    id === LIBRARY_FIRST_BOOK ? THICKNESS : id === LIBRARY_GOLD_BOOK ? GOLD_BOOK_SHAPE.thickness : (rareBookArt(id).thickness ?? THICKNESS);
+  // Le Livre d'or, rangé comme un livre rare trouvé au livre où la vitrine l'a montré la première fois.
+  const shelvedAt = goldBookShelved(state);
+  const foundAt = (id: string): number => (id === LIBRARY_GOLD_BOOK ? shelvedAt! : state.rareBooks[id]);
   // Les livres trouvés, dans l'ordre où ils l'ont été : chacun à la première place libre. Le livre des
   // crédits, là dès le début, puis le premier livre lu, passent avant tous les livres rares.
   const found = [
@@ -259,7 +270,8 @@ export const createLibraryPage = (
     ...(firstBookKept(state) ? [LIBRARY_FIRST_BOOK] : []),
     ...RARE_BOOKS.map(({ id }) => id)
       .filter((id) => id !== LIBRARY_DEBUG_BOOK && isRareBookFound(state, id))
-      .sort((a, b) => state.rareBooks[a] - state.rareBooks[b]),
+      .concat(shelvedAt === null ? [] : [LIBRARY_GOLD_BOOK])
+      .sort((a, b) => foundAt(a) - foundAt(b)),
   ];
   // La vitrine d'abord ; les livres qui n'y tiennent plus vont dans l'autre bibliothèque, à droite, qui ne paraît qu'avec le
   // premier d'entre eux (maquette du 21/10). Aucun livre rangé ne change de place.
@@ -575,10 +587,12 @@ export const createLibraryPage = (
       ? t('ui.firstBook')
       : id === LIBRARY_FINAL_BOOK
         ? t('finalBook.title')
-        : // Les tomes 2 à 11 : leur titre dans la saga (le tome 1 a le sien, comme un livre rare).
-          tomeIndex(id) > 0
-          ? messages().ui.endings.titles[tomeIndex(id)]
-          : t(`rareBooks.${id}.name`);
+        : id === LIBRARY_GOLD_BOOK
+          ? t('goldBook.name')
+          : // Les tomes 2 à 11 : leur titre dans la saga (le tome 1 a le sien, comme un livre rare).
+            tomeIndex(id) > 0
+            ? messages().ui.endings.titles[tomeIndex(id)]
+            : t(`rareBooks.${id}.name`);
   const hover = (place: Place | null): void => {
     if (hovered === place) return;
     if (hovered) hovered.aim = 0;
