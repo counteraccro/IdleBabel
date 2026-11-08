@@ -24,8 +24,8 @@ export const ETHERIUM_GROUPS = [
   { id: 'methods', contents: 0, pages: ['ages', 'gear', 'reading', 'start', 'memory', 'screen', 'chandelier'] },
   { id: 'reading', contents: 1, pages: ['hands', 'quill', 'knowledge', 'finds'] },
   { id: 'time', contents: 1, pages: ['away', 'weight'] },
-  // Le Livre d'or (07/11), après les Tâches : en mode débogage tant qu'il n'est pas fini (data/goldBookOn.ts). L'atelier qu'il
-  // remplace, seulement avec ?atelier (data/atelierOn.ts).
+  // Le Livre d'or (07/11), après les Tâches ; l'atelier qu'il remplace, seulement avec ?atelier, et alors sans le Livre d'or
+  // (data/atelierOn.ts, data/goldBookOn.ts).
   { id: 'rooms', contents: 2, pages: ['explore', 'mimic', 'relics', 'lottery', 'tasks', 'goldBook', 'atelier'] },
 ] as const;
 

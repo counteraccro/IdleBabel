@@ -162,7 +162,7 @@ const IDS: Record<AnomalyFamily, readonly string[]> = {
     'hintRelicCompass',
     // L'atelier (27/10) : détruire un livre S. Seulement en débogage pour l'instant, comme l'atelier (data/atelierOn.ts).
     ...(ATELIER_ON ? [HINT_ATELIER] : []),
-    // Le Livre d'or (07/11) : BABEL écrit au plafond du combo, son tome. Seulement en débogage pour l'instant.
+    // Le Livre d'or (07/11) : BABEL écrit au plafond du combo, son tome. Pas avec l'atelier (?atelier : data/goldBookOn.ts).
     ...(GOLD_BOOK_ON ? HINTS_GOLD_BOOK : []),
   ],
 };

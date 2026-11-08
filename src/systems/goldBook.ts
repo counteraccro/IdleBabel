@@ -25,7 +25,7 @@ import type { Run } from './goldBookRun';
  * (l'auteur, 02/11 : « rien de plus frustrant »).
  */
 
-/** Le Sud de la Rose des vents est allumé : le livre s'ouvre (en débogage seulement pour l'instant, data/goldBookOn.ts). */
+/** Le Sud de la Rose des vents est allumé : le livre s'ouvre (sauf avec l'atelier, ?atelier : data/goldBookOn.ts). */
 export const goldBookOpen = (state: GameState): boolean => GOLD_BOOK_ON && state.etherium.includes(GOLD_BOOK_STAR);
 
 /**

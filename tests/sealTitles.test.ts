@@ -16,8 +16,8 @@ describe('les titres des sceaux (21/10)', () => {
   afterEach(() => revealStats(false));
 
   it('chaque titre est celui d’un vrai sceau', () => {
-    // L'atelier et le Livre d'or, seulement en débogage (data/atelierOn.ts, data/goldBookOn.ts) : leurs sceaux n'y sont pas,
-    // leurs titres si (et celui de la constellation du Livre d'or).
+    // L'atelier, seulement avec ?atelier (data/atelierOn.ts) : ses sceaux n'y sont pas, ses titres si ; ceux du Livre d'or
+    // y sont (et le titre de sa constellation).
     const ids = new Set([...SEALS, ...ATELIER_SEALS, ...GOLD_BOOK_SEALS].map((seal) => seal.id).concat('constellation-goldBook'));
     for (const id of Object.keys(fr.sealTitles)) expect(ids.has(id), id).toBe(true);
   });

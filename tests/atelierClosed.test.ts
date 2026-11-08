@@ -13,16 +13,18 @@ vi.stubGlobal('window', new EventTarget());
 
 /** L'atelier, première version en mode débogage seulement (l'auteur, 27/10 : « tout caché hors debug »). */
 describe('L’atelier hors débogage', () => {
-  it('le Sud reste « plus tard », la page, les sceaux et la phrase de l’atelier n’existent pas', () => {
+  it('le Sud ouvre le Livre d’or ; la page, les sceaux et la phrase de l’atelier n’existent pas', () => {
     expect(ATELIER_ON).toBe(false);
     expect(ETHERIUM_PAGES).not.toContain('atelier');
-    expect(OPEN_STARS.some((star) => star.id === 'explore.s' || star.page === 'atelier')).toBe(false);
+    expect(ETHERIUM_PAGES).toContain('goldBook');
+    expect(OPEN_STARS.some((star) => star.id === 'explore.s')).toBe(true);
+    expect(OPEN_STARS.some((star) => star.page === 'atelier')).toBe(false);
     expect(SEALS.some((seal) => seal.plate === 'atelier' || seal.id === 'unmakeMasterpiece')).toBe(false);
     expect(PLATES).toContain('atelier');
     expect(ANOMALIES.some((anomaly) => anomaly.id === 'hintUnmakeMasterpiece')).toBe(false);
     const state = createInitialState('fr');
     Object.assign(state, { ether: 100, etheriumInHand: true });
-    expect(lightStar(state, 'explore.s')).toBe(false);
+    expect(lightStar(state, 'atelier.f1')).toBe(false);
   });
 
   it('une partie qui l’a ouvert en débogage le garde (rien n’est rendu), mais rien n’arrive ni n’agit', () => {

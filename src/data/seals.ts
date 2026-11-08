@@ -43,7 +43,7 @@ export const PLATES = [
   'tasks',
   // L'atelier (27/10) : seulement en débogage pour l'instant (data/atelierOn.ts) ; sans sceau, la planche n'a pas de page.
   'atelier',
-  // Le Livre d'or (07/11), à la place de l'atelier : seulement en débogage pour l'instant (data/goldBookOn.ts).
+  // Le Livre d'or (07/11), à la place de l'atelier (sauf avec ?atelier : data/goldBookOn.ts).
   'goldBook',
   'rare',
   'seals',
@@ -414,7 +414,7 @@ export const SEALS: readonly SealDef[] = [
   // Un livre S de l'atelier détruit (systems/curiosities.ts) : seulement en débogage pour l'instant, comme l'atelier.
   ...(ATELIER_ON ? [ATELIER_SECRET] : []),
   // Le Livre d'or (07/11) : BABEL écrit avec le combo au plafond (systems/goldBook.ts, endRun) ; un tome gagné par une partie.
-  // Seulement en débogage pour l'instant.
+  // Pas avec l'atelier (?atelier : data/goldBookOn.ts).
   ...(GOLD_BOOK_ON
     ? [
         secret('babelAtCap'),

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-// Le Livre d'or n'existe qu'en mode débogage pour l'instant (data/goldBookOn.ts) : l'adresse ?debug, avant d'importer le jeu.
+// Le Livre d'or est dans le jeu pour tous (data/goldBookOn.ts), sans ?debug : l'adresse sans paramètre, avant d'importer le jeu.
 vi.hoisted(() => {
-  (globalThis as { location?: unknown }).location = { search: '?debug' };
+  (globalThis as { location?: unknown }).location = { search: '' };
 });
 
 import { createInitialState, type GameState } from '../src/core/state';
@@ -53,7 +53,7 @@ const catchNext = (run: Run, random = GOLD_ONLY) => {
 };
 
 describe('le Livre d’or, à la place de l’atelier', () => {
-  it('en débogage, le Livre d’or ; l’atelier seulement avec ?atelier', () => {
+  it('le Livre d’or pour tous, sans ?debug ; l’atelier seulement avec ?atelier', () => {
     expect(GOLD_BOOK_ON).toBe(true);
     expect(ATELIER_ON).toBe(false);
   });

@@ -169,8 +169,7 @@ export const modGame = (state: GameState) => ({
   }),
   /**
    * Le Livre d'or (le Sud allumé : `open`) : le record d'une partie, la poussière d'or, les parties jouées, BABEL écrit, les
-   * cases de l'arbre achetées, les lectures qui restent aujourd'hui. Seulement en débogage pour l'instant (data/goldBookOn.ts) :
-   * sa ligne de la documentation des mods viendra avec lui.
+   * cases de l'arbre achetées, les lectures qui restent aujourd'hui. Pas avec l'atelier (?atelier : data/goldBookOn.ts).
    */
   ...(GOLD_BOOK_ON
     ? {

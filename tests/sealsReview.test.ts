@@ -54,8 +54,10 @@ describe('revue des sceaux (08/10)', () => {
     // Les Âges d'après le Numérique, la Goutte, les quatre pointes de la Rose des vents qui n'ouvrent encore rien (le Nord-Est
     // donne le tome 1 depuis le 18/10) ; « Une dernière pour la route » s'ouvre le 18/10 (le tome 4) ; les deux dents du
     // Rouage qui attendaient leur Âge (19/10), celle de l'Âge Quantique ouverte le 24/10.
-    // Le Livre d'or (07/11) et l'atelier (27/10), fermés hors débogage : le Sud (déjà compté) et leurs étoiles.
-    expect(OPEN_STARS.length).toBe(STARS.length - 8 - (SOUTH_STARS.size - 1));
+    // L'atelier (27/10), fermé sans ?atelier : ses étoiles ; le Sud ouvre le Livre d'or (08/11, pour tous).
+    const atelierStars = STARS.filter((star) => star.page === 'atelier').length;
+    expect([...SOUTH_STARS].filter((id) => id.startsWith('atelier.'))).toHaveLength(atelierStars);
+    expect(OPEN_STARS.length).toBe(STARS.length - 7 - atelierStars);
   });
 
   it('scelle la Connaissance trouvée, et le livre blanc', () => {
